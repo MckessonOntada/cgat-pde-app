@@ -1,13 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import {
-  Button,
-  Alert,
-  Tooltip,
-  Loader,
-  MultiSelectDropdown,
-  Heading
-} from '@mckesson/mcp-component-library';
+import { Button, Alert, Tooltip, Loader, MultiSelectDropdown, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -27,10 +20,7 @@ import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
-import {
-  getInitialValues,
-  getValidationSchema
-} from './forms/validation-schema';
+import { getInitialValues, getValidationSchema } from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
 import useTimedArray from '../summary/useTimedArray';
@@ -39,25 +29,22 @@ import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
 
 export const getFilteredSections = (channelType) => {
-  return sections(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA).map(
-    (section) => ({
-      ...section,
-      rows: section.rows.map((row) => ({
-        ...row,
-        controls: row.controls.filter((control) => {
-          if (typeof control.if === 'function') {
-            return control.if(channelType);
-          }
-          return true;
-        })
-      }))
-    })
-  );
+  return sections(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA).map((section) => ({
+    ...section,
+    rows: section.rows.map((row) => ({
+      ...row,
+      controls: row.controls.filter((control) => {
+        if (typeof control.if === 'function') {
+          return control.if(channelType);
+        }
+        return true;
+      })
+    }))
+  }));
 };
 
 const PatientDetails = () => {
   const { t } = useTranslate();
-  const [selectedProvider, setSelectedProvider] = React.useState(null);
   const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -65,49 +52,28 @@ const PatientDetails = () => {
   const { controlRef } = useContext(FooterContext);
   const { showAlert } = useAlert();
   const location = useLocation();
-  const {
-    isEdit = false,
-    isApprover = false,
-    alertState
-  } = location.state || {};
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const {
-    data: orderDetails = {},
-    isFetching: isFetchingOrderDetails,
-    isError,
-    error,
-    isLoader
-  } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
 
   React.useEffect(() => {
     if (orderDetails.channelType) {
-      if (
-        orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL &&
-        !orderDetails.patientDetailsRequired
-      )
+      if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired)
         navigate(`/orders/${orderId}/additional-details`, {
           state: { ...location.state }
         });
     }
   }, [orderDetails]);
-  const {
-    items: notifications,
-    add: addNotification,
-    remove: removeNotification
-  } = useTimedArray(10000);
+  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
 
   const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId =
-    orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId =
-    orderDetails?.accountDetails?.shipToAccount?.accountNumber;
-  const channelType =
-    orderDetails?.accountDetails?.soldToAccount?.channelType ||
-    CHANNEL_TYPE.BUY_AND_BILL;
+  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
 
   const { data: priceDetails } = useOrderPrice({
     therapyId,
@@ -134,8 +100,7 @@ const PatientDetails = () => {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder)
-      navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
+    if (isPapOrder) navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
   }, [orderDetails]);
 
   useEffect(() => {
@@ -174,13 +139,7 @@ const PatientDetails = () => {
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) =>
-      OrderService.savePatientDetails(
-        orderId,
-        payload,
-        skipDuplicateCheck,
-        orderDetails.channelType
-      ),
+    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType),
     {
       onSuccess: (result) => {
         const { id } = result;
@@ -201,6 +160,7 @@ const PatientDetails = () => {
             }
           });
         }
+        setProvider(null);
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -243,10 +203,7 @@ const PatientDetails = () => {
   const handleSubmit = (form, skipDuplicateCheck = false) => {
     const payload = CommonUtils.cleanObject(form);
     if (form.dateOfBirth) {
-      payload.dateOfBirth = CommonUtils.convertDateStringFormat(
-        form.dateOfBirth,
-        'MM-DD-YYYY'
-      );
+      payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
     }
     if (isApprover) {
       skipDuplicateCheck = true;
@@ -312,59 +269,35 @@ const PatientDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToOrders}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
-        }
-      />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
-        <OrderStepper
-          status={orderDetails?.currentStage}
-          patientDetailsRequired={orderDetails?.patientDetailsRequired}
-          channelType={channelType}
-        />
+        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
 
         {notifications?.length > 0 && (
           <div className="alert-container">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert
-                  key={item.id}
-                  description={item.description}
-                  onClose={() => removeNotification(item.id)}
-                  type={item.type}
-                />
+                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
               ))}
             </div>
           </div>
         )}
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails
-            orderDetails={orderDetails}
-            priceDetails={priceDetails}
-          />
+          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(
-            t,
-            orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-          )}
+          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA)}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
           {({ values, isValid, errors, dirty, setFieldValue }) => {
@@ -382,11 +315,7 @@ const PatientDetails = () => {
                           <hr />
                           <div className="selected-provider">
                             <div className="MCP-module-body">
-                              <Heading as="h2">
-                                {t(
-                                  'orderManagement.patientDetails.inputLabel.providerDetails'
-                                )}
-                              </Heading>
+                              <Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>
                               <Field
                                 component={Components['multiSelectDropdown']}
                                 id={'patient-info-provider'}
@@ -394,9 +323,7 @@ const PatientDetails = () => {
                                 label={' '}
                                 isMultiSelect={false}
                                 placeholder={'Select Provider'}
-                                onChange={(value) =>
-                                  handleOnSelection(value, setFieldValue)
-                                }
+                                onChange={(value) => handleOnSelection(value, setFieldValue)}
                                 options={providers.map((item) => ({
                                   label: item.fullname,
                                   labelDescription: item.detailedAddress,
@@ -407,20 +334,9 @@ const PatientDetails = () => {
                                 onSearch={setProviderQuery}
                                 recordsCountToEnableSearch={5}
                                 size="lg"
-                                fieldDisplayValue={
-                                  CommonUtils.isNonEmptyObject(provider)
-                                    ? provider
-                                    : undefined
-                                }
+                                fieldDisplayValue={CommonUtils.isNonEmptyObject(provider) ? provider : undefined}
                                 isAsyncLoading={isFetching}
-                                refineFilterMessage={[
-                                  t(
-                                    'paymentInvoices.accountSearch.moreRecordsExist'
-                                  ),
-                                  t(
-                                    'paymentInvoices.accountSearch.searchToRefine'
-                                  )
-                                ]}
+                                refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                 asyncRecordsFound={totalProviders}
                               />
                             </div>
@@ -431,17 +347,13 @@ const PatientDetails = () => {
                                 </Heading>
                                 <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
                                   <Tooltip body={provider.detailedAddress}>
-                                    <p className="detail-segment inline-text-overflow">
-                                      {provider.detailedAddress}
-                                    </p>
+                                    <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
                                   </Tooltip>
                                   {['dea', 'npi', 'phone'].map((key) => {
                                     const value = provider[key];
                                     return (
                                       <Tooltip body={value}>
-                                        <p className="detail-segment inline-text-overflow">
-                                          {value}
-                                        </p>
+                                        <p className="detail-segment inline-text-overflow">{value}</p>
                                       </Tooltip>
                                     );
                                   })}
@@ -455,10 +367,7 @@ const PatientDetails = () => {
                   </div>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
-                      <Button
-                        size="md"
-                        variant="secondary"
-                        onClick={handleOnBack}>
+                      <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
                       <Button size="md" variant="primary" type="submit">

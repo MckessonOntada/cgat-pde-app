@@ -26,11 +26,13 @@ export const getInitialValues = () => ({
       state: ''
     },
     patientIdentifier: '',
-    patientIdentifier: '',
     mrn: ''
   },
   providerId: ''
 });
+
+const yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1);
 
 export const getValidationSchema = (t, isProviderRequired) => {
   return Yup.object().shape({
@@ -50,7 +52,7 @@ export const getValidationSchema = (t, isProviderRequired) => {
             required: isProviderRequired ? true : false
           }),
           dateOfBirth: Yup.date()
-            .max(new Date(), 'Date of birth can not be greater than today.')
+            .max(yesterday, 'Date of birth must be yesterday or earlier.')
             .when([], {
               is: () => isProviderRequired,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.dateOfBirth')),
