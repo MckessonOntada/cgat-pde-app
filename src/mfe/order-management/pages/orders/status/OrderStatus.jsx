@@ -10,7 +10,7 @@ import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
 import useOrder from '../useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { FooterContext } from '@src/components/footer/FooterContext';
 
 const OrderStatus = () => {
@@ -120,13 +120,7 @@ const OrderStatus = () => {
             <DetailSegment
               label={t('labels.patientName')}
               value={
-                [
-                  patient?.patientInfo?.firstName,
-                  patient?.patientInfo?.middleName,
-                  patient?.patientInfo?.lastName
-                ]
-                  .filter(Boolean)
-                  .join(' ') || '-'
+                patient?.patientInfo ? getFullName(patient.patientInfo) : ''
               }
             />
           </div>
