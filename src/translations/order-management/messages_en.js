@@ -286,7 +286,7 @@ export const MessageEn = {
   'messages.accountSelect': 'Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement': 'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
-  'messages.papOrderPlacementAcknowledgement': 'No Cost Therapy Order',
+  'messages.papOrderPlacementAcknowledgement': ' Submit this as no Cost therapy Order.',
   'messages.variantAcknowledgement': 'Please acknowledge that you have verified and selected the correct Variant.',
   'messages.selectAccountToBuyTherapy': 'Please select the account to buy the therapy for',
   'messages.selectAccount': 'Please select account',
