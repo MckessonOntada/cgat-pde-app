@@ -231,6 +231,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, t
                   }}
                   value={selectedChannel}
                   radioBtnWidth="auto"
+                  size="lg"
                 />
               </div>
             </div>
