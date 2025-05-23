@@ -103,7 +103,9 @@ const objectToQueryStringWithCustomSeparator = function (obj, customSeparator) {
   for (const key in obj) {
     const value = obj[key];
     if (value !== '' && (!Array.isArray(value) || value.length > 0)) {
-      keyValuePairs.push(`${key}=${Array.isArray(value) ? value.join(customSeparator) : value}`);
+      keyValuePairs.push(
+        `${key}=${Array.isArray(value) ? value.join(customSeparator) : value}`
+      );
     }
   }
 
@@ -185,7 +187,9 @@ const sanitizeValue = (value) => {
   }
 
   if (typeof value === 'object' && value !== null) {
-    return Object.fromEntries(Object.entries(value).map(([key, val]) => [key, sanitizeValue(val)]));
+    return Object.fromEntries(
+      Object.entries(value).map(([key, val]) => [key, sanitizeValue(val)])
+    );
   }
 
   return value;
@@ -198,7 +202,8 @@ const getTooltipPosition = (height, width, event) => {
   const screenHeight = window.innerHeight;
 
   const isRightSpaceAvailable = event.clientX + width + margin <= screenWidth;
-  const isBottomSpaceAvailable = event.clientY + height + margin <= screenHeight;
+  const isBottomSpaceAvailable =
+    event.clientY + height + margin <= screenHeight;
   const isTopSpaceAvailable = event.clientY - height - margin >= 0;
 
   let position = {};
@@ -255,7 +260,11 @@ const convertDateStringToUserTimezone = (dateString) => {
   return formattedDate;
 };
 
-const convertDateStringFormat = (dateString, outputformat = 'MM-DD-YYYY', inputFormat = 'DD/MM/YYYY') => {
+const convertDateStringFormat = (
+  dateString,
+  outputformat = 'MM-DD-YYYY',
+  inputFormat = 'DD/MM/YYYY'
+) => {
   if (!dateString || typeof dateString !== 'string') return '-';
   let parsedDate;
 
@@ -323,7 +332,9 @@ const sanitizeContent = (content) => {
 
 function searchAndRankOnPrefixFirst(data, searchText) {
   searchText = searchText.toLowerCase();
-  const filteredList = data.filter((string) => string.label.toLowerCase().includes(searchText));
+  const filteredList = data.filter((string) =>
+    string.label.toLowerCase().includes(searchText)
+  );
   filteredList.sort((a, b) => {
     const aStartsWith = a.label.toLowerCase().startsWith(searchText);
     const bStartsWith = b.label.toLowerCase().startsWith(searchText);
@@ -363,7 +374,12 @@ function areArraysEqual(arr1, arr2) {
 function deepEqual(obj1, obj2) {
   if (obj1 === obj2) return true;
 
-  if (obj1 === null || obj2 === null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+  if (
+    obj1 === null ||
+    obj2 === null ||
+    typeof obj1 !== 'object' ||
+    typeof obj2 !== 'object'
+  ) {
     return false;
   }
 
@@ -408,14 +424,21 @@ export const getDateRangeValidationError = (start, end, isRequired = false) => {
   return undefined;
 };
 
-export const validateDateRange = (value, messages = {}, allowFutureDate = true) => {
+export const validateDateRange = (
+  value,
+  messages = {},
+  allowFutureDate = true
+) => {
   if (Array.isArray(messages)) messages = {};
 
   let message = '';
-  const fromDate = value?.[0] && !isNaN(new Date(value[0])) ? new Date(value[0]) : null;
-  const toDate = value?.[1] && !isNaN(new Date(value[1])) ? new Date(value[1]) : null;
+  const fromDate =
+    value?.[0] && !isNaN(new Date(value[0])) ? new Date(value[0]) : null;
+  const toDate =
+    value?.[1] && !isNaN(new Date(value[1])) ? new Date(value[1]) : null;
   const today = new Date();
-  const defaultMessage = messages.fromDateAndToDate || 'Please select a valid date range.';
+  const defaultMessage =
+    messages.fromDateAndToDate || 'Please select a valid date range.';
   if ((!fromDate && toDate) || (fromDate && !toDate)) {
     message = defaultMessage;
   } else if (fromDate > toDate) {
@@ -488,7 +511,13 @@ export function getUSFullName({ firstName, lastName, middleName }) {
 }
 export const getAddress = (account) => {
   const sanitizedAccount = CommonUtils.sanitizeValue(account);
-  return [sanitizedAccount.address1, sanitizedAccount.address2, sanitizedAccount.city, sanitizedAccount.state, sanitizedAccount.zipCode]
+  return [
+    sanitizedAccount.address1,
+    sanitizedAccount.address2,
+    sanitizedAccount.city,
+    sanitizedAccount.state,
+    sanitizedAccount.zipCode
+  ]
     .filter(Boolean)
     .join(', ');
 };
@@ -555,7 +584,9 @@ export const downloadFile = (blob, fileName) => {
 export const enableReviewAndPay = (selectedAccount) => {
   let ignorableCompanyCode = ['5040'];
   if (selectedAccount) {
-    let hide = ignorableCompanyCode.some((ele) => ele == selectedAccount.companyCode);
+    let hide = ignorableCompanyCode.some(
+      (ele) => ele == selectedAccount.companyCode
+    );
     return !hide;
   } else {
     return false;
@@ -564,7 +595,14 @@ export const enableReviewAndPay = (selectedAccount) => {
 
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
-    return obj.map(cleanObject).filter((item) => item !== undefined && item !== null && !(typeof item === 'object' && Object.keys(item).length === 0));
+    return obj
+      .map(cleanObject)
+      .filter(
+        (item) =>
+          item !== undefined &&
+          item !== null &&
+          !(typeof item === 'object' && Object.keys(item).length === 0)
+      );
   } else if (typeof obj === 'object' && obj !== null) {
     return Object.entries(obj).reduce((acc, [key, value]) => {
       const cleanedValue = cleanObject(value);
@@ -573,7 +611,10 @@ const cleanObject = (obj) => {
         cleanedValue !== null &&
         cleanedValue !== '' &&
         !(Array.isArray(cleanedValue) && cleanedValue.length === 0) &&
-        !(typeof cleanedValue === 'object' && Object.keys(cleanedValue).length === 0)
+        !(
+          typeof cleanedValue === 'object' &&
+          Object.keys(cleanedValue).length === 0
+        )
       ) {
         acc[key] = cleanedValue;
       }
@@ -584,19 +625,34 @@ const cleanObject = (obj) => {
 };
 
 const formatNumberWithoutSymbol = (value) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0).slice(1);
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+    .format(value || 0)
+    .slice(1);
 };
 
-const getCamelCase = (str) => str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
+const getCamelCase = (str) =>
+  str.replace(/(^\w|[-_]\w)/g, (match) =>
+    match.replace(/[-_]/, '').toUpperCase()
+  );
 
-const getNameValidation = (t, { field = '', min = 2, max = 50, required = false, invalidKey } = {}) => {
+const getNameValidation = (
+  t,
+  { field = '', min = 2, max = 50, required = false, invalidKey } = {}
+) => {
   let schema = Yup.string()
     .nullable()
-    .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t(invalidKey || `userManagement.create_user.validation.${field}`))
+    .matches(
+      ALPHABETIC_WITH_SPECIAL_AND_ACCENTED,
+      t(invalidKey || `userManagement.create_user.validation.${field}`)
+    )
     .min(min, t(`orgManagement.create_org.validation.${field}_min`))
     .max(max, t(`orgManagement.create_org.validation.${field}_max`));
 
-  return required ? schema.required(t(`userManagement.create_user.validation.${field}_required`)) : schema;
+  return required
+    ? schema.required(
+        t(`userManagement.create_user.validation.${field}_required`)
+      )
+    : schema;
 };
 
 function flattenObject(obj, parentKey = '', result = {}) {
@@ -605,7 +661,11 @@ function flattenObject(obj, parentKey = '', result = {}) {
 
     const newKey = parentKey ? key : key;
 
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+    if (
+      typeof obj[key] === 'object' &&
+      obj[key] !== null &&
+      !Array.isArray(obj[key])
+    ) {
       flattenObject(obj[key], newKey, result);
     } else {
       result[newKey] = obj[key];
@@ -643,7 +703,9 @@ function getAxiosErrorMessage(error) {
     }
 
     if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
-      return data.errors.map((err) => err.message || JSON.stringify(err)).join(', ');
+      return data.errors
+        .map((err) => err.message || JSON.stringify(err))
+        .join(', ');
     }
 
     return JSON.stringify(data);

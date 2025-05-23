@@ -23,7 +23,8 @@ function UploadOrderDocument() {
   const { t } = useTranslate();
   const [comment, setComment] = React.useState('');
   const [alert, setAlert] = React.useState(null);
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
+    useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
 
   const handleOnUpload = (values = {}) => {
@@ -88,7 +89,10 @@ function UploadOrderDocument() {
       <PageHeader heading={'Upload Documents'} />
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <div className="MCP-CardContainer">
-        <ModuleHeader className={styles['panel-header']} heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>} />
+        <ModuleHeader
+          className={styles['panel-header']}
+          heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>}
+        />
 
         {isFetchingOrderDetails ? (
           <div className="spinner-wrapper md">
@@ -96,9 +100,18 @@ function UploadOrderDocument() {
           </div>
         ) : (
           <div>
-            <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4`}>
-              <DetailSegment key={'sap_id'} label="SAP ID" value={orderDetails.id} />
-              <DetailSegment key={'therapy_name'} label="Therapy" value={orderDetails.therapy?.materialDescription} />
+            <div
+              className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4`}>
+              <DetailSegment
+                key={'sap_id'}
+                label="SAP ID"
+                value={orderDetails.id}
+              />
+              <DetailSegment
+                key={'therapy_name'}
+                label="Therapy"
+                value={orderDetails.therapy?.materialDescription}
+              />
               <div></div>
               <DetailSegment
                 key={'order_cost'}
