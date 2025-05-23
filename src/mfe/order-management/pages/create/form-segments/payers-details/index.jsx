@@ -97,7 +97,7 @@ const PayerDetails = () => {
     } else {
       formValues.drugBenefitInsuranceCompany = undefined;
     }
-    setFormValues({ ...newValues, ...formValues });
+    setFormValues({ ...formValues, ...newValues });
     setValidationSchema(Yup.object(schemaShape));
   }, [showSecondaryPayer, showDrugBenefitInsurer]);
 
@@ -164,7 +164,7 @@ const PayerDetails = () => {
       state: { activeTab: location?.state?.fromTab }
     });
   const handleOnBackClick = () => navigate(`/orders/${orderId}/patient`);
-
+  console.log(formValues);
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -184,9 +184,6 @@ const PayerDetails = () => {
       </div>
       <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
         {({ values, errors }) => {
-          React.useEffect(() => {
-            console.log(values, errors);
-          }, [values]);
           return (
             <Form>
               <div className="MCP-module-body">

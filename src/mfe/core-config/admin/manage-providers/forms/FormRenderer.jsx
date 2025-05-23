@@ -3,6 +3,7 @@ import { Field } from 'formik';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
+import CommonUtils from '@src/util/CommonUtils';
 
 const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
   const { t } = useTranslate();
@@ -12,21 +13,14 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
         <div className="MCP-form">
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex} className="form-section">
-              {(section.title ||
-                section.primaryAction ||
-                section.isRequired) && (
+              {(section.title || section.primaryAction || section.isRequired) && (
                 <div className={'row-space-between-center'}>
-                  <div className="form-section-heading">
-                    {section.title && (
-                      <Heading as="h1">{t(section.title)}</Heading>
-                    )}
-                  </div>
+                  <div className="form-section-heading">{section.title && <Heading as="h1">{t(section.title)}</Heading>}</div>
                   <div className="controls">
                     {section.primaryAction}
                     {section.isRequired && (
                       <p className="form-instruction">
-                        <span className="required">*</span>{' '}
-                        {t('labels.required')}
+                        <span className="required">*</span> {t('labels.required')}
                       </p>
                     )}
                   </div>
@@ -35,11 +29,7 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
 
               {(section.subTitle || section.secondaryActions) && (
                 <div className={'row-space-between-center'}>
-                  <div classname="form-section-heading">
-                    {section.subTitle && (
-                      <Heading as="h3">{t(section.subTitle)}</Heading>
-                    )}
-                  </div>
+                  <div classname="form-section-heading">{section.subTitle && <Heading as="h3">{t(section.subTitle)}</Heading>}</div>
                   <div className="controls">{section.secondaryActions}</div>
                 </div>
               )}
@@ -54,7 +44,7 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
                       return (
                         <Field
                           id={`${fieldPrefix}${control.name}`}
-                          key={`${fieldPrefix}_${control.name}_${controlIndex}`}
+                          key={`${CommonUtils.generateUniqueCode(fieldPrefix + control.name + controlIndex)}`}
                           name={`${fieldPrefix}${control.name}`}
                           label={t(control.label)}
                           placeholder={control.placeholder || ' '}

@@ -4,11 +4,7 @@ import { useOrgAccountSelectionContext } from './context/OrgAccountSelectionCont
 import './styles.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
-function OrgAccountsSelect({
-  handleOrgChange,
-  handleAccountChange,
-  showAccountsSelect = true
-}) {
+function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsSelect = true }) {
   const { t } = useTranslate();
   const {
     organizationOptions,
@@ -21,9 +17,10 @@ function OrgAccountsSelect({
     accountOptions,
     setAccountOptions,
     setCheckedAccounts,
-    checkedAccounts
+    checkedAccounts,
+    totalOrgs,
+    totalAccs
   } = useOrgAccountSelectionContext();
-
   const onOrganizationChange = (selectedValue) => {
     let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
     setSelectedOrganization(_selected);
@@ -36,15 +33,14 @@ function OrgAccountsSelect({
   const onAccountChange = (selectedValue) => {
     if (selectedValue.length > 0) {
       let _checkedOptions = [...[], ...checkedAccounts];
-      selectedValue.map((ele) => {
-        let eleExist = checkedAccounts.find((item) => item.value == ele.value);
-        if (ele.isChecked) {
-          if (!eleExist) _checkedOptions.push(ele);
-        } else {
-          if (eleExist)
-            _checkedOptions = _checkedOptions.filter(
-              (i) => i.value != ele.value
-            );
+
+      selectedValue.forEach((val) => {
+        const exists = checkedAccounts.some((item) => item.value === val.value);
+        if (val.isChecked && !exists) {
+          _checkedOptions.push(val);
+        }
+        if (!val.isChecked && exists) {
+          _checkedOptions = _checkedOptions.filter((i) => i.value !== val.value);
         }
       });
       setCheckedAccounts(_checkedOptions);
@@ -69,6 +65,8 @@ function OrgAccountsSelect({
           size="md"
           isSortEnable={false}
           value={selectedOrganization?.id.toString() || ''}
+          refineFilterMessage={[t('refineFilter.message')]}
+          asyncRecordsFound={totalOrgs}
           fieldDisplayValue={
             selectedOrganization?.name
               ? {
@@ -93,6 +91,8 @@ function OrgAccountsSelect({
             recordsCountToEnableSearch={5}
             size="md"
             noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+            refineFilterMessage={[t('refineFilter.message')]}
+            asyncRecordsFound={totalAccs}
           />
         </div>
       )}
