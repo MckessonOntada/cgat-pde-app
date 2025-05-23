@@ -22,7 +22,10 @@ async function getOrders(requestParams) {
 }
 
 async function getOrderById(orderId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
@@ -149,17 +152,31 @@ async function getOrderById(orderId) {
   return {};
 }
 
-async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+async function savePatientDetails(
+  orderId,
+  payload,
+  skipDuplicateCheck = false,
+  channelType
+) {
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
   const params = {
     skipDuplicateCheck
   };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(params)}`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(
+    params
+  )}`;
   try {
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+    const res = await HttpResourceService.callRest(
+      url,
+      httpVerb.PATCH,
+      payload
+    );
     if (res.data) {
       return res.data;
     }
@@ -169,16 +186,25 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
 }
 
 async function savePayerDetails(orderId, payload, channelType) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to save payer details');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to save payer details'
+    );
 
   const params = {};
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(params)}`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(
+    params
+  )}`;
   try {
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+    const res = await HttpResourceService.callRest(
+      url,
+      httpVerb.PATCH,
+      payload
+    );
     if (res.data) {
       return res.data;
     }
@@ -188,7 +214,10 @@ async function savePayerDetails(orderId, payload, channelType) {
 }
 
 async function saveAdditionalDetails(orderId, payload) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -201,7 +230,10 @@ async function saveAdditionalDetails(orderId, payload) {
 }
 
 async function saveAccount(orderId, payload) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/account`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -214,7 +246,10 @@ async function saveAccount(orderId, payload) {
 }
 
 async function submitOrder(orderId, payload) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/submit`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -227,11 +262,21 @@ async function submitOrder(orderId, payload) {
 }
 
 async function rejectOrder(orderId, rejectionReason) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to reject the order.');
-  if (!rejectionReason) throw new Error('Reason is missing. Reason is required to reject the order.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to reject the order.'
+    );
+  if (!rejectionReason)
+    throw new Error(
+      'Reason is missing. Reason is required to reject the order.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/reject`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, rejectionReason);
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.PATCH,
+    rejectionReason
+  );
 
   if (res.data) {
     return res.data;
@@ -241,7 +286,9 @@ async function rejectOrder(orderId, rejectionReason) {
 }
 
 async function getTherapies(requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(
+    requestParams
+  )}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -267,8 +314,14 @@ async function getSoldToAccounts(therapyId, query) {
   return {};
 }
 
-async function getShippingAddressForTherapyByAccountId(therapyId, accountId, requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(requestParams)}`;
+async function getShippingAddressForTherapyByAccountId(
+  therapyId,
+  accountId,
+  requestParams
+) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(
+    requestParams
+  )}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -277,7 +330,12 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
   return {};
 }
 
-async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = null) {
+async function getPriceDetails(
+  therapyId,
+  accountId,
+  shipToAccountId,
+  variant = null
+) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog${
     !!variant ? `?variantType=${variant}` : ''
   }`;
@@ -289,7 +347,12 @@ async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = 
   return {};
 }
 
-async function getVariants(therapyId, accountId, shipToAccountId, requestParams) {
+async function getVariants(
+  therapyId,
+  accountId,
+  shipToAccountId,
+  requestParams
+) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/variants?${serializeParams(
     requestParams
   )}`;
@@ -303,7 +366,10 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
 
 async function getInventoryStatus(orderId) {
   try {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability/${orderId}`, httpVerb.GET);
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.INVENTORY()}/availability/${orderId}`,
+      httpVerb.GET
+    );
     if (res) {
       return res;
     }
@@ -313,7 +379,9 @@ async function getInventoryStatus(orderId) {
 }
 
 async function getProgramAndChannelConfig(therapyId, requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(
+    requestParams
+  )}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -323,7 +391,10 @@ async function getProgramAndChannelConfig(therapyId, requestParams) {
 }
 
 async function setOrderAssignToMe(orderId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/approver/assignToMe`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
@@ -336,7 +407,10 @@ async function setOrderAssignToMe(orderId) {
 }
 
 async function setOrderUnassignToMe(orderId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/approver/release`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
@@ -349,7 +423,10 @@ async function setOrderUnassignToMe(orderId) {
 }
 
 async function deleteOrder(orderId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
   const url = `${ApiRoutes.ORDERS()}/${orderId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
   if (res.data) {
@@ -371,7 +448,10 @@ async function getAssignedGroups() {
 }
 
 async function simulateOrder(orderId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
   const url = `${ApiRoutes.ORDERS()}/${orderId}/simulate`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
   if (res.data) {
@@ -382,10 +462,17 @@ async function simulateOrder(orderId) {
 }
 
 async function updateTherapy(orderId, requestBody) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to fetch details.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/therapy`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, requestBody);
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.PATCH,
+    requestBody
+  );
 
   if (res.data) {
     return res.data;
@@ -395,7 +482,10 @@ async function updateTherapy(orderId, requestBody) {
 }
 
 async function discardCurrentOrderVersion(orderId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to discard order changes.');
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to discard order changes.'
+    );
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/discard`;
   const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
@@ -408,8 +498,14 @@ async function discardCurrentOrderVersion(orderId) {
 }
 
 async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
-  if (!sapOrderId) throw new Error('SAP Order id is missing. SAP Order id is required to discard order changes.');
-  if (!salesOrgId) throw new Error('Sales Org id is missing. Sales Org id is required to discard order changes.');
+  if (!sapOrderId)
+    throw new Error(
+      'SAP Order id is missing. SAP Order id is required to discard order changes.'
+    );
+  if (!salesOrgId)
+    throw new Error(
+      'Sales Org id is missing. Sales Org id is required to discard order changes.'
+    );
 
   const url = `${ApiRoutes.SAP_ORDERS()}/${sapOrderId}/sales-org/${salesOrgId}/status`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
@@ -438,7 +534,10 @@ async function getOrderCountByStatus() {
 }
 
 async function downloadDocument(url) {
-  if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
+  if (!url)
+    throw new Error(
+      'Document url is missing. Document url is required to download the document.'
+    );
 
   try {
     const documentUrl = `${ApiRoutes.ORDERS()}/documents/download?documentPath=${url}`;
