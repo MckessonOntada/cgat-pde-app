@@ -12,5 +12,6 @@ export const RoutePaths = {
   pathApproverManagement: '/admin/approver-group',
   pathOrganizationRoles: '/admin/organization/roles',
   pathSystemAdminManagement: '/system-admin/user',
-  pathManageProviders: '/admin/providers'
+  pathManageProviders: '/admin/providers',
+  pathManageLinkAccount: '/admin/linked-accounts'
 };
