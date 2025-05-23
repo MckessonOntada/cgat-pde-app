@@ -1001,10 +1001,12 @@ const Summary = () => {
                     {additionalDetails.additionalDocuments?.map((documentSegment) => {
                       return (
                         <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
-                          <div>
+                          <div className="MCP-module-body">
                             <DetailSegment label={'Comment'} value={documentSegment.comment} />
-                            <DetailSegment label={'Uploaded by:'} value={documentSegment.uploadedBy} />
-                            <DetailSegment label={'Uploaded on:'} value={documentSegment.uploadedOn} />
+                            <div>
+                              <DetailSegment direction="row" label={'Uploaded by:'} value={documentSegment.uploadedBy} />
+                              <DetailSegment direction="row" label={'Uploaded on:'} value={documentSegment.uploadedDate} />
+                            </div>
                           </div>
                           {documentSegment.name && documentSegment.url && (
                             <AttachmentCard url={documentSegment?.url} fileName={documentSegment.name} fileSize={documentSegment.size} />

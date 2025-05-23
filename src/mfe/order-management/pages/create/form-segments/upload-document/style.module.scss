@@ -2,3 +2,8 @@
     font-size: var(--brand-font-size--32);
     font-weight: var(--brand-font-weight-700);
 }
+
+.panel-header {
+    padding-bottom: var(--spacing-01);
+    border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
+}

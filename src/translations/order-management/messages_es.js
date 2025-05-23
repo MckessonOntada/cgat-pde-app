@@ -107,6 +107,7 @@ export const MessageEs = {
   'labels.slotNo': 'S_Slot No',
   'labels.selectVariant': 'S_Select Variant',
   'labels.configuredQuestionnaires': 'S_Configured Questionnaires',
+  'labels.additionalDocuments': 'S_Additional Documents',
   'labels.poNo': 'S_PO No',
   'labels.variantDescription': 'S_Variant Description',
   'labels.actions.view': 'S_View',

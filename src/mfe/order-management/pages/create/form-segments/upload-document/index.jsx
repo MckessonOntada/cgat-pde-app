@@ -5,13 +5,15 @@ import { useOrderPrice } from '../additional-details/useOrderPrice';
 import PageHeader from '@src/components/pageHeader';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import UploadFile from '@src/components/uploadFile/UploadFile';
-import { Heading } from '@mckesson/mcp-component-library';
+import { Heading, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import Textarea from '@src/components/form/Textarea';
 import { RoutePaths } from '@src/routes/constants';
 import DetailSegment from '@src/components/DetailSegment';
 import styles from './style.module.scss';
 import OrderService from '@src/api/commonService/OrderService';
+import ModuleHeader from '@src/components/module-header';
+import CommonUtils from '@src/util/CommonUtils';
 
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
@@ -20,23 +22,21 @@ function UploadOrderDocument() {
   const navigate = useNavigate();
   const { t } = useTranslate();
   const [comment, setComment] = React.useState('');
-  const [url, setUrl] = React.useState('');
+  const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
+  const [validationMessage, setValidationMessage] = React.useState(null);
 
-  const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
-  const { data: priceDetails } = useOrderPrice({
-    therapyId,
-    soldToAccountId,
-    shipToAccountId
-  });
-  const handleOnUpload = (values, setFieldValue) => {
+  const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {
-      setFieldValue('file', 'Please select document');
+      setValidationMessage({
+        type: 'error',
+        description: 'Please select document to upload.',
+        onClose: () => setValidationMessage(null)
+      });
       return;
     }
+    setValidationMessage(null);
 
     const payload = {
       orderId,
@@ -52,22 +52,31 @@ function UploadOrderDocument() {
 
       const payload = [documentDetails];
 
-      OrderService.uploadOrderDocument(orderId, payload).then((response) => {
-        navigate('/orders', {
-          state: {
-            activeTab: location.state?.fromTab,
-            alert: {
-              from: 'UPLOAD_ORDER_DOCUMENT',
-              type: 'success',
-              description: `Document has been successfully uploaded for Order ID: ${orderId}`
+      OrderService.uploadOrderDocument(orderId, payload)
+        .then((response) => {
+          setComment('');
+          navigate('/orders', {
+            state: {
+              activeTab: location.state?.fromTab,
+              alert: {
+                from: 'UPLOAD_ORDER_DOCUMENT',
+                type: 'success',
+                description: `Document has been successfully uploaded for Order ID: ${orderId}`
+              }
             }
-          }
+          });
+        })
+        .catch((error) => {
+          const message = CommonUtils.getAxiosErrorMessage(error);
+          setValidationMessage({
+            type: 'error',
+            description: message,
+            onClose: () => setValidationMessage(null)
+          });
         });
-      });
     });
   };
 
-  const uploadDocument = async (file) => {};
   const handleOnCancel = () => {
     navigate(RoutePaths.pathOrderManagement, {
       state: { activeTab: location?.state?.fromTab }
@@ -77,8 +86,10 @@ function UploadOrderDocument() {
   return (
     <div className="MCP-module-wrapper">
       <PageHeader heading={'Upload Documents'} />
+      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <div className="MCP-CardContainer">
-        <Heading as="h3">Order Details</Heading>
+        <ModuleHeader className={styles['panel-header']} heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>} />
+
         {isFetchingOrderDetails ? (
           <div className="spinner-wrapper md">
             <SpinnerIcon />
@@ -111,7 +122,7 @@ function UploadOrderDocument() {
         <div className="">
           <UploadFile
             isLoading={false}
-            messages={[]}
+            messages={[validationMessage]}
             onCloseAlert={() => {}}
             upload={{
               caption: t('controls.updateOrder'),
