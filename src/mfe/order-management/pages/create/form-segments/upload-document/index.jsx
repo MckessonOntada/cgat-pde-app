@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import PageHeader from '@src/components/pageHeader';
@@ -14,6 +14,8 @@ import styles from './style.module.scss';
 import OrderService from '@src/api/commonService/OrderService';
 import ModuleHeader from '@src/components/module-header';
 import CommonUtils from '@src/util/CommonUtils';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
@@ -21,6 +23,7 @@ function UploadOrderDocument() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslate();
+  const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
@@ -110,7 +113,13 @@ function UploadOrderDocument() {
               <DetailSegment
                 key={'therapy_name'}
                 label="Therapy"
-                value={orderDetails.therapy?.materialDescription}
+                value={
+                  <Link
+                    onClick={() => setShowTherapyDetails(true)}
+                    className="MCP-table-link">
+                    {orderDetails.therapy?.materialDescription}
+                  </Link>
+                }
               />
               <div></div>
               <DetailSegment
@@ -159,6 +168,17 @@ function UploadOrderDocument() {
           </UploadFile>
         </div>
       </div>
+      {showTherapyDetails && orderDetails.id && (
+        <TherapyDetails
+          therapyId={orderDetails.therapy.materialNumber}
+          therapyData={TherapyDetailsConstantsForBB}
+          onClose={() => setShowTherapyDetails(false)}
+          showFooter={false}
+          isMaterialConfiguration={true}
+          useMaterialService={true}
+          heading={t('labels.therapyDetails')}
+        />
+      )}
     </div>
   );
 }
