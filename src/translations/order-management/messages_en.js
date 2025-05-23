@@ -50,6 +50,7 @@ export const MessageEn = {
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
   'labels.configuredQuestionnaires': 'Configured Questionnaires',
+  'labels.additionalDocuments': 'Additional Documents',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
   'labels.provideSlotNumber': 'Slot Number',

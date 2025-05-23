@@ -1,5 +1,10 @@
 import React from 'react';
-import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
+import {
+  TabList,
+  Button,
+  Heading,
+  Alert
+} from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
@@ -19,7 +24,6 @@ import {
 } from './config';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
-import useOrderCount from './useOrderCount';
 import CommonUtils from '@src/util/CommonUtils';
 
 const OrderIndex = () => {
@@ -37,6 +41,7 @@ const OrderIndex = () => {
     searchAssigneeByTest,
     setAssigneeOnChange
   } = useOrders();
+  const [alert, setAlert] = React.useState(null);
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -166,6 +171,17 @@ const OrderIndex = () => {
     changeTab(newTab.id);
   };
 
+  React.useEffect(() => {
+    const alert = location.state?.alert;
+    if (alert) {
+      setAlert({
+        type: alert.type,
+        description: alert.description
+      });
+      navigate('/orders', { replace: true });
+    }
+  }, [location]);
+
   const handleOnClick = () => {
     navigate(routesConfig.createOrder);
   };
@@ -216,6 +232,7 @@ const OrderIndex = () => {
           }
         />
         <div id={alertContainerId} />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {/* add alert here */}
 
         <div className="MCP-module-body">

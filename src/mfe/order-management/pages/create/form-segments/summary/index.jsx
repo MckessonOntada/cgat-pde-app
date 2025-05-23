@@ -1397,6 +1397,60 @@ const Summary = () => {
                   </div>
                 </div>
               )}
+
+            {additionalDetails.additionalDocuments &&
+              additionalDetails.additionalDocuments?.length > 0 && (
+                <div className="MCP-CardContainer">
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={
+                      <Heading as="h3">
+                        {t('labels.additionalDocuments')}
+                      </Heading>
+                    }
+                  />
+                  <div className="MCP-module-body">
+                    <div className="summary-question-list">
+                      {additionalDetails.additionalDocuments?.map(
+                        (documentSegment) => {
+                          return (
+                            <div
+                              className={
+                                'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
+                              }>
+                              <div className="MCP-module-body">
+                                <DetailSegment
+                                  label={'Comment'}
+                                  value={documentSegment.comment}
+                                />
+                                <div>
+                                  <DetailSegment
+                                    direction="row"
+                                    label={'Uploaded by:'}
+                                    value={documentSegment.uploadedBy}
+                                  />
+                                  <DetailSegment
+                                    direction="row"
+                                    label={'Uploaded on:'}
+                                    value={documentSegment.uploadedDate}
+                                  />
+                                </div>
+                              </div>
+                              {documentSegment.name && documentSegment.url && (
+                                <AttachmentCard
+                                  url={documentSegment?.url}
+                                  fileName={documentSegment.name}
+                                  fileSize={documentSegment.size}
+                                />
+                              )}
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
           {!hideControls && (
             <div className="MCP-module-body agreement-checkbox-control">
