@@ -273,7 +273,7 @@ const UserDetail = () => {
   };
 
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
-  const userFullName = `${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
+  const userFullName = CommonUtils.getFullName(data?.name); //`${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
   const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
@@ -574,7 +574,11 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
         modalBody: (
           <div className="MCP-modal-body">
             <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
-            <p>{t('popup.message.wishToContinueLoginAsThisUserDescription', { targetUser: userFullName })}</p>
+            <p>
+              {t('popup.message.wishToContinueLoginAsThisUserDescription', {
+                targetUser: userFullName
+              })}
+            </p>
             <div className="checkboxGroup">
               <CheckboxGroup
                 id={'default'}

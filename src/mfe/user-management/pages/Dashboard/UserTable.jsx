@@ -28,7 +28,10 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { PATHS } from '../../routes';
 import { RoutePaths } from '@src/routes/constants';
-import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
+import {
+  CUSTOMER_CENTRE,
+  CUSTOMER_SERVICE
+} from '@src/api/commonService/CommonService';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -249,9 +252,7 @@ function UserTable({ onActionSuccess }) {
           <div>
             {activeTab === 2 ? (
               <EclipsesTextcss
-                str={`${props.name.lastName}, ${props.name.firstName} ${
-                  props.name.middleName || ''
-                }`}
+                str={CommonUtils.getFullName(props?.name)}
                 maxWidth={140}
               />
             ) : (
@@ -261,17 +262,13 @@ function UserTable({ onActionSuccess }) {
                     to={`${props.id}`} // dynamically constructs the URL with userId
                     className="MCP-table-link">
                     <EclipsesTextcss
-                      str={`${props.name.lastName}, ${props.name.firstName} ${
-                        props.name.middleName || ''
-                      }`}
+                      str={CommonUtils.getFullName(props?.name)}
                       maxWidth={140}
                     />
                   </Link>
                 ) : (
                   <EclipsesTextcss
-                    str={`${props.name.lastName}, ${props.name.firstName} ${
-                      props.name.middleName || ''
-                    }`}
+                    str={CommonUtils.getFullName(props?.name)}
                     maxWidth={300}
                   />
                 )}
@@ -307,10 +304,19 @@ function UserTable({ onActionSuccess }) {
         maxWidth: '185px',
         cell: (props) =>
           props.role?.name ? (
-            <Tooltip body={props.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : props.role?.name}>
+            <Tooltip
+              body={
+                props.role?.name === CUSTOMER_CENTRE
+                  ? CUSTOMER_SERVICE
+                  : props.role?.name
+              }>
               <span className="ellipsis-center">
                 <Badge
-                  text={props.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : props.role?.name}
+                  text={
+                    props.role?.name === CUSTOMER_CENTRE
+                      ? CUSTOMER_SERVICE
+                      : props.role?.name
+                  }
                   type={getBackgroundColorByRole(props.role?.name)}
                 />
               </span>
