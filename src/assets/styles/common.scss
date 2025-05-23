@@ -1452,7 +1452,8 @@ div[role="row"] {
 .custom-radio {
   display: block;
   position: relative;
-  padding-left: var(--spacing-04);
+  padding-left: 30px; //size is not not present
+  font-weight: var(--brand-font-weight-600);
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -1467,8 +1468,8 @@ div[role="row"] {
     position: absolute;
     top: 0;
     left: 0;
-    height: 18px; //size not available
-    width: 18px; //size not available
+    height: 20px; //size not available
+    width: 20px; //size not available
     border-radius: 50%;
     border: 1px solid var(--brand-color-primary-background);
   }
@@ -1494,8 +1495,8 @@ div[role="row"] {
 }
 
 .custom-radio .checkmark:after {
-  top: 6px; //size not available
-  left: 6px;
+  top: 7px; //size not available
+  left: 7px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
