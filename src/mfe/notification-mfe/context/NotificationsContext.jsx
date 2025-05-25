@@ -7,7 +7,6 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
-import { MockNotifications as notificationsMock } from '../data/MockNotifications';
 
 // Context and custom hook
 const NotificationsContext = createContext();
@@ -29,13 +28,14 @@ const initialPaginationState = {
 export const NotificationsProvider = ({ children }) => {
   // State hooks
 
+  // Notifications State Group
+  const [paginatedNotifications, setPaginatedNotifications] = useState([]);
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+
   // Unread Count State
   const [unreadCount, setUnreadCount] = useState(0);
   const [paginatedUnreadCount, setPaginatedUnreadCount] = useState(0);
-
-  // Notifications State
-  const [paginatedNotifications, setPaginatedNotifications] = useState([]);
-  const [selectedNotification, setSelectedNotification] = useState(null);
 
   // Drawer State
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
@@ -76,11 +76,6 @@ export const NotificationsProvider = ({ children }) => {
       }
     }
   );
-
-  const [loading, setLoading] = useState(false);
-
-  // Loading State
-  const [loadingNotifications, setLoadingNotifications] = useState(false);
 
   const notificationsMutation = useMutation(
     async (filters) => {
@@ -299,8 +294,9 @@ export const NotificationsProvider = ({ children }) => {
         resetPaginationState,
 
         // Dropdown
-        dropdownOptions,
-      }}>
+        dropdownOptions
+      }}
+    >
       {children}
     </NotificationsContext.Provider>
   );

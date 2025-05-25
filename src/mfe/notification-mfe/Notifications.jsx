@@ -55,13 +55,7 @@ const Notifications = () => {
       <div className="MCP-module-body">
         <div className="notifications-container">
           <div className="top-nav">
-            <Button
-              className="back-button-control"
-              variant="tertiary"
-              Icon={IconArrowLeft}
-              onClick={onBackTo}
-              size={elementSize}
-            >
+            <Button className="back-button-control" variant="tertiary" Icon={IconArrowLeft} onClick={onBackTo} size={elementSize}>
               {isMobileView ? t('notifications.cta.backMobile') : t('notifications.cta.back')}
             </Button>
           </div>

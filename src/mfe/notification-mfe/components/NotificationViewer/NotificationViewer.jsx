@@ -33,9 +33,7 @@ const NotificationViewer = () => {
   });
 
   // Remove \n and \\n from messageContent if present
-  const cleanedMessageContent = selectedNotification.messageContent
-    ? selectedNotification.messageContent.replace(/\\n|\n/g, '')
-    : '';
+  const cleanedMessageContent = selectedNotification.messageContent ? selectedNotification.messageContent.replace(/\\n|\n/g, '') : '';
 
   return (
     <div className={styles.notificationViewer}>
@@ -52,12 +50,7 @@ const NotificationViewer = () => {
       </div>
       <div className={styles.notificationViewerDesc}>{selectedNotification.messageDescription}</div>
       <div className={styles.notificationContent}>
-        {selectedNotification.messageContent && (
-          <div
-            className={styles.notificationHtmlContent}
-            dangerouslySetInnerHTML={{ __html: cleanedMessageContent }}
-          />
-        )}
+        {selectedNotification.messageContent && <div className={styles.notificationHtmlContent} dangerouslySetInnerHTML={{ __html: cleanedMessageContent }} />}
       </div>
     </div>
   );

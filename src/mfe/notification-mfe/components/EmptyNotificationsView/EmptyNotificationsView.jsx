@@ -5,19 +5,13 @@ import styles from './EmptyNotificationsView.module.scss';
 
 // Component
 const EmptyNotificationView = ({ isDrawerView, text, subtext }) => (
-    <div
-        className={
-            isDrawerView
-                ? styles.noNotificationsDrawerWrapper
-                : styles.noNotificationsWrapper
-        }
-    >
-        <NoNotificationsIcon />
-        <div className={styles.noNotifications}>
-            <div className={styles.noNotificationsText}>{text}</div>
-            <div className={styles.noNotificationsSubtext}>{subtext}</div>
-        </div>
+  <div className={isDrawerView ? styles.noNotificationsDrawerWrapper : styles.noNotificationsWrapper}>
+    <NoNotificationsIcon />
+    <div className={styles.noNotifications}>
+      <div className={styles.noNotificationsText}>{text}</div>
+      <div className={styles.noNotificationsSubtext}>{subtext}</div>
     </div>
+  </div>
 );
 
 // Export

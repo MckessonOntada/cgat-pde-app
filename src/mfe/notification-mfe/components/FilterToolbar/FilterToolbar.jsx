@@ -68,7 +68,8 @@ const FilterToolbar = ({ isMobileView }) => {
           notificationDateRange: values.notificationDateRange,
           notificationCategory: values.notificationCategory
         }));
-      }}>
+      }}
+    >
       {({ values, setFieldValue }) => (
         <Form ref={formRef} autoComplete="off" className={styles.filterForm}>
           <div className={styles.filterToolbar}>

@@ -46,7 +46,8 @@ export const NotificationDrawer = () => {
               aria-label={t('notifications.cta.seeAllNotifications')}
             />
           </div>
-        }>
+        }
+      >
         <div className={styles.notificationDrawerContent}>
           <NotificationLister isDrawerView={true} closeDrawer={handleClose} />
         </div>

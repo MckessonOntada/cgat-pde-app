@@ -1,128 +1,128 @@
 @use "../../../../assets/styles/abstracts/mixins";
 
 .notification-lister-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  // height added to ensure the container fills the available space
+  height: 100%;
+
+  // Header
+  .notification-lister-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .date-display {
+      color: var(--text-dark-slate-body-hover-state, #1e394e);
+      font-family: var(--typography-font-family-body, Nunito);
+      font-size: var(--typography-text-size-body-font-large, 18px);
+      font-style: normal;
+      font-weight: 600;
+      line-height: var(--typography-line-height-body-font-large, 22px);
+      letter-spacing: -0.036px;
+    }
+  }
+
+  // Content
+  .notification-lister-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    // height added to ensure the container fills the available space
-    height: 100%;
+    gap: 12px;
+    max-height: 912px;
+    overflow-y: auto;
 
-    // Header
-    .notification-lister-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    @media (max-width: 767px) {
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE and Edge
 
-        .date-display {
-            color: var(--text-dark-slate-body-hover-state, #1E394E);
-            font-family: var(--typography-font-family-body, Nunito);
-            font-size: var(--typography-text-size-body-font-large, 18px);
-            font-style: normal;
-            font-weight: 600;
-            line-height: var(--typography-line-height-body-font-large, 22px);
-            letter-spacing: -0.036px;
-        }
+      &::-webkit-scrollbar {
+        display: none; // Chrome, Safari, Opera
+      }
+    }
+  }
+
+  .notification-lister-content--fixed-width {
+    @include mixins.respond(md) {
+      width: 300px;
+
+      @include mixins.respond(lg) {
+        width: auto;
+      }
+    }
+  }
+
+  // Card
+  .notification-list-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    cursor: pointer;
+
+    // Title row
+    .notification-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
     }
 
-    // Content
-    .notification-lister-content {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        max-height: 912px;
-        overflow-y: auto;
-
-        @media (max-width: 767px) {
-            scrollbar-width: none; // Firefox
-            -ms-overflow-style: none; // IE and Edge
-
-            &::-webkit-scrollbar {
-                display: none; // Chrome, Safari, Opera
-            }
-        }
+    // Title
+    .notification-title {
+      color: var(--text-black, #181818);
+      flex: 1 1 auto;
+      font-family: Nunito;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .notification-lister-content--fixed-width {
-        @include mixins.respond(md) {
-            width: 300px;
-
-            @include mixins.respond(lg) {
-                width: auto;
-            }
-        }
+    // Unread dot
+    .notification-unread-dot {
+      background: #007cc1;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      height: 10px;
+      margin-left: 4px;
+      width: 10px;
     }
 
-    // Card
-    .notification-list-card {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        padding: 12px;
-        cursor: pointer;
-
-        // Title row
-        .notification-title-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-        }
-
-        // Title
-        .notification-title {
-            color: var(--text-black, #181818);
-            flex: 1 1 auto;
-            font-family: Nunito;
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: 20px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        // Unread dot
-        .notification-unread-dot {
-            background: #007CC1;
-            border-radius: 50%;
-            display: inline-block;
-            flex-shrink: 0;
-            height: 10px;
-            margin-left: 4px;
-            width: 10px;
-        }
-
-        // Description
-        .notification-description {
-            color: #3C5C6E;
-            font-family: Nunito;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 18px;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        // Date
-        .notification-date {
-            color: #181818;
-            font-family: var(--typography-font-family-body, Nunito);
-            font-size: var(--typography-text-size-body-font-x-small, 12px);
-            font-style: normal;
-            font-weight: 600;
-            line-height: var(--typography-line-height-body-font-x-small, 16px);
-            letter-spacing: 0.012px;
-            text-align: end;
-        }
+    // Description
+    .notification-description {
+      color: #3c5c6e;
+      font-family: Nunito;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .notification-list-card.active {
-        border-radius: 8px;
-        border: 1px solid #007CC1;
-        background: #E9F0F5;
+    // Date
+    .notification-date {
+      color: #181818;
+      font-family: var(--typography-font-family-body, Nunito);
+      font-size: var(--typography-text-size-body-font-x-small, 12px);
+      font-style: normal;
+      font-weight: 600;
+      line-height: var(--typography-line-height-body-font-x-small, 16px);
+      letter-spacing: 0.012px;
+      text-align: end;
     }
+  }
+
+  .notification-list-card.active {
+    border-radius: 8px;
+    border: 1px solid #007cc1;
+    background: #e9f0f5;
+  }
 }

@@ -123,7 +123,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                   aria-pressed={isActive}
                   className="notification-list-card-wrapper"
                   onClick={() => handleClick(notification)}
-                  onKeyDown={handleKeyDown(notification)}>
+                  onKeyDown={handleKeyDown(notification)}
+                >
                   <CustomCard className={`notification-list-card${!isDrawerView && isActive ? ' active' : ''}`}>
                     <div className="notification-title-row">
                       <div className="notification-title">{notification.messageTitle}</div>
@@ -145,7 +146,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                   justifyContent: 'center',
                   borderRadius: '8px',
                   backgroundColor: '#fff'
-                }}>
+                }}
+              >
                 <Loader variant="circular" />
               </div>
             )}

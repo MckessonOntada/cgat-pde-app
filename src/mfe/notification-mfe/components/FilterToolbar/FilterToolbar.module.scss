@@ -1,21 +1,22 @@
 .filterForm {
+  width: 100%;
+
+  .filterToolbar {
+    display: flex;
+    align-items: flex-end;
     width: 100%;
+    gap: 16px;
 
-    .filterToolbar {
-        display: flex;
-        align-items: flex-end;
-        width: 100%;
-        gap: 16px;
-
-        .dateFilter {}
-
-        .dropdownFilter {
-            margin-bottom: 2px;
-            width: 200px;
-        }
-
-        .filterCta {
-            margin-bottom: 8px;
-        }
+    .dateFilter {
     }
+
+    .dropdownFilter {
+      margin-bottom: 2px;
+      width: 200px;
+    }
+
+    .filterCta {
+      margin-bottom: 8px;
+    }
+  }
 }
