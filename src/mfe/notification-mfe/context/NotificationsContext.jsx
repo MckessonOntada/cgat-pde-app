@@ -182,7 +182,7 @@ export const NotificationsProvider = ({ children }) => {
     unreadCountMutation.mutate();
     const interval = setInterval(() => {
       unreadCountMutation.mutate();
-    }, 5 * 60 * 1000);
+    }, 0.5 * 60 * 1000); // 5 minutes
     return () => clearInterval(interval);
   }, []);
 
@@ -198,7 +198,7 @@ export const NotificationsProvider = ({ children }) => {
     if (JSON.stringify(filterState) === JSON.stringify(initialFilterState)) {
       interval = setInterval(() => {
         notificationsMutation.mutate(filterState);
-      }, 5 * 60 * 1000);
+      }, 5 * 60 * 1000); // 5 minutes
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -257,24 +257,18 @@ export const NotificationsProvider = ({ children }) => {
   return (
     <NotificationsContext.Provider
       value={{
-        // Initial States
-        initialFilterState,
-        initialPaginationState,
-
         // Unread Count
         unreadCount,
-        setUnreadCount,
         paginatedUnreadCount,
-        setPaginatedUnreadCount,
 
         // Notifications
         paginatedNotifications,
-        setPaginatedNotifications,
         selectedNotification,
         setSelectedNotification,
-        markNotificationAsReadById,
         loadMoreNotifications,
-        loadingNotifications,
+
+        // Mark notification as read
+        markNotificationAsReadById,
 
         // Mark all as read mutation
         markAllNotificationsAsRead: markAllNotificationsAsReadMutation.mutate,
@@ -286,17 +280,10 @@ export const NotificationsProvider = ({ children }) => {
         // Filter
         filterState,
         setFilterState,
-        resetFilterState,
-
-        // Pagination
-        paginationState,
-        setPaginationState,
-        resetPaginationState,
 
         // Dropdown
         dropdownOptions
-      }}
-    >
+      }}>
       {children}
     </NotificationsContext.Provider>
   );
