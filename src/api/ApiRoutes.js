@@ -26,7 +26,7 @@ const constructOrderManagementServiceUrl = (uri) => {
 };
 
 const constructNotificationServiceUrl = (uri) => {
-  return `${NOTIFICATION_SERVICE_BASE_URL}api/${uri}`;
+  return `${NOTIFICATION_SERVICE_BASE_URL}${uri}`;
 };
 
 const ApiRoutes = Object.freeze({
@@ -87,8 +87,8 @@ const ApiRoutes = Object.freeze({
   RESET_PASSWORD: () => constructUserManagementServiceUrl(`users/current/reset-password`),
   GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-footer`),
   NOTIFICATIONS: () => constructNotificationServiceUrl(`in-app-notification/fetch`),
-  NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl(`in-app-notification/unread-count`),
-  NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl(`in-app-notification/read-all`),
+  NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl(`in-app-notification/unread/count`),
+  NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl(`in-app-notification/read/all`),
   NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`)
 });
 

@@ -1,55 +1,68 @@
 @use "../../assets/styles/abstracts/mixins";
 
+// ==================
+// Notifications Container
+// ==================
 .notifications-container {
   display: flex;
-  width: 100%;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 
+  // Top Navigation
   .top-nav {
     display: flex;
     width: 100%;
   }
 
+  // ==================
+  // Notifications Header
+  // ==================
   .notifications-header {
-    display: flex;
-    width: 100%;
     align-items: center;
-    justify-content: space-between;
-    gap:16px;
+    display: flex;
     flex-direction: column;
+    gap: 16px;
+    justify-content: space-between;
+    width: 100%;
 
     @include mixins.respond(lg) {
       flex-direction: row;
     }
 
     .heading {
-      width: 100%;
       display: flex;
+      width: 100%;
     }
   }
 
+  // ==================
+  // Notifications Info
+  // ==================
   .notifications-info {
     // display: flex;
     width: 100%;
   }
 
+  // ==================
+  // Notifications Content
+  // ==================
   .notifications-content {
     display: flex;
-    width: 100%;
-    max-height: 912px;
     gap: 12px;
+    max-height: 912px;
+    width: 100%;
 
     .notifications-list {
       // display: flex;
-      width: 412px;
       max-height: 912px;
+      width: 412px;
     }
 
     .notification-detail {
       display: flex;
-      width: 100%;
       max-height: 912px;
+      width: 100%;
     }
   }
 }

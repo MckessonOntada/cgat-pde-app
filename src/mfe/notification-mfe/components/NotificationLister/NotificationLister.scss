@@ -4,7 +4,10 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    // height added to ensure the container fills the available space
+    height: 100%;
 
+    // Header
     .notification-lister-header {
         display: flex;
         align-items: center;
@@ -12,19 +15,16 @@
 
         .date-display {
             color: var(--text-dark-slate-body-hover-state, #1E394E);
-
-            /* Body/SemiBold L */
             font-family: var(--typography-font-family-body, Nunito);
             font-size: var(--typography-text-size-body-font-large, 18px);
             font-style: normal;
             font-weight: 600;
             line-height: var(--typography-line-height-body-font-large, 22px);
-            /* 122.222% */
             letter-spacing: -0.036px;
         }
     }
 
-
+    // Content
     .notification-lister-content {
         display: flex;
         flex-direction: column;
@@ -33,15 +33,11 @@
         overflow-y: auto;
 
         @media (max-width: 767px) {
-            /* Hide scrollbar for all browsers */
-            scrollbar-width: none;
-            /* Firefox */
-            -ms-overflow-style: none;
-            /* IE and Edge */
+            scrollbar-width: none; // Firefox
+            -ms-overflow-style: none; // IE and Edge
 
             &::-webkit-scrollbar {
-                display: none;
-                /* Chrome, Safari, and Opera */
+                display: none; // Chrome, Safari, Opera
             }
         }
     }
@@ -56,67 +52,69 @@
         }
     }
 
+    // Card
     .notification-list-card {
         display: flex;
         flex-direction: column;
-        // width: 400px;
         gap: 4px;
         padding: 12px;
         cursor: pointer;
 
+        // Title row
         .notification-title-row {
             display: flex;
             align-items: center;
-            width: 100%;
             gap: 8px;
+            width: 100%;
         }
 
+        // Title
         .notification-title {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1 1 auto;
             color: var(--text-black, #181818);
+            flex: 1 1 auto;
             font-family: Nunito;
             font-size: 16px;
             font-style: normal;
             font-weight: 700;
             line-height: 20px;
-        }
-
-        .notification-unread-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #007CC1;
-            display: inline-block;
-            margin-left: 4px;
-            flex-shrink: 0;
-        }
-
-        .notification-description {
             overflow: hidden;
-            color: #3C5C6E;
             text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        // Unread dot
+        .notification-unread-dot {
+            background: #007CC1;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+            height: 10px;
+            margin-left: 4px;
+            width: 10px;
+        }
+
+        // Description
+        .notification-description {
+            color: #3C5C6E;
             font-family: Nunito;
             font-size: 14px;
             font-style: normal;
             font-weight: 400;
             line-height: 18px;
-            /* 128.571% */
-            white-space: nowrap;
             max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
+        // Date
         .notification-date {
             color: #181818;
-            /* Body/SemiBold XS */
             font-family: var(--typography-font-family-body, Nunito);
             font-size: var(--typography-text-size-body-font-x-small, 12px);
             font-style: normal;
             font-weight: 600;
             line-height: var(--typography-line-height-body-font-x-small, 16px);
-            /* 133.333% */
             letter-spacing: 0.012px;
             text-align: end;
         }
@@ -126,45 +124,5 @@
         border-radius: 8px;
         border: 1px solid #007CC1;
         background: #E9F0F5;
-    }
-}
-
-.no-notifications-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 300px;
-    gap: 20px;
-
-    .no-notifications {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;;
-        .no-notifications-text {
-            // No Notifications
-            color: var(--fill-content-content-med, #3C5C6E);
-            font-size: 24px;
-            font-family: Nunito;
-            font-weight: 700;
-            line-height: 28px;
-            word-wrap: break-word;
-            text-align: center;
-        }
-
-        .no-notifications-subtext {
-            // When you have received notification, you’ll see them here.
-            color: var(--text-body-03-placeholder, #627386);
-            font-size: 16px;
-            font-family: Nunito;
-            font-weight: 400;
-            line-height: 20px;
-            word-wrap: break-word;
-            text-align: center;
-        }
     }
 }

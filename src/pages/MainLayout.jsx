@@ -19,7 +19,7 @@ import AccountSetting from '@src/components/AccountSetting';
 import { FooterProvider } from '@src/components/footer/FooterContext';
 import Dashboard from '@src/mfe/core-config/system-admin';
 import AdminRoutes from '@src/mfe/core-config/admin';
-import Notifications from '@src/mfe/notification-mfe';
+import Notifications from '@src/mfe/notification-mfe/Notifications';
 import { NotificationDrawer } from '@src/mfe/notification-mfe/components/NotificationDrawer/NotificationDrawer';
 import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));

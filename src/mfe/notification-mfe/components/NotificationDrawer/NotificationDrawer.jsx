@@ -1,27 +1,32 @@
+// External dependencies
 import React, { useCallback } from 'react';
-import { useTranslate } from '@src/translations/useTranslation';
-import FloatingDrawer from '@src/components/floating-drawer';
-import styles from './NotificationDrawer.module.scss';
-import NotificationLister from '../NotificationLister/NotificationLister';
-import { Button } from '@mckesson/mcp-component-library';
 import { useNavigate } from 'react-router-dom';
+
+// UI components
+import { Button } from '@mckesson/mcp-component-library';
+import FloatingDrawer from '@src/components/floating-drawer';
+import NotificationLister from '../NotificationLister/NotificationLister';
+
+// Hooks and context
+import { useTranslate } from '@src/translations/useTranslation';
 import { useNotifications } from '../../context/NotificationsContext';
+
+// Styles
+import styles from './NotificationDrawer.module.scss';
 
 export const NotificationDrawer = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-
-  const { notificationsCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
+  const { paginatedUnreadCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
 
   const handleClose = useCallback(() => {
     setNotificationDrawerOpen(false);
-  }, []);
+  }, [setNotificationDrawerOpen]);
 
   const onSeeAllNotifications = useCallback(() => {
     setNotificationDrawerOpen(false);
-    // Add logic to navigate to the notifications page
     navigate('/notifications');
-  }, []);
+  }, [setNotificationDrawerOpen, navigate]);
 
   return (
     <div className={styles.notificationDrawer}>
@@ -29,7 +34,7 @@ export const NotificationDrawer = () => {
         open={notificationDrawerOpen}
         onClose={handleClose}
         anchor="right"
-        heading={`${t('notifications.title')} (${notificationsCount})`}
+        heading={`${t('notifications.title')} (${paginatedUnreadCount})`}
         controls={
           <div className={styles.controls}>
             <Button

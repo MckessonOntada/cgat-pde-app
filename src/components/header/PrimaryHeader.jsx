@@ -40,7 +40,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const impersonatedByUser = AuthUtils.getImpersonatedByUser();
   const impersonatedUserName = getFullName(impersonatedByUser?.name);
 
-  const { notificationsCount } = useNotifications();
+  const { unreadCount: notificationsCount } = useNotifications();
 
   useEffect(() => {
     const handleResize = () => {
@@ -144,23 +144,23 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     };
     const quickLinks = [
       // Only show notifications button if not on /notifications
-      location.pathname !== '/notifications' && (
-        <button
-          type="button"
-          className={styles.actionLink}
-          aria-label="View notifications"
-          onClick={handleNotificationClick}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer'
-          }}>
-          <span>{t('header.label.notifications')}</span>
-          <IconNotification />
-          {notificationsCount > 0 && <span className={styles.notificationsCount}>{notificationsCount > 99 ? '99+' : notificationsCount}</span>}
-        </button>
-      ),
+      // location.pathname !== '/notifications' && (
+      <button
+        type="button"
+        className={styles.actionLink}
+        aria-label="View notifications"
+        onClick={handleNotificationClick}
+        style={{
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer'
+        }}>
+        <span>{t('header.label.notifications')}</span>
+        <IconNotification />
+        {notificationsCount > 0 && <span className={styles.notificationsCount}>{notificationsCount > 99 ? '99+' : notificationsCount}</span>}
+      </button>,
+      // ),
 
       <MenuList size="md" handleSelect={(e) => handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
