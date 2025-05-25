@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { CustomCard, Button, Loader } from '@mckesson/mcp-component-library';
@@ -15,7 +15,6 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
   const { t } = useTranslate();
   const navigate = useNavigate();
   const contentRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Context
   const {
@@ -23,8 +22,9 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     markAllNotificationsAsRead,
     selectedNotification,
     setSelectedNotification,
-    markNotificationAsReadById,
-    loadMoreNotifications
+    loadMoreNotifications,
+    loadingNotifications,
+    loadingMoreNotifications,
   } = useNotifications();
 
   // Constants
@@ -57,7 +57,6 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
   // Handlers
   const handleClick = (notification) => {
     setSelectedNotification(notification);
-    markNotificationAsReadById(notification.id);
     if (isDrawerView) {
       if (typeof closeDrawer === 'function') closeDrawer();
       navigate('/notifications');
@@ -74,15 +73,27 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     }
   };
 
+  // Effects
+  useEffect(() => {
+    if (isDrawerView) return;
+    if (notifications.length < 1) {
+      setSelectedNotification(null);
+    } else {
+      selectedNotification === null && setSelectedNotification(notifications[0]);
+    }
+  }, [isDrawerView, notifications, selectedNotification]);
+
   // Infinite scroll effect
   useEffect(() => {
     if (isDrawerView) return;
     const handleScroll = () => {
       const el = contentRef.current;
       if (!el) return;
-      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 10 && !isLoading) {
-        setIsLoading(true);
-        Promise.resolve(loadMoreNotifications()).finally(() => setIsLoading(false));
+      if (
+        el.scrollTop + el.clientHeight >= el.scrollHeight - 10 &&
+        !loadingMoreNotifications // Use loadingMoreNotifications instead of isLoading
+      ) {
+        loadMoreNotifications();
       }
     };
     const el = contentRef.current;
@@ -90,10 +101,21 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     return () => {
       if (el) el.removeEventListener('scroll', handleScroll);
     };
-  }, [isDrawerView, loadMoreNotifications, isLoading]);
+  }, [isDrawerView, loadMoreNotifications, loadingMoreNotifications]);
 
   // Render
-  return (
+  return loadingNotifications && !isDrawerView ? (
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        width: '412px',
+        height: '912px',
+        justifyContent: 'center',
+      }}>
+      <Loader variant="circular" />
+    </div>
+  ) : (
     <div className="notification-lister-container">
       <div className="notification-lister-header">
         <div className="date-display">{formattedDate}</div>
@@ -123,8 +145,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                   aria-pressed={isActive}
                   className="notification-list-card-wrapper"
                   onClick={() => handleClick(notification)}
-                  onKeyDown={handleKeyDown(notification)}
-                >
+                  onKeyDown={handleKeyDown(notification)}>
                   <CustomCard className={`notification-list-card${!isDrawerView && isActive ? ' active' : ''}`}>
                     <div className="notification-title-row">
                       <div className="notification-title">{notification.messageTitle}</div>
@@ -136,7 +157,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                 </div>
               );
             })}
-            {isLoading && (
+            {loadingMoreNotifications && ( // Use loadingMoreNotifications instead of isLoading
               <div
                 style={{
                   alignItems: 'center',
@@ -146,8 +167,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                   justifyContent: 'center',
                   borderRadius: '8px',
                   backgroundColor: '#fff'
-                }}
-              >
+                }}>
                 <Loader variant="circular" />
               </div>
             )}

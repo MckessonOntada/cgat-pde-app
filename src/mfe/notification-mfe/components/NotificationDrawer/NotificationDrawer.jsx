@@ -17,7 +17,7 @@ import styles from './NotificationDrawer.module.scss';
 export const NotificationDrawer = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginatedUnreadCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
+  const { drawerUnreadCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
 
   const handleClose = useCallback(() => {
     setNotificationDrawerOpen(false);
@@ -34,7 +34,7 @@ export const NotificationDrawer = () => {
         open={notificationDrawerOpen}
         onClose={handleClose}
         anchor="right"
-        heading={`${t('notifications.title')} (${paginatedUnreadCount})`}
+        heading={`${t('notifications.title')} (${drawerUnreadCount})`}
         controls={
           <div className={styles.controls}>
             <Button

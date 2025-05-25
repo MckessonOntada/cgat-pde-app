@@ -32,9 +32,11 @@ export const NotificationsProvider = ({ children }) => {
   const [paginatedNotifications, setPaginatedNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [loadingMoreNotifications, setLoadingMoreNotifications] = useState(false); // NEW STATE
 
   // Unread Count State
   const [unreadCount, setUnreadCount] = useState(0);
+  const [drawerUnreadCount, setDrawerUnreadCount] = useState(0);
   const [paginatedUnreadCount, setPaginatedUnreadCount] = useState(0);
 
   // Drawer State
@@ -78,15 +80,22 @@ export const NotificationsProvider = ({ children }) => {
   );
 
   const notificationsMutation = useMutation(
-    async (filters) => {
+    async () => {
+      // Set loading states
       if (paginationState.page === initialPaginationState.page) {
         setLoadingNotifications(true);
+      } else {
+        setLoadingMoreNotifications(true); // Set loading more when loading next pages
       }
+      const endDateFromFilter = dayjs(filterState.notificationDateRange[1], 'MM/DD/YYYY');
+      const now = dayjs();
+      const effectiveEndDate = endDateFromFilter.isAfter(now) ? endDateFromFilter : now;
+
       const payload = {
         searchText: '',
-        category: filters.notificationCategory,
-        startDate: dayjs(filters.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-        endDate: dayjs(filters.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+        category: filterState.notificationCategory,
+        startDate: dayjs(filterState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        endDate: effectiveEndDate.format('YYYY-MM-DD')
       };
       const paramsObj = {
         pageNo: paginationState.page - 1,
@@ -100,6 +109,8 @@ export const NotificationsProvider = ({ children }) => {
       onSuccess: (response) => {
         if (paginationState.page === initialPaginationState.page) {
           setLoadingNotifications(false);
+        } else {
+          setLoadingMoreNotifications(false); // Reset loading more
         }
         if (response.status === 200) {
           const notifications = response.data.response;
@@ -107,9 +118,6 @@ export const NotificationsProvider = ({ children }) => {
             setPaginatedNotifications((prev) => (paginationState.page > 1 ? [...prev, ...notifications] : notifications));
           } else {
             setPaginatedNotifications([]);
-          }
-          if (notifications.length > 0 && paginationState.page === 1) {
-            setSelectedNotification(notifications[0]);
           }
           setPaginationState((prevState) => ({
             ...prevState,
@@ -121,6 +129,8 @@ export const NotificationsProvider = ({ children }) => {
       onError: () => {
         if (paginationState.page === initialPaginationState.page) {
           setLoadingNotifications(false);
+        } else {
+          setLoadingMoreNotifications(false); // Reset loading more
         }
         setPaginatedNotifications([]);
       }
@@ -177,12 +187,22 @@ export const NotificationsProvider = ({ children }) => {
 
   // Effects
 
+  // On set of selected notification
+  useEffect(() => {
+    if (selectedNotification && selectedNotification.id) {
+      // Mark notification as read when selected
+      if (!selectedNotification.readStatus) {
+        markNotificationAsReadById(selectedNotification.id);
+      }
+    }
+  }, [selectedNotification]);
+
   // Unread count: fetch on mount and every 5 minutes
   useEffect(() => {
     unreadCountMutation.mutate();
     const interval = setInterval(() => {
       unreadCountMutation.mutate();
-    }, 0.5 * 60 * 1000); // 5 minutes
+    }, 5 * 60 * 1000); // 5 minutes
     return () => clearInterval(interval);
   }, []);
 
@@ -193,22 +213,23 @@ export const NotificationsProvider = ({ children }) => {
 
   // Fetch notifications on mount/filter change, poll every 5 min if filter is initial
   useEffect(() => {
-    notificationsMutation.mutate(filterState);
+    notificationsMutation.mutate();
     let interval;
     if (JSON.stringify(filterState) === JSON.stringify(initialFilterState)) {
       interval = setInterval(() => {
-        notificationsMutation.mutate(filterState);
+        notificationsMutation.mutate();
       }, 5 * 60 * 1000); // 5 minutes
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [filterState]);
+  }, []);
 
   // Update unread count and dropdown options when notifications change
   useEffect(() => {
     if (paginatedNotifications.length > 0) {
       setPaginatedUnreadCount(paginatedNotifications.filter((notification) => !notification.readStatus).length);
+      setDrawerUnreadCount(paginatedNotifications.slice(0,8).filter((notification) => !notification.readStatus).length);
       setDropdownOptions(buildDropdownOptions(paginatedNotifications));
     } else {
       setSelectedNotification(null);
@@ -218,7 +239,7 @@ export const NotificationsProvider = ({ children }) => {
   // Fetch more notifications when page increases
   useEffect(() => {
     if (paginationState.page > 1) {
-      notificationsMutation.mutate(filterState);
+      notificationsMutation.mutate();
     }
   }, [paginationState.page]);
 
@@ -231,8 +252,14 @@ export const NotificationsProvider = ({ children }) => {
     return [{ label: 'All', value: '' }, ...categoryOptions];
   };
 
+  const markAllNotificationsAsRead = () => {
+    console.log('Marking all notifications as read');
+    // markAllNotificationsAsReadMutation.mutate();
+  };
+
   const markNotificationAsReadById = (notificationId) => {
-    markNotificationAsReadMutation.mutate(notificationId);
+    console.log('Marking notification as read:', notificationId);
+    // markNotificationAsReadMutation.mutate(notificationId);
   };
 
   const loadMoreNotifications = () => {
@@ -253,12 +280,17 @@ export const NotificationsProvider = ({ children }) => {
     setFilterState(initialFilterState);
   };
 
+  const resetDropdownOptions = () => {
+    setDropdownOptions([]);
+  };
+
   // Provider
   return (
     <NotificationsContext.Provider
       value={{
         // Unread Count
         unreadCount,
+        drawerUnreadCount,
         paginatedUnreadCount,
 
         // Notifications
@@ -266,12 +298,11 @@ export const NotificationsProvider = ({ children }) => {
         selectedNotification,
         setSelectedNotification,
         loadMoreNotifications,
-
-        // Mark notification as read
-        markNotificationAsReadById,
+        loadingNotifications,
+        loadingMoreNotifications, // PROVIDE TO CONTEXT
 
         // Mark all as read mutation
-        markAllNotificationsAsRead: markAllNotificationsAsReadMutation.mutate,
+        markAllNotificationsAsRead,
 
         // Drawer
         notificationDrawerOpen,
