@@ -224,7 +224,7 @@ export const UserManagementES = {
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'S_View Organization',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'S_Allows user to view organization',
 
-  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'S_Deactivate/Link sp account',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'S_Deactivate/Link SP account',
   'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'S_Allow user to manage provider , enable deactivate and link sp account button ',
   'MANAGE_PROVIDERS.VIEW_PROVIDER': 'S_View Provider',
   'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'S_Allows user to view provider page',
