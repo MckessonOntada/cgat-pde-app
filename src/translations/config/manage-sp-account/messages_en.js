@@ -236,7 +236,7 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.table.error.providers.listing':
     'You need to add providers to see data in this table',
   'manageSPAccount.providers.search.placeholder':
-    'Search by Provider Name, NPI, DEA, Address',
+    'Search by Provider Name, NPI, DEA',
   'manageSPAccount.providers.column.unlink': 'UNLINK',
   'manageSPAccount.providers.details': 'Provider Details',
   'manageSPAccount.providers.selectedProviders': 'Selected Providers',
