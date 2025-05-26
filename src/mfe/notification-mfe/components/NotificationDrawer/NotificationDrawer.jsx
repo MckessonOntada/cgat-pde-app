@@ -32,7 +32,7 @@ export const NotificationDrawer = () => {
   const navigate = useNavigate();
 
   // Notification context: unread count, drawer state, and setter
-  const { unreadCount, notificationDrawerOpen, setNotificationDrawerOpen, fetchNotifications, isNotificationsPage  } = useNotifications();
+  const { unreadCount, notificationDrawerOpen, setNotificationDrawerOpen, fetchNotifications, isNotificationsPage } = useNotifications();
 
   /**
    * Closes the notification drawer.
@@ -71,7 +71,8 @@ export const NotificationDrawer = () => {
               aria-label={t('notifications.cta.seeAllNotifications')}
             />
           </div>
-        }>
+        }
+      >
         <div className={styles.notificationDrawerContent}>
           {/* List of notifications in drawer view */}
           <NotificationLister isDrawerView={true} closeDrawer={handleClose} />

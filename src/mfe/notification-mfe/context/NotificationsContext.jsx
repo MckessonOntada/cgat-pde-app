@@ -475,7 +475,8 @@ export const NotificationsProvider = ({ children }) => {
         applyFilters,
         markAllNotificationsAsRead,
         markNotificationAsReadById
-      }}>
+      }}
+    >
       {children}
     </NotificationsContext.Provider>
   );

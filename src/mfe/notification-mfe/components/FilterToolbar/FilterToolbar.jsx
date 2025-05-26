@@ -121,7 +121,8 @@ const FilterToolbar = ({ isMobileView }) => {
           notificationCategory: values.notificationCategory,
           page: 1 // Reset page on filter change
         });
-      }}>
+      }}
+    >
       {({ values, setFieldValue }) => (
         <Form ref={formRef} autoComplete="off" className={styles.filterForm}>
           <div className={styles.filterToolbar}>

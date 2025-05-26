@@ -165,7 +165,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
           width: '412px',
           height: '912px',
           justifyContent: 'center'
-        }}>
+        }}
+      >
         <Loader variant="circular" />
       </div>
     );
@@ -181,7 +182,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
           width: '412px',
           height: '912px',
           justifyContent: 'center'
-        }}>
+        }}
+      >
         <Loader variant="circular" />
       </div>
     );
@@ -193,7 +195,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     } else {
       return loadingNotifications || loadingMoreNotifications || filteredUnreadCount === 0;
     }
-  }
+  };
 
   // Main notification list UI
   return (
@@ -202,14 +204,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
       <div className="notification-lister-header">
         <div className="date-display">{formattedDate}</div>
         <div className="all-read-cta">
-          <Button
-            id="mark-all-btn"
-            variant="tertiary"
-            size={elementSize}
-            onClick={markAllNotificationsAsRead}
-            disabled={
-              getDisabilityStatus()
-            }>
+          <Button id="mark-all-btn" variant="tertiary" size={elementSize} onClick={markAllNotificationsAsRead} disabled={getDisabilityStatus()}>
             {t('notifications.cta.markAll')}
           </Button>
         </div>
@@ -237,7 +232,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                   aria-pressed={isActive}
                   className="notification-list-card-wrapper"
                   onClick={() => handleClick(notification)}
-                  onKeyDown={handleKeyDown(notification)}>
+                  onKeyDown={handleKeyDown(notification)}
+                >
                   <CustomCard className={`notification-list-card${!isDrawerView && isActive ? ' active' : ''}`}>
                     <div className="notification-title-row">
                       <div className="notification-title">{notification.messageTitle}</div>
@@ -261,7 +257,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
                   justifyContent: 'center',
                   borderRadius: '8px',
                   backgroundColor: '#fff'
-                }}>
+                }}
+              >
                 <Loader variant="circular" />
               </div>
             )}

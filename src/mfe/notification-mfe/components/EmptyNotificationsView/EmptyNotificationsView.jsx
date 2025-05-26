@@ -17,13 +17,7 @@ import styles from './EmptyNotificationsView.module.scss';
 //   - subtext: Secondary message to display
 // -----------------------------------------------------------------------------
 const EmptyNotificationView = ({ isDrawerView, text, subtext }) => (
-  <div
-    className={
-      isDrawerView
-        ? styles.noNotificationsDrawerWrapper
-        : styles.noNotificationsWrapper
-    }
-  >
+  <div className={isDrawerView ? styles.noNotificationsDrawerWrapper : styles.noNotificationsWrapper}>
     {/* Icon representing no notifications */}
     <NoNotificationsIcon />
     <div className={styles.noNotifications}>
