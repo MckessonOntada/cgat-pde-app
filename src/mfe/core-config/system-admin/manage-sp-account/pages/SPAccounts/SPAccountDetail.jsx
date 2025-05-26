@@ -30,6 +30,9 @@ const SPAccountDetail = () => {
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const { setSelectedOrganization, selectedOrganization, organizationOptions } = useOrgAccountSelectionContext();
 
+  const practiceId = AuthUtils.getPracticeId() || null;
+  const organizationId = selectedOrganization?.id || practiceId;
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const orgId = queryParams.get('orgId');
@@ -44,7 +47,7 @@ const SPAccountDetail = () => {
 
   const { isLoading, data, refetch } = useQuery({
     queryKey: ['Account', spAccountId],
-    queryFn: async () => AccountService.getAccountListConfigurationById(spAccountId, selectedOrganization?.id),
+    queryFn: async () => AccountService.getAccountListConfigurationById(spAccountId, organizationId),
     enabled: !!spAccountId ? true : false,
     refetchOnWindowFocus: false,
     onError: (error) => {}
@@ -78,7 +81,7 @@ const SPAccountDetail = () => {
   };
 
   const goBack = () => {
-    navigate('/system-admin/config/manage-sp-account', {
+    navigate(!practiceId ? '/system-admin/config/manage-sp-account' : '/admin/linked-accounts', {
       state: { isSuccess: true }
     });
   };
@@ -93,7 +96,7 @@ const SPAccountDetail = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
-          {t('manageSPAccount.BacktoPage')}
+          {!practiceId ? t('manageSPAccount.BacktoPage') : t('Back to Manage Linked Accounts')}
         </Button>
       </div>
       {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
@@ -106,14 +109,15 @@ const SPAccountDetail = () => {
             </div>
           }
           controls={
-            !isCustomerCenter && (
+            !isCustomerCenter &&
+            !practiceId && (
               <Button
                 Icon={EditPencil}
                 variant="secondary"
                 className="button-icon"
                 size="md"
                 onClick={() =>
-                  navigate(`../${routeConstants.EDIT_SPACCOUNT}/${spAccountId}?orgId=${selectedOrganization?.id}`, {
+                  navigate(`../${routeConstants.EDIT_SPACCOUNT}/${spAccountId}?orgId=${organizationId}`, {
                     state: { isEdit: true }
                   })
                 }>
@@ -147,7 +151,7 @@ const SPAccountDetail = () => {
       </div>
       {data?.questionnaireList?.length > 0 && (
         <div className="MCP-module-body">
-          <SPAccountConfigurations data={data} refetch={refetch} />
+          <SPAccountConfigurations data={data} refetch={refetch} orgAdmin={!!practiceId} />
         </div>
       )}
     </div>

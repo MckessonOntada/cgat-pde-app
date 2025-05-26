@@ -254,5 +254,10 @@ export const ManageSPAccountMessagesEN = {
     'Failed to open provider details. Please try again.',
   'manageSPAccount.success.message.addProvider':
     'Provider(s) has been linked successfully.',
-  'manageSPAccount.providers.noData': 'No Providers found'
+  'manageSPAccount.providers.noData': 'No Providers found',
+  'manageSPAccount.channelType.buynbill': 'Buy and Bill',
+  'manageSPAccount.channelType.specialtyPharma': 'SP',
+
+  'manageLinkedAccounts.backToLinkedAccountdetails':
+    'Back to Linked account details page'
 };

@@ -170,6 +170,7 @@ export const UserManagementES = {
   SYSTEM_CONFIGURATION: 'S_System Configuration',
   ADMIN_MANAGEMENT: 'S_System Admin Permissions',
   MANAGE_PROVIDERS: 'S_Manage Providers',
+  MANAGE_LINKED_ACCOUNTS: 'S_Manage Linked Accounts',
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'S_Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'S_Allows user to login',
@@ -233,6 +234,9 @@ export const UserManagementES = {
   'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION': 'S_Allows user to upload provider and download the csv file, enables upload button',
   'MANAGE_PROVIDERS.EDIT_PROVIDER': 'S_Edit Provider',
   'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION': 'S_Allows user to edit provider details, enable edit button',
+
+  'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS': 'S_Manage Linked account',
+  'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS.DESCRIPTION': 'S_Allows org admin to Link provider with the account within the organization ',
 
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'S_Manage Orders',
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'S_Allows to Perform Delete action, Enable delete option',

@@ -17,7 +17,8 @@ function ConfigurationPreview() {
     questionnaire = [],
     isSPMaterial = false,
     isSPCatalog = false,
-    isSPAccount = false
+    isSPAccount = false,
+    isLinkedAccounts = false
   } = location.state || false;
 
   const handleOnBackToQuestionnaire = () => {
@@ -39,6 +40,8 @@ function ConfigurationPreview() {
             ? t('manageSPMaterial.BacktoPage')
             : isSPCatalog
             ? t('label.backSpCatalog')
+            : isLinkedAccounts
+            ? t('manageSPAccount.btn.backToSpAccount')
             : ''}
         </Button>
       </div>

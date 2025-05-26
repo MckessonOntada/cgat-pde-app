@@ -12,7 +12,8 @@ export const getShippingLocationColumns = (
   handleOnOptionSelection,
   isCustomerCenter,
   selectedShippingLocation,
-  setSelectedShippingLocation
+  setSelectedShippingLocation,
+  orgUser
 ) => [
   {
     id: 'checkbox',
@@ -89,7 +90,7 @@ export const getShippingLocationColumns = (
         />
       );
     },
-    omit: isCustomerCenter,
+    omit: isCustomerCenter || orgUser,
     isAction: true
   }
 ];
