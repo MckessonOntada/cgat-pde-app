@@ -1419,10 +1419,12 @@ const Summary = () => {
                                 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
                               }>
                               <div className="MCP-module-body">
-                                <DetailSegment
-                                  label={'Comment'}
-                                  value={documentSegment.comment}
-                                />
+                                {documentSegment.comment && (
+                                  <DetailSegment
+                                    label={'Comment'}
+                                    value={documentSegment.comment}
+                                  />
+                                )}
                                 <div>
                                   <DetailSegment
                                     direction="row"

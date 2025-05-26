@@ -16,6 +16,8 @@ import ModuleHeader from '@src/components/module-header';
 import CommonUtils from '@src/util/CommonUtils';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
+import { ORDER_STATUS } from '../../../orders/config';
+import { CHANNEL_TYPE } from '../Constants';
 
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
@@ -87,6 +89,15 @@ function UploadOrderDocument() {
     });
   };
 
+  if (
+    orderDetails.id &&
+    (orderDetails.status !== ORDER_STATUS.SUBMITTED ||
+      ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(
+        orderDetails.channelType
+      ))
+  ) {
+    navigate('/orders');
+  }
   return (
     <div className="MCP-module-wrapper">
       <PageHeader heading={'Upload Documents'} />
@@ -104,7 +115,7 @@ function UploadOrderDocument() {
         ) : (
           <div>
             <div
-              className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4`}>
+              className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
               <DetailSegment
                 key={'sap_id'}
                 label="SAP ID"
@@ -121,21 +132,21 @@ function UploadOrderDocument() {
                   </Link>
                 }
               />
-              <div></div>
-              <DetailSegment
-                key={'order_cost'}
-                label="Order Cost"
-                value={
-                  orderDetails.orderCost ? (
-                    <div className={styles['price-text']}>
-                      <span>$</span>
-                      {orderDetails.orderCost}
-                    </div>
-                  ) : (
-                    '-'
-                  )
-                }
-              />
+              <div className="price-wrapper">
+                <DetailSegment
+                  label={t('labels.orderCost')}
+                  value={
+                    orderDetails.orderCost ? (
+                      <span className="dollarSign ">
+                        <span>$</span>
+                        {orderDetails.orderCost}
+                      </span>
+                    ) : (
+                      '-'
+                    )
+                  }
+                />
+              </div>
             </div>
           </div>
         )}
