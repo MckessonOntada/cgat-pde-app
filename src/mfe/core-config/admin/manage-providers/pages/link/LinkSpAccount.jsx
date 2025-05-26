@@ -16,13 +16,14 @@ import { useMutation } from 'react-query';
 import ProviderService from '@src/api/commonService/ProviderService';
 import SpAccountTable from './SpAccountTable';
 import style from './LinkSpAccount.module.scss';
+import CommonUtils from '@src/util/CommonUtils';
 function LinkSpAccount() {
   const [spAccount, setSpAccount] = useState([]);
   const { t } = useTranslate();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isEdit = searchParams.get('isEdit') === 'true';
-
+  const name = searchParams.get('name');
   const providerIds =
     searchParams.get('accounts')?.split(',').map(Number) || [];
   const {
@@ -111,7 +112,16 @@ function LinkSpAccount() {
             !isEdit && (
               <div className={style.alignMultiple}>
                 <Label className={style.spnTemplate}>
-                  {providerIds.length} {t('provider.sp.account.selected')}
+                  {/* {providerIds.length} {t('provider.sp.account.selected')} */}
+                  {providerIds.length > 1 ? (
+                    <span>
+                      {providerIds.length} {t('provider.sp.account.selected')}
+                    </span>
+                  ) : (
+                    <span>
+                      {name} {t('provider.sp.account.selected')}
+                    </span>
+                  )}
                 </Label>
                 <Button onClick={goBack} variant="tertiary" size="md">
                   {t('button.caption.change')}
