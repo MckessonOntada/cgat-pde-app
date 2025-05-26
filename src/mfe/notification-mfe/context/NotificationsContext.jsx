@@ -249,28 +249,28 @@ export const NotificationsProvider = ({ children }) => {
   }, [searchState.notificationCategory, searchState.notificationDateRange]);
 
   // Fetch notifications on mount/filter/page change, poll every 5 min if filter is initial
-  useEffect(() => {
-    notificationsMutation.mutate();
-    let interval;
-    const isInitialFilter =
-      JSON.stringify({
-        notificationDateRange: searchState.notificationDateRange,
-        notificationCategory: searchState.notificationCategory
-      }) ===
-      JSON.stringify({
-        notificationDateRange: initialSearchState.notificationDateRange,
-        notificationCategory: initialSearchState.notificationCategory
-      });
-    if (isInitialFilter) {
-      interval = setInterval(() => {
-        notificationsMutation.mutate();
-      }, 5 * 60 * 1000); // 5 minutes
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchState.notificationCategory, searchState.notificationDateRange, searchState.page, searchState.pageSize]);
+  // useEffect(() => {
+  //   notificationsMutation.mutate();
+  //   let interval;
+  //   const isInitialFilter =
+  //     JSON.stringify({
+  //       notificationDateRange: searchState.notificationDateRange,
+  //       notificationCategory: searchState.notificationCategory
+  //     }) ===
+  //     JSON.stringify({
+  //       notificationDateRange: initialSearchState.notificationDateRange,
+  //       notificationCategory: initialSearchState.notificationCategory
+  //     });
+  //   if (isInitialFilter) {
+  //     interval = setInterval(() => {
+  //       notificationsMutation.mutate();
+  //     }, 5 * 60 * 1000); // 5 minutes
+  //   }
+  //   return () => {
+  //     if (interval) clearInterval(interval);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchState.notificationCategory, searchState.notificationDateRange, searchState.page, searchState.pageSize]);
 
   // Update unread counts when notifications change
   useEffect(() => {

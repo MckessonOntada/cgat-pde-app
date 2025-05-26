@@ -20,7 +20,7 @@ import styles from './NotificationDrawer.module.scss';
 
 /**
  * NotificationDrawer
- * 
+ *
  * Displays a floating drawer containing a list of notifications.
  * Allows users to view all notifications and close the drawer.
  */
@@ -32,11 +32,7 @@ export const NotificationDrawer = () => {
   const navigate = useNavigate();
 
   // Notification context: unread count, drawer state, and setter
-  const {
-    drawerUnreadCount,
-    notificationDrawerOpen,
-    setNotificationDrawerOpen
-  } = useNotifications();
+  const { drawerUnreadCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
 
   /**
    * Closes the notification drawer.
@@ -53,13 +49,16 @@ export const NotificationDrawer = () => {
     navigate('/notifications');
   }, [setNotificationDrawerOpen, navigate]);
 
+  // Only show the count if it's greater than 0
+  const heading = drawerUnreadCount > 0 ? `${t('notifications.title')} (${drawerUnreadCount})` : t('notifications.title');
+
   return (
     <div className={styles.notificationDrawer}>
       <FloatingDrawer
         open={notificationDrawerOpen}
         onClose={handleClose}
         anchor="right"
-        heading={`${t('notifications.title')} (${drawerUnreadCount})`}
+        heading={heading}
         controls={
           <div className={styles.controls}>
             {/* Button to view all notifications */}
@@ -72,8 +71,7 @@ export const NotificationDrawer = () => {
               aria-label={t('notifications.cta.seeAllNotifications')}
             />
           </div>
-        }
-      >
+        }>
         <div className={styles.notificationDrawerContent}>
           {/* List of notifications in drawer view */}
           <NotificationLister isDrawerView={true} closeDrawer={handleClose} />

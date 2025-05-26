@@ -109,22 +109,20 @@ const Notifications = () => {
               {isMobileView ? t('notifications.cta.backMobile') : t('notifications.cta.back')}
             </Button>
           </div>
-
           {/* Header with Title and Filter */}
           <div className="notifications-header">
             <div className="heading">
               <Heading as="h1" size={'var(--brand-font-size--28, 28px)'}>
-                {t('notifications.title')} <span className="count">({paginatedUnreadCount})</span>
+                {t('notifications.title')}
+                {paginatedUnreadCount > 0 && <span className="count"> ({paginatedUnreadCount})</span>}
               </Heading>
             </div>
             <FilterToolbar isMobileView={isMobileView} />
           </div>
-
           {/* Info Alert */}
           <div className="notifications-info">
             <Alert description={t('notifications.info.cleared')} showCloseIcon={false} title="" size="sm" />
           </div>
-
           {/* Main Content: Responsive Layout */}
           {!isMobileView ? (
             // Desktop/Tablet: List and Detail side by side
