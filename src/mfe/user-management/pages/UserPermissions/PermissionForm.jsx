@@ -11,7 +11,10 @@ import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
-import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
+import {
+  CUSTOMER_CENTRE,
+  CUSTOMER_SERVICE
+} from '@src/api/commonService/CommonService';
 
 const PermissionForm = ({
   enabledPermissions,
@@ -88,7 +91,8 @@ const PermissionForm = ({
         ORDER_MANAGEMENT: {},
         SYSTEM_CONFIGURATION: {},
         PAYMENT_INVOICING: {},
-        MANAGE_PROVIDERS: {}
+        MANAGE_PROVIDERS: {},
+        MANAGE_LINKED_ACCOUNTS: {}
       };
 
       //filter the data according to group
@@ -198,10 +202,11 @@ const PermissionForm = ({
           ].includes(permission)
         ) {
           groupedPermissions.MANAGE_PROVIDERS[permission] = permission;
+        } else if (['MANAGE_LINKED_ACCOUNTS'].includes(permission)) {
+          groupedPermissions.MANAGE_LINKED_ACCOUNTS[permission] = permission;
         }
       });
 
-      console.log('groupedPermissions', groupedPermissions);
       // remove empty data
       const filteredPermissions = Object.fromEntries(
         Object.entries(groupedPermissions).filter(

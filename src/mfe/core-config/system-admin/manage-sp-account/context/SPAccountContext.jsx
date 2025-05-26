@@ -33,7 +33,7 @@ const INITIAL_SORT_STATE = {
   sortOrder: 'desc'
 };
 
-export const SPAccountProvider = ({ children }) => {
+export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
@@ -73,7 +73,9 @@ export const SPAccountProvider = ({ children }) => {
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       practiceId: organizationId,
       partnerFunction: 'SOLD_TO',
-      channelType: !practiceId ? ChannelType.SPECIALITY_PHARMA : 'ALL'
+      channelType: !practiceId ? ChannelType.SPECIALITY_PHARMA : 'ALL',
+      ...(isLinkedAccounts && filterConfig?.distributionChannel ? { channelType: filterConfig.distributionChannel } : {}),
+      ...(isLinkedAccounts && filterConfig?.salesOrg ? { salesOrg: filterConfig.salesOrg } : {})
     };
 
     return baseParams;

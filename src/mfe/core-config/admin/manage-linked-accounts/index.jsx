@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
 import CommonFilters from '@src/components/Filters';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useSPAccountContext } from '../../system-admin/manage-sp-account/context/SPAccountContext';
 import SPAccountDataTable from '../../system-admin/manage-sp-account/pages/SPAccounts/SPAccountDataTable';
 
@@ -17,7 +16,7 @@ function ManageLinkedAccount() {
         name: 'salesOrg',
         label: t('Sales Org'),
         options: [
-          { label: 'All', value: 'all' },
+          { label: 'All', value: '' },
           { label: 'MPB', value: 'MPB' },
           { label: '3PL', value: '3PL' },
           { label: 'SD', value: 'SD' },
@@ -29,9 +28,9 @@ function ManageLinkedAccount() {
         name: 'distributionChannel',
         label: t('Distribution Channel'),
         options: [
-          { label: 'All', value: 'all' },
-          { label: 'BUY_AND_BILL', value: 'Buy and Bill' },
-          { label: 'SPECIALITY_PHARMA', value: 'SP' }
+          { label: 'All', value: 'ALL' },
+          { label: 'Buy and Bill', value: 'BUY_AND_BILL' },
+          { label: 'SP', value: 'SPECIALITY_PHARMA' }
         ]
       }
     ];
@@ -63,7 +62,7 @@ function ManageLinkedAccount() {
               searchPlaceholder={t('manageSPAccount.filters.searchPlaceholder')}
             />
           </div>
-          <SPAccountDataTable manageLinkedAccount={true} />
+          <SPAccountDataTable isLinkedAccount={true} />
         </div>
       </div>
     </div>

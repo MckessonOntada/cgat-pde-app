@@ -88,7 +88,11 @@ function SPAccountConfigurations({ data, refetch, orgAdmin }) {
               variant="secondary"
               className="button-icon"
               size="md"
-              onClick={() => navigate(PREVIEW_URL, { state: { isSPAccount: true, questionnaire: data?.questionnaireList } })}>
+              onClick={() =>
+                orgAdmin
+                  ? navigate('../../../admin/linked-accounts/questionnaire', { state: { questionnaire: data?.questionnaireList, isLinkedAccounts: true } })
+                  : navigate(PREVIEW_URL, { state: { isSPAccount: true, questionnaire: data?.questionnaireList } })
+              }>
               {t('manageSPMaterial.drawer.details.configuration.actions.preview')}
             </Button>
           }

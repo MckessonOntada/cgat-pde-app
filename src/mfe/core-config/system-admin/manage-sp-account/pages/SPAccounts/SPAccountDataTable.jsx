@@ -1,5 +1,5 @@
 import { useTranslate } from '@src/translations/useTranslation';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -12,25 +12,39 @@ import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import AuthUtils from '@src/util/AuthUtils';
-import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { ChannelType } from '../../util';
+import AccountDetails from '../../../manage-account/pages/AccountDetails';
 
-function SPAccountDataTable({ manageLinkedAccount }) {
+function SPAccountDataTable({ isLinkedAccount }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { selectedOrganization } = useOrgAccountSelectionContext();
   const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId } = useSPAccountContext();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const [openDetails, setOpenDetails] = useState(false);
+  const [selectedDetails, setSelectedDetails] = useState(null);
   const columns = [
     {
       id: 'accountNumber',
       name: t('table.columns.captions.accountNumber'),
       selector: (row) => row.accountNumber || '',
       maxWidth: '350px',
-      cell: (props) => (
-        <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
-          <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
-        </Link>
-      ),
+      cell: (props) =>
+        props.channelType === ChannelType.BUY_AND_BILL ? (
+          <Link
+            className="MCP-table-link"
+            aria-label={t('table.columns.captions.accountNumber')}
+            onClick={(e) => {
+              e.preventDefault();
+              setOpenDetails(true);
+              setSelectedDetails(props);
+            }}>
+            <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
+          </Link>
+        ) : (
+          <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
+            <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
+          </Link>
+        ),
       sortable: true,
       sortKey: 'sap_partner'
     },
@@ -55,14 +69,21 @@ function SPAccountDataTable({ manageLinkedAccount }) {
       name: t('account.sales_org'),
       selector: (row) => row.salesOrg || '',
       maxWidth: '450px',
-      cell: (props) => <EclipsesTextcss str={props.salesOrg} maxWidth={430} />
+      cell: (props) => <EclipsesTextcss str={props.salesOrg} maxWidth={430} />,
+      omit: !isLinkedAccount ? true : false
     },
     {
       id: 'distributionChannel',
       name: t('account.distribution'),
-      selector: (row) => row.distributionChannel || '',
+      selector: (row) => row.channelType || '',
       maxWidth: '450px',
-      cell: (props) => <EclipsesTextcss str={props.distributionChannel} maxWidth={430} />
+      cell: (props) => (
+        <EclipsesTextcss
+          str={props.channelType === ChannelType.BUY_AND_BILL ? t('manageSPAccount.channelType.buynbill') : t('manageSPAccount.channelType.specialtyPharma')}
+          maxWidth={430}
+        />
+      ),
+      omit: !isLinkedAccount ? true : false
     }
   ];
 
@@ -78,10 +99,10 @@ function SPAccountDataTable({ manageLinkedAccount }) {
     <div>
       <div style={{ marginBottom: '24px', marginTop: '16px' }}>
         <ModuleHeader
-          heading={<Heading as="h2">{!manageLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
+          heading={<Heading as="h2">{!isLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
           controls={
             !isCustomerCenter &&
-            !manageLinkedAccount && (
+            !isLinkedAccount && (
               <div className="controls">
                 {
                   <Button
@@ -120,6 +141,13 @@ function SPAccountDataTable({ manageLinkedAccount }) {
             description={t('manageSPAccount.table.emptyDataDescription')}
           />
         }
+      />
+      <AccountDetails
+        openDetails={openDetails}
+        setOpenDetails={setOpenDetails}
+        viewAccount={selectedDetails}
+        setViewAccount={setSelectedDetails}
+        isLinkedAccount={isLinkedAccount}
       />
     </div>
   );
