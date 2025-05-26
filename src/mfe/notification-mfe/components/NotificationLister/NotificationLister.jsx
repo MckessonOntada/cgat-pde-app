@@ -23,12 +23,7 @@ import EmptyNotificationView from '../EmptyNotificationsView/EmptyNotificationsV
  *
  * @returns {JSX.Element} The rendered NotificationLister component.
  */
-const NotificationLister = ({
-  isDrawerView = false,
-  closeDrawer,
-  isMobileView,
-  setIsDetailView
-}) => {
+const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, setIsDetailView }) => {
   // =========================
   // Hooks & Context
   // =========================
@@ -38,13 +33,17 @@ const NotificationLister = ({
 
   // Notification context values
   const {
-    paginatedNotifications: notifications,
+    drawerNotifications,
+    notifications,
     markAllNotificationsAsRead,
     selectedNotification,
     setSelectedNotification,
     loadMoreNotifications,
+    loadingDrawerNotifications,
     loadingNotifications,
     loadingMoreNotifications,
+    filteredUnreadCount,
+    unreadCount
   } = useNotifications();
 
   // =========================
@@ -55,10 +54,7 @@ const NotificationLister = ({
   const elementSize = isMobileView ? 'sm' : 'md';
 
   // Limit notifications in drawer view
-  const drawerPageSize = 8;
-  const displayedNotifications = isDrawerView
-    ? notifications.slice(0, drawerPageSize)
-    : notifications;
+  const displayedNotifications = isDrawerView ? drawerNotifications : notifications;
 
   // Today's formatted date for header
   const today = new Date();
@@ -143,10 +139,7 @@ const NotificationLister = ({
       const el = contentRef.current;
       if (!el) return;
       // If scrolled near bottom and not already loading more, fetch more notifications
-      if (
-        el.scrollTop + el.clientHeight >= el.scrollHeight - 10 &&
-        !loadingMoreNotifications
-      ) {
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 10 && !loadingMoreNotifications) {
         loadMoreNotifications();
       }
     };
@@ -162,6 +155,22 @@ const NotificationLister = ({
   // Render
   // =========================
 
+  // Show loader if drawer notifications are loading and in drawer view
+  if (loadingDrawerNotifications && isDrawerView) {
+    return (
+      <div
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          width: '412px',
+          height: '912px',
+          justifyContent: 'center'
+        }}>
+        <Loader variant="circular" />
+      </div>
+    );
+  }
+
   // Show loader if notifications are loading and not in drawer view
   if (loadingNotifications && !isDrawerView) {
     return (
@@ -171,11 +180,19 @@ const NotificationLister = ({
           display: 'flex',
           width: '412px',
           height: '912px',
-          justifyContent: 'center',
+          justifyContent: 'center'
         }}>
         <Loader variant="circular" />
       </div>
     );
+  }
+
+  const getDisabilityStatus = () => {
+    if (isDrawerView) {
+      return loadingDrawerNotifications || unreadCount === 0;
+    } else {
+      return loadingNotifications || loadingMoreNotifications || filteredUnreadCount === 0;
+    }
   }
 
   // Main notification list UI
@@ -191,21 +208,15 @@ const NotificationLister = ({
             size={elementSize}
             onClick={markAllNotificationsAsRead}
             disabled={
-              loadingMoreNotifications ||
-              notifications.length < 1 ||
-              notifications.every((n) => n.readStatus)
-            }
-          >
+              getDisabilityStatus()
+            }>
             {t('notifications.cta.markAll')}
           </Button>
         </div>
       </div>
 
       {/* Notification list or empty state */}
-      <div
-        ref={contentRef}
-        className={`notification-lister-content${!isDrawerView ? ' notification-lister-content--fixed-width' : ''}`}
-      >
+      <div ref={contentRef} className={`notification-lister-content${!isDrawerView ? ' notification-lister-content--fixed-width' : ''}`}>
         {displayedNotifications.length < 1 ? (
           <EmptyNotificationView
             isDrawerView={isDrawerView}
@@ -216,10 +227,7 @@ const NotificationLister = ({
           <>
             {/* Notification cards */}
             {displayedNotifications.map((notification) => {
-              const isActive =
-                !isMobileView &&
-                selectedNotification &&
-                selectedNotification.id === notification.id;
+              const isActive = !isMobileView && selectedNotification && selectedNotification.id === notification.id;
 
               return (
                 <div
@@ -229,8 +237,7 @@ const NotificationLister = ({
                   aria-pressed={isActive}
                   className="notification-list-card-wrapper"
                   onClick={() => handleClick(notification)}
-                  onKeyDown={handleKeyDown(notification)}
-                >
+                  onKeyDown={handleKeyDown(notification)}>
                   <CustomCard className={`notification-list-card${!isDrawerView && isActive ? ' active' : ''}`}>
                     <div className="notification-title-row">
                       <div className="notification-title">{notification.messageTitle}</div>

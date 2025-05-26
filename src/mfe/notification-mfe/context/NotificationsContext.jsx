@@ -7,17 +7,14 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
+import { NOTIFICATION_DRAWER_PAGE_SIZE } from '../constants/NotificationFilterConstants';
+import { useLocation } from 'react-router-dom';
 
-/* ============================================================================
- * Context and Custom Hook
- * ========================================================================== */
 const NotificationsContext = createContext();
 export const useNotifications = () => useContext(NotificationsContext);
 
-/* ============================================================================
- * Initial State
- * ========================================================================== */
 const initialSearchState = {
+  searchText: '',
   notificationDateRange: [dayjs().subtract(90, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
   notificationCategory: '',
   page: 1,
@@ -26,51 +23,19 @@ const initialSearchState = {
   totalPages: 0
 };
 
-/* ============================================================================
- * Provider Component
- * ========================================================================== */
-/**
- * NotificationsProvider component provides notification-related state and actions
- * to its children via React Context. It manages fetching, updating, and marking
- * notifications as read, as well as handling unread counts, pagination and filtering.
- *
- * @component
- * @param {Object} props
- * @param {React.ReactNode} props.children - Child components that will have access to the notifications context.
- * @returns {JSX.Element} The NotificationsContext.Provider wrapping the children.
- *
- * @context
- * Provides the following values via context:
- * - unreadCount {number}: Total unread notifications count.
- * - drawerUnreadCount {number}: Unread notifications count for the drawer.
- * - paginatedUnreadCount {number}: Unread notifications count in the current page.
- * - paginatedNotifications {Array}: List of paginated notifications.
- * - selectedNotification {Object|null}: Currently selected notification.
- * - setSelectedNotification {Function}: Setter for selected notification.
- * - loadMoreNotifications {Function}: Loads more notifications (pagination).
- * - loadingNotifications {boolean}: Loading state for notifications.
- * - loadingMoreNotifications {boolean}: Loading state for loading more notifications.
- * - markAllNotificationsAsRead {Function}: Marks all notifications as read.
- * - notificationDrawerOpen {boolean}: State for notification drawer visibility.
- * - setNotificationDrawerOpen {Function}: Setter for notification drawer state.
- * - searchState {Object}: Current search/filter/pagination state.
- * - setSearchState {Function}: Setter for search state.
- * - resetSearchState {Function}: Resets search state to initial values.
- */
 export const NotificationsProvider = ({ children }) => {
-  /* --------------------------------------------------------------------------
-   * State Hooks
-   * ------------------------------------------------------------------------*/
   // Notifications State
-  const [paginatedNotifications, setPaginatedNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [drawerNotifications, setDrawerNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [loadingDrawerNotifications, setLoadingDrawerNotifications] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [loadingMoreNotifications, setLoadingMoreNotifications] = useState(false);
 
   // Unread Count State
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [drawerUnreadCount, setDrawerUnreadCount] = useState(0);
-  const [paginatedUnreadCount, setPaginatedUnreadCount] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(0); // Total unread notifications count
+  const [drawerUnreadCount, setDrawerUnreadCount] = useState(0); // Unread count for drawer notifications
+  const [filteredUnreadCount, setFilteredUnreadCount] = useState(0); // Unread count after applying filters
 
   // Drawer State
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
@@ -83,6 +48,8 @@ export const NotificationsProvider = ({ children }) => {
    * ------------------------------------------------------------------------*/
   const { showSnackbar } = useSnackbar();
   const { t } = useTranslate();
+  const location = useLocation();
+  const isNotificationsPage = location.pathname.includes('/notifications');
 
   /* --------------------------------------------------------------------------
    * Mutations (API Calls)
@@ -90,12 +57,12 @@ export const NotificationsProvider = ({ children }) => {
 
   // Fetch unread notifications count
   const unreadCountMutation = useMutation(
-    async () => {
+    async (searchObj) => {
       const payload = {
-        searchText: '',
-        category: '',
-        startDate: '',
-        endDate: dayjs().format('YYYY-MM-DD')
+        searchText: searchObj?.searchText || initialSearchState.searchText,
+        category: searchObj?.category || initialSearchState.notificationCategory,
+        startDate: searchObj?.startDate || dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
+        endDate: searchObj?.endDate || dayjs().format('YYYY-MM-DD')
       };
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
@@ -111,28 +78,124 @@ export const NotificationsProvider = ({ children }) => {
     }
   );
 
+  // Fetch filtered unread notifications count
+  const filteredUnreadCountMutation = useMutation(
+    async (searchObj) => {
+      const payload = {
+        searchText: searchObj?.searchText,
+        category: searchObj?.category,
+        startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
+        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
+      };
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
+    },
+    {
+      onSuccess: (response) => (response.status === 200 ? setFilteredUnreadCount(response?.data?.unreadCount ?? 0) : setFilteredUnreadCount(0)),
+      onError: () => {
+        setFilteredUnreadCount(0);
+        showSnackbar({
+          description: t('notifications.error'),
+          type: 'error'
+        });
+      }
+    }
+  );
+
+  // Fetch unread count on context load and every 5 minutes
+  useEffect(() => {
+    const searchObj = {
+      searchText: initialSearchState.searchText,
+      category: initialSearchState.notificationCategory,
+      startDate: dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
+      endDate: dayjs().format('YYYY-MM-DD')
+    };
+    unreadCountMutation.mutate(searchObj);
+    const interval = setInterval(() => {
+      unreadCountMutation.mutate(searchObj);
+    }, 5 * 60 * 1000); // 5 minutes
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fetch drawer notifications
+  const drawerNotificationsMutation = useMutation(
+    async (searchObj) => {
+      // Set loading states
+      if (notificationDrawerOpen) {
+        setLoadingDrawerNotifications(true);
+      }
+      const payload = {
+        searchText: searchObj?.searchText,
+        category: searchObj?.category,
+        startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
+        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
+      };
+      const paramsObj = {
+        pageNo: searchObj?.page - 1,
+        pageSize: searchObj?.pageSize
+      };
+      return await HttpResourceService.callRest(`${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`, httpVerb.POST, payload);
+    },
+    {
+      onSuccess: (response) => {
+        if (notificationDrawerOpen) {
+          setLoadingDrawerNotifications(false);
+          if (response.status === 200) {
+            const notificationsData = response?.data?.response || [];
+            setDrawerNotifications(notificationsData);
+            setDrawerUnreadCount(notificationsData.filter((n) => !n.readStatus).length);
+          }
+        }
+      },
+      onError: (error) => {
+        if (notificationDrawerOpen) {
+          setLoadingDrawerNotifications(false);
+          setDrawerNotifications([]);
+          setDrawerUnreadCount(0);
+          error &&
+            showSnackbar({
+              description: t('notifications.error'),
+              type: 'error'
+            });
+        }
+      }
+    }
+  );
+
+  useEffect(() => {
+    if (notificationDrawerOpen) {
+      const searchObj = {
+        searchText: initialSearchState.searchText,
+        category: initialSearchState.notificationCategory,
+        startDate: dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
+        endDate: dayjs().format('YYYY-MM-DD'),
+        page: initialSearchState.page,
+        pageSize: NOTIFICATION_DRAWER_PAGE_SIZE
+      };
+      drawerNotificationsMutation.mutate(searchObj);
+    } else {
+      setDrawerNotifications([]);
+      setDrawerUnreadCount(0);
+    }
+  }, [notificationDrawerOpen]);
+
   // Fetch paginated notifications
   const notificationsMutation = useMutation(
-    async () => {
+    async (searchObj) => {
       // Set loading states
       if (searchState.page === initialSearchState.page) {
         setLoadingNotifications(true);
       } else {
         setLoadingMoreNotifications(true);
       }
-      const endDateFromFilter = dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY');
-      const now = dayjs();
-      const effectiveEndDate = endDateFromFilter.isAfter(now) ? endDateFromFilter : now;
-
       const payload = {
-        searchText: '',
-        category: searchState.notificationCategory,
-        startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-        endDate: effectiveEndDate.format('YYYY-MM-DD')
+        searchText: searchObj.searchText,
+        category: searchObj.category,
+        startDate: dayjs(searchObj.startDate).format('YYYY-MM-DD'),
+        endDate: dayjs(searchObj.endDate).format('YYYY-MM-DD')
       };
       const paramsObj = {
-        pageNo: searchState.page - 1,
-        pageSize: searchState.pageSize
+        pageNo: searchObj.page - 1,
+        pageSize: searchObj.pageSize
       };
       return await HttpResourceService.callRest(`${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`, httpVerb.POST, payload);
     },
@@ -146,9 +209,9 @@ export const NotificationsProvider = ({ children }) => {
         if (response.status === 200) {
           const notifications = response.data.response;
           if (notifications.length > 0) {
-            setPaginatedNotifications((prev) => (searchState.page > 1 ? [...prev, ...notifications] : notifications));
+            setNotifications((prev) => (searchState.page > 1 ? [...prev, ...notifications] : notifications));
           } else {
-            setPaginatedNotifications([]);
+            setNotifications([]);
           }
           setSearchState((prevState) => ({
             ...prevState,
@@ -157,21 +220,106 @@ export const NotificationsProvider = ({ children }) => {
           }));
         }
       },
-      onError: () => {
+      onError: (error) => {
         if (searchState.page === initialSearchState.page) {
           setLoadingNotifications(false);
         } else {
           setLoadingMoreNotifications(false);
         }
-        setPaginatedNotifications([]);
+        setNotifications([]);
+        setSelectedNotification(null);
+        error &&
+          showSnackbar({
+            description: t('notifications.error'),
+            type: 'error'
+          });
       }
     }
   );
 
+  const fetchNotifications = () => {
+    if (!isNotificationsPage) {
+      return; // Do not fetch if not on notifications page
+    }
+    const searchObj = {
+      searchText: searchState.searchText,
+      category: searchState.notificationCategory,
+      startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+      endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+      page: searchState.page,
+      pageSize: searchState.pageSize
+    };
+    notificationsMutation.mutate(searchObj);
+  };
+
+  // Load more notifications (pagination)
+  const loadMoreNotifications = () => {
+    if (!notificationDrawerOpen && isNotificationsPage && searchState.page < searchState.totalPages) {
+      setSearchState((prevState) => ({
+        ...prevState,
+        page: prevState.page + 1
+      }));
+    }
+  };
+
+  useEffect(() => {
+    if (isNotificationsPage && searchState.page > initialSearchState.page) {
+      fetchNotifications();
+    }
+  }, [searchState.page]);
+
+  useEffect(() => {
+    if (isNotificationsPage && JSON.stringify(searchState) !== JSON.stringify(initialSearchState)) {
+      // Fetch notifications when search state changes
+      fetchNotifications();
+      filteredUnreadCountMutation.mutate({
+        searchText: searchState.searchText,
+        category: searchState.notificationCategory,
+        startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+      });
+    }
+  }, [searchState.searchText, searchState.notificationCategory, searchState.notificationDateRange]);
+
+  const applyFilters = (newSearchState) => {
+    setSelectedNotification(null); // Reset selected notification when applying filters
+    // Reset page to 1 when applying filters
+    setSearchState((prevState) => ({
+      ...prevState,
+      ...newSearchState,
+      page: 1 // Reset page to 1 when applying filters
+    }));
+  };
+
+  // Reset search state to initial
+  const resetSearchState = () => {
+    setSearchState(initialSearchState);
+  };
+
+  useEffect(() => {
+    if (!isNotificationsPage) {
+      setSelectedNotification(null);
+    } else {
+      const searchObj = {
+        searchText: searchState.searchText,
+        category: searchState.notificationCategory,
+        startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+      };
+      filteredUnreadCountMutation.mutate(searchObj);
+    }
+  }, [isNotificationsPage]);
+
   // Mark all notifications as read
   const markAllNotificationsAsReadMutation = useMutation(
-    async () => {
-      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_ALL(), httpVerb.PATCH);
+    async (searchObj) => {
+      const payload = {
+        searchText: searchObj?.searchText,
+        category: searchObj?.category,
+        startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
+        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
+      };
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_ALL(), httpVerb.PATCH, payload);
     },
     {
       onSuccess: (response) => {
@@ -180,6 +328,38 @@ export const NotificationsProvider = ({ children }) => {
             description: t('notifications.markAllReadSuccess'),
             type: 'success'
           });
+          // Update all notifications to reflect read status
+
+          notificationDrawerOpen &&
+            setDrawerNotifications((prev) =>
+              prev.map((notification) => ({
+                ...notification,
+                readStatus: true
+              }))
+            );
+          setDrawerUnreadCount(0); // Reset drawer unread count
+          setUnreadCount(0); // Reset total unread count
+          isNotificationsPage && setFilteredUnreadCount(0);
+          unreadCountMutation.mutate({
+            searchText: initialSearchState.searchText,
+            category: initialSearchState.notificationCategory,
+            startDate: dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
+            endDate: dayjs().format('YYYY-MM-DD')
+          });
+          isNotificationsPage &&
+            filteredUnreadCountMutation.mutate({
+              searchText: searchState.searchText,
+              category: searchState.notificationCategory,
+              startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+              endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+            });
+          isNotificationsPage &&
+            setNotifications((prev) =>
+              prev.map((notification) => ({
+                ...notification,
+                readStatus: true
+              }))
+            );
         }
       },
       onError: () => {
@@ -200,7 +380,10 @@ export const NotificationsProvider = ({ children }) => {
       onSuccess: (response) => {
         if (response.status === 200) {
           // Update notificaion list to reflect read status
-          setPaginatedNotifications((prev) =>
+          setNotifications((prev) =>
+            prev.map((notification) => (notification.id === selectedNotification.id ? { ...notification, readStatus: true } : notification))
+          );
+          setDrawerNotifications((prev) =>
             prev.map((notification) => (notification.id === selectedNotification.id ? { ...notification, readStatus: true } : notification))
           );
           // Update the selected notification to reflect read status
@@ -208,6 +391,19 @@ export const NotificationsProvider = ({ children }) => {
             ...prev,
             readStatus: true
           }));
+          unreadCountMutation.mutate({
+            searchText: initialSearchState.searchText,
+            category: initialSearchState.notificationCategory,
+            startDate: dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
+            endDate: dayjs().format('YYYY-MM-DD')
+          });
+          isNotificationsPage &&
+            filteredUnreadCountMutation.mutate({
+              searchText: searchState.searchText,
+              category: searchState.notificationCategory,
+              startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+              endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+            });
         }
       },
       onError: () => {
@@ -219,9 +415,23 @@ export const NotificationsProvider = ({ children }) => {
     }
   );
 
-  /* --------------------------------------------------------------------------
-   * Effects
-   * ------------------------------------------------------------------------*/
+  // Mark all notifications as read (calls mutation)
+  const markAllNotificationsAsRead = () => {
+    const searchObj = {
+      searchText: !notificationDrawerOpen ? searchState.searchText : '',
+      category: !notificationDrawerOpen ? searchState.notificationCategory : '',
+      startDate: !notificationDrawerOpen ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'),
+      endDate: !notificationDrawerOpen
+        ? dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+        : dayjs().subtract(90, 'day').format('YYYY-MM-DD')
+    };
+    markAllNotificationsAsReadMutation.mutate(searchObj);
+  };
+
+  // Mark a notification as read by ID (calls mutation)
+  const markNotificationAsReadById = (notificationId) => {
+    markNotificationAsReadMutation.mutate(notificationId);
+  };
 
   // Mark notification as read when selected
   useEffect(() => {
@@ -230,117 +440,41 @@ export const NotificationsProvider = ({ children }) => {
     }
   }, [selectedNotification]);
 
-  // Fetch unread count on mount and every 5 minutes
-  useEffect(() => {
-    unreadCountMutation.mutate();
-    const interval = setInterval(() => {
-      unreadCountMutation.mutate();
-    }, 5 * 60 * 1000); // 5 minutes
-    return () => clearInterval(interval);
-  }, []);
-
-  // Reset page to 1 when filter changes
-  useEffect(() => {
-    setSearchState((prev) => ({
-      ...prev,
-      page: 1
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchState.notificationCategory, searchState.notificationDateRange]);
-
-  // Fetch notifications on mount/filter/page change, poll every 5 min if filter is initial
-  // useEffect(() => {
-  //   notificationsMutation.mutate();
-  //   let interval;
-  //   const isInitialFilter =
-  //     JSON.stringify({
-  //       notificationDateRange: searchState.notificationDateRange,
-  //       notificationCategory: searchState.notificationCategory
-  //     }) ===
-  //     JSON.stringify({
-  //       notificationDateRange: initialSearchState.notificationDateRange,
-  //       notificationCategory: initialSearchState.notificationCategory
-  //     });
-  //   if (isInitialFilter) {
-  //     interval = setInterval(() => {
-  //       notificationsMutation.mutate();
-  //     }, 5 * 60 * 1000); // 5 minutes
-  //   }
-  //   return () => {
-  //     if (interval) clearInterval(interval);
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [searchState.notificationCategory, searchState.notificationDateRange, searchState.page, searchState.pageSize]);
-
-  // Update unread counts when notifications change
-  useEffect(() => {
-    if (paginatedNotifications.length > 0) {
-      setPaginatedUnreadCount(paginatedNotifications.filter((notification) => !notification.readStatus).length);
-      setDrawerUnreadCount(paginatedNotifications.slice(0, 8).filter((notification) => !notification.readStatus).length);
-    } else {
-      setSelectedNotification(null);
-    }
-  }, [paginatedNotifications]);
-
-  /* --------------------------------------------------------------------------
-   * Helper Functions
-   * ------------------------------------------------------------------------*/
-
-  // Mark all notifications as read (calls mutation)
-  const markAllNotificationsAsRead = () => {
-    markAllNotificationsAsReadMutation.mutate();
-  };
-
-  // Mark a notification as read by ID (calls mutation)
-  const markNotificationAsReadById = (notificationId) => {
-    markNotificationAsReadMutation.mutate(notificationId);
-  };
-
-  // Load more notifications (pagination)
-  const loadMoreNotifications = () => {
-    if (searchState.page < searchState.totalPages) {
-      setSearchState((prevState) => ({
-        ...prevState,
-        page: prevState.page + 1
-      }));
-    }
-  };
-
-  // Reset search state to initial
-  const resetSearchState = () => {
-    setSearchState(initialSearchState);
-  };
-
   /* --------------------------------------------------------------------------
    * Provider Value
    * ------------------------------------------------------------------------*/
   return (
     <NotificationsContext.Provider
       value={{
-        // Unread Count
-        unreadCount,
-        drawerUnreadCount,
-        paginatedUnreadCount,
-
-        // Notifications
-        paginatedNotifications,
+        notifications,
+        setNotifications,
+        drawerNotifications,
+        setDrawerNotifications,
         selectedNotification,
         setSelectedNotification,
-        loadMoreNotifications,
+        loadingDrawerNotifications,
+        setLoadingDrawerNotifications,
         loadingNotifications,
+        setLoadingNotifications,
         loadingMoreNotifications,
-
-        // Mark all as read mutation
-        markAllNotificationsAsRead,
-
-        // Drawer
+        setLoadingMoreNotifications,
+        unreadCount,
+        setUnreadCount,
+        drawerUnreadCount,
+        setDrawerUnreadCount,
+        filteredUnreadCount,
+        setFilteredUnreadCount,
         notificationDrawerOpen,
         setNotificationDrawerOpen,
-
-        // Search (merged filter + pagination)
         searchState,
         setSearchState,
         resetSearchState,
+        fetchNotifications,
+        loadMoreNotifications,
+        isNotificationsPage,
+        applyFilters,
+        markAllNotificationsAsRead,
+        markNotificationAsReadById
       }}>
       {children}
     </NotificationsContext.Provider>

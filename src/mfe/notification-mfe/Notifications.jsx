@@ -60,7 +60,7 @@ const Notifications = () => {
   // ==========================
   const windowSize = useWindowSize();
   const { t } = useTranslate();
-  const { paginatedUnreadCount, setSelectedNotification, resetSearchState } = useNotifications();
+  const { isNotificationsPage, fetchNotifications, filteredUnreadCount, setSelectedNotification, resetSearchState } = useNotifications();
 
   // ==========================
   // State
@@ -74,10 +74,8 @@ const Notifications = () => {
   // ==========================
   // Reset selected notification on component unmount
   useEffect(() => {
-    return () => {
-      setSelectedNotification(null);
-    };
-  }, [setSelectedNotification]);
+    isNotificationsPage && fetchNotifications();
+  }, [isNotificationsPage]);
 
   // ==========================
   // Handlers
@@ -89,6 +87,7 @@ const Notifications = () => {
    */
   const onBackTo = () => {
     resetSearchState();
+    setSelectedNotification(null);
     if (!isMobileView) {
       window.history.back();
     } else {
@@ -110,19 +109,23 @@ const Notifications = () => {
             </Button>
           </div>
           {/* Header with Title and Filter */}
-          <div className="notifications-header">
-            <div className="heading">
-              <Heading as="h1" size={'var(--brand-font-size--28, 28px)'}>
-                {t('notifications.title')}
-                {paginatedUnreadCount > 0 && <span className="count"> ({paginatedUnreadCount})</span>}
-              </Heading>
+          {!isDetailView && (
+            <div className="notifications-header">
+              <div className="heading">
+                <Heading as="h1" size={'var(--brand-font-size--28, 28px)'}>
+                  {t('notifications.title')}
+                  {filteredUnreadCount > 0 && <span className="count"> ({filteredUnreadCount})</span>}
+                </Heading>
+              </div>
+              <FilterToolbar isMobileView={isMobileView} />
             </div>
-            <FilterToolbar isMobileView={isMobileView} />
-          </div>
+          )}
           {/* Info Alert */}
-          <div className="notifications-info">
-            <Alert description={t('notifications.info.cleared')} showCloseIcon={false} title="" size="sm" />
-          </div>
+          {!isDetailView && (
+            <div className="notifications-info">
+              <Alert description={t('notifications.info.cleared')} showCloseIcon={false} title="" size="sm" />
+            </div>
+          )}
           {/* Main Content: Responsive Layout */}
           {!isMobileView ? (
             // Desktop/Tablet: List and Detail side by side

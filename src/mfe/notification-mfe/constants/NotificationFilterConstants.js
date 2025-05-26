@@ -6,6 +6,12 @@
  */
 
 // =========================
+// Notification Page Constants
+// =========================
+export const NOTIFICATION_DRAWER_PAGE_SIZE = 8; // Number of notifications per page in the drawer
+export const NOTIFICATION_LIST_PAGE_SIZE = 10; // Number of notifications per page in the list view
+
+// =========================
 // Category Filter Options
 // =========================
 

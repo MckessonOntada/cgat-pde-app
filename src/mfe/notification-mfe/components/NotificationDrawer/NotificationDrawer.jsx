@@ -32,7 +32,7 @@ export const NotificationDrawer = () => {
   const navigate = useNavigate();
 
   // Notification context: unread count, drawer state, and setter
-  const { drawerUnreadCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
+  const { unreadCount, notificationDrawerOpen, setNotificationDrawerOpen, fetchNotifications, isNotificationsPage  } = useNotifications();
 
   /**
    * Closes the notification drawer.
@@ -46,11 +46,11 @@ export const NotificationDrawer = () => {
    */
   const onSeeAllNotifications = useCallback(() => {
     setNotificationDrawerOpen(false);
-    navigate('/notifications');
+    !isNotificationsPage && navigate('/notifications');
   }, [setNotificationDrawerOpen, navigate]);
 
   // Only show the count if it's greater than 0
-  const heading = drawerUnreadCount > 0 ? `${t('notifications.title')} (${drawerUnreadCount})` : t('notifications.title');
+  const heading = unreadCount > 0 ? `${t('notifications.title')} (${unreadCount})` : t('notifications.title');
 
   return (
     <div className={styles.notificationDrawer}>

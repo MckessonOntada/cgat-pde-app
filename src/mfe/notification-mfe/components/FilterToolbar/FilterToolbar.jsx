@@ -47,7 +47,7 @@ const FilterToolbar = ({ isMobileView }) => {
   const formRef = useRef(null);
 
   // Notification context: search state
-  const { searchState, setSearchState } = useNotifications();
+  const { searchState, applyFilters } = useNotifications();
 
   // --- Date Range State Management ---
 
@@ -115,12 +115,12 @@ const FilterToolbar = ({ isMobileView }) => {
       enableReinitialize
       // On form submit, update search state and reset page
       onSubmit={(values) => {
-        setSearchState((prevState) => ({
-          ...prevState,
+        applyFilters({
+          ...searchState,
           notificationDateRange: values.notificationDateRange,
           notificationCategory: values.notificationCategory,
           page: 1 // Reset page on filter change
-        }));
+        });
       }}>
       {({ values, setFieldValue }) => (
         <Form ref={formRef} autoComplete="off" className={styles.filterForm}>
