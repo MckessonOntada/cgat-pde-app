@@ -223,7 +223,7 @@ export const UserManagementEN = {
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'View Organization',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'Allows user to view organization',
 
-  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'Deactivate/Link sp account',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'Deactivate/Link SP account',
   'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'Allow user to manage provider , enable deactivate and link sp account button ',
   'MANAGE_PROVIDERS.VIEW_PROVIDER': 'View Provider',
   'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'Allows user to view provider page',
