@@ -8,31 +8,64 @@ import { serializeParams } from '@src/util/ApiUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 
-// Context and custom hook
+/* ============================================================================
+ * Context and Custom Hook
+ * ========================================================================== */
 const NotificationsContext = createContext();
 export const useNotifications = () => useContext(NotificationsContext);
 
-// Initial state
-const initialFilterState = {
+/* ============================================================================
+ * Initial State
+ * ========================================================================== */
+const initialSearchState = {
   notificationDateRange: [dayjs().subtract(90, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
-  notificationCategory: ''
-};
-
-const initialPaginationState = {
+  notificationCategory: '',
   page: 1,
   pageSize: 10,
   totalElements: 0,
   totalPages: 0
 };
 
+/* ============================================================================
+ * Provider Component
+ * ========================================================================== */
+/**
+ * NotificationsProvider component provides notification-related state and actions
+ * to its children via React Context. It manages fetching, updating, and marking
+ * notifications as read, as well as handling unread counts, pagination and filtering.
+ *
+ * @component
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Child components that will have access to the notifications context.
+ * @returns {JSX.Element} The NotificationsContext.Provider wrapping the children.
+ *
+ * @context
+ * Provides the following values via context:
+ * - unreadCount {number}: Total unread notifications count.
+ * - drawerUnreadCount {number}: Unread notifications count for the drawer.
+ * - paginatedUnreadCount {number}: Unread notifications count in the current page.
+ * - paginatedNotifications {Array}: List of paginated notifications.
+ * - selectedNotification {Object|null}: Currently selected notification.
+ * - setSelectedNotification {Function}: Setter for selected notification.
+ * - loadMoreNotifications {Function}: Loads more notifications (pagination).
+ * - loadingNotifications {boolean}: Loading state for notifications.
+ * - loadingMoreNotifications {boolean}: Loading state for loading more notifications.
+ * - markAllNotificationsAsRead {Function}: Marks all notifications as read.
+ * - notificationDrawerOpen {boolean}: State for notification drawer visibility.
+ * - setNotificationDrawerOpen {Function}: Setter for notification drawer state.
+ * - searchState {Object}: Current search/filter/pagination state.
+ * - setSearchState {Function}: Setter for search state.
+ * - resetSearchState {Function}: Resets search state to initial values.
+ */
 export const NotificationsProvider = ({ children }) => {
-  // State hooks
-
-  // Notifications State Group
+  /* --------------------------------------------------------------------------
+   * State Hooks
+   * ------------------------------------------------------------------------*/
+  // Notifications State
   const [paginatedNotifications, setPaginatedNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-  const [loadingMoreNotifications, setLoadingMoreNotifications] = useState(false); // NEW STATE
+  const [loadingMoreNotifications, setLoadingMoreNotifications] = useState(false);
 
   // Unread Count State
   const [unreadCount, setUnreadCount] = useState(0);
@@ -42,20 +75,20 @@ export const NotificationsProvider = ({ children }) => {
   // Drawer State
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
 
-  // Filter State
-  const [filterState, setFilterState] = useState(initialFilterState);
+  // Search State (merged filter + pagination)
+  const [searchState, setSearchState] = useState(initialSearchState);
 
-  // Pagination State
-  const [paginationState, setPaginationState] = useState(initialPaginationState);
-
-  // Dropdown State
-  const [dropdownOptions, setDropdownOptions] = useState([]);
-
-  // Hooks
+  /* --------------------------------------------------------------------------
+   * Hooks
+   * ------------------------------------------------------------------------*/
   const { showSnackbar } = useSnackbar();
   const { t } = useTranslate();
 
-  // Mutations
+  /* --------------------------------------------------------------------------
+   * Mutations (API Calls)
+   * ------------------------------------------------------------------------*/
+
+  // Fetch unread notifications count
   const unreadCountMutation = useMutation(
     async () => {
       const payload = {
@@ -64,8 +97,7 @@ export const NotificationsProvider = ({ children }) => {
         startDate: '',
         endDate: dayjs().format('YYYY-MM-DD')
       };
-      const response = await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
-      return response;
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
     {
       onSuccess: (response) => (response.status === 200 ? setUnreadCount(response?.data?.unreadCount ?? 0) : setUnreadCount(0)),
@@ -79,47 +111,46 @@ export const NotificationsProvider = ({ children }) => {
     }
   );
 
+  // Fetch paginated notifications
   const notificationsMutation = useMutation(
     async () => {
       // Set loading states
-      if (paginationState.page === initialPaginationState.page) {
+      if (searchState.page === initialSearchState.page) {
         setLoadingNotifications(true);
       } else {
-        setLoadingMoreNotifications(true); // Set loading more when loading next pages
+        setLoadingMoreNotifications(true);
       }
-      const endDateFromFilter = dayjs(filterState.notificationDateRange[1], 'MM/DD/YYYY');
+      const endDateFromFilter = dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY');
       const now = dayjs();
       const effectiveEndDate = endDateFromFilter.isAfter(now) ? endDateFromFilter : now;
 
       const payload = {
         searchText: '',
-        category: filterState.notificationCategory,
-        startDate: dayjs(filterState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        category: searchState.notificationCategory,
+        startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
         endDate: effectiveEndDate.format('YYYY-MM-DD')
       };
       const paramsObj = {
-        pageNo: paginationState.page - 1,
-        pageSize: paginationState.pageSize
+        pageNo: searchState.page - 1,
+        pageSize: searchState.pageSize
       };
-      const response = await HttpResourceService.callRest(`${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`, httpVerb.POST, payload);
-      console.log('response', response);
-      return response;
+      return await HttpResourceService.callRest(`${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`, httpVerb.POST, payload);
     },
     {
       onSuccess: (response) => {
-        if (paginationState.page === initialPaginationState.page) {
+        if (searchState.page === initialSearchState.page) {
           setLoadingNotifications(false);
         } else {
-          setLoadingMoreNotifications(false); // Reset loading more
+          setLoadingMoreNotifications(false);
         }
         if (response.status === 200) {
           const notifications = response.data.response;
           if (notifications.length > 0) {
-            setPaginatedNotifications((prev) => (paginationState.page > 1 ? [...prev, ...notifications] : notifications));
+            setPaginatedNotifications((prev) => (searchState.page > 1 ? [...prev, ...notifications] : notifications));
           } else {
             setPaginatedNotifications([]);
           }
-          setPaginationState((prevState) => ({
+          setSearchState((prevState) => ({
             ...prevState,
             totalElements: response.data.totalRecords,
             totalPages: response.data.totalPageCount
@@ -127,21 +158,20 @@ export const NotificationsProvider = ({ children }) => {
         }
       },
       onError: () => {
-        if (paginationState.page === initialPaginationState.page) {
+        if (searchState.page === initialSearchState.page) {
           setLoadingNotifications(false);
         } else {
-          setLoadingMoreNotifications(false); // Reset loading more
+          setLoadingMoreNotifications(false);
         }
         setPaginatedNotifications([]);
       }
     }
   );
 
-  // Call PATCH API to mark all notifications as read using react-query
+  // Mark all notifications as read
   const markAllNotificationsAsReadMutation = useMutation(
     async () => {
-      const response = await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_MARK_ALL_READ(), httpVerb.PATCH);
-      return response;
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_ALL(), httpVerb.PATCH);
     },
     {
       onSuccess: (response) => {
@@ -161,19 +191,23 @@ export const NotificationsProvider = ({ children }) => {
     }
   );
 
-  // Call PATCH API to mark notification as read by ID using react-query
+  // Mark a single notification as read by ID
   const markNotificationAsReadMutation = useMutation(
     async (notificationId) => {
-      const response = await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_MARK_READ_BY_ID(notificationId), httpVerb.PATCH);
-      return response;
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_BY_ID(notificationId), httpVerb.PATCH);
     },
     {
       onSuccess: (response) => {
         if (response.status === 200) {
-          showSnackbar({
-            description: t('notifications.markReadSuccess'),
-            type: 'success'
-          });
+          // Update notificaion list to reflect read status
+          setPaginatedNotifications((prev) =>
+            prev.map((notification) => (notification.id === selectedNotification.id ? { ...notification, readStatus: true } : notification))
+          );
+          // Update the selected notification to reflect read status
+          setSelectedNotification((prev) => ({
+            ...prev,
+            readStatus: true
+          }));
         }
       },
       onError: () => {
@@ -185,19 +219,18 @@ export const NotificationsProvider = ({ children }) => {
     }
   );
 
-  // Effects
+  /* --------------------------------------------------------------------------
+   * Effects
+   * ------------------------------------------------------------------------*/
 
-  // On set of selected notification
+  // Mark notification as read when selected
   useEffect(() => {
-    if (selectedNotification && selectedNotification.id) {
-      // Mark notification as read when selected
-      if (!selectedNotification.readStatus) {
-        markNotificationAsReadById(selectedNotification.id);
-      }
+    if (selectedNotification && selectedNotification.id && !selectedNotification.readStatus) {
+      markNotificationAsReadById(selectedNotification.id);
     }
   }, [selectedNotification]);
 
-  // Unread count: fetch on mount and every 5 minutes
+  // Fetch unread count on mount and every 5 minutes
   useEffect(() => {
     unreadCountMutation.mutate();
     const interval = setInterval(() => {
@@ -206,16 +239,29 @@ export const NotificationsProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Reset pagination when filter changes
+  // Reset page to 1 when filter changes
   useEffect(() => {
-    setPaginationState(initialPaginationState);
-  }, [filterState]);
+    setSearchState((prev) => ({
+      ...prev,
+      page: 1
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchState.notificationCategory, searchState.notificationDateRange]);
 
-  // Fetch notifications on mount/filter change, poll every 5 min if filter is initial
+  // Fetch notifications on mount/filter/page change, poll every 5 min if filter is initial
   useEffect(() => {
     notificationsMutation.mutate();
     let interval;
-    if (JSON.stringify(filterState) === JSON.stringify(initialFilterState)) {
+    const isInitialFilter =
+      JSON.stringify({
+        notificationDateRange: searchState.notificationDateRange,
+        notificationCategory: searchState.notificationCategory
+      }) ===
+      JSON.stringify({
+        notificationDateRange: initialSearchState.notificationDateRange,
+        notificationCategory: initialSearchState.notificationCategory
+      });
+    if (isInitialFilter) {
       interval = setInterval(() => {
         notificationsMutation.mutate();
       }, 5 * 60 * 1000); // 5 minutes
@@ -223,68 +269,51 @@ export const NotificationsProvider = ({ children }) => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchState.notificationCategory, searchState.notificationDateRange, searchState.page, searchState.pageSize]);
 
-  // Update unread count and dropdown options when notifications change
+  // Update unread counts when notifications change
   useEffect(() => {
     if (paginatedNotifications.length > 0) {
       setPaginatedUnreadCount(paginatedNotifications.filter((notification) => !notification.readStatus).length);
-      setDrawerUnreadCount(paginatedNotifications.slice(0,8).filter((notification) => !notification.readStatus).length);
-      setDropdownOptions(buildDropdownOptions(paginatedNotifications));
+      setDrawerUnreadCount(paginatedNotifications.slice(0, 8).filter((notification) => !notification.readStatus).length);
     } else {
       setSelectedNotification(null);
     }
   }, [paginatedNotifications]);
 
-  // Fetch more notifications when page increases
-  useEffect(() => {
-    if (paginationState.page > 1) {
-      notificationsMutation.mutate();
-    }
-  }, [paginationState.page]);
+  /* --------------------------------------------------------------------------
+   * Helper Functions
+   * ------------------------------------------------------------------------*/
 
-  // Helpers
-  const buildDropdownOptions = (notifications) => {
-    const categoryOptions = Array.from(new Set(notifications.map((n) => n.category))).map((category) => ({
-      label: category,
-      value: category
-    }));
-    return [{ label: 'All', value: '' }, ...categoryOptions];
-  };
-
+  // Mark all notifications as read (calls mutation)
   const markAllNotificationsAsRead = () => {
-    console.log('Marking all notifications as read');
-    // markAllNotificationsAsReadMutation.mutate();
+    markAllNotificationsAsReadMutation.mutate();
   };
 
+  // Mark a notification as read by ID (calls mutation)
   const markNotificationAsReadById = (notificationId) => {
-    console.log('Marking notification as read:', notificationId);
-    // markNotificationAsReadMutation.mutate(notificationId);
+    markNotificationAsReadMutation.mutate(notificationId);
   };
 
+  // Load more notifications (pagination)
   const loadMoreNotifications = () => {
-    if (paginationState.page < paginationState.totalPages) {
-      setPaginationState((prevState) => ({
+    if (searchState.page < searchState.totalPages) {
+      setSearchState((prevState) => ({
         ...prevState,
         page: prevState.page + 1
       }));
     }
   };
 
-  // Reset functions
-  const resetPaginationState = () => {
-    setPaginationState(initialPaginationState);
+  // Reset search state to initial
+  const resetSearchState = () => {
+    setSearchState(initialSearchState);
   };
 
-  const resetFilterState = () => {
-    setFilterState(initialFilterState);
-  };
-
-  const resetDropdownOptions = () => {
-    setDropdownOptions([]);
-  };
-
-  // Provider
+  /* --------------------------------------------------------------------------
+   * Provider Value
+   * ------------------------------------------------------------------------*/
   return (
     <NotificationsContext.Provider
       value={{
@@ -299,7 +328,7 @@ export const NotificationsProvider = ({ children }) => {
         setSelectedNotification,
         loadMoreNotifications,
         loadingNotifications,
-        loadingMoreNotifications, // PROVIDE TO CONTEXT
+        loadingMoreNotifications,
 
         // Mark all as read mutation
         markAllNotificationsAsRead,
@@ -308,12 +337,10 @@ export const NotificationsProvider = ({ children }) => {
         notificationDrawerOpen,
         setNotificationDrawerOpen,
 
-        // Filter
-        filterState,
-        setFilterState,
-
-        // Dropdown
-        dropdownOptions
+        // Search (merged filter + pagination)
+        searchState,
+        setSearchState,
+        resetSearchState,
       }}>
       {children}
     </NotificationsContext.Provider>

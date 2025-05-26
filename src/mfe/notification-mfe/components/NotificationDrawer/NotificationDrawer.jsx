@@ -1,28 +1,53 @@
-// External dependencies
+// ==========================
+// NotificationDrawer Component
+// ==========================
+
+// ----------- External dependencies -----------
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// UI components
+// ----------- UI Components -----------
 import { Button } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import NotificationLister from '../NotificationLister/NotificationLister';
 
-// Hooks and context
+// ----------- Hooks and Context -----------
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNotifications } from '../../context/NotificationsContext';
 
-// Styles
+// ----------- Styles -----------
 import styles from './NotificationDrawer.module.scss';
 
+/**
+ * NotificationDrawer
+ * 
+ * Displays a floating drawer containing a list of notifications.
+ * Allows users to view all notifications and close the drawer.
+ */
 export const NotificationDrawer = () => {
+  // Translation hook for i18n
   const { t } = useTranslate();
-  const navigate = useNavigate();
-  const { drawerUnreadCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
 
+  // React Router navigation
+  const navigate = useNavigate();
+
+  // Notification context: unread count, drawer state, and setter
+  const {
+    drawerUnreadCount,
+    notificationDrawerOpen,
+    setNotificationDrawerOpen
+  } = useNotifications();
+
+  /**
+   * Closes the notification drawer.
+   */
   const handleClose = useCallback(() => {
     setNotificationDrawerOpen(false);
   }, [setNotificationDrawerOpen]);
 
+  /**
+   * Navigates to the notifications page and closes the drawer.
+   */
   const onSeeAllNotifications = useCallback(() => {
     setNotificationDrawerOpen(false);
     navigate('/notifications');
@@ -37,6 +62,7 @@ export const NotificationDrawer = () => {
         heading={`${t('notifications.title')} (${drawerUnreadCount})`}
         controls={
           <div className={styles.controls}>
+            {/* Button to view all notifications */}
             <Button
               label={t('notifications.cta.seeAllNotifications')}
               onClick={onSeeAllNotifications}
@@ -49,6 +75,7 @@ export const NotificationDrawer = () => {
         }
       >
         <div className={styles.notificationDrawerContent}>
+          {/* List of notifications in drawer view */}
           <NotificationLister isDrawerView={true} closeDrawer={handleClose} />
         </div>
       </FloatingDrawer>

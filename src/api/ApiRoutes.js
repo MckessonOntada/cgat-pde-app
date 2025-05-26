@@ -26,6 +26,8 @@ const constructOrderManagementServiceUrl = (uri) => {
 };
 
 const constructNotificationServiceUrl = (uri) => {
+  // constructs the URL for the notification service
+  // using the NOTIFICATION_SERVICE_BASE_URL and the provided URI.
   return `${NOTIFICATION_SERVICE_BASE_URL}${uri}`;
 };
 
@@ -86,9 +88,13 @@ const ApiRoutes = Object.freeze({
   DELETE_MATERIAL_CONFIG: (materialId) => constructUserManagementServicePublicUrl(`therapies/config/${materialId}`),
   RESET_PASSWORD: () => constructUserManagementServiceUrl(`users/current/reset-password`),
   GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-footer`),
+  // Fetch all in-app notifications for the current user
   NOTIFICATIONS: () => constructNotificationServiceUrl(`in-app-notification/fetch`),
+  // Get the count of unread in-app notifications for the current user
   NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl(`in-app-notification/unread/count`),
+  // Mark all in-app notifications as read for the current user
   NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl(`in-app-notification/read/all`),
+  // Mark a specific in-app notification as read by its ID
   NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`)
 });
 

@@ -1,12 +1,24 @@
 @use "../../../../assets/styles/abstracts/mixins" as mixins;
 
+/* ==========================================================================
+   Notification Viewer Container
+   ========================================================================== */
 .notificationViewer {
+  // Layout & Box Model
   width: 100%;
+  min-height: 711px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+
+  // Visual Styles
   background: var(--brand-color-background-white, #fff);
   border-radius: var(--brand-border-radius--8, 8px);
   border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
   padding: 16px;
 
+  // Responsive Padding
   @include mixins.respond(md) {
     padding: 24px;
   }
@@ -14,12 +26,9 @@
     padding: 32px;
   }
 
-  min-height: 711px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-sizing: border-box;
-
+  /* --------------------------------------------------------------------------
+     Header Row: Section & Date
+     -------------------------------------------------------------------------- */
   .notificationViewerHeaderRow {
     display: flex;
     flex-direction: column;
@@ -28,10 +37,12 @@
     margin-bottom: 8px;
     gap: 8px;
 
+    // Responsive: Row on large screens
     @include mixins.respond(lg) {
       flex-direction: row;
     }
 
+    // Section & Date Text Styles
     .notificationViewerSection,
     .notificationViewerDate {
       color: #181818;
@@ -42,21 +53,24 @@
     }
 
     .notificationViewerSection {
-      font-weight: 600;
+      font-weight: 600; // Emphasized section
     }
 
     .notificationViewerDate {
-      font-weight: 400;
+      font-weight: 400; // Regular date
     }
   }
 
+  /* --------------------------------------------------------------------------
+     Title Row: Notification Title
+     -------------------------------------------------------------------------- */
   .notificationViewerTitleRow {
     margin-bottom: 0;
 
     .notificationViewerTitle {
       overflow: hidden;
-      color: var(--text-black, #181818);
       text-overflow: ellipsis;
+      color: var(--text-black, #181818);
       font-family: Nunito;
       font-size: 16px;
       font-style: normal;
@@ -65,6 +79,9 @@
     }
   }
 
+  /* --------------------------------------------------------------------------
+     Description: Notification Body Text
+     -------------------------------------------------------------------------- */
   .notificationViewerDesc {
     color: #3c5c6e;
     font-family: Nunito;
@@ -74,6 +91,9 @@
     line-height: 18px;
   }
 
+  /* --------------------------------------------------------------------------
+     Empty State: No Notification Message
+     -------------------------------------------------------------------------- */
   .notificationViewerEmpty {
     display: flex;
     align-items: center;

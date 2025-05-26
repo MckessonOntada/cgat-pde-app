@@ -1,18 +1,27 @@
 @use "../../../../assets/styles/abstracts/mixins";
 
+/* ==========================================================================
+   Notification Lister Component Styles
+   ========================================================================== */
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
 .notification-lister-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  // height added to ensure the container fills the available space
-  height: 100%;
+  height: 100%; // Ensures the container fills the available space
 
-  // Header
+  /* ------------------------------------------------------------------------
+     Header Section
+     ------------------------------------------------------------------------ */
   .notification-lister-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
+    // Date display in header
     .date-display {
       color: var(--text-dark-slate-body-hover-state, #1e394e);
       font-family: var(--typography-font-family-body, Nunito);
@@ -24,7 +33,9 @@
     }
   }
 
-  // Content
+  /* ------------------------------------------------------------------------
+     Content Section
+     ------------------------------------------------------------------------ */
   .notification-lister-content {
     display: flex;
     flex-direction: column;
@@ -32,6 +43,7 @@
     max-height: 912px;
     overflow-y: auto;
 
+    // Hide scrollbar on mobile devices
     @media (max-width: 767px) {
       scrollbar-width: none; // Firefox
       -ms-overflow-style: none; // IE and Edge
@@ -42,6 +54,7 @@
     }
   }
 
+  // Fixed width for content on medium screens, auto on large screens
   .notification-lister-content--fixed-width {
     @include mixins.respond(md) {
       width: 300px;
@@ -52,7 +65,9 @@
     }
   }
 
-  // Card
+  /* ------------------------------------------------------------------------
+     Notification Card Section
+     ------------------------------------------------------------------------ */
   .notification-list-card {
     display: flex;
     flex-direction: column;
@@ -60,7 +75,7 @@
     padding: 12px;
     cursor: pointer;
 
-    // Title row
+    // Title row: contains title and unread dot
     .notification-title-row {
       display: flex;
       align-items: center;
@@ -68,7 +83,7 @@
       width: 100%;
     }
 
-    // Title
+    // Notification title
     .notification-title {
       color: var(--text-black, #181818);
       flex: 1 1 auto;
@@ -82,7 +97,7 @@
       white-space: nowrap;
     }
 
-    // Unread dot
+    // Unread notification indicator
     .notification-unread-dot {
       background: #007cc1;
       border-radius: 50%;
@@ -93,7 +108,7 @@
       width: 10px;
     }
 
-    // Description
+    // Notification description
     .notification-description {
       color: #3c5c6e;
       font-family: Nunito;
@@ -107,7 +122,7 @@
       white-space: nowrap;
     }
 
-    // Date
+    // Notification date
     .notification-date {
       color: #181818;
       font-family: var(--typography-font-family-body, Nunito);
@@ -120,6 +135,7 @@
     }
   }
 
+  // Active notification card styling
   .notification-list-card.active {
     border-radius: 8px;
     border: 1px solid #007cc1;
