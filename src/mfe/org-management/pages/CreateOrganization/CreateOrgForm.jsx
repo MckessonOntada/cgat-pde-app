@@ -23,7 +23,10 @@ const OrgDetailsFormSegment = ({ formik }) => {
     const allowedMimeTypes = ['image/png', 'image/jpeg'];
 
     if (!allowedMimeTypes.includes(file.type)) {
-      return { isValid: false, message: 'Unsupported file type. Please upload a valid image.' };
+      return {
+        isValid: false,
+        message: 'Unsupported file type. Please upload a valid image.'
+      };
     }
 
     return { isValid: true, message: 'File is valid.' };
@@ -57,7 +60,7 @@ const OrgDetailsFormSegment = ({ formik }) => {
       <Field
         name="file"
         validateOnChange={validateFile}
-        label={t('button.caption.uploadFile')}
+        label={t('button.caption.uploadlogo')}
         component={Components['inputFile']}
         attachmentValue={attachmentValue}
       />
