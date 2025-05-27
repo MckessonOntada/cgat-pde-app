@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
@@ -24,6 +24,11 @@ function App() {
       }
     }
   });
+
+  useEffect(() => {
+    // Print the build tag to the console for debugging purposes
+    console.log('BUILD TAG:', process.env.REACT_APP_RELEASE_BUILD_TAG);
+  }, []);
 
   return (
     <Provider store={store}>
