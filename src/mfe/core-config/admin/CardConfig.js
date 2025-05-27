@@ -24,6 +24,14 @@ const cardList = [
     permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
   },
   {
+    name: 'ManageLinkedAccounts',
+    label: 'manage_linked_accounts',
+    icon: ProviderIcon,
+    details: 'manage_linked_accounts_description',
+    path: AppRoutes.pathManageLinkAccount,
+    permissions: MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS
+  },
+  {
     name: 'ManageApproverGroups',
     label: 'manage_approver_groups',
     icon: ApproverGroupIcon,
@@ -38,14 +46,6 @@ const cardList = [
     details: 'manage_provider_description',
     path: AppRoutes.pathManageProviders,
     permissions: MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
-  },
-  {
-    name: 'ManageLinkedAccounts',
-    label: 'manage_linked_accounts',
-    icon: ProviderIcon,
-    details: 'manage_linked_accounts_description',
-    path: AppRoutes.pathManageLinkAccount,
-    permissions: MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS
   }
 ];
 
