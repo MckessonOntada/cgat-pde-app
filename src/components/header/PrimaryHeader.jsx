@@ -165,7 +165,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
       <MenuList size="md" handleSelect={(e) => handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
           <span>
-            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
+            <EclipsesTextcss str={impersonatedUserName || userName || 'Anonymous'} maxWidth={textMaxWidth} />
           </span>
           <IconArrowDown />
         </div>
@@ -223,7 +223,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
       <ul className={styles.quickLinksMobile} role="navigation" aria-label="Quick access links">
         <li className={styles.linkWrapperMobile}>
           <div aria-label="Account options">
-            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
+            <EclipsesTextcss str={impersonatedUserName|| userName || 'Anonymous'} maxWidth={textMaxWidth} />
             <ul className={styles.quickLinksInner} role="navigation" aria-label="Quick access links">
               {HeaderConfig.profileOptions.map((item, index) => (
                 <li key={`quick-links-item-${index}`}>
