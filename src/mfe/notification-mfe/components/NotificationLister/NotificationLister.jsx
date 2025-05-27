@@ -126,8 +126,6 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     if (isDrawerView) return;
     if (notifications.length < 1) {
       setSelectedNotification(null);
-    } else if (selectedNotification === null) {
-      setSelectedNotification(notifications[0]);
     }
   }, [isDrawerView, notifications, selectedNotification, setSelectedNotification]);
 
