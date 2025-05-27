@@ -223,7 +223,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
       <ul className={styles.quickLinksMobile} role="navigation" aria-label="Quick access links">
         <li className={styles.linkWrapperMobile}>
           <div aria-label="Account options">
-            <EclipsesTextcss str={impersonatedUserName|| userName || 'Anonymous'} maxWidth={textMaxWidth} />
+            <EclipsesTextcss str={impersonatedUserName || userName || 'Anonymous'} maxWidth={textMaxWidth} />
             <ul className={styles.quickLinksInner} role="navigation" aria-label="Quick access links">
               {HeaderConfig.profileOptions.map((item, index) => (
                 <li key={`quick-links-item-${index}`}>
