@@ -546,6 +546,7 @@ export const MessageEn = {
   'label.addSPProducts': 'Add SP Products',
   'label.emptySPCatalogTableDescription': 'You need to add SP Products to see data in this table',
   'controls.uploadCatalog': 'Upload Catalog',
+  'label.uploadCatalog.info': 'For filling up the catalog template, please refer to the instruction file and account/material master',
   'label.uploadCatalogListCSV': 'Upload Catalog List CSV',
   'label.backSpCatalog': 'Back to manage sp catalog page',
   'label.deactivateRecord': 'Deactivate Record',
