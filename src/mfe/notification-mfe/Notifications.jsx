@@ -1,7 +1,7 @@
 // ==========================
 // External Libraries
 // ==========================
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 // ==========================
 // Hooks
@@ -60,14 +60,18 @@ const Notifications = () => {
   // ==========================
   const windowSize = useWindowSize();
   const { t } = useTranslate();
-  const { isNotificationsPage, fetchNotifications, filteredUnreadCount, setSelectedNotification, resetSearchState } = useNotifications();
+  const { 
+    isNotificationsPage, 
+    fetchNotifications, 
+    filteredUnreadCount, 
+    setSelectedNotification, 
+    resetSearchState,
+    isMobileView,
+    isDetailView,
+    setIsDetailView
+  } = useNotifications();
 
-  // ==========================
-  // State
-  // ==========================
-  const isMobileView = windowSize.width < TABLET_BREAKPOINT;
   const elementSize = isMobileView ? 'sm' : 'md';
-  const [isDetailView, setIsDetailView] = useState(false);
 
   // ==========================
   // Effects

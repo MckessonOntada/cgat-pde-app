@@ -23,7 +23,7 @@ import EmptyNotificationView from '../EmptyNotificationsView/EmptyNotificationsV
  *
  * @returns {JSX.Element} The rendered NotificationLister component.
  */
-const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, setIsDetailView }) => {
+const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
   // =========================
   // Hooks & Context
   // =========================
@@ -43,7 +43,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     loadingNotifications,
     loadingMoreNotifications,
     filteredUnreadCount,
-    unreadCount
+    unreadCount,
+    isMobileView, setIsDetailView
   } = useNotifications();
 
   // =========================
@@ -120,16 +121,6 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
   // =========================
   // Effects
   // =========================
-
-  // Set default selected notification when not in drawer view
-  useEffect(() => {
-    if (isDrawerView) return;
-    if (notifications.length < 1) {
-      setSelectedNotification(null);
-    } else if (selectedNotification === null) {
-      setSelectedNotification(notifications[0]);
-    }
-  }, [isDrawerView, notifications, selectedNotification, setSelectedNotification]);
 
   // Infinite scroll: load more notifications when scrolled to bottom
   useEffect(() => {
