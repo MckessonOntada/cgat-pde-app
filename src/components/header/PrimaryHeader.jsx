@@ -40,7 +40,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const impersonatedByUser = AuthUtils.getImpersonatedByUser();
   const impersonatedUserName = getFullName(impersonatedByUser?.name);
 
-  const { unreadCount: notificationsCount } = useNotifications();
+  const { unreadCount: notificationsCount } = useNotifications() || { unreadCount: 0 };
 
   useEffect(() => {
     const handleResize = () => {
