@@ -5,7 +5,7 @@ import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import HttpResourceService, { authToken, httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -29,7 +29,7 @@ export const AccountDetailsConstants = [
   }
 ];
 
-function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccount }) {
+function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccount, isLinkedAccount }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
@@ -40,7 +40,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
     setOpenDetails((state) => !state);
   };
 
-  const practiceId = selectedOrganization?.id;
+  const practiceId = !isLinkedAccount ? selectedOrganization?.id : AuthUtils.getPracticeId();
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: ['Account', viewAccount?.id],
     queryFn: async () => {
@@ -124,7 +124,12 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageAccount.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
-                      <div onClick={() => navigate(PREVIEW_URL, { state: { isAccount: true, questionnaire: data?.questionnaireList } })}>
+                      <div
+                        onClick={() =>
+                          navigate(isLinkedAccount ? '../../../admin/linked-accounts/questionnaire' : PREVIEW_URL, {
+                            state: { isAccount: true, questionnaire: data?.questionnaireList }
+                          })
+                        }>
                         {t('ManageCatalog.Preview')}
                       </div>
                     </div>
@@ -134,7 +139,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                       return (
                         <div key={item.templateName} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          {!isCustomerCenter && (
+                          {!isCustomerCenter && !isLinkedAccount && (
                             <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
                               <DeleteIcon />
                             </div>

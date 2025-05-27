@@ -181,10 +181,11 @@ export const getColumns = (add) => {
   };
 
   const handleOnMenuClick = (props) => (value) => {
+    const name = CommonUtils.getFullName(props?.name);
     if (value === 'edit') {
       navigate(`${props.id}/edit`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-accounts?accounts=${props.id}`);
+      navigate(`link-sp-accounts?accounts=${props.id}&name=${name}`);
     } else if (value === 'activate' || value === 'deactivate') {
       confirmDeactivation(props, value);
     }

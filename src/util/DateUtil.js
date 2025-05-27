@@ -59,3 +59,50 @@ export const DateUtils = Object.freeze({
   isValidDate,
   formatDate
 });
+
+
+// Helper to calculate "time ago"
+export const getTimeAgo = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+  const secondsInMinute = 60;
+  const secondsInHour = 3600;
+  const secondsInDay = 86400;
+  const secondsInWeek = 604800;
+  const secondsInMonth = 2629800; // average month (30.44 days)
+  const secondsInYear = 31557600; // average year (365.25 days)
+
+  if (diffInSeconds < secondsInMinute) return `${diffInSeconds} seconds ago`;
+  if (diffInSeconds < secondsInHour) return `${Math.floor(diffInSeconds / secondsInMinute)} minutes ago`;
+  if (diffInSeconds < secondsInDay) return `${Math.floor(diffInSeconds / secondsInHour)} hours ago`;
+
+  // Check if it's yesterday
+  const yesterday = new Date(now);
+  yesterday.setHours(0, 0, 0, 0);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const dateCopy = new Date(date);
+  dateCopy.setHours(0, 0, 0, 0);
+
+  if (dateCopy.getTime() === yesterday.getTime()) return 'yesterday';
+
+  if (diffInSeconds < secondsInWeek) {
+    const days = Math.floor(diffInSeconds / secondsInDay);
+    return days === 1 ? '1 day ago' : `${days} days ago`;
+  }
+
+  if (diffInSeconds < secondsInMonth) {
+    const weeks = Math.floor(diffInSeconds / secondsInWeek);
+    return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+  }
+
+  if (diffInSeconds < secondsInYear) {
+    const months = Math.floor(diffInSeconds / secondsInMonth);
+    return months === 1 ? '1 month ago' : `${months} months ago`;
+  }
+
+  const years = Math.floor(diffInSeconds / secondsInYear);
+  return years === 1 ? '1 year ago' : `${years} years ago`;
+};

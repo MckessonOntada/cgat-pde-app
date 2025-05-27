@@ -1,0 +1,68 @@
+@use "../../assets/styles/abstracts/mixins";
+
+// ==================
+// Notifications Container
+// ==================
+.notifications-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  // Top Navigation
+  .top-nav {
+    display: flex;
+    width: 100%;
+  }
+
+  // ==================
+  // Notifications Header
+  // ==================
+  .notifications-header {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: space-between;
+    width: 100%;
+
+    @include mixins.respond(lg) {
+      flex-direction: row;
+    }
+
+    .heading {
+      display: flex;
+      width: 100%;
+    }
+  }
+
+  // ==================
+  // Notifications Info
+  // ==================
+  .notifications-info {
+    // display: flex;
+    width: 100%;
+  }
+
+  // ==================
+  // Notifications Content
+  // ==================
+  .notifications-content {
+    display: flex;
+    gap: 12px;
+    max-height: 912px;
+    width: 100%;
+
+    .notifications-list {
+      // display: flex;
+      max-height: 912px;
+      width: 412px;
+    }
+
+    .notification-detail {
+      display: flex;
+      max-height: 912px;
+      width: 100%;
+    }
+  }
+}

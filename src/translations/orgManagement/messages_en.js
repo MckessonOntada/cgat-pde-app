@@ -163,5 +163,6 @@ export const OrgManagementEN = {
   'errors.default': 'An unexpected error occurred.',
 
   'orgManagement.filters.status.label': 'Select by name & location',
-  'button.caption.uploadFile': 'Upload File'
+  'button.caption.uploadFile': 'Upload File',
+  'button.caption.uploadlogo': 'Upload Logo'
 };

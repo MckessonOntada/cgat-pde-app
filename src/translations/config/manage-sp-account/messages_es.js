@@ -238,7 +238,7 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.table.error.providers.listing':
     'S_You need to add providers to see data in this table',
   'manageSPAccount.providers.search.placeholder':
-    'S_Search by Provider Name, NPI Number, DEA Number, Address',
+    'S_Search by Provider Name, NPI, DEA, Address',
   'manageSPAccount.providers.column.unlink': 'S_UNLINK',
   'manageSPAccount.providers.details': 'S_Provider Details',
   'manageSPAccount.providers.selectedProviders': 'S_Selected Providers',
@@ -257,5 +257,10 @@ export const ManageSPAccountMessagesES = {
     'S_Failed to open provider details. Please try again.',
   'manageSPAccount.success.message.addProvider':
     'S_Provider(s) has been linked successfully.',
-  'manageSPAccount.providers.noData': 'S_No Providers found'
+  'manageSPAccount.providers.noData': 'S_No Providers found',
+  'manageSPAccount.channelType.buynbill': 'S_Buy and Bill',
+  'manageSPAccount.channelType.specialtyPharma': 'S_SP',
+
+  'manageLinkedAccounts.backToLinkedAccountdetails':
+    'S_Back to Linked account details page'
 };

@@ -4,10 +4,10 @@ import SecondaryHeader from './SecondaryHeader';
 import { debugIds, ID } from '../../constants/id';
 import HeaderConfig from './constants';
 
-const GlobalHeader = () => {
+const GlobalHeader = ({ onNotificationClick }) => {
   return (
     <header id={debugIds(ID.HEADER, ID.CONTAINER)}>
-      <PrimaryHeader />
+      <PrimaryHeader onNotificationClick={onNotificationClick} />
       <SecondaryHeader navLinks={HeaderConfig.navLinks} />
     </header>
   );

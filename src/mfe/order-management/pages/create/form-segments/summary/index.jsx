@@ -935,16 +935,23 @@ const Summary = () => {
                         spOrder ? (
                           '-'
                         ) : (
-                          <span className="dollarSign">
-                            <span>$</span>
-                            {catalog?.netPrice ||
-                            simulationData?.updatedCatalogNetPrice
-                              ? CommonUtils.formatNumberWithoutSymbol(
-                                  simulationData.updatedCatalogNetPrice ||
-                                    catalog.netPrice
-                                )
-                              : '-'}
-                          </span>
+                          <Tooltip body={(catalog?.netPrice || simulationData?.updatedCatalogNetPrice)
+                              ? `$${CommonUtils.formatNumberWithoutSymbol(
+                                  simulationData?.updatedCatalogNetPrice || catalog?.netPrice
+                                )}`
+                              : '-'
+                          }>
+                            <span className="dollarSign">
+                              <span>$</span>
+                              {catalog?.netPrice ||
+                              simulationData?.updatedCatalogNetPrice
+                                ? CommonUtils.formatNumberWithoutSymbol(
+                                    simulationData.updatedCatalogNetPrice ||
+                                      catalog.netPrice
+                                  )
+                                : '-'}
+                            </span>
+                          </Tooltip>
                         )
                       }
                     />
@@ -1279,7 +1286,7 @@ const Summary = () => {
                 />
                 <DetailSegment
                   label={t('labels.orderQuantity')}
-                  value={additionalDetails?.orderQuantity || '-'}
+                  value={String(additionalDetails?.orderQuantity) || '-'}
                 />
               </div>
             </div>
@@ -1419,10 +1426,12 @@ const Summary = () => {
                                 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
                               }>
                               <div className="MCP-module-body">
-                                <DetailSegment
-                                  label={'Comment'}
-                                  value={documentSegment.comment}
-                                />
+                                {documentSegment.comment && (
+                                  <DetailSegment
+                                    label={'Comment'}
+                                    value={documentSegment.comment}
+                                  />
+                                )}
                                 <div>
                                   <DetailSegment
                                     direction="row"

@@ -12,11 +12,13 @@ export default function DetailSegment({ label, tooltip, value, className, custom
       <div className={`fieldValue ${customValueStyles ? customValueStyles : ``}`}>
         <div className="overflowing">
           {noTooltip ? (
-            value
+            <div className="overflowing">{value}</div>
           ) : typeof calculatedTooltip === 'string' ? (
-            <Tooltip body={typeof calculatedTooltip === 'string' && calculatedTooltip}>{typeof value === 'string' ? <div>{value}</div> : value}</Tooltip>
+            <Tooltip body={typeof calculatedTooltip === 'string' && calculatedTooltip}>
+              {typeof value === 'string' ? <div className="overflowing">{value}</div> : <div className="overflowing">{value}</div>}
+            </Tooltip>
           ) : (
-            value
+            <div className="overflowing">{value}</div>
           )}
         </div>
       </div>

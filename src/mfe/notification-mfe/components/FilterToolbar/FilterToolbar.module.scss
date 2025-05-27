@@ -1,0 +1,66 @@
+// -----------------------------------------------------------------------------
+// Imports
+// -----------------------------------------------------------------------------
+@use "../../../../assets/styles/abstracts/mixins";
+
+// -----------------------------------------------------------------------------
+// Root Form Container
+// -----------------------------------------------------------------------------
+.filterForm {
+  width: 100%;
+
+  // ---------------------------------------------------------------------------
+  // Filter Toolbar Layout
+  // ---------------------------------------------------------------------------
+  .filterToolbar {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    gap: 16px;
+    flex-direction: column;
+
+    // Responsive: Switch to row layout on small screens and up
+    @include mixins.respond(sm) {
+      flex-direction: row;
+      justify-content: end;
+    }
+
+    // -------------------------------------------------------------------------
+    // Date Filter Section
+    // -------------------------------------------------------------------------
+    .dateFilter {
+      width: 100%;
+
+      // Responsive: Auto width on small screens and up
+      @include mixins.respond(sm) {
+        width: auto;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Dropdown Filter Section
+    // -------------------------------------------------------------------------
+    .dropdownFilter {
+      margin-bottom: 2px;
+      width: 100%;
+
+      // Responsive: Fixed width on small screens and up
+      @include mixins.respond(sm) {
+        width: 200px;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Call-to-Action (CTA) Button Section
+    // -------------------------------------------------------------------------
+    .filterCta {
+      margin-bottom: 8px;
+      width: 100%;
+
+      // Responsive: Auto width on small screens and up
+      @include mixins.respond(sm) {
+        width: auto;
+      }
+    }
+  }
+}
