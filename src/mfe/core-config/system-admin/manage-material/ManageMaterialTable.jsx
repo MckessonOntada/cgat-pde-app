@@ -5,16 +5,30 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
-import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
-import CommonUtils from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+
+function flattenMaterials(data) {
+  if (!data && !Array.isArray(data)) {
+    throw new Error('Invalid data provided to flattenMaterials function');
+  }
+
+  return data.reduce((acc, item) => {
+    if (item.materials && Array.isArray(item.materials) && item.materials.length > 0) {
+      item.materials.forEach((material) => {
+        acc.push(material);
+      });
+    }
+    return acc;
+  }, []);
+}
 
 function ManageMaterialTable({ ...props }) {
   const { t } = useTranslate();
@@ -26,21 +40,50 @@ function ManageMaterialTable({ ...props }) {
   const [configureError, setConfigureError] = React.useState(false);
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-
-  const columns = [
+  const [expandedRows, setExpandedRows] = React.useState([]);
+  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  };
+  console.log(data);
+  const getColumns = () => [
     {
       id: 'checkbox',
       name: renderTableCheckBox(
         { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
+        flattenMaterials(data),
         'materialNumber',
-        paginationConfig,
+        {
+          ...paginationConfig,
+          totalElements: data.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
+        },
         selectedMaterials,
         setSelectedMaterials
       ),
-      // sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'materialNumber', paginationConfig, selectedMaterials, setSelectedMaterials),
-      selector: (row) => row['Material Number'],
+      cell: (row, index) => {
+        if (row.isExpandable && row.materials.length > 1) {
+          const expanded = isRowExpanded?.(row);
+          return (
+            <div className="expand-icon-wrapper" onClick={() => onExpandToggle?.(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+              <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+                <ArrowAngleRight />
+              </div>
+            </div>
+          );
+        }
+        return renderTableCheckBox(
+          row,
+          flattenMaterials(data),
+          'materialNumber',
+          {
+            ...paginationConfig,
+            totalElements: data.reduce((item, acc) => acc + (item.materials ? item.materials.length : 1), 0)
+          },
+          selectedMaterials,
+          setSelectedMaterials
+        );
+      },
+      selector: (row) => row['materialNumber'],
       width: '50px',
       showInMobileHeader: true,
       omit: isCustomerCenter
@@ -51,26 +94,25 @@ function ManageMaterialTable({ ...props }) {
       selector: (row) => row.materialNumber,
       wrap: true,
       minWidth: '220px',
-      cell: (props) => (
+      cell: (row) => {
+        let displayCaption = '-';
+        if (row.isExpandable) {
+          displayCaption = row.materials.map((child) => child.materialDescription).join(', ');
+        } else {
+          displayCaption = row.materialDescription;
+        }
+
         <div className="cellEllipse">
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            className="MCP-table-link"
             onClick={() => {
               setOpenDetails(!openDetails);
               setMaterialNumber(props?.materialNumber);
             }}>
-            {props?.materialNumber || '-'}
+            {displayCaption}
           </Link>
-        </div>
-      )
-    },
-    {
-      name: t('manageMaterial.table.materialDescription'),
-      id: 'materialDescription',
-      selector: (row) => row.materialDescription,
-      wrap: true,
-      minWidth: '220px',
-      cell: (props) => <div className="cellEllipse">{props?.materialDescription || '-'}</div>
+        </div>;
+      }
     },
     {
       name: t('manageMaterial.table.nationalDrugCode'),
@@ -78,7 +120,16 @@ function ManageMaterialTable({ ...props }) {
       selector: (row) => row.ndcNumber,
       wrap: true,
       minWidth: '214px',
-      cell: (props) => <div className="cellEllipse">{props?.ndcNumber || '-'}</div>
+      cell: (row) => {
+        let displayCaption = '-';
+        if (row.isExpandable) {
+          displayCaption = row.materials.map((child) => child.ndcNumber).join(', ');
+        } else {
+          displayCaption = row.ndcNumber;
+        }
+
+        return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{displayCaption}</span>;
+      }
     },
     {
       name: t('manageMaterial.table.strength'),
@@ -93,12 +144,41 @@ function ManageMaterialTable({ ...props }) {
       selector: (row) => row.dosage,
       wrap: true,
       maxWidth: '140px',
-      cell: (props) => <div className="cellEllipse">{props?.dosage || '-'}</div>
+      cell: (row) => {
+        let displayCaption = '-';
+        if (!row.isExpandable) {
+          displayCaption = row.dosage;
+        }
+        return <span aria-label={t('table.columns.captions.dosage')}>{displayCaption}</span>;
+      }
     }
   ];
 
+  const columns = getColumns();
+
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
+  };
+
+  const ExpandedComponent = ({ data }) => {
+    const expandedData = data.materials || [];
+    const expandedColumns = getColumns();
+
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={expandedColumns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
   };
 
   return (
@@ -142,6 +222,10 @@ function ManageMaterialTable({ ...props }) {
         responsive={true}
         showCardView={showCardView}
         defaultExpandedCardView={true}
+        expandableRows
+        expandableRowExpanded={isRowExpanded}
+        expandableRowsComponent={ExpandedComponent}
+        expandableRowsHideExpander={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
