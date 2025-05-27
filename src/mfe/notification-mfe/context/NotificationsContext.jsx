@@ -8,15 +8,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
-import { NOTIFICATION_DRAWER_PAGE_SIZE as CONST_DRAWER_PAGE_SIZE } from '../constants/NotificationFilterConstants';
-
-/* --------------------------------------------------------------------------
- * Constants
- * ------------------------------------------------------------------------*/
-// Page size and fetch interval from environment or fallback
-const NOTIFICATION_PAGE_SIZE = parseInt(process.env.REACT_APP_NOTIFICATION_PAGE_SIZE, 10) || 10;
-const NOTIFICATION_DRAWER_PAGE_SIZE = parseInt(process.env.REACT_APP_NOTIFICATION_DRAWER_PAGE_SIZE, 10) || 8;
-const NOTIFICATION_FETCH_TIME_IN_MINS = parseInt(process.env.REACT_APP_NOTIFICATION_FETCH_TIME_IN_MINS, 10) || 5;
+import { NOTIFICATION_PAGE_SIZE, NOTIFICATION_DRAWER_PAGE_SIZE, NOTIFICATION_FETCH_TIME_IN_MINS } from '../constants/NotificationFilterConstants';
 
 /* --------------------------------------------------------------------------
  * Context Setup
@@ -29,10 +21,7 @@ export const useNotifications = () => useContext(NotificationsContext);
  * ------------------------------------------------------------------------*/
 const initialSearchState = {
   searchText: '',
-  notificationDateRange: [
-    dayjs().subtract(90, 'day').format('MM/DD/YYYY'),
-    dayjs().format('MM/DD/YYYY')
-  ],
+  notificationDateRange: [dayjs().subtract(90, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
   notificationCategory: '',
   page: 1,
   pageSize: NOTIFICATION_PAGE_SIZE,
@@ -88,10 +77,7 @@ export const NotificationsProvider = ({ children }) => {
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
     {
-      onSuccess: (response) =>
-        response.status === 200
-          ? setUnreadCount(response?.data?.unreadCount ?? 0)
-          : setUnreadCount(0),
+      onSuccess: (response) => (response.status === 200 ? setUnreadCount(response?.data?.unreadCount ?? 0) : setUnreadCount(0)),
       onError: () => {
         setUnreadCount(0);
         showSnackbar({ description: t('notifications.error'), type: 'error' });
@@ -111,10 +97,7 @@ export const NotificationsProvider = ({ children }) => {
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
     {
-      onSuccess: (response) =>
-        response.status === 200
-          ? setFilteredUnreadCount(response?.data?.unreadCount ?? 0)
-          : setFilteredUnreadCount(0),
+      onSuccess: (response) => (response.status === 200 ? setFilteredUnreadCount(response?.data?.unreadCount ?? 0) : setFilteredUnreadCount(0)),
       onError: () => {
         setFilteredUnreadCount(0);
         showSnackbar({ description: t('notifications.error'), type: 'error' });
@@ -136,11 +119,7 @@ export const NotificationsProvider = ({ children }) => {
         pageNo: searchObj?.page - 1,
         pageSize: searchObj?.pageSize
       };
-      return await HttpResourceService.callRest(
-        `${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`,
-        httpVerb.POST,
-        payload
-      );
+      return await HttpResourceService.callRest(`${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`, httpVerb.POST, payload);
     },
     {
       onSuccess: (response) => {
@@ -158,8 +137,7 @@ export const NotificationsProvider = ({ children }) => {
           setLoadingDrawerNotifications(false);
           setDrawerNotifications([]);
           setDrawerUnreadCount(0);
-          error &&
-            showSnackbar({ description: t('notifications.error'), type: 'error' });
+          error && showSnackbar({ description: t('notifications.error'), type: 'error' });
         }
       }
     }
@@ -181,11 +159,7 @@ export const NotificationsProvider = ({ children }) => {
         pageNo: searchObj.page - 1,
         pageSize: searchObj.pageSize
       };
-      return await HttpResourceService.callRest(
-        `${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`,
-        httpVerb.POST,
-        payload
-      );
+      return await HttpResourceService.callRest(`${ApiRoutes.NOTIFICATIONS()}?${serializeParams(paramsObj)}`, httpVerb.POST, payload);
     },
     {
       onSuccess: (response) => {
@@ -195,9 +169,7 @@ export const NotificationsProvider = ({ children }) => {
         if (response.status === 200) {
           const notifications = response.data.response;
           if (notifications.length > 0) {
-            setNotifications((prev) =>
-              searchState.page > 1 ? [...prev, ...notifications] : notifications
-            );
+            setNotifications((prev) => (searchState.page > 1 ? [...prev, ...notifications] : notifications));
           } else {
             setNotifications([]);
           }
@@ -206,6 +178,15 @@ export const NotificationsProvider = ({ children }) => {
             totalElements: response.data.totalRecords,
             totalPages: response.data.totalPageCount
           }));
+          const isInitialFilterState =
+            searchState.searchText === initialSearchState.searchText &&
+            searchState.notificationCategory === initialSearchState.notificationCategory &&
+            JSON.stringify(searchState.notificationDateRange) === JSON.stringify(initialSearchState.notificationDateRange);
+
+          if (isNotificationsPage && !selectedNotification && notifications.length > 0 && isInitialFilterState && !loadingNotifications) {
+            // Set the first notification as selected if none is selected
+            setSelectedNotification(notifications[0]);
+          }
         }
       },
       onError: (error) => {
@@ -214,8 +195,7 @@ export const NotificationsProvider = ({ children }) => {
 
         setNotifications([]);
         setSelectedNotification(null);
-        error &&
-          showSnackbar({ description: t('notifications.error'), type: 'error' });
+        error && showSnackbar({ description: t('notifications.error'), type: 'error' });
       }
     }
   );
@@ -229,11 +209,7 @@ export const NotificationsProvider = ({ children }) => {
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
         endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
       };
-      return await HttpResourceService.callRest(
-        ApiRoutes.NOTIFICATIONS_READ_ALL(),
-        httpVerb.PATCH,
-        payload
-      );
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_ALL(), httpVerb.PATCH, payload);
     },
     {
       onSuccess: (response) => {
@@ -241,10 +217,7 @@ export const NotificationsProvider = ({ children }) => {
           showSnackbar({ description: t('notifications.markAllReadSuccess'), type: 'success' });
 
           // Update all notifications to reflect read status
-          notificationDrawerOpen &&
-            setDrawerNotifications((prev) =>
-              prev.map((notification) => ({ ...notification, readStatus: true }))
-            );
+          notificationDrawerOpen && setDrawerNotifications((prev) => prev.map((notification) => ({ ...notification, readStatus: true })));
           setDrawerUnreadCount(0);
           setUnreadCount(0);
           isNotificationsPage && setFilteredUnreadCount(0);
@@ -263,10 +236,7 @@ export const NotificationsProvider = ({ children }) => {
               startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
               endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
             });
-          isNotificationsPage &&
-            setNotifications((prev) =>
-              prev.map((notification) => ({ ...notification, readStatus: true }))
-            );
+          isNotificationsPage && setNotifications((prev) => prev.map((notification) => ({ ...notification, readStatus: true })));
         }
       },
       onError: () => {
@@ -278,27 +248,16 @@ export const NotificationsProvider = ({ children }) => {
   // 6. Mark a single notification as read by ID
   const markNotificationAsReadMutation = useMutation(
     async (notificationId) => {
-      return await HttpResourceService.callRest(
-        ApiRoutes.NOTIFICATIONS_READ_BY_ID(notificationId),
-        httpVerb.PATCH
-      );
+      return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_BY_ID(notificationId), httpVerb.PATCH);
     },
     {
       onSuccess: (response) => {
         if (response.status === 200) {
           setNotifications((prev) =>
-            prev.map((notification) =>
-              notification.id === selectedNotification.id
-                ? { ...notification, readStatus: true }
-                : notification
-            )
+            prev.map((notification) => (notification.id === selectedNotification.id ? { ...notification, readStatus: true } : notification))
           );
           setDrawerNotifications((prev) =>
-            prev.map((notification) =>
-              notification.id === selectedNotification.id
-                ? { ...notification, readStatus: true }
-                : notification
-            )
+            prev.map((notification) => (notification.id === selectedNotification.id ? { ...notification, readStatus: true } : notification))
           );
           setSelectedNotification((prev) => ({
             ...prev,
@@ -399,6 +358,19 @@ export const NotificationsProvider = ({ children }) => {
     }
   }, [isNotificationsPage]);
 
+  // useEffect(() => {
+  //   // Compare only searchText, notificationDateRange, and notificationCategory
+  //   const isInitialFilterState =
+  //     searchState.searchText === initialSearchState.searchText &&
+  //     searchState.notificationCategory === initialSearchState.notificationCategory &&
+  //     JSON.stringify(searchState.notificationDateRange) === JSON.stringify(initialSearchState.notificationDateRange);
+
+  //   if (isNotificationsPage && !selectedNotification && notifications.length > 0 && isInitialFilterState && !loadingNotifications) {
+  //     // Set the first notification as selected if none is selected
+  //     setSelectedNotification(notifications[0]);
+  //   }
+  // }, [selectedNotification, isNotificationsPage, notifications, searchState]);
+
   // Mark notification as read when selected
   useEffect(() => {
     if (selectedNotification && selectedNotification.id && !selectedNotification.readStatus) {
@@ -454,9 +426,7 @@ export const NotificationsProvider = ({ children }) => {
     const searchObj = {
       searchText: !notificationDrawerOpen ? searchState.searchText : '',
       category: !notificationDrawerOpen ? searchState.notificationCategory : '',
-      startDate: !notificationDrawerOpen
-        ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD')
-        : dayjs().format('YYYY-MM-DD'),
+      startDate: !notificationDrawerOpen ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'),
       endDate: !notificationDrawerOpen
         ? dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
         : dayjs().subtract(90, 'day').format('YYYY-MM-DD')
@@ -504,7 +474,8 @@ export const NotificationsProvider = ({ children }) => {
         applyFilters,
         markAllNotificationsAsRead,
         markNotificationAsReadById
-      }}>
+      }}
+    >
       {children}
     </NotificationsContext.Provider>
   );

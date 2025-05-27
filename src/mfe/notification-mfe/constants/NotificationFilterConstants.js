@@ -8,8 +8,9 @@
 // =========================
 // Notification Page Constants
 // =========================
-export const NOTIFICATION_DRAWER_PAGE_SIZE = 8; // Number of notifications per page in the drawer
-export const NOTIFICATION_LIST_PAGE_SIZE = 10; // Number of notifications per page in the list view
+export const NOTIFICATION_PAGE_SIZE = parseInt(process.env.REACT_APP_NOTIFICATION_PAGE_SIZE, 10) || 10;
+export const NOTIFICATION_DRAWER_PAGE_SIZE = parseInt(process.env.REACT_APP_NOTIFICATION_DRAWER_PAGE_SIZE, 10) || 8;
+export const NOTIFICATION_FETCH_TIME_IN_MINS = parseInt(process.env.REACT_APP_NOTIFICATION_FETCH_TIME_IN_MINS, 10) || 5;
 
 // =========================
 // Category Filter Options
@@ -21,9 +22,9 @@ export const NOTIFICATION_LIST_PAGE_SIZE = 10; // Number of notifications per pa
  */
 export const NOTIFICATION_CATEGORIES_LIST = [
   { label: 'All', value: '' },
-  { label: 'On Behalf', value: 'On Behalf' },
+  { label: 'User Management', value: 'User Management' },
   { label: 'Order Approval', value: 'Order Approval' },
-  { label: 'User Management', value: 'User Management' }
+  { label: 'On Behalf', value: 'On Behalf' }
 ];
 
 // =========================

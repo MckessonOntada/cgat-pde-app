@@ -121,14 +121,6 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
   // Effects
   // =========================
 
-  // Set default selected notification when not in drawer view
-  useEffect(() => {
-    if (isDrawerView) return;
-    if (notifications.length < 1) {
-      setSelectedNotification(null);
-    }
-  }, [isDrawerView, notifications, selectedNotification, setSelectedNotification]);
-
   // Infinite scroll: load more notifications when scrolled to bottom
   useEffect(() => {
     if (isDrawerView) return;
