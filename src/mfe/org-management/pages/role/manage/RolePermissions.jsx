@@ -172,31 +172,18 @@ const RolePermissions = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleGoBack}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
           {t('orgManagement.role.captionsBtnBackToManageRoles')}
         </Button>
       </div>
 
-      <ModuleHeader
-        heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />}
-      />
+      <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
       {/* {messageConfig.messageKind && messageConfig.primaryMessage && <Alert onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.messageKind} />} */}
-      {isAlertVisible && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          description={alert.description}
-        />
-      )}
+      {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
         {/* {!isEdit && (
-          <Stepper
+          <StepperMui
             activeIndex={2}
             dividerText="of"
             mobileLabel={t('orgManagement.role.labelStep')}
@@ -227,11 +214,7 @@ const RolePermissions = () => {
                   />
 
                   <div className={'buttonGroup'}>
-                    <Button
-                      variant="secondary"
-                      type="button"
-                      onClick={handleOnCancelButtonClick}
-                      size={'md'}>
+                    <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
                       {t('orgManagement.button.cancel')}
                     </Button>
                     <Button variant="primary" type="submit" size={'md'}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stepper, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
+import { StepperMui, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
@@ -109,7 +109,7 @@ const UserPermissions = () => {
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={2}
             dividerText="of"
             stepHeaders={[
