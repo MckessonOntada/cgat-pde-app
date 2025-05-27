@@ -132,7 +132,7 @@ export default function ViewOrganization() {
   };
   return (
     <div className="viewOrg-container">
-      {isLoading || isAddingAccounts && <Loader type={'screen'} />}
+      {isLoading || (isAddingAccounts && <Loader type={'screen'} />)}
 
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
@@ -140,16 +140,11 @@ export default function ViewOrganization() {
         </Button>
       </div>
 
-      {!addNewAccounts && (
-        <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} style={{ marginBottom: '16px' }} />
-      )}
+      {!addNewAccounts && <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} style={{ marginBottom: '16px' }} />}
 
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
-          <DetailsView
-            data={data}
-            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
-          />
+          <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)} />
         </div>
       )}
       <ModuleHeader
