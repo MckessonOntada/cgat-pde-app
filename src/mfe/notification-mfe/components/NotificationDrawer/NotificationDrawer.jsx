@@ -32,7 +32,7 @@ export const NotificationDrawer = () => {
   const navigate = useNavigate();
 
   // Notification context: unread count, drawer state, and setter
-  const { unreadCount, notificationDrawerOpen, setNotificationDrawerOpen, isNotificationsPage } = useNotifications();
+  const { unreadCount, notificationDrawerOpen, setNotificationDrawerOpen, isNotificationsPage,  } = useNotifications();
 
   /**
    * Closes the notification drawer.

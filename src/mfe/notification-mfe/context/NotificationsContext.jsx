@@ -9,6 +9,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import { NOTIFICATION_PAGE_SIZE, NOTIFICATION_DRAWER_PAGE_SIZE, NOTIFICATION_FETCH_TIME_IN_MINS } from '../constants/NotificationFilterConstants';
+import useWindowSize from '@src/hooks/UseWindowSize';
 
 /* --------------------------------------------------------------------------
  * Context Setup
@@ -32,6 +33,8 @@ const initialSearchState = {
 /* --------------------------------------------------------------------------
  * Provider Component
  * ------------------------------------------------------------------------*/
+const TABLET_BREAKPOINT = 768;
+
 export const NotificationsProvider = ({ children }) => {
   /* ----------------------------- State Variables ----------------------------- */
   // Notifications data
@@ -54,6 +57,17 @@ export const NotificationsProvider = ({ children }) => {
 
   // Search/filter state
   const [searchState, setSearchState] = useState(initialSearchState);
+
+  // Add window size and mobile view state
+  const windowSize = useWindowSize();
+  const [isMobileView, setIsMobileView] = useState(windowSize.width < TABLET_BREAKPOINT);
+
+  useEffect(() => {
+    setIsMobileView(windowSize.width < TABLET_BREAKPOINT);
+  }, [windowSize.width]);
+
+  // Add detail view state
+  const [isDetailView, setIsDetailView] = useState(false);
 
   /* ----------------------------- Custom Hooks ----------------------------- */
   const { showSnackbar } = useSnackbar();
@@ -473,7 +487,11 @@ export const NotificationsProvider = ({ children }) => {
         isNotificationsPage,
         applyFilters,
         markAllNotificationsAsRead,
-        markNotificationAsReadById
+        markNotificationAsReadById,
+        isMobileView,
+        setIsMobileView,
+        isDetailView,
+        setIsDetailView,
       }}
     >
       {children}

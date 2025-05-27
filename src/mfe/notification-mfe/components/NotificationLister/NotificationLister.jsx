@@ -23,7 +23,7 @@ import EmptyNotificationView from '../EmptyNotificationsView/EmptyNotificationsV
  *
  * @returns {JSX.Element} The rendered NotificationLister component.
  */
-const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, setIsDetailView }) => {
+const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
   // =========================
   // Hooks & Context
   // =========================
@@ -43,7 +43,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
     loadingNotifications,
     loadingMoreNotifications,
     filteredUnreadCount,
-    unreadCount
+    unreadCount,
+    isMobileView, setIsDetailView
   } = useNotifications();
 
   // =========================
