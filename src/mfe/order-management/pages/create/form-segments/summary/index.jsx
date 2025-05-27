@@ -935,16 +935,23 @@ const Summary = () => {
                         spOrder ? (
                           '-'
                         ) : (
-                          <span className="dollarSign">
-                            <span>$</span>
-                            {catalog?.netPrice ||
-                            simulationData?.updatedCatalogNetPrice
-                              ? CommonUtils.formatNumberWithoutSymbol(
-                                  simulationData.updatedCatalogNetPrice ||
-                                    catalog.netPrice
-                                )
-                              : '-'}
-                          </span>
+                          <Tooltip body={(catalog?.netPrice || simulationData?.updatedCatalogNetPrice)
+                              ? `$${CommonUtils.formatNumberWithoutSymbol(
+                                  simulationData?.updatedCatalogNetPrice || catalog?.netPrice
+                                )}`
+                              : '-'
+                          }>
+                            <span className="dollarSign">
+                              <span>$</span>
+                              {catalog?.netPrice ||
+                              simulationData?.updatedCatalogNetPrice
+                                ? CommonUtils.formatNumberWithoutSymbol(
+                                    simulationData.updatedCatalogNetPrice ||
+                                      catalog.netPrice
+                                  )
+                                : '-'}
+                            </span>
+                          </Tooltip>
                         )
                       }
                     />
@@ -1279,7 +1286,7 @@ const Summary = () => {
                 />
                 <DetailSegment
                   label={t('labels.orderQuantity')}
-                  value={additionalDetails?.orderQuantity || '-'}
+                  value={String(additionalDetails?.orderQuantity) || '-'}
                 />
               </div>
             </div>
