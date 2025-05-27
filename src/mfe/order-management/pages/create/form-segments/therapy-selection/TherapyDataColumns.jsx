@@ -1,47 +1,54 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, RadioGroup } from '@mckesson/mcp-component-library';
+import { RadioGroup } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 
-const getColorByStatus = (status) => {
-  const statusColors = {
-    success: 'success',
-    error: 'error',
-    pending: 'info'
-  };
-  return statusColors[status.toLowerCase()] || 'info';
-};
-
-export const createColumns = (t, navigate, therapy, onChange) => [
+export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onExpandToggle) => [
   {
-    id: 'id',
-    selector: () => {},
+    id: 'expandOrSelect',
+    selector: () => null,
     width: '40px',
     sortable: false,
     showInMobileHeader: true,
     isSelectable: true,
-    cell: (props) => (
-      <div className="MCP-table-cell radio-button-wrapper">
-        <RadioGroup
-          direction="column"
-          id={`radio-button-order-therapy-${props.id}`}
-          items={[
-            {
-              isDisabled: false,
-              label: ' ',
-              value: props.id
-            }
-          ]}
-          onChangeValue={() => {
-            onChange(props);
-          }}
-          onOtherTextChange={() => {}}
-          onSubRadioFieldChange={() => {}}
-          radioBtnWidth="auto"
-          value={therapy?.id == props.id ? props.id : ''}
-        />
-      </div>
-    )
+    cell: (row) => {
+      if (row.isExpandable && row.therapies.length > 1) {
+        const expanded = isRowExpanded?.(row);
+        return (
+          <div
+            className="expand-icon-wrapper"
+            style={{ cursor: 'pointer' }}
+            onClick={() => onExpandToggle?.(row)}
+            aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+            <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+              <ArrowAngleRight />
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="MCP-table-cell radio-button-wrapper">
+          <RadioGroup
+            direction="column"
+            id={`radio-button-order-therapy-${row.id}`}
+            items={[
+              {
+                isDisabled: false,
+                label: ' ',
+                value: row.id
+              }
+            ]}
+            onChangeValue={() => {
+              onChange(row);
+            }}
+            radioBtnWidth="auto"
+            value={therapy?.id === row.id ? row.id : ''}
+          />
+        </div>
+      );
+    }
   },
   {
     id: 'therapyDescription',
@@ -52,25 +59,34 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     sortKey: 'material_description',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    cell: (props) => (
-      <Link
-        className="MCP-table-link"
-        aria-label={t('labels.therapyDescription')}
-        to={`?therapy-details=${props.id}`}>
-        <EclipsesTextcss str={props.therapyDescription} />
-      </Link>
-    )
+    cell: (row) => {
+      const label = row.therapies && row.therapies.length === 1 ? row.therapies[0].materialDescription : row.tradeName || row.materialDescription;
+
+      return (
+        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${row.id}`}>
+          <EclipsesTextcss str={label} />
+        </Link>
+      );
+    }
   },
   {
-    id: 'therapyNumber',
-    name: t('labels.therapyNumber'),
+    id: 'genericName',
+    name: t('labels.genericName'),
     selector: () => {},
-    sortable: true,
+    sortable: false,
     minWidth: '200px',
-    sortKey: 'material_Number',
-    cell: (props) => (
-      <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
-    )
+    cell: (row) => {
+      let displayCaption = '-';
+      if (row.isExpandable) {
+        const manufacturers = Array.from(new Set(row.therapies.map((i) => i.genericName)));
+        if (manufacturers && manufacturers.length > 0) {
+          displayCaption = manufacturers.join(', ');
+        }
+      } else {
+        displayCaption = row.genericName;
+      }
+      return <span aria-label={t('labels.genericName')}>{displayCaption}</span>;
+    }
   },
   {
     id: 'ndc',
@@ -82,34 +98,62 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cardHeader: true,
-    cell: (props) => (
-      <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-        {props.ndc}
-      </span>
-    )
+    cell: (row) => {
+      let displayCaption = '-';
+      if (row.isExpandable) {
+        displayCaption = row.therapies.map((child) => child.ndc).join(', ');
+      } else {
+        displayCaption = row.ndc;
+      }
+
+      return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{displayCaption}</span>;
+    }
   },
   {
-    id: 'strength',
-    name: t('table.columns.captions.strength'),
+    id: 'manufacturer',
+    name: t('labels.manufacturer'),
     selector: () => {},
-    width: '100px',
+    width: '180px',
+    sortable: true,
+    cell: (row) => {
+      let displayCaption = '-';
+      if (row.isExpandable) {
+        const manufacturers = Array.from(new Set(row.therapies.map((i) => i.manufacturerName)));
+        if (manufacturers && manufacturers.length > 0) {
+          displayCaption = manufacturers.join(', ');
+        }
+      } else {
+        displayCaption = row.manufacturerName;
+      }
+      return <span aria-label={t('table.columns.captions.manufacturer')}>{displayCaption}</span>;
+    }
+  },
+  {
+    id: 'formulation',
+    name: t('labels.formulation'),
+    selector: () => {},
+    width: '140px',
     sortable: false,
-    cell: (props) => (
-      <span aria-label={t('table.columns.captions.strength')}>
-        {props.strength}
-      </span>
-    )
+    cell: (row) => {
+      let displayCaption = '-';
+      if (!row.isExpandable) {
+        displayCaption = row.formulation;
+      }
+      return <span aria-label={t('table.columns.captions.formulation')}>{displayCaption}</span>;
+    }
   },
   {
     id: 'dosage',
-    name: t('table.columns.captions.dosage'),
+    name: t('labels.dosage'),
     selector: () => {},
     width: '100px',
     sortable: false,
-    cell: (props) => (
-      <span aria-label={t('table.columns.captions.dosage')}>
-        {props.dosage}
-      </span>
-    )
+    cell: (row) => {
+      let displayCaption = '-';
+      if (!row.isExpandable) {
+        displayCaption = row.dosage;
+      }
+      return <span aria-label={t('table.columns.captions.dosage')}>{displayCaption}</span>;
+    }
   }
 ];

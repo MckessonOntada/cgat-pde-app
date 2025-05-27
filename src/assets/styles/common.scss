@@ -1512,3 +1512,29 @@ div[role="row"] {
     height: var(--spacing-04) !important;
   }
 }
+
+.expanded-rows {
+  div[role="row"] {
+    height: 42px;
+  }
+  div[role="cell"] {
+    padding: 12px 0px 12px 16px;
+  }
+  > div {
+    border-left: none;
+    border-top: none;
+    border-right: none;
+  }
+}
+
+.row-expansion-icon {
+  display: inline-flex;
+  align-self: center;
+  fill: var(--brand-color-background-blue-3);
+  transition: all 400ms ease;
+  margin: 2px 0px 0px 1px;
+
+  &.open {
+    transform: rotate(90deg);
+  }
+}

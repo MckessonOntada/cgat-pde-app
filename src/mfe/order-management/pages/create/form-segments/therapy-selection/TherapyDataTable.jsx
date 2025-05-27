@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './TherapyDataColumns';
@@ -14,7 +13,34 @@ const TherapyDataTable = ({ therapy, onChange }) => {
   const navigate = useNavigate();
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort } = useTherapy();
 
-  const columns = createColumns(t, navigate, therapy, onChange);
+  const showCardView = useResponsiveView();
+
+  const [expandedRows, setExpandedRows] = useState(['Avastin']);
+  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  };
+
+  const ExpandedComponent = ({ data }) => {
+    const expandedData = data.therapies || [];
+    const expandedColumns = createColumns(t, navigate, therapy, onChange);
+
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={expandedColumns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
+  };
 
   const handleOnPageChange = (_event, pageIndex) => {
     setPageNumber(pageIndex);
@@ -22,21 +48,24 @@ const TherapyDataTable = ({ therapy, onChange }) => {
 
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) {
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+      applySort({
+        sortBy: selectedColumn.sortKey,
+        sortOrder: sortDirection
+      });
     }
   };
 
-  const showCardView = useResponsiveView();
+  const columns = createColumns(t, navigate, therapy, onChange, isRowExpanded, onExpandToggle);
 
   return (
     <CustomDataTable
       id="order-management-therapy-listing"
-      type={'normal'}
+      type="normal"
       columns={columns}
       data={data}
       handleChangePage={handleOnPageChange}
       onSortIconClick={handleOnSort}
-      pagination={true}
+      pagination
       currentPage={paginationConfig.pageNumber}
       totalPageCount={paginationConfig.totalPages}
       totalRocords={paginationConfig.totalElements}
@@ -46,10 +75,14 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       paginationTotalRecorsMessage={t('labels.results')}
       showCardView={showCardView}
       defaultExpandedCardView={false}
+      expandableRows
+      expandableRowExpanded={isRowExpanded}
+      expandableRowsComponent={ExpandedComponent}
+      expandableRowsHideExpander={true}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}
-          error={error && error.message}
+          error={error?.message}
           image={EmptyDataImage}
           heading={t('table.labels.therapySelectionNoDataAvailable')}
           description={t('table.labels.therapySelectionNoDataAvailableDescription')}
@@ -57,11 +90,6 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       }
     />
   );
-};
-
-TherapyDataTable.propTypes = {
-  type: PropTypes.string,
-  pagination: PropTypes.bool
 };
 
 export default TherapyDataTable;
