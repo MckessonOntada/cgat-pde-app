@@ -2,6 +2,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import CommonUtils from '@src/util/CommonUtils';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -22,162 +23,27 @@ async function getOrders(requestParams) {
 }
 
 async function getOrderById(orderId) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
   if (res.data) {
     return res.data;
-    // return {
-    //   createdAt: '2025-04-30T10:13:05.914',
-    //   createdBy: {
-    //     id: '5442',
-    //     role: 'Organization Admin',
-    //     roleId: '2523',
-    //     name: 'Freddy Zoe Macdonald Rogers',
-    //     userName: 'freddy_rogers@yopmail.com',
-    //     impersonatedBy: {
-    //       id: '12554',
-    //       role: 'System Admin',
-    //       roleId: '1',
-    //       name: 'kapil sin',
-    //       userName: 'kapilSuperUser@yopmail.com',
-    //       impersonatedBy: null
-    //     }
-    //   },
-    //   updatedAt: '2025-04-30T13:38:14.533',
-    //   updatedBy: {
-    //     id: '5442',
-    //     role: 'Organization Admin',
-    //     roleId: '2523',
-    //     name: 'Freddy Zoe Macdonald Rogers',
-    //     userName: 'freddy_rogers@yopmail.com',
-    //     impersonatedBy: {
-    //       id: '1',
-    //       role: 'System Admin',
-    //       roleId: '1',
-    //       name: 'DEFAULT DEFAULT',
-    //       userName: 'cgat.admin@yopmail.com',
-    //       impersonatedBy: null
-    //     }
-    //   },
-    //   id: '9148f867-aa97-4aec-8966-0995914e6e55',
-    //   practiceId: '1882',
-    //   practiceName: 'Adah Bergstrom',
-    //   therapy: {
-    //     strength: '40mg',
-    //     dropshipIndicator: null,
-    //     id: '15',
-    //     materialDescription: 'Pantop',
-    //     materialNumber: '5',
-    //     ndcNumber: 'C002'
-    //   },
-    //   accountDetails: {
-    //     soldToAccount: {
-    //       id: '53',
-    //       accountName: 'account 53',
-    //       accountNumber: 'sc53',
-    //       address: {
-    //         email: 'account53@mckesson.com',
-    //         telephone: 'telephone 53',
-    //         houseNumber: 'hn53',
-    //         street: 'street 53',
-    //         street2: 'street_53 53',
-    //         street3: 'street_53 53',
-    //         city: 'city53',
-    //         district: 'district 53',
-    //         state: 's',
-    //         country: 'c',
-    //         zipCode: 'zip 53'
-    //       },
-    //       distributionChannel: '20',
-    //       division: 'dv',
-    //       companyCode: '881e',
-    //       channelType: 'SPECIALTY_PHARMA',
-    //       cgatIdentifier: 'i53',
-    //       salesOrg: '1100'
-    //     },
-    //     shipToAccount: {
-    //       id: '166',
-    //       accountName: 'account166',
-    //       accountNumber: 'sc166',
-    //       address: {
-    //         email: 'account166@mckesson.com',
-    //         telephone: 'tel 161',
-    //         houseNumber: 'hn161',
-    //         street: 'street 161',
-    //         street2: null,
-    //         street3: null,
-    //         city: 'city161',
-    //         district: 'district161',
-    //         state: 's',
-    //         country: 'c',
-    //         zipCode: 'zip161'
-    //       },
-    //       distributionChannel: '20',
-    //       division: 'dv',
-    //       companyCode: '6a51',
-    //       channelType: 'SPECIALTY_PHARMA',
-    //       cgatIdentifier: null,
-    //       salesOrg: 'so61'
-    //     }
-    //   },
-    //   patientId: null,
-    //   patient: null,
-    //   additionalDetails: null,
-    //   catalog: null,
-    //   orderCost: null,
-    //   status: 'IN_DRAFT',
-    //   submittedBy: null,
-    //   submittedOn: null,
-    //   currentStage: 'PATIENT_DETAILS',
-    //   patientDetailsRequired: false,
-    //   backendOrderId: null,
-    //   approverGroupIds: [],
-    //   approver: null,
-    //   rejectionDetails: null,
-    //   version: 2,
-    //   simulatedOn: null,
-    //   orderVersion: 0,
-    //   versionOwner: null,
-    //   isCoiIdRequired: false,
-    //   catalogConfiguration: null,
-    //   payerDetails: null,
-    //   orderPriceUpdated: false,
-    //   paporder: false
-    // };
   }
   return {};
 }
 
-async function savePatientDetails(
-  orderId,
-  payload,
-  skipDuplicateCheck = false,
-  channelType
-) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const params = {
     skipDuplicateCheck
   };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(
-    params
-  )}`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(params)}`;
   try {
-    const res = await HttpResourceService.callRest(
-      url,
-      httpVerb.PATCH,
-      payload
-    );
+    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     if (res.data) {
       return res.data;
     }
@@ -187,25 +53,16 @@ async function savePatientDetails(
 }
 
 async function savePayerDetails(orderId, payload, channelType) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to save payer details'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to save payer details');
 
   const params = {};
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(
-    params
-  )}`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(params)}`;
   try {
-    const res = await HttpResourceService.callRest(
-      url,
-      httpVerb.PATCH,
-      payload
-    );
+    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     if (res.data) {
       return res.data;
     }
@@ -215,10 +72,7 @@ async function savePayerDetails(orderId, payload, channelType) {
 }
 
 async function saveAdditionalDetails(orderId, payload) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -231,10 +85,7 @@ async function saveAdditionalDetails(orderId, payload) {
 }
 
 async function saveAccount(orderId, payload) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/account`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -247,10 +98,7 @@ async function saveAccount(orderId, payload) {
 }
 
 async function submitOrder(orderId, payload) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/submit`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -263,21 +111,11 @@ async function submitOrder(orderId, payload) {
 }
 
 async function rejectOrder(orderId, rejectionReason) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to reject the order.'
-    );
-  if (!rejectionReason)
-    throw new Error(
-      'Reason is missing. Reason is required to reject the order.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to reject the order.');
+  if (!rejectionReason) throw new Error('Reason is missing. Reason is required to reject the order.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/reject`;
-  const res = await HttpResourceService.callRest(
-    url,
-    httpVerb.PATCH,
-    rejectionReason
-  );
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, rejectionReason);
 
   if (res.data) {
     return res.data;
@@ -287,11 +125,109 @@ async function rejectOrder(orderId, rejectionReason) {
 }
 
 async function getTherapies(requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(
-    requestParams
-  )}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
+    res.data = {
+      content: [
+        {
+          tradeName: 'Ibrance',
+          channelType: 'SPECIALITY_PHARMA',
+          therapies: [
+            {
+              id: '4',
+              materialNumber: 'sp2',
+              materialDescription: 'Ibrance 125mg Capsule',
+              ndc: '00069-0820-01',
+              strength: '125mg',
+              dosage: '125mg',
+              genericName: 'palbociclib',
+              manufacturerName: 'Pfizer',
+              formulation: 'Capsule'
+            }
+          ]
+        },
+        {
+          tradeName: 'Avastin',
+          channelType: 'BUY_AND_BILL',
+          therapies: [
+            {
+              id: '1',
+              materialNumber: 'bb1',
+              materialDescription: 'Avastin 100mg/4mL Injection',
+              ndc: '50242-060-01',
+              strength: '100mg/4mL',
+              dosage: '100mg',
+              genericName: 'bevacizumab',
+              manufacturerName: 'Genentech',
+              formulation: 'Injection'
+            },
+            {
+              id: '2',
+              materialNumber: 'bb2',
+              materialDescription: 'Avastin 400mg/16mL Injection',
+              ndc: '50242-060-02',
+              strength: '400mg/16mL',
+              dosage: '400mg',
+              genericName: 'bevacizumab',
+              manufacturerName: 'Genentech',
+              formulation: 'Injection'
+            }
+          ]
+        },
+        {
+          tradeName: 'Revlimid',
+          channelType: 'SPECIALITY_PHARMA',
+          therapies: [
+            {
+              id: '3',
+              materialNumber: 'sp1',
+              materialDescription: 'Revlimid 10mg Capsule',
+              ndc: '59572-1010-01',
+              strength: '10mg',
+              dosage: '10mg',
+              genericName: 'lenalidomide',
+              manufacturerName: 'Bristol Myers Squibb',
+              formulation: 'Capsule'
+            }
+          ]
+        }
+      ],
+      pageable: {
+        pageNumber: 0,
+        pageSize: 20,
+        sort: {
+          empty: false,
+          unsorted: false,
+          sorted: true
+        },
+        offset: 0,
+        unpaged: false,
+        paged: true
+      },
+      last: true,
+      totalPages: 1,
+      totalElements: 3,
+      first: true,
+      size: 20,
+      number: 0,
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: true
+      },
+      numberOfElements: 3,
+      empty: false
+    };
+
+    if (res.data?.content) {
+      res.data.content.forEach((i) => {
+        i.isExpandable = Boolean(CommonUtils.isNonEmptyArray(i.therapies));
+      });
+    }
+
+    console.log(res.data);
+
     return res.data;
   }
   return [];
@@ -315,14 +251,8 @@ async function getSoldToAccounts(therapyId, query) {
   return {};
 }
 
-async function getShippingAddressForTherapyByAccountId(
-  therapyId,
-  accountId,
-  requestParams
-) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(
-    requestParams
-  )}`;
+async function getShippingAddressForTherapyByAccountId(therapyId, accountId, requestParams) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -331,12 +261,7 @@ async function getShippingAddressForTherapyByAccountId(
   return {};
 }
 
-async function getPriceDetails(
-  therapyId,
-  accountId,
-  shipToAccountId,
-  variant = null
-) {
+async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = null) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog${
     !!variant ? `?variantType=${variant}` : ''
   }`;
@@ -348,12 +273,7 @@ async function getPriceDetails(
   return {};
 }
 
-async function getVariants(
-  therapyId,
-  accountId,
-  shipToAccountId,
-  requestParams
-) {
+async function getVariants(therapyId, accountId, shipToAccountId, requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/variants?${serializeParams(
     requestParams
   )}`;
@@ -367,10 +287,7 @@ async function getVariants(
 
 async function getInventoryStatus(orderId) {
   try {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.INVENTORY()}/availability/${orderId}`,
-      httpVerb.GET
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability/${orderId}`, httpVerb.GET);
     if (res) {
       return res;
     }
@@ -380,9 +297,7 @@ async function getInventoryStatus(orderId) {
 }
 
 async function getProgramAndChannelConfig(therapyId, requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(
-    requestParams
-  )}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -392,10 +307,7 @@ async function getProgramAndChannelConfig(therapyId, requestParams) {
 }
 
 async function setOrderAssignToMe(orderId) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/approver/assignToMe`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
@@ -408,10 +320,7 @@ async function setOrderAssignToMe(orderId) {
 }
 
 async function setOrderUnassignToMe(orderId) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/approver/release`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
@@ -424,10 +333,7 @@ async function setOrderUnassignToMe(orderId) {
 }
 
 async function deleteOrder(orderId) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const url = `${ApiRoutes.ORDERS()}/${orderId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
   if (res.data) {
@@ -449,10 +355,7 @@ async function getAssignedGroups() {
 }
 
 async function simulateOrder(orderId) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const url = `${ApiRoutes.ORDERS()}/${orderId}/simulate`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
   if (res.data) {
@@ -463,17 +366,10 @@ async function simulateOrder(orderId) {
 }
 
 async function updateTherapy(orderId, requestBody) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to fetch details.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/therapy`;
-  const res = await HttpResourceService.callRest(
-    url,
-    httpVerb.PATCH,
-    requestBody
-  );
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, requestBody);
 
   if (res.data) {
     return res.data;
@@ -483,10 +379,7 @@ async function updateTherapy(orderId, requestBody) {
 }
 
 async function discardCurrentOrderVersion(orderId) {
-  if (!orderId)
-    throw new Error(
-      'Order id is missing. Order id is required to discard order changes.'
-    );
+  if (!orderId) throw new Error('Order id is missing. Order id is required to discard order changes.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/discard`;
   const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
@@ -499,14 +392,8 @@ async function discardCurrentOrderVersion(orderId) {
 }
 
 async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
-  if (!sapOrderId)
-    throw new Error(
-      'SAP Order id is missing. SAP Order id is required to discard order changes.'
-    );
-  if (!salesOrgId)
-    throw new Error(
-      'Sales Org id is missing. Sales Org id is required to discard order changes.'
-    );
+  if (!sapOrderId) throw new Error('SAP Order id is missing. SAP Order id is required to discard order changes.');
+  if (!salesOrgId) throw new Error('Sales Org id is missing. Sales Org id is required to discard order changes.');
 
   const url = `${ApiRoutes.SAP_ORDERS()}/${sapOrderId}/sales-org/${salesOrgId}/status`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
@@ -535,10 +422,7 @@ async function getOrderCountByStatus() {
 }
 
 async function downloadDocument(url) {
-  if (!url)
-    throw new Error(
-      'Document url is missing. Document url is required to download the document.'
-    );
+  if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
 
   try {
     const documentUrl = `${ApiRoutes.ORDERS()}/documents/download?documentPath=${url}`;

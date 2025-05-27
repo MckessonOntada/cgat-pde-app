@@ -45,7 +45,7 @@ function ManageMaterialTable({ ...props }) {
   const onExpandToggle = (row) => {
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
   };
-  console.log(data);
+
   const getColumns = () => [
     {
       id: 'checkbox',

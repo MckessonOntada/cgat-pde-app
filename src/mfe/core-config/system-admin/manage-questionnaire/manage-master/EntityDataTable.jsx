@@ -21,13 +21,28 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const showCardView = useResponsiveView();
+  const [expandedRows, setExpandedRows] = useState([]);
+  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  };
 
   const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError } = useManagerQuestionnaire();
   const isMaterial = EntityType == MasterEntityType.Material;
   const isCatalog = EntityType == MasterEntityType.Catalog;
   const isAccount = EntityType == MasterEntityType.Account;
   const entityData = isMaterial && MaterialData ? MaterialData : isCatalog && CatalogData ? CatalogData : isAccount && AccountsData ? AccountsData : [];
-  const columns = getColumnsByEntityType(t, navigate, EntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails);
+  const columns = getColumnsByEntityType(
+    t,
+    navigate,
+    EntityType,
+    entityData,
+    setSelectedRows,
+    setOpenDetails,
+    setSelectedDetails,
+    isRowExpanded,
+    onExpandToggle
+  );
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);
@@ -35,6 +50,37 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
 
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
+
+  const ExpandedComponent = ({ data }) => {
+    const expandedData = data.therapies || [];
+    const expandedColumns = getColumnsByEntityType(
+      t,
+      navigate,
+      EntityType,
+      entityData,
+      setSelectedRows,
+      setOpenDetails,
+      setSelectedDetails,
+      isRowExpanded,
+      onExpandToggle
+    );
+
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={expandedColumns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
   };
 
   return (
@@ -54,6 +100,10 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         showCardView={showCardView}
+        expandableRows
+        expandableRowExpanded={isRowExpanded}
+        expandableRowsComponent={ExpandedComponent}
+        expandableRowsHideExpander={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}

@@ -15,7 +15,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
 
   const showCardView = useResponsiveView();
 
-  const [expandedRows, setExpandedRows] = useState(['Avastin']);
+  const [expandedRows, setExpandedRows] = useState([]);
   const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
   const onExpandToggle = (row) => {
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));

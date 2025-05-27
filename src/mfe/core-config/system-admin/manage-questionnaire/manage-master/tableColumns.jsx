@@ -3,10 +3,35 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../context/ManageQuestionnaireContext';
-import { useMultiCheckBox } from '../useMultiCheckBox';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 
-export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails) => {
+function flattenMaterials(data) {
+  if (!data && !Array.isArray(data)) {
+    throw new Error('Invalid data provided to flattenMaterials function');
+  }
+
+  return data.reduce((acc, item) => {
+    if (item.materials && Array.isArray(item.materials) && item.materials.length > 0) {
+      item.materials.forEach((material) => {
+        acc.push(material);
+      });
+    }
+    return acc;
+  }, []);
+}
+
+export const getColumnsByEntityType = (
+  t,
+  navigate,
+  masterEntityType,
+  entityData,
+  setSelectedRows,
+  setOpenDetails,
+  setSelectedDetails,
+  isRowExpanded,
+  onExpandToggle
+) => {
   const { paginationConfig } = useManagerQuestionnaire();
   const [selectedData, setSelectedData] = useState([]);
   useEffect(() => {
@@ -25,10 +50,42 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'checkbox',
           name:
             entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedData, setSelectedData)
+              ? renderTableCheckBox(
+                  { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+                  flattenMaterials(entityData),
+                  'id',
+                  {
+                    ...paginationConfig,
+                    totalElements: entityData.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
+                  },
+                  selectedData,
+                  setSelectedData
+                )
               : null,
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
+          cell: (row, index) => {
+            if (row.isExpandable && row.materials.length > 1) {
+              const expanded = isRowExpanded?.(row);
+              return (
+                <div className="expand-icon-wrapper" onClick={() => onExpandToggle?.(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+                  <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+                    <ArrowAngleRight />
+                  </div>
+                </div>
+              );
+            }
+            return renderTableCheckBox(
+              row,
+              flattenMaterials(entityData),
+              'materialNumber',
+              {
+                ...paginationConfig,
+                totalElements: entityData.reduce((item, acc) => acc + (item.materials ? item.materials.length : 1), 0)
+              },
+              selectedData,
+              setSelectedData
+            );
+          },
           selector: (row) => row.MRN,
           width: '50px'
         },
