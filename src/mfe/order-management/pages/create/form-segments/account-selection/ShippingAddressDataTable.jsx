@@ -12,12 +12,18 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount } = useShippingAddress();
+  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount, applySort } = useShippingAddress();
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
   const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {
     setPageNumber(pageIndex);
+  };
+
+  const handleOnSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) {
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    }
   };
 
   return (
@@ -27,7 +33,7 @@ const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, 
       columns={columns}
       data={data}
       handleChangePage={handleOnPageChange}
-      // onSortIconClick={handleOnSort}
+      onSortIconClick={handleOnSort}
       pagination={true}
       currentPage={pageConfig.pageNumber}
       totalPageCount={pageConfig.totalPages}

@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { useQuery } from 'react-query';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import AuthUtils from '@src/util/AuthUtils';
 
 const ShippingLocationContext = createContext();
 
@@ -35,6 +36,8 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
+  const practiceId = AuthUtils.getPracticeId();
+  const organizationId = selectedOrganization?.id || practiceId;
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -56,9 +59,9 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
   );
 
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['ShippingLocations', requestParams, accountId, selectedOrganization?.id],
+    queryKey: ['ShippingLocations', requestParams, accountId, organizationId],
     queryFn: async () => {
-      const result = await ShippingLocationService.getShippingLocationList(requestParams, accountId, selectedOrganization?.id);
+      const result = await ShippingLocationService.getShippingLocationList(requestParams, accountId, organizationId);
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
@@ -67,7 +70,7 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
       }));
       return data;
     },
-    enabled: !!accountId && !!selectedOrganization?.id,
+    enabled: !!accountId && !!organizationId,
     refetchOnWindowFocus: false
   });
 
@@ -76,10 +79,10 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
   };
 
   useEffect(() => {
-    if (accountId && selectedOrganization?.id) {
+    if (accountId && organizationId) {
       refetch();
     }
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, accountId, selectedOrganization?.id]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, accountId, organizationId]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 

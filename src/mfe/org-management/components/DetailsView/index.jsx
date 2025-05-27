@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import './styles.scss';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
@@ -33,10 +33,7 @@ const DetailsView = ({ data, onEditClick }) => {
       <div className="view-container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.person_name')}</p>
-          <p className="contact-details">
-            {`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''}`.trim() ||
-              'N/A'}
-          </p>
+          <p className="contact-details">{getFullName(data?.contactPerson)}</p>
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.create_org.inputLabel.email')}</p>

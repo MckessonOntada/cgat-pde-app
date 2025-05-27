@@ -45,7 +45,6 @@ export const getFilteredSections = (channelType) => {
 
 const PatientDetails = () => {
   const { t } = useTranslate();
-  const [selectedProvider, setSelectedProvider] = React.useState(null);
   const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -161,6 +160,7 @@ const PatientDetails = () => {
             }
           });
         }
+        setProvider(null);
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -344,27 +344,27 @@ const PatientDetails = () => {
                                 refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                 asyncRecordsFound={totalProviders}
                               />
-                              {provider && (
-                                <div className="details-card">
-                                  <Heading className="details-title" as="h3">
-                                    {provider.fullname}
-                                  </Heading>
-                                  <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
-                                    <Tooltip body={provider.detailedAddress}>
-                                      <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
-                                    </Tooltip>
-                                    {['dea', 'npi', 'phone'].map((key) => {
-                                      const value = provider[key];
-                                      return (
-                                        <Tooltip body={value}>
-                                          <p className="detail-segment inline-text-overflow">{value}</p>
-                                        </Tooltip>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
                             </div>
+                            {provider && (
+                              <div className="details-card">
+                                <Heading className="details-title" as="h3">
+                                  {provider.fullname}
+                                </Heading>
+                                <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                  <Tooltip body={provider.detailedAddress}>
+                                    <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
+                                  </Tooltip>
+                                  {['dea', 'npi', 'phone'].map((key) => {
+                                    const value = provider[key];
+                                    return (
+                                      <Tooltip body={value}>
+                                        <p className="detail-segment inline-text-overflow">{value}</p>
+                                      </Tooltip>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </React.Fragment>
                       )}

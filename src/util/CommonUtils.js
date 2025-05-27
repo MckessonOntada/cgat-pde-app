@@ -688,6 +688,34 @@ function flattenToRoot(obj, result = {}) {
   return result;
 }
 
+function getAxiosErrorMessage(error) {
+  if (!error || typeof error !== 'object') return 'Unknown error occurred';
+
+  if (error.response && error.response.data) {
+    const data = error.response.data;
+
+    if (typeof data.message === 'string') {
+      return data.message.replace(/^\[|\]$/g, '');
+    }
+
+    if (Array.isArray(data.message)) {
+      return data.message.join(', ');
+    }
+
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      return data.errors
+        .map((err) => err.message || JSON.stringify(err))
+        .join(', ');
+    }
+
+    return JSON.stringify(data);
+  }
+
+  if (error.message) return error.message;
+
+  return 'An unexpected error occurred';
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -735,7 +763,8 @@ const CommonUtils = Object.freeze({
   getNameValidation,
   flattenObject,
   flattenToRoot,
-  formatFields
+  formatFields,
+  getAxiosErrorMessage
 });
 
 export default CommonUtils;

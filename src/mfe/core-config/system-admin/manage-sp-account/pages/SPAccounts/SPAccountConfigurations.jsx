@@ -12,7 +12,7 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { PREVIEW_URL } from '../../../manage-questionnaire/constants';
 
-function SPAccountConfigurations({ data, refetch }) {
+function SPAccountConfigurations({ data, refetch, orgAdmin }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { selectedOrganization } = useOrgAccountSelectionContext();
@@ -88,7 +88,11 @@ function SPAccountConfigurations({ data, refetch }) {
               variant="secondary"
               className="button-icon"
               size="md"
-              onClick={() => navigate(PREVIEW_URL, { state: { isSPAccount: true, questionnaire: data?.questionnaireList } })}>
+              onClick={() =>
+                orgAdmin
+                  ? navigate('../../../admin/linked-accounts/questionnaire', { state: { questionnaire: data?.questionnaireList, isLinkedAccounts: true } })
+                  : navigate(PREVIEW_URL, { state: { isSPAccount: true, questionnaire: data?.questionnaireList } })
+              }>
               {t('manageSPMaterial.drawer.details.configuration.actions.preview')}
             </Button>
           }
@@ -100,10 +104,12 @@ function SPAccountConfigurations({ data, refetch }) {
             {data?.questionnaireList?.map((item, index) => (
               <div key={index} className="labelWrap">
                 <div className="view_label">{item.templateName}</div>
-                <div className="delete-buttonwithText" onClick={() => OnDeleteClick(item.id)}>
-                  <DeleteIcon className="delete-button-icon" />
-                  {t('paymentInvoices.reviewPayments.remove')}
-                </div>
+                {!orgAdmin && (
+                  <div className="delete-buttonwithText" onClick={() => OnDeleteClick(item.id)}>
+                    <DeleteIcon className="delete-button-icon" />
+                    {t('paymentInvoices.reviewPayments.remove')}
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -108,6 +108,7 @@ export const MessageEs = {
   'labels.slotNo': 'S_Slot No',
   'labels.selectVariant': 'S_Select Variant',
   'labels.configuredQuestionnaires': 'S_Configured Questionnaires',
+  'labels.additionalDocuments': 'S_Additional Documents',
   'labels.poNo': 'S_PO No',
   'labels.variantDescription': 'S_Variant Description',
   'labels.actions.view': 'S_View',
@@ -276,6 +277,7 @@ export const MessageEs = {
   'messages.patientConcent': 'S_Please acknowledge if Patient Consent has been taken',
   'messages.selectAcknowledgementError': 'S_Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'S_The selected therapy is in stock.',
+  'messages.papOrderPlacementAcknowledgement': 'S_Submit this as No Cost therapy Order.',
   'messages.inventoryCheck.error':
     'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
   'modal.action.continue': 'S_Continue',

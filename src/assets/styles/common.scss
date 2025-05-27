@@ -1245,6 +1245,7 @@ div[role="row"] {
   padding: var(--spacing-03);
   display: flex;
   cursor: pointer;
+  align-self: center;
   align-items: center;
   justify-content: flex-start;
   gap: var(--spacing-02);
@@ -1380,19 +1381,23 @@ div[role="row"] {
 .selected-provider {
   display: flex;
   flex-direction: column;
+
   .heading-provider {
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
   }
+
   .provider-field-wrap {
     display: grid;
     gap: 16px;
     grid-template-columns: 1fr;
+
     @include mixins.respond(md) {
       grid-template-columns: 1fr 2fr;
     }
   }
+
   .details-card {
     display: flex;
     flex-direction: column;
@@ -1439,9 +1444,11 @@ div[role="row"] {
     }
   }
 }
+
 .radio-btn-group {
   display: flex;
   gap: var(--spacing-02);
+
   .radio-info-group {
     display: flex;
     gap: var(--spacing-01);
@@ -1452,23 +1459,26 @@ div[role="row"] {
 .custom-radio {
   display: block;
   position: relative;
-  padding-left: var(--spacing-04);
+  padding-left: 30px; //size is not not present
+  font-weight: var(--brand-font-weight-600);
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
   input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
   }
+
   .checkmark {
     position: absolute;
     top: 0;
     left: 0;
-    height: 18px; //size not available
-    width: 18px; //size not available
+    height: 20px; //size not available
+    width: 20px; //size not available
     border-radius: 50%;
     border: 1px solid var(--brand-color-primary-background);
   }
@@ -1478,6 +1488,7 @@ div[role="row"] {
   background-color: var(--brand-color-primary);
   border: none;
 }
+
 .custom-radio input:disabled ~ .checkmark {
   background-color: var(--brand-color-dark-grey);
   border: none;
@@ -1494,23 +1505,32 @@ div[role="row"] {
 }
 
 .custom-radio .checkmark:after {
-  top: 6px; //size not available
-  left: 6px;
+  top: 7px; //size not available
+  left: 7px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: white;
 }
+
 .details-info {
   list-style-type: disc;
   margin-left: var(--spacing-03);
 }
+
 .infoModel-icon {
   padding-top: var(--spacing-01);
+
   button {
     padding: 0px !important;
     min-width: var(--spacing-04) !important;
     width: var(--spacing-04) !important;
     height: var(--spacing-04) !important;
   }
+}
+
+.details-segment-wrapper {
+  display: flex;
+  gap: var(--spacing-01);
+  flex-direction: column;
 }

@@ -22,6 +22,11 @@ const initialPageConfig = {
   pageNumber: 1
 };
 
+const INITIAL_SORT_STATE = {
+  sortBy: 'accountNumber',
+  sortOrder: 'desc'
+};
+
 const ShippingAddressContext = createContext();
 
 export const useShippingAddress = () => {
@@ -31,6 +36,7 @@ export const useShippingAddress = () => {
 export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const [filterState, setFilterState] = useState(initialFilterState);
   const [pageConfig, setPageConfig] = useState(initialPageConfig);
+  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = useState([]);
   const { therapyId, selectedAccount } = accountDetails;
   const prepareDataForTable = (_data) => {
@@ -71,11 +77,18 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         filterState?.accName.length > 0 && {
           accName: [...filterState.accName]
         }),
+      ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
+      ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder }),
       ...(selectedAccount?.channelType && {
         channelType: selectedAccount?.channelType
       })
     }),
-    [filterState, pageConfig.currentPage, selectedAccount?.channelType]
+    [
+      filterState,
+      pageConfig.currentPage,
+      selectedAccount?.channelType,
+      sortConfig
+    ]
   );
 
   const {
@@ -123,10 +136,11 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const clearFilters = () => {
     setFilterState({ ...initialFilterState });
   };
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
   useEffect(() => {
     if (selectedAccount?.accountNumber) refreshData();
-  }, [filterState, pageConfig.pageNumber]);
+  }, [filterState, pageConfig.pageNumber, sortConfig]);
 
   const setPageNumber = (pageIndex) => {
     setPageConfig((prevConfig) => ({
@@ -153,7 +167,8 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         applyFilters,
         clearFilters,
         setPageNumber,
-        setShippingAddressData
+        setShippingAddressData,
+        applySort
       }}>
       {children}
     </ShippingAddressContext.Provider>
