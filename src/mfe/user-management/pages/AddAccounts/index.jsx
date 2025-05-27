@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Stepper, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
+import { StepperMui, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
@@ -104,13 +104,11 @@ const AddAccounts = () => {
         </Button>
       </div>
 
-      <ModuleHeader
-        heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>}
-      />
+      <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
 
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={3}
             dividerText="of"
             stepHeaders={[
@@ -127,9 +125,7 @@ const AddAccounts = () => {
           />
         </div>
       )}
-      {alertConfig?.isVisible && (
-        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
-      )}
+      {alertConfig?.isVisible && <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />}
       <UserAccounts
         selectedRows={selectedAccounts}
         setSelectedRows={setSelectedAccounts}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Heading, Stepper, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, StepperMui, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -269,7 +269,7 @@ const CreateUser = () => {
 
       {!isEdit && !isSystemAdminView && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={1}
             dividerText="of"
             stepHeaders={[
