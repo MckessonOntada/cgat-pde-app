@@ -75,11 +75,7 @@ function CreditsSelected(props) {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss
-          className="cellEllipse"
-          str={CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}
-          maxWidth={240}
-        />
+        <EclipsesTextcss className="cellEllipse" str={CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')} maxWidth={240} />
       )
     },
     {
@@ -89,11 +85,7 @@ function CreditsSelected(props) {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss
-          className="cellEllipse"
-          str={CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}
-          maxWidth={240}
-        />
+        <EclipsesTextcss className="cellEllipse" str={CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')} maxWidth={240} />
       )
     },
     {

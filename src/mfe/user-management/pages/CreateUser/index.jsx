@@ -99,7 +99,7 @@ const CreateUser = () => {
   const handleGoBack = () => {
     navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
-
+  const sanitized = CommonUtils.sanitizeValue(userData?.address);
   const initialValues = {
     name: {
       firstName: userData?.name?.firstName || '',
@@ -112,7 +112,13 @@ const CreateUser = () => {
       countryCode: '91',
       fax: userData?.contact?.fax || ''
     },
-    address: CommonUtils.sanitizeValue(userData?.address)
+    address: {
+      address1: sanitized.address1 || '',
+      address2: sanitized.address2 || '',
+      city: sanitized.city || '',
+      state: sanitized.state || '',
+      zip: sanitized.zip || ''
+    }
   };
 
   const validationSchema = Yup.object({
@@ -297,14 +303,7 @@ const CreateUser = () => {
           return (
             <Form>
               <div className="MCP-panel-container">
-                {/* <Heading as="h2">
-                  {t(
-                    isSystemAdminView
-                      ? 'userManagement.create_user.details_to_create_sysadmin'
-                      : 'userManagement.create_user.details_to_create_user'
-                  )}
-                </Heading> */}
-                <UserDetailsFormSegment comment={userData?.comment} />
+                <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
               </div>
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
