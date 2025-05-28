@@ -16,14 +16,7 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
-  const {
-    data,
-    isFetching,
-    paginationConfig,
-    setPageNumber,
-    applySort,
-    isError
-  } = usePaymentCredits();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
   const { selectedRows, setSelectedRows, selectableRows } = props;
   const location = useLocation();
   const { state } = location;
@@ -32,24 +25,9 @@ export default function CreditsTable(props) {
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
-        'billNumber',
-        paginationConfig,
-        selectedRows,
-        setSelectedRows
-      ),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
       sortable: false,
-      cell: (row, index) =>
-        renderTableCheckBox(
-          row,
-          data,
-          'billNumber',
-          paginationConfig,
-          selectedRows,
-          setSelectedRows
-        ),
+      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
       selector: (row) => row.MRN,
       width: '48px',
       omit: !selectableRows,
@@ -57,7 +35,7 @@ export default function CreditsTable(props) {
     },
     {
       id: 'billNumber',
-      name: t('paymentInvoices.table.column.CreditNo'),
+      name: t('paymentInvoices.history.table.invoiceNumber'),
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
@@ -98,29 +76,18 @@ export default function CreditsTable(props) {
       sortable: true,
       wrap: true,
       width: '140px',
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props.dueDate,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'openAmount',
-      name: selectableRows
-        ? t('paymentInvoices.credits.table.billamount')
-        : t('paymentInvoices.table.column.creditAmount'),
+      name: selectableRows ? t('paymentInvoices.history.table.invoiceAmount') : t('paymentInvoices.table.column.creditAmount'),
       selector: (row) => row.openAmount,
       maxWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber
-            value={props?.openAmount}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
         </div>
       ),
       right: true
@@ -140,8 +107,7 @@ export default function CreditsTable(props) {
     // }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id)
-      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -172,9 +138,7 @@ export default function CreditsTable(props) {
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.credits.table.emptyData')}
-            description={t(
-              'paymentInvoices.history.table.emptyDataDescription'
-            )}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={
