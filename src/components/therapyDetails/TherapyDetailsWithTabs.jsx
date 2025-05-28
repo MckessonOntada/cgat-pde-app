@@ -13,16 +13,23 @@ export const THERAPY_TABS = {
   SP: 'SPECIALITY_PHARMA'
 };
 
-function TherapyDetailsWithTabs({
-  therapyId,
-  onClose,
-  onSelect,
-  buyAndBillTherapyConstants,
-  spTherapyConstants,
-  showFooter = true,
-  heading
-}) {
+function TherapyDetailsWithTabs({ therapyId, onClose, onSelect, buyAndBillTherapyConstants, spTherapyConstants, showFooter = true, heading }) {
   const { t } = useTranslate();
+  const [therapyTabs, setTherapyTabs] = useState(() => {
+    if (!therapyId) return [];
+
+    const therapyTabs = therapyId.split(',').map((id, index) => {
+      return {
+        id: `details-by-therapy-id-${id}`,
+        configName: id,
+        isActiveTab: index === 0,
+        sequence: index,
+        labelForMobile: 'labels.tabs.submittedBuyAndBill'
+      };
+    });
+
+    return therapyTabs;
+  });
   const [selectedTab, setSelectedTab] = useState(THERAPY_TABS.BUY_AND_BILL);
   const [isCardExpanded, setIsCardExpanded] = useState(true);
   const {
@@ -103,16 +110,23 @@ function TherapyDetailsWithTabs({
         showFooter && (
           <div className="controls">
             <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
-            <Button
-              label={t('captions.btnSelecttherapy')}
-              onClick={handleSelect}
-              variant="primary"
-              size="md"
-              aria-label={t('captions.selectAccount')}
-            />
+            <Button label={t('captions.btnSelecttherapy')} onClick={handleSelect} variant="primary" size="md" aria-label={t('captions.selectAccount')} />
           </div>
         )
       }>
+      <div className={styles.wrapper}>
+        <div className="customTab" style={{ padding: '0px 16px' }}>
+          <TabList
+            options={therapyTabs}
+            alignment="left"
+            onTabClick={(tab) => setSelectedTab(tab.id)}
+            showShadow={false}
+            variant={'text'}
+            useAsButton={true}
+            aria-label={t('controls.ariaLabels.orderTabList')}
+          />
+        </div>
+      </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
           <TabList
@@ -170,12 +184,7 @@ function TherapyDetailsWithTabs({
                     )}
                   </div>
                 ) : (
-                  <DetailsPanel
-                    details={therapyDetails}
-                    handleSelect={handleSelect}
-                    onClose={onClose}
-                    therapyData={buyAndBillTherapyConstants}
-                  />
+                  <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} therapyData={buyAndBillTherapyConstants} />
                 )}
               </>
             )}
@@ -188,8 +197,7 @@ function TherapyDetailsWithTabs({
 
 function DetailsPanel({ details, therapyData }) {
   const { t } = useTranslate();
-  const renderDetails = (fields, details) =>
-    fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
+  const renderDetails = (fields, details) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
   return (
     <div className={styles.detailsPanel}>
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>

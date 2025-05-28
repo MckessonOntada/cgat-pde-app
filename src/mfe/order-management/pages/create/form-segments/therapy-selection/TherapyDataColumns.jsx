@@ -60,10 +60,11 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (row) => {
-      const label = row.therapies && row.therapies.length === 1 ? row.therapies[0].materialDescription : row.tradeName || row.materialDescription;
-
+      const { therapies = [], tradeName, materialDescription } = row;
+      const label = therapies && therapies.length === 1 ? therapies[0].materialDescription : tradeName || materialDescription;
+      const linkValue = therapies.map((i) => i.id).join(',');
       return (
-        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${row.id}`}>
+        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy=${linkValue}`}>
           <EclipsesTextcss str={label} />
         </Link>
       );

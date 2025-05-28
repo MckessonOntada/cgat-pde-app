@@ -13,10 +13,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import {
-  TherapyDetailsConstantsForBB,
-  TherapyDetailsConstantsForSP
-} from './assets/constants/TherapyDetailsConstants';
+import { TherapyDetailsConstantsForBB, TherapyDetailsConstantsForSP } from './assets/constants/TherapyDetailsConstants';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
@@ -32,21 +29,15 @@ function TherapySelection() {
   const location = useLocation();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
-  const [initialSelectedTherapy, setInitialSelectedTherapy] =
-    React.useState(null);
+  const [initialSelectedTherapy, setInitialSelectedTherapy] = React.useState(null);
   const { data: orderDetails = {} } = useOrder(orderId);
   const [therapy, setTherapy] = useState(orderDetails?.therapy);
   const searchParams = new URLSearchParams(location.search);
-  const therapyDetails = searchParams.get('therapy-details');
+  const detailsByTherapyId = searchParams.get('therapy');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const {
-    isEdit = false,
-    isApprover = false,
-    isBack = false
-  } = location.state || {};
+  const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
   const alertContainerId = 'alert-container';
-  const [therapySelectionMessage, setTherapySelectionMessage] =
-    React.useState(null);
+  const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
@@ -63,32 +54,30 @@ function TherapySelection() {
   }, [orderDetails]);
 
   const handleOnClose = () => {
-    searchParams.delete('therapy-details');
+    searchParams.delete('therapy');
+    searchParams.delete('trade');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
     });
   };
 
-  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(
-    async (data) => OrderService.createOrder(data),
-    {
-      onSuccess: (result) => {
-        const { id } = result;
-        navigate(`../${id}/accounts`, {
-          state: { isEdit: false, isApprover: isApprover }
-        });
-      },
-      onError: (err) => {
-        const errorKey = handleApiError(err);
-        showAlert({
-          description: t(errorKey),
-          type: 'error',
-          anchorEl: alertContainerId
-        });
-      }
+  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
+    onSuccess: (result) => {
+      const { id } = result;
+      navigate(`../${id}/accounts`, {
+        state: { isEdit: false, isApprover: isApprover }
+      });
+    },
+    onError: (err) => {
+      const errorKey = handleApiError(err);
+      showAlert({
+        description: t(errorKey),
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
-  );
+  });
 
   const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
     async ({ orderId, payload }) => {
@@ -101,9 +90,7 @@ function TherapySelection() {
           state: {
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged:
-              Number(therapy?.therapyId) !==
-              Number(initialSelectedTherapy?.materialNumber)
+            isTherapyChanged: Number(therapy?.therapyId) !== Number(initialSelectedTherapy?.materialNumber)
           }
         });
       },
@@ -138,8 +125,7 @@ function TherapySelection() {
       }
     }
   };
-  const isDirty =
-    JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
+  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -184,21 +170,12 @@ function TherapySelection() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToOrders}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
-        }
-      />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
         <OrderStepper
@@ -214,9 +191,7 @@ function TherapySelection() {
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={[]}
-                searchPlaceholder={t(
-                  'controls.placeholder.therapySelection.search'
-                )}
+                searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
             <TableHeading heading={t('labels.therapySelection')} />
@@ -235,18 +210,14 @@ function TherapySelection() {
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button
-                size="md"
-                variant="primary"
-                type="submit"
-                onClick={handleOnSubmit}>
+              <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>
-          {therapyDetails && (
+          {detailsByTherapyId && (
             <TherapyDetailsWithTabs
-              therapyId={therapyDetails}
+              therapyId={detailsByTherapyId}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
