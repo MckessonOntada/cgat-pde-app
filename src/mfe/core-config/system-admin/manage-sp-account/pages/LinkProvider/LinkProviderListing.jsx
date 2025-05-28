@@ -1,5 +1,5 @@
 import { useTranslate } from '@src/translations/useTranslation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
@@ -8,7 +8,6 @@ import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { routeConstants } from '../../routes/constants';
 import LinkProviderTable from './LinkProviderTable';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useMutation } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
 import Alert from '@src/components/cgat-alert/Alert';
@@ -19,14 +18,13 @@ function LinkProviderListing() {
   const { spAccountId } = useParams();
   const location = useLocation();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
   const [searchParams] = useSearchParams();
   const selectedOrganization = searchParams.get('orgId');
 
   useEffect(() => {
     if (location.state?.type && location.state?.messages) {
-      addNotification({
+      setNotification({
         type: location.state.type,
         description: location.state.messages
       });
@@ -44,13 +42,13 @@ function LinkProviderListing() {
     },
     {
       onSuccess: () => {
-        addNotification({
+        setNotification({
           type: 'success',
           description: t('manageSPAccount.message.removelinkprovider.success')
         });
       },
       onError: () => {
-        addNotification({
+        setNotification({
           type: 'error',
           description: t('manageSPAccount.error.message.unableToUnlinkProvider')
         });
@@ -82,15 +80,7 @@ function LinkProviderListing() {
               )
             }
           />
-          {notifications?.length > 0 && (
-            <div className="alert-container">
-              <div className="MCP-module-body">
-                {notifications.map((item, index) => (
-                  <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-                ))}
-              </div>
-            </div>
-          )}
+          {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
           <LinkProviderTable handleUnlinkProvider={handleUnlinkProvider} />
         </div>
       </LinkProviderProvider>

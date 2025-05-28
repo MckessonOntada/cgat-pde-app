@@ -9,14 +9,13 @@ import CommonDataService from '@src/api/commonService/CommonDataService';
 import { useMutation } from 'react-query';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import Alert from '../cgat-alert/Alert';
 
 const AccountSetting = () => {
   const dispatch = useDispatch();
   const { t } = useTranslate();
   const userName = AuthUtils.getUserName();
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
 
   const { mutate: resetPassword } = useMutation(
     async () => {
@@ -27,7 +26,7 @@ const AccountSetting = () => {
         onSuccessEmail();
       },
       onError: () => {
-        addNotification({
+        setNotification({
           description: t('reset.password.error'),
           type: 'error'
         });
@@ -53,15 +52,7 @@ const AccountSetting = () => {
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('reset.password.account.settings')}</Heading>} />
-        {notifications?.length > 0 && (
-          <div className="alert-container">
-            <div className="MCP-module-body">
-              {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-              ))}
-            </div>
-          </div>
-        )}
+        {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
         <div className="MCP-panel-container profile-wraper">
           <Heading as="h3">{t('reset.password.login.userInformation')}</Heading>
           <div className="profile-table">

@@ -8,7 +8,6 @@ import { useFilters, usePagination, useSelection, useSort, useTable } from '@src
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
@@ -25,7 +24,7 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
   const { data, refreshTable } = useTable();
   const { applySort } = useSort();
   const { selectedRows, setSelection } = useSelection();
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslate } from '@src/translations/useTranslation';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import UploadFile from '@src/components/uploadFile/UploadFile';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -19,13 +18,13 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 
 const Upload = () => {
   const { t } = useTranslate();
-  const { items, add, remove, removeAll } = useTimedArray(10000);
   const navigate = useNavigate();
+  const [notification, setNotification] = React.useState(null);
   const handleOnUpload = (values) => {
-    removeAll();
+    setNotification(null);
     const { file } = values;
     if (!file) {
-      add({
+      setNotification({
         type: 'error',
         description: t('providers.errorMessage.fileUploadRequired')
       });
@@ -38,7 +37,7 @@ const Upload = () => {
     SPCrosswalkService.uploadSPCrosswalk(formData)
       .then((response) => {
         if (response.status == 200) {
-          add({
+          setNotification({
             type: 'success',
             description: t('fileUpload.crosswalk.success')
           });
@@ -49,7 +48,7 @@ const Upload = () => {
             });
             downloadFile(blob, 'SP_Crosswalk_Upload_Log');
           };
-          add({
+          setNotification({
             type: 'info',
             description: (
               <div className="alert-controls">
@@ -68,21 +67,21 @@ const Upload = () => {
       .catch((error) => {
         const { response: errorResponse = {} } = error;
         if (errorStatusCodes.includes(errorResponse.status)) {
-          add({
+          setNotification({
             type: 'error',
             description: t('fileUpload.error.timeoutOrSystemError'),
             isSticky: true
           });
         } else if (errorResponse.data?.errorCodes) {
           errorResponse.data?.errorCodes.forEach((element) => {
-            add({
+            setNotification({
               type: 'error',
               description: t(element),
               isSticky: true
             });
           });
         } else {
-          add({
+          setNotification({
             type: 'error',
             description: errorResponse.data?.message || t('providers.message.fileUploadFailure'),
             isSticky: true
@@ -130,7 +129,7 @@ const Upload = () => {
         primaryHeading={t('controls.uploadMaterialCrosswalk')}
         controlHeading={t('heading.uploadMaterialCrosswalkListCSV')}
         isLoading={false}
-        messages={items}
+        messages={[notification]}
         customDownload={
           <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={handleOnDownload}>
             <Button size="md" variant={'secondary'} className="context-menu__button">
@@ -138,7 +137,7 @@ const Upload = () => {
             </Button>
           </ContextMenu>
         }
-        onCloseAlert={remove}
+        onCloseAlert={() => setNotification(null)}
         upload={{
           caption: t('controls.uploadMaterialCrosswalk'),
           fn: handleOnUpload

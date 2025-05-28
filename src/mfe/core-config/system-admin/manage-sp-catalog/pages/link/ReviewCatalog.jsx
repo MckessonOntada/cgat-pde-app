@@ -2,8 +2,6 @@ import ModuleHeader from '@src/components/module-header';
 import React, { useEffect, useState } from 'react';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 
@@ -23,7 +21,7 @@ const ReviewCatalog = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
   const { selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
   const checkedCount = Array.isArray(selectedAccount) ? selectedAccount.filter((acc) => acc.isChecked === true).length : 0;
@@ -57,7 +55,7 @@ const ReviewCatalog = () => {
   const handleSave = async () => {
     const updatedData = service.getCombinedData();
     if (updatedData.length === 0) {
-      addNotification({
+      setNotification({
         type: 'error',
         description: t('SPCatalog.error.RequiredMissing')
       });
@@ -90,7 +88,7 @@ const ReviewCatalog = () => {
       },
       onError: (error) => {
         const errorKey = handleApiError(error);
-        addNotification({
+        setNotification({
           type: 'error',
           description: t(errorKey)
         });
@@ -99,7 +97,7 @@ const ReviewCatalog = () => {
     }
   );
   const handleNotification = (notification) => {
-    addNotification(notification);
+    setNotification(notification);
   };
   return (
     <div className="MCP-module-wrapper catalog-module">
@@ -110,15 +108,8 @@ const ReviewCatalog = () => {
       </div>
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('SPCatalog.LinkSPMaterial')}</Heading>} />
-        {notifications?.length > 0 && (
-          <div className="alert-container">
-            <div className="MCP-module-body">
-              {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-              ))}
-            </div>
-          </div>
-        )}
+        {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
+
         <div className="MCP-CardContainer">
           <div className="disabled-div">
             <OrgAccountsMultiSelect />

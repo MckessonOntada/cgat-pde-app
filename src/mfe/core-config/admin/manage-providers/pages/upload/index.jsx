@@ -1,10 +1,8 @@
 import React from 'react';
 import { useTranslate } from '@src/translations/useTranslation';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { Button } from '@mckesson/mcp-component-library';
-import { useNavigate } from 'react-router-dom';
 import UploadFile from '@src/components/uploadFile/UploadFile';
 import {
   handleDownload,
@@ -17,7 +15,7 @@ import { errorStatusCodes } from '@src/util/ApiUtils';
 const Upload = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
-  const { items, add, remove, removeAll } = useTimedArray(10000);
+  const [notification, setNotification] = React.useState(null);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -35,10 +33,10 @@ const Upload = () => {
   }, [isSystemAdminView]);
 
   const handleOnUpload = (values) => {
-    removeAll();
+    setNotification(null);
     const { file } = values;
     if (!file) {
-      add({
+      setNotification({
         type: 'error',
         description: t('providers.errorMessage.fileUploadRequired')
       });
@@ -51,7 +49,7 @@ const Upload = () => {
     ProviderService.uploadProvider(formData)
       .then((response) => {
         if (response.status == 200) {
-          add({
+          setNotification({
             type: 'success',
             description: t('providers.message.fileUploadSuccess')
           });
@@ -62,7 +60,7 @@ const Upload = () => {
             });
             downloadFile(blob, 'SP_Providers_Log.csv');
           };
-          add({
+          setNotification({
             type: 'info',
             description: (
               <div className="alert-controls">
@@ -84,21 +82,21 @@ const Upload = () => {
       .catch((error) => {
         const { response: errorResponse = {} } = error;
         if (errorStatusCodes.includes(errorResponse.status)) {
-          add({
+          setNotification({
             type: 'error',
             description: t('fileUpload.error.timeoutOrSystemError'),
             isSticky: true
           });
         } else if (errorResponse.data?.errorCodes) {
           errorResponse.data?.errorCodes.forEach((element) => {
-            add({
+            setNotification({
               type: 'error',
               description: t(element),
               isSticky: true
             });
           });
         } else {
-          add({
+          setNotification({
             type: 'error',
             description:
               errorResponse.data?.message ||
@@ -122,8 +120,8 @@ const Upload = () => {
         primaryHeading={t('controls.uploadProviders')}
         controlHeading={t('heading.uploadProviderListCSV')}
         isLoading={false}
-        messages={items}
-        onCloseAlert={remove}
+        messages={[notification]}
+        onCloseAlert={() => setNotification(null)}
         downloadTemplate={{
           caption: t('controls.downloadCSVTemplate'),
           fn: handleOnDownloadTemplate

@@ -33,7 +33,7 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = (add) => {
+export const getColumns = (setNotification) => {
   const { selectedRows, toggleRowSelection, setSelection } = useSelection();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export const getColumns = (add) => {
     async (id) => ProviderService.activateProvider(id),
     {
       onSuccess: () => {
-        add({
+        setNotification({
           description: t('provider.activationSuccess'),
           type: 'success'
         });
@@ -61,7 +61,7 @@ export const getColumns = (add) => {
         }
       },
       onError: () => {
-        add({
+        setNotification({
           description: t('provider.activationFailure'),
           type: 'error'
         });
@@ -73,7 +73,7 @@ export const getColumns = (add) => {
     async (id) => ProviderService.deactivateProvider(id),
     {
       onSuccess: () => {
-        add({
+        setNotification({
           description: t('provider.deactivationSuccess'),
           type: 'success'
         });
@@ -88,7 +88,7 @@ export const getColumns = (add) => {
         }
       },
       onError: () => {
-        add({
+        setNotification({
           description: t('provider.deactivationFailure'),
           type: 'error'
         });

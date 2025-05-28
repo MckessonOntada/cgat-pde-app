@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -11,14 +11,12 @@ import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 import { LinkSpAccountProvider } from '../../context/LinkSpAccountContext';
 import SpAccountTable from '../link/SpAccountTable';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import AuthUtils from '@src/util/AuthUtils';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import Alert from '@src/components/cgat-alert/Alert';
 
 const ProviderDetails = () => {
@@ -27,14 +25,11 @@ const ProviderDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const practiceId = AuthUtils.getPracticeId();
-  const {
-    items: notifications,
-    add: addNotification,
-    remove: removeNotification
-  } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
+
   useEffect(() => {
     if (location.state?.type && location.state?.messages) {
-      addNotification({
+      setNotification({
         type: location.state.type,
         description: location.state.messages
       });
@@ -73,13 +68,13 @@ const ProviderDetails = () => {
       },
       {
         onSuccess: () => {
-          addNotification({
+          setNotification({
             type: 'success',
             description: t('provider.sp.account.unlinkSuccessfully')
           });
         },
         onError: () => {
-          addNotification({
+          setNotification({
             type: 'error',
             description: t('provider.sp.account.unabletounlink')
           });
@@ -159,20 +154,14 @@ const ProviderDetails = () => {
             </Button>
           }
         />
-        {notifications?.length > 0 && (
-          <div className="alert-container">
-            <div className="MCP-module-body">
-              {notifications.map((item, index) => (
-                <Alert
-                  key={item.id}
-                  description={item.description}
-                  onClose={() => removeNotification(item.id)}
-                  type={item.type}
-                />
-              ))}
-            </div>
-          </div>
+        {notification && (
+          <Alert
+            description={notification.description}
+            onClose={() => setNotification(null)}
+            type={notification.type}
+          />
         )}
+
         <LinkSpAccountProvider>
           <SpAccountTable
             isAddSpAccount={false}

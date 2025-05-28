@@ -5,13 +5,12 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import ModuleHeader from '@src/components/module-header';
 import { Button, Heading, Label, Loader } from '@mckesson/mcp-component-library';
 import { LinkSpAccountProvider } from '../../context/LinkSpAccountContext';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useMutation } from 'react-query';
 import ProviderService from '@src/api/commonService/ProviderService';
 import SpAccountTable from './SpAccountTable';
 import style from './LinkSpAccount.module.scss';
 import Alert from '@src/components/cgat-alert/Alert';
-import CommonUtils from '@src/util/CommonUtils';
+
 function LinkSpAccount() {
   const [spAccount, setSpAccount] = useState([]);
   const { t } = useTranslate();
@@ -20,11 +19,11 @@ function LinkSpAccount() {
   const isEdit = searchParams.get('isEdit') === 'true';
   const name = searchParams.get('name');
   const providerIds = searchParams.get('accounts')?.split(',').map(Number) || [];
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
 
   const onSubmitHandler = () => {
     if (!spAccount?.length) {
-      addNotification({
+      setNotification({
         type: 'error',
         description: t('provider.sp.account.selectSP')
       });
@@ -58,7 +57,7 @@ function LinkSpAccount() {
       },
       onError: () => {
         setSelectedProviders([]);
-        addNotification({
+        setNotification({
           type: 'error',
           description: t('provider.sp.account.unableToLink')
         });
@@ -109,15 +108,7 @@ function LinkSpAccount() {
             )
           }
         />
-        {notifications?.length > 0 && (
-          <div className="alert-container">
-            <div className="MCP-module-body">
-              {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-              ))}
-            </div>
-          </div>
-        )}
+        {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
         <LinkSpAccountProvider>
           <SpAccountTable setSpAccount={setSpAccount} isAddSpAccount={true} />
         </LinkSpAccountProvider>
