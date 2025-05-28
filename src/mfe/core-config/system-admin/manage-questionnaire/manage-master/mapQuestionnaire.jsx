@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Button, Heading, Label } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { debugIds, ID } from '@src/constants/id';
@@ -32,9 +32,6 @@ export default function mapQuestionnaire() {
   const templatesSelected = location.state?.selectedTemplates;
   const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(selectedEntityType);
 
-  const handleCancel = () => {
-    navigate('../');
-  };
   useEffect(() => {
     setEntity(selectedEntityType);
   }, [selectedEntityType]);
@@ -175,7 +172,7 @@ export default function mapQuestionnaire() {
             </Button>
           }
         />
-        <EntityDataTable EntityType={selectedEntityType} setSelectedRows={setSelectedRows} showAlert={showAlert} />
+        <EntityDataTable entityType={selectedEntityType} selectedRows={selectedRows} setSelectedRows={setSelectedRows} showAlert={showAlert} />
       </div>
     </div>
   );

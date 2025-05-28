@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../context/ManageQuestionnaireContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 function flattenMaterials(data) {
   if (!data && !Array.isArray(data)) {
-    throw new Error('Invalid data provided to flattenMaterials function');
+    return [];
   }
 
   return data.reduce((acc, item) => {
@@ -21,47 +22,35 @@ function flattenMaterials(data) {
   }, []);
 }
 
-export const getColumnsByEntityType = (
-  t,
-  navigate,
-  masterEntityType,
+export const getColumnsByEntityType = ({
+  entityType,
   entityData,
+  selectedRows,
   setSelectedRows,
   setOpenDetails,
   setSelectedDetails,
   isRowExpanded,
   onExpandToggle
-) => {
+}) => {
   const { paginationConfig } = useManagerQuestionnaire();
-  const [selectedData, setSelectedData] = useState([]);
-  useEffect(() => {
-    setSelectedRows(selectedData);
-  }, [selectedData]);
+  const { t } = useTranslate();
 
-  const handleRowClick = (e, row) => {
-    setSelectedDetails(row);
-    setOpenDetails(true);
-  };
-
-  switch (masterEntityType) {
+  switch (entityType) {
     case MasterEntityType.Material:
       return [
         {
           id: 'checkbox',
-          name:
-            entityData?.length > 0
-              ? renderTableCheckBox(
-                  { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-                  flattenMaterials(entityData),
-                  'id',
-                  {
-                    ...paginationConfig,
-                    totalElements: entityData.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
-                  },
-                  selectedData,
-                  setSelectedData
-                )
-              : null,
+          name: renderTableCheckBox(
+            { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+            flattenMaterials(entityData),
+            'materialNumber',
+            {
+              ...paginationConfig,
+              totalElements: entityData.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
+            },
+            selectedRows,
+            setSelectedRows
+          ),
           sortable: false,
           cell: (row, index) => {
             if (row.isExpandable && row.materials.length > 1) {
@@ -80,10 +69,10 @@ export const getColumnsByEntityType = (
               'materialNumber',
               {
                 ...paginationConfig,
-                totalElements: entityData.reduce((item, acc) => acc + (item.materials ? item.materials.length : 1), 0)
+                totalElements: entityData.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
               },
-              selectedData,
-              setSelectedData
+              selectedRows,
+              setSelectedRows
             );
           },
           selector: (row) => row.MRN,
@@ -162,10 +151,10 @@ export const getColumnsByEntityType = (
           id: 'checkbox',
           name:
             entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedData, setSelectedData)
+              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedRows, setSelectedRows)
               : null,
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedRows, setSelectedRows),
           selector: (row) => row.MRN,
           width: '50px'
         },
@@ -240,10 +229,10 @@ export const getColumnsByEntityType = (
           id: 'checkbox',
           name:
             entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedData, setSelectedData)
+              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedRows, setSelectedRows)
               : null,
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedRows, setSelectedRows),
           selector: (row) => row.MRN,
           width: '50px'
         },

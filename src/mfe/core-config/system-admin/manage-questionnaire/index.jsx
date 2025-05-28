@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import ManageQuestionnaire from './ManageQuestionnaire';
 import AddQuestionnaire from './AddQuestionnaire';
 import { ROUTE_CONFIG } from './constants';
-import MapQuestionnaire from './manage-master/mapQuestionnaire';
+import MapQuestionnaire from './manage-master/MapQuestionnaire';
 import NotFound from '@src/pages/error-pages/NotFound';
 import { OrgAccountSelectionProvider } from './components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { ManageQuestionnaireProvider } from './context/ManageQuestionnaireContext';
