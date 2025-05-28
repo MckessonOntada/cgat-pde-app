@@ -104,6 +104,13 @@ async function getSPProductDetailsByMN(requestParams) {
   }
   return {};
 }
+
+async function deleteConfigurationsForSPCatalogs(requestParams) {
+  const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
+  const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE);
+  return res;
+}
+
 const SPCatalogService = Object.freeze({
   downloadSPAccountTemplate,
   downloadSPMaterialTemplate,
@@ -114,7 +121,8 @@ const SPCatalogService = Object.freeze({
   deLinkCatalogs,
   linkCatalog,
   downloadSpCatalogList,
-  getSPProductDetailsByMN
+  getSPProductDetailsByMN,
+  deleteConfigurationsForSPCatalogs
 });
 
 export default SPCatalogService;

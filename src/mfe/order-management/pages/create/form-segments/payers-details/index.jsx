@@ -21,15 +21,6 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import { getInsuranceCoverageDetailsTemplate, getPersonalDetailsTemplate, insuranceCompanySchema, insuranceCoverageSchema } from './forms/validation.schema';
 import CommonUtils from '@src/util/CommonUtils';
 
-function toggleProperties(a, b, flag) {
-  if (flag) {
-    return { ...a, ...b };
-  } else {
-    const keysToRemove = new Set(Object.keys(b));
-    return Object.fromEntries(Object.entries(a).filter(([key]) => !keysToRemove.has(key)));
-  }
-}
-
 const PayerDetails = () => {
   const { t } = useTranslate();
   const [formValues, setFormValues] = React.useState(() => {
@@ -115,8 +106,11 @@ const PayerDetails = () => {
     }
   }, [orderDetails]);
 
-  const handleOnAddDrugBenefitInsuranceCompany = (state) => {
+  const handleOnAddDrugBenefitInsuranceCompany = (state, setFieldValue) => {
     setShowDrugBenefitInsurer(state);
+    if (state) {
+      setFieldValue('drugBenefitInsuranceCompany', getPersonalDetailsTemplate(), false);
+    }
   };
 
   const secondaryPayerSection = React.useMemo(() => {
@@ -134,7 +128,9 @@ const PayerDetails = () => {
   }, [showSecondaryPayer]);
 
   const insuranceCompanySectionsWithActions = () => {
-    if (!showDrugBenefitInsurer) return null;
+    if (!showDrugBenefitInsurer) {
+      return null;
+    }
     const filteredSection = [
       {
         rows: payerPersonalDetailsTemplate('drugBenefitInsuranceCompany'),
@@ -159,10 +155,12 @@ const PayerDetails = () => {
   const handleOnSubmit = (formValues) => {
     savePayerDetails(CommonUtils.cleanObject(formValues));
   };
+
   const handleOnBackToOrders = () =>
     navigate('/orders', {
       state: { activeTab: location?.state?.fromTab }
     });
+
   const handleOnBackClick = () => navigate(`/orders/${orderId}/patient`);
 
   return (
@@ -183,10 +181,7 @@ const PayerDetails = () => {
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
       </div>
       <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
-        {({ values, errors }) => {
-          React.useEffect(() => {
-            console.log(values, errors);
-          }, [values]);
+        {({ setFieldValue }) => {
           return (
             <Form>
               <div className="MCP-module-body">
@@ -211,7 +206,7 @@ const PayerDetails = () => {
                   <hr />
                   <div>
                     {showDrugBenefitInsurer ? (
-                      <FormRenderer sections={insuranceCompanySectionsWithActions() || []} />
+                      <FormRenderer sections={insuranceCompanySectionsWithActions(setFieldValue) || []} />
                     ) : (
                       <IconButton
                         variant="tertiary"
@@ -220,7 +215,7 @@ const PayerDetails = () => {
                         iconButton={false}
                         textButton={true}
                         Icon={AddIcon}
-                        onClick={() => handleOnAddDrugBenefitInsuranceCompany(true)}
+                        onClick={() => handleOnAddDrugBenefitInsuranceCompany(true, setFieldValue)}
                       />
                     )}
                   </div>

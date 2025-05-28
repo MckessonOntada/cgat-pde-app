@@ -40,12 +40,12 @@ export const getTableColumn = (
     omit: !isAddLinkProvider
   },
   {
-    id: 'accountName',
-    name: t('table.columns.captions.accountName'),
+    id: 'accountNumber',
+    name: t('table.columns.captions.accountNumber'),
     selector: (row) => row.accountName || '',
     minWidth: '140px',
     sortable: true,
-    sortKey: 'name_1',
+    sortKey: 'sap_partner',
     cell: (props) => (
       <div className="cellEllipse">
         <Link
@@ -58,20 +58,20 @@ export const getTableColumn = (
             e.preventDefault();
             handleProviderDetails(props?.accountNumber);
           }}>
-          <EclipsesTextcss str={props?.accountName || '-'} maxWidth={300} />
+          <EclipsesTextcss str={props?.accountNumber || '-'} maxWidth={300} />
         </Link>
       </div>
     )
   },
   {
-    id: 'accountNumber',
-    name: t('table.columns.captions.accountNumber'),
-    selector: (row) => row.accountNumber || '',
+    id: 'accountName',
+    name: t('table.columns.captions.accountName'),
+    selector: (row) => row.accountName || '',
     minWidth: '140px',
     sortable: true,
-    sortKey: 'sap_partner',
+    sortKey: 'name_1',
     cell: (props) => (
-      <EclipsesTextcss str={props?.accountNumber || '-'} maxWidth={300} />
+      <EclipsesTextcss str={props?.accountName || '-'} maxWidth={300} />
     )
   },
   {

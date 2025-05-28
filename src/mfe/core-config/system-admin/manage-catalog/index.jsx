@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
@@ -6,12 +6,13 @@ import CatalogDataTable from './pages/CatalogDataTable';
 import CommonFilters from '@src/components/Filters';
 import './manageCatalog.scss';
 import OrgAccountsSelect from '../manage-questionnaire/components/orgAccountSelection/OrgAccountsSelect';
-import { CatalogProvider, useCatalogContext } from './context/CatalogContext';
-import ViewConfiguration from './pages/viewConfiguration/ViewConfiguration';
+import { useCatalogContext } from './context/CatalogContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function ManageCatalog(props) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, filterConfig } = useCatalogContext();
+  const [alert, setAlert] = useState(null);
 
   const translatedBreadcrumbs = [
     {
@@ -29,12 +30,18 @@ function ManageCatalog(props) {
     ...item,
     label: t(`dashboard.card.${item.label}`)
   }));
-
+  const handleAlertClose = () => {
+    setAlert({ type: null, message: null });
+  };
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+  };
   return (
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
       <div className="MCP-module-body">
         <Heading as="h1">{t('dashboard.card.manage_catalog')}</Heading>
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
         <div className="MCP-panel-container">
           <OrgAccountsSelect handleAccountChange={() => {}} />
           <div className="MCP-panel-container">
@@ -47,7 +54,7 @@ function ManageCatalog(props) {
               initialData={filterConfig || {}}
             />
           </div>
-          <CatalogDataTable />
+          <CatalogDataTable showAlert={showAlert} />
         </div>
       </div>
     </div>

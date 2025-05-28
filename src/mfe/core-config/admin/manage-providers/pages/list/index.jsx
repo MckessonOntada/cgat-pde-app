@@ -2,15 +2,9 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
-import React, { useEffect } from 'react';
-import {
-  Button,
-  Heading,
-  Alert,
-  Loader
-} from '@mckesson/mcp-component-library';
+import React, { useEffect, useState } from 'react';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -30,13 +24,14 @@ import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.s
 import CommonUtils from '@src/util/CommonUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, add, remove } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
   const { filters, applyFilters, clearFilters } = useFilters();
   const { selectedRows } = useSelection();
   const { applySort } = useSort();
@@ -68,7 +63,7 @@ const List = () => {
   }, []);
   useEffect(() => {
     if (location.state?.type && location.state?.messages) {
-      add({
+      setNotification({
         type: location.state.type,
         description: location.state.messages
       });
@@ -85,7 +80,7 @@ const List = () => {
     const { state } = location;
     if (state?.items) {
       state.items.map((item) => {
-        add({ ...item });
+        setNotification({ ...item });
       });
       navigate(location.pathname, { replace: true });
     }
@@ -93,7 +88,18 @@ const List = () => {
 
   const handleOnLinkSpAccounts = () => {
     const searchParams = Array.from(selectedRows).join(',');
-    navigate(`link-sp-accounts?accounts=${searchParams}`);
+    let url = `link-sp-accounts?accounts=${searchParams}`;
+    if (selectedRows.size === 1) {
+      const selectedId = Array.from(selectedRows)[0];
+      const selectedRowData = data.find((row) => row.id === selectedId);
+      const name = CommonUtils.getFullName(selectedRowData?.name);
+
+      if (selectedRowData?.name) {
+        url += `&name=${name}`;
+      }
+    }
+
+    navigate(url);
   };
 
   const handleOnClick = (url) => () => navigate(url);
@@ -128,19 +134,12 @@ const List = () => {
           </div>
         }
       />
-      {items && items.length > 0 && (
-        <div className="MCP-module-body">
-          {items.map((item, index) => {
-            return (
-              <Alert
-                key={item.id}
-                description={item.description}
-                onClose={() => remove(item.id)}
-                type={item.type}
-              />
-            );
-          })}
-        </div>
+      {notification && (
+        <Alert
+          description={notification.description}
+          onClose={() => setNotification(null)}
+          type={notification.type}
+        />
       )}
 
       <div className="MCP-CardContainer">
@@ -176,7 +175,7 @@ const List = () => {
         />
         <CustomDataTable
           id="provider-list-table"
-          columns={getColumns(add)}
+          columns={getColumns(setNotification)}
           data={data}
           handleChangePage={(_event, pageIndex) => changePage(pageIndex)}
           onSortIconClick={handleOnSort}

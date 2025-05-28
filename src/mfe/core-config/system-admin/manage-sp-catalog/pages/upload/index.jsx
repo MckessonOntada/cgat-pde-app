@@ -1,7 +1,5 @@
 import React from 'react';
 import { useTranslate } from '@src/translations/useTranslation';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
-import AuthUtils from '@src/util/AuthUtils';
 import { Button } from '@mckesson/mcp-component-library';
 import UploadFile from '@src/components/uploadFile/UploadFile';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -21,13 +19,14 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 
 const Upload = () => {
   const { t } = useTranslate();
-  const { items, add, removeAll, remove } = useTimedArray(10000);
+  const [notification, setNotification] = React.useState(null);
+
   const navigate = useNavigate();
   const handleOnUpload = (values) => {
-    removeAll();
+    setNotification(null);
     const { file } = values;
     if (!file) {
-      add({
+      setNotification({
         type: 'error',
         description: t('providers.errorMessage.fileUploadRequired')
       });
@@ -40,7 +39,7 @@ const Upload = () => {
     SPCatalogService.uploadCatalogData(formData)
       .then((response) => {
         if (response.status == 200) {
-          add({
+          setNotification({
             type: 'success',
             description: t('providers.message.fileUploadSuccess')
           });
@@ -51,7 +50,7 @@ const Upload = () => {
             });
             downloadFile(blob, 'SP_Catalog_Upload_Log');
           };
-          add({
+          setNotification({
             type: 'info',
             description: (
               <div className="alert-controls">
@@ -70,21 +69,21 @@ const Upload = () => {
       .catch((error) => {
         const { response: errorResponse = {} } = error;
         if (errorStatusCodes.includes(errorResponse.status)) {
-          add({
+          setNotification({
             type: 'error',
             description: t('fileUpload.error.timeoutOrSystemError'),
             isSticky: true
           });
         } else if (errorResponse.data?.errorCodes) {
           errorResponse.data?.errorCodes.forEach((element) => {
-            add({
+            setNotification({
               type: 'error',
               description: t(element),
               isSticky: true
             });
           });
         } else {
-          add({
+          setNotification({
             type: 'error',
             description: errorResponse.data?.message || t('providers.message.fileUploadFailure'),
             isSticky: true
@@ -135,9 +134,10 @@ const Upload = () => {
       <UploadFile
         primaryHeading={t('controls.uploadCatalog')}
         controlHeading={t('label.uploadCatalogListCSV')}
+        infoHeader={t('label.uploadCatalog.info')}
         isLoading={false}
-        messages={items}
-        onCloseAlert={remove}
+        messages={[notification]}
+        onCloseAlert={() => setNotification(null)}
         customDownload={
           <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={handleOnDownload}>
             <Button size="md" variant={'secondary'} className="context-menu__button">

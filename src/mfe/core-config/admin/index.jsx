@@ -8,6 +8,7 @@ import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import AdminLayout from '@src/mfe/core-config/admin/AdminIndex';
 import NotFound from '@src/pages/error-pages/NotFound';
+import ManagedLinkedAccounts from './manage-linked-accounts/routes/Routes';
 const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
 
 function AdminRoutes() {
@@ -44,6 +45,14 @@ function AdminRoutes() {
         element={
           <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
             <ManageApprovers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={`linked-accounts/*`}
+        element={
+          <ProtectedRoute permissions={Object.values(PERMISSIONS_ENUM.MANAGE_LINKED_ACCOUNTS)}>
+            <ManagedLinkedAccounts/>
           </ProtectedRoute>
         }
       />

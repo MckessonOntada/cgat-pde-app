@@ -170,6 +170,7 @@ export const UserManagementEN = {
   SYSTEM_CONFIGURATION: 'System Configuration',
   ADMIN_MANAGEMENT: 'System Admin Permissions',
   MANAGE_PROVIDERS: 'Manage Providers',
+  MANAGE_LINKED_ACCOUNTS: 'Manage Linked Accounts',
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'Allows user to login',
@@ -223,7 +224,7 @@ export const UserManagementEN = {
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'View Organization',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'Allows user to view organization',
 
-  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'Deactivate/Link sp account',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'Deactivate/Link SP account',
   'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'Allow user to manage provider , enable deactivate and link sp account button ',
   'MANAGE_PROVIDERS.VIEW_PROVIDER': 'View Provider',
   'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'Allows user to view provider page',
@@ -233,6 +234,9 @@ export const UserManagementEN = {
   'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION': 'Allows user to upload provider and download the csv file, enables upload button',
   'MANAGE_PROVIDERS.EDIT_PROVIDER': 'Edit Provider',
   'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION': 'Allows user to edit provider details, enable edit button',
+
+  'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS': 'Manage Linked account',
+  'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS.DESCRIPTION': 'Allows org admin to Link provider with the account within the organization ',
 
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'Manage Orders',
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'Allows to Perform Delete action, Enable delete option',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Loader, Alert, Switch } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Switch } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -14,10 +14,10 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { useMutation, useQuery } from 'react-query';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
-import QuestionnaireTemplate from './QuestionnaireTemplate';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 import { handleApiError } from '@src/util/ApiUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 export const QUESTION_TYPE = {
   RADIO_BUTTON: 'RADIO_BUTTON',
@@ -139,7 +139,7 @@ function AddQuestionnaire() {
     isLoading: isDeactivating,
     isError: deactivateError,
     data: deactivateResponse
-  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
+  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById([id]), {
     onSuccess: (response) => {
       setMode(MODE.VIEW);
       getQuestionnaireDetails();
@@ -382,12 +382,7 @@ function AddQuestionnaire() {
                     </div>
 
                     {alertConfig.isVisible && (
-                      <Alert
-                        description={alertConfig.description}
-                        onClose={() => setAlertConfig(INITIAL_ALERT_CONFIG)}
-                        type={alertConfig.type}
-                        duration={10000}
-                      />
+                      <Alert description={alertConfig.description} onClose={() => setAlertConfig(INITIAL_ALERT_CONFIG)} type={alertConfig.type} />
                     )}
 
                     <div className="MCP-CardContainer">

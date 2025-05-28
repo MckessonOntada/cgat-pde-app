@@ -15,10 +15,16 @@ export const renderTableCheckBox = (
   setSelectedData
 ) => {
   const isCheckboxDisabled = () => {
-    let isDisbled =
-      row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber &&
-      !CommonUtils.isNonEmptyArray(data);
-    return isDisbled;
+    const isHeaderCheckbox =
+      row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber;
+    const isRowInactive =
+      row.active === false ||
+      row.active === 'Inactive' ||
+      row.isActive === false ||
+      row.isActive === 'Inactive';
+    return (
+      (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) || isRowInactive
+    );
   };
 
   const handleRowSelected = () => {
@@ -30,7 +36,21 @@ export const renderTableCheckBox = (
   };
 
   const handleHeaderCheck = () => {
-    const currentPageMaterialNumbers = data.map((item) => item[dataKey]);
+    const activeRows = data.filter((item) => {
+      if (item.hasOwnProperty('active') && item.active === true) {
+        return true;
+      }
+      if (item.hasOwnProperty('isActive') && item.isActive === true) {
+        return true;
+      }
+
+      if (!item.hasOwnProperty('active') && !item.hasOwnProperty('isActive')) {
+        return true;
+      }
+
+      return false;
+    });
+    const currentPageMaterialNumbers = activeRows.map((item) => item[dataKey]);
 
     if (isAllChecked()) {
       setSelectedData(
@@ -39,13 +59,13 @@ export const renderTableCheckBox = (
         )
       );
     } else {
-      const allDataIncluded = data.every((item) =>
+      const allDataIncluded = activeRows.every((item) =>
         selectedData.some(
           (includedItem) => includedItem[dataKey] === item[dataKey]
         )
       );
       if (!allDataIncluded) {
-        const newSelections = data.filter(
+        const newSelections = activeRows.filter(
           (ele) => !selectedData.some((item) => item[dataKey] === ele[dataKey])
         );
         setSelectedData([...selectedData, ...newSelections]);
@@ -59,9 +79,13 @@ export const renderTableCheckBox = (
     }
   };
 
-  const isAllChecked = () => {
-    return selectedData.length === paginationConfig.totalElements;
-  };
+  const isAllChecked = () =>
+    selectedData.length ===
+    data.filter((item) => {
+      if ('active' in item) return item.active === true;
+      if ('isActive' in item) return item.isActive === true;
+      return true;
+    }).length;
 
   const handleIndividualCheck = () => {
     if (selectedData.find((item) => item[dataKey] === row[dataKey])) {

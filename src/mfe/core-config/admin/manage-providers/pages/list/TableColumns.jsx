@@ -33,7 +33,7 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = (add) => {
+export const getColumns = (setNotification) => {
   const { selectedRows, toggleRowSelection, setSelection } = useSelection();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export const getColumns = (add) => {
     async (id) => ProviderService.activateProvider(id),
     {
       onSuccess: () => {
-        add({
+        setNotification({
           description: t('provider.activationSuccess'),
           type: 'success'
         });
@@ -61,7 +61,7 @@ export const getColumns = (add) => {
         }
       },
       onError: () => {
-        add({
+        setNotification({
           description: t('provider.activationFailure'),
           type: 'error'
         });
@@ -73,7 +73,7 @@ export const getColumns = (add) => {
     async (id) => ProviderService.deactivateProvider(id),
     {
       onSuccess: () => {
-        add({
+        setNotification({
           description: t('provider.deactivationSuccess'),
           type: 'success'
         });
@@ -88,7 +88,7 @@ export const getColumns = (add) => {
         }
       },
       onError: () => {
-        add({
+        setNotification({
           description: t('provider.deactivationFailure'),
           type: 'error'
         });
@@ -181,10 +181,11 @@ export const getColumns = (add) => {
   };
 
   const handleOnMenuClick = (props) => (value) => {
+    const name = CommonUtils.getFullName(props?.name);
     if (value === 'edit') {
       navigate(`${props.id}/edit`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-accounts?accounts=${props.id}`);
+      navigate(`link-sp-accounts?accounts=${props.id}&name=${name}`);
     } else if (value === 'activate' || value === 'deactivate') {
       confirmDeactivation(props, value);
     }

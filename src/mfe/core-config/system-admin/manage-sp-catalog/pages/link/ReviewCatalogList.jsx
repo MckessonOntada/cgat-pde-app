@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
@@ -25,7 +24,7 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
   const { data, refreshTable } = useTable();
   const { applySort } = useSort();
   const { selectedRows, setSelection } = useSelection();
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);

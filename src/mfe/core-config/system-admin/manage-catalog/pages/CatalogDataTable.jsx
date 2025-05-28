@@ -1,11 +1,10 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CustomDataTable, Loader, Alert, Button } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Loader, Button } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useCatalogContext } from '../context/CatalogContext';
-import CommonUtils from '@src/util/CommonUtils';
 import ConfigureCatalog from './ConfigureCatalog';
 import CatalogDetails from './CatalogDetails';
 import TableHeading from '@src/components/tableHeading/TableHeading';
@@ -20,22 +19,12 @@ function CatalogDataTable(props) {
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const [openCatalogDetails, setOpenCatalogDetails] = useState(false);
   const [viewCatalog, setViewCatalog] = useState(null);
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [alertDescription, setAlertDescription] = useState('');
-  const [alert, setAlert] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-
+  const { showAlert } = props;
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
-        'id',
-        paginationConfig,
-        selectedCatalogs,
-        setSelectedCatalogs
-      ),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
       sortable: false,
       cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
       // selector: (row) => row.MRN,
@@ -51,7 +40,11 @@ function CatalogDataTable(props) {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
             onClick={() => {
               setViewCatalog(props);
               setOpenCatalogDetails(true);
@@ -113,22 +106,6 @@ function CatalogDataTable(props) {
     setPageNumber(newPage);
   };
 
-  const handleAlertClose = () => {
-    setIsAlertVisible(false);
-  };
-  const showAlert = (type, message) => {
-    setAlert({ type });
-    setIsAlertVisible(true);
-    setAlertDescription(message);
-    const timer = setTimeout(() => {
-      setIsAlertVisible(false);
-      setAlert({ type: '', description: '' });
-    }, 10000);
-
-    // Cleanup the timer to prevent memory leaks
-    return () => clearTimeout(timer);
-  };
-
   return (
     <div>
       <TableHeading
@@ -142,11 +119,7 @@ function CatalogDataTable(props) {
         }
         style={{ marginBottom: '16px' }}
       />
-      {isAlertVisible && (
-        <div className="alert-container">
-          <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />
-        </div>
-      )}
+
       <CustomDataTable
         id="my-data-table"
         type="normal"
@@ -160,13 +133,7 @@ function CatalogDataTable(props) {
         recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        noDataComponent={
-          <EmptyDataTable
-            image={EmptyDataImage}
-            heading={t('ManageCatalog.Table.nodata')}
-            description={t('ManageCatalog.Table.nodataMsg')}
-          />
-        }
+        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('ManageCatalog.Table.nodata')} description={t('ManageCatalog.Table.nodataMsg')} />}
         progressPending={isLoading}
         progressComponent={
           <div

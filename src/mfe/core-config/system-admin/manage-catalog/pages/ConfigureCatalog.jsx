@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
-import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
+import { Field, FieldArray, Form, Formik } from 'formik';
 import Components from '@src/components/form/Components';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import '../manageCatalog.scss';
 import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import * as Yup from 'yup';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 const validationSchema = Yup.object().shape({
   steps: Yup.array().of(
@@ -23,7 +21,15 @@ const validationSchema = Yup.object().shape({
   )
 });
 
-function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, selectedCatalogs, setSelectedCatalogs, showAlert }) {
+function ConfigureCatalog({
+  openConfigurationDraw,
+  setOpenConfigurationDraw,
+  selectedCatalogs,
+  setSelectedCatalogs,
+  showAlert,
+  isSPCatalog,
+  clearTableSelection
+}) {
   const [initialValues, setInitialValues] = useState({
     steps: [
       {
@@ -32,25 +38,42 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
       }
     ]
   });
-  const { showSnackbar } = useSnackbar();
+
   const { t } = useTranslate();
 
   const { mutate, isLoading, isError, data } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configure`;
-      const res = await HttpResourceService.callRest(apiUrl, httpVerb.POST, payload);
+      const res = await HttpResourceService.callRest(
+        apiUrl,
+        httpVerb.POST,
+        payload
+      );
       return res;
     },
     {
       onSuccess: (response) => {
         setOpenConfigurationDraw(false);
-        setSelectedCatalogs([]);
-        // showSnackbar({ description: 'Catalog configured successfully', type: 'success' });
-        showAlert('success', 'Catalog configured successfully');
+        if (!isSPCatalog) {
+          setSelectedCatalogs([]);
+          showAlert(
+            'success',
+            t('manageMaterial.drawer.controls.apply.success')
+          );
+        } else {
+          clearTableSelection();
+          showAlert({
+            type: 'success',
+            description: t('manageMaterial.drawer.controls.apply.success')
+          });
+        }
       },
       onError: (error) => {
         setOpenConfigurationDraw(true);
-        showSnackbar({ description: 'Error while configuring catalog', type: 'error' });
+        showAlert({
+          type: 'success',
+          description: t('manageMaterial.drawer.controls.apply.error')
+        });
       }
     }
   );
@@ -68,14 +91,20 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
   };
 
   const onSubmitHandler = (values) => {
+    const catalogList = Array.isArray(selectedCatalogs)
+      ? selectedCatalogs
+      : Array.from(selectedCatalogs || []);
     let payload = {
-      catalogConfigurationAttributes: selectedCatalogs.map((catalog) => ({
-        sapMaterial: catalog.sapMaterial,
-        soldToCustomer: catalog.soldToCustomer,
-        shipToCustomer: catalog.shipToCustomer,
-        variant: catalog.variant
-      })),
-      ...values
+      catalogConfigurationAttributes: Array.from(catalogList).map(
+        (catalog) => ({
+          sapMaterial: catalog.sapMaterial,
+          soldToCustomer: catalog.soldToCustomer,
+          shipToCustomer: catalog.shipToCustomer,
+          variant: catalog.variant
+        })
+      ),
+      ...values,
+      channelType: catalogList?.[0]?.channelType || CHANNEL_TYPE.BUY_AND_BILL
     };
     mutate(payload);
   };
@@ -97,7 +126,11 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                 heading={t('ManageCatalog.Configurations')}
                 controls={
                   <div className="controls">
-                    <Button label="secondary" variant="secondary" size="md" onClick={handleCloseDrawer}>
+                    <Button
+                      label="secondary"
+                      variant="secondary"
+                      size="md"
+                      onClick={handleCloseDrawer}>
                       {t('ManageCatalog.Button.Cancel')}
                     </Button>
                     <Button label="Primary" size="md" type="submit">
@@ -110,7 +143,9 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                     {({ insert, remove, push }) => (
                       <div className="step-main-container">
                         <div className="styled-heading">
-                          <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
+                          <Heading as="h4">
+                            {t('ManageCatalog.WhatToExpectNext')}
+                          </Heading>
                         </div>
                         {values.steps.length > 0 &&
                           values.steps.map((step, index) => (
@@ -148,7 +183,9 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                                   placeholder=" "
                                   isRequired={false}
                                   component={Components['textarea']}
-                                  maxCharHelperText={t('ManageCatalog.input.validation.text')}
+                                  maxCharHelperText={t(
+                                    'ManageCatalog.input.validation.text'
+                                  )}
                                   maxCharLimit={5000}
                                   maxCharWarningLimit={4900}
                                 />
@@ -156,7 +193,12 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                             </div>
                           ))}
                         <div className="add-step">
-                          <Button label="Tertiary" onClick={() => push({ stepName: '', description: '' })} variant="tertiary">
+                          <Button
+                            label="Tertiary"
+                            onClick={() =>
+                              push({ stepName: '', description: '' })
+                            }
+                            variant="tertiary">
                             {t('ManageCatalog.ADDSTEP')}
                           </Button>
                         </div>

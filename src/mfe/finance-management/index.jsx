@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import PageHeader from '@src/components/pageHeader';
 import './index.scss';
 import RecordDetails from './components/RecordDetails';
 import BalanceDetails from './components/BalanceDetails';
 import Routes from './routes/Routes';
 import { TabList, Heading } from '@mckesson/mcp-component-library';
-import { PATHS, tabListData } from './routes/constants';
+import { tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
-import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
-import EmptyDataContainer from '@src/components/EmptyData';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyUI from './EmptyUI';
 
@@ -22,6 +19,7 @@ const PaymentsInvoices = () => {
   const [tabs, setTabs] = useState();
   const { selectedAccount, isLoading } = useAccountContext();
   const { t } = useTranslate();
+  const alertContainerId = 'summary-alert-container';
 
   useEffect(() => {
     if (!Array.isArray(tabListData) || tabListData.length === 0) {
@@ -56,29 +54,17 @@ const PaymentsInvoices = () => {
   };
 
   if (isLoading || !CommonUtils.isNonEmptyObject(selectedAccount)) {
-    return (
-      <EmptyUI
-        isLoading={isLoading}
-        isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)}
-      />
-    );
+    return <EmptyUI isLoading={isLoading} isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)} />;
   }
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader
-        heading={
-          <Heading as="h1">
-            {t('paymentInvoices.header.manageInvoices')}
-          </Heading>
-        }
-      />
+      <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.manageInvoices')}</Heading>} />
+      <div id={alertContainerId} />
       <RecordDetails />
-
       <BalanceProvider>
         <BalanceDetails />
       </BalanceProvider>
-
       <div className="MCP-module-body">
         <div id="tablist-container" className="MCP-panel-container">
           <div className="customTab">

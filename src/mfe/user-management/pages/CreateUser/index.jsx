@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Heading, Stepper, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, StepperMui, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -18,6 +18,7 @@ import { RoutePaths } from '@src/routes/constants';
 import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import CommonUtils from '@src/util/CommonUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const CreateUser = () => {
   const { t } = useTranslate();
@@ -31,16 +32,6 @@ const CreateUser = () => {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-
-  useEffect(() => {
-    if (isAlertVisible) {
-      const timer = setTimeout(() => {
-        setIsAlertVisible(false);
-      }, 10000);
-
-      return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, [isAlertVisible]);
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
@@ -108,7 +99,7 @@ const CreateUser = () => {
   const handleGoBack = () => {
     navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
-
+  const sanitized = CommonUtils.sanitizeValue(userData?.address);
   const initialValues = {
     name: {
       firstName: userData?.name?.firstName || '',
@@ -121,7 +112,13 @@ const CreateUser = () => {
       countryCode: '91',
       fax: userData?.contact?.fax || ''
     },
-    address: CommonUtils.sanitizeValue(userData?.address)
+    address: {
+      address1: sanitized.address1 || '',
+      address2: sanitized.address2 || '',
+      city: sanitized.city || '',
+      state: sanitized.state || '',
+      zip: sanitized.zip || ''
+    }
   };
 
   const validationSchema = Yup.object({
@@ -269,7 +266,7 @@ const CreateUser = () => {
 
       {!isEdit && !isSystemAdminView && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={1}
             dividerText="of"
             stepHeaders={[
@@ -288,7 +285,7 @@ const CreateUser = () => {
         </div>
       )}
 
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
 
       <Formik
         initialValues={initialValues}
@@ -306,14 +303,7 @@ const CreateUser = () => {
           return (
             <Form>
               <div className="MCP-panel-container">
-                {/* <Heading as="h2">
-                  {t(
-                    isSystemAdminView
-                      ? 'userManagement.create_user.details_to_create_sysadmin'
-                      : 'userManagement.create_user.details_to_create_user'
-                  )}
-                </Heading> */}
-                <UserDetailsFormSegment comment={userData?.comment} />
+                <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
               </div>
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>

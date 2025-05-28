@@ -13,7 +13,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -30,41 +29,31 @@ const AccountSelection = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const { controlRef } = useContext(FooterContext);
-  const {
-    isEdit = false,
-    isApprover = false,
-    alertState,
-    isTherapyChanged = false
-  } = location.state || {};
-  const [updateState, setUpdateState] = useState({ isTherapyChanged });
-  const [selectedAccount, setSelectedAccount] = React.useState(null);
-  const [accountSearchString, setAccountSearchString] = React.useState('');
-  const [selectedShippingAddress, setSelectedShippingAddress] =
-    React.useState('');
-  const [initialSelectedAccount, setInitialSelectedAccount] =
-    React.useState(null);
-  const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] =
-    React.useState('');
+  const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = location.state || {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [accountError, setAccountError] = useState({
     isError: false,
     message: ''
   });
-  const {
-    data: orderDetails,
-    isFetching: isFetchingOrderDetails,
-    isError,
-    error,
-    isLoader
-  } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+
+  const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
+  const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+
+  React.useEffect(() => {
+    if (!isTherapyChanged) {
+      setSelectedSoldToAccount(orderDetails.accountDetails?.soldToAccount);
+      setSelectedShipToAccount(orderDetails.accountDetails?.shipToAccount);
+    }
+  }, [orderDetails]);
 
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const therapChannelType = orderDetails?.therapy?.channelType;
+
   const { data: priceDetails } = useOrderPrice({
-    therapyId: therapyId,
-    soldToAccountId: selectedAccount?.accountNumber,
-    shipToAccountId: selectedShippingAddress?.accountNumber,
-    channelType: selectedAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL
+    therapyId,
+    soldToAccountId: selectedSoldToAccount?.accountNumber,
+    shipToAccountId: selectedShipToAccount?.accountNumber,
+    channelType: selectedSoldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL
   });
 
   const alertContainerId = 'accountSelection-alert-Container';
@@ -75,18 +64,17 @@ const AccountSelection = () => {
     if (isPapOrder) navigate('/orders');
   }, [orderDetails]);
 
-  const { isLoading, data: accountsListData = {} } = useQuery({
-    queryKey: ['order', 'therapy', therapyId, accountSearchString],
-    queryFn: async () =>
-      OrderService.getSoldToAccounts(
-        therapyId,
-        serializeParams({
-          query: accountSearchString,
-          channelType: orderDetails?.accountDetails?.soldToAccount?.channelType
-        })
-      ),
-    enabled: !!therapyId && !!orderDetails.accountDetails.soldToAccount,
-    refetchOnWindowFocus: false,
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
+    onSuccess: async (result) => {
+      const { id } = result;
+      try {
+        navigate(`../${id}/patient`, {
+          state: { alertState, isEdit: false, isApprover: isApprover }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    },
     onError: (error) => {
       showAlert({
         description: error.message,
@@ -96,64 +84,20 @@ const AccountSelection = () => {
     }
   });
 
-  const isSPAccountSelected = true;
-  const { isLoading: isSaving, mutate: saveAccount } = useMutation(
-    async (data) => OrderService.saveAccount(orderId, data),
-    {
-      onSuccess: async (result) => {
-        const { id } = result;
-        try {
-          // temp code start
-          navigate(`../${id}/patient`, {
-            state: { alertState, isEdit: false, isApprover: isApprover }
-          });
-          return;
-          // temp code end
-          if (result.patientDetailsRequired || isSPAccountSelected) {
-            navigate(`../${id}/patient`, {
-              state: { alertState, isEdit: false, isApprover: isApprover }
-            });
-          } else {
-            navigate(`../${id}/additional-details`, {
-              state: { alertState, isEdit: false, isApprover: isApprover }
-            });
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      },
-      onError: (error) => {
-        showAlert({
-          description: error.message,
-          type: 'error',
-          anchorEl: alertContainerId
-        });
-      }
-    }
-  );
-
   const handleOnClose = () => {
     setOpen(false);
   };
   const handleOnClick = () => {
     setAccountError({ isError: false, message: '' });
-    setUpdateState({ isTherapyChanged: false });
     setOpen(true);
   };
 
   const isDirty = useMemo(() => {
     return (
-      JSON.stringify(selectedAccount) !==
-        JSON.stringify(initialSelectedAccount) ||
-      JSON.stringify(selectedShippingAddress) !==
-        JSON.stringify(initialSelectedShippingAddress)
+      JSON.stringify(selectedSoldToAccount) !== JSON.stringify(orderDetails.accountDetails?.soldToAccount) ||
+      JSON.stringify(selectedShipToAccount) !== JSON.stringify(orderDetails.accountDetails?.shipToAccount)
     );
-  }, [
-    selectedAccount,
-    initialSelectedAccount,
-    selectedShippingAddress,
-    initialSelectedShippingAddress
-  ]);
+  }, [selectedSoldToAccount, selectedShipToAccount]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -181,13 +125,13 @@ const AccountSelection = () => {
   }, [accountError]);
 
   const handleOnSubmit = async () => {
-    if (!selectedShippingAddress || !selectedAccount || isSaving) {
-      if (!selectedShippingAddress && selectedAccount) {
+    if (!selectedShipToAccount || !selectedSoldToAccount || isSaving) {
+      if (!selectedShipToAccount && selectedSoldToAccount) {
         setAccountError({
           isError: true,
           message: t('messages.selectshippingAddress')
         });
-      } else if (!selectedAccount) {
+      } else if (!selectedSoldToAccount) {
         setAccountError({
           isError: true,
           message: t('messages.selectAccount')
@@ -201,16 +145,16 @@ const AccountSelection = () => {
       return;
     }
 
-    if (selectedAccount && selectedShippingAddress) {
+    if (selectedSoldToAccount && selectedShipToAccount) {
       const payload = {
-        soldToAccountId: selectedAccount.id,
-        shipToAccountId: selectedShippingAddress.id
+        soldToAccountId: selectedSoldToAccount.id,
+        shipToAccountId: selectedShipToAccount.id
       };
       setAccountError({ isError: false, message: '' });
 
       saveAccount(payload);
     } else {
-      if (!selectedAccount) {
+      if (!selectedSoldToAccount) {
         setAccountError({
           isError: true,
           message: 'Please select an account before proceeding.'
@@ -229,6 +173,7 @@ const AccountSelection = () => {
       });
     }
   };
+
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
@@ -244,79 +189,14 @@ const AccountSelection = () => {
   };
 
   const getAddress = (acc) => {
-    return [
-      acc.houseNumber,
-      acc.street,
-      acc.district,
-      acc.city,
-      acc.state,
-      acc.zipCode
-    ]
-      .filter(Boolean)
-      .join(', ');
+    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
   };
 
   const handleOnAccountSelection = (selectedAccount) => {
-    setSelectedShippingAddress('');
-    setUpdateState({ isTherapyChanged: false });
-    setSelectedAccount(selectedAccount);
+    setSelectedShipToAccount('');
+    setSelectedSoldToAccount(selectedAccount);
     setOpen(false);
   };
-
-  const transformSoldToAccount = (account) => {
-    if (!account) return null;
-
-    return {
-      ...account,
-      address: {
-        email: account.email || null,
-        telephone: account.telephone || null,
-        houseNumber: account.houseNumber || null,
-        street: account.street || null,
-        street2: account.street2 || null,
-        street3: account.street3 || null,
-        city: account.city || null,
-        district: account.district || null,
-        state: account.state || null,
-        zipCode: account.zipCode || null,
-        country: account.country || null
-      }
-    };
-  };
-
-  React.useEffect(() => {
-    if (accountsListData && orderDetails) {
-      const { accountDetails } = orderDetails;
-      if (accountDetails) {
-        const { soldToAccount, shipToAccount } = accountDetails;
-        if (soldToAccount) {
-          const originalSelectedAccount = accountsListData?.content?.filter(
-            (acc) => acc.accountNumber === soldToAccount.accountNumber
-          )[0];
-          if (originalSelectedAccount)
-            setSelectedAccount(originalSelectedAccount);
-
-          setInitialSelectedAccount(originalSelectedAccount); // Set initial value;
-        } else {
-          if (updateState.isTherapyChanged) {
-            setSelectedAccount('');
-            setInitialSelectedAccount('');
-          }
-        }
-        if (shipToAccount) {
-          setSelectedShippingAddress(shipToAccount);
-          setInitialSelectedShippingAddress(shipToAccount); // Set initial value
-        } else {
-          if (updateState.isTherapyChanged) {
-            setSelectedShippingAddress('');
-            setInitialSelectedShippingAddress('');
-          }
-        }
-      } else {
-        console.log('Could not set account');
-      }
-    }
-  }, [orderDetails?.accountDetails, accountsListData, therapyId]);
 
   if (isLoader) {
     return isLoader;
@@ -324,24 +204,16 @@ const AccountSelection = () => {
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
+
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToOrders}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
-        }
-      />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
         <OrderStepper
@@ -354,8 +226,8 @@ const AccountSelection = () => {
             orderDetails={orderDetails}
             priceDetails={priceDetails}
             selectedAccount={{
-              shipToAccount: selectedShippingAddress,
-              soldToAccount: transformSoldToAccount(selectedAccount)
+              shipToAccount: selectedShipToAccount,
+              soldToAccount: selectedSoldToAccount
             }}
           />
           {accountError.isError && <div id={alertContainerId} />}
@@ -365,44 +237,31 @@ const AccountSelection = () => {
                 heading={
                   <div>
                     <Heading as="h2">{t('labels.accountSelection')}</Heading>
-                    <p className="dull-text">
-                      {t('messages.selectAccountToBuyTherapy')}
-                    </p>
+                    <p className="dull-text">{t('messages.selectAccountToBuyTherapy')}</p>
                   </div>
                 }
               />
               <div className="MCP-CardContainer">
-                <div
-                  className={
-                    'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
-                  }>
+                <div className={'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                   <div className={styles.account}>
                     <div className={styles.accountDetails}>
-                      {selectedAccount ? (
+                      {selectedSoldToAccount ? (
                         <React.Fragment>
                           <p className={styles.name}>
-                            <b>{selectedAccount.accountName}</b>
+                            <b>{selectedSoldToAccount.accountName}</b>
                           </p>
-                          <p className={styles.address}>
-                            {getAddress(selectedAccount)}
-                          </p>
+                          <p className={styles.address}>{getAddress(selectedSoldToAccount.address)}</p>
                           <p className={styles.address}>
                             <span>
-                              {t('Distribution Channel')} -{' '}
-                              {t(`labels.${selectedAccount?.channelType}`)}
+                              {t('Distribution Channel')} - {t(`labels.${selectedSoldToAccount?.channelType}`)}
                             </span>
                           </p>
                         </React.Fragment>
                       ) : (
                         <React.Fragment>
-                          <Heading as="h3">
-                            {t('labels.pleaseSelectAccount')}
-                          </Heading>
+                          <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
                           <div className={styles.btnAccount}>
-                            <Button
-                              size="md"
-                              onClick={handleOnClick}
-                              variant="secondary">
+                            <Button size="md" onClick={handleOnClick} variant="secondary">
                               {t('captions.btnSelectYourAccount')}
                             </Button>
                           </div>
@@ -410,7 +269,7 @@ const AccountSelection = () => {
                       )}
                     </div>
                   </div>
-                  {selectedAccount && (
+                  {selectedSoldToAccount && (
                     <div className={`${styles.controls} left-floating-control`}>
                       <div className="styled-icon-button">
                         <Button variant="tertiary" onClick={handleOnClick}>
@@ -422,13 +281,9 @@ const AccountSelection = () => {
                 </div>
               </div>
             </div>
-            {selectedAccount && (
-              <ShippingAddressProvider
-                accountDetails={{ therapyId, selectedAccount }}>
-                <ShippingAddress
-                  selectedShippingAddress={selectedShippingAddress}
-                  setSelectedShippingAddress={setSelectedShippingAddress}
-                />
+            {selectedSoldToAccount && (
+              <ShippingAddressProvider accountDetails={{ therapyId, selectedAccount: selectedSoldToAccount }}>
+                <ShippingAddress selectedShippingAddress={selectedShipToAccount} setSelectedShippingAddress={setSelectedShipToAccount} />
               </ShippingAddressProvider>
             )}
           </div>
@@ -437,11 +292,7 @@ const AccountSelection = () => {
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button
-                size="md"
-                onClick={handleOnSubmit}
-                variant="primary"
-                type="submit">
+              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
@@ -452,7 +303,7 @@ const AccountSelection = () => {
               therapyId={therapyId}
               onSubmit={handleOnAccountSelection}
               onClose={handleOnClose}
-              therapChannelType={therapChannelType}
+              channelType={orderDetails?.therapy?.channelType}
             />
           )}
         </div>

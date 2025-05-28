@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -14,6 +14,7 @@ import ApproverList from './ApproverList';
 import { useApprover } from '../../context/ApproverContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import AuthUtils from '@src/util/AuthUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -30,13 +31,6 @@ export default function Dashboard() {
     setAlert({ type });
     setIsAlertVisible(true);
     setAlertDescription(message);
-    const timer = setTimeout(() => {
-      setIsAlertVisible(false);
-      setAlert({ type: '', description: '' });
-    }, 10000);
-
-    // Cleanup the timer to prevent memory leaks
-    return () => clearTimeout(timer);
   };
 
   useEffect(() => {
@@ -106,19 +100,14 @@ export default function Dashboard() {
           controls={
             <div className="controls">
               {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP) && (
-                <Button
-                  Icon={add_circle_bold}
-                  className="button-icon"
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
+                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
                   {t('approvergroup.create_approvergroup')}
                 </Button>
               )}
             </div>
           }
         />
-        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />}
 
         <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <div className="MCP-CardContainer">

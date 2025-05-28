@@ -62,5 +62,9 @@ export const DashboardEN = {
   'header.tabs.admin': 'Admin',
 
   'dashboard.card.system_config_standard_settings': 'Standard Settings',
-  'dashboard.card.system_config_sp_settings': 'SP Settings'
+  'dashboard.card.system_config_sp_settings': 'SP Settings',
+  'dashboard.card.manage_linked_accounts_description':
+    'Enable you to efficiently review and manage accounts linked to your organization.',
+  'dashboard.card.manage_linked_accounts':
+    'Manage Linked Accounts',
 };

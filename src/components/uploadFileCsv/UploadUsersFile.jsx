@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import Components from '@src/components/form/Components';
+import Alert from '../cgat-alert/Alert';
 
-function UploadUsersFile({downloadTemplate, handleUpload, validateFile, label, alert, handleAlertClose, isLoading}) {
+function UploadUsersFile({ downloadTemplate, handleUpload, validateFile, label, alert, handleAlertClose, isLoading }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   return (
@@ -23,11 +24,11 @@ function UploadUsersFile({downloadTemplate, handleUpload, validateFile, label, a
           heading={<Heading as="h1">{`Upload ${label}`}</Heading>}
           controls={
             downloadTemplate && (
-                <div className="controls">
-                  <Button className="button-icon" variant="secondary" size="md" onClick={downloadTemplate}>
-                    {t('file.download.csv')}
-                  </Button>
-                </div>
+              <div className="controls">
+                <Button className="button-icon" variant="secondary" size="md" onClick={downloadTemplate}>
+                  {t('file.download.csv')}
+                </Button>
+              </div>
             )
           }
         />

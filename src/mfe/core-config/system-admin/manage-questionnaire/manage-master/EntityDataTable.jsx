@@ -123,6 +123,9 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
           isMaterialConfiguration={true}
           useMaterialService={true}
           heading={t('manageMaterial.drawer.heading')}
+          notify={({ type, message }) => {
+            showAlert(type, message);
+          }}
         />
       ) : (
         <SPMaterialDetails openSPMaterialDetails={openDetails} setOpenSPMaterialDetails={setOpenDetails} viewSPMaterial={selectedDetails} />

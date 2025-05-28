@@ -1,15 +1,11 @@
 import React, { useRef, useState } from 'react';
-import {
-  Button,
-  Heading,
-  Alert,
-  Loader
-} from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import Components from '@src/components/form/Components';
+import Alert from '../cgat-alert/Alert';
 
 function UploadFile({
   primaryHeading,
@@ -20,7 +16,7 @@ function UploadFile({
   customDownload,
   downloadTemplate,
   upload,
-  cancel= {},
+  cancel = {},
   onFileSelection,
   prefixChildren = false,
   suffixChildren = false,

@@ -62,7 +62,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     cell: (row) => {
       const { therapies = [], tradeName, materialDescription } = row;
       const label = therapies && therapies.length === 1 ? therapies[0].materialDescription : tradeName || materialDescription;
-      const linkValue = therapies.map((i) => i.id).join(',');
+      const linkValue = Boolean(therapies.length) ? therapies.map((i) => i.id).join(',') : row.id;
       return (
         <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy=${linkValue}`}>
           <EclipsesTextcss str={label} />

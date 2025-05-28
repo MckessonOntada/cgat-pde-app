@@ -2,10 +2,9 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
@@ -22,6 +21,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import PermittedComponent from '@src/components/permitted-component';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -65,7 +65,6 @@ const UserDetail = () => {
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const isSelf = userId === AuthUtils.getUserId();
-  const [duration, setDuration] = React.useState(10000);
   const disablePay = useRef(false);
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
@@ -106,14 +105,12 @@ const UserDetail = () => {
         setIsProvisioned(true);
         setAlertType('success');
         setAlertDescription(t('messages.provisionedsuccess'));
-        setDuration(10000);
       },
       onError: (error) => {
         setIsAlertVisible(true);
         setIsProvisioned(true);
         setAlertType('error');
         setAlertDescription(t('messages.provisionederrror'));
-        setDuration(null);
       }
     }
   );
@@ -123,7 +120,6 @@ const UserDetail = () => {
       setIsAlertVisible(true);
       setIsProvisioned(true);
       setAlertType('error');
-      setDuration(null);
       setAlertDescription(
         <>
           {t('userManagement.provision.message', {
@@ -193,14 +189,12 @@ const UserDetail = () => {
       setIsAlertVisible(true);
       setAlertType('success');
       setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'));
-      setDuration(10000);
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
       setIsAlertVisible(true);
       setAlertType('error');
-      setDuration(10000);
       setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'));
     }
   });
@@ -247,7 +241,6 @@ const UserDetail = () => {
     onError: (error) => {
       setIsAlertVisible(true);
       setAlertType('error');
-      setDuration(10000);
       setAlertDescription(t('errors.default'));
       setIsConsentModalOpen(false);
       setIsConsentError(true);
@@ -273,7 +266,7 @@ const UserDetail = () => {
   };
 
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
-  const userFullName = `${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
+  const userFullName = CommonUtils.getFullName(data?.name); //`${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
   const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
@@ -574,7 +567,11 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
         modalBody: (
           <div className="MCP-modal-body">
             <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
-            <p>{t('popup.message.wishToContinueLoginAsThisUserDescription', { targetUser: userFullName })}</p>
+            <p>
+              {t('popup.message.wishToContinueLoginAsThisUserDescription', {
+                targetUser: userFullName
+              })}
+            </p>
             <div className="checkboxGroup">
               <CheckboxGroup
                 id={'default'}

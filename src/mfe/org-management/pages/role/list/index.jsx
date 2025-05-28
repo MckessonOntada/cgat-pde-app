@@ -1,21 +1,23 @@
 import React, { useEffect, useMemo } from 'react';
-import { Button, Alert, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from '@src/components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { useRole } from '../../../context/RoleContext';
 import RolesDataTable from './RolesDataTable';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS } from '../../../routes/constants';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonFilters from '@src/components/Filters';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function RolesList() {
   const { t } = useTranslate();
+  const location = useLocation();
   const navigate = useNavigate();
-  const { messageConfig, clearMessage, clearFilters, applyFilters, refreshData } = useRole();
+  const { messageConfig, clearMessage, clearFilters, applyFilters, refreshData, setMessage } = useRole();
   const userPermissions = AuthUtils.getUserPermissions();
 
   const handleOnAddRoleClick = () => {
@@ -24,6 +26,15 @@ function RolesList() {
   useEffect(() => {
     clearFilters();
     refreshData();
+    if (location.state?.showAlert) {
+      setMessage({
+        primaryMessage: location.state?.showAlert.description,
+        kind: location.state?.showAlert.type
+      });
+      navigate(location.pathname, { replace: true, state: { ...location.state, showAlert: null } });
+    } else {
+      clearMessage();
+    }
   }, []);
 
   const AdditionalFiltersConfig = useMemo(() => {
@@ -74,7 +85,7 @@ function RolesList() {
           }
         />
         {messageConfig.kind && messageConfig.primaryMessage && (
-          <Alert duration={10000} onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
+          <Alert onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
         )}
 
         {/* module body */}

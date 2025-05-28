@@ -5,8 +5,8 @@ import CommonUtils from '@src/util/CommonUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import dayjs from 'dayjs';
+import useAlert from '@src/hooks/useAlert';
 
 const PaymentMethodsContext = createContext();
 
@@ -42,15 +42,14 @@ export const PaymentMethodsProvider = ({ children }) => {
   const { selectedAccount } = useAccountContext();
   const [bankAccountsData, setBankAccountsData] = useState([]);
   const [unslicedBankAccountsData, setUnslicedBankAccountsData] = useState([]);
-  // const [bankFilterConfig, setBankFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [bankPaginationConfig, setBankPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [bankSortConfig, setBankSortConfig] = useState(INITIAL_SORT_STATE);
   const [cardsData, setCardsData] = useState([]);
   const [unslicedCardsData, setUnslicedCardsData] = useState([]);
-  // const [cardsFilterConfig, setCardsFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [cardsPaginationConfig, setCardsPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [cardsSortConfig, setCardsSortConfig] = useState(INITIAL_SORT_STATE);
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
 
   const {
     isFetching,
@@ -67,8 +66,7 @@ export const PaymentMethodsProvider = ({ children }) => {
         payerAccountNumber: selectedAccount?.accountNumber
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
-      // const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
-      // const endIndex = startIndex + paginationConfig.pageSize;
+
       setUnslicedBankAccountsData(res.data.banks);
       setUnslicedCardsData(res.data.cards);
       return res.data;
@@ -79,7 +77,11 @@ export const PaymentMethodsProvider = ({ children }) => {
       if (CommonUtils.isNonEmptyObject(error)) {
         const { response } = error;
         let errorMsg = response?.data?.message || t('paymentInvoices.paymentMethods.api.error');
-        showSnackbar({ description: errorMsg, type: 'error' });
+        showAlert({
+          description: errorMsg,
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
     }
   });
@@ -108,9 +110,7 @@ export const PaymentMethodsProvider = ({ children }) => {
   const filterBankAccounts = debounce((query) => {
     if (CommonUtils.isNonEmptyString(query)) {
       const lowerQuery = query.toLowerCase();
-      setBankAccountsData(
-        unslicedBankAccountsData.filter((item) => item.name?.toLowerCase().includes(lowerQuery) || item.accountNumber?.includes(lowerQuery))
-      );
+      setBankAccountsData(unslicedBankAccountsData.filter((item) => item.name?.toLowerCase().includes(lowerQuery) || item.accountNumber?.includes(lowerQuery)));
     } else {
       refetchPaymentMethods();
     }
@@ -119,9 +119,7 @@ export const PaymentMethodsProvider = ({ children }) => {
   const filterCreditCards = debounce((query) => {
     if (CommonUtils.isNonEmptyString(query)) {
       const lowerQuery = query.toLowerCase();
-      setCardsData(
-        unslicedCardsData.filter((item) => item.holderName?.toLowerCase().includes(lowerQuery) || item.number?.includes(lowerQuery))
-      );
+      setCardsData(unslicedCardsData.filter((item) => item.holderName?.toLowerCase().includes(lowerQuery) || item.number?.includes(lowerQuery)));
     } else {
       refetchPaymentMethods();
     }

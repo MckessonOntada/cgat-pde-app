@@ -159,23 +159,16 @@ const RoleDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleGoBack}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
           {t('orgManagement.role.captionsBtnBackToManageRoles')}
         </Button>
       </div>
 
-      <ModuleHeader
-        heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />}
-      />
+      <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
 
       <div className="MCP-module-body">
         {/* {!isEdit && (
-          <Stepper
+          <StepperMui
             activeIndex={1}
             dividerText="of"
             mobileLabel={t('orgManagement.role.labelStep')}
@@ -184,11 +177,7 @@ const RoleDetails = () => {
         )} */}
 
         <div>
-          <Formik
-            initialValues={formData}
-            validationSchema={roleValidationSchema}
-            onSubmit={handleOnSubmit}
-            enableReinitialize>
+          <Formik initialValues={formData} validationSchema={roleValidationSchema} onSubmit={handleOnSubmit} enableReinitialize>
             {({ values, isValid }) => {
               React.useEffect(() => {
                 setFormData({ ...values });
@@ -199,40 +188,25 @@ const RoleDetails = () => {
                   <div className="MCP-module-wrapper">
                     <div className="MCP-panel-container">
                       <ModuleHeader
-                        heading={
-                          <Heading as="h2">
-                            {t('orgManagement.role.headingPermissionDetails')}
-                          </Heading>
-                        }
+                        heading={<Heading as="h2">{t('orgManagement.role.headingPermissionDetails')}</Heading>}
                         controls={
                           <p>
-                            <span className="required">*</span>{' '}
-                            {t('orgManagement.create_org.required')}
+                            <span className="required">*</span> {t('orgManagement.create_org.required')}
                           </p>
                         }
                       />
 
                       <div className="MCP-module-body">
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                          <Field
-                            name="roleName"
-                            label={t('orgManagement.role.labelRoleName')}
-                            placeholder=" "
-                            isRequired
-                            component={Components['input']}
-                          />
+                          <Field name="roleName" label={t('orgManagement.role.labelRoleName')} placeholder=" " isRequired component={Components['input']} />
                         </div>
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
                           <Field
                             name="roleDescription"
                             placeholder=" "
                             component={Components['textarea']}
-                            fieldlabel={t(
-                              'orgManagement.role.labelRoleDescription'
-                            )}
-                            maxCharHelperText={t(
-                              'ManageCatalog.input.validation.text'
-                            )}
+                            fieldlabel={t('orgManagement.role.labelRoleDescription')}
+                            maxCharHelperText={t('ManageCatalog.input.validation.text')}
                             maxCharLimit={5000}
                           />
                         </div>
@@ -241,10 +215,7 @@ const RoleDetails = () => {
                     <ModuleHeader
                       controls={
                         <div className="controls">
-                          <Button
-                            size="md"
-                            variant="secondary"
-                            onClick={handleOnBackButtonClick}>
+                          <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                             {t('orgManagement.button.cancel')}
                           </Button>
                           <Button size="md" variant="primary" type="submit">

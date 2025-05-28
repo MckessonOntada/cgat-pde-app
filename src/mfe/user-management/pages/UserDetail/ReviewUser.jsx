@@ -42,9 +42,7 @@ const ReviewUser = () => {
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
-  const userFullName = `${data?.name.lastName} ${data?.name.firstName}${
-    data?.name.middleName ? `, ${data?.name.middleName}` : ''
-  }`;
+  const userFullName = CommonUtils.getFullName(data?.name);
   const fullAddress = formatFields(data?.address, ['address1', 'address2']);
   return (
     <div className="MCP-module-wrapper">

@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import styles from './assets/TherapyDetails.module.scss';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
 import UserService from '@src/api/commonService/UserService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
@@ -26,10 +24,10 @@ function TherapyDetails({
   useMaterialService = false,
   isMaterialConfiguration = false,
   hasDeleteConfigAccess = true,
-  heading
+  heading,
+  notify = () => {}
 }) {
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
   const {
     isLoading,
     data: therapyDetails = {},
@@ -50,7 +48,7 @@ function TherapyDetails({
   useEffect(() => {
     if (error) {
       onClose();
-      showSnackbar({ description: 'Error fetching Therapy Details', type: 'error' });
+      notify({ type: 'error', message: 'Error fetching Therapy Details' });
     }
   }, [error]);
 
@@ -79,10 +77,10 @@ function TherapyDetails({
             action: async () => {
               try {
                 await MaterialService.deleteMaterialConfig(therapyId);
-                showSnackbar({ description: t('manageMaterial.drawer.controls.apply.success'), type: 'success' });
+                notify({ type: 'success', message: t('manageMaterial.drawer.controls.apply.success') });
                 refetch();
               } catch (error) {
-                showSnackbar({ description: t('manageMaterial.drawer.controls.apply.error'), type: 'error' });
+                notify({ type: 'error', message: t('manageMaterial.drawer.controls.apply.error') });
               }
             }
           }
@@ -131,9 +129,17 @@ function TherapyDetails({
   );
 }
 
-function DetailsPanel({ details, therapyData, configurationData, isMaterialConfiguration, onDeleteConfig, refetch = { refetch }, hasDeleteConfigAccess }) {
+function DetailsPanel({
+  details,
+  therapyData,
+  configurationData,
+  isMaterialConfiguration,
+  onDeleteConfig,
+  refetch = { refetch },
+  hasDeleteConfigAccess,
+  notify = () => {}
+}) {
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
 
   const OnDelinkQuestionnaireClick = async (id) => {
     const payload = {
@@ -158,7 +164,7 @@ function DetailsPanel({ details, therapyData, configurationData, isMaterialConfi
               await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
               refetch();
             } catch (error) {
-              showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
+              notify({ type: 'error', message: t('manageMaterial.drawer.delink.error') });
             }
           }
         }

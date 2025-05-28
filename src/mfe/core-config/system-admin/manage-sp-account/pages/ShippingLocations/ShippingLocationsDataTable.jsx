@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ModuleHeader from '@src/components/module-header';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useShippingLocation } from '../../context/ShippingLocationContext';
 import CommonFilters from '@src/components/Filters';
 import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
@@ -18,6 +17,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function ShippingLocationsDataTable() {
   const { t } = useTranslate();
@@ -29,6 +29,9 @@ function ShippingLocationsDataTable() {
   const [alert, setAlert] = useState(null);
   const [selectedShippingLocation, setSelectedShippingLocation] = useState([]);
   const [spLocation, setSPLocation] = useState([]);
+
+  const practiceId = AuthUtils.getPracticeId();
+  const organizationId = selectedOrganization?.id || practiceId;
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'edit') {
@@ -46,7 +49,8 @@ function ShippingLocationsDataTable() {
     handleOnOptionSelection,
     isCustomerCenter,
     selectedShippingLocation,
-    setSelectedShippingLocation
+    setSelectedShippingLocation,
+    practiceId
   );
 
   const renderModelforRemove = (rowParam) => {
@@ -69,7 +73,7 @@ function ShippingLocationsDataTable() {
           action: () => {
             mutate({
               ids,
-              selectedOrgId: selectedOrganization?.id,
+              selectedOrgId: organizationId,
               accid: accountId
             });
           }
@@ -125,7 +129,8 @@ function ShippingLocationsDataTable() {
             </div>
           }
           controls={
-            !isCustomerCenter && (
+            !isCustomerCenter &&
+            !practiceId && (
               <Button
                 Icon={AddIcon}
                 variant="secondary"
@@ -140,7 +145,7 @@ function ShippingLocationsDataTable() {
             )
           }
         />
-        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters

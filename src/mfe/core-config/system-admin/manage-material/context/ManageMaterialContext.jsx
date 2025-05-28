@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
+import useAlert from '@src/hooks/useAlert';
 
 // Create the context
 export const ManageMaterialContext = createContext();
@@ -48,7 +48,8 @@ export const ManageMaterialProvider = ({ children }) => {
 
   const [selectedMaterials, setSelectedMaterials] = useState([]);
 
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
 
   const getApiUrl = (searchText) => {
     const params = {
@@ -65,7 +66,7 @@ export const ManageMaterialProvider = ({ children }) => {
       const res = await HttpResourceService.callRest(`${getApiUrl()}`, httpVerb.GET, {});
 
       if (!res.data || !res.data.content) {
-        showSnackbar({ description: t('manageMaterial.data.fetch.error'), type: 'error' });
+        showAlert({ description: t('manageMaterial.data.fetch.error'), type: 'error', anchorEl: alertContainerId });
         return;
       }
 
@@ -690,7 +691,7 @@ export const ManageMaterialProvider = ({ children }) => {
     },
     {
       onError: (error) => {
-        error && showSnackbar({ description: t('manageMaterial.data.fetch.error'), type: 'error' });
+        error && showAlert({ description: t('manageMaterial.data.fetch.error'), type: 'error', anchorEl: alertContainerId });
       }
     }
   );

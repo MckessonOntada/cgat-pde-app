@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import EmptyDataTable from '@src/components/EmptyTable';
-import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../../routes';
@@ -16,7 +14,6 @@ import CommonUtils from '@src/util/CommonUtils';
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
   const { selectedInvoices, setSelectedInvoices } = props;
-  const dispatch = useDispatch();
   const location = useLocation();
   const { state } = location;
   const REVIEW_MODE = state?.reviewMode || false;
@@ -24,11 +21,11 @@ function SelectedInvoiceList(props) {
 
   const columns = [
     {
-      name: t('paymentInvoices.history.table.bill.id'),
+      name: t('paymentInvoices.history.table.invoiceNumber'),
       id: 'billNumber',
       selector: (row) => `${row.billNumber}`,
       wrap: true,
-      minWidth: '100px',
+      minWidth: '150px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cell: (props) => (
@@ -39,7 +36,6 @@ function SelectedInvoiceList(props) {
               fontWeight: '600',
               textDecoration: 'none'
             }}
-            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
             state={{ ...state }}>
             {`${props?.billNumber || ''}`}
@@ -49,7 +45,7 @@ function SelectedInvoiceList(props) {
     },
     {
       id: 'soldToSite',
-      name: t('paymentInvoices.history.table.SoldToSite'),
+      name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
       minWidth: '120px',
       wrap: true,
@@ -70,15 +66,7 @@ function SelectedInvoiceList(props) {
       selector: (row) => row?.billDate,
       minWidth: '150px',
       id: 'billDate',
-      cell: (props) => (
-        <div>
-          {CommonUtils.convertDateStringFormat(
-            props?.billDate,
-            'MM/DD/YYYY',
-            'DD/MM/YYYY'
-          )}
-        </div>
-      )
+      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -87,29 +75,17 @@ function SelectedInvoiceList(props) {
       minWidth: '105px',
       wrap: true,
       id: 'dueDate',
-      cell: (props) => (
-        <div>
-          {CommonUtils.convertDateStringFormat(
-            props?.dueDate,
-            'MM/DD/YYYY',
-            'DD/MM/YYYY'
-          )}
-        </div>
-      )
+      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
-      name: t('paymentInvoices.history.table.BillAmount'),
+      name: t('paymentInvoices.history.table.invoiceAmount'),
       selector: (row) => row?.billAmount,
       minWidth: '160px',
       right: true,
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber
-            value={props?.billAmount || 0}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
     },
@@ -121,11 +97,7 @@ function SelectedInvoiceList(props) {
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber
-            value={props?.openAmount || 0}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.openAmount || 0} style="currency" currency="USD" />
         </div>
       ),
       right: true
@@ -146,31 +118,24 @@ function SelectedInvoiceList(props) {
           setInputValue(e.target.value);
           let _invoices = [...[], ...selectedInvoices];
           _invoices[index].paymentAmount = e.target.value;
-          setSelectedInvoices(_invoices)
+          setSelectedInvoices(_invoices);
         };
 
         const handleBlur = (e) => {
           const val = parseFloat(e.target.value);
-          const finalVal = val > 0 && val <= props.openAmount ? val : props.openAmount;
+          const finalVal =
+            val > 0 && val <= props.openAmount ? val : props.openAmount;
           let _invoices = [...selectedInvoices];
           _invoices[index].paymentAmount = finalVal;
           setInputValue(finalVal);
           setSelectedInvoices(_invoices);
         };
 
-        const isError =
-          inputValue > props.openAmount ||
-          inputValue <= 0 ||
-          inputValue === '' ||
-          inputValue === null;
+        const isError = inputValue > props.openAmount || inputValue <= 0 || inputValue === '' || inputValue === null;
 
         return REVIEW_MODE ? (
           <div className="cellEllipse align-items-right ">
-            <FormattedNumber
-              value={props.paymentAmount || 0}
-              style="currency"
-              currency="USD"
-            />
+            <FormattedNumber value={props.paymentAmount || 0} style="currency" currency="USD" />
           </div>
         ) : (
           <input
@@ -181,18 +146,14 @@ function SelectedInvoiceList(props) {
             min={0}
             onBlur={handleBlur}
           />
-        )
+        );
       }
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
       id: 'paymentAmount',
       cell: (props, index) => (
-        <div
-          className={`action-container ${
-            selectedInvoices.length <= 1 ? `in-active` : ``
-          }`}
-          onClick={() => onRemoveInvoice(index)}>
+        <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
       ),
@@ -221,11 +182,7 @@ function SelectedInvoiceList(props) {
       showCardView={showCardView}
       defaultExpandedCardView={false}
       noDataComponent={
-        <EmptyDataTable
-          image={EmptyDataImage}
-          heading={t('paymentInvoices.invoice.table.emptyData')}
-          description={'Please select Invoices from dashboard'}
-        />
+        <EmptyDataTable image={EmptyDataImage} heading={t('paymentInvoices.invoice.table.emptyData')} description={'Please select Invoices from dashboard'} />
       }
     />
   );

@@ -156,9 +156,7 @@ function ApproverGroupDetails() {
           <div className="rule-field type">
             <div className="fake-control">{CommonUtils.getCamelCase(getRuleLabel(key))}</div>
           </div>
-          <div className="rule-operator attribute-text-segment">
-            {getRuleOperator(CommonUtils.getCamelCase(getRuleLabel(key)), t, true)}
-          </div>
+          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(getRuleLabel(key)), t, true)}</div>
           <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
             <div className="fake-control">
               <Pills
@@ -185,9 +183,7 @@ function ApproverGroupDetails() {
           {t('approvergroup.header.backmessage')}
         </Button>
       </div>
-      {isDeactivate && isAlertVisible && (
-        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
-      )}
+      {isDeactivate && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" />}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{t('approvergroup.view.header')}</Heading>}
@@ -227,9 +223,7 @@ function ApproverGroupDetails() {
 
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_created_on')}</span>
-              <p className="label-text">
-                {groupData?.createdAt ? CommonUtils.convertDateStringFormat(groupData.createdAt, 'MM-DD-YYYY') : 'N/A'}
-              </p>
+              <p className="label-text">{groupData?.createdAt ? CommonUtils.convertDateStringFormat(groupData.createdAt, 'MM-DD-YYYY') : 'N/A'}</p>
             </div>
           </div>
         </div>

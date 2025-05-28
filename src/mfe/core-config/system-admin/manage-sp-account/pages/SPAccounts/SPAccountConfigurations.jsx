@@ -2,7 +2,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { useMutation } from 'react-query';
 import { renderModal } from '@src/util/ModalUtil';
@@ -11,8 +11,9 @@ import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { PREVIEW_URL } from '../../../manage-questionnaire/constants';
+import Alert from '@src/components/cgat-alert/Alert';
 
-function SPAccountConfigurations({ data, refetch }) {
+function SPAccountConfigurations({ data, refetch, orgAdmin }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { selectedOrganization } = useOrgAccountSelectionContext();
@@ -88,22 +89,28 @@ function SPAccountConfigurations({ data, refetch }) {
               variant="secondary"
               className="button-icon"
               size="md"
-              onClick={() => navigate(PREVIEW_URL, { state: { isSPAccount: true, questionnaire: data?.questionnaireList } })}>
+              onClick={() =>
+                orgAdmin
+                  ? navigate('../../../admin/linked-accounts/questionnaire', { state: { questionnaire: data?.questionnaireList, isLinkedAccounts: true } })
+                  : navigate(PREVIEW_URL, { state: { isSPAccount: true, questionnaire: data?.questionnaireList } })
+              }>
               {t('manageSPMaterial.drawer.details.configuration.actions.preview')}
             </Button>
           }
         />
-        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
 
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2">
             {data?.questionnaireList?.map((item, index) => (
               <div key={index} className="labelWrap">
                 <div className="view_label">{item.templateName}</div>
-                <div className="delete-buttonwithText" onClick={() => OnDeleteClick(item.id)}>
-                  <DeleteIcon className="delete-button-icon" />
-                  {t('paymentInvoices.reviewPayments.remove')}
-                </div>
+                {!orgAdmin && (
+                  <div className="delete-buttonwithText" onClick={() => OnDeleteClick(item.id)}>
+                    <DeleteIcon className="delete-button-icon" />
+                    {t('paymentInvoices.reviewPayments.remove')}
+                  </div>
+                )}
               </div>
             ))}
           </div>

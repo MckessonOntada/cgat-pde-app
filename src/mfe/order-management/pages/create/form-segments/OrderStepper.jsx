@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stepper } from '@mckesson/mcp-component-library';
+import { StepperMui } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { CHANNEL_TYPE, FormList, ORDER_STAGES } from './Constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -13,7 +13,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
     return {
       ACCOUNT_DETAILS: `/orders/${orderId}/accounts`,
       PATIENT_DETAILS: `/orders/${orderId}/patient`,
-      'PATIENT_&_PROVIDER_DETAILS': `/orders/${orderId}/patient`,
+      PATIENT_AND_PROVIDER_DETAILS: `/orders/${orderId}/patient`,
       PAYER_DETAILS: `/orders/${orderId}/payer`,
       ADDITIONAL_DETAILS: `/orders/${orderId}/additional-details`,
       ORDER_SUMMARY: `/orders/${orderId}/summary`
@@ -64,34 +64,37 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   const activeIndex = filteredStepperItems.find((step) => step.name === status)?.order || 1;
 
-  const handleOnStepClick = (e) => {
-    const nearestListItem = e.target.closest('li');
-    if (nearestListItem) {
-      const stepItemTitle = nearestListItem.querySelector('[class*="Stepper-module--stepsItemTitle"]');
-      if (stepItemTitle) {
-        let stepByTitle = stepItemTitle.innerText?.toUpperCase().split(' ').join('_');
-        if (stepByTitle === 'ACCOUNT_SELECTION') stepByTitle = ORDER_STAGES.ACCOUNT_DETAILS;
-        if (stepByTitle) {
-          if (currentStage[stepByTitle] <= currentStage[status]) {
-            const newNavLink = navLinks[stepByTitle];
-            if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
-              navigate(`/orders/edit-order/${orderId}`, {
-                state: { fromTab: location?.state?.fromTab }
-              });
-            else {
-              navigate(newNavLink, {
-                state: { fromTab: location?.state?.fromTab }
-              });
-            }
-          }
+  const handleOnStepClick = (i) => {
+    const { name: stepByTitle } = filteredStepperItems[i - 1];
+    if (stepByTitle === 'ACCOUNT_SELECTION') stepByTitle = ORDER_STAGES.ACCOUNT_DETAILS;
+
+    if (stepByTitle) {
+      if (currentStage[stepByTitle] <= currentStage[status]) {
+        const newNavLink = navLinks[stepByTitle];
+        if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
+          navigate(`/orders/edit-order/${orderId}`, {
+            state: { fromTab: location?.state?.fromTab }
+          });
+        else {
+          navigate(newNavLink, {
+            state: { fromTab: location?.state?.fromTab }
+          });
         }
       }
     }
+    //}
+    //}
   };
 
   return (
-    <div className={style['custom-order-stepper']} onClick={handleOnStepClick}>
-      <Stepper activeIndex={activeIndex} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))} />
+    <div className={style['custom-order-stepper']}>
+      <StepperMui
+        activeIndex={activeIndex}
+        dividerText="of"
+        mobileLabel={t('labels.steps')}
+        stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))}
+        onStepClick={handleOnStepClick}
+      />
     </div>
   );
 }

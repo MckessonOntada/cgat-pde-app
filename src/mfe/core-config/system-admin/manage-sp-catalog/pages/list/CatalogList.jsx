@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-
 import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import ModuleHeader from '@src/components/module-header';
 import { useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
 import { useDispatch } from 'react-redux';
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import CommonUtils from '@src/util/CommonUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import ConfigureCatalog from '../../../manage-catalog/pages/ConfigureCatalog';
+import AuthUtils from '@src/util/AuthUtils';
 
 const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }) => {
   const { filters, applyFilters, clearFilters } = useFilters();
   const navigate = useNavigate();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
+
+  const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
   const { data = [], refreshTable, requestParams } = useTable();
   const { applySort } = useSort();
   const dispatch = useDispatch();
-  const { selectedRows, deselectAll } = useSelection();
-
+  const { selectedRows, deselectAll, selectedRowObjects, setSelectedRowObjects, setSelection } = useSelection();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);
@@ -44,7 +45,10 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
       applySort(sortKey, direction);
     }
   };
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+
+  const clearTableSelection = () => {
+    deselectAll(); // clears selectedRows and selectedRowObjects
+  };
   const { mutate } = useMutation({
     mutationFn: (payload) => SPCatalogService.deLinkCatalogs(payload),
     onSuccess: (response) => {
@@ -69,6 +73,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
       }
     }
   });
+
   const onDeLinkConfirmation = (payload) => {
     const state = {};
     state.title = t('SPCatalog.deLinkConfirmationTitle');
@@ -89,6 +94,17 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
       </div>
     );
     dispatch(openModal(state));
+  };
+
+  const handleOnOptionSelection = (action, row) => {
+    if (action == 'unlink') {
+      const { sapMaterial, soldToCustomer } = row;
+      const payload = [{ sapMaterial, soldToCustomer }];
+      onDeLinkConfirmation(payload);
+    } else if (action == 'configure') {
+      setSelection([row]);
+      setOpenConfigurationDraw(true);
+    }
   };
 
   const handleOnDeLink = () => {
@@ -155,9 +171,14 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         secondaryView={selectedRows.size > 0}
         secondaryViewHeading={`${selectedRows.size} ${t('userManagement.selected_items')}`}
         secondaryViewControls={
-          <Button variant="secondary" onClick={handleOnDeLink}>
-            {t('provider.btnUnlink')}
-          </Button>
+          <div className="controls">
+            <Button variant="secondary" onClick={() => setOpenConfigurationDraw(true)}>
+              {t('SPCatalog.Configuration')}
+            </Button>
+            <Button variant="secondary" onClick={handleOnDeLink}>
+              {t('provider.btnUnlink')}
+            </Button>
+          </div>
         }
       />
 
@@ -166,7 +187,9 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         columns={getColumns({
           setOpenSPMaterialDetails,
           setViewSPMaterial,
-          onDeLinkConfirmation
+          onDeLinkConfirmation,
+          handleOnOptionSelection,
+          isCustomerCenter
         })}
         data={data}
         handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
@@ -187,6 +210,15 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         setOpenSPMaterialDetails={setOpenSPMaterialDetails}
         viewSPMaterial={viewSPMaterial}
         isSPCatalog={true}
+        sendNotification={sendNotification}
+      />
+      <ConfigureCatalog
+        openConfigurationDraw={openConfigurationDraw}
+        setOpenConfigurationDraw={setOpenConfigurationDraw}
+        selectedCatalogs={selectedRowObjects}
+        showAlert={sendNotification}
+        isSPCatalog={true}
+        clearTableSelection={clearTableSelection}
       />
     </div>
   );

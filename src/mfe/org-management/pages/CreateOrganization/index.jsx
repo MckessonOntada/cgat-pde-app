@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Loader, Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { Loader, Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
@@ -14,6 +14,7 @@ import { PATHS } from '../../routes/constants';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { handleApiError } from '@src/util/ApiUtils';
 import ModuleHeader from '@src/components/module-header';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
@@ -30,15 +31,6 @@ const CreateOrganization = () => {
     }
     return false;
   }, [orgId, location]);
-
-  useEffect(() => {
-    if (isAlertVisible) {
-      const timer = setTimeout(() => {
-        setIsAlertVisible(false);
-      }, 10000);
-      return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, [isAlertVisible]);
 
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -129,7 +121,7 @@ const CreateOrganization = () => {
 
       {/* {!isEdit && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={1}
             dividerText="of"
             stepHeaders={[

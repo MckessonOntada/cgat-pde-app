@@ -3,5 +3,6 @@ export const routeConstants = {
   ADD_SPACCOUNT: 'create',
   EDIT_SPACCOUNT: 'edit',
   VIEW_SPACCOUNT: ':spAccountId',
-  ADD_LINK_PROVIDER: 'link-provider'
+  ADD_LINK_PROVIDER: 'link-provider',
+  VIEWQUESTIONNAIREPRIVIEW: 'questionnaire'
 };

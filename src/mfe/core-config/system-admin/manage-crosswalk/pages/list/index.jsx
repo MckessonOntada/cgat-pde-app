@@ -2,9 +2,8 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import React, { useState } from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -21,6 +20,7 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
 import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -37,7 +37,7 @@ const List = () => {
   const { data = [], refreshTable } = useTable();
   const dispatch = useDispatch();
   const { applySort } = useSort();
-  const { items: notifications, remove: removeNotification, removeAll, add: addNotification } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -58,7 +58,7 @@ const List = () => {
     const { state } = location;
     if (state?.items) {
       state.items.map((item) => {
-        addNotification({ ...item });
+        setNotification({ ...item });
       });
       navigate(location.pathname, { replace: true });
     }
@@ -77,7 +77,7 @@ const List = () => {
     SPCrosswalkService.deLinkCrosswalk(id)
       .then((response) => {
         if (response.status === 200) {
-          addNotification({
+          setNotification({
             type: 'success',
             description: t('SPCrosswalk.unlinkCrosswalkSuccess')
           });
@@ -88,13 +88,13 @@ const List = () => {
         const { response: errorResponse } = error;
         if (errorResponse.response.data?.errorCodes && errorResponse.response.data?.errorCodes.length > 0) {
           errorResponse.response.data.errorCodes.forEach((error) => {
-            addNotification({
+            setNotification({
               type: 'error',
               description: t(`SPCrosswalk.deLinkFailure.${error}`)
             });
           });
         } else {
-          addNotification({
+          setNotification({
             type: 'error',
             description: t(`SPCrosswalk.deLinkFailure.generic`)
           });
@@ -145,13 +145,7 @@ const List = () => {
           </div>
         }
       />
-      {notifications && notifications.length > 0 && (
-        <div className="MCP-module-body">
-          {notifications.map((item, index) => {
-            return <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />;
-          })}
-        </div>
-      )}
+      {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
 
       <div className="MCP-CardContainer">
         <div className="MCP-CardContainer">
@@ -205,6 +199,12 @@ const List = () => {
             useMaterialService={true}
             hasDeleteConfigAccess={!isCustomerCenter}
             heading={t('manageMaterial.drawer.heading')}
+            notify={({ type, message }) =>
+              setNotification({
+                type,
+                description: message
+              })
+            }
           />
         )}
 

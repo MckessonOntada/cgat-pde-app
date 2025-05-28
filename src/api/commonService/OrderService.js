@@ -442,6 +442,28 @@ async function getTherapyDetailsByCrossWalkId(therapyId) {
   return res.data || {};
 }
 
+async function uploadOrderDocument(orderId, payload) {
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  return res;
+}
+
+async function uploadDocument(payload) {
+  const { orderId, file } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${orderId}`;
+
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    { file },
+    {
+      'Content-Type': 'multipart/form-data'
+    }
+  );
+
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -470,7 +492,9 @@ const OrderService = Object.freeze({
   discardCurrentOrderVersion,
   getOrderCountByStatus,
   downloadDocument,
-  getTherapyDetailsByCrossWalkId
+  getTherapyDetailsByCrossWalkId,
+  uploadOrderDocument,
+  uploadDocument
 });
 
 export default OrderService;

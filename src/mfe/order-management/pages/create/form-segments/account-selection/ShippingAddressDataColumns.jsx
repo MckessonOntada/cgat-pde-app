@@ -45,7 +45,8 @@ export const createColumns = (
     id: 'shippingAccountName',
     name: t('table.columns.captions.shippingAccountName'),
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    sortKey: 'accountName',
     width: '25%',
     cell: (props) => (
       <span className={'MCP-table-cell'}> {props.accountName}</span>
@@ -66,7 +67,8 @@ export const createColumns = (
     id: 'shippingAccountNumber',
     name: t('table.columns.captions.shippingAccountNumber'),
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    sortKey: 'accountNumber',
     width: '25%',
     showInMobileHeader: true,
     showColumnNameInHeader: true,

@@ -46,8 +46,7 @@ export const MaterialDetailsConstants = [
 
 export const ConfigConstants = [
   {
-    sectionHeading:
-      'manageMaterial.drawer.details.configuration.heading.questionnaire',
+    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.questionnaire',
     actions: [
       {
         label: 'manageMaterial.drawer.details.configuration.actions.preview',
@@ -58,8 +57,7 @@ export const ConfigConstants = [
     questionnaire: true
   },
   {
-    sectionHeading:
-      'manageMaterial.drawer.details.configuration.heading.material',
+    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
     actions: [
       {
         label: 'manageMaterial.drawer.details.configuration.actions.delete',
@@ -69,8 +67,7 @@ export const ConfigConstants = [
     ],
     sectionData: [
       {
-        label:
-          'manageMaterial.drawer.details.configuration.body.patientInfoRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired',
         value: 'isPatientInformationRequired'
       },
       {
