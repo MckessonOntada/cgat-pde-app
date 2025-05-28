@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import PageHeader from '@src/components/pageHeader';
 import './index.scss';
 import RecordDetails from './components/RecordDetails';
 import BalanceDetails from './components/BalanceDetails';
 import Routes from './routes/Routes';
 import { TabList, Heading } from '@mckesson/mcp-component-library';
-import { PATHS, tabListData } from './routes/constants';
+import { tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
-import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
-import EmptyDataContainer from '@src/components/EmptyData';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyUI from './EmptyUI';
 
@@ -65,11 +62,9 @@ const PaymentsInvoices = () => {
       <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.manageInvoices')}</Heading>} />
       <div id={alertContainerId} />
       <RecordDetails />
-
       <BalanceProvider>
         <BalanceDetails />
       </BalanceProvider>
-
       <div className="MCP-module-body">
         <div id="tablist-container" className="MCP-panel-container">
           <div className="customTab">

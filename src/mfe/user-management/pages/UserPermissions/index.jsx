@@ -109,7 +109,7 @@ const UserPermissions = () => {
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
-          <StepperMui
+          <Stepper
             activeIndex={2}
             dividerText="of"
             stepHeaders={[
