@@ -117,7 +117,7 @@ export const insuranceCoverageSchema = (t) =>
       .required(t('Please Select the Plan Type'))
       .oneOf(PLAN_TYPES, t('Please select a valid Plan Type.')),
     effectiveDate: Yup.date()
-      .nullable()
+      .typeError('Please enter a valid date')
       .required(t('Please enter the Effective Date.'))
       .max(new Date(), t('Effective Date cannot be in the future.')),
     pcnNumber: Yup.string()
