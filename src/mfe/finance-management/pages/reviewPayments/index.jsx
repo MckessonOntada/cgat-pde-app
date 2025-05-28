@@ -50,7 +50,7 @@ function ReviewPayments() {
   const [totalCreditsCount, settotalCreditsCount] = useState(0);
   const disablePay = useRef(false);
   const [SpecificDateError, setSpecificDateError] = useState('');
-   const { controlRef } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
 
   const showAlert = (type, message) => {
     setAlert({ type });
@@ -153,9 +153,7 @@ function ReviewPayments() {
 
   const leastDueDateInvoice = useMemo(() => {
     return selectedInvoices?.length > 0
-      ? selectedInvoices.reduce((min, current) =>
-          dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min
-        )
+      ? selectedInvoices.reduce((min, current) => (dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min))
       : null;
   }, [selectedInvoices]);
 
@@ -174,9 +172,7 @@ function ReviewPayments() {
   }, [selectedInvoices]);
 
   const paymentAmountSum = useMemo(() => {
-    const _sum = selectedInvoices
-      .filter((i) => i.paymentAmount)
-      .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
+    const _sum = selectedInvoices.filter((i) => i.paymentAmount).reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
     setPaymentOption('');
     setSpecificDateError('');
     return parseFloat(_sum).toFixed(2);
@@ -320,11 +316,11 @@ function ReviewPayments() {
             ...state,
             paymentDate: _paymentDate && _paymentDate[0],
             selectedPayment: selectedData,
-            paymentError: true,
-          },
+            paymentError: true
+          }
         });
       },
-      
+
       retry: false
     }
   );
@@ -383,11 +379,7 @@ function ReviewPayments() {
     }
   };
   const disablePreview = () => {
-    return (
-      !selectedData ||
-      (paymentOption == t('paymentInvoices.reviewPayments.paySpecfic') ? !selectedSpecificDate : !paymentOption) ||
-      !!SpecificDateError
-    );
+    return !selectedData || (paymentOption == t('paymentInvoices.reviewPayments.paySpecfic') ? !selectedSpecificDate : !paymentOption) || !!SpecificDateError;
   };
 
   const onChangePayment = (value) => {
@@ -409,9 +401,9 @@ function ReviewPayments() {
 
   if (isLoading) {
     return (
-      <div className='loaderWrapper' >
-        <p className='loaderText'>{t('paymentInvoices.reviewPayments.processing')}</p>
-        <Loader loaderText={''}/>
+      <div className="loaderWrapper">
+        <p className="loaderText">{t('paymentInvoices.reviewPayments.processing')}</p>
+        <Loader loaderText={''} />
       </div>
     );
   }
@@ -437,8 +429,7 @@ function ReviewPayments() {
               <div className="accountNumber">{selectedAccount.accountNumber}</div>
               <div className="accountName">{selectedAccount.accountName}</div>
               <div className="accountAddress">
-                {selectedAccount.street}, {selectedAccount.state}, {selectedAccount.city}, {selectedAccount.country},{' '}
-                {selectedAccount.zipCode}
+                {selectedAccount.street}, {selectedAccount.state}, {selectedAccount.city}, {selectedAccount.country}, {selectedAccount.zipCode}
               </div>
             </div>
           )}
@@ -450,17 +441,15 @@ function ReviewPayments() {
               data={{
                 [t('paymentInvoices.reviewPayments.scheduleOption')]: state.paymentOption,
                 [t('paymentInvoices.reviewPayments.netAmount')]: FinanceUtils.formatCurrency(totalAmount),
-                [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
-                  selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)
-                } - ${selectedData?.userDefinedName || selectedData?.name}`
+                [t('paymentInvoices.reviewPayments.paymentMethod')]: `${selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)} - ${
+                  selectedData?.userDefinedName || selectedData?.name
+                }`
               }}
             />
           </div>
         )}
         <div className="selectedInvoices-container section">
-          <div className="sectionHeader">
-            {REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}
-          </div>
+          <div className="sectionHeader">{REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}</div>
           <SelectedInvoiceList omitColumns={['billDate']} selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
         {!REVIEW_MODE && (
@@ -492,13 +481,23 @@ function ReviewPayments() {
               )}
             </div>
             {!REVIEW_MODE && (
-              <div className="invoice-sum-container">
-                <div className="label">{`Total credit amount:`}</div>{' '}
-                <div className="value">
-                  <span className="currencySymbol">$</span>
-                  {`${FinanceUtils.formatCurrency(creditsSum).slice(1)}`}
+              <>
+                <div className="invoice-sum-container">
+                  <div className="label">{t('paymentInvoices.reviewPayments.TotalCreditAmount')}</div>{' '}
+                  <div className="value">
+                    <span className="currencySymbol">$</span>
+                    {`${FinanceUtils.formatCurrency(totalCreditsCount).slice(1)}`}
+                  </div>
                 </div>
-              </div>
+
+                <div className="invoice-sum-container">
+                  <div className="label">{t('paymentInvoices.reviewPayments.TotalAmountAfterCreditApplied')}</div>{' '}
+                  <div className="value">
+                    <span className="currencySymbol">$</span>
+                    {`${FinanceUtils.formatCurrency(totalCreditsCount - creditsSum).slice(1)}`}
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -526,7 +525,7 @@ function ReviewPayments() {
                     fieldDisplayValue={selectedData?.label ? selectedData : undefined}
                   />
                 </div>
-                <span className='selectMethodInfo'>{t('paymentInvoices.reviewPayments.selectMethodInfo')}</span>
+                <span className="selectMethodInfo">{t('paymentInvoices.reviewPayments.selectMethodInfo')}</span>
               </div>
               <div className="paymentOptionContainer">
                 <PaymentOptionsControls
@@ -555,7 +554,7 @@ function ReviewPayments() {
           </div>
         </div>
       )}
-      <div  className="footer-wrapper" ref={controlRef}>
+      <div className="footer-wrapper" ref={controlRef}>
         <div className="footer-section controls footer-controls">
           <Button variant="secondary" onClick={() => navigate('../')} size="md">
             {t('paymentInvoices.reviewPayments.cancel')}
