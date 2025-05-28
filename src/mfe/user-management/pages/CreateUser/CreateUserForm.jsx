@@ -4,9 +4,8 @@ import Components from '@src/components/form/Components';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
-import StateDropdown from '@src/components/form/StateDropdown';
 
-const UserDetailsFormSegment = ({comment}) => {
+const UserDetailsFormSegment = ({ comment, isEdit }) => {
   const { t } = useTranslate();
 
   const options = US_STATES();
@@ -54,9 +53,6 @@ const UserDetailsFormSegment = ({comment}) => {
         </div>
         <div className="headingBox">
           <Heading as="h3">{t('userManagement.create_user.contact_details')}</Heading>
-          {/* <p className="form-instruction">
-              <Required id="Required"></Required> {t('userManagement.create_user.required')}
-            </p> */}
         </div>
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 align-items-baseline">
           <Field
@@ -109,6 +105,7 @@ const UserDetailsFormSegment = ({comment}) => {
             isRequired
             component={Components['input']}
             maxLength={100}
+            isReadOnly={isEdit}
           />
           <Field
             name="contact.phone"
@@ -118,17 +115,10 @@ const UserDetailsFormSegment = ({comment}) => {
             placeholder=" "
             isRequired
           />
-          <Field
-            name="contact.fax"
-            label={t('userManagement.create_user.inputLabel.fax')}
-            placeholder=" "
-            component={Components['input']}
-            maxLength={15}
-          />
-          {/* <StateDropdown /> */}
+          <Field name="contact.fax" label={t('userManagement.create_user.inputLabel.fax')} placeholder=" " component={Components['input']} maxLength={15} />
         </div>
         {comment && (
-          <div className='commentWrap'>
+          <div className="commentWrap">
             <span>{t('label.comment')}</span>
             <p>{comment}</p>
           </div>
