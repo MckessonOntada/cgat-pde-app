@@ -1,8 +1,5 @@
 import * as Yup from 'yup';
-import {
-  PATIENT_RELATIONSHIP,
-  PLAN_TYPES
-} from '../forms/payer-details.config';
+import { PATIENT_RELATIONSHIP, PLAN_TYPES } from '../forms/payer-details.config';
 
 export const getPersonalDetailsTemplate = () => ({
   name: {
@@ -37,27 +34,16 @@ export const nameSchema = (t) =>
     firstName: Yup.string()
       .required(t('Please enter the First Name.'))
       .max(50, t('First Name should not exceed 50 characters.'))
-      .matches(
-        /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$/,
-        t('First Name must contain alphabets only.')
-      ),
-    middleName: Yup.string()
-      .nullable()
-      .max(50, t('Middle Name should not exceed 50 characters.')),
+      .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$/, t('First Name must contain alphabets only.')),
+    middleName: Yup.string().nullable().max(50, t('Middle Name should not exceed 50 characters.')),
     lastName: Yup.string()
       .required(t('Please enter the Last Name.'))
       .max(50, t('Last Name should not exceed 50 characters.'))
-      .matches(
-        /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$/,
-        t('Last Name must contain alphabets only.')
-      )
+      .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$/, t('Last Name must contain alphabets only.'))
   });
 
 export const phoneSchema = (t) =>
-  Yup.string()
-    .nullable()
-    .matches(/^\d+$/, t('Phone Number must contain digits only.'))
-    .max(50, t('Phone Number should not exceed 50 characters.'));
+  Yup.string().nullable().matches(/^\d+$/, t('Phone Number must contain digits only.')).max(50, t('Phone Number should not exceed 50 characters.'));
 
 export const addressSchema = (t) =>
   Yup.object({
@@ -71,13 +57,8 @@ export const addressSchema = (t) =>
       .matches(/^[^@#%]*$/, t('Address cannot include @, #, or % characters.')),
     zip: Yup.string()
       .nullable()
-      .matches(
-        /^\d{5}(-\d{4})?$/,
-        t('ZIP should be in the format 12345 or 12345-6789.')
-      ),
-    state: Yup.string()
-      .nullable()
-      .notOneOf([''], t('Please select a valid State.')),
+      .matches(/^\d{5}(-\d{4})?$/, t('ZIP should be in the format 12345 or 12345-6789.')),
+    state: Yup.string().nullable().notOneOf([''], t('Please select a valid State.')),
     city: Yup.string()
       .nullable()
       .max(15, t('City should not exceed 15 characters.'))
@@ -102,20 +83,12 @@ export const insuranceCoverageSchema = (t) =>
     policyNumber: Yup.string()
       .required(t('Please enter the Policy Number.'))
       .max(30, t('Policy Number should not exceed 30 characters.'))
-      .matches(
-        /^[A-Za-z0-9]+$/,
-        t('Policy Number should only contain letters and numbers.')
-      ),
+      .matches(/^[A-Za-z0-9]+$/, t('Policy Number should only contain letters and numbers.')),
     groupNumber: Yup.string()
       .required(t('Please enter the Group Number'))
       .max(30, t('Group Number should not exceed 30 characters.'))
-      .matches(
-        /^[A-Za-z0-9]*$/,
-        t('Group Number should only contain letters and numbers.')
-      ),
-    planType: Yup.string()
-      .required(t('Please Select the Plan Type'))
-      .oneOf(PLAN_TYPES, t('Please select a valid Plan Type.')),
+      .matches(/^[A-Za-z0-9]*$/, t('Group Number should only contain letters and numbers.')),
+    planType: Yup.string().required(t('Please Select the Plan Type')).oneOf(PLAN_TYPES, t('Please select a valid Plan Type.')),
     effectiveDate: Yup.date()
       .typeError('Please enter a valid date')
       .required(t('Please enter the Effective Date.'))
