@@ -1,11 +1,12 @@
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
+import useAlert from '@src/hooks/useAlert';
 import { PATHS } from '@src/mfe/finance-management/routes';
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 
 export const useExportStatementPDF = (exportType) => {
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   return useMutation(
     async (data) => {
       const { url, payload, type } = data;
@@ -51,19 +52,19 @@ export const useExportStatementPDF = (exportType) => {
           link.download = fileName;
           link.click();
 
-          showSnackbar({
+          showAlert({
             description: `${fileName} exported successful`,
-            type: 'success'
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
       onError: (error) => {
         if (error && error.response && error.response.data) {
-          showSnackbar({
-            description: CommonUtils.isNonEmptyString(error.response.data.message)
-              ? error.response.data.message
-              : `Error While exporting excel`,
-            type: 'error'
+          showAlert({
+            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : `Error While exporting excel`,
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }

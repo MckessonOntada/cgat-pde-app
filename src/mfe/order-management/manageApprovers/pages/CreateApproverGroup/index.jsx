@@ -175,11 +175,9 @@ const CreateApproverGroup = () => {
         </Button>
       </div>
 
-      <ModuleHeader
-        heading={<Heading as="h1">{t(isEditMode ? 'approvergroup.edit.label' : 'approvergroup.create_addapprovergroup')}</Heading>}
-      />
+      <ModuleHeader heading={<Heading as="h1">{t(isEditMode ? 'approvergroup.edit.label' : 'approvergroup.create_addapprovergroup')}</Heading>} />
 
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
 
       <Formik
         initialValues={initialValues}
@@ -261,9 +259,7 @@ const CreateApproverGroup = () => {
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
                   {t('approvergroup.button.cancel')}
                 </Button>
-                {hasPermission(
-                  isEditMode ? PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP : PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP
-                ) && (
+                {hasPermission(isEditMode ? PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP : PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP) && (
                   <Button type="submit" size="md">
                     {t(isEditMode ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
                   </Button>

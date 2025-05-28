@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { StepperMui, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
 import './index.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -15,6 +14,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
@@ -109,7 +109,7 @@ const UserPermissions = () => {
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
-          <StepperMui
+          <Stepper
             activeIndex={2}
             dividerText="of"
             stepHeaders={[
@@ -126,7 +126,7 @@ const UserPermissions = () => {
           />
         </div>
       )}
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
       <Formik
         initialValues={{
           permissions: permissionsData?.permissions || [],

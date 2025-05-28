@@ -1,9 +1,7 @@
 import ModuleHeader from '@src/components/module-header';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import React, { useEffect, useState } from 'react';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
@@ -11,12 +9,13 @@ import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
 import { useSPMaterial } from '@src/mfe/core-config/system-admin/manage-sp-material/context/SPMaterialContext';
 import CommonFilters from '@src/components/Filters';
 import SPMaterialDataTable from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDataTable';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const LinkSPMaterial = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const [notification, setNotification] = useState(null);
   const { applyFilters, clearFilters, selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
   const isAccountSelected = Array.isArray(selectedAccount) && selectedAccount.some((acc) => acc.isChecked === true);
@@ -41,7 +40,7 @@ const LinkSPMaterial = () => {
 
   const handleSave = () => {
     if (selectedSPMaterial.length === 0 || !isAccountSelected) {
-      addNotification({
+      setNotification({
         type: 'error',
         description: t('SPCatalog.error.PeaseSelectRequired')
       });
@@ -62,15 +61,7 @@ const LinkSPMaterial = () => {
 
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('SPCatalog.LinkSPMaterial')}</Heading>} />
-        {notifications?.length > 0 && (
-          <div className="alert-container">
-            <div className="MCP-module-body">
-              {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-              ))}
-            </div>
-          </div>
-        )}
+        {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
         <div className="MCP-panel-container">
           <div style={{ marginBottom: '8px' }}>
             <OrgAccountsMultiSelect />

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Alert, Tooltip, Loader, MultiSelectDropdown, Heading } from '@mckesson/mcp-component-library';
+import { Button, Tooltip, Loader, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -19,14 +19,13 @@ import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
-import { providerSections } from './forms/providers.config';
 import { getInitialValues, getValidationSchema } from './forms/validation-schema';
-import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
 import useTimedArray from '../summary/useTimedArray';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
+import Alert from '@src/components/cgat-alert/Alert';
 
 export const getFilteredSections = (channelType) => {
   return sections(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA).map((section) => ({

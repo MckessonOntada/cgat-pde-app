@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
 import Routes from './routes/Routes';
-import { TabList, Button } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { PATHS, tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { PaymentMethodsProvider } from '../../context/PaymentMethodsContext';
 import { ReactComponent as AddCircle } from '@src/assets/svg/add-circle.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import useWindowSize from '@src/hooks/UseWindowSize';
-import { Alert } from '@mckesson/mcp-component-library';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const TABLET_BREAKPOINT = 768;
 
@@ -30,8 +29,12 @@ const PaymentMethods = () => {
         return {
           ...item,
           isActiveTab: location.pathname.includes(item.path),
-          ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false',
-          configName: t(`paymentInvoices.paymentMethods.tabs.${item.translationKey}`)
+          ariaSelected: location.pathname.includes(item.path)
+            ? 'true'
+            : 'false',
+          configName: t(
+            `paymentInvoices.paymentMethods.tabs.${item.translationKey}`
+          )
         };
       });
       setTabs(updatedTabs);
@@ -48,28 +51,20 @@ const PaymentMethods = () => {
       <div className="MCP-module-body paymentMethodSection">
         {showAlert && (
           <Alert
-            description={t('paymentInvoices.paymentMethods.achForm.description')}
+            description={t(
+              'paymentInvoices.paymentMethods.achForm.description'
+            )}
             onClose={() => setShowAlert(false)}
             type="info"
-            duration={10000}
           />
         )}
         <div id="tablist-container" className="tablist-container">
-          <div className="customTab">
-            {/* <TabList
-              options={tabs}
-              alignment="left"
-              onTabClick={(e) => {
-                navigate(e.path);
-              }}
-              showShadow={false}
-              variant={'text'}
-              useAsButton={true}
-              aria-label={'record-tab-list'}
-            /> */}
-          </div>
+          <div className="customTab"></div>
           {isBankTabActive && (
-            <Button Icon={AddCircle} size={buttonSize} onClick={handleDownloadACHForm}>
+            <Button
+              Icon={AddCircle}
+              size={buttonSize}
+              onClick={handleDownloadACHForm}>
               {t('paymentInvoices.paymentMethods.table.bankAccount.addBank')}
             </Button>
           )}

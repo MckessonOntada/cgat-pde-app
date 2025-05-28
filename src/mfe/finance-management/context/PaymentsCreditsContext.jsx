@@ -3,11 +3,11 @@ import { useMutation, useQuery } from 'react-query';
 import dayjs from 'dayjs';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import useAlert from '@src/hooks/useAlert';
 
 const PaymentsCreditsContext = createContext();
 
@@ -48,7 +48,8 @@ export const PaymentsCreditsProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
 
   const { selectedAccount } = useAccountContext();
@@ -74,9 +75,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
         matchesDueDate = true;
 
       if (filters?.searchQuery) {
-        matchesSearchQuery = filters?.searchQuery
-          ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
-          : true;
+        matchesSearchQuery = filters?.searchQuery ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) : true;
       }
 
       if (filters.billDate[0] || filters.billDate[1]) {
@@ -155,7 +154,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
       onError: (error) => {
         const { response } = error;
         let errorMsg = response?.data?.message || 'Error fetching credits listing';
-        showSnackbar({ description: errorMsg, type: 'error' });
+        showAlert({ description: errorMsg, type: 'error', anchorEl: alertContainerId });
       }
     }
   );
@@ -250,19 +249,19 @@ export const PaymentsCreditsProvider = ({ children }) => {
           link.click();
 
           // Show success message
-          showSnackbar({
+          showAlert({
             description: `${t('paymentInvoices.excel.export.success')}`,
-            type: 'success'
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
-          showSnackbar({
-            description: CommonUtils.isNonEmptyString(error.response.data.message)
-              ? error.response.data.message
-              : t('paymentInvoices.excel.export.error'),
-            type: 'error'
+          showAlert({
+            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('paymentInvoices.excel.export.error'),
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }
@@ -278,18 +277,10 @@ export const PaymentsCreditsProvider = ({ children }) => {
         searchTerm: filterConfig?.searchQuery || '',
         paymentTerm: filterConfig?.paymentTerm || [],
         status: filterConfig?.status || [],
-        billDateStart: CommonUtils.isNonEmptyString(filterConfig?.billDate[0])
-          ? dayjs(filterConfig?.billDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
-          : '' || '',
-        billDateEnd: CommonUtils.isNonEmptyString(filterConfig?.billDate[1])
-          ? dayjs(filterConfig?.billDate[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
-          : '' || '',
-        validFromStart: CommonUtils.isNonEmptyString(filterConfig?.dueDate[0])
-          ? dayjs(filterConfig?.dueDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
-          : '' || '',
-        validFromEnd: CommonUtils.isNonEmptyString(filterConfig?.dueDate[1])
-          ? dayjs(filterConfig?.dueDate[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
-          : '' || ''
+        billDateStart: CommonUtils.isNonEmptyString(filterConfig?.billDate[0]) ? dayjs(filterConfig?.billDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY') : '' || '',
+        billDateEnd: CommonUtils.isNonEmptyString(filterConfig?.billDate[1]) ? dayjs(filterConfig?.billDate[1], 'MM/DD/YYYY').format('DD/MM/YYYY') : '' || '',
+        validFromStart: CommonUtils.isNonEmptyString(filterConfig?.dueDate[0]) ? dayjs(filterConfig?.dueDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY') : '' || '',
+        validFromEnd: CommonUtils.isNonEmptyString(filterConfig?.dueDate[1]) ? dayjs(filterConfig?.dueDate[1], 'MM/DD/YYYY').format('DD/MM/YYYY') : '' || ''
       },
       excelMetaDataDTO: {
         accountNumber: selectedAccount?.accountNumber,

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ProviderService from '@src/api/commonService/ProviderService';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import { getProviderSchema } from '../../forms/provider.schema';
@@ -12,6 +11,7 @@ import { sections } from '../../forms/provider.config';
 import { useQuery } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const INITIAL_VALUES = {
   firstName: '',
@@ -32,7 +32,8 @@ const ProviderForm = (props) => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const navigate = useNavigate();
   const { t } = useTranslate();
-  const { items, add, remove, removeAll } = useTimedArray(10000);
+  const [notification, setNotification] = React.useState(null);
+
   const { id } = useParams();
   const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const breadcrumbItems = React.useMemo(() => {
@@ -46,9 +47,7 @@ const ProviderForm = (props) => {
         url: isSystemAdminView ? '/' : '/admin/providers'
       },
       {
-        label: t(
-          isEditOperation ? `provider.editProvider` : `provider.addProvider`
-        )
+        label: t(isEditOperation ? `provider.editProvider` : `provider.addProvider`)
       }
     ];
   }, [isSystemAdminView]);
@@ -65,19 +64,7 @@ const ProviderForm = (props) => {
   });
 
   const handleSubmit = (values) => {
-    const {
-      firstName,
-      middleName,
-      lastName,
-      deaNumber,
-      npiNumber,
-      phoneNumber,
-      address1,
-      address2,
-      city,
-      zip,
-      state
-    } = values;
+    const { firstName, middleName, lastName, deaNumber, npiNumber, phoneNumber, address1, address2, city, zip, state } = values;
     const payload = {
       name: {
         firstName,
@@ -95,7 +82,7 @@ const ProviderForm = (props) => {
         zip
       }
     };
-    removeAll();
+
     if (isEditOperation) {
       ProviderService.updateProvider(id, payload)
         .then((response) => {
@@ -132,12 +119,8 @@ const ProviderForm = (props) => {
   const handleServerError = (error) => {
     const { response = {} } = error;
     const errorFromServer = response.data?.errorCodes;
-    if (
-      errorFromServer &&
-      Array.isArray(errorFromServer) &&
-      errorFromServer.length > 0
-    ) {
-      add({
+    if (errorFromServer && Array.isArray(errorFromServer) && errorFromServer.length > 0) {
+      setNotification({
         description: t(`serverResponse.${errorFromServer.sort().join('.')}`),
         type: 'error',
         isSticky: true
@@ -149,45 +132,18 @@ const ProviderForm = (props) => {
 
   return (
     <div>
-      <Formik
-        validationSchema={getProviderSchema(t)}
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        enableReinitialize={true}>
+      <Formik validationSchema={getProviderSchema(t)} initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize={true}>
         <Form>
           <div className="MCP-module-wrapper">
             <Breadcrumbs items={breadcrumbItems} />
-            <Heading as="h1">
-              {t(
-                isEditOperation
-                  ? `provider.editProvider`
-                  : `provider.addProvider`
-              )}
-            </Heading>
+            <Heading as="h1">{t(isEditOperation ? `provider.editProvider` : `provider.addProvider`)}</Heading>
             <div className="MCP-module-body">
               {isEditOperation && isProviderDetailsError ? (
-                <Alert
-                  description={providerDetailsError.message}
-                  type={'error'}
-                  duration={0}
-                  showCloseIcon={false}
-                />
+                <Alert description={providerDetailsError.message} type={'error'} duration={0} showCloseIcon={false} />
               ) : (
                 <React.Fragment>
-                  {items && items.length > 0 && (
-                    <div className="MCP-module-body">
-                      {items.map(({ id, description, type }) => {
-                        return (
-                          <Alert
-                            key={id}
-                            description={description}
-                            type={type}
-                            onClose={() => remove(id)}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
+                  {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
+
                   <div className="MCP-CardContainer">
                     {isEditOperation && isLoading ? (
                       <div className="spinner-wrapper md">
@@ -209,11 +165,7 @@ const ProviderForm = (props) => {
                         {t('provider.btnCancel')}
                       </Button>
                       <Button type="submit" size="md">
-                        {t(
-                          isEditOperation
-                            ? 'provider.btnUpdateProvider'
-                            : 'provider.btnCreateProvider'
-                        )}
+                        {t(isEditOperation ? 'provider.btnUpdateProvider' : 'provider.btnCreateProvider')}
                       </Button>
                     </div>
                   )}

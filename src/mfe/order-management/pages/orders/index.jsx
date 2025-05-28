@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabList, Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
@@ -14,6 +14,7 @@ import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIE
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import CommonUtils from '@src/util/CommonUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const OrderIndex = () => {
   const { t } = useTranslate();

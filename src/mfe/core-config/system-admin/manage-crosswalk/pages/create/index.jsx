@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/
 import Summary from './Summary';
 import { useGenericContext } from '../../config/GenericContext';
 import { errorStatusCodes } from '@src/util/ApiUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -201,6 +202,12 @@ const CreateCrosswalk = () => {
             isMaterialConfiguration={true}
             useMaterialService={true}
             heading={t('manageMaterial.drawer.heading')}
+            notify={({ type, message }) =>
+              addNotification({
+                type,
+                description: message
+              })
+            }
           />
         )}
       </div>

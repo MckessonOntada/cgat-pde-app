@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Heading, Button, RadioGroup, Label, Alert } from '@mckesson/mcp-component-library';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
+import { Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import FloatingDrawer from '@src/components/floating-drawer';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
@@ -41,8 +41,16 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       caption: t('manageMaterial.drawer.configuration.body.patientInfoRequired'),
       id: 'patientInfoRequired',
       items: [
-        { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.yes'), value: 'yes' },
-        { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.no'), value: 'no' }
+        {
+          isDisabled: false,
+          label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.yes'),
+          value: 'yes'
+        },
+        {
+          isDisabled: false,
+          label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.no'),
+          value: 'no'
+        }
       ],
       value: formValues.patientInfoRequired,
       required: true,
@@ -52,8 +60,16 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
       id: 'coiIdRequired',
       items: [
-        { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.coiIdRequired.yes'), value: 'yes' },
-        { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.coiIdRequired.no'), value: 'no' }
+        {
+          isDisabled: false,
+          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.yes'),
+          value: 'yes'
+        },
+        {
+          isDisabled: false,
+          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.no'),
+          value: 'no'
+        }
       ],
       value: formValues.coiIdRequired,
       required: true,
@@ -104,9 +120,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       }>
       <div className={styles.wrapper}>
         <div className={styles.body}>
-          {error && !isApplyDisabled && (
-            <Alert description={t('manageMaterial.drawer.configuration.alert.error')} onClose={handleAlertClose} type={'error'} duration={10000} />
-          )}
+          {error && !isApplyDisabled && <Alert description={t('manageMaterial.drawer.configuration.alert.error')} onClose={handleAlertClose} type={'error'} />}
           <div className={styles.formControls}>
             {formFields.map((field, index) => (
               <div className={styles.formField} key={index}>

@@ -8,11 +8,11 @@ import React, {
 import { useQuery, useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import dayjs from 'dayjs';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
+import useAlert from '@src/hooks/useAlert';
 
 const PaymentHistoryContext = createContext();
 
@@ -59,7 +59,8 @@ export const PaymentHistoryProvider = ({ children }) => {
     INITIAL_PAGINATION_STATE
   );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const { selectedAccount } = useAccountContext();
   const [actualData, setActualData] = useState([]);
   const { t } = useTranslate();
@@ -80,10 +81,6 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const filterData = async (filters, dataToFilter) => {
-    // if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
-    //   // await refetch();
-    //   setPreviousFilterConfig(filters);
-    // }
     let _data = [...(dataToFilter?.length ? dataToFilter : actualData)];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -205,7 +202,11 @@ export const PaymentHistoryProvider = ({ children }) => {
       const { response } = error;
       let errorMsg =
         response?.data?.message || 'Error fetching payment history listing';
-      showSnackbar({ description: errorMsg, type: 'error' });
+      showAlert({
+        description: errorMsg,
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     },
     enabled: !!selectedAccount?.id
   });
@@ -271,11 +272,12 @@ export const PaymentHistoryProvider = ({ children }) => {
           link.click();
 
           // Show success message
-          showSnackbar({
+          showAlert({
             description: `${t(
               'paymentInvoices.paymentHistory.export.success'
             )}`,
-            type: 'success'
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
@@ -286,13 +288,14 @@ export const PaymentHistoryProvider = ({ children }) => {
           error.response.data &&
           error.response.data
         ) {
-          showSnackbar({
+          showAlert({
             description: CommonUtils.isNonEmptyString(
               error.response.data.message
             )
               ? error.response.data.message
               : t('paymentInvoices.paymentHistory.export.error'),
-            type: 'error'
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }

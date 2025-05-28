@@ -3,12 +3,12 @@ import { useMutation, useQuery } from 'react-query';
 import dayjs from 'dayjs';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
 import { DUE_STATUS } from '../pages/invoices/InvoiceConstants';
+import useAlert from '@src/hooks/useAlert';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -54,7 +54,8 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const [previousFilterConfig, setPreviousFilterConfig] =
     useState(INITIAL_FILTER_STATE);
   const [resetFilterData, setResetFilterData] = useState(true);
@@ -183,9 +184,10 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       );
 
       if (!res.data || !res.data.openInvoices) {
-        showSnackbar({
+        showAlert({
           description: 'Error fetching invoice listing',
-          type: 'error'
+          type: 'error',
+          anchorEl: alertContainerId
         });
         setData([]);
         setUnSlicedData([]);
@@ -221,7 +223,11 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         setActualData([]);
         let errorMsg =
           response?.data?.message || 'Error fetching invoice listing';
-        showSnackbar({ description: errorMsg, type: 'error' });
+        showAlert({
+          description: errorMsg,
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
     }
   );
@@ -352,9 +358,10 @@ export const PaymentsInvoiceProvider = ({ children }) => {
           link.click();
 
           // Show success message
-          showSnackbar({
+          showAlert({
             description: `${t('paymentInvoices.excel.export.success')}`,
-            type: 'success'
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
@@ -365,13 +372,14 @@ export const PaymentsInvoiceProvider = ({ children }) => {
           error.response.data &&
           error.response.data
         ) {
-          showSnackbar({
+          showAlert({
             description: CommonUtils.isNonEmptyString(
               error.response.data.message
             )
               ? error.response.data.message
               : t('paymentInvoices.excel.export.error'),
-            type: 'error'
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }

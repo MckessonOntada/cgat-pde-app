@@ -5,7 +5,7 @@ import { useOrderPrice } from '../additional-details/useOrderPrice';
 import PageHeader from '@src/components/pageHeader';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import UploadFile from '@src/components/uploadFile/UploadFile';
-import { Heading, Alert } from '@mckesson/mcp-component-library';
+import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import Textarea from '@src/components/form/Textarea';
 import { RoutePaths } from '@src/routes/constants';
@@ -18,6 +18,7 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import { ORDER_STATUS } from '../../../orders/config';
 import { CHANNEL_TYPE } from '../Constants';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
@@ -28,8 +29,7 @@ function UploadOrderDocument() {
   const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [alert, setAlert] = React.useState(null);
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
-    useOrder(orderId);
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
 
   const handleOnUpload = (values = {}) => {
@@ -91,10 +91,7 @@ function UploadOrderDocument() {
 
   if (
     orderDetails.id &&
-    (orderDetails.status !== ORDER_STATUS.SUBMITTED ||
-      ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(
-        orderDetails.channelType
-      ))
+    (orderDetails.status !== ORDER_STATUS.SUBMITTED || ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(orderDetails.channelType))
   ) {
     navigate('/orders');
   }
@@ -103,10 +100,7 @@ function UploadOrderDocument() {
       <PageHeader heading={'Upload Documents'} />
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <div className="MCP-CardContainer">
-        <ModuleHeader
-          className={styles['panel-header']}
-          heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>}
-        />
+        <ModuleHeader className={styles['panel-header']} heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>} />
 
         {isFetchingOrderDetails ? (
           <div className="spinner-wrapper md">
@@ -114,20 +108,13 @@ function UploadOrderDocument() {
           </div>
         ) : (
           <div>
-            <div
-              className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-              <DetailSegment
-                key={'sap_id'}
-                label="SAP ID"
-                value={orderDetails.id}
-              />
+            <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+              <DetailSegment key={'sap_id'} label="SAP ID" value={orderDetails.id} />
               <DetailSegment
                 key={'therapy_name'}
                 label="Therapy"
                 value={
-                  <Link
-                    onClick={() => setShowTherapyDetails(true)}
-                    className="MCP-table-link">
+                  <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
                     {orderDetails.therapy?.materialDescription}
                   </Link>
                 }
@@ -156,7 +143,7 @@ function UploadOrderDocument() {
           <UploadFile
             isLoading={false}
             messages={[validationMessage]}
-            onCloseAlert={() => {}}
+            onCloseAlert={() => setValidationMessage(null)}
             upload={{
               caption: t('controls.updateOrder'),
               fn: handleOnUpload

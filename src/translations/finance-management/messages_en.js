@@ -279,8 +279,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentHistory.export.error': 'Error exporting Payment history.',
   'paymentInvoices.excel.export.success': 'Excel exported.',
   'paymentInvoices.excel.export.error': 'Error exporting excel.',
-  'paymentInvoices.pendingPaynemt.export.success': 'Pending Payment exported.',
-  'paymentInvoices.pendingPaynemt.export.error': 'Pending exporting Payment .',
+  'paymentInvoices.pendingPayment.export.success': 'Pending Payment exported.',
+  'paymentInvoices.pendingPayment.export.error': 'Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'BILL ID',
 
   'paymentInvoices.paymentMethods.achForm.description': 'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',

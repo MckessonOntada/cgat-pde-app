@@ -7,7 +7,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import './ViewOrg.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RoutePaths } from '@src/routes/constants';
-import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
@@ -16,6 +16,7 @@ import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import OrganizationAccounts from '@src/components/Accounts/Accounts';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import Alert from '@src/components/cgat-alert/Alert';
 
 export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
@@ -49,15 +50,6 @@ export default function ViewOrganization() {
     navigate(RoutePaths.pathOrgManagement);
   };
 
-  useEffect(() => {
-    if (updateState.isSuccess) {
-      const timer = setTimeout(() => {
-        handleAlertClose;
-      }, 10000);
-      return () => clearTimeout(timer);
-    }
-  }, [updateState.isSuccess, location.pathname, location.state]);
-
   const handleAlertClose = () => {
     setAlertConfig(null);
   };
@@ -85,9 +77,14 @@ export default function ViewOrganization() {
       {
         onSuccess: (response) => {
           if (!isView) {
-            navigate(RoutePaths.pathOrgManagement, { state: { isSuccess: true } });
+            navigate(RoutePaths.pathOrgManagement, {
+              state: { isSuccess: true }
+            });
           } else {
-            setUpdateState({ isSuccess: isView ? true : false, recCount: selectedCount });
+            setUpdateState({
+              isSuccess: isView ? true : false,
+              recCount: selectedCount
+            });
             setAlertConfig({
               isVisible: true,
               description: `${selectedCount} ${t('orgManagement.messages.accountlinkSuccess')}`,
@@ -163,7 +160,7 @@ export default function ViewOrganization() {
         style={{ marginBottom: '16px' }}
       />
       {updateState.isSuccess && alertConfig?.isVisible && (
-        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
+        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} />
       )}
 
       <OrganizationAccounts

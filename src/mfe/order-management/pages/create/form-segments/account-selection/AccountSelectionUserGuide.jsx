@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
-import { RadioGroup, Button, Loader, Heading, Alert, CheckboxGroup } from '@mckesson/mcp-component-library';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
+import { RadioGroup, Button, Loader, Heading, CheckboxGroup } from '@mckesson/mcp-component-library';
 import AccountCard from './AccountCard';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
@@ -10,6 +9,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { CHANNEL_TYPE, INFO_340B, PROGRAM_LIST } from '../Constants';
 import InfoModel from '@src/components/InfoModel/indix';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, channelType = CHANNEL_TYPE.BUY_AND_BILL }) => {
   const { t } = useTranslate();

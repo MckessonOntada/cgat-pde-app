@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-
 import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +15,6 @@ import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-mater
 import { useDispatch } from 'react-redux';
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
-import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import CommonUtils from '@src/util/CommonUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import ConfigureCatalog from '../../../manage-catalog/pages/ConfigureCatalog';
@@ -47,7 +45,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
       applySort(sortKey, direction);
     }
   };
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+
   const clearTableSelection = () => {
     deselectAll(); // clears selectedRows and selectedRowObjects
   };

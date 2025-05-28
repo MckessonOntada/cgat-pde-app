@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  TabList,
-  Alert,
-  Button,
-  Heading
-} from '@mckesson/mcp-component-library';
+import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -21,6 +16,7 @@ import CommonFilters from '@src/components/Filters';
 import usePermission from '@src/hooks/usePermissions';
 import UploadUsers from './UploadUsers';
 import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
+import Alert from '@src/components/cgat-alert/Alert';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -47,13 +43,6 @@ export default function Dashboard() {
     setAlert({ type });
     setIsAlertVisible(true);
     setAlertDescription(message);
-    const timer = setTimeout(() => {
-      setIsAlertVisible(false);
-      setAlert({ type: '', description: '' });
-    }, 10000);
-
-    // Cleanup the timer to prevent memory leaks
-    return () => clearTimeout(timer);
   };
 
   useEffect(() => {
@@ -234,7 +223,6 @@ export default function Dashboard() {
             description={alertDescription}
             onClose={handleAlertClose}
             type={alert.type}
-            duration={10000}
           />
         )}
         <div

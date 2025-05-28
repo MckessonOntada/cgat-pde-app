@@ -1,13 +1,13 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation } from 'react-router-dom';
+import useAlert from '@src/hooks/useAlert';
 
 const ACCOUNTS_PER_SEARCH = 20;
 
@@ -28,8 +28,8 @@ export const AccountProvider = ({ children }) => {
   const [totalAccounts, setTotalAccounts] = useState(0);
   const location = useLocation();
   const { state } = location;
-  const { showSnackbar } = useSnackbar();
-
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const formatPayToAccountsList = () => {
     const formattedAccounts = payToAccountsData.map((account, index) => ({
       index,
@@ -74,9 +74,10 @@ export const AccountProvider = ({ children }) => {
 
   useEffect(() => {
     if (errorFetchingAccounts) {
-      showSnackbar({
+      showAlert({
         description: t('paymentInvoices.getAccountsAPI.error'),
-        type: 'error'
+        type: 'error',
+        anchorEl: alertContainerId
       });
     }
   }, [errorFetchingAccounts]);
@@ -122,25 +123,21 @@ export const AccountProvider = ({ children }) => {
       onSuccess: (response) => {
         if (CommonUtils.isNonEmptyObject(response)) {
           refetchPayToAccountsData();
-          showSnackbar({
-            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountName} (${
-              selectedAccount?.accountNumber
-            })`,
-            type: 'success'
+          showAlert({
+            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountName} (${selectedAccount?.accountNumber})`,
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
       onError: (error) => {
-        if (
-          CommonUtils.isNonEmptyObject(error) &&
-          CommonUtils.isNonEmptyObject(error.response) &&
-          CommonUtils.isNonEmptyObject(error.response.data)
-        ) {
-          showSnackbar({
+        if (CommonUtils.isNonEmptyObject(error) && CommonUtils.isNonEmptyObject(error.response) && CommonUtils.isNonEmptyObject(error.response.data)) {
+          showAlert({
             description: CommonUtils.isNonEmptyString(error.response.data.message)
               ? error.response.data.message
               : t('paymentInvoices.setDefaultAccountAPI.error'),
-            type: 'error'
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }

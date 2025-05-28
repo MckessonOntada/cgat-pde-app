@@ -3,8 +3,8 @@ import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useAccountContext } from '@src/mfe/finance-management/context/AccountContext';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
+import useAlert from '@src/hooks/useAlert';
 
 const BalanceContext = createContext();
 
@@ -14,7 +14,8 @@ export const useBalanceContext = () => {
 
 export const BalanceProvider = ({ children, initialData = [] }) => {
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const [data, setData] = useState(initialData);
   const [balanceData, setBalanceData] = useState([]);
 
@@ -36,7 +37,7 @@ export const BalanceProvider = ({ children, initialData = [] }) => {
       },
       onError: (error) => {
         if (error) {
-          showSnackbar({ description: t('paymentInvoices.balanceAPI.error'), type: 'error' });
+          showAlert({ description: t('paymentInvoices.balanceAPI.error'), type: 'error', anchorEl: alertContainerId });
         }
       }
     }

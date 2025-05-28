@@ -1,4 +1,4 @@
-import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import ModuleHeader from '@src/components/module-header';
@@ -13,7 +13,7 @@ import CommonFilters from '@src/components/Filters';
 import { US_STATES } from '@src/components/form/util';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
-import AuthUtils from '@src/util/AuthUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function DashboardPage() {
   const { t } = useTranslate();
@@ -59,14 +59,15 @@ function DashboardPage() {
       setIsAlertVisible(true);
       setAlert({ type: 'success' });
       setAlertDescription('Organization Created Successfully');
-      const timer = setTimeout(handleAlertClose, 10000);
-      return () => clearTimeout(timer);
     }
   }, [isSuccess, location.pathname, location.state]);
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
-    navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false } });
+    navigate(location.pathname, {
+      replace: true,
+      state: { ...location.state, isSuccess: false }
+    });
   };
 
   const handlealert = (success, message) => {
@@ -139,7 +140,7 @@ function DashboardPage() {
           }
         />
         {(isSuccess || isDeactivate) && isAlertVisible && (
-          <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />
+          <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />
         )}
 
         <div className="MCP-module-body">

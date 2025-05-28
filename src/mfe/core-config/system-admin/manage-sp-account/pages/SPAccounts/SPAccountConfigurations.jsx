@@ -2,7 +2,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { useMutation } from 'react-query';
 import { renderModal } from '@src/util/ModalUtil';
@@ -11,6 +11,7 @@ import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { PREVIEW_URL } from '../../../manage-questionnaire/constants';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function SPAccountConfigurations({ data, refetch, orgAdmin }) {
   const { t } = useTranslate();
@@ -97,7 +98,7 @@ function SPAccountConfigurations({ data, refetch, orgAdmin }) {
             </Button>
           }
         />
-        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
 
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2">

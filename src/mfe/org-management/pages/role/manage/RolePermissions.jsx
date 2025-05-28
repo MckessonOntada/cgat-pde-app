@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -8,17 +8,15 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Formik, Form } from 'formik';
 import { useMutation } from 'react-query';
 import PermissionForm from '../../../../user-management/pages/UserPermissions/PermissionForm';
-import HttpResourceService, {
-  httpVerb
-} from '../../../../../api/HttpResourceService';
+import HttpResourceService, { httpVerb } from '../../../../../api/HttpResourceService';
 import ApiRoutes from '../../../../../api/ApiRoutes';
 import { PATHS } from '../../../routes/constants';
 import { useRole } from '../../../context/RoleContext';
 import DiscardChangesModal from './DiscardChangesModel';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function arePermissionsEqual(arr1, arr2) {
-  if ((Array.isArray(arr1) && !arr2) || (Array.isArray(arr2) && !arr1))
-    return false;
+  if ((Array.isArray(arr1) && !arr2) || (Array.isArray(arr2) && !arr1)) return false;
 
   if (arr1.length !== arr2.length) {
     return false;
@@ -40,9 +38,7 @@ const RolePermissions = () => {
   const [alert, setAlert] = useState(null);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const [enabledPermissions, setEnabledPermissions] = React.useState(
-    row?.permissions ? [...row.permissions] : []
-  );
+  const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
   const [inheritedRole, setInheritedRole] = React.useState(null);
   const { refreshData } = useRole();
   const { isEdit } = location.state || {};
@@ -50,30 +46,12 @@ const RolePermissions = () => {
   const handleOnCancelButtonClick = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('list');
-    } else
-      navigate(
-        isEdit
-          ? `/admin/organization/roles/${roleId}`
-          : `/admin/organization/${PATHS.roles}`
-      );
+    } else navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`);
   };
-
-  useEffect(() => {
-    if (isAlertVisible) {
-      const timer = setTimeout(() => {
-        setIsAlertVisible(false);
-      }, 10000);
-      return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, [isAlertVisible]);
 
   const { mutate, isLoading } = useMutation(
     async (data) => {
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`,
-        httpVerb.PATCH,
-        data
-      );
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`, httpVerb.PATCH, data);
 
       return res;
     },
@@ -82,29 +60,15 @@ const RolePermissions = () => {
         const data = res?.data;
         refreshData();
         if (data) {
-          if (row?.permissions) {
-            setMessage(
-              {
-                primaryMessage: t('orgManagement.messages.roleUpdate'),
-                kind: 'success'
-              },
-              10000
-            );
-          } else {
-            setMessage(
-              {
-                primaryMessage: t('orgManagement.messages.newRoleCreation'),
-                kind: 'success'
-              },
-              10000
-            );
-          }
           refreshData();
-          navigate(
-            isEdit
-              ? `/admin/organization/roles/${roleId}`
-              : `/admin/organization/${PATHS.roles}`
-          );
+          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`, {
+            state: {
+              showAlert: {
+                type: 'success',
+                description: t(row?.permissions ? 'orgManagement.messages.roleUpdate' : 'orgManagement.messages.newRoleCreation')
+              }
+            }
+          });
         }
       },
       onError: (error) => {
@@ -137,23 +101,14 @@ const RolePermissions = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('mainlist');
     } else {
-      navigate(
-        isEdit
-          ? `/admin/organization/roles/${roleId}`
-          : '/admin/organization/roles'
-      );
+      navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
     }
   };
 
   const handleNavigate = () => {
-    if (modalSuccessCallback === 'back')
-      navigate(`../${roleId}/edit-role`, { state: row });
+    if (modalSuccessCallback === 'back') navigate(`../${roleId}/edit-role`, { state: row });
     else if (modalSuccessCallback === 'list') {
-      navigate(
-        isEdit
-          ? `/admin/organization/roles/${roleId}`
-          : '/admin/organization/roles'
-      );
+      navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
     } else if (modalSuccessCallback === 'mainlist') {
       navigate('/admin/organization/roles');
     }
@@ -178,19 +133,9 @@ const RolePermissions = () => {
       </div>
 
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
-      {/* {messageConfig.messageKind && messageConfig.primaryMessage && <Alert onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.messageKind} />} */}
       {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
-        {/* {!isEdit && (
-          <StepperMui
-            activeIndex={2}
-            dividerText="of"
-            mobileLabel={t('orgManagement.role.labelStep')}
-            stepHeaders={forms.map((f) => ({ label: f.label }))}
-          />
-        )} */}
-
         <div>
           <Formik
             initialValues={{}}

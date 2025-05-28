@@ -2,11 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import dayjs from 'dayjs';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
+import useAlert from '@src/hooks/useAlert';
 
 const CustomerStatementsContext = createContext();
 
@@ -54,7 +54,8 @@ export const CustomerStatementsProvider = ({ children }) => {
     INITIAL_PAGINATION_STATE
   );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const { selectedAccount } = useAccountContext();
   const [actualData, setActualData] = useState([]);
 
@@ -74,10 +75,6 @@ export const CustomerStatementsProvider = ({ children }) => {
   };
 
   const filterData = async (filters) => {
-    // if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
-    //   await refetch();
-    //   setPreviousFilterConfig(filters);
-    // }
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -190,7 +187,11 @@ export const CustomerStatementsProvider = ({ children }) => {
       const { response } = error;
       let errorMsg =
         response?.data?.message || 'Error fetching customer statements listing';
-      showSnackbar({ description: errorMsg, type: 'error' });
+      showAlert({
+        description: errorMsg,
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
   });
 
@@ -304,9 +305,10 @@ export const CustomerStatementsProvider = ({ children }) => {
           link.click();
 
           // Show success message
-          showSnackbar({
+          showAlert({
             description: `${t('paymentInvoices.CS.export.success')}`,
-            type: 'success'
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
@@ -317,13 +319,14 @@ export const CustomerStatementsProvider = ({ children }) => {
           error.response.data &&
           error.response.data
         ) {
-          showSnackbar({
+          showAlert({
             description: CommonUtils.isNonEmptyString(
               error.response.data.message
             )
               ? error.response.data.message
               : t('paymentInvoices.CS.export.error'),
-            type: 'error'
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }

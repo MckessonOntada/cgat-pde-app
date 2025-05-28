@@ -1,13 +1,11 @@
 import React from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
-import { Heading, Button } from '@mckesson/mcp-component-library';
+import { Heading } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { authToken, httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
@@ -32,7 +30,6 @@ export const AccountDetailsConstants = [
 function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccount, isLinkedAccount }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
 
@@ -87,9 +84,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
       onSuccess: (response) => {
         refetch();
       },
-      onError: (error) => {
-        showSnackbar({ description: t('ManageAccount.delink.error'), type: 'error' });
-      }
+      onError: (error) => {}
     }
   );
 
