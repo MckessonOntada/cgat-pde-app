@@ -494,7 +494,7 @@ function ReviewPayments() {
                   <div className="label">{t('paymentInvoices.reviewPayments.TotalAmountAfterCreditApplied')}</div>{' '}
                   <div className="value">
                     <span className="currencySymbol">$</span>
-                    {`${FinanceUtils.formatCurrency(totalCreditsCount - creditsSum)}`}
+                    {`${FinanceUtils.formatCurrency(totalCreditsCount - creditsSum).slice(1)}`}
                   </div>
                 </div>
               </>

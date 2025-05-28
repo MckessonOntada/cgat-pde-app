@@ -172,7 +172,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.selectMethodInfo': 'For other payment methods, please contact Customer Care.',
   'paymentInvoices.reviewPayments.invoiceDesc': 'Total Scheduled Payment:',
   'paymentInvoices.reviewPayments.TotalCreditAmount': 'Total Credit Balance:',
-  'paymentInvoices.reviewPayments.TotalCreditAmount': 'Total Balance After Credit Applied:',
+  'paymentInvoices.reviewPayments.TotalAmountAfterCreditApplied': 'Total Balance After Credit Applied:',
   'paymentInvoices.reviewPayments.previewPayment': 'Preview Payment',
   'paymentInvoices.reviewPayments.creditsAvail': 'Credits Available',
   'paymentInvoices.reviewPayments.creditsSelected': 'Credits Selected',
