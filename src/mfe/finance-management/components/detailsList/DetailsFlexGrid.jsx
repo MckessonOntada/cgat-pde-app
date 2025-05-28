@@ -10,7 +10,7 @@ function DetailsFlexGrid({ invoiceDetails }) {
     <div className="details-wrapper">
       {invoiceDetails &&
         Object.entries(invoiceDetails)?.map(([key, value], index) => (
-          <div className={`element-row ${index % 2 == 0 ? `left-column` : `right-column`}`}>
+          <div key={key} className={`element-row ${index % 2 == 0 ? `left-column` : `right-column`}`}>
             <div className="list-item">
               <div className="label">{key}</div>
               <div className="value">{value || '-'}</div>
