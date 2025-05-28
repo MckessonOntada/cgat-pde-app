@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stepper } from '@mckesson/mcp-component-library';
+import { StepperMui } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { CHANNEL_TYPE, FormList, ORDER_STAGES } from './Constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -91,7 +91,12 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   return (
     <div className={style['custom-order-stepper']} onClick={handleOnStepClick}>
-      <Stepper activeIndex={activeIndex} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))} />
+      <StepperMui
+        activeIndex={activeIndex}
+        dividerText="of"
+        mobileLabel={t('labels.steps')}
+        stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))}
+      />
     </div>
   );
 }

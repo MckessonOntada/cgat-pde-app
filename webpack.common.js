@@ -130,6 +130,9 @@ module.exports = {
       __ORDERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(
         process.env.REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL
       ),
+      __NOTIFICATION_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_NOTIFICATION_SERVICE_BASE_URL
+      ),
       __DATA_ABSTRACTION_SERVICE_BASE_URL__: JSON.stringify(
         process.env.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL
       ),
@@ -158,11 +161,11 @@ module.exports = {
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
       '@fonts': path.resolve(__dirname, 'public/fonts/'), // Alias to refer to fonts folder easily
-      '@mckesson/mcp-component-library': path.resolve(
+      "@mckesson/mcp-component-library": path.resolve(
         __dirname,
-        'node_modules/@mckesson/mcp-component-library/dist/index.esm.js'
-      )
+        "node_modules/@mckesson/mcp-component-library/dist/index.esm.js"
+      ),
     },
-    extensions: ['.js', '.jsx', '.json', '.esm.js']
+    extensions: [".js", ".jsx", ".json", ".esm.js"],
   }
 };

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Loader } from '@mckesson/mcp-component-library';
 import { debugIds, ID } from '@src/constants/id';
 import styles from '../../src/assets/styles/MainLayout.module.scss';
@@ -19,12 +19,24 @@ import AccountSetting from '@src/components/AccountSetting';
 import { FooterProvider } from '@src/components/footer/FooterContext';
 import Dashboard from '@src/mfe/core-config/system-admin';
 import AdminRoutes from '@src/mfe/core-config/admin';
+import Notifications from '@src/mfe/notification-mfe/Notifications';
+import { NotificationDrawer } from '@src/mfe/notification-mfe/components/NotificationDrawer/NotificationDrawer';
+import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
+const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
+const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
+  const { notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
+
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
-      <Header />
+      <Header
+        onNotificationClick={() =>
+          setNotificationDrawerOpen(!notificationDrawerOpen)
+        }
+      />
+      <NotificationDrawer />
       <ErrorWrapper>
         <div className={`${styles['app-wrapper']}`} id={debugIds(ID.APP_WRAPPER)}>
           <FooterProvider>
@@ -87,9 +99,10 @@ function MainLayout() {
                         ) : (
                           <Navigate to="/" />
                         )
-                      }></Route>
-
+                      }
+                    />
                     <Route path="/account-setting" element={<AccountSetting />} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>

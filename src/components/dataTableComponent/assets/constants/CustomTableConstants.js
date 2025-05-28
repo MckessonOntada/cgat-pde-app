@@ -17,7 +17,11 @@ export const renderTableCheckBox = (
   const isCheckboxDisabled = () => {
     const isHeaderCheckbox =
       row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber;
-    const isRowInactive = row.active === false || row.active === 'Inactive';
+    const isRowInactive =
+      row.active === false ||
+      row.active === 'Inactive' ||
+      row.isActive === false ||
+      row.isActive === 'Inactive';
     return (
       (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) || isRowInactive
     );
@@ -32,7 +36,20 @@ export const renderTableCheckBox = (
   };
 
   const handleHeaderCheck = () => {
-    const activeRows = data.filter((item) => (item.active ?? true) === true);
+    const activeRows = data.filter((item) => {
+      if (item.hasOwnProperty('active') && item.active === true) {
+        return true;
+      }
+      if (item.hasOwnProperty('isActive') && item.isActive === true) {
+        return true;
+      }
+
+      if (!item.hasOwnProperty('active') && !item.hasOwnProperty('isActive')) {
+        return true;
+      }
+
+      return false;
+    });
     const currentPageMaterialNumbers = activeRows.map((item) => item[dataKey]);
 
     if (isAllChecked()) {
@@ -63,7 +80,12 @@ export const renderTableCheckBox = (
   };
 
   const isAllChecked = () =>
-    selectedData.length === data.filter((item) => item.active !== false).length;
+    selectedData.length ===
+    data.filter((item) => {
+      if ('active' in item) return item.active === true;
+      if ('isActive' in item) return item.isActive === true;
+      return true;
+    }).length;
 
   const handleIndividualCheck = () => {
     if (selectedData.find((item) => item[dataKey] === row[dataKey])) {

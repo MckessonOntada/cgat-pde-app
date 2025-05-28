@@ -60,25 +60,6 @@ const RolePermissions = () => {
         const data = res?.data;
         refreshData();
         if (data) {
-          // if (row?.permissions) {
-          //   // setMessage({
-          //   //   primaryMessage: t('orgManagement.messages.roleUpdate'),
-          //   //   kind: 'success'
-          //   // });
-          //   setAlert({
-          //     type: 'success',
-          //     description: t('orgManagement.messages.roleUpdate')
-          //   });
-          // } else {
-          //   // setMessage({
-          //   //   primaryMessage: t('orgManagement.messages.newRoleCreation'),
-          //   //   kind: 'success'
-          //   // });
-          //   setAlert({
-          //     type: 'success',
-          //     description: t('orgManagement.messages.newRoleCreation')
-          //   });
-          // }
           refreshData();
           navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`, {
             state: {

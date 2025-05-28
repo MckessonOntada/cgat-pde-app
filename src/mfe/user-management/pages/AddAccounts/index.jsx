@@ -109,7 +109,7 @@ const AddAccounts = () => {
 
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={3}
             dividerText="of"
             stepHeaders={[

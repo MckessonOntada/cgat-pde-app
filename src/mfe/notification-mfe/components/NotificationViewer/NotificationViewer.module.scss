@@ -1,0 +1,109 @@
+@use "../../../../assets/styles/abstracts/mixins" as mixins;
+
+/* ==========================================================================
+   Notification Viewer Container
+   ========================================================================== */
+.notificationViewer {
+  // Layout & Box Model
+  width: 100%;
+  min-height: 711px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+
+  // Visual Styles
+  background: var(--brand-color-background-white, #fff);
+  border-radius: var(--brand-border-radius--8, 8px);
+  border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
+  padding: 16px;
+
+  // Responsive Padding
+  @include mixins.respond(md) {
+    padding: 24px;
+  }
+  @include mixins.respond(lg) {
+    padding: 32px;
+  }
+
+  /* --------------------------------------------------------------------------
+     Header Row: Section & Date
+     -------------------------------------------------------------------------- */
+  .notificationViewerHeaderRow {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+
+    // Responsive: Row on large screens
+    @include mixins.respond(lg) {
+      flex-direction: row;
+    }
+
+    // Section & Date Text Styles
+    .notificationViewerSection,
+    .notificationViewerDate {
+      color: #181818;
+      font-family: var(--typography-font-family-body, Nunito);
+      font-size: var(--typography-text-size-body-font-small, 14px);
+      font-style: normal;
+      line-height: var(--typography-line-height-body-font-small, 18px);
+    }
+
+    .notificationViewerSection {
+      font-weight: 600; // Emphasized section
+    }
+
+    .notificationViewerDate {
+      font-weight: 400; // Regular date
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     Title Row: Notification Title
+     -------------------------------------------------------------------------- */
+  .notificationViewerTitleRow {
+    margin-bottom: 0;
+
+    .notificationViewerTitle {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-black, #181818);
+      font-family: Nunito;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     Description: Notification Body Text
+     -------------------------------------------------------------------------- */
+  .notificationViewerDesc {
+    color: #3c5c6e;
+    font-family: Nunito;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  /* --------------------------------------------------------------------------
+     Empty State: No Notification Message
+     -------------------------------------------------------------------------- */
+  .notificationViewerEmpty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+
+    .notificationViewerEmptyText {
+      color: var(--brand-color-primary-slate, #3c5c6e);
+      font-size: 16px;
+      font-weight: 400;
+    }
+  }
+}

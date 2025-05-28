@@ -42,7 +42,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
     const { accountName, accountNumber, name, address } = data;
     return [
       {
-        sectionHeading: 'manageSPMaterial.drawer.Details',
+        sectionHeading: 'manageSPAccount.heading.AccountDetails',
         sectionData: [
           {
             label: 'manageSPAccount.heading.organization',
@@ -231,7 +231,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
             open={openSPDetails}
             onClose={() => setOpenSPDetails(false)}
             details={drawerDetails}
-            title={t('manageSPAccount.providers.details')}
+            title={t('manageSPAccount.heading.spAccountDetails')}
           />
         )}
       </div>

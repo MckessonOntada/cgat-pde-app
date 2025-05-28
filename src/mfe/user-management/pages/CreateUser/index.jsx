@@ -260,7 +260,7 @@ const CreateUser = () => {
 
       {!isEdit && !isSystemAdminView && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={1}
             dividerText="of"
             stepHeaders={[

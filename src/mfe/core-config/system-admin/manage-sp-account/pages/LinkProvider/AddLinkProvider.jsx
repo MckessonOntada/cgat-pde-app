@@ -10,6 +10,7 @@ import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useMutation } from 'react-query';
 import Alert from '@src/components/cgat-alert/Alert';
+import AuthUtils from '@src/util/AuthUtils';
 
 const AddLinkProvider = () => {
   const { t } = useTranslate();
@@ -22,7 +23,8 @@ const AddLinkProvider = () => {
   };
   const [searchParams] = useSearchParams();
   const selectedOrganization = searchParams.get('orgId');
-
+  const practiceId = AuthUtils.getPracticeId();
+  const organizationId = selectedOrganization || practiceId;
   const onSubmitHandler = () => {
     if (!selectedProviders || selectedProviders.length === 0) {
       addNotification({
@@ -38,11 +40,11 @@ const AddLinkProvider = () => {
 
   const { isLoading, mutate: handleAddAccounts } = useMutation(
     async (selectedProviderIds) => {
-      return LinkProviderService.linkProvidersToAccount(selectedOrganization, spAccountId, selectedProviderIds);
+      return LinkProviderService.linkProvidersToAccount(organizationId, spAccountId, selectedProviderIds);
     },
     {
       onSuccess: (_, selectedProviderIds) => {
-        navigate(`/system-admin/config/manage-sp-account/${spAccountId}?orgId=${selectedOrganization}`, {
+        navigate(`/${!practiceId ? 'system-admin/config/manage-sp-account' : 'admin/linked-accounts'}/${spAccountId}?orgId=${organizationId}`, {
           state: {
             type: 'success',
             messages: `${selectedProviderIds.length} ${t('manageSPAccount.success.message.addProvider')}`

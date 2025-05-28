@@ -89,7 +89,18 @@ const List = () => {
 
   const handleOnLinkSpAccounts = () => {
     const searchParams = Array.from(selectedRows).join(',');
-    navigate(`link-sp-accounts?accounts=${searchParams}`);
+    let url = `link-sp-accounts?accounts=${searchParams}`;
+    if (selectedRows.size === 1) {
+      const selectedId = Array.from(selectedRows)[0];
+      const selectedRowData = data.find((row) => row.id === selectedId);
+      const name = CommonUtils.getFullName(selectedRowData?.name);
+
+      if (selectedRowData?.name) {
+        url += `&name=${name}`;
+      }
+    }
+
+    navigate(url);
   };
 
   const handleOnClick = (url) => () => navigate(url);

@@ -121,11 +121,8 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                     <div className="Questionnaire-value">
                       <div
                         onClick={() =>
-                          navigate(PREVIEW_URL, {
-                            state: {
-                              isAccount: true,
-                              questionnaire: data?.questionnaireList
-                            }
+                          navigate(isLinkedAccount ? '../../../admin/linked-accounts/questionnaire' : PREVIEW_URL, {
+                            state: { isAccount: true, questionnaire: data?.questionnaireList }
                           })
                         }>
                         {t('ManageCatalog.Preview')}

@@ -133,7 +133,7 @@ export const ConfigurationMessagesEN = {
   'provider.contextMenu.optionEdit': 'Edit',
   'provider.contextMenu.optionActivate': 'Activate',
   'provider.contextMenu.optionDeactivate': 'Deactivate',
-  'provider.contextMenu.optionLinkSPAccount': 'Link SP Account',
+  'provider.contextMenu.optionLinkSPAccount': 'Link SP Accounts',
 
   'serverResponse.provider.dea.conflict':
     'A provider with this DEA Number already exists. Please enter a unique DEA Number.',

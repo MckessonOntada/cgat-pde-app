@@ -135,6 +135,7 @@ const Upload = () => {
       <UploadFile
         primaryHeading={t('controls.uploadCatalog')}
         controlHeading={t('label.uploadCatalogListCSV')}
+        infoHeader={t('label.uploadCatalog.info')}
         isLoading={false}
         messages={items}
         onCloseAlert={remove}

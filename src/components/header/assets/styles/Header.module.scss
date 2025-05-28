@@ -301,3 +301,26 @@
 .logoutBtnMobile {
   width: 100%;
 }
+
+
+
+.notificationsCount {
+  border-radius: 16px;
+  background: var(--fill-status-error-emphasis, #C53026) !important;
+  color: var(--fill-content-content-white, #FFF) !important;
+  text-align: center;
+
+  /* Body/SemiBold S */
+  font-family: var(--typography-font-family-body, Nunito);
+  font-size: var(--typography-text-size-body-font-small, 14px);
+  font-style: normal;
+  font-weight: 600;
+  line-height: var(--typography-line-height-body-font-small, 18px);
+  /* 128.571% */
+
+  display: flex;
+  padding: 1px 5.5px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

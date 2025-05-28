@@ -121,7 +121,7 @@ const CreateOrganization = () => {
 
       {/* {!isEdit && (
         <div className="stepper">
-          <Stepper
+          <StepperMui
             activeIndex={1}
             dividerText="of"
             stepHeaders={[
