@@ -12,7 +12,7 @@ function DetailMetrics({ data }) {
     <div className="bill-amount-wrapper">
       {data &&
         Object.entries(data)?.map(([key, value]) => (
-          <div className="bill-amount-container">
+          <div key={key} className="bill-amount-container">
             {/* <div className="label">{key}</div>
             <div className="value">{value}</div> */}
             <InfoCards title={key} value={value} />
