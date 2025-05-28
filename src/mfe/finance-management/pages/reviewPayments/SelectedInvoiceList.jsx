@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import EmptyDataTable from '@src/components/EmptyTable';
-import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../../routes';
@@ -16,7 +14,6 @@ import CommonUtils from '@src/util/CommonUtils';
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
   const { selectedInvoices, setSelectedInvoices } = props;
-  const dispatch = useDispatch();
   const location = useLocation();
   const { state } = location;
   const REVIEW_MODE = state?.reviewMode || false;
@@ -39,7 +36,6 @@ function SelectedInvoiceList(props) {
               fontWeight: '600',
               textDecoration: 'none'
             }}
-            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
             state={{ ...state }}>
             {`${props?.billNumber || ''}`}
@@ -146,12 +142,13 @@ function SelectedInvoiceList(props) {
           setInputValue(e.target.value);
           let _invoices = [...[], ...selectedInvoices];
           _invoices[index].paymentAmount = e.target.value;
-          setSelectedInvoices(_invoices)
+          setSelectedInvoices(_invoices);
         };
 
         const handleBlur = (e) => {
           const val = parseFloat(e.target.value);
-          const finalVal = val > 0 && val <= props.openAmount ? val : props.openAmount;
+          const finalVal =
+            val > 0 && val <= props.openAmount ? val : props.openAmount;
           let _invoices = [...selectedInvoices];
           _invoices[index].paymentAmount = finalVal;
           setInputValue(finalVal);
@@ -181,7 +178,7 @@ function SelectedInvoiceList(props) {
             min={0}
             onBlur={handleBlur}
           />
-        )
+        );
       }
     },
     {

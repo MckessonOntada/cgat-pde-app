@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Heading, Alert } from '@mckesson/mcp-component-library';
+import { Heading } from '@mckesson/mcp-component-library';
 import CommonFilters from '@src/components/Filters';
 import SPMaterialDataTable from './pages/SPMaterialDataTable';
 import ModuleHeader from '@src/components/module-header';

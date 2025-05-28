@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Badge, Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { Formik, Form } from 'formik';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
@@ -14,6 +13,7 @@ import { routeConstants } from '../../routes/constants';
 import AccountService from '@src/api/commonService/AccountService';
 import { handleApiError } from '@src/util/ApiUtils';
 import { useMutation, useQuery } from 'react-query';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const AddSPAccount = () => {
   const { t } = useTranslate();
@@ -138,7 +138,7 @@ const AddSPAccount = () => {
             heading={<Heading as="h1">{t(spAccountId ? 'manageSPAccount.heading.editSPAccount' : 'manageSPAccount.heading.addSPAccount')}</Heading>}
             controls={<Heading as="h2">{`${t('manageSPAccount.heading.organization')} - ${selectedOrganization?.name}`}</Heading>}
           />
-          {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+          {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
           <Formik
             initialValues={initialValuesforSPAccount(selectedAccount)}
             validationSchema={validationSchemaforSPAccount(t)}

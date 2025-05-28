@@ -1,6 +1,6 @@
 import React from 'react';
 import ModuleHeader from '../module-header';
-import { Heading, Button, IconButton, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button, IconButton } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditIcon } from '@src/assets/svg/edit-icon.svg';
 import './profile.scss';
@@ -10,6 +10,7 @@ import { useMutation } from 'react-query';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
+import Alert from '../cgat-alert/Alert';
 
 const AccountSetting = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const AccountSetting = () => {
       onError: () => {
         addNotification({
           description: t('reset.password.error'),
-          type: 'error',
+          type: 'error'
         });
       }
     }
@@ -42,7 +43,7 @@ const AccountSetting = () => {
       </div>
     );
     state.footer = (
-      <Button onClick={() => dispatch(closeModal())}  size="md" variant="primary"  >
+      <Button onClick={() => dispatch(closeModal())} size="md" variant="primary">
         {t('reset.password.ok')}
       </Button>
     );
@@ -68,11 +69,11 @@ const AccountSetting = () => {
               <p>{t('reset.password.user.email')}</p>
               <span>{userName}</span>
             </div>
-            <div className='user-details'>
+            <div className="user-details">
               <p>{t('reset.password.password')}</p>
               <div>
                 <IconButton
-                  label= {t('reset.password.change.password')}
+                  label={t('reset.password.change.password')}
                   size="lg"
                   iconButton={false}
                   textButton={true}

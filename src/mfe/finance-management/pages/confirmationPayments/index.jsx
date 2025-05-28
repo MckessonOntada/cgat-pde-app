@@ -11,13 +11,13 @@ import { useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import dayjs from 'dayjs';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useCustomPrint } from '@src/util/printUtils';
 import { ReactComponent as Scuccess } from '@src/assets/svg/success.svg';
 import { ReactComponent as Failed } from '@src/assets/svg/failed.svg';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import useAlert from '@src/hooks/useAlert';
 
 function ConfirmationPayments() {
   const { t } = useTranslate();
@@ -26,8 +26,9 @@ function ConfirmationPayments() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selectedAccount } = useAccountContext();
-  const { showSnackbar } = useSnackbar();
-  const contentRef = useRef(null); 
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
+  const contentRef = useRef(null);
   const printPage = useCustomPrint(contentRef);
   const paymentFailed = location.state?.paymentError || false;
   const { controlRef } = useContext(FooterContext);
@@ -47,13 +48,13 @@ function ConfirmationPayments() {
     enabled: !!selectedAccount?.id,
     onError: (error) => {
       if (CommonUtils.isNonEmptyObject(error)) {
-        showSnackbar({ description: t('paymentInvoices.paymentMethods.api.error'), type: 'error' });
+        showAlert({ description: t('paymentInvoices.paymentMethods.api.error'), type: 'error', anchorEl: alertContainerId });
       }
     }
   });
 
   const confirmationData = {
-    ...( !paymentFailed ? {[t('paymentInvoices.reviewPayments.mckessonId')]: location.state?.confirmationNumber} : {}),
+    ...(!paymentFailed ? { [t('paymentInvoices.reviewPayments.mckessonId')]: location.state?.confirmationNumber } : {}),
     [t('paymentInvoices.reviewPayments.paymentInitiatedDate')]: dayjs().format('MM/DD/YYYY'),
     [t('paymentInvoices.reviewPayments.paymentType')]: location.state?.paymentOption,
     [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
@@ -95,26 +96,13 @@ function ConfirmationPayments() {
           </Button>
         </div>
         <div className="headerWrapper">
-          { !paymentFailed ? (
-              <Scuccess />
-            ):(
-              <Failed />
-            )
-          } 
+          {!paymentFailed ? <Scuccess /> : <Failed />}
           <div>
             <div className="paymentSuccesfull">
-              {t( !paymentFailed ? 
-                'paymentInvoices.reviewPayments.paymentSuccess' 
-                : 
-                'paymentInvoices.reviewPayments.paymentFailed'
-              )}
+              {t(!paymentFailed ? 'paymentInvoices.reviewPayments.paymentSuccess' : 'paymentInvoices.reviewPayments.paymentFailed')}
             </div>
             <div className="paymentSuccesfullMessage">
-              {t( !paymentFailed ? 
-                'paymentInvoices.reviewPayments.thankyouforpayment' 
-                : 
-                'paymentInvoices.reviewPayments.paymentFailedMessage'
-              )}
+              {t(!paymentFailed ? 'paymentInvoices.reviewPayments.thankyouforpayment' : 'paymentInvoices.reviewPayments.paymentFailedMessage')}
             </div>
           </div>
         </div>
@@ -131,11 +119,11 @@ function ConfirmationPayments() {
               </>
             ))}
         </div>
-        { !paymentFailed && (
+        {!paymentFailed && (
           <div className="confirmationNote">
             <strong>Note:</strong> {t('paymentInvoices.Details.ConfirmationNote')}
           </div>
-        )} 
+        )}
       </div>
       <div className="footer-wrapper" ref={controlRef}>
         <div className="controls footer-controls">

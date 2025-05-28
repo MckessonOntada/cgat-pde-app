@@ -17,7 +17,7 @@ function Alert() {
     if (anchorEl) {
       return ReactDOM.createPortal(
         <div style={{ marginTop: '8px' }}>
-          <MCPAlert title={title} showTitle={!!title} description={description} type={type} duration={15000} onClose={handleClose} />
+          <MCPAlert title={title} showTitle={!!title} description={description} type={type} duration={0} onClose={handleClose} />
         </div>,
         anchorEl
       );

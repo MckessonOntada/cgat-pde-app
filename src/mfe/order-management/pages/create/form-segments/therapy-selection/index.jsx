@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -24,6 +24,7 @@ import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -224,7 +225,6 @@ function TherapySelection() {
               <Alert
                 description={therapySelectionMessage.description}
                 type={therapySelectionMessage.type}
-                duration={10000}
                 onClose={() => setTherapySelectionMessage(null)}
               />
             )}

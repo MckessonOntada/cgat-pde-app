@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Stepper, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import { PATHS } from '../../routes';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const AddAccounts = () => {
   const { t } = useTranslate();
@@ -104,9 +105,7 @@ const AddAccounts = () => {
         </Button>
       </div>
 
-      <ModuleHeader
-        heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>}
-      />
+      <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
 
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
@@ -127,9 +126,7 @@ const AddAccounts = () => {
           />
         </div>
       )}
-      {alertConfig?.isVisible && (
-        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
-      )}
+      {alertConfig?.isVisible && <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} />}
       <UserAccounts
         selectedRows={selectedAccounts}
         setSelectedRows={setSelectedAccounts}

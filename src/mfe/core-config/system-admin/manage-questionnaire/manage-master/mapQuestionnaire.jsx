@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Alert, Button, Heading, Label } from '@mckesson/mcp-component-library';
+import { Button, Heading, Label } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { debugIds, ID } from '@src/constants/id';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ import './index.scss';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { ChannelType } from '../../manage-sp-account/util';
 import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 export default function mapQuestionnaire() {
   const { t } = useTranslate();
@@ -151,7 +152,7 @@ export default function mapQuestionnaire() {
           </Button>
         </div>
       </div>
-      {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+      {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />}
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         {!isMaterial && <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={!!isCatalog} />}
         <div className="MCP-CardContainer">

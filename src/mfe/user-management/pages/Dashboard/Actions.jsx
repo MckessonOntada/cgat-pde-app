@@ -1,8 +1,7 @@
 import { Button } from '@mckesson/mcp-component-library';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as VerticalIcon } from '@src/assets/image/Vertical.svg';
 import { ReactComponent as View } from '@src/assets/image/view.svg';
 import { ReactComponent as Edit } from '@src/assets/image/edit_pencil.svg';
 import { debugIds, ID } from '@src/constants/id';

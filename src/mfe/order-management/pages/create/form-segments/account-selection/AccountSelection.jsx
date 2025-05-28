@@ -13,7 +13,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -205,9 +204,6 @@ const AccountSelection = () => {
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
-
-  console.log('selectedSoldToAccount', selectedSoldToAccount);
-  console.log('selectedShipToAccount', selectedShipToAccount);
 
   return (
     <div className="MCP-module-wrapper">

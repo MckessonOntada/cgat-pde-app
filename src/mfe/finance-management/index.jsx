@@ -22,6 +22,7 @@ const PaymentsInvoices = () => {
   const [tabs, setTabs] = useState();
   const { selectedAccount, isLoading } = useAccountContext();
   const { t } = useTranslate();
+  const alertContainerId = 'summary-alert-container';
 
   useEffect(() => {
     if (!Array.isArray(tabListData) || tabListData.length === 0) {
@@ -56,23 +57,13 @@ const PaymentsInvoices = () => {
   };
 
   if (isLoading || !CommonUtils.isNonEmptyObject(selectedAccount)) {
-    return (
-      <EmptyUI
-        isLoading={isLoading}
-        isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)}
-      />
-    );
+    return <EmptyUI isLoading={isLoading} isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)} />;
   }
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader
-        heading={
-          <Heading as="h1">
-            {t('paymentInvoices.header.manageInvoices')}
-          </Heading>
-        }
-      />
+      <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.manageInvoices')}</Heading>} />
+      <div id={alertContainerId} />
       <RecordDetails />
 
       <BalanceProvider>

@@ -16,8 +16,8 @@ import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useAccountContext } from '../../context/AccountContext';
-import useSnackbar from '@src/hooks/useSnackbar';
-import dayjs from 'dayjs';
+
+import useAlert from '@src/hooks/useAlert';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
@@ -32,8 +32,8 @@ export default function PendingPaymentTable() {
   } = usePendingPayments();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
-  const { showSnackbar } = useSnackbar();
-
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const columns = [
     {
       id: 'confirmationNo',
@@ -169,15 +169,17 @@ export default function PendingPaymentTable() {
     {
       onSuccess: (response) => {
         refetch();
-        showSnackbar({
+        showAlert({
           description: t('pendingPayments.cancel.success'),
-          type: 'success'
+          type: 'success',
+          anchorEl: alertContainerId
         });
       },
       onError: (error) => {
-        showSnackbar({
+        showAlert({
           description: t('pendingPayments.cancel.failed'),
-          type: 'error'
+          type: 'error',
+          anchorEl: alertContainerId
         });
       }
     }

@@ -312,12 +312,13 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.export.success': 'Customer Statement exported.',
   'paymentInvoices.CS.export.error': 'Error exporting statement.',
   'paymentInvoices.paymentHistory.export.success': 'Payment History exported.',
+
   'paymentInvoices.paymentHistory.export.error':
     'Error exporting Payment history.',
   'paymentInvoices.excel.export.success': 'Excel exported.',
   'paymentInvoices.excel.export.error': 'Error exporting excel.',
-  'paymentInvoices.pendingPaynemt.export.success': 'Pending Payment exported.',
-  'paymentInvoices.pendingPaynemt.export.error': 'Pending exporting Payment .',
+  'paymentInvoices.pendingPayment.export.success': 'Pending Payment exported.',
+  'paymentInvoices.pendingPayment.export.error': 'Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'BILL ID',
 
   'paymentInvoices.paymentMethods.achForm.description':

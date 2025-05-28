@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Button, Heading, Switch, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Switch } from '@mckesson/mcp-component-library';
 import './index.scss';
 import ModuleHeader from '@src/components/module-header';
 import { useMutation, useQuery } from 'react-query';
@@ -17,6 +17,7 @@ import PermittedComponent from '@src/components/permitted-component';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const roleDetail = () => {
   const { t } = useTranslate();
@@ -123,7 +124,7 @@ const roleDetail = () => {
           </Button>
         </div>
         {messageConfig && messageConfig.type && messageConfig.message && (
-          <Alert duration={10000} onClose={clearMessage} description={messageConfig.message} type={messageConfig.type} />
+          <Alert onClose={clearMessage} description={messageConfig.message} type={messageConfig.type} />
         )}
         <div className="MCP-module-body">
           <ModuleHeader heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>} />
@@ -185,7 +186,11 @@ const roleDetail = () => {
                       className="button-icon"
                       size="md"
                       disabled={!data?.isActive}
-                      onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
+                      onClick={() =>
+                        navigate(`permissions`, {
+                          state: { data, isEdit: true }
+                        })
+                      }>
                       {t('userManagement.button.edit')}
                     </Button>
                   </PermittedComponent>

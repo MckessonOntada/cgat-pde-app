@@ -3,12 +3,7 @@ import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bo
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
 import React, { useEffect } from 'react';
-import {
-  Button,
-  Heading,
-  Alert,
-  Loader
-} from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
@@ -30,6 +25,7 @@ import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.s
 import CommonUtils from '@src/util/CommonUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as AddCircleIcon } from '@src/assets/svg/add-circle.svg';
@@ -7,9 +7,9 @@ import TemplateList from './TemplateList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEntityTypeFlags } from './util';
 import { useQuestionnaire } from './context/QuestionnaireContext';
-import ModuleHeader from '@src/components/module-header';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function ManageQuestionnaire() {
   const { t } = useTranslate();
@@ -89,9 +89,7 @@ function ManageQuestionnaire() {
               </Button>
             )}
           </div>
-          {alertConfig && alertConfig.isVisible && (
-            <Alert description={alertConfig.description} onClose={handleAlertClose} type={alertConfig.type} duration={10000} />
-          )}
+          {alertConfig && alertConfig.isVisible && <Alert description={alertConfig.description} onClose={handleAlertClose} type={alertConfig.type} />}
           <div className="MCP-CardContainer">
             <TemplateList onAlert={setAlertConfig} />
           </div>

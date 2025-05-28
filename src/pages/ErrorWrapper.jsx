@@ -1,4 +1,5 @@
-import { Alert, Button } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
+import Alert from '@src/components/cgat-alert/Alert';
 import React from 'react';
 
 class ErrorWrapper extends React.Component {

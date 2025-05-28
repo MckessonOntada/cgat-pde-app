@@ -1,29 +1,25 @@
 import React from 'react';
-import { Loader, Button, Alert } from '@mckesson/mcp-component-library';
+import { Loader, Button } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
-import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
-import CommonUtils from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
-function ManageMaterialTable({ ...props }) {
+function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials } = useManageMaterial();
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
-  const [configureSuccess, setConfigureSuccess] = React.useState(false);
-  const [configureError, setConfigureError] = React.useState(false);
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
 
@@ -103,12 +99,6 @@ function ManageMaterialTable({ ...props }) {
 
   return (
     <React.Fragment>
-      {configureSuccess && (
-        <Alert description={t('manageMaterial.drawer.controls.apply.success')} onClose={() => setConfigureSuccess(false)} type="success" duration={3000} />
-      )}
-      {configureError && (
-        <Alert description={t('manageMaterial.drawer.controls.apply.error')} onClose={() => setConfigureError(false)} type="error" duration={3000} />
-      )}
       <TableHeading
         heading={'Material Listing'}
         secondaryView={selectedMaterials?.length}
@@ -175,15 +165,22 @@ function ManageMaterialTable({ ...props }) {
           useMaterialService={true}
           hasDeleteConfigAccess={!isCustomerCenter}
           heading={t('manageMaterial.drawer.heading')}
+          notify={({ type, message }) => {
+            if (type === 'success') {
+              onSuccess({
+                type,
+                description: message
+              });
+            } else {
+              onError({
+                type,
+                description: message
+              });
+            }
+          }}
         />
       )}
-      {openConfiguration && (
-        <ConfigureMaterials
-          onClose={() => setOpenConfiguration(!openConfiguration)}
-          onSuccess={() => setConfigureSuccess(true)}
-          onError={() => setConfigureError(true)}
-        />
-      )}
+      {openConfiguration && <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
     </React.Fragment>
   );
 }

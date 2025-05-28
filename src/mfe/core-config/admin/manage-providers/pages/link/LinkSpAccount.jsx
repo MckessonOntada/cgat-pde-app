@@ -6,7 +6,6 @@ import ModuleHeader from '@src/components/module-header';
 import {
   Button,
   Heading,
-  Alert,
   Label,
   Loader
 } from '@mckesson/mcp-component-library';
@@ -16,6 +15,7 @@ import { useMutation } from 'react-query';
 import ProviderService from '@src/api/commonService/ProviderService';
 import SpAccountTable from './SpAccountTable';
 import style from './LinkSpAccount.module.scss';
+import Alert from '@src/components/cgat-alert/Alert';
 function LinkSpAccount() {
   const [spAccount, setSpAccount] = useState([]);
   const { t } = useTranslate();

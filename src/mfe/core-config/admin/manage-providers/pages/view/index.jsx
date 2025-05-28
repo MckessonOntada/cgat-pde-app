@@ -1,10 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Button,
-  Heading,
-  Alert,
-  Loader
-} from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
@@ -24,6 +19,7 @@ import SpAccountTable from '../link/SpAccountTable';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import AuthUtils from '@src/util/AuthUtils';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const ProviderDetails = () => {
   const { id } = useParams();
@@ -132,7 +128,6 @@ const ProviderDetails = () => {
             <Alert
               description={providerDetailsError.message}
               type={'error'}
-              duration={0}
               showCloseIcon={false}
             />
           ) : (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';

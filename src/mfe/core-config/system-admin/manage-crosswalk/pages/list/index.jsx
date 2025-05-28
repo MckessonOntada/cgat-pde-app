@@ -2,7 +2,7 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import React, { useState } from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
@@ -21,6 +21,7 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
 import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -205,6 +206,12 @@ const List = () => {
             useMaterialService={true}
             hasDeleteConfigAccess={!isCustomerCenter}
             heading={t('manageMaterial.drawer.heading')}
+            notify={({ type, message }) =>
+              addNotification({
+                type,
+                description: message
+              })
+            }
           />
         )}
 

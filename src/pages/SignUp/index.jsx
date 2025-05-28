@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
-import { Button, Heading, AutoSuggestDropdown, Label, Required, TextError, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserDetailsFormSegment } from '@src/mfe/user-management/pages/CreateUser';
 import Components from '@src/components/form/Components';
@@ -15,17 +15,11 @@ import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonDataService from '../../api/commonService/CommonDataService';
-import {
-  ADDRESS_REGEX,
-  ALPHABETIC_WITH_SPACE,
-  ALPHABETIC_WITH_SPECIAL,
-  FAX_REGEX,
-  PHONE_REGEX,
-  ZIP_REGEX,
-} from '@src/components/form/ValidationRegExp';
+import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, ALPHABETIC_WITH_SPECIAL, FAX_REGEX, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { handleApiError } from '@src/util/ApiUtils';
 import CommonUtils from '@src/util/CommonUtils';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const SignUp = () => {
   const { t } = useTranslate();
@@ -33,15 +27,6 @@ const SignUp = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const [selectedOrganization, setSelectedOrganization] = useState(null);
-  useEffect(() => {
-    if (isAlertVisible) {
-      const timer = setTimeout(() => {
-        setIsAlertVisible(false);
-      }, 10000);
-
-      return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, [isAlertVisible]);
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
@@ -52,7 +37,13 @@ const SignUp = () => {
     return res.data;
   });
 
-  const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 20, sortBy: 'name', sortOrder: 'asc', status: ['active'] });
+  const [requestParams, setRequestParams] = useState({
+    pageNo: 0,
+    pageSize: 20,
+    sortBy: 'name',
+    sortOrder: 'asc',
+    status: ['active']
+  });
 
   const {
     isLoading: loadingOrg,
@@ -111,18 +102,16 @@ const SignUp = () => {
         required: true
       }),
       middleName: CommonUtils.getNameValidation(t, {
-        field: 'middle_name',
+        field: 'middle_name'
       }),
       lastName: CommonUtils.getNameValidation(t, {
         field: 'last_name',
         required: true
-      }),
+      })
     }),
 
     contact: Yup.object({
-      email: Yup.string()
-        .email(t('userManagement.create_user.validation.invalid_email'))
-        .required(t('userManagement.create_user.validation.email_required')),
+      email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
       phone: Yup.string()
         .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
         .required(t('userManagement.create_user.validation.phone_no_required')),
@@ -190,7 +179,7 @@ const SignUp = () => {
         <div className={`${mainLayoutStyles.home} max-container`}>
           <div className="MCP-module-wrapper">
             <ModuleHeader heading={<Heading as="h1">{t('forms.headings.newUserRegistration')}</Heading>} />
-            {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+            {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}

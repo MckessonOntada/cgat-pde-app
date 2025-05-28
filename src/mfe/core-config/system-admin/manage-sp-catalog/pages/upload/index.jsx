@@ -21,7 +21,7 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 
 const Upload = () => {
   const { t } = useTranslate();
-  const { items, add, removeAll, remove } = useTimedArray(10000);
+  const { items, add, removeAll, remove } = useTimedArray(0);
   const navigate = useNavigate();
   const handleOnUpload = (values) => {
     removeAll();

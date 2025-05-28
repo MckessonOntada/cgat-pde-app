@@ -1,6 +1,6 @@
 import ModuleHeader from '@src/components/module-header';
 import React, { useEffect, useState } from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
@@ -17,6 +17,7 @@ import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import { handleApiError } from '@src/util/ApiUtils';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const ReviewCatalog = () => {
   const { t } = useTranslate();

@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
 import SelectedInvoiceList from './SelectedInvoiceList';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Credits from '../credits';
 import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
@@ -14,19 +13,17 @@ import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { FinanceUtils } from '@src/util/FinanceUtil';
 import dayjs from 'dayjs';
 import { PaymentOptionsControls } from '@src/mfe/finance-management/pages/reviewPayments/paymentControlOptions';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
-import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import { onConfirmPayment } from '../utils/actions';
 import { paymentMethod } from '../utils/constants';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import SelectCreditsListing from './SelectCreditsListing';
-import EmptyUI from '../../EmptyUI';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -37,7 +34,6 @@ function ReviewPayments() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selectedAccount } = useAccountContext();
-  const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
   const [paymentOption, setPaymentOption] = useState('');
@@ -50,27 +46,21 @@ function ReviewPayments() {
   const [totalCreditsCount, settotalCreditsCount] = useState(0);
   const disablePay = useRef(false);
   const [SpecificDateError, setSpecificDateError] = useState('');
-   const { controlRef } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
 
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
     setAlertDescription(message);
-    const timer = setTimeout(() => {
-      setIsAlertVisible(false);
-      setAlert({ type: '', description: '' });
-    }, 10000);
-    return () => clearTimeout(timer);
   };
   const handleAlertClose = () => {
     setIsAlertVisible(false);
-    //  navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false, isReject: false } });
   };
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments', selectedAccount?.accountNumber],
     queryFn: async () => {
-      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount.accountNumber)}`;
+      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING('selectedAccount.accountNumber')}`;
       const payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
@@ -82,7 +72,7 @@ function ReviewPayments() {
     enabled: !!selectedAccount?.id,
     onError: (error) => {
       if (CommonUtils.isNonEmptyObject(error)) {
-        showSnackbar({ description: t('paymentInvoices.paymentMethods.api.error'), type: 'error' });
+        showAlert('error', t('paymentInvoices.paymentMethods.api.error'));
       }
     }
   });
@@ -320,11 +310,11 @@ function ReviewPayments() {
             ...state,
             paymentDate: _paymentDate && _paymentDate[0],
             selectedPayment: selectedData,
-            paymentError: true,
-          },
+            paymentError: true
+          }
         });
       },
-      
+
       retry: false
     }
   );
@@ -373,12 +363,7 @@ function ReviewPayments() {
           replace: true
         });
       } else if (!valid) {
-        dispatch(
-          showSnackbar({
-            description: 'Invalid payment amount entered',
-            type: 'error'
-          })
-        );
+        dispatch(showAlert('error', 'Invalid payment amount entered'));
       }
     }
   };
@@ -409,9 +394,9 @@ function ReviewPayments() {
 
   if (isLoading) {
     return (
-      <div className='loaderWrapper' >
-        <p className='loaderText'>{t('paymentInvoices.reviewPayments.processing')}</p>
-        <Loader loaderText={''}/>
+      <div className="loaderWrapper">
+        <p className="loaderText">{t('paymentInvoices.reviewPayments.processing')}</p>
+        <Loader loaderText={''} />
       </div>
     );
   }
@@ -424,7 +409,7 @@ function ReviewPayments() {
             {t('paymentInvoices.reviewPayments.BackToManagePayments')}
           </Button>
         </div>
-        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />}
         <div>
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}
@@ -526,7 +511,7 @@ function ReviewPayments() {
                     fieldDisplayValue={selectedData?.label ? selectedData : undefined}
                   />
                 </div>
-                <span className='selectMethodInfo'>{t('paymentInvoices.reviewPayments.selectMethodInfo')}</span>
+                <span className="selectMethodInfo">{t('paymentInvoices.reviewPayments.selectMethodInfo')}</span>
               </div>
               <div className="paymentOptionContainer">
                 <PaymentOptionsControls
@@ -555,7 +540,7 @@ function ReviewPayments() {
           </div>
         </div>
       )}
-      <div  className="footer-wrapper" ref={controlRef}>
+      <div className="footer-wrapper" ref={controlRef}>
         <div className="footer-section controls footer-controls">
           <Button variant="secondary" onClick={() => navigate('../')} size="md">
             {t('paymentInvoices.reviewPayments.cancel')}

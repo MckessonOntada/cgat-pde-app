@@ -4,9 +4,10 @@ import dayjs from 'dayjs';
 import CommonUtils from '@src/util/CommonUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import useAlert from '@src/hooks/useAlert';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -37,6 +38,7 @@ const INITIAL_PAGINATION_STATE = {
 };
 
 export const PendingPaymentsProvider = ({ children }) => {
+  const { t } = useTranslate();
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [actualData, setActualData] = useState([]);
@@ -44,7 +46,8 @@ export const PendingPaymentsProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
-  const { showSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'summary-alert-container';
   const { selectedAccount } = useAccountContext();
 
   const applyFilters = (filters) => {
@@ -72,15 +75,11 @@ export const PendingPaymentsProvider = ({ children }) => {
         filters?.paymentInitiationDate?.length === 2 && !!filters?.paymentInitiationDate[0] && !!filters?.paymentInitiationDate[1]
           ? new Date(dayjs(item.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >=
               new Date(
-                CommonUtils.isNonEmptyString(filters.paymentInitiationDate[0])
-                  ? dayjs(filters.paymentInitiationDate[0]).format('MM/DD/YYYY')
-                  : new Date()
+                CommonUtils.isNonEmptyString(filters.paymentInitiationDate[0]) ? dayjs(filters.paymentInitiationDate[0]).format('MM/DD/YYYY') : new Date()
               ) &&
             new Date(dayjs(item.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) <=
               new Date(
-                CommonUtils.isNonEmptyString(filters.paymentInitiationDate[1])
-                  ? dayjs(filters.paymentInitiationDate[1]).format('MM/DD/YYYY')
-                  : new Date()
+                CommonUtils.isNonEmptyString(filters.paymentInitiationDate[1]) ? dayjs(filters.paymentInitiationDate[1]).format('MM/DD/YYYY') : new Date()
               )
           : true;
 
@@ -149,7 +148,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     onError: (error) => {
       const { response } = error;
       let errorMsg = response?.data?.message || 'Error fetching Pending payments listing';
-      showSnackbar({ description: errorMsg, type: 'error' });
+      showAlert({ description: errorMsg, type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -242,19 +241,21 @@ export const PendingPaymentsProvider = ({ children }) => {
           link.click();
 
           // Show success message
-          showSnackbar({
+          showAlert({
             description: `${t('paymentInvoices.pendingPayment.export.success')}`,
-            type: 'success'
+            type: 'success',
+            anchorEl: alertContainerId
           });
         }
       },
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
-          showSnackbar({
+          showAlert({
             description: CommonUtils.isNonEmptyString(error.response.data.message)
               ? error.response.data.message
               : t('paymentInvoices.pendingPayment.export.error'),
-            type: 'error'
+            type: 'error',
+            anchorEl: alertContainerId
           });
         }
       }

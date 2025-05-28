@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
-import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
+import { Heading } from '@mckesson/mcp-component-library';
 import '../manageCatalog.scss';
 import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -10,19 +9,16 @@ import { serializeParams } from '@src/util/ApiUtils';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { CatalogDetailsConstants } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
-import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
+import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { renderModal } from '@src/util/ModalUtil';
-import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 import AuthUtils from '@src/util/AuthUtils';
 
 function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
   const { hasPermission } = usePermission();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const handleCloseDrawer = () => {
@@ -58,7 +54,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     {
       onSuccess: (response) => {},
       onError: (error) => {
-        showSnackbar({ description: 'Error while fetching Catalog Details', type: 'error' });
+        showAlert('error', 'Error while fetching Catalog Details');
         setOpenCatalogDetails(false);
       }
     }
@@ -77,11 +73,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     {
       onSuccess: (response) => {
         setOpenCatalogDetails(false);
-        showAlert('success', t('ManageCatalog.delink.success'));
+        showAlert('success', t('manageMaterial.drawer.controls.apply.success'));
       },
       onError: (error) => {
         setOpenCatalogDetails(false);
-        showSnackbar({ description: t('ManageCatalog.delink.error'), type: 'error' });
+        showAlert('error', t('manageMaterial.drawer.controls.apply.error'));
       }
     }
   );
@@ -130,7 +126,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
         refetch();
       },
       onError: (error) => {
-        showSnackbar({ description: t('ManageCatalog.delink.error'), type: 'error' });
+        showAlert('error', t('ManageCatalog.delink.error'));
       }
     }
   );

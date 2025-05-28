@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { LinkProviderProvider } from '../../context/LinkProviderContext';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useMutation } from 'react-query';
-import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const AddLinkProvider = () => {
   const { t } = useTranslate();

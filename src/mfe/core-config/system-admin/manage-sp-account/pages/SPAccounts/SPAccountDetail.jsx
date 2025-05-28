@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
 import { useQuery } from 'react-query';
@@ -18,6 +18,7 @@ import AccountService from '@src/api/commonService/AccountService';
 import SPAccountConfigurations from './SPAccountConfigurations';
 import LinkProviderListing from '../LinkProvider/LinkProviderListing';
 import { getAddress } from '../../../manage-questionnaire/util';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const SPAccountDetail = () => {
   const { t } = useTranslate();
@@ -99,7 +100,7 @@ const SPAccountDetail = () => {
           {!practiceId ? t('manageSPAccount.BacktoPage') : t('Back to Manage Linked Accounts')}
         </Button>
       </div>
-      {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+      {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('manageSPAccount.heading.spAccountDetails')}</Heading>} />
         <ModuleHeader

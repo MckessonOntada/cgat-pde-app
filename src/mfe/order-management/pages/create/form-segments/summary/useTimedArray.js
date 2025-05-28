@@ -7,14 +7,12 @@ const useTimedArray = (timeout) => {
 
   const add = useCallback(
     (obj) => {
-      const id = CommonUtils.generateUniqueCode(
-        obj.description + Math.random()
-      );
-      const newObj = { ...obj, id };
+      const id = CommonUtils.generateUniqueCode(obj.description + Math.random());
+      const newObj = { ...obj, id, isSticky: true };
 
       setItems((prev) => [...prev, newObj]);
 
-      if (obj.isSticky) {
+      if (newObj.isSticky) {
         return;
       }
 
