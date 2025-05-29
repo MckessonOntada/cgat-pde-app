@@ -79,12 +79,15 @@ export const getColumnsByEntityType = ({
           width: '50px'
         },
         {
-          id: 'materialNumber',
-          name: t('labels.therapy.materialNumber'),
+          id: 'therapy',
+          name: t('labels.therapy'),
           selector: () => {},
           maxWidth: '250px',
-          cell: (props) => (
-            <div className="cellEllipse">
+          cell: (row) => {
+            debugger;
+            const { materials = [], tradeName, materialDescription } = row;
+            const label = materials && materials.length === 1 ? materials[0].materialDescription : tradeName || materialDescription;
+            return (
               <Link
                 className="MCP-table-link"
                 aria-label={t('table.columns.captions.accountNumber')}
@@ -93,42 +96,57 @@ export const getColumnsByEntityType = ({
                   setOpenDetails(true);
                   setSelectedDetails(props);
                 }}>
-                <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
+                <EclipsesTextcss str={label} maxWidth={240} />
               </Link>
-            </div>
-          )
+            );
+          }
         },
         {
-          id: 'materialDescription',
-          name: t('labels.therapy.materialDescription'),
-          selector: (row) => row.materialDescription || '',
+          id: 'genericName',
+          name: t('labels.genericName'),
+          selector: (row) => row.genericName || '',
           maxWidth: '230px',
-          cell: (props) => (
-            <span aria-label={t('labels.therapy.materialDescription')}>
-              <EclipsesTextcss str={props.materialDescription} maxWidth={220} />
+          cell: (row) => (
+            <span aria-label={t('labels.genericName')}>
+              <EclipsesTextcss str={row.genericName} maxWidth={220} />
             </span>
           )
         },
         {
           id: 'ndc',
-          name: t('table.columns.captions.nationalDrugCode'),
-          selector: (row) => row.ndcNumber || '',
+          name: t('labels.ndc'),
+          selector: (row) => row.ndc || '',
+          sortable: true,
+          sortKey: 'ndc',
           maxWidth: '200px',
           cell: (props) => (
-            <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-              <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
+            <span aria-label={t('label.ndc')}>
+              <EclipsesTextcss str={props.ndc} maxWidth={180} />
             </span>
           )
         },
         {
-          id: 'strength',
-          name: t('table.columns.captions.strength'),
-          selector: (row) => row.strength || '',
+          id: 'manufacturer',
+          name: t('labels.manufacturer'),
+          selector: (row) => row.manufacturerName || '',
+          sortable: true,
+          sortKey: 'manufacturerName',
+          maxWidth: '200px',
+          cell: (row) => (
+            <span aria-label={t('label.manufacturerName')}>
+              <EclipsesTextcss str={row.manufacturerName} maxWidth={180} />
+            </span>
+          )
+        },
+        {
+          id: 'formulation',
+          name: t('labels.formulation'),
+          selector: (row) => row.formulation || '',
           maxWidth: '200px',
           sortable: false,
-          cell: (props) => (
-            <span aria-label={t('table.columns.captions.strength')}>
-              <EclipsesTextcss str={props.strength} maxWidth={180} />
+          cell: (rows) => (
+            <span aria-label={t('labels.formulation')}>
+              <EclipsesTextcss str={rows.formulation} maxWidth={180} />
             </span>
           )
         },
