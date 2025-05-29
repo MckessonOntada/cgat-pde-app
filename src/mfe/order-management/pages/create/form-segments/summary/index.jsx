@@ -737,7 +737,7 @@ const Summary = () => {
                     <DetailSegment label={t('labels.Strength')} value={therapy.strength || '-'} />
                     <DetailSegment label={t('labels.Dosage')} value={therapy.dosage || '-'} />
                     <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.salesOrg || '-'} />
-                    <DetailSegment label={t('labels.distributionsChannel')} value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)} />
+                    <DetailSegment label={t('labels.distributionsChannel')} value={accountDetails?.soldToAccount?.distributionChannel} />
                     <DetailSegment
                       label={t('labels.netPrice')}
                       value={
