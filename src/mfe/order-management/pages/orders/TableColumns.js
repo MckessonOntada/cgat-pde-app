@@ -372,11 +372,12 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.therapy_description',
-    maxWidth: '115px',
+    minWidth: '250px',
+    maxWidth: '300px',
     showInMobileHeader: true,
     cardHeader: true,
     cell: function (props) {
-      return <EclipsesTextCss str={props.therapy?.materialDescription} maxWidth={120} className={'MCP-table-cell'} />;
+      return <EclipsesTextCss str={props.therapy?.materialDescription} maxWidth={280} className={'MCP-table-cell'} />;
     }
   },
   {
@@ -415,7 +416,7 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '156px',
+    maxWidth: '120px',
     cell: function (props) {
       return <EclipsesTextCss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />;
     }
@@ -426,7 +427,7 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    minwidth: '160px',
+    width: '155px',
     cell: function (props) {
       return <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>;
     }
@@ -437,7 +438,7 @@ const jsxColumns = [
     name: 'table.columns.captions.status',
     selector: () => {},
     sortable: false,
-    minWidth: '160px',
+    maxWidth: '140px',
     center: true,
     showInMobileHeader: true,
     cardStatus: true,
