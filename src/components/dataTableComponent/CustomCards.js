@@ -126,23 +126,25 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
               ))}
             </div>
             <div className="collapsed-detail action-button">
-              {actionItems.map((col) =>
-                !!col.isContextMenu ? (
-                  <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
-                ) : (
-                  <MenuList
-                    menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
-                    handleSelect={() => {}}
-                    options={[{ label: renderCell(col, row) }]}
-                    aria-label="Order options"
-                  />
-                )
-              )}
+              {actionItems.map((col) => (
+                <React.Fragment key={col.id}>
+                  {!!col.isContextMenu ? (
+                    <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
+                  ) : (
+                    <MenuList
+                      menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
+                      handleSelect={() => {}}
+                      options={[{ label: renderCell(col, row) }]}
+                      aria-label="Order options"
+                    />
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
           {inlineStatus.map((col, colIndex) => (
-            <div className="inline-status">
-              <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
+            <div key={col.id} className="inline-status">
+              <div className="collapsed-detail" style={col.mobileStyles}>
                 {col.showColumnNameInHeader && col.name && (
                   <div className="column-name">
                     {col.name} {colIndex === 0 ? ':' : '-'}
