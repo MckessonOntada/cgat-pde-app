@@ -52,7 +52,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
   },
   {
     id: 'therapyDescription',
-    name: t('labels.therapyDescription'),
+    name: t('labels.therapy'),
     selector: () => {},
     minWidth: '200px',
     sortable: true,
@@ -91,7 +91,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
   },
   {
     id: 'ndc',
-    name: t('table.columns.captions.nationalDrugCode'),
+    name: t('labels.ndc'),
     selector: () => {},
     minWidth: '120px',
     sortable: true,
