@@ -37,6 +37,13 @@ export const FormList = (t) => [
 ];
 export const PROGRAM_LIST = ['WAC', '340B', 'GOV'];
 
+export const CGAT_IDENTIFIER = {
+  WAC: 'WAC',
+  '340B': '340B',
+  340: '340B',
+  GOV: 'GOV'
+};
+
 export const INFO_340B = [
   {
     title: 'order.account.selection.eligibility.patient.title',
