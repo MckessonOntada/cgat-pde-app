@@ -14,6 +14,7 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 function flattenMaterials(data) {
   if (!data && !Array.isArray(data)) {
@@ -87,36 +88,36 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       omit: isCustomerCenter
     },
     {
-      name: t('manageMaterial.table.materialNumber'),
-      id: 'materialNumber',
-      selector: (row) => row.materialNumber,
+      name: t('labels.therapy'),
+      id: 'therapy',
+      selector: (row) => row.therapy,
       wrap: true,
+      sortable: true,
+      sortKey: 'therapy',
       minWidth: '220px',
       cell: (row) => {
-        let displayCaption = '-';
-        if (row.isExpandable) {
-          displayCaption = row.materials.map((child) => child.materialDescription).join(', ');
-        } else {
-          displayCaption = row.materialDescription;
-        }
-
-        <div className="cellEllipse">
+        const { materials = [], tradeName, materialDescription } = row;
+        const label = materials && materials.length === 1 ? materials[0].materialDescription : tradeName || materialDescription;
+        return (
           <Link
             className="MCP-table-link"
+            aria-label={t('table.columns.captions.accountNumber')}
             onClick={() => {
               setOpenDetails(!openDetails);
               setMaterialNumber(props?.materialNumber);
             }}>
-            {displayCaption}
+            <EclipsesTextcss str={label} maxWidth={240} />
           </Link>
-        </div>;
+        );
       }
     },
     {
-      name: t('manageMaterial.table.nationalDrugCode'),
+      name: t('labels.ndc'),
       id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
       wrap: true,
+      sortable: true,
+      sortKey: 'ndc',
       minWidth: '214px',
       cell: (row) => {
         let displayCaption = '-';
@@ -130,11 +131,11 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       }
     },
     {
-      name: t('manageMaterial.table.strength'),
-      id: 'strength',
+      name: t('labels.formulation'),
+      id: 'formulation',
       selector: (row) => row.strength,
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props?.strength || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.formulation || '-'}</div>
     },
     {
       name: t('manageMaterial.table.dosage'),

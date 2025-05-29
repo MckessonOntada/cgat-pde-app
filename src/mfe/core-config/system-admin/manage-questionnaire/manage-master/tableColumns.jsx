@@ -84,7 +84,6 @@ export const getColumnsByEntityType = ({
           selector: () => {},
           maxWidth: '250px',
           cell: (row) => {
-            debugger;
             const { materials = [], tradeName, materialDescription } = row;
             const label = materials && materials.length === 1 ? materials[0].materialDescription : tradeName || materialDescription;
             return (
