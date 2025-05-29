@@ -11,7 +11,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
-
+import { defaultThemes } from 'react-data-table-component';
 const Materials = () => {
   const { t } = useTranslate();
   const { _data, error, isLoading } = useTable();
@@ -720,7 +720,8 @@ const Materials = () => {
         id: 'ndcNumber',
         selector: (row) => row.ndcNumber,
         wrap: true,
-        sortable: false,
+        sortable: true,
+        sortKey: 'ndc',
         minWidth: '140px',
         cell: (row) => {
           let displayCaption = '-';
@@ -760,7 +761,7 @@ const Materials = () => {
           <Heading as="h3">{t('label.materialListing')}</Heading>
         </div>
       </div>
-      <div className={style['grid-item']}>
+      <div className={`${style['grid-item']} scrollable-table-wrapper`}>
         <CustomDataTable
           id="manage-material-table"
           type="normal"
@@ -779,6 +780,8 @@ const Materials = () => {
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}
+          fixedHeaderScrollHeight={'380px'}
+          fixedHeader={true}
           expandableRows
           expandableRowExpanded={isRowExpanded}
           expandableRowsComponent={ExpandedComponent}
