@@ -676,9 +676,26 @@ export const ManageMaterialProvider = ({ children }) => {
       };
 
       if (res.data?.content) {
-        res.data.content.forEach((i) => {
-          i.isExpandable = Boolean(CommonUtils.isNonEmptyArray(i.materials));
+        res.data.content = res.data.content.map((i) => {
+          let record = {};
+          if (i.therapies && i.therapies.length <= 1) {
+            record.isExpandable = false;
+            const { therapies, ...rest } = i;
+            record = {
+              ...record,
+              ...rest,
+              ...i.therapies[0]
+            };
+          } else {
+            record.isExpandable = true;
+            record.channelType = i.channelType;
+            record.tradeName = i.tradeName;
+            record.therapies = i.therapies.map((t) => ({ ...t, isExpandable: false }));
+          }
+          return record;
         });
+
+        console.log(res.data.content);
       }
 
       const { content: data, totalElements, totalPages } = res.data;

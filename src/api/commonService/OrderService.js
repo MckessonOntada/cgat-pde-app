@@ -128,106 +128,28 @@ async function getTherapies(requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
-    res.data = {
-      content: [
-        {
-          tradeName: 'Ibrance',
-          channelType: 'SPECIALITY_PHARMA',
-          therapies: [
-            {
-              id: '4',
-              materialNumber: 'sp2',
-              materialDescription: 'Ibrance 125mg Capsule',
-              ndc: '00069-0820-01',
-              strength: '125mg',
-              dosage: '125mg',
-              genericName: 'palbociclib',
-              manufacturerName: 'Pfizer',
-              formulation: 'Capsule'
-            }
-          ]
-        },
-        {
-          tradeName: 'Avastin',
-          channelType: 'BUY_AND_BILL',
-          therapies: [
-            {
-              id: '1',
-              materialNumber: 'bb1',
-              materialDescription: 'Avastin 100mg/4mL Injection',
-              ndc: '50242-060-01',
-              strength: '100mg/4mL',
-              dosage: '100mg',
-              genericName: 'bevacizumab',
-              manufacturerName: 'Genentech',
-              formulation: 'Injection'
-            },
-            {
-              id: '2',
-              materialNumber: 'bb2',
-              materialDescription: 'Avastin 400mg/16mL Injection',
-              ndc: '50242-060-02',
-              strength: '400mg/16mL',
-              dosage: '400mg',
-              genericName: 'bevacizumab',
-              manufacturerName: 'Genentech',
-              formulation: 'Injection'
-            }
-          ]
-        },
-        {
-          tradeName: 'Revlimid',
-          channelType: 'SPECIALITY_PHARMA',
-          therapies: [
-            {
-              id: '3',
-              materialNumber: 'sp1',
-              materialDescription: 'Revlimid 10mg Capsule',
-              ndc: '59572-1010-01',
-              strength: '10mg',
-              dosage: '10mg',
-              genericName: 'lenalidomide',
-              manufacturerName: 'Bristol Myers Squibb',
-              formulation: 'Capsule'
-            }
-          ]
-        }
-      ],
-      pageable: {
-        pageNumber: 0,
-        pageSize: 20,
-        sort: {
-          empty: false,
-          unsorted: false,
-          sorted: true
-        },
-        offset: 0,
-        unpaged: false,
-        paged: true
-      },
-      last: true,
-      totalPages: 1,
-      totalElements: 3,
-      first: true,
-      size: 20,
-      number: 0,
-      sort: {
-        empty: false,
-        unsorted: false,
-        sorted: true
-      },
-      numberOfElements: 3,
-      empty: false
-    };
-
     if (res.data?.content) {
-      res.data.content.forEach((i) => {
-        i.isExpandable = Boolean(CommonUtils.isNonEmptyArray(i.therapies));
+      res.data.content = res.data.content.map((i) => {
+        let record = {};
+        if (i.therapies && i.therapies.length <= 1) {
+          record.isExpandable = false;
+          const { therapies, ...rest } = i;
+          record = {
+            ...record,
+            ...rest,
+            ...i.therapies[0]
+          };
+        } else {
+          record.isExpandable = true;
+          record.channelType = i.channelType;
+          record.tradeName = i.tradeName;
+          record.therapies = i.therapies.map((t) => ({ ...t, isExpandable: false }));
+        }
+        return record;
       });
+
+      console.log(res.data.content);
     }
-
-    console.log(res.data);
-
     return res.data;
   }
   return [];

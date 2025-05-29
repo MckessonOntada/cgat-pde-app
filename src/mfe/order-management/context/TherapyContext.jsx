@@ -11,7 +11,7 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: 'material_Number',
+  sortBy: 'trade_name',
   sortOrder: 'desc'
 };
 

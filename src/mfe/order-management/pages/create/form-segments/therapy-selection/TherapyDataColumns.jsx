@@ -61,11 +61,11 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     showColumnNameInHeader: true,
     cell: (row) => {
       const { therapies = [], tradeName, materialDescription } = row;
-      const label = therapies && therapies.length === 1 ? therapies[0].materialDescription : tradeName || materialDescription;
       const linkValue = Boolean(therapies.length) ? therapies.map((i) => i.id).join(',') : row.id;
+      const displayCaption = row.isExpandable ? tradeName : materialDescription;
       return (
         <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy=${linkValue}`}>
-          <EclipsesTextcss str={label} />
+          <EclipsesTextcss str={displayCaption} />
         </Link>
       );
     }
@@ -91,7 +91,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
   },
   {
     id: 'ndc',
-    name: t('labels.ndc'),
+    name: t('table.columns.captions.nationalDrugCode'),
     selector: () => {},
     minWidth: '120px',
     sortable: true,
@@ -138,7 +138,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     cell: (row) => {
       let displayCaption = '-';
       if (!row.isExpandable) {
-        displayCaption = row.formulation;
+        displayCaption = row.strength;
       }
       return <span aria-label={t('table.columns.captions.formulation')}>{displayCaption}</span>;
     }
