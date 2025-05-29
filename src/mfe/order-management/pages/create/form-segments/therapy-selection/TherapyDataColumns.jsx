@@ -4,7 +4,24 @@ import { RadioGroup } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 
-export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onExpandToggle) => [
+function getCellValue(data, key) {
+  let displayCaption = '-';
+  if (data.isExpandable) {
+    const vals = data.map((child) => child[key]).filter((i) => Boolean(i));
+    const uniqueValues = Array.from(new Set(vals));
+    if (uniqueValues.length < 3) {
+      displayCaption = uniqueValues.join(', ');
+    } else {
+      const markerCaption = uniqueValues.slice(0, 2);
+      displayCaption = `${markerCaption.join(', ')} + ${uniqueValues.length - 2} more`;
+    }
+  } else {
+    displayCaption = data[key];
+  }
+  return displayCaption;
+}
+
+export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandToggle }) => [
   {
     id: 'expandOrSelect',
     selector: () => null,
@@ -60,12 +77,13 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (row) => {
-      const { therapies = [], tradeName, materialDescription } = row;
+      const { therapies = [], tradeName } = row;
       const linkValue = Boolean(therapies.length) ? therapies.map((i) => i.id).join(',') : row.id;
-      const displayCaption = row.isExpandable ? tradeName : materialDescription;
+
+      let cellValue = row.isExpandable ? tradeName : row.materialDescription;
       return (
         <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy=${linkValue}`}>
-          <EclipsesTextcss str={displayCaption} />
+          <EclipsesTextcss str={cellValue} />
         </Link>
       );
     }
@@ -77,21 +95,14 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     sortable: false,
     minWidth: '200px',
     cell: (row) => {
-      let displayCaption = '-';
-      if (row.isExpandable) {
-        const manufacturers = Array.from(new Set(row.therapies.map((i) => i.genericName)));
-        if (manufacturers && manufacturers.length > 0) {
-          displayCaption = manufacturers.join(', ');
-        }
-      } else {
-        displayCaption = row.genericName;
-      }
-      return <span aria-label={t('labels.genericName')}>{displayCaption}</span>;
+      let displayCaption = getCellValue(row.therapies || row, 'genericName', row.isExpandable);
+
+      return <span aria-label={t('labels.genericName')}>{displayCaption || '-'}</span>;
     }
   },
   {
     id: 'ndc',
-    name: t('table.columns.captions.nationalDrugCode'),
+    name: t('labels.ndc'),
     selector: () => {},
     minWidth: '120px',
     sortable: true,
@@ -100,12 +111,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     showColumnNameInHeader: true,
     cardHeader: true,
     cell: (row) => {
-      let displayCaption = '-';
-      if (row.isExpandable) {
-        displayCaption = row.therapies.map((child) => child.ndc).join(', ');
-      } else {
-        displayCaption = row.ndc;
-      }
+      let displayCaption = getCellValue(row.therapies || row, 'ndc', row.isExpandable);
 
       return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{displayCaption}</span>;
     }
@@ -117,15 +123,7 @@ export const createColumns = (t, navigate, therapy, onChange, isRowExpanded, onE
     width: '180px',
     sortable: true,
     cell: (row) => {
-      let displayCaption = '-';
-      if (row.isExpandable) {
-        const manufacturers = Array.from(new Set(row.therapies.map((i) => i.manufacturerName)));
-        if (manufacturers && manufacturers.length > 0) {
-          displayCaption = manufacturers.join(', ');
-        }
-      } else {
-        displayCaption = row.manufacturerName;
-      }
+      let displayCaption = getCellValue(row.therapies || row, 'manufacturer', row.isExpandable);
       return <span aria-label={t('table.columns.captions.manufacturer')}>{displayCaption}</span>;
     }
   },

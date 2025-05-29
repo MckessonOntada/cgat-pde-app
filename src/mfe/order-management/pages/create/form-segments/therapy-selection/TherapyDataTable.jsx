@@ -23,7 +23,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
 
   const ExpandedComponent = ({ data }) => {
     const expandedData = data.therapies || [];
-    const expandedColumns = createColumns(t, navigate, therapy, onChange);
+    const expandedColumns = createColumns({ t, therapy, onChange });
 
     return (
       <div className="expanded-rows">
@@ -55,7 +55,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
     }
   };
 
-  const columns = createColumns(t, navigate, therapy, onChange, isRowExpanded, onExpandToggle);
+  const columns = createColumns({ t, therapy, onChange, isRowExpanded, onExpandToggle });
 
   return (
     <CustomDataTable
