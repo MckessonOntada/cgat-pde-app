@@ -7,13 +7,27 @@ import { ReactComponent as arrow_right } from '@src/assets/image/arrow_right_sma
 import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
+import CommonUtils from '@src/util/CommonUtils';
+import { current } from '@reduxjs/toolkit';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import Alert from '../cgat-alert/Alert';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
   SP: 'SPECIALITY_PHARMA'
 };
 
-function TherapyDetailsWithTabs({ therapyId, onClose, onSelect, buyAndBillTherapyConstants, spTherapyConstants, showFooter = true, heading }) {
+function TherapyDetailsWithTabs({
+  trade,
+  channelType = 'ALL',
+  therapyId,
+  onClose,
+  onSelect,
+  buyAndBillTherapyConstants,
+  spTherapyConstants,
+  showFooter = true,
+  heading
+}) {
   const { t } = useTranslate();
   const [therapyTabs, setTherapyTabs] = useState(() => {
     if (!therapyId) return [];
@@ -30,63 +44,57 @@ function TherapyDetailsWithTabs({ therapyId, onClose, onSelect, buyAndBillTherap
 
     return therapyTabs;
   });
-  const [selectedTab, setSelectedTab] = useState(THERAPY_TABS.BUY_AND_BILL);
+  const [selectedTab, setSelectedTab] = useState(null);
   const [isCardExpanded, setIsCardExpanded] = useState(true);
+  const [therapyDetails, setTherapyDetails] = useState(null);
+  const [alert, setAlert] = React.useState(null);
+
   const {
+    data: details,
     isLoading,
-    data: therapyDetails = {},
     error
   } = useQuery({
-    queryKey: ['therapy', therapyId],
-    queryFn: async () => {
-      return await OrderService.getTherapyDetailsByCrossWalkId(therapyId);
+    queryKey: ['therapyDetailsByTrade', trade],
+    queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade, channelType),
+    onSuccess: (data) => {
+      if (data && CommonUtils.isNonEmptyArray(data)) {
+        const therapyTabs = data.map((item, index) => ({
+          id: `details-by-therapy-id-${item.id}`,
+          therapyId: item.id,
+          configName: item.materialDescription,
+          isActiveTab: index === 0,
+          sequence: index,
+          labelForMobile: 'labels.tabs.submittedBuyAndBill'
+        }));
+        setTherapyTabs(therapyTabs);
+        setSelectedTab(therapyTabs[0]);
+      } else {
+        setAlert({
+          kind: 'info',
+          description: 'No therapy details found for the selected trade.',
+          showTitle: false,
+          showCloseIcon: false
+        });
+      }
     },
-    enabled: Boolean(therapyId),
+    onError: (err) => {
+      const message = CommonUtils.getAxiosErrorMessage(err);
+      setAlert({
+        type: 'error',
+        description: message,
+        showTitle: false
+      });
+    },
+    enabled: Boolean(trade),
     refetchOnWindowFocus: false
   });
 
-  const showBuyAndBillTab = therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL;
-  const showSPTab =
-    therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.SP ||
-    (therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL &&
-      therapyDetails?.isCrosswalked &&
-      therapyDetails?.crosswalkedTherapies?.length > 0);
-
-  useEffect(() => {
-    if (therapyDetails?.primaryTherapyChannelType) {
-      if (therapyDetails.primaryTherapyChannelType === THERAPY_TABS.SP) {
-        setSelectedTab(THERAPY_TABS.SP);
-      } else if (therapyDetails.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL) {
-        setSelectedTab(THERAPY_TABS.BUY_AND_BILL);
-      }
+  React.useEffect(() => {
+    if (selectedTab && selectedTab.therapyId) {
+      const currentTherapyDetails = details?.find((item) => item.id === selectedTab.therapyId);
+      setTherapyDetails(currentTherapyDetails);
     }
-  }, [therapyDetails]);
-
-  const getTabs = () => {
-    const tabs = [];
-
-    if (showBuyAndBillTab) {
-      tabs.push({
-        id: THERAPY_TABS.BUY_AND_BILL,
-        configName: t('labels.BuyNBill'),
-        isActiveTab: selectedTab === THERAPY_TABS.BUY_AND_BILL,
-        sequence: 1,
-        labelForMobile: t('labels.BuyNBill')
-      });
-    }
-
-    if (showSPTab) {
-      tabs.push({
-        id: THERAPY_TABS.SP,
-        configName: t('labels.SP'),
-        isActiveTab: selectedTab === THERAPY_TABS.SP,
-        sequence: 2,
-        labelForMobile: t('labels.SP')
-      });
-    }
-
-    return tabs;
-  };
+  }, [selectedTab]);
 
   const handleExpandCard = (id) => {
     setIsCardExpanded((prevId) => (prevId === id ? null : id));
@@ -116,21 +124,13 @@ function TherapyDetailsWithTabs({ therapyId, onClose, onSelect, buyAndBillTherap
       }>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          <TabList
-            options={therapyTabs}
-            alignment="left"
-            onTabClick={(tab) => setSelectedTab(tab.id)}
-            showShadow={false}
-            variant={'text'}
-            useAsButton={true}
-            aria-label={t('controls.ariaLabels.orderTabList')}
-          />
+          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         </div>
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
           <TabList
-            options={getTabs()}
+            options={therapyTabs}
             alignment="left"
             onTabClick={(tab) => setSelectedTab(tab.id)}
             showShadow={false}

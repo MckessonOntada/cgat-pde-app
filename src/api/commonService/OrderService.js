@@ -143,7 +143,7 @@ async function getTherapies(requestParams) {
           record.isExpandable = true;
           record.channelType = i.channelType;
           record.tradeName = i.tradeName;
-          record.therapies = i.therapies.map((t) => ({ ...t, isExpandable: false }));
+          record.therapies = i.therapies.map((t) => ({ ...t, isTherapy: true, isExpandable: false, channelType: i.channelType, tradeName: i.tradeName }));
         }
         return record;
       });
@@ -386,6 +386,13 @@ async function uploadDocument(payload) {
   if (res.data) return res.data;
 }
 
+async function getTherapyDetailsByTradeName(tradeName, channelType) {
+  if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
+  const url = `${ApiRoutes.USERS()}/current/therapies/details/${tradeName}?channelType=${channelType}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -416,7 +423,8 @@ const OrderService = Object.freeze({
   downloadDocument,
   getTherapyDetailsByCrossWalkId,
   uploadOrderDocument,
-  uploadDocument
+  uploadDocument,
+  getTherapyDetailsByTradeName
 });
 
 export default OrderService;

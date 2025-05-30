@@ -34,7 +34,8 @@ function TherapySelection() {
   const { data: orderDetails = {} } = useOrder(orderId);
   const [therapy, setTherapy] = useState(orderDetails?.therapy);
   const searchParams = new URLSearchParams(location.search);
-  const detailsByTherapyId = searchParams.get('therapy');
+  const trade = searchParams.get('trade');
+  const channelType = searchParams.get('channelType');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
   const alertContainerId = 'alert-container';
@@ -55,7 +56,6 @@ function TherapySelection() {
   }, [orderDetails]);
 
   const handleOnClose = () => {
-    searchParams.delete('therapy');
     searchParams.delete('trade');
     navigate({
       pathname: '',
@@ -197,11 +197,7 @@ function TherapySelection() {
             </div>
             <TableHeading heading={t('labels.therapySelection')} />
             {therapySelectionMessage && (
-              <Alert
-                description={therapySelectionMessage.description}
-                type={therapySelectionMessage.type}
-                onClose={() => setTherapySelectionMessage(null)}
-              />
+              <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
@@ -215,9 +211,10 @@ function TherapySelection() {
               </Button>
             </div>
           </div>
-          {detailsByTherapyId && (
+          {trade && (
             <TherapyDetailsWithTabs
-              therapyId={detailsByTherapyId}
+              trade={trade}
+              channelType={channelType}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
