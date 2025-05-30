@@ -4,6 +4,47 @@ import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import CommonUtils from '@src/util/CommonUtils';
 
+function transformContent(content) {
+  return content.map((item) => {
+    const { tradeName, therapies, channelType } = item;
+
+    if (therapies.length > 1) {
+      return {
+        tradeId: CommonUtils.generateUniqueCode(`${tradeName}-${channelType}`),
+        cellValue: tradeName,
+        channelType,
+        tradeName,
+        isExpandable: true,
+        isParent: true,
+        genericName: Array.from(new Set(therapies.map((t) => t.genericName).filter(Boolean))).join(', '),
+        ndc: Array.from(new Set(therapies.map((t) => t.ndc).filter(Boolean))).join(', '),
+        manufacturer: Array.from(new Set(therapies.map((t) => t.manufacturerName).filter(Boolean))).join(', '),
+        formulation: '-',
+        dosage: '-',
+        therapies: therapies.map((therapy) => ({
+          isExpandable: false,
+          isParent: false,
+          cellValue: therapy.materialDescription,
+          channelType,
+          tradeName,
+          ...therapy
+        }))
+      };
+    } else {
+      const t = therapies[0];
+      return {
+        tradeId: CommonUtils.generateUniqueCode(`${tradeName}-${channelType}-${t.ndc}`),
+        cellValue: tradeName,
+        channelType,
+        tradeName,
+        isExpandable: false,
+        isParent: true,
+        ...t
+      };
+    }
+  });
+}
+
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
@@ -129,26 +170,7 @@ async function getTherapies(requestParams) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     if (res.data?.content) {
-      res.data.content = res.data.content.map((i) => {
-        let record = {};
-        if (i.therapies && i.therapies.length <= 1) {
-          record.isExpandable = false;
-          const { therapies, ...rest } = i;
-          record = {
-            ...record,
-            ...rest,
-            ...i.therapies[0]
-          };
-        } else {
-          record.isExpandable = true;
-          record.channelType = i.channelType;
-          record.tradeName = i.tradeName;
-          record.therapies = i.therapies.map((t) => ({ ...t, isTherapy: true, isExpandable: false, channelType: i.channelType, tradeName: i.tradeName }));
-        }
-        return record;
-      });
-
-      console.log(res.data.content);
+      res.data.content = transformContent(res.data.content);
     }
     return res.data;
   }
@@ -161,8 +183,8 @@ async function getTherapyDetailsById(therapyId) {
   return res.data || {};
 }
 
-async function getSoldToAccounts(therapyId, query) {
-  let url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccounts`;
+async function getSoldToAccounts(ndc, query) {
+  let url = `${ApiRoutes.USERS()}/current/therapies/ndc/${ndc}/soldtoaccounts`;
   if (query) {
     url += `?${query}`;
   }
@@ -173,8 +195,8 @@ async function getSoldToAccounts(therapyId, query) {
   return {};
 }
 
-async function getShippingAddressForTherapyByAccountId(therapyId, accountId, requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(requestParams)}`;
+async function getShippingAddressForTherapyByAccountId(ndc, accountId, requestParams) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/ndc/${ndc}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -183,8 +205,8 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
   return {};
 }
 
-async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = null) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog${
+async function getPriceDetails(ndc, accountId, shipToAccountId, variant = null) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/ndc/${ndc}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog${
     !!variant ? `?variantType=${variant}` : ''
   }`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -218,8 +240,8 @@ async function getInventoryStatus(orderId) {
   }
 }
 
-async function getProgramAndChannelConfig(therapyId, requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(requestParams)}`;
+async function getProgramAndChannelConfig(ndc, requestParams) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/ndc/${ndc}/programs-channels?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;

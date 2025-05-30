@@ -30,9 +30,8 @@ function TherapySelection() {
   const location = useLocation();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
-  const [initialSelectedTherapy, setInitialSelectedTherapy] = React.useState(null);
   const { data: orderDetails = {} } = useOrder(orderId);
-  const [therapy, setTherapy] = useState(orderDetails?.therapy);
+  const [tradeDetails, setTradeDetails] = useState(orderDetails?.tradeDetails);
   const searchParams = new URLSearchParams(location.search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
@@ -48,15 +47,15 @@ function TherapySelection() {
   }, [orderDetails]);
 
   React.useEffect(() => {
-    const { therapy } = orderDetails || {};
-    if (therapy) {
-      setTherapy(therapy);
-      setInitialSelectedTherapy(therapy);
+    const { tradeDetails } = orderDetails || {};
+    if (tradeDetails) {
+      setTradeDetails(tradeDetails);
     }
   }, [orderDetails]);
 
   const handleOnClose = () => {
     searchParams.delete('trade');
+    searchParams.delete('channelType');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
@@ -91,7 +90,7 @@ function TherapySelection() {
           state: {
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged: Number(therapy?.therapyId) !== Number(initialSelectedTherapy?.materialNumber)
+            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName)
           }
         });
       },
@@ -107,7 +106,7 @@ function TherapySelection() {
   );
 
   const handleOnSubmit = () => {
-    if (!therapy || isSaving) {
+    if (!tradeDetails || isSaving) {
       setTherapySelectionMessage({
         description: 'Select therapy to create order',
         type: 'error'
@@ -115,9 +114,11 @@ function TherapySelection() {
       return;
     }
 
-    if (therapy) {
+    if (tradeDetails) {
       const payload = {
-        id: therapy.id
+        ndc: tradeDetails.ndc,
+        tradeName: tradeDetails.tradeName,
+        channelType: tradeDetails.channelType
       };
       if (isEdit || isApprover || isBack) {
         updateTherapy({ orderId, payload });
@@ -126,7 +127,7 @@ function TherapySelection() {
       }
     }
   };
-  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
+  const isDirty = JSON.stringify(tradeDetails) !== JSON.stringify(orderDetails?.tradeDetails);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -163,7 +164,7 @@ function TherapySelection() {
   };
 
   const handleOnDrawerSelect = (therapy) => {
-    setTherapy(therapy);
+    setTradeDetails(therapy);
   };
   if (isSaving) {
     return <Loader type={'screen'} />;
@@ -199,7 +200,7 @@ function TherapySelection() {
             {therapySelectionMessage && (
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable therapy={therapy} onChange={setTherapy} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">

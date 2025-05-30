@@ -8,23 +8,24 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 
-const TherapyDataTable = ({ therapy, onChange }) => {
+const TherapyDataTable = ({ trade, onChange }) => {
   const { t } = useTranslate();
-  const navigate = useNavigate();
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort } = useTherapy();
-
+  console.log(data);
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = useState([]);
-  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
-  const onExpandToggle = (row) => {
-    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  const isRowExpanded = (row) => {
+    return expandedRows.includes(row.tradeId);
+  };
+  const onExpandToggle = (tradeId) => {
+    setExpandedRows((prev) => (prev.includes(tradeId) ? prev.filter((id) => id !== tradeId) : [...prev, tradeId]));
   };
 
   const ExpandedComponent = ({ data }) => {
     const expandedData = data.therapies || [];
-    const expandedColumns = createColumns({ t, therapy, onChange });
-
+    const expandedColumns = createColumns({ t, trade, onChange });
+    debugger;
     return (
       <div className="expanded-rows">
         <CustomDataTable
@@ -55,7 +56,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
     }
   };
 
-  const columns = createColumns({ t, therapy, onChange, isRowExpanded, onExpandToggle });
+  const columns = createColumns({ t, trade, onChange, isRowExpanded, onExpandToggle });
 
   return (
     <CustomDataTable

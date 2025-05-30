@@ -14,15 +14,15 @@ import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.s
 
 const Materials = () => {
   const { t } = useTranslate();
-  const { _data, error, isLoading } = useTable();
+  const { data, error, isLoading } = useTable();
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
-  let data = null;
-  if (_data) {
-    data = _data.map((i) => {
+  let beautifiedData = data;
+  if (beautifiedData) {
+    beautifiedData = beautifiedData.map((i) => {
       let record = {};
-      if (i.therapies && i.therapies.length <= 1) {
+      if (i.therapies && i.therapies?.length <= 1) {
         record.isExpandable = false;
         const { therapies, ...rest } = i;
         record = {
@@ -38,12 +38,10 @@ const Materials = () => {
       }
       return record;
     });
-
-    console.log(res.data.content);
   }
 
-  if (data) {
-    data.forEach((i) => {
+  if (beautifiedData) {
+    beautifiedData.forEach((i) => {
       i.isExpandable = Boolean(CommonUtils.isNonEmptyArray(i.materials));
     });
   }
@@ -105,6 +103,7 @@ const Materials = () => {
         showInMobileHeader: true,
         isSelectable: true,
         cell: (row) => {
+          console.log(row);
           if (row.isExpandable && row.materials.length > 1) {
             const expanded = isRowExpanded?.(row);
             return (
@@ -151,7 +150,7 @@ const Materials = () => {
         sortable: true,
         sortKey: 'materialDescription',
         cell: (row) => {
-          const label = row.therapies && row.therapies.length === 1 ? row.therapies[0].materialDescription : row.tradeName || row.materialDescription;
+          const label = row.therapies && row.therapies?.length === 1 ? row.therapies[0].materialDescription : row.tradeName || row.materialDescription;
 
           return (
             <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${row.id}`}>
@@ -211,7 +210,7 @@ const Materials = () => {
           id="manage-material-table"
           type="normal"
           columns={getColumns()}
-          data={data}
+          data={beautifiedData}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
           pagination={false}

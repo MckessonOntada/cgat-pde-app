@@ -56,6 +56,7 @@ function TherapyDetailsWithTabs({
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
     queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade, channelType),
+    select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
         const therapyTabs = data.map((item, index) => ({
@@ -107,6 +108,15 @@ function TherapyDetailsWithTabs({
     }
   };
 
+  const handleOnTabChange = (selectedTab) => {
+    const newTabs = therapyTabs.map((tab) => ({
+      ...tab,
+      isActiveTab: tab.id === selectedTab.id
+    }));
+    setTherapyTabs(newTabs);
+    setSelectedTab(selectedTab);
+  };
+
   return (
     <FloatingDrawer
       open={true}
@@ -132,7 +142,7 @@ function TherapyDetailsWithTabs({
           <TabList
             options={therapyTabs}
             alignment="left"
-            onTabClick={(tab) => setSelectedTab(tab.id)}
+            onTabClick={handleOnTabChange}
             showShadow={false}
             variant={'text'}
             useAsButton={true}

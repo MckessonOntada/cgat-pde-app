@@ -11,7 +11,7 @@ import { CHANNEL_TYPE, INFO_340B, PROGRAM_LIST } from '../Constants';
 import InfoModel from '@src/components/InfoModel/indix';
 import Alert from '@src/components/cgat-alert/Alert';
 
-const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, channelType = CHANNEL_TYPE.BUY_AND_BILL }) => {
+const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, channelType = CHANNEL_TYPE.BUY_AND_BILL }) => {
   const { t } = useTranslate();
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
@@ -49,12 +49,12 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, c
     isError,
     error
   } = useQuery({
-    queryKey: ['order', 'therapy', therapyId, 'program-channel-config'],
+    queryKey: ['order', 'therapy', trade.tradName, 'program-channel-config'],
     queryFn: async () =>
-      OrderService.getProgramAndChannelConfig(therapyId, {
+      OrderService.getProgramAndChannelConfig(trade.ndc, {
         channelType: channelType
       }),
-    enabled: !!therapyId,
+    enabled: Boolean(trade.ndc),
     refetchOnWindowFocus: false
   });
 
@@ -63,10 +63,10 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, c
     data: accountList = {},
     refetch: fetchAccountsByProgramAndChannel
   } = useQuery({
-    queryKey: ['order', 'therapy', therapyId, 'program-channel-config-accounts', selectedChannel, selectedProgram],
+    queryKey: ['order', 'therapy', trade.tradeName, 'program-channel-config-accounts', selectedChannel, selectedProgram],
     queryFn: async () =>
       OrderService.getSoldToAccounts(
-        therapyId,
+        trade.ndc,
         serializeParams({
           ...(selectedChannel === CHANNEL_TYPE.BUY_AND_BILL ? { program: selectedProgram } : {}),
           channelType: selectedChannel,
@@ -113,10 +113,11 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, c
       }
     };
 
-    onSubmit(transformedAccount);
+    onSubmit(transformedAccount, { program: selectedProgram, channelType: selectedChannel });
+    onClose();
   };
 
-  if (!therapyId) {
+  if (!trade) {
     return (
       <div className={styles.wrapper}>
         <div>Error: therapy id is not available</div>

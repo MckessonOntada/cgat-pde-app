@@ -6,7 +6,7 @@ import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.s
 
 function getCellValue(data, key) {
   let displayCaption = '-';
-  if (data.isExpandable) {
+  if (!data.isTherapy) {
     const vals = data.map((child) => child[key]).filter((i) => Boolean(i));
     const uniqueValues = Array.from(new Set(vals));
     if (uniqueValues.length < 3) {
@@ -21,7 +21,7 @@ function getCellValue(data, key) {
   return displayCaption;
 }
 
-export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandToggle }) => [
+export const createColumns = ({ t, trade, onChange, isRowExpanded, onExpandToggle }) => [
   {
     id: 'expandOrSelect',
     selector: () => null,
@@ -30,13 +30,13 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     showInMobileHeader: true,
     isSelectable: true,
     cell: (row) => {
-      if (row.isExpandable && row.therapies.length > 1) {
+      if (row.isExpandable && row.isParent) {
         const expanded = isRowExpanded?.(row);
         return (
           <div
             className="expand-icon-wrapper"
             style={{ cursor: 'pointer' }}
-            onClick={() => onExpandToggle?.(row)}
+            onClick={() => onExpandToggle?.(row.tradeId)}
             aria-label={expanded ? 'Collapse row' : 'Expand row'}>
             <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
               <ArrowAngleRight />
@@ -61,7 +61,7 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
               onChange(row);
             }}
             radioBtnWidth="auto"
-            value={therapy?.id === row.id ? row.id : ''}
+            value={row.id && trade?.id === row.id ? row.id : ''}
           />
         </div>
       );
@@ -77,9 +77,8 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (row) => {
-      const { tradeName } = row;
-      console.log('Row', row);
-      let cellValue = row.isTherapy ? row.materialDescription : tradeName;
+      const { tradeName, cellValue } = row;
+      console.log(row);
       return (
         <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}&channelType=${row.channelType}`}>
           <EclipsesTextcss str={cellValue} />
@@ -94,9 +93,7 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     sortable: false,
     minWidth: '200px',
     cell: (row) => {
-      let displayCaption = getCellValue(row.therapies || row, 'genericName', row.isExpandable);
-
-      return <span aria-label={t('labels.genericName')}>{displayCaption || '-'}</span>;
+      return <span aria-label={t('labels.genericName')}>{row.genericName}</span>;
     }
   },
   {
@@ -110,9 +107,7 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     showColumnNameInHeader: true,
     cardHeader: true,
     cell: (row) => {
-      let displayCaption = getCellValue(row.therapies || row, 'ndc', row.isExpandable);
-
-      return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{displayCaption}</span>;
+      return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{row.ndc}</span>;
     }
   },
   {
@@ -122,8 +117,7 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     width: '180px',
     sortable: true,
     cell: (row) => {
-      let displayCaption = getCellValue(row.therapies || row, 'manufacturer', row.isExpandable);
-      return <span aria-label={t('table.columns.captions.manufacturer')}>{displayCaption}</span>;
+      return <span aria-label={t('table.columns.captions.manufacturer')}>{row.manufacturer}</span>;
     }
   },
   {
@@ -133,11 +127,7 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     width: '140px',
     sortable: false,
     cell: (row) => {
-      let displayCaption = '-';
-      if (!row.isExpandable) {
-        displayCaption = row.strength;
-      }
-      return <span aria-label={t('table.columns.captions.formulation')}>{displayCaption}</span>;
+      return <span aria-label={t('table.columns.captions.formulation')}>{row.formulation}</span>;
     }
   },
   {
@@ -147,11 +137,7 @@ export const createColumns = ({ t, therapy, onChange, isRowExpanded, onExpandTog
     width: '100px',
     sortable: false,
     cell: (row) => {
-      let displayCaption = '-';
-      if (!row.isExpandable) {
-        displayCaption = row.dosage;
-      }
-      return <span aria-label={t('table.columns.captions.dosage')}>{displayCaption}</span>;
+      return <span aria-label={t('table.columns.captions.dosage')}>{row.dosage}</span>;
     }
   }
 ];
