@@ -10,6 +10,7 @@ import { PATHS } from '../../routes';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
+import PaymentAmountCell from './PaymentAmountCell';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -107,47 +108,15 @@ function SelectedInvoiceList(props) {
       minWidth: '180px',
       id: 'paymentAmount',
       right: true,
-      cell: (props, index) => {
-        const [inputValue, setInputValue] = useState(props.paymentAmount);
-
-        useEffect(() => {
-          setInputValue(props.paymentAmount);
-        }, [props.paymentAmount]);
-
-        const handleChange = (e) => {
-          setInputValue(e.target.value);
-          let _invoices = [...[], ...selectedInvoices];
-          _invoices[index].paymentAmount = e.target.value;
-          setSelectedInvoices(_invoices);
-        };
-
-        const handleBlur = (e) => {
-          const val = parseFloat(e.target.value);
-          const finalVal =
-            val > 0 && val <= props.openAmount ? val : props.openAmount;
-          let _invoices = [...selectedInvoices];
-          _invoices[index].paymentAmount = finalVal;
-          setInputValue(finalVal);
-          setSelectedInvoices(_invoices);
-        };
-
-        const isError = inputValue > props.openAmount || inputValue <= 0 || inputValue === '' || inputValue === null;
-
-        return REVIEW_MODE ? (
-          <div className="cellEllipse align-items-right ">
-            <FormattedNumber value={props.paymentAmount || 0} style="currency" currency="USD" />
-          </div>
-        ) : (
-          <input
-            type="number"
-            className={`paymenyAmount-input ${isError ? 'error-input' : ''}`}
-            value={inputValue}
-            onChange={handleChange}
-            min={0}
-            onBlur={handleBlur}
-          />
-        );
-      }
+      cell: (row, index) => (
+        <PaymentAmountCell
+          row={row}
+          index={index}
+          selectedInvoices={selectedInvoices}
+          setSelectedInvoices={setSelectedInvoices}
+          REVIEW_MODE={REVIEW_MODE}
+        />
+      )
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
