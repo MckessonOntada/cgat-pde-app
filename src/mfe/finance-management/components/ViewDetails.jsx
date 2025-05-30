@@ -34,13 +34,7 @@ export default function ViewDetails(props) {
   return (
     <div className="view-details-container">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={onBackToPaymentsInvoices}
-          size="md"
-        >
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={onBackToPaymentsInvoices} size="md">
           {backText || t('paymentInvoices.Details.backToManageInvoices')}
         </Button>
       </div>
@@ -48,9 +42,7 @@ export default function ViewDetails(props) {
       <div className="card-container">
         {CommonUtils.isNonEmptyObject(selectedAccount) && (
           <div className="account-info">
-            <div className="account-name">
-              {CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}
-            </div>
+            <div className="account-name">{CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}</div>
             <div className="account-address">{selectedAccount ? GeographicUtils.addressAggregator(selectedAccount) : ''}</div>
           </div>
         )}
@@ -71,7 +63,7 @@ export default function ViewDetails(props) {
         <div className="bill-amount-wrapper">
           {billDates &&
             Object.entries(billDates).map(([key, value]) => (
-              <div className="bill-amount-container">
+              <div key={key} className="bill-amount-container">
                 <div className="label">{key}</div>
                 <div className="value">{value}</div>
               </div>

@@ -109,14 +109,12 @@ function ConfirmationPayments() {
         <div className="confirmationDetails">
           {CommonUtils.isNonEmptyObject(confirmationData) &&
             Object.entries(confirmationData).map(([key, value]) => (
-              <>
-                <div className="card">
-                  <div className="card-header">
-                    <div className="accountNumber">{key}</div>
-                  </div>
-                  <div className="accountName">{value || 'NA'}</div>
+              <div key={key} className="card">
+                <div className="card-header">
+                  <div className="accountNumber">{key}</div>
                 </div>
-              </>
+                <div className="accountName">{value || 'NA'}</div>
+              </div>
             ))}
         </div>
         {!paymentFailed && (
