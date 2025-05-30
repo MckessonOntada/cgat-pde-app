@@ -22,8 +22,8 @@ export const useCatalogData = (shouldFetch) => {
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (
         res.data?.content?.map((item) => ({
-          label: item.therapyDescription,
-          value: item.therapyId,
+          label: item.tradeName,
+          value: item.tradeName,
           channelType: item.channelType
         })) || []
       );
