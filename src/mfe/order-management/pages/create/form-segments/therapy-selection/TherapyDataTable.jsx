@@ -7,44 +7,37 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 const TherapyDataTable = (props) => {
   const { trade, onChange } = props;
 
   const { t } = useTranslate();
+  const [isInitialExpandSet, setIsInitialExpandSet] = React.useState(false);
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort } = useTherapy();
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);
-  React.useEffect(() => {
-    if (trade && trade.isExpandable) {
-      setExpandedRows([trade.tradeId]);
-    } else setExpandedRows((prevState) => prevState || []);
-  }, [trade]);
+  const isRowExpanded = (row) => {
+    return expandedRows.includes(row.tradeName);
+  };
+  const onExpandToggle = (tradeName) => {
+    setExpandedRows((prev) => (prev.includes(tradeName) ? prev.filter((id) => id !== tradeName) : [...prev, tradeName]));
+  };
 
   React.useEffect(() => {
-    if (data && trade && !trade.id) {
-      const { tradeName, channelType, ndc } = trade;
-      const targetTrade = data.find((item) => item.tradeName === tradeName && item.channelType === channelType);
-      const targetTherapy = targetTrade && targetTrade.isExpandable ? targetTrade?.therapies.find((therapy) => therapy.ndc === ndc) : {};
-      if (targetTherapy) {
-        onChange({
-          ...targetTherapy,
-          ...targetTrade
-        });
-      }
+    if (data && trade && !isInitialExpandSet) {
+      const targetTrade = data.find((__trade) => __trade.tradeName === trade.tradeName);
+      if (targetTrade && targetTrade.therapies?.length > 1) onExpandToggle(trade.tradeName);
+      setIsInitialExpandSet(true);
+      isFetching;
     }
   }, [data, trade]);
 
-  const isRowExpanded = (row) => {
-    return expandedRows.includes(row.tradeId);
-  };
-  const onExpandToggle = (tradeId) => {
-    setExpandedRows((prev) => (prev.includes(tradeId) ? prev.filter((id) => id !== tradeId) : [...prev, tradeId]));
-  };
-
   const ExpandedComponent = ({ data }) => {
     const expandedData = data.therapies || [];
+    if (!CommonUtils.isNonEmptyArray(expandedData)) return;
+
     const expandedColumns = createColumns({ t, trade, onChange });
     return (
       <div className="expanded-rows">

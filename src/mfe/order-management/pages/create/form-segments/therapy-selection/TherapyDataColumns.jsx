@@ -21,7 +21,7 @@ function getCellValue(data, key) {
   return displayCaption;
 }
 
-export const createColumns = ({ t, trade, onChange, isRowExpanded, onExpandToggle }) => [
+export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle }) => [
   {
     id: 'expandOrSelect',
     selector: () => null,
@@ -36,7 +36,7 @@ export const createColumns = ({ t, trade, onChange, isRowExpanded, onExpandToggl
           <div
             className="expand-icon-wrapper"
             style={{ cursor: 'pointer' }}
-            onClick={() => onExpandToggle?.(row.tradeId)}
+            onClick={() => onExpandToggle?.(row.tradeName)}
             aria-label={expanded ? 'Collapse row' : 'Expand row'}>
             <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
               <ArrowAngleRight />
@@ -61,7 +61,7 @@ export const createColumns = ({ t, trade, onChange, isRowExpanded, onExpandToggl
               onChange(row);
             }}
             radioBtnWidth="auto"
-            value={row.id && trade?.id === row.id ? row.id : ''}
+            value={row.tradeName === trade.tradeName && trade.ndc === row.ndc ? row.id : ''}
           />
         </div>
       );

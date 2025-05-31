@@ -4,27 +4,25 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
-import { CHANNEL_TYPE } from './Constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 
-function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedAccount = {} }) {
+function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();
-
-  const therapy = orderDetails?.therapy ?? {};
+  const { therapy = {}, patient = {}, tradeDetails } = orderDetails;
   const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
-  const patient = orderDetails?.patient ?? {};
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
-  const channelType = accountDetails?.soldToAccount?.channelType ? accountDetails?.soldToAccount?.channelType : selectedAccount?.channelType;
 
   const detailsSegments = [];
-  if (therapy?.materialDescription) {
+  if (tradeDetails.tradeName || therapy.materialDescription) {
     detailsSegments.push(
       <DetailSegment
         key={'therapy-description'}
         label={t('labels.therapyDescription')}
         value={
           <div className="row-space-between-center therapy-description-wrapper">
-            <div className="overflowing">{`${therapy.tradeName} (${therapy.materialDescription})` || '-'}</div>
+            <div className="overflowing">
+              {tradeDetails.tradeName} {therapy.materialDescription ? `(${therapy.materialDescription})` : null}
+            </div>
             <InventoryIndicator status={status} />
           </div>
         }

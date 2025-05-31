@@ -2,7 +2,18 @@ import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
-import CommonUtils from '@src/util/CommonUtils';
+
+const getUniqueLabelFromKey = (data, key, markerElements) => {
+  let label = '';
+  const uniqueLabelSegments = [...new Set(data.map((t) => t[key]).filter(Boolean))];
+  if (markerElements && data.length > markerElements) {
+    const markerLabel = uniqueLabelSegments.splice(0, markerElements).join(', ');
+    label = `${markerLabel} and ${data.length - markerElements} more`;
+  } else {
+    label = uniqueLabelSegments.join(', ');
+  }
+  return label;
+};
 
 function transformContent(content) {
   return content.map((item) => {
@@ -10,15 +21,14 @@ function transformContent(content) {
 
     if (therapies.length > 1) {
       return {
-        tradeId: CommonUtils.generateUniqueCode(`${tradeName}-${channelType}`),
         cellValue: tradeName,
         channelType,
         tradeName,
         isExpandable: true,
         isParent: true,
-        genericName: Array.from(new Set(therapies.map((t) => t.genericName).filter(Boolean))).join(', '),
-        ndc: Array.from(new Set(therapies.map((t) => t.ndc).filter(Boolean))).join(', '),
-        manufacturer: Array.from(new Set(therapies.map((t) => t.manufacturerName).filter(Boolean))).join(', '),
+        genericName: getUniqueLabelFromKey(therapies, 'genericName', 2),
+        ndc: getUniqueLabelFromKey(therapies, 'ndc', 2),
+        manufacturer: getUniqueLabelFromKey(therapies, 'manufacturer', 2),
         formulation: '-',
         dosage: '-',
         therapies: therapies.map((therapy) => ({
@@ -31,15 +41,14 @@ function transformContent(content) {
         }))
       };
     } else {
-      const t = therapies[0];
+      const therapy = therapies[0] || {};
       return {
-        tradeId: CommonUtils.generateUniqueCode(`${tradeName}-${channelType}-${t.ndc}`),
-        cellValue: tradeName,
+        isExpandable: false,
+        isParent: false,
+        cellValue: therapy.materialDescription,
         channelType,
         tradeName,
-        isExpandable: false,
-        isParent: true,
-        ...t
+        ...therapy
       };
     }
   });

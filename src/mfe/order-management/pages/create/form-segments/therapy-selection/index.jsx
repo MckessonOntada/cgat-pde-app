@@ -48,11 +48,9 @@ function TherapySelection() {
   }, [orderDetails]);
 
   React.useEffect(() => {
-    const { tradeDetails } = orderDetails || {};
+    const { tradeDetails, therapyDetails = {} } = orderDetails || {};
     if (tradeDetails) {
-      const { tradeName, channelType } = tradeDetails;
-      tradeDetails.tradeId = CommonUtils.generateUniqueCode(`${tradeName}-${channelType}`);
-      setTradeDetails(tradeDetails);
+      setTradeDetails({ ...tradeDetails, ...therapyDetails });
     }
   }, [orderDetails]);
 
