@@ -18,8 +18,8 @@ const TherapyDataTable = (props) => {
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);
-  const isRowExpanded = (row) => {
-    return expandedRows.includes(row.tradeName);
+  const isRowExpanded = (trade) => {
+    return expandedRows.includes(trade.tradeName);
   };
   const onExpandToggle = (tradeName) => {
     setExpandedRows((prev) => (prev.includes(tradeName) ? prev.filter((id) => id !== tradeName) : [...prev, tradeName]));
@@ -28,9 +28,10 @@ const TherapyDataTable = (props) => {
   React.useEffect(() => {
     if (data && trade && !isInitialExpandSet) {
       const targetTrade = data.find((__trade) => __trade.tradeName === trade.tradeName);
-      if (targetTrade && targetTrade.therapies?.length > 1) onExpandToggle(trade.tradeName);
+      if (!expandedRows.includes(trade.tradeName)) {
+        onExpandToggle(trade.tradeName);
+      }
       setIsInitialExpandSet(true);
-      isFetching;
     }
   }, [data, trade]);
 

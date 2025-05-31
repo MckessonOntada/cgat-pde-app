@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { RadioGroup } from '@mckesson/mcp-component-library';
+import { RadioGroup, Tooltip } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 
@@ -92,7 +92,11 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     sortable: false,
     minWidth: '200px',
     cell: (row) => {
-      return <span aria-label={t('labels.genericName')}>{row.genericName}</span>;
+      return (
+        <span aria-label={t('labels.genericName')}>
+          <Tooltip body={row.isExpandable ? row.genericNameTooltip : row.genericName}>{row.genericName}</Tooltip>
+        </span>
+      );
     }
   },
   {
@@ -106,7 +110,11 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showColumnNameInHeader: true,
     cardHeader: true,
     cell: (row) => {
-      return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{row.ndc}</span>;
+      return (
+        <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+          <Tooltip body={row.isExpandable ? row.ndcTooltip : row.ndc}>{row.ndc}</Tooltip>
+        </span>
+      );
     }
   },
   {
@@ -116,7 +124,11 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     width: '180px',
     sortable: true,
     cell: (row) => {
-      return <span aria-label={t('table.columns.captions.manufacturer')}>{row.manufacturer}</span>;
+      return (
+        <span aria-label={t('table.columns.captions.manufacturer')}>
+          <Tooltip body={row.isExpandable ? row.manufacturerTooltip : row.manufacturer}>{row.manufacturer}</Tooltip>
+        </span>
+      );
     }
   },
   {
@@ -126,7 +138,13 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     width: '140px',
     sortable: false,
     cell: (row) => {
-      return <span aria-label={t('table.columns.captions.formulation')}>{row.formulation}</span>;
+      return row.formulation ? (
+        <span aria-label={t('table.columns.captions.formulation')}>
+          <Tooltip body={row.formulation}>{row.formulation}</Tooltip>
+        </span>
+      ) : (
+        '-'
+      );
     }
   },
   {
@@ -136,7 +154,13 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     width: '100px',
     sortable: false,
     cell: (row) => {
-      return <span aria-label={t('table.columns.captions.dosage')}>{row.dosage}</span>;
+      return row.dosage ? (
+        <span aria-label={t('table.columns.captions.dosage')}>
+          <Tooltip body={row.formulation}>{row.dosage}</Tooltip>
+        </span>
+      ) : (
+        '-'
+      );
     }
   }
 ];

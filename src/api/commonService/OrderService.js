@@ -2,57 +2,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
-
-const getUniqueLabelFromKey = (data, key, markerElements) => {
-  let label = '';
-  const uniqueLabelSegments = [...new Set(data.map((t) => t[key]).filter(Boolean))];
-  if (markerElements && data.length > markerElements) {
-    const markerLabel = uniqueLabelSegments.splice(0, markerElements).join(', ');
-    label = `${markerLabel} and ${data.length - markerElements} more`;
-  } else {
-    label = uniqueLabelSegments.join(', ');
-  }
-  return label;
-};
-
-function transformContent(content) {
-  return content.map((item) => {
-    const { tradeName, therapies, channelType } = item;
-
-    if (therapies.length > 1) {
-      return {
-        cellValue: tradeName,
-        channelType,
-        tradeName,
-        isExpandable: true,
-        isParent: true,
-        genericName: getUniqueLabelFromKey(therapies, 'genericName', 2),
-        ndc: getUniqueLabelFromKey(therapies, 'ndc', 2),
-        manufacturer: getUniqueLabelFromKey(therapies, 'manufacturer', 2),
-        formulation: '-',
-        dosage: '-',
-        therapies: therapies.map((therapy) => ({
-          isExpandable: false,
-          isParent: false,
-          cellValue: therapy.materialDescription,
-          channelType,
-          tradeName,
-          ...therapy
-        }))
-      };
-    } else {
-      const therapy = therapies[0] || {};
-      return {
-        isExpandable: false,
-        isParent: false,
-        cellValue: therapy.materialDescription,
-        channelType,
-        tradeName,
-        ...therapy
-      };
-    }
-  });
-}
+import ServiceUtil from './ServiceUtil';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -179,7 +129,7 @@ async function getTherapies(requestParams) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     if (res.data?.content) {
-      res.data.content = transformContent(res.data.content);
+      res.data.content = ServiceUtil.transformContent(res.data.content);
     }
     return res.data;
   }
