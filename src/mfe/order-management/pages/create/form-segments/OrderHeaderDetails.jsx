@@ -24,7 +24,7 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
         label={t('labels.therapyDescription')}
         value={
           <div className="row-space-between-center therapy-description-wrapper">
-            <div className="overflowing">{therapy.materialDescription || '-'}</div>
+            <div className="overflowing">{`${therapy.tradeName} (${therapy.materialDescription})` || '-'}</div>
             <InventoryIndicator status={status} />
           </div>
         }
