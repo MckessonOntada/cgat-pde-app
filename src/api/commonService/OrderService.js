@@ -226,8 +226,9 @@ async function getPriceDetails(ndc, accountId, shipToAccountId, variant = null) 
   return {};
 }
 
-async function getVariants(therapyId, accountId, shipToAccountId, requestParams) {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/variants?${serializeParams(
+async function getVariants(config, requestParams) {
+  const { soldToAccountId, shipToAccountId, ndc } = config;
+  const url = `${ApiRoutes.USERS()}/current/therapies/${ndc}/soldtoaccount/${soldToAccountId}/shiptoaccount/${shipToAccountId}/variants?${serializeParams(
     requestParams
   )}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
