@@ -78,7 +78,6 @@ export const createColumns = ({ t, trade, onChange, isRowExpanded, onExpandToggl
     showColumnNameInHeader: true,
     cell: (row) => {
       const { tradeName, cellValue } = row;
-      console.log(row);
       return (
         <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}&channelType=${row.channelType}`}>
           <EclipsesTextcss str={cellValue} />

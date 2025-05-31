@@ -8,13 +8,34 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 
-const TherapyDataTable = ({ trade, onChange }) => {
+const TherapyDataTable = (props) => {
+  const { trade, onChange } = props;
+
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort } = useTherapy();
-  console.log(data);
   const showCardView = useResponsiveView();
 
-  const [expandedRows, setExpandedRows] = useState([]);
+  const [expandedRows, setExpandedRows] = React.useState([]);
+  React.useEffect(() => {
+    if (trade && trade.isExpandable) {
+      setExpandedRows([trade.tradeId]);
+    } else setExpandedRows((prevState) => prevState || []);
+  }, [trade]);
+
+  React.useEffect(() => {
+    if (data && trade && !trade.id) {
+      const { tradeName, channelType, ndc } = trade;
+      const targetTrade = data.find((item) => item.tradeName === tradeName && item.channelType === channelType);
+      const targetTherapy = targetTrade && targetTrade.isExpandable ? targetTrade?.therapies.find((therapy) => therapy.ndc === ndc) : {};
+      if (targetTherapy) {
+        onChange({
+          ...targetTherapy,
+          ...targetTrade
+        });
+      }
+    }
+  }, [data, trade]);
+
   const isRowExpanded = (row) => {
     return expandedRows.includes(row.tradeId);
   };
@@ -25,7 +46,6 @@ const TherapyDataTable = ({ trade, onChange }) => {
   const ExpandedComponent = ({ data }) => {
     const expandedData = data.therapies || [];
     const expandedColumns = createColumns({ t, trade, onChange });
-    debugger;
     return (
       <div className="expanded-rows">
         <CustomDataTable

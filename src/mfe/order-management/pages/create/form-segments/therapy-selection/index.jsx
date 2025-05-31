@@ -22,6 +22,7 @@ import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonUtils from '@src/util/CommonUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -49,6 +50,8 @@ function TherapySelection() {
   React.useEffect(() => {
     const { tradeDetails } = orderDetails || {};
     if (tradeDetails) {
+      const { tradeName, channelType } = tradeDetails;
+      tradeDetails.tradeId = CommonUtils.generateUniqueCode(`${tradeName}-${channelType}`);
       setTradeDetails(tradeDetails);
     }
   }, [orderDetails]);
