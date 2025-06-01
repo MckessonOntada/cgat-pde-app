@@ -3,23 +3,16 @@ import { Link } from 'react-router-dom';
 import { RadioGroup, Tooltip } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import CommonUtils from '@src/util/CommonUtils';
 
-function getCellValue(data, key) {
-  let displayCaption = '-';
-  if (!data.isTherapy) {
-    const vals = data.map((child) => child[key]).filter((i) => Boolean(i));
-    const uniqueValues = Array.from(new Set(vals));
-    if (uniqueValues.length < 3) {
-      displayCaption = uniqueValues.join(', ');
-    } else {
-      const markerCaption = uniqueValues.slice(0, 2);
-      displayCaption = `${markerCaption.join(', ')} + ${uniqueValues.length - 2} more`;
-    }
+const getListOverflowingDisplayLabel = (data = [], length = 3) => {
+  if (CommonUtils.isNonEmptyArray(data) && data.length > length) {
+    const markerLabel = data.slice(0, length).join(', ');
+    return `${markerLabel} and ${data.length - length} more`;
   } else {
-    displayCaption = data[key];
+    return data.join(', ');
   }
-  return displayCaption;
-}
+};
 
 export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle }) => [
   {
@@ -91,11 +84,22 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     selector: () => {},
     sortable: false,
     minWidth: '200px',
-    cell: (row) => {
-      return (
+    cell: ({ isExpandable, genericName }) => {
+      let toolTip = '',
+        cellValue = '';
+      if (isExpandable) {
+        toolTip = genericName.join(', <br/>');
+        cellValue = getListOverflowingDisplayLabel(genericName, 2);
+      } else {
+        toolTip = genericName;
+        cellValue = genericName;
+      }
+      return cellValue ? (
         <span aria-label={t('labels.genericName')}>
-          <Tooltip body={row.isExpandable ? row.genericNameTooltip : row.genericName}>{row.genericName}</Tooltip>
+          <Tooltip body={toolTip}>{cellValue}</Tooltip>
         </span>
+      ) : (
+        '-'
       );
     }
   },
@@ -109,10 +113,19 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cardHeader: true,
-    cell: (row) => {
+    cell: ({ isExpandable, ndc }) => {
+      let toolTip = '',
+        cellValue = '';
+      if (isExpandable) {
+        toolTip = ndc.join(', <br/>');
+        cellValue = getListOverflowingDisplayLabel(ndc, 2);
+      } else {
+        toolTip = ndc;
+        cellValue = ndc;
+      }
       return (
         <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-          <Tooltip body={row.isExpandable ? row.ndcTooltip : row.ndc}>{row.ndc}</Tooltip>
+          <Tooltip body={toolTip}>{cellValue}</Tooltip>
         </span>
       );
     }
@@ -123,11 +136,22 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     selector: () => {},
     width: '180px',
     sortable: true,
-    cell: (row) => {
-      return (
+    cell: ({ isExpandable, manufacturer }) => {
+      let toolTip = '',
+        cellValue = '';
+      if (isExpandable) {
+        toolTip = manufacturer.join(', ');
+        cellValue = getListOverflowingDisplayLabel(manufacturer, 2);
+      } else {
+        toolTip = manufacturer;
+        cellValue = manufacturer;
+      }
+      return cellValue ? (
         <span aria-label={t('table.columns.captions.manufacturer')}>
-          <Tooltip body={row.isExpandable ? row.manufacturerTooltip : row.manufacturer}>{row.manufacturer}</Tooltip>
+          <Tooltip body={toolTip}>{cellValue}</Tooltip>
         </span>
+      ) : (
+        '-'
       );
     }
   },

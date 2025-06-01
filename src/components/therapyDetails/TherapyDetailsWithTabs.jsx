@@ -8,8 +8,6 @@ import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommonUtils from '@src/util/CommonUtils';
-import { current } from '@reduxjs/toolkit';
-import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import Alert from '../cgat-alert/Alert';
 
 export const THERAPY_TABS = {
@@ -56,7 +54,7 @@ function TherapyDetailsWithTabs({
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
     queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade, channelType),
-    select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ...rest })),
+    select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
         const therapyTabs = data.map((item, index) => ({
@@ -103,6 +101,7 @@ function TherapyDetailsWithTabs({
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
+      debugger;
       onSelect(therapyDetails);
       onClose();
     }
@@ -111,7 +110,7 @@ function TherapyDetailsWithTabs({
   const handleOnTabChange = (selectedTab) => {
     const newTabs = therapyTabs.map((tab) => ({
       ...tab,
-      isActiveTab: tab.id === selectedTab.id
+      isActiveTab: tab.therapyId === selectedTab.therapyId
     }));
     setTherapyTabs(newTabs);
     setSelectedTab(selectedTab);
