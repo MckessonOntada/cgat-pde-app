@@ -164,8 +164,8 @@ function TherapySelection() {
     }
   };
 
-  const handleOnDrawerSelect = (therapy) => {
-    setTradeDetails(therapy);
+  const handleOnDrawerSelect = (details) => {
+    setTradeDetails(details);
   };
   if (isSaving) {
     return <Loader type={'screen'} />;

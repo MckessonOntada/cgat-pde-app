@@ -301,7 +301,7 @@ function AdditionalDetails() {
       const { accountDetails, therapy } = orderDetails;
       if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
 
-      let materialOrNdcNumber = null;
+      let materialOrNdcNumber = '';
       if (isSPCrossWalked) {
         // materialOrNdcNumber = ?;
       } else if (isSPNonCrossWalked) {
@@ -312,6 +312,7 @@ function AdditionalDetails() {
 
       const payload = {
         ...(variantType ? { variantType } : {}),
+        materialOrNdcNumber,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
         sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy.materialNumber,
