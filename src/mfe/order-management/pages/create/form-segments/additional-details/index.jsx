@@ -447,11 +447,12 @@ function AdditionalDetails() {
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        navigate(`../${orderId}/patient`, {
+        const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
+        navigate(`../${orderId}/${targetPage}`, {
           state: {
             fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover: isApprover
+            isApprover
           }
         });
       } else {
