@@ -2,6 +2,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import ServiceUtil from './ServiceUtil';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;

@@ -8,7 +8,7 @@ import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnai
 
 function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();
-  const { therapy = {}, patient = {}, tradeDetails } = orderDetails;
+  const { therapy = {}, patient = {}, tradeDetails = {} } = orderDetails;
   const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
 

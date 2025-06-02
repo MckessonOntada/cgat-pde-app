@@ -303,7 +303,7 @@ function AdditionalDetails() {
 
       let materialOrNdcNumber = '';
       if (isSPCrossWalked) {
-        // materialOrNdcNumber = ?;
+        materialOrNdcNumber = variant ? variant?.materialNumber : therapy.materialNumber;
       } else if (isSPNonCrossWalked) {
         materialOrNdcNumber = therapy.materialNumber;
       } else {
