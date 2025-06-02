@@ -6,6 +6,8 @@ import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { CHANNEL_TYPE } from './Constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
+import {  Tooltip} from '@mckesson/mcp-component-library';
+
 
 function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();
@@ -24,7 +26,9 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
         label={t('labels.therapyDescription')}
         value={
           <div className="row-space-between-center therapy-description-wrapper">
-            <div className="overflowing">{therapy.materialDescription || '-'}</div>
+            <Tooltip body={therapy.materialDescription}>
+              <div className="overflowing">{therapy.materialDescription || '-'}</div>
+            </Tooltip>
             <InventoryIndicator status={status} />
           </div>
         }
