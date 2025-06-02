@@ -37,8 +37,8 @@ export default function DateRangePickerFormik({ minDate, maxDate, ...props }) {
     const fieldValue = form.values[field.name];
     if (!fieldValue || (Array.isArray(fieldValue) && fieldValue.every((val) => !val))) {
       setPickerMinDate(minDate);
-      if (JSON.stringify(fieldValue) !== JSON.stringify([null, null])) {
-        form.setFieldValue(field.name, [null, null]);
+      if (JSON.stringify(fieldValue) !== JSON.stringify(['', ''])) {
+        form.setFieldValue(field.name, ['', '']);
         setResetKey((prevKey) => prevKey + 1);
       }
     }
