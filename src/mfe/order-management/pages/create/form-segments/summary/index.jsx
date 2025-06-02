@@ -29,7 +29,7 @@ import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import AttachmentCard from './AttachmentCard';
 import { getFullName } from '@src/util/CommonUtils';
-import { CHANNEL_TYPE } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
 import dayjs from 'dayjs';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
@@ -737,7 +737,7 @@ const Summary = () => {
                     <DetailSegment label={t('labels.Strength')} value={therapy.strength || '-'} />
                     <DetailSegment label={t('labels.Dosage')} value={therapy.dosage || '-'} />
                     <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.salesOrg || '-'} />
-                    <DetailSegment label={t('labels.distributionsChannel')} value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)} />
+                    <DetailSegment label={t('labels.distributionsChannel')} value={accountDetails?.soldToAccount?.distributionChannel} />
                     <DetailSegment
                       label={t('labels.netPrice')}
                       value={
@@ -787,7 +787,7 @@ const Summary = () => {
                       value={spOrder ? accountDetails?.shipToAccount?.id : CommonUtils.getDetailedAddress(accountDetails?.shipToAccount?.address)}
                     />
                     <DetailSegment label={t('labels.orderChannel')} value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)} />
-                    {!spOrder && <DetailSegment label={t('labels.program')} value={accountDetails?.soldToAccount?.cgatIdentifier} />}
+                    {!spOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier]} />}
                   </div>
                 </div>
               </div>

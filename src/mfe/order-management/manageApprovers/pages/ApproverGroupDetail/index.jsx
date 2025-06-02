@@ -146,7 +146,7 @@ function ApproverGroupDetails() {
         return;
       }
       let _key = 'accountName';
-      if (key === 'therapies') _key = 'therapyName';
+      if (key === 'therapies') _key = 'tradeName';
       else if (key === 'roles') _key = 'roleName';
       else if (key === 'users') _key = 'userName';
 
