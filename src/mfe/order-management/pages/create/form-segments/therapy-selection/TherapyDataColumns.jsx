@@ -5,15 +5,6 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import CommonUtils from '@src/util/CommonUtils';
 
-const getListOverflowingDisplayLabel = (data = [], length = 3) => {
-  if (CommonUtils.isNonEmptyArray(data) && data.length > length) {
-    const markerLabel = data.slice(0, length).join(', ');
-    return `${markerLabel} and ${data.length - length} more`;
-  } else {
-    return data.join(', ');
-  }
-};
-
 export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle }) => [
   {
     id: 'expandOrSelect',
@@ -88,8 +79,8 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
       let toolTip = '',
         cellValue = '';
       if (isExpandable) {
-        toolTip = genericName.join(', <br/>');
-        cellValue = getListOverflowingDisplayLabel(genericName, 2);
+        toolTip = genericName.join(', ');
+        cellValue = CommonUtils.getListOverflowingDisplayLabel(genericName, 2);
       } else {
         toolTip = genericName;
         cellValue = genericName;
@@ -118,7 +109,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
         cellValue = '';
       if (isExpandable) {
         toolTip = ndc.join(', <br/>');
-        cellValue = getListOverflowingDisplayLabel(ndc, 2);
+        cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
       } else {
         toolTip = ndc;
         cellValue = ndc;
@@ -141,7 +132,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
         cellValue = '';
       if (isExpandable) {
         toolTip = manufacturer.join(', ');
-        cellValue = getListOverflowingDisplayLabel(manufacturer, 2);
+        cellValue = CommonUtils.getListOverflowingDisplayLabel(manufacturer, 2);
       } else {
         toolTip = manufacturer;
         cellValue = manufacturer;

@@ -37,7 +37,7 @@ const CreateCrosswalk = () => {
     const { material, selectedProducts } = state;
     if (material && selectedProducts.length > 0) {
       const payload = {
-        bnbMaterialNumber: material.materialNumber,
+        bnbNdc: material.ndc,
         spProductIds: selectedProducts.map((item) => item.materialNumber)
       };
 
@@ -159,10 +159,10 @@ const CreateCrosswalk = () => {
                 status: 'active'
               }}
               defaultSort={{
-                sortBy: 'material_description',
+                sortBy: 'trade_name',
                 sortOrder: 'ASC'
               }}
-              allowedSort={['material_description']}
+              allowedSort={['trade_name']}
               fetchFn={MaterialService.getMaterialList}>
               <Materials material={selectedMaterial} setMaterial={setSelectedMaterial} />
             </TableProvider>
@@ -173,10 +173,10 @@ const CreateCrosswalk = () => {
                 status: 'active'
               }}
               defaultSort={{
-                sortBy: 'material_description',
+                sortBy: 'trade_name',
                 sortOrder: 'ASC'
               }}
-              allowedSort={['material_description']}
+              allowedSort={['trade_name']}
               fetchFn={MaterialService.getMaterialList}>
               <Products selection={selectedItems} setSelection={setSelectedItems} />
             </TableProvider>

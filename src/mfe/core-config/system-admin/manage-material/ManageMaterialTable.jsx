@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, Button } from '@mckesson/mcp-component-library';
+import { Loader, Button, Tooltip } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
@@ -15,6 +15,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import CommonUtils from '@src/util/CommonUtils';
 
 function flattenMaterials(data) {
   if (!data && !Array.isArray(data)) {
@@ -22,8 +23,8 @@ function flattenMaterials(data) {
   }
 
   return data.reduce((acc, item) => {
-    if (item.materials && Array.isArray(item.materials) && item.materials.length > 0) {
-      item.materials.forEach((material) => {
+    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
+      item.therapies.forEach((material) => {
         acc.push(material);
       });
     }
@@ -54,13 +55,13 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         'materialNumber',
         {
           ...paginationConfig,
-          totalElements: data.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
+          totalElements: data.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
         },
         selectedMaterials,
         setSelectedMaterials
       ),
       cell: (row, index) => {
-        if (row.isExpandable && row.materials.length > 1) {
+        if (row.isExpandable && row.therapies.length > 1) {
           const expanded = isRowExpanded?.(row);
           return (
             <div className="expand-icon-wrapper" onClick={() => onExpandToggle?.(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
@@ -76,7 +77,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           'materialNumber',
           {
             ...paginationConfig,
-            totalElements: data.reduce((item, acc) => acc + (item.materials ? item.materials.length : 1), 0)
+            totalElements: data.reduce((item, acc) => acc + (item.therapies ? item.therapies.length : 1), 0)
           },
           selectedMaterials,
           setSelectedMaterials
@@ -96,17 +97,17 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       sortKey: 'therapy',
       minWidth: '220px',
       cell: (row) => {
-        const { materials = [], tradeName, materialDescription } = row;
-        const label = materials && materials.length === 1 ? materials[0].materialDescription : tradeName || materialDescription;
+        const { materialNumber, cellValue } = row;
+
         return (
           <Link
             className="MCP-table-link"
             aria-label={t('table.columns.captions.accountNumber')}
             onClick={() => {
               setOpenDetails(!openDetails);
-              setMaterialNumber(props?.materialNumber);
+              setMaterialNumber(materialNumber);
             }}>
-            <EclipsesTextcss str={label} maxWidth={240} />
+            <EclipsesTextcss str={cellValue} />
           </Link>
         );
       }
@@ -119,15 +120,21 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       sortable: true,
       sortKey: 'ndc',
       minWidth: '214px',
-      cell: (row) => {
-        let displayCaption = '-';
-        if (row.isExpandable) {
-          displayCaption = row.materials.map((child) => child.ndcNumber).join(', ');
+      cell: ({ isExpandable, ndc }) => {
+        let toolTip = '',
+          cellValue = '';
+        if (isExpandable) {
+          toolTip = ndc.join(', ');
+          cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
         } else {
-          displayCaption = row.ndcNumber;
+          toolTip = ndc;
+          cellValue = ndc;
         }
-
-        return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{displayCaption}</span>;
+        return (
+          <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+            <Tooltip body={toolTip}>{cellValue}</Tooltip>
+          </span>
+        );
       }
     },
     {
@@ -160,7 +167,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   };
 
   const ExpandedComponent = ({ data }) => {
-    const expandedData = data.materials || [];
+    console.log(data);
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
+    const expandedData = data.therapies || [];
     const expandedColumns = getColumns();
 
     return (

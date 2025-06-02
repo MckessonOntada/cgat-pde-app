@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
-import { RadioGroup, InputField, Heading } from '@mckesson/mcp-component-library';
+import { RadioGroup, InputField, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const Materials = () => {
   const { t } = useTranslate();
@@ -18,33 +19,7 @@ const Materials = () => {
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
-  let beautifiedData = data;
-  if (beautifiedData) {
-    beautifiedData = beautifiedData.map((i) => {
-      let record = {};
-      if (i.therapies && i.therapies?.length <= 1) {
-        record.isExpandable = false;
-        const { therapies, ...rest } = i;
-        record = {
-          ...record,
-          ...rest,
-          ...i.therapies[0]
-        };
-      } else {
-        record.isExpandable = true;
-        record.channelType = i.channelType;
-        record.tradeName = i.tradeName;
-        record.therapies = i.therapies.map((t) => ({ ...t, isExpandable: false }));
-      }
-      return record;
-    });
-  }
-
-  if (beautifiedData) {
-    beautifiedData.forEach((i) => {
-      i.isExpandable = Boolean(CommonUtils.isNonEmptyArray(i.materials));
-    });
-  }
+  let beautifiedData = ServiceUtil.transformContent(data);
 
   const [materialQuery, setMaterialQuery] = React.useState(null);
   const debouncedApplyFilter = React.useCallback(
@@ -72,7 +47,7 @@ const Materials = () => {
   };
 
   const ExpandedComponent = ({ data }) => {
-    const expandedData = data.materials || [];
+    const expandedData = data.therapies || [];
     const expandedColumns = getColumns();
 
     return (
@@ -103,8 +78,7 @@ const Materials = () => {
         showInMobileHeader: true,
         isSelectable: true,
         cell: (row) => {
-          console.log(row);
-          if (row.isExpandable && row.materials.length > 1) {
+          if (row.isExpandable && row.isParent) {
             const expanded = isRowExpanded?.(row);
             return (
               <div
@@ -149,12 +123,10 @@ const Materials = () => {
         maxWidth: '180px',
         sortable: true,
         sortKey: 'materialDescription',
-        cell: (row) => {
-          const label = row.therapies && row.therapies?.length === 1 ? row.therapies[0].materialDescription : row.tradeName || row.materialDescription;
-
+        cell: ({ id, cellValue }) => {
           return (
-            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${row.id}`}>
-              <EclipsesTextcss str={label} />
+            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${id}`}>
+              <EclipsesTextcss str={cellValue} />
             </Link>
           );
         }
@@ -167,14 +139,21 @@ const Materials = () => {
         sortable: true,
         sortKey: 'ndc',
         minWidth: '140px',
-        cell: (row) => {
-          let displayCaption = '-';
-          if (row.isExpandable) {
-            displayCaption = row.materials.map((child) => child.ndcNumber).join(', ');
+        cell: ({ isExpandable, ndc }) => {
+          let toolTip = '',
+            cellValue = '';
+          if (isExpandable) {
+            toolTip = ndc.join(', <br/>');
+            cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
           } else {
-            displayCaption = row.ndcNumber;
+            toolTip = ndc;
+            cellValue = ndc;
           }
-          return <span aria-label={t('table.columns.captions.nationalDrugCode')}>{displayCaption}</span>;
+          return (
+            <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+              <Tooltip body={toolTip}>{cellValue}</Tooltip>
+            </span>
+          );
         }
       }
     ];
