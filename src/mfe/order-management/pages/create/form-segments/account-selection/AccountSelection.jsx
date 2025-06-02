@@ -64,6 +64,14 @@ const AccountSelection = () => {
     const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate('/orders');
   }, [orderDetails]);
+  React.useEffect(() => {
+    if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
+      setAccountConfig({
+        program: CGAT_IDENTIFIER[orderDetails.accountDetails.shipToAccount.cgatIdentifier],
+        channelType: orderDetails.accountDetails.shipToAccount.channelType
+      });
+    }
+  }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: async (result) => {
@@ -147,7 +155,7 @@ const AccountSelection = () => {
     }
     if (selectedSoldToAccount && selectedShipToAccount) {
       const payload = {
-        program: accountConfig.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
+        program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
         soldToAccountId: selectedSoldToAccount.id,
         shipToAccountId: selectedShipToAccount.id
       };
