@@ -1009,7 +1009,7 @@ const Summary = () => {
                       return (
                         <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                           <div className="MCP-module-body">
-                            {documentSegment.comment && <DetailSegment label={'Comment'} value={documentSegment.comment} />}
+                            {documentSegment.comment && <DetailSegment maxLength={60} label={'Comment'} value={documentSegment.comment} />}
                             <div>
                               <DetailSegment direction="row" label={'Uploaded by:'} value={documentSegment.uploadedBy} />
                               <DetailSegment direction="row" label={'Uploaded on:'} value={documentSegment.uploadedDate} />
