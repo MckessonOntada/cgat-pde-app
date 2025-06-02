@@ -5,6 +5,7 @@ import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
+import { Tooltip } from '@mckesson/mcp-component-library';
 
 function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();
@@ -20,9 +21,11 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
         label={t('labels.therapyDescription')}
         value={
           <div className="row-space-between-center therapy-description-wrapper">
-            <div className="overflowing">
-              {tradeDetails.tradeName} {therapy.materialDescription ? `(${therapy.materialDescription})` : null}
-            </div>
+            <Tooltip body={therapy.materialDescription}>
+              <div className="overflowing">
+                {tradeDetails.tradeName} {therapy.materialDescription ? `(${therapy.materialDescription})` : null}
+              </div>
+            </Tooltip>
             <InventoryIndicator status={status} />
           </div>
         }
