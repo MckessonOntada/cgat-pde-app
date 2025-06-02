@@ -67,7 +67,7 @@ function UploadOrderDocument() {
               alert: {
                 from: 'UPLOAD_ORDER_DOCUMENT',
                 type: 'success',
-                description: `Document has been successfully uploaded for Order ID: ${orderId}`
+                description: `Document has been successfully uploaded for Order ID: ${orderDetails.backendOrderId}`
               }
             }
           });
@@ -109,7 +109,7 @@ function UploadOrderDocument() {
         ) : (
           <div>
             <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-              <DetailSegment key={'sap_id'} label="SAP ID" value={orderDetails.id} />
+              <DetailSegment key={'order_id'} label="Order ID" value={orderDetails.backendOrderId} />
               <DetailSegment
                 key={'therapy_name'}
                 label="Therapy"
@@ -126,7 +126,7 @@ function UploadOrderDocument() {
                     orderDetails.orderCost ? (
                       <span className="dollarSign ">
                         <span>$</span>
-                        {orderDetails.orderCost}
+                        {CommonUtils.formatNumberWithoutSymbol(orderDetails.orderCost)}
                       </span>
                     ) : (
                       '-'
