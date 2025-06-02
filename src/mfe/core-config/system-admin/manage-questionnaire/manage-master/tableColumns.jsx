@@ -13,8 +13,8 @@ function flattenMaterials(data) {
   }
 
   return data.reduce((acc, item) => {
-    if (item.materials && Array.isArray(item.materials) && item.materials.length > 0) {
-      item.materials.forEach((material) => {
+    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
+      item.therapies.forEach((material) => {
         acc.push(material);
       });
     }
@@ -46,14 +46,14 @@ export const getColumnsByEntityType = ({
             'materialNumber',
             {
               ...paginationConfig,
-              totalElements: entityData.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
+              totalElements: entityData.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
             },
             selectedRows,
             setSelectedRows
           ),
           sortable: false,
           cell: (row, index) => {
-            if (row.isExpandable && row.materials.length > 1) {
+            if (row.isExpandable && row.therapies.length > 1) {
               const expanded = isRowExpanded?.(row);
               return (
                 <div className="expand-icon-wrapper" onClick={() => onExpandToggle?.(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
@@ -69,7 +69,7 @@ export const getColumnsByEntityType = ({
               'materialNumber',
               {
                 ...paginationConfig,
-                totalElements: entityData.reduce((acc, item) => acc + (item.materials ? item.materials.length : 1), 0)
+                totalElements: entityData.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
               },
               selectedRows,
               setSelectedRows
@@ -84,8 +84,7 @@ export const getColumnsByEntityType = ({
           selector: () => {},
           maxWidth: '250px',
           cell: (row) => {
-            const { materials = [], tradeName, materialDescription } = row;
-            const label = materials && materials.length === 1 ? materials[0].materialDescription : tradeName || materialDescription;
+            const { cellValue } = row;
             return (
               <Link
                 className="MCP-table-link"
@@ -95,7 +94,7 @@ export const getColumnsByEntityType = ({
                   setOpenDetails(true);
                   setSelectedDetails(props);
                 }}>
-                <EclipsesTextcss str={label} maxWidth={240} />
+                <EclipsesTextcss str={cellValue} maxWidth={240} />
               </Link>
             );
           }

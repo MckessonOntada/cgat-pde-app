@@ -123,9 +123,9 @@ const Materials = () => {
         maxWidth: '180px',
         sortable: true,
         sortKey: 'materialDescription',
-        cell: ({ id, cellValue }) => {
+        cell: ({ id, cellValue, tradeName }) => {
           return (
-            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${id}`}>
+            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${id}`}>
               <EclipsesTextcss str={cellValue} />
             </Link>
           );

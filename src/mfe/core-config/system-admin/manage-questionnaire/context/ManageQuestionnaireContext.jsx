@@ -6,6 +6,7 @@ import { getEntityTypeFlags, MasterEntityType } from '../util';
 import { serializeParams } from '@src/util/ApiUtils';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import CommonUtils from '@src/util/CommonUtils';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -93,28 +94,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         return [];
       }
 
-      if (res.data?.content) {
-        res.data.content = res.data.content.map((i) => {
-          let record = {};
-          if (i.therapies && i.therapies.length <= 1) {
-            record.isExpandable = false;
-            const { therapies, ...rest } = i;
-            record = {
-              ...record,
-              ...rest,
-              ...i.therapies[0]
-            };
-          } else {
-            record.isExpandable = true;
-            record.channelType = i.channelType;
-            record.tradeName = i.tradeName;
-            record.therapies = i.therapies.map((t) => ({ ...t, isExpandable: false }));
-          }
-          return record;
-        });
-
-        console.log(res.data.content);
-      }
+      res.data.content = ServiceUtil.transformContent(res.data.content);
 
       const { content: data, totalElements, totalPages } = res.data;
 

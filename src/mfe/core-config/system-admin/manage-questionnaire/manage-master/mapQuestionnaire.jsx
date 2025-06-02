@@ -18,7 +18,7 @@ import { ChannelType } from '../../manage-sp-account/util';
 import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
 import Alert from '@src/components/cgat-alert/Alert';
 
-export default function mapQuestionnaire() {
+export default function MapQuestionnaire() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { applyFilters, clearFilters, setEntity } = useManagerQuestionnaire();
@@ -63,7 +63,7 @@ export default function mapQuestionnaire() {
 
   function buildPayload({ isMaterial, isCatalog, isAccount, selectedRows = [] }) {
     const buyAndBillPayload = {
-      materialNumberList: isMaterial ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.materialNumber) : [],
+      materialOrNdcNumberList: isMaterial ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.ndc) : [],
       accountNumberList: isAccount ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.accountNumber) : [],
       catalogIdAttributes: isCatalog
         ? selectedRows
@@ -78,7 +78,9 @@ export default function mapQuestionnaire() {
     };
 
     const specialtyPharmaPayload = {
-      materialNumberList: isMaterial ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.materialNumber) : [],
+      materialOrNdcNumberList: isMaterial
+        ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.materialNumber)
+        : [],
       accountNumberList: isAccount ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.accountNumber) : [],
       catalogIdAttributes: isCatalog
         ? selectedRows

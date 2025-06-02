@@ -13,6 +13,7 @@ import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/
 import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import SPMaterialDetails from '../../manage-sp-material/pages/SPMaterialDetails';
+import CommonUtils from '@src/util/CommonUtils';
 
 const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert }) => {
   const { t } = useTranslate();
@@ -82,7 +83,9 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   };
 
   const ExpandedComponent = ({ data }) => {
-    const expandedData = data.materials || [];
+    const expandedData = data.therapies || [];
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
+
     const expandedColumns = getColumnsByEntityType({
       entityType,
       entityData,
