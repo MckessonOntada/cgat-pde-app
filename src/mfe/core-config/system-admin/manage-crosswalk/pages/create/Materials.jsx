@@ -19,7 +19,7 @@ const Materials = () => {
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
-  let beautifiedData = ServiceUtil.transformContent(data);
+  let beautifiedData = ServiceUtil.transformTherapies(data);
 
   const [materialQuery, setMaterialQuery] = React.useState(null);
   const debouncedApplyFilter = React.useCallback(
@@ -126,7 +126,7 @@ const Materials = () => {
         cell: ({ id, cellValue, tradeName }) => {
           return (
             <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${id}`}>
-              <EclipsesTextcss str={cellValue} />
+              <EclipsesTextcss str={tradeName} />
             </Link>
           );
         }

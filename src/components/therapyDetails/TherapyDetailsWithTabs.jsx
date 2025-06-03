@@ -53,7 +53,7 @@ function TherapyDetailsWithTabs({
     error
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
-    queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade, channelType),
+    queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade),
     select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {

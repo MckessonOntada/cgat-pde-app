@@ -71,7 +71,7 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const beautifiedData = ServiceUtil.transformContent(data);
+  const beautifiedData = ServiceUtil.transformTherapies(data);
 
   const debouncedApplyFilter = React.useCallback(
     CommonUtils.debounce((value) => {

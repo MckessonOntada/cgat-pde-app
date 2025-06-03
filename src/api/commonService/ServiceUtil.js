@@ -1,7 +1,18 @@
 const getUniqueValues = (data, key) => [...new Set(data.map((t) => t[key]).filter(Boolean))];
 
-function transformContent(content) {
-  return content.map((item) => {
+function transformTherapy(therapy = {}, additionalProperties) {
+  return {
+    ...therapy,
+    isExpandable: false,
+    isParent: false,
+    cellValue: therapy.materialDescription,
+    ...additionalProperties,
+    formulation: therapy.strength
+  };
+}
+
+function transformTherapies(data) {
+  return data.map((item) => {
     const { tradeName, therapies, channelType } = item;
 
     if (therapies.length > 1) {
@@ -16,33 +27,17 @@ function transformContent(content) {
         manufacturer: getUniqueValues(therapies, 'manufacturer'),
         formulation: '-',
         dosage: '-',
-        therapies: therapies.map((therapy) => ({
-          isExpandable: false,
-          isParent: false,
-          cellValue: therapy.materialDescription,
-          channelType,
-          tradeName,
-          ...therapy,
-          formulation: therapy.strength
-        }))
+        therapies: therapies.map(transformTherapy, { channelType, tradeName })
       };
     } else {
       const therapy = therapies[0] || {};
-      return {
-        isExpandable: false,
-        isParent: false,
-        cellValue: therapy.materialDescription,
-        channelType,
-        tradeName,
-        ...therapy,
-        formulation: therapy.strength
-      };
+      return transformTherapy(therapy, { tradeName, channelType });
     }
   });
 }
 
 const ServiceUtil = Object.freeze({
-  transformContent
+  transformTherapies
 });
 
 export default ServiceUtil;
