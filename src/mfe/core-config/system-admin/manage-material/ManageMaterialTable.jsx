@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, Button } from '@mckesson/mcp-component-library';
+import { Loader, Button, Tooltip } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
@@ -13,6 +13,24 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import CommonUtils from '@src/util/CommonUtils';
+
+function flattenMaterials(data) {
+  if (!data && !Array.isArray(data)) {
+    throw new Error('Invalid data provided to flattenMaterials function');
+  }
+
+  return data.reduce((acc, item) => {
+    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
+      item.therapies.forEach((material) => {
+        acc.push(material);
+      });
+    }
+    return acc;
+  }, []);
+}
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
@@ -22,66 +40,109 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const [materialNumber, setMaterialNumber] = React.useState(null);
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const [expandedRows, setExpandedRows] = React.useState([]);
+  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  };
 
-  const columns = [
+  const getColumns = () => [
     {
       id: 'checkbox',
       name: renderTableCheckBox(
         { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
+        flattenMaterials(data),
         'materialNumber',
-        paginationConfig,
+        {
+          ...paginationConfig,
+          totalElements: data.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
+        },
         selectedMaterials,
         setSelectedMaterials
       ),
-      // sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'materialNumber', paginationConfig, selectedMaterials, setSelectedMaterials),
-      selector: (row) => row['Material Number'],
+      cell: (row, index) => {
+        if (row.isExpandable && row.therapies.length > 1) {
+          const expanded = isRowExpanded?.(row);
+          return (
+            <div className="expand-icon-wrapper" onClick={() => onExpandToggle?.(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+              <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+                <ArrowAngleRight />
+              </div>
+            </div>
+          );
+        }
+        return renderTableCheckBox(
+          row,
+          flattenMaterials(data),
+          'materialNumber',
+          {
+            ...paginationConfig,
+            totalElements: data.reduce((item, acc) => acc + (item.therapies ? item.therapies.length : 1), 0)
+          },
+          selectedMaterials,
+          setSelectedMaterials
+        );
+      },
+      selector: (row) => row['materialNumber'],
       width: '50px',
       showInMobileHeader: true,
       omit: isCustomerCenter
     },
     {
-      name: t('manageMaterial.table.materialNumber'),
-      id: 'materialNumber',
-      selector: (row) => row.materialNumber,
+      name: t('labels.therapy'),
+      id: 'therapy',
+      selector: (row) => row.therapy,
       wrap: true,
+      sortable: true,
+      sortKey: 'therapy',
       minWidth: '220px',
-      cell: (props) => (
-        <div className="cellEllipse">
+      cell: (row) => {
+        const { materialNumber, cellValue } = row;
+
+        return (
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            className="MCP-table-link"
+            aria-label={t('table.columns.captions.accountNumber')}
             onClick={() => {
               setOpenDetails(!openDetails);
-              setMaterialNumber(props?.materialNumber);
+              setMaterialNumber(materialNumber);
             }}>
-            {props?.materialNumber || '-'}
+            <EclipsesTextcss str={cellValue} />
           </Link>
-        </div>
-      )
+        );
+      }
     },
     {
-      name: t('manageMaterial.table.materialDescription'),
-      id: 'materialDescription',
-      selector: (row) => row.materialDescription,
-      wrap: true,
-      minWidth: '220px',
-      cell: (props) => <div className="cellEllipse">{props?.materialDescription || '-'}</div>
-    },
-    {
-      name: t('manageMaterial.table.nationalDrugCode'),
+      name: t('labels.ndc'),
       id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
       wrap: true,
+      sortable: true,
+      sortKey: 'ndc',
       minWidth: '214px',
-      cell: (props) => <div className="cellEllipse">{props?.ndcNumber || '-'}</div>
+      cell: ({ isExpandable, ndc }) => {
+        let toolTip = '',
+          cellValue = '';
+        if (isExpandable) {
+          toolTip = ndc.join(', ');
+          cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
+        } else {
+          toolTip = ndc;
+          cellValue = ndc;
+        }
+        return (
+          <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+            <Tooltip body={toolTip}>{cellValue}</Tooltip>
+          </span>
+        );
+      }
     },
     {
-      name: t('manageMaterial.table.strength'),
-      id: 'strength',
+      name: t('labels.formulation'),
+      id: 'formulation',
       selector: (row) => row.strength,
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props?.strength || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.formulation || '-'}</div>
     },
     {
       name: t('manageMaterial.table.dosage'),
@@ -89,12 +150,43 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       selector: (row) => row.dosage,
       wrap: true,
       maxWidth: '140px',
-      cell: (props) => <div className="cellEllipse">{props?.dosage || '-'}</div>
+      cell: (row) => {
+        let displayCaption = '-';
+        if (!row.isExpandable) {
+          displayCaption = row.dosage;
+        }
+        return <span aria-label={t('table.columns.captions.dosage')}>{displayCaption}</span>;
+      }
     }
   ];
 
+  const columns = getColumns();
+
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
+  };
+
+  const ExpandedComponent = ({ data }) => {
+    console.log(data);
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
+    const expandedData = data.therapies || [];
+    const expandedColumns = getColumns();
+
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={expandedColumns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
   };
 
   return (
@@ -132,6 +224,10 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         responsive={true}
         showCardView={showCardView}
         defaultExpandedCardView={true}
+        expandableRows
+        expandableRowExpanded={isRowExpanded}
+        expandableRowsComponent={ExpandedComponent}
+        expandableRowsHideExpander={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

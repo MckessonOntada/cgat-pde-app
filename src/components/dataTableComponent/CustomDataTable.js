@@ -1,11 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import DataTable from 'react-data-table-component';
 import styles from './assets/CustomDataTable.module.scss';
 import {
   Divider,
-  Dropdown,
-  Button,
   Paginate,
   Loader,
   IconButton
@@ -13,24 +10,18 @@ import {
 import './assets/DataTableCssOverride.scss';
 import {
   customStylesNormal,
-  customStylesCompact,
-  isEqual
+  customStylesCompact
 } from './assets/DataTableCutomStyle.js';
-// import { Paginate, Loader } from '@mckesson/mcp-component-library';
-// import { Loader } from '@mckesson/mcp-component-library';
 import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants';
-import DataTableEmptyView from './assets/DataTableEmptyView';
 import CommonUtils from '@src/util/CommonUtils';
-import CustomCard from './CustomCards';
-import { ReactComponent as arrowThickUp } from './assets/svg/arrowThickUp.svg';
 import TableCardView from './TableCardView';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as IconArrowRight } from '@src/assets/svg/arrow-right.svg';
 
 export const CustomDataTable = (props) => {
   const {
-    id,
-    type,
+    id = 'C-table',
+    type = 'normal',
     columns,
     data,
     onSortIconClick,
@@ -54,14 +45,18 @@ export const CustomDataTable = (props) => {
     progressComponent,
     handleRowClicked,
     defaultSortAsc,
-    responsive,
-    isAdmin,
-    isStickyPagination,
+    responsive = false,
+    isAdmin = false,
+    isStickyPagination = false,
     selectedRowId,
     rowSelectCritera,
     selectedRowIds,
     showCardView,
-    siblingBreakpoint = 'lg'
+    siblingBreakpoint = 'lg',
+    expandableRows = null,
+    expandableRowDisabled = false,
+    expandableRowsComponent = null,
+    ...rest
   } = props;
 
   const pageChangeEvent = (e, newPage) => {
@@ -160,7 +155,7 @@ export const CustomDataTable = (props) => {
             label={'Next'}
             size="md"
             iconButton={false}
-            iconPosition='right'
+            iconPosition="right"
             textButton={true}
             Icon={IconArrowRight}
             onClick={(e) => pageChangeEvent(e, currentPage + 1)}
@@ -234,55 +229,16 @@ export const CustomDataTable = (props) => {
             conditionalRowStyles={getConditionalRowStyles()}
             selectableRowSelected={rowSelectCritera}
             siblingBreakpoint={siblingBreakpoint}
+            expandableRows={expandableRows}
+            expandableRowDisabled={expandableRowDisabled}
+            expandableRowsComponent={expandableRowsComponent}
+            {...rest}
           />
         </div>
       )}
 
-      {/* Since we are already having pagination component, we are using our custom pagination*/}
       {pagination && renderPagination()}
       {StepperControls && renderStepperControls()}
     </>
   );
-};
-
-CustomDataTable.propTypes = {
-  id: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['normal', 'compact']),
-  //basic columns structure should be like
-  // [{id: columnId, name: columnName, selector: (row) => row.columnId}]
-  columns: PropTypes.array,
-  data: PropTypes.array,
-  progressPending: PropTypes.bool,
-  onSortIconClick: PropTypes.func, //it will return (selectedColumn, sortDirection, sortedRows)
-  currentPage: PropTypes.number,
-  totalPageCount: PropTypes.number,
-  handleChangePage: PropTypes.func,
-  totalRocords: PropTypes.number,
-  recordsPerPage: PropTypes.number,
-  noDataComponent: PropTypes.any, // We can pass only string with no record message or new ui.
-  fixedHeaderScrollHeight: PropTypes.string,
-  defaultSortColumn: PropTypes.string,
-  paginationTotalRecorsMessage: PropTypes.string,
-  paginationRecordsPerPageMessage: PropTypes.string,
-  stickyHeader: PropTypes.bool,
-  selectableRows: PropTypes.bool,
-  defaultSortAsc: PropTypes.bool,
-  handleRowSelected: PropTypes.func, //it will return (allSelected, selectedCount, selectedRows)
-  sortIcon: PropTypes.any,
-  responsive: PropTypes.bool,
-  isAdmin: PropTypes.bool,
-  isStickyPagination: PropTypes.bool,
-  selectedRowId: PropTypes.string,
-  rowSelectCritera: PropTypes.func,
-  selectedRowIds: PropTypes.array,
-  defaultExpandedCardView: PropTypes.bool,
-  collapsibleCardView: PropTypes.bool
-};
-
-CustomDataTable.defaultProps = {
-  id: 'C-table',
-  type: 'normal',
-  responsive: true,
-  isAdmin: false,
-  isStickyPagination: false
 };

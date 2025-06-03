@@ -4,22 +4,17 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
-import { CHANNEL_TYPE } from './Constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
-import {  Tooltip} from '@mckesson/mcp-component-library';
+import { Tooltip } from '@mckesson/mcp-component-library';
 
-
-function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedAccount = {} }) {
+function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();
-
-  const therapy = orderDetails?.therapy ?? {};
+  const { therapy = {}, patient = {}, tradeDetails = {} } = orderDetails;
   const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
-  const patient = orderDetails?.patient ?? {};
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
-  const channelType = accountDetails?.soldToAccount?.channelType ? accountDetails?.soldToAccount?.channelType : selectedAccount?.channelType;
 
   const detailsSegments = [];
-  if (therapy?.materialDescription) {
+  if (tradeDetails.tradeName || therapy.materialDescription) {
     detailsSegments.push(
       <DetailSegment
         key={'therapy-description'}
@@ -27,7 +22,9 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
         value={
           <div className="row-space-between-center therapy-description-wrapper">
             <Tooltip body={therapy.materialDescription}>
-              <div className="overflowing">{therapy.materialDescription || '-'}</div>
+              <div className="overflowing">
+                {tradeDetails.tradeName} {therapy.materialDescription ? `(${therapy.materialDescription})` : null}
+              </div>
             </Tooltip>
             <InventoryIndicator status={status} />
           </div>

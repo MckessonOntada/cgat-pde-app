@@ -4,10 +4,9 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { getEntityTypeFlags, MasterEntityType } from '../util';
 import { serializeParams } from '@src/util/ApiUtils';
-import {
-  useOrgAccountSelectionContext,
-  OrgAccountSelectionProvider
-} from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import CommonUtils from '@src/util/CommonUtils';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -24,8 +23,6 @@ const INITIAL_SORT_STATE = {
   sortBy: null,
   sortOrder: null
 };
-
-const INITIAL_DATA_STATE = [];
 
 const ManagerQuestionnaireContext = createContext();
 
@@ -96,7 +93,11 @@ export const ManageQuestionnaireProvider = ({ children }) => {
       if (!res.data) {
         return [];
       }
+
+      res.data.content = ServiceUtil.transformContent(res.data.content);
+
       const { content: data, totalElements, totalPages } = res.data;
+
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),

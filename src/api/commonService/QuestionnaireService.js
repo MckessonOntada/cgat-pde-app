@@ -69,7 +69,7 @@ async function getConfiguredQuestionnaire(requestParams) {
   if (soldToCustomer === undefined || shipToCustomer === undefined || sapMaterial === undefined) {
     throw new Error("Invalid payload. Required properties: 'soldToCustomer', 'shipToCustomer', and 'sapMaterial '. Optional property: 'variant'.");
   }
-
+  // pass one more param materialOrNdcNumber
   const url = `${ApiRoutes.QUESTIONNAIRE()}/configured-questionnaire?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
   if (res.data) {
