@@ -36,9 +36,8 @@ const TherapyDataTable = (props) => {
   }, [data, trade]);
 
   const ExpandedComponent = ({ data }) => {
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
     const expandedData = data.therapies || [];
-    if (!CommonUtils.isNonEmptyArray(expandedData)) return;
-
     const expandedColumns = createColumns({ t, trade, onChange });
     return (
       <div className="expanded-rows">

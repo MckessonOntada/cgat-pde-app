@@ -178,7 +178,6 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   };
 
   const ExpandedComponent = ({ data }) => {
-    console.log(data);
     if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
     const expandedData = data.therapies || [];
     const expandedColumns = getColumns();

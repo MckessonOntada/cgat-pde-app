@@ -93,9 +93,9 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   };
 
   const ExpandedComponent = ({ data }) => {
-    const expandedData = data.therapies || [];
     if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
 
+    const expandedData = data.therapies || [];
     const expandedColumns = getColumnsByEntityType({
       entityType,
       entityData,

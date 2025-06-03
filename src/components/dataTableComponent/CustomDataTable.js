@@ -1,17 +1,9 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
 import styles from './assets/CustomDataTable.module.scss';
-import {
-  Divider,
-  Paginate,
-  Loader,
-  IconButton
-} from '@mckesson/mcp-component-library';
+import { Divider, Paginate, Loader, IconButton } from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
-import {
-  customStylesNormal,
-  customStylesCompact
-} from './assets/DataTableCutomStyle.js';
+import { customStylesNormal, customStylesCompact } from './assets/DataTableCutomStyle.js';
 import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants';
 import CommonUtils from '@src/util/CommonUtils';
 import TableCardView from './TableCardView';
@@ -45,7 +37,7 @@ export const CustomDataTable = (props) => {
     progressComponent,
     handleRowClicked,
     defaultSortAsc,
-    responsive = false,
+    responsive = true,
     isAdmin = false,
     isStickyPagination = false,
     selectedRowId,
@@ -60,8 +52,7 @@ export const CustomDataTable = (props) => {
   } = props;
 
   const pageChangeEvent = (e, newPage) => {
-    if (!showCardView)
-      document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
+    if (!showCardView) document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
     handleChangePage(e, newPage);
   };
 
@@ -83,22 +74,12 @@ export const CustomDataTable = (props) => {
   const renderPagination = () => {
     if (CommonUtils.isNonEmptyArray(data) && totalRocords > recordsPerPage) {
       return (
-        <div
-          data-testid={'table-pagination-' + id}
-          className={
-            isStickyPagination
-              ? styles.paginationWrapperSticky
-              : styles.paginationWrapper
-          }>
+        <div data-testid={'table-pagination-' + id} className={isStickyPagination ? styles.paginationWrapperSticky : styles.paginationWrapper}>
           <div className={styles.d_flex}>
             <div className={styles.totalRecords}>
               {totalRocords} {paginationTotalRecorsMessage}
             </div>
-            <Divider
-              className={styles.verticalLine}
-              orientation="vertical"
-              role="presentation"
-            />
+            <Divider className={styles.verticalLine} orientation="vertical" role="presentation" />
             <div className={styles.pagination}>
               <Paginate
                 currentPage={currentPage}
@@ -107,11 +88,7 @@ export const CustomDataTable = (props) => {
                 pageSize={recordsPerPage}
               />
             </div>
-            <Divider
-              className={styles.verticalLine}
-              orientation="vertical"
-              role="presentation"
-            />
+            <Divider className={styles.verticalLine} orientation="vertical" role="presentation" />
             <div className={styles.recordPerPage}>
               {recordsPerPage} {paginationRecordsPerPageMessage}
             </div>
@@ -119,19 +96,12 @@ export const CustomDataTable = (props) => {
         </div>
       );
     }
-    if (
-      isAdmin &&
-      CommonUtils.isNonEmptyArray(data) &&
-      totalRocords <= recordsPerPage
-    ) {
+    if (isAdmin && CommonUtils.isNonEmptyArray(data) && totalRocords <= recordsPerPage) {
       return (
         <div className={styles.paginationWrapper}>
           <div className={styles.d_flex}>
             <div className={styles.totalRecords}>
-              {totalRocords}{' '}
-              {totalRocords == 1
-                ? paginationTotalRecorsMessage.slice(0, -1)
-                : paginationTotalRecorsMessage}
+              {totalRocords} {totalRocords == 1 ? paginationTotalRecorsMessage.slice(0, -1) : paginationTotalRecorsMessage}
             </div>
           </div>
         </div>
@@ -171,10 +141,7 @@ export const CustomDataTable = (props) => {
     }
     return [
       {
-        when: (row) =>
-          selectableRows
-            ? !!selectedRowIds?.includes(row.id)
-            : row.id === selectedRowId,
+        when: (row) => (selectableRows ? !!selectedRowIds?.includes(row.id) : row.id === selectedRowId),
         style: {
           backgroundColor: 'var(--brand-color-secondary-active-yellow-2)'
         }
@@ -188,35 +155,23 @@ export const CustomDataTable = (props) => {
         <TableCardView {...props} />
       ) : (
         <div
-          className={`${styles.tableContainer} ${getTypeClasses()} ${
-            progressPending || !data || data?.length == 0
-              ? styles.noDataTable
-              : ''
-          }`}
+          className={`${styles.tableContainer} ${getTypeClasses()} ${progressPending || !data || data?.length == 0 ? styles.noDataTable : ''}`}
           id={`data-table-${id}`}>
           <DataTable
             columns={columns}
             data={data}
             defaultSortFieldId={defaultSortColumn}
             sortServer={true}
-            onSort={(selectedColumn, sortDirection, sortedRows) =>
-              onSortIconClick(selectedColumn, sortDirection, sortedRows)
-            }
+            onSort={(selectedColumn, sortDirection, sortedRows) => onSortIconClick(selectedColumn, sortDirection, sortedRows)}
             pagination={false}
             sortIcon={sortIcon ? sortIcon : ''}
-            customStyles={
-              type === CUSTOM_TABLE_TYPE.NORMAL
-                ? customStylesNormal
-                : customStylesCompact
-            }
+            customStyles={type === CUSTOM_TABLE_TYPE.NORMAL ? customStylesNormal : customStylesCompact}
             fixedHeader={stickyHeader}
             persistTableHead={true}
             noDataComponent={noDataComponent}
             selectableRows={selectableRows}
             onSelectedRowsChange={handleRowSelected}
-            fixedHeaderScrollHeight={
-              fixedHeaderScrollHeight ? fixedHeaderScrollHeight : '590px'
-            }
+            fixedHeaderScrollHeight={fixedHeaderScrollHeight ? fixedHeaderScrollHeight : '590px'}
             progressComponent={
               <div className="dataTable-loader">
                 <Loader variant="circular" />

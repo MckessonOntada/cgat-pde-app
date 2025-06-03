@@ -47,6 +47,7 @@ const Materials = () => {
   };
 
   const ExpandedComponent = ({ data }) => {
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
     const expandedData = data.therapies || [];
     const expandedColumns = getColumns();
 
