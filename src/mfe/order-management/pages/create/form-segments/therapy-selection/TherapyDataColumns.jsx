@@ -64,7 +64,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
       const { tradeName, cellValue } = row;
       return (
         <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`}>
-          <EclipsesTextcss str={tradeName} />
+          <EclipsesTextcss str={cellValue} />
         </Link>
       );
     }
