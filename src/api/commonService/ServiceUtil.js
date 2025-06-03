@@ -1,6 +1,6 @@
 const getUniqueValues = (data, key) => [...new Set(data.map((t) => t[key]).filter(Boolean))];
 
-function transformContent(content) {
+function transformTherapies(content) {
   return content.map((item) => {
     const { tradeName, therapies, channelType } = item;
 
@@ -29,12 +29,12 @@ function transformContent(content) {
     } else {
       const therapy = therapies[0] || {};
       return {
+        ...therapy,
         isExpandable: false,
         isParent: false,
-        cellValue: therapy.materialDescription,
+        cellValue: tradeName,
         channelType,
         tradeName,
-        ...therapy,
         formulation: therapy.strength
       };
     }
@@ -42,7 +42,7 @@ function transformContent(content) {
 }
 
 const ServiceUtil = Object.freeze({
-  transformContent
+  transformTherapies
 });
 
 export default ServiceUtil;

@@ -19,7 +19,7 @@ const Materials = () => {
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
-  let beautifiedData = ServiceUtil.transformContent(data);
+  let beautifiedData = ServiceUtil.transformTherapies(data);
 
   const [materialQuery, setMaterialQuery] = React.useState(null);
   const debouncedApplyFilter = React.useCallback(
@@ -123,9 +123,9 @@ const Materials = () => {
         maxWidth: '180px',
         sortable: true,
         sortKey: 'materialDescription',
-        cell: ({ id, cellValue, tradeName }) => {
+        cell: ({ cellValue, tradeName }) => {
           return (
-            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${id}`}>
+            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`}>
               <EclipsesTextcss str={cellValue} />
             </Link>
           );
@@ -143,7 +143,7 @@ const Materials = () => {
           let toolTip = '',
             cellValue = '';
           if (isExpandable) {
-            toolTip = ndc.join(', <br/>');
+            toolTip = ndc.join(', ');
             cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
           } else {
             toolTip = ndc;

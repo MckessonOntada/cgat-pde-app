@@ -20,6 +20,7 @@ import Summary from './Summary';
 import { useGenericContext } from '../../config/GenericContext';
 import { errorStatusCodes } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const CreateCrosswalk = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const material = searchParams.get('material');
+  const trade = searchParams.get('trade');
   const { state, reset } = useGenericContext();
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
@@ -130,6 +132,15 @@ const CreateCrosswalk = () => {
     };
   }, []);
 
+  const handleOnClose = () => {
+    searchParams.delete('trade');
+    searchParams.delete('channelType');
+    navigate({
+      pathname: '',
+      search: searchParams.toString() ? `?${searchParams.toString()}` : ''
+    });
+  };
+
   return (
     <div className="MCP-module-wrapper" id="create-crosswalk">
       <div>
@@ -192,11 +203,14 @@ const CreateCrosswalk = () => {
           </Button>
         </div>
 
+        {trade && (
+          <TherapyDetailsWithTabs trade={trade} onSelect={() => {}} onClose={handleOnClose} heading={t('manageMaterial.drawer.heading')} showFooter={false} />
+        )}
+
         {material && (
           <TherapyDetails
-            therapyId={material}
-            therapyData={MaterialDetailsConstants}
-            configurationData={ConfigConstants}
+            // therapyId={material}
+            // therapyData={MaterialDetailsConstants}
             onClose={handleOnDetailsPanelClose}
             showFooter={false}
             isMaterialConfiguration={true}

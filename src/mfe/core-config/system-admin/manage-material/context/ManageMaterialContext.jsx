@@ -71,7 +71,7 @@ export const ManageMaterialProvider = ({ children }) => {
         return;
       }
 
-      res.data.content = ServiceUtil.transformContent(res.data.content);
+      res.data.content = ServiceUtil.transformTherapies(res.data.content);
 
       const { content: data, totalElements, totalPages } = res.data;
       setPaginationConfig((prevConfig) => ({

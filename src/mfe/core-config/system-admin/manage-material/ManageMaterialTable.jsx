@@ -4,7 +4,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
@@ -16,6 +16,11 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import {
+  TherapyDetailsConstantsForBB,
+  TherapyDetailsConstantsForSP
+} from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 
 function flattenMaterials(data) {
   if (!data && !Array.isArray(data)) {
@@ -38,6 +43,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
+  const searchParams = new URLSearchParams(location.search);
+  const trade = searchParams.get('trade');
+  const navigate = useNavigate();
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [expandedRows, setExpandedRows] = React.useState([]);
@@ -97,17 +105,11 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       sortKey: 'therapy',
       minWidth: '220px',
       cell: (row) => {
-        const { materialNumber, cellValue } = row;
+        const { tradeName, cellValue } = row;
 
         return (
-          <Link
-            className="MCP-table-link"
-            aria-label={t('table.columns.captions.accountNumber')}
-            onClick={() => {
-              setOpenDetails(!openDetails);
-              setMaterialNumber(materialNumber);
-            }}>
-            <EclipsesTextcss str={cellValue} />
+          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?trade=${tradeName}`}>
+            <EclipsesTextcss str={tradeName} />
           </Link>
         );
       }
@@ -164,6 +166,15 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
+  };
+
+  const handleOnClose = () => {
+    searchParams.delete('trade');
+    searchParams.delete('channelType');
+    navigate({
+      pathname: '',
+      search: searchParams.toString() ? `?${searchParams.toString()}` : ''
+    });
   };
 
   const ExpandedComponent = ({ data }) => {
@@ -250,7 +261,20 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           </div>
         }
       />
-      {openDetails && (
+
+      {trade && (
+        <TherapyDetailsWithTabs
+          trade={trade}
+          onSelect={() => {}}
+          onClose={handleOnClose}
+          buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+          spTherapyConstants={TherapyDetailsConstantsForSP}
+          heading={t('manageMaterial.drawer.heading')}
+          showFooter={false}
+        />
+      )}
+
+      {/* {openDetails && (
         <TherapyDetails
           therapyId={materialNumber}
           therapyData={MaterialDetailsConstants}
@@ -275,7 +299,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             }
           }}
         />
-      )}
+      )} */}
       {openConfiguration && <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
     </React.Fragment>
   );
