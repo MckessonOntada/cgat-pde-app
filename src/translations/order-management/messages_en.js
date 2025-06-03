@@ -145,7 +145,7 @@ export const MessageEn = {
   'controls.placeholder.searchSPOrderPlaceholder': 'Search by Order ID, Therapy, Submitted By',
   'controls.placeholders.autoSearch': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'Search by Account name or Number',
-  'controls.placeholder.therapySelection.search': 'Search Therapy by Name, NDC...',
+  'controls.placeholder.therapySelection.search': 'Search Therapy, Number, NDC, Formulation, Dosage...',
   'controls.placeholder.material.search': 'Search by Name, NDC, Material Number...',
   'controls.placeholder.Accounts.search': 'Search by Account Name, NDC, UDI...',
   'controls.placeholder.Catalogs.search': 'Search by Catalog Name, NDC, UDI...',
