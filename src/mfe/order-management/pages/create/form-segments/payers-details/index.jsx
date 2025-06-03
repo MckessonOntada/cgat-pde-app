@@ -40,6 +40,7 @@ const PayerDetails = () => {
   const navigate = useNavigate();
   const { controlRef } = useContext(FooterContext);
   const { isApprover = false } = location.state || {};
+  const searchParams = new URLSearchParams(location.search);
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -52,7 +53,7 @@ const PayerDetails = () => {
   const { mutate: savePayerDetails } = useMutation({
     mutationFn: async (payload) => OrderService.savePayerDetails(orderId, payload, orderDetails.channelType),
     onSuccess: (response) => {
-      navigate(`/orders/${orderId}/additional-details`);
+      navigate(`/orders/${orderId}/additional-details?${searchParams.toString()}`);
     },
     onError: console.error
   });
@@ -157,11 +158,11 @@ const PayerDetails = () => {
   };
 
   const handleOnBackToOrders = () =>
-    navigate('/orders', {
+    navigate(`/orders?${searchParams.toString()}`, {
       state: { activeTab: location?.state?.fromTab }
     });
 
-  const handleOnBackClick = () => navigate(`/orders/${orderId}/patient`);
+  const handleOnBackClick = () => navigate(`/orders/${orderId}/patient?${searchParams.toString()}`);
 
   return (
     <div className="MCP-module-wrapper">

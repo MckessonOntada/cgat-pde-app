@@ -58,6 +58,7 @@ const Summary = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { orderId } = useParams();
+  const searchParams = new URLSearchParams(location.search);
   const { showAlert } = useAlert();
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader } = useOrder(orderId);
@@ -304,9 +305,11 @@ const Summary = () => {
 
   const handleOnBackButtonClick = () => {
     if (isApprover || isSimulate) {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else {
-      navigate('/orders');
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
     }
   };
 
@@ -378,8 +381,8 @@ const Summary = () => {
   };
 
   const handleOnBackToOrders = () => {
-    navigate(RoutePaths.pathOrderManagement, {
-      state: { activeTab: location?.state?.fromTab }
+    navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+      state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
     });
   };
 

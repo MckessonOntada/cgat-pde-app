@@ -119,7 +119,7 @@ export const OrderProvider = ({ children }) => {
     refetch: refreshData,
     error
   } = useQuery({
-    queryKey: ['orders', tabVariant],
+    queryKey: ['orders', tabVariant, requestParams],
     queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
@@ -206,18 +206,25 @@ export const OrderProvider = ({ children }) => {
     isChecked: false
   }));
 
-  const changeTab = (tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL) => {
-    setAssigneeList(resetAssigneeList);
-    setDataState(INITIAL_DATA_STATE);
-    setFilterConfig({ ...INITIAL_FILTER_STATE });
-    setCurrentPage(1);
-    setOrderView(ORDER_VIEW.ALL_ORDERS);
+  const changeTab = (
+    tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+    shouldReset = true
+  ) => {
+    if (shouldReset) {
+      setAssigneeList(resetAssigneeList);
+      setDataState(INITIAL_DATA_STATE);
+      setFilterConfig({ ...INITIAL_FILTER_STATE });
+      setCurrentPage(1);
+      setOrderView(ORDER_VIEW.ALL_ORDERS);
+    }
     setTabVariant(tabType);
   };
 
   const changeOrderView = (view) => {
-    setCurrentPage(1);
-    setOrderView(view);
+    if (typeof view === 'string') {
+      setCurrentPage(1);
+      setOrderView(view);
+    }
   };
 
   return (

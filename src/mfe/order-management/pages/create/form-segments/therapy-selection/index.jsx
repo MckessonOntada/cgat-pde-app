@@ -76,7 +76,7 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/accounts`, {
+        navigate(`../${id}/accounts?${searchParams.toString()}`, {
           state: { isEdit: false, isApprover: isApprover }
         });
       },
@@ -98,7 +98,7 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/accounts`, {
+        navigate(`../${id}/accounts?${searchParams.toString()}`, {
           state: {
             isEdit: false,
             isApprover: isApprover,
@@ -146,8 +146,11 @@ function TherapySelection() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: location?.state?.fromTab,
+          fromOrderView: location?.state?.fromOrderView
+        }
       });
     }
   };
@@ -158,20 +161,40 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, {
-        state: { isEdit: true, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: {
+          isEdit: true,
+          isApprover: isApprover,
+          activeTab: location?.state?.fromTab,
+          fromOrderView: location?.state?.fromOrderView
+        }
       });
     } else {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: location?.state?.fromTab,
+          fromOrderView: location?.state?.fromOrderView
+        }
+      });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: location?.state?.fromTab,
+          fromOrderView: location?.state?.fromOrderView
+        }
+      });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, {
-        state: { isEdit: true, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: {
+          isEdit: true,
+          isApprover: isApprover,
+          activeTab: location?.state?.fromTab,
+          fromOrderView: location?.state?.fromOrderView
+        }
       });
     }
   };
