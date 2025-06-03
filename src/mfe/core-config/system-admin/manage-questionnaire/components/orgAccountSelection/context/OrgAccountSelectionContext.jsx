@@ -114,8 +114,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             ...item,
             label: item.accountName,
             value: item.accountNumber,
-            isChecked:
-              checkedAccounts.length > 0 ? (checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false) : index == 0 ? true : false
+            isChecked: false
           })) || [];
         setAccountOptions(_opt);
         setSelectedAccount(_opt);
