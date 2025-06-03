@@ -108,7 +108,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
       let toolTip = '',
         cellValue = '';
       if (isExpandable) {
-        toolTip = ndc.join(', <br/>');
+        toolTip = ndc.join(', ');
         cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
       } else {
         toolTip = ndc;

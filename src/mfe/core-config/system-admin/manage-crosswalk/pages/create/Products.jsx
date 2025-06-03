@@ -38,11 +38,14 @@ const getColumns = ({ t }) => {
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
-      cell: (props) => (
-        <Link to={`?catalog=${props.id}`} className="MCP-table-link">
-          {props?.materialDescription}
-        </Link>
-      )
+      cell: (props) => {
+        console.log(props);
+        return (
+          <Link to={`?catalog=${props.id}`} className="MCP-table-link">
+            {props?.materialDescription}
+          </Link>
+        );
+      }
     },
     {
       id: 'ndcNumber',
@@ -103,6 +106,8 @@ const Products = () => {
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
+
+  console.log(data, beautifiedData);
 
   return (
     <React.Fragment>
@@ -170,7 +175,7 @@ const Products = () => {
           <SPMaterialDetails
             openSPMaterialDetails={true}
             setOpenSPMaterialDetails={handleOnDetailsPanelClose}
-            viewSPMaterial={data.find((item) => item.id == catalog)}
+            viewSPMaterial={beautifiedData.find((item) => item.id == catalog)}
           />
         )}
       </div>

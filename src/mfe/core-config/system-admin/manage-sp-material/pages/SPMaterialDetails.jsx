@@ -54,7 +54,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
-        viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber,
+        viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.tradeName,
         requestParams
       );
       return result;
