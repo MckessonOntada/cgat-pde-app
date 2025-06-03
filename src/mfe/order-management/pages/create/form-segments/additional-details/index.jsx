@@ -70,7 +70,7 @@ function AdditionalDetails() {
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
-  const { therapy = {} } = orderDetails;
+  const { therapy = {}, tradeDetails = {} } = orderDetails;
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -153,11 +153,11 @@ function AdditionalDetails() {
         {
           soldToAccountId,
           shipToAccountId,
-          ndc: therapy.ndcNumber
+          ndc: tradeDetails.ndc
         },
         variantsApiRequestParam
       ),
-    enabled: !!therapy.ndcNumber && !!soldToAccountId && !!shipToAccountId,
+    enabled: !!tradeDetails.ndc && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {},
     onError: (error) => {
