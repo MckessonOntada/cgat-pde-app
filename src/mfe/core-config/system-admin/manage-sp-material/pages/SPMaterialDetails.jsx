@@ -51,7 +51,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     data: MaterialData,
     refetch
   } = useQuery({
-    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
+    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.tradeName],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
         viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.tradeName,
@@ -194,7 +194,10 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
         </div>
         <div className="details-ul">
           {item.sectionData.map((subItem, subIndex) => {
-            const value = subItem.value === 'siteName' ? data?.siteName || '-' : data?.[dataSource]?.[subItem.value] || '-';
+            const value =
+              subItem.value === 'siteName'
+                ? (isSPCatalog ? data?.siteName : data[0]?.[dataSource]?.siteName) || '-'
+                : (isSPCatalog ? data?.[dataSource]?.[subItem.value] : data[0]?.[dataSource]?.[subItem.value]) || '-';
             return (
               <div className="details-li" key={subIndex}>
                 <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${subItem.label}`)}</div>
@@ -206,8 +209,8 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       </React.Fragment>
     ));
   };
-  const isCrosswalked = data?.therapy?.isCrosswalked;
-
+  const isCrosswalked = data && data[0]?.therapy?.isCrosswalked;
+  const questionnaires = isSPCatalog ? data?.questionnaires : data?.[0]?.questionnaires;
   return (
     <React.Fragment>
       {data && (
@@ -228,7 +231,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                   </div>
                 </div>
               )}
-              {data?.questionnaires?.length > 0 && (
+              {questionnaires.length > 0 && (
                 <>
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageAccount.questionnaireConfiguration')}</div>
@@ -251,7 +254,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                   </div>
 
                   <div className="Questionnairedetails-ul">
-                    {data?.questionnaires.map((item, index) => {
+                    {questionnaires.map((item, index) => {
                       return (
                         <div key={index} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
