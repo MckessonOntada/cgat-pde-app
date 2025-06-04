@@ -84,6 +84,7 @@ const ApiRoutes = Object.freeze({
   GET_ALL_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies`),
   GET_MATERIAL_BY_ID: (materialId) => constructUserManagementServicePublicUrl(`therapies/${materialId}`),
   GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`),
+  GET_SP_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/sp/config/${materials}`),
   CONFIGURE_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies/config/update`),
   DELETE_MATERIAL_CONFIG: (materialId) => constructUserManagementServicePublicUrl(`therapies/config/${materialId}`),
   RESET_PASSWORD: () => constructUserManagementServiceUrl(`users/current/reset-password`),
