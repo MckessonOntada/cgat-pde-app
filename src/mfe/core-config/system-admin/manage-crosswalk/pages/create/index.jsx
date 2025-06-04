@@ -204,7 +204,14 @@ const CreateCrosswalk = () => {
         </div>
 
         {trade && (
-          <TherapyDetailsWithTabs trade={trade} onSelect={() => {}} onClose={handleOnClose} heading={t('manageMaterial.drawer.heading')} showFooter={false} />
+          <TherapyDetailsWithTabs
+            isMaterialListing={true}
+            trade={trade}
+            onSelect={() => {}}
+            onClose={handleOnClose}
+            heading={t('manageMaterial.drawer.heading')}
+            showFooter={false}
+          />
         )}
 
         {material && (

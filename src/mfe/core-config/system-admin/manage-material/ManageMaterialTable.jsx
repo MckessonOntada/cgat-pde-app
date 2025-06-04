@@ -264,6 +264,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       {trade && (
         <TherapyDetailsWithTabs
           trade={trade}
+          isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
