@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { getColumnsByEntityType } from './tableColumns';
-import { useNavigate } from 'react-router-dom';
+import { getColumnsByEntityType } from './TableColumns';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -14,20 +13,76 @@ import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/
 import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import SPMaterialDetails from '../../manage-sp-material/pages/SPMaterialDetails';
+import CommonUtils from '@src/util/CommonUtils';
+import {
+  TherapyDetailsConstantsForBB,
+  TherapyDetailsConstantsForSP
+} from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 
-const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
+const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert }) => {
   const { t } = useTranslate();
-  const navigate = useNavigate();
-  const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const showCardView = useResponsiveView();
+  const [expandedRows, setExpandedRows] = useState([]);
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams(location.search);
+  const trade = searchParams.get('trade');
+  const [openDetails, setOpenDetails] = useState(Boolean(trade));
+
+  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  };
 
   const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError } = useManagerQuestionnaire();
-  const isMaterial = EntityType == MasterEntityType.Material;
-  const isCatalog = EntityType == MasterEntityType.Catalog;
-  const isAccount = EntityType == MasterEntityType.Account;
-  const entityData = isMaterial && MaterialData ? MaterialData : isCatalog && CatalogData ? CatalogData : isAccount && AccountsData ? AccountsData : [];
-  const columns = getColumnsByEntityType(t, navigate, EntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails);
+  const [entityData, setEntityData] = React.useState([]);
+  const [attributes, setAttributes] = React.useState({});
+
+  React.useEffect(() => {
+    if (!entityType) return;
+
+    let data = [];
+    const attributes = {};
+
+    switch (entityType) {
+      case MasterEntityType.Material: {
+        data = MaterialData;
+        attributes.noDataComponentHeading = 'captions.questionnaire.material.emptyTableTitle';
+        attributes.noDataComponentDescription = 'captions.questionnaire.material.emptyTableSubtitle';
+        attributes.tableAriaLabel = 'table.ariaLabel.materialList';
+        break;
+      }
+      case MasterEntityType.Catalog: {
+        data = CatalogData;
+        attributes.noDataComponentHeading = 'captions.questionnaire.catalog.emptyTableTitle';
+        attributes.noDataComponentDescription = 'captions.questionnaire.catalog.emptyTableSubtitle';
+        attributes.tableAriaLabel = 'table.ariaLabel.catalogList';
+        break;
+      }
+      case MasterEntityType.Account: {
+        data = AccountsData;
+        attributes.noDataComponentHeading = 'captions.questionnaire.account.emptyTableTitle';
+        attributes.noDataComponentDescription = 'captions.questionnaire.account.emptyTableSubtitle';
+        attributes.tableAriaLabel = 'table.ariaLabel.accountList';
+        break;
+      }
+    }
+    setEntityData(data || []);
+    setAttributes(attributes);
+  }, [entityType, MaterialData, CatalogData, AccountsData]);
+
+  const columns = getColumnsByEntityType({
+    entityType,
+    entityData,
+    selectedRows,
+    setSelectedRows,
+    setOpenDetails,
+    setSelectedDetails,
+    isRowExpanded,
+    onExpandToggle
+  });
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);
@@ -37,8 +92,67 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
+  const ExpandedComponent = ({ data }) => {
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
+
+    const expandedData = data.therapies || [];
+    const expandedColumns = getColumnsByEntityType({
+      entityType,
+      entityData,
+      selectedRows,
+      setSelectedRows,
+      setOpenDetails,
+      setSelectedDetails,
+      isRowExpanded,
+      onExpandToggle
+    });
+
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={expandedColumns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
+  };
+
+  const handleOnClose = () => {
+    searchParams.delete('trade');
+    setSearchParams(searchParams);
+  };
+
+  const renderDetailsComponent = () => {
+    if (entityType === MasterEntityType.Catalog) {
+      return selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
+        <CatalogDetails
+          openCatalogDetails={openDetails}
+          setOpenCatalogDetails={setOpenDetails}
+          viewCatalog={selectedDetails}
+          setViewCatalog={setSelectedDetails}
+          showAlert={showAlert}
+        />
+      ) : (
+        <SPMaterialDetails openSPMaterialDetails={openDetails} setOpenSPMaterialDetails={setOpenDetails} viewSPMaterial={selectedDetails} isSPCatalog={true} />
+      );
+    }
+
+    if (entityType === MasterEntityType.Account) {
+      return <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} viewAccount={selectedDetails} setViewAccount={setSelectedDetails} />;
+    }
+
+    return null;
+  };
+
   return (
-    <>
+    <React.Fragment>
       <CustomDataTable
         type={'normal'}
         columns={columns}
@@ -50,72 +164,36 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
         totalPageCount={paginationConfig.totalPages}
         totalRocords={paginationConfig.totalElements}
         recordsPerPage={paginationConfig.pageSize}
-        aria-label={t(isMaterial ? 'table.ariaLabel.materialList' : isCatalog ? 'table.ariaLabel.catalogList' : 'table.ariaLabel.accountList')}
+        aria-label={t(attributes.tableAriaLabel)}
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         showCardView={showCardView}
+        expandableRows
+        expandableRowExpanded={isRowExpanded}
+        expandableRowsComponent={ExpandedComponent}
+        expandableRowsHideExpander={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}
             error={isError && isError.message}
             image={EmptyDataImage}
-            heading={t(
-              isMaterial
-                ? 'captions.questionnaire.material.emptyTableTitle'
-                : isCatalog
-                ? 'captions.questionnaire.catalog.emptyTableTitle'
-                : 'captions.questionnaire.account.emptyTableTitle'
-            )}
-            description={t(
-              isMaterial
-                ? 'captions.questionnaire.material.emptyTableSubtitle'
-                : isCatalog
-                ? 'captions.questionnaire.catalog.emptyTableSubtitle'
-                : 'captions.questionnaire.account.emptyTableSubtitle'
-            )}
+            heading={t(attributes.noDataComponentHeading)}
+            description={t(attributes.noDataComponentDescription)}
           />
         }
       />
-      {openDetails &&
-        (isMaterial ? (
-          selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
-            <TherapyDetails
-              therapyId={selectedDetails?.materialNumber}
-              therapyData={MaterialDetailsConstants}
-              configurationData={ConfigConstants}
-              onClose={() => setOpenDetails(!openDetails)}
-              showFooter={false}
-              isMaterialConfiguration={true}
-              useMaterialService={true}
-              heading={t('manageMaterial.drawer.heading')}
-              notify={({ type, message }) => {
-                showAlert(type, message);
-              }}
-            />
-          ) : (
-            <SPMaterialDetails openSPMaterialDetails={openDetails} setOpenSPMaterialDetails={setOpenDetails} viewSPMaterial={selectedDetails} />
-          )
-        ) : isCatalog ? (
-          selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
-            <CatalogDetails
-              openCatalogDetails={openDetails}
-              setOpenCatalogDetails={setOpenDetails}
-              viewCatalog={selectedDetails}
-              setViewCatalog={setSelectedDetails}
-              showAlert={showAlert}
-            />
-          ) : (
-            <SPMaterialDetails
-              openSPMaterialDetails={openDetails}
-              setOpenSPMaterialDetails={setOpenDetails}
-              viewSPMaterial={selectedDetails}
-              isSPCatalog={true}
-            />
-          )
-        ) : isAccount ? (
-          <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} viewAccount={selectedDetails} setViewAccount={setSelectedDetails} />
-        ) : null)}
-    </>
+      {openDetails && renderDetailsComponent()}
+      {entityType === MasterEntityType.Material && trade && (
+        <TherapyDetailsWithTabs
+          trade={trade}
+          onSelect={() => {}}
+          onClose={handleOnClose}
+          buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+          spTherapyConstants={TherapyDetailsConstantsForSP}
+          heading={t('manageMaterial.drawer.heading')}
+        />
+      )}
+    </React.Fragment>
   );
 };
 

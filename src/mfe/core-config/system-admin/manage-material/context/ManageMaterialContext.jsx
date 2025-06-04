@@ -6,6 +6,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 // Create the context
 export const ManageMaterialContext = createContext();
@@ -69,6 +70,8 @@ export const ManageMaterialProvider = ({ children }) => {
         showAlert({ description: t('manageMaterial.data.fetch.error'), type: 'error', anchorEl: alertContainerId });
         return;
       }
+
+      res.data.content = ServiceUtil.transformTherapies(res.data.content);
 
       const { content: data, totalElements, totalPages } = res.data;
       setPaginationConfig((prevConfig) => ({

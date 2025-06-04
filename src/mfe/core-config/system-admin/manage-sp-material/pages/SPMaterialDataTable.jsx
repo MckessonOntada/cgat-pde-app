@@ -22,6 +22,15 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [tableHeight, setTableHeight] = useState('100%');
+
+  const [expandedRows, setExpandedRows] = React.useState([]);
+  const isRowExpanded = (trade) => {
+    return expandedRows.includes(trade.tradeName);
+  };
+  const onExpandToggle = (tradeName) => {
+    setExpandedRows((prev) => (prev.includes(tradeName) ? prev.filter((id) => id !== tradeName) : [...prev, tradeName]));
+  };
+
   const columns = [
     {
       id: 'checkbox',
@@ -33,12 +42,12 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
     },
     {
       name: t('manageSPMaterial.table.spproductId'),
-      id: 'material_number',
+      id: 'trade_name',
       selector: (row) => {},
       wrap: true,
       minWidth: '220px',
       sortable: true,
-      sortKey: 'material_number',
+      sortKey: 'trade_name',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -72,9 +81,9 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       selector: (row) => {},
       minWidth: '250px',
       sortable: false,
-      sortKey: 'ndc_number',
+      sortKey: 'ndc',
       wrap: true,
-      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
+      cell: (props) => <div>{props?.ndc || '-'}</div>
     },
     {
       id: 'siteName',
@@ -103,6 +112,27 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       omit: isLinkCatalog ? true : false
     }
   ];
+
+  const ExpandedComponent = ({ data }) => {
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
+    const expandedData = data.therapies || [];
+    // const expandedColumns = createColumns({ t, trade, onChange });
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={columns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -178,6 +208,10 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
             recordsPerPage={paginationConfig.pageSize}
             paginationTotalRecorsMessage={t('orgManagement.results')}
             paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+            expandableRows
+            expandableRowExpanded={isRowExpanded}
+            expandableRowsComponent={ExpandedComponent}
+            expandableRowsHideExpander={true}
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}

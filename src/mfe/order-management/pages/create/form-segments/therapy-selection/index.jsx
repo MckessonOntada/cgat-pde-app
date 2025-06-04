@@ -13,10 +13,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import {
-  TherapyDetailsConstantsForBB,
-  TherapyDetailsConstantsForSP
-} from './assets/constants/TherapyDetailsConstants';
+import { TherapyDetailsConstantsForBB, TherapyDetailsConstantsForSP } from './assets/constants/TherapyDetailsConstants';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
@@ -25,6 +22,7 @@ import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonUtils from '@src/util/CommonUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -33,63 +31,55 @@ function TherapySelection() {
   const location = useLocation();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
-  const [initialSelectedTherapy, setInitialSelectedTherapy] =
-    React.useState(null);
   const { data: orderDetails = {} } = useOrder(orderId);
-  const [therapy, setTherapy] = useState(orderDetails?.therapy);
+  const [tradeDetails, setTradeDetails] = useState(orderDetails?.tradeDetails);
   const searchParams = new URLSearchParams(location.search);
-  const therapyDetails = searchParams.get('therapy-details');
+  const trade = searchParams.get('trade');
+  const channelType = searchParams.get('channelType');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const {
-    isEdit = false,
-    isApprover = false,
-    isBack = false
-  } = location.state || {};
+  const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
   const alertContainerId = 'alert-container';
-  const [therapySelectionMessage, setTherapySelectionMessage] =
-    React.useState(null);
+  const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders');
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   }, [orderDetails]);
 
   React.useEffect(() => {
-    const { therapy } = orderDetails || {};
-    if (therapy) {
-      setTherapy(therapy);
-      setInitialSelectedTherapy(therapy);
+    const { tradeDetails, therapyDetails = {} } = orderDetails || {};
+    if (tradeDetails) {
+      setTradeDetails({ ...tradeDetails, ...therapyDetails });
     }
   }, [orderDetails]);
 
   const handleOnClose = () => {
-    searchParams.delete('therapy-details');
+    searchParams.delete('trade');
+    searchParams.delete('channelType');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
     });
   };
 
-  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(
-    async (data) => OrderService.createOrder(data),
-    {
-      onSuccess: (result) => {
-        const { id } = result;
-        navigate(`../${id}/accounts?${searchParams.toString()}`, {
-          state: { isEdit: false, isApprover: isApprover }
-        });
-      },
-      onError: (err) => {
-        const errorKey = handleApiError(err);
-        showAlert({
-          description: t(errorKey),
-          type: 'error',
-          anchorEl: alertContainerId
-        });
-      }
+  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
+    onSuccess: (result) => {
+      const { id } = result;
+      navigate(`../${id}/accounts?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
+    },
+    onError: (err) => {
+      const errorKey = handleApiError(err);
+      showAlert({
+        description: t(errorKey),
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
-  );
+  });
 
   const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
     async ({ orderId, payload }) => {
@@ -102,9 +92,9 @@ function TherapySelection() {
           state: {
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged:
-              Number(therapy?.therapyId) !==
-              Number(initialSelectedTherapy?.materialNumber)
+            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName),
+            fromTab: location?.state?.fromTab,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       },
@@ -120,7 +110,7 @@ function TherapySelection() {
   );
 
   const handleOnSubmit = () => {
-    if (!therapy || isSaving) {
+    if (!tradeDetails || isSaving) {
       setTherapySelectionMessage({
         description: 'Select therapy to create order',
         type: 'error'
@@ -128,9 +118,11 @@ function TherapySelection() {
       return;
     }
 
-    if (therapy) {
+    if (tradeDetails) {
       const payload = {
-        id: therapy.id
+        ndc: tradeDetails.ndc,
+        tradeName: tradeDetails.tradeName,
+        channelType: tradeDetails.channelType
       };
       if (isEdit || isApprover || isBack) {
         updateTherapy({ orderId, payload });
@@ -139,8 +131,7 @@ function TherapySelection() {
       }
     }
   };
-  const isDirty =
-    JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
+  const isDirty = JSON.stringify(tradeDetails) !== JSON.stringify(orderDetails?.tradeDetails);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -165,7 +156,7 @@ function TherapySelection() {
         state: {
           isEdit: true,
           isApprover: isApprover,
-          activeTab: location?.state?.fromTab,
+          fromTab: location?.state?.fromTab,
           fromOrderView: location?.state?.fromOrderView
         }
       });
@@ -192,15 +183,15 @@ function TherapySelection() {
         state: {
           isEdit: true,
           isApprover: isApprover,
-          activeTab: location?.state?.fromTab,
+          fromTab: location?.state?.fromTab,
           fromOrderView: location?.state?.fromOrderView
         }
       });
     }
   };
 
-  const handleOnDrawerSelect = (therapy) => {
-    setTherapy(therapy);
+  const handleOnDrawerSelect = (details) => {
+    setTradeDetails(details);
   };
   if (isSaving) {
     return <Loader type={'screen'} />;
@@ -208,21 +199,12 @@ function TherapySelection() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToOrders}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
-        }
-      />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
         <OrderStepper
@@ -238,38 +220,29 @@ function TherapySelection() {
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={[]}
-                searchPlaceholder={t(
-                  'controls.placeholder.therapySelection.search'
-                )}
+                searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
             <TableHeading heading={t('labels.therapySelection')} />
             {therapySelectionMessage && (
-              <Alert
-                description={therapySelectionMessage.description}
-                type={therapySelectionMessage.type}
-                onClose={() => setTherapySelectionMessage(null)}
-              />
+              <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable therapy={therapy} onChange={setTherapy} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button
-                size="md"
-                variant="primary"
-                type="submit"
-                onClick={handleOnSubmit}>
+              <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>
-          {therapyDetails && (
+          {trade && (
             <TherapyDetailsWithTabs
-              therapyId={therapyDetails}
+              trade={trade}
+              channelType={channelType}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}

@@ -9,8 +9,7 @@ import ModuleHeader from '@src/components/module-header';
 
 export default function Credits(props) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData, exportExcel, data } =
-    usePaymentCredits();
+  const { applyFilters, clearFilters, actualData, exportExcel, data } = usePaymentCredits();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -23,6 +22,7 @@ export default function Credits(props) {
       {
         type: 'dateRangePicker',
         name: 'dueDate',
+        localDateRange: ['1/1/2025', '1/2/2025'],
         startDateLabel: t('paymentInvoices.credits.filters.credit.dateStart'),
         endDateLabel: t('paymentInvoices.credits.filters.credit.dateEnd')
       }
@@ -44,18 +44,10 @@ export default function Credits(props) {
         {!props.selectableRows && (
           <div className="credit-heading">
             <ModuleHeader
-              heading={
-                <Heading as="h2">
-                  {t('paymentInvoices.table.creditHeading')}
-                </Heading>
-              }
+              heading={<Heading as="h2">{t('paymentInvoices.table.creditHeading')}</Heading>}
               controls={
                 <div className="table-header">
-                  <Button
-                    variant="secondary"
-                    onClick={() => exportExcel()}
-                    disabled={data.length === 0}
-                    size="sm">
+                  <Button variant="secondary" onClick={() => exportExcel()} disabled={data.length === 0} size="sm">
                     {t('paymentInvoices.CS.ExportExcel')}
                   </Button>
                 </div>
@@ -63,11 +55,7 @@ export default function Credits(props) {
             />
           </div>
         )}
-        <CreditsTable
-          selectedRows={props.selectedCredits}
-          setSelectedRows={props.setSelectedCredits}
-          selectableRows={props.selectableRows}
-        />
+        <CreditsTable selectedRows={props.selectedCredits} setSelectedRows={props.setSelectedCredits} selectableRows={props.selectableRows} />
       </div>
     </React.Fragment>
   );

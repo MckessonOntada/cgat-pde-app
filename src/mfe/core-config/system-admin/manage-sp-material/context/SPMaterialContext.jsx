@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const SPMaterialContext = createContext();
 
@@ -18,7 +19,7 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: 'material_number',
+  sortBy: 'trade_name',
   sortOrder: 'desc'
 };
 
@@ -49,7 +50,7 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
     return {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'material_number',
+      sortBy: sortConfig.sortBy || 'trade_name',
       sortOrder: sortConfig.sortOrder || 'desc',
       channelTypes: 'SPECIALITY_PHARMA',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
@@ -61,6 +62,8 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
     queryKey: ['SPMaterials', requestParams],
     queryFn: async () => {
       const result = await MaterialService.getMaterialList(requestParams);
+
+      result.content = ServiceUtil.transformTherapies(result.content);
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,

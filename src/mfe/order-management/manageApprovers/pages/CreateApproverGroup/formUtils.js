@@ -23,8 +23,7 @@ export const transformAttributesToRules = (values, practiceId) => {
         break;
       case CONTROL_OPTIONS.Material: // Therapies
         result.rules.therapies = rule.value_augmented.map((therapy) => ({
-          therapyId: therapy.value,
-          therapyName: therapy.name,
+          tradeName: therapy.name,
           channelType: getChannelType(materials, therapy.value, therapy.name)
         }));
         break;
@@ -83,13 +82,7 @@ export const getValidationSchema = (t) => {
           attributeType: Yup.string()
             .required(t('approvergroup.create.validation.approverattribute_required'))
             .oneOf(
-              [
-                CONTROL_OPTIONS.Price,
-                CONTROL_OPTIONS.Account,
-                CONTROL_OPTIONS.Material,
-                CONTROL_OPTIONS['User Name'],
-                CONTROL_OPTIONS['User Role']
-              ],
+              [CONTROL_OPTIONS.Price, CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Material, CONTROL_OPTIONS['User Name'], CONTROL_OPTIONS['User Role']],
               t('approvergroup.create.validation.approverattribute_required')
             ),
           value: Yup.mixed()
@@ -123,11 +116,7 @@ export const getValidationSchema = (t) => {
                 return Yup.number().min(0.001, t('approvergroup.create.validation.price')).isValidSync(value);
               }
 
-              if (
-                [CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Material, CONTROL_OPTIONS['User Name'], CONTROL_OPTIONS['User Role']].includes(
-                  attributeType
-                )
-              ) {
+              if ([CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Material, CONTROL_OPTIONS['User Name'], CONTROL_OPTIONS['User Role']].includes(attributeType)) {
                 return value !== '';
               }
 

@@ -159,7 +159,7 @@ const PayerDetails = () => {
 
   const handleOnBackToOrders = () =>
     navigate(`/orders?${searchParams.toString()}`, {
-      state: { activeTab: location?.state?.fromTab }
+      state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
     });
 
   const handleOnBackClick = () => navigate(`/orders/${orderId}/patient?${searchParams.toString()}`);

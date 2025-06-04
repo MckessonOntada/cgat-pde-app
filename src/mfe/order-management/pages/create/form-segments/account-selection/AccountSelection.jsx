@@ -19,7 +19,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { CHANNEL_TYPE } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 
 const AccountSelection = () => {
@@ -28,6 +28,7 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
+  const [accountConfig, setAccountConfig] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = location.state || {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
@@ -47,10 +48,10 @@ const AccountSelection = () => {
     }
   }, [orderDetails]);
 
-  const therapyId = orderDetails?.therapy?.materialNumber;
+  const tradeDetails = orderDetails.tradeDetails;
 
   const { data: priceDetails } = useOrderPrice({
-    therapyId,
+    trade: tradeDetails,
     soldToAccountId: selectedSoldToAccount?.accountNumber,
     shipToAccountId: selectedShipToAccount?.accountNumber,
     channelType: selectedSoldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL
@@ -65,12 +66,29 @@ const AccountSelection = () => {
       navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   }, [orderDetails]);
 
+  React.useEffect(() => {
+    if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
+      setAccountConfig({
+        program: CGAT_IDENTIFIER[orderDetails.accountDetails.shipToAccount.cgatIdentifier],
+        channelType: orderDetails.accountDetails.shipToAccount.channelType
+      });
+    }
+  }, [orderDetails]);
+  React.useEffect(() => {
+    if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
+      setAccountConfig({
+        program: CGAT_IDENTIFIER[orderDetails.accountDetails.shipToAccount.cgatIdentifier],
+        channelType: orderDetails.accountDetails.shipToAccount.channelType
+      });
+    }
+  }, [orderDetails]);
+
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: async (result) => {
       const { id } = result;
       try {
         navigate(`../${id}/patient?${searchParams.toString()}`, {
-          state: { alertState, isEdit: false, isApprover: isApprover, fromOrderView: location?.state?.fromOrderView }
+          state: { alertState, isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
         });
       } catch (err) {
         console.error(err);
@@ -108,11 +126,11 @@ const AccountSelection = () => {
 
     if (isEdit) {
       navigate(`../${orderId}/summary?${searchParams.toString()}`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+        state: { isEdit: isEdit, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else {
       navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
-        state: { isEdit: false, isApprover: isApprover, isBack: true }
+        state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
@@ -145,9 +163,9 @@ const AccountSelection = () => {
 
       return;
     }
-
     if (selectedSoldToAccount && selectedShipToAccount) {
       const payload = {
+        program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
         soldToAccountId: selectedSoldToAccount.id,
         shipToAccountId: selectedShipToAccount.id
       };
@@ -180,11 +198,11 @@ const AccountSelection = () => {
       navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`);
     } else if (modalSuccessCallback === 'details') {
       navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
-        state: { isEdit: false, isApprover: isApprover, isBack: true }
+        state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary?${searchParams.toString()}`, {
-        state: { isEdit: false, isApprover: isApprover }
+        state: { isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
@@ -193,9 +211,10 @@ const AccountSelection = () => {
     return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
   };
 
-  const handleOnAccountSelection = (selectedAccount) => {
+  const handleOnAccountSelection = (selectedAccount, config) => {
     setSelectedShipToAccount('');
     setSelectedSoldToAccount(selectedAccount);
+    setAccountConfig(config);
     setOpen(false);
   };
 
@@ -283,11 +302,7 @@ const AccountSelection = () => {
               </div>
             </div>
             {selectedSoldToAccount && (
-              <ShippingAddressProvider
-                accountDetails={{
-                  therapyId,
-                  selectedAccount: selectedSoldToAccount
-                }}>
+              <ShippingAddressProvider accountDetails={{ trade: tradeDetails, selectedAccount: selectedSoldToAccount }}>
                 <ShippingAddress selectedShippingAddress={selectedShipToAccount} setSelectedShippingAddress={setSelectedShipToAccount} />
               </ShippingAddressProvider>
             )}
@@ -305,10 +320,10 @@ const AccountSelection = () => {
           {open && (
             <AccountSelectionUserGuide
               openDrawer={open}
-              therapyId={therapyId}
+              trade={tradeDetails}
               onSubmit={handleOnAccountSelection}
               onClose={handleOnClose}
-              channelType={orderDetails?.therapy?.channelType}
+              channelType={tradeDetails?.channelType}
             />
           )}
         </div>

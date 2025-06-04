@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-  useFilters,
-  usePagination,
-  useSort,
-  useTable
-} from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
-import { InputField, Heading } from '@mckesson/mcp-component-library';
+import { InputField, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import style from './style.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
@@ -16,6 +11,7 @@ import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
@@ -28,23 +24,8 @@ const getColumns = ({ t }) => {
   return [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + pagination.pageNumber },
-        data,
-        'id',
-        pagination,
-        state.selectedProducts || [],
-        onSelectProduct
-      ),
-      cell: (row, index) =>
-        renderTableCheckBox(
-          row,
-          data,
-          'id',
-          pagination,
-          state.selectedProducts || [],
-          onSelectProduct
-        ),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
+      cell: (row, index) => renderTableCheckBox(row, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
       selector: (row) => row.materialNumber,
       width: '50px',
       showInMobileHeader: true
@@ -57,11 +38,14 @@ const getColumns = ({ t }) => {
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
-      cell: (props) => (
-        <Link to={`?catalog=${props.id}`} className="MCP-table-link">
-          {props?.materialDescription}
-        </Link>
-      )
+      cell: (props) => {
+        console.log(props);
+        return (
+          <Link to={`?catalog=${props.id}`} className="MCP-table-link">
+            {props?.materialDescription}
+          </Link>
+        );
+      }
     },
     {
       id: 'ndcNumber',
@@ -70,7 +54,11 @@ const getColumns = ({ t }) => {
       minWidth: '140px',
       sortable: false,
       wrap: true,
-      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
+      cell: ({ ndc }) => (
+        <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+          <Tooltip body={ndc}>{ndc}</Tooltip>
+        </span>
+      )
     }
   ];
 };
@@ -86,6 +74,7 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
+  const beautifiedData = ServiceUtil.transformTherapies(data);
 
   const debouncedApplyFilter = React.useCallback(
     CommonUtils.debounce((value) => {
@@ -115,9 +104,10 @@ const Products = () => {
   };
 
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
+
+  console.log(data, beautifiedData);
 
   return (
     <React.Fragment>
@@ -144,7 +134,7 @@ const Products = () => {
           <Heading as="h3">{t('label.spProductListing')}</Heading>
         </div>
       </div>
-      <div className={style['grid-item']}>
+      <div className={`${style['grid-item']} scrollable-table-wrapper`}>
         <CustomDataTable
           siblingBreakpoint="md"
           totalCount={5}
@@ -157,7 +147,7 @@ const Products = () => {
             setSelectedMaterials: () => {},
             data
           })}
-          data={data}
+          data={beautifiedData}
           onSortIconClick={handleOnSort}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
@@ -166,12 +156,8 @@ const Products = () => {
           totalRocords={pagination.totalElements}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
           recordsPerPage={pagination.pageSize}
-          paginationTotalRecorsMessage={t(
-            'manageMaterial.table.pagination.totalRecords'
-          )}
-          paginationRecordsPerPageMessage={t(
-            'manageMaterial.table.pagination.perPage'
-          )}
+          paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
+          paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}
@@ -189,7 +175,7 @@ const Products = () => {
           <SPMaterialDetails
             openSPMaterialDetails={true}
             setOpenSPMaterialDetails={handleOnDetailsPanelClose}
-            viewSPMaterial={data.find((item) => item.id == catalog)}
+            viewSPMaterial={beautifiedData.find((item) => item.id == catalog)}
           />
         )}
       </div>

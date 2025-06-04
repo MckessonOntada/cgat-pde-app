@@ -70,6 +70,7 @@ function AdditionalDetails() {
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
+  const { therapy = {}, tradeDetails = {} } = orderDetails;
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -82,7 +83,7 @@ function AdditionalDetails() {
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
-    channelType: channelType
+    channelType
   };
 
   const { data: priceDetails = {} } = useOrderPrice(
@@ -147,8 +148,16 @@ function AdditionalDetails() {
 
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
-    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
-    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
+    queryFn: async () =>
+      OrderService.getVariants(
+        {
+          soldToAccountId,
+          shipToAccountId,
+          ndc: tradeDetails.ndc
+        },
+        variantsApiRequestParam
+      ),
+    enabled: !!tradeDetails.ndc && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {},
     onError: (error) => {
@@ -200,7 +209,7 @@ function AdditionalDetails() {
       const { id } = result;
       navigate(`../${id}/summary?${searchParams.toString()}`, {
         state: {
-          activeTab: location?.state?.fromTab,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
           isApprover: isApprover,
           fromOrderView: location?.state?.fromOrderView
@@ -296,8 +305,18 @@ function AdditionalDetails() {
       const { accountDetails, therapy } = orderDetails;
       if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
 
+      let materialOrNdcNumber = '';
+      if (isSPCrossWalked) {
+        materialOrNdcNumber = variant ? variant?.materialNumber : therapy.materialNumber;
+      } else if (isSPNonCrossWalked) {
+        materialOrNdcNumber = therapy.materialNumber;
+      } else {
+        materialOrNdcNumber = therapy.ndcNumber;
+      }
+
       const payload = {
         ...(variantType ? { variantType } : {}),
+        materialOrNdcNumber,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
         sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy.materialNumber,
@@ -452,7 +471,8 @@ function AdditionalDetails() {
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        navigate(`../${orderId}/patient?${searchParams.toString()}`, {
+        const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
+        navigate(`../${orderId}/${targetPage}?${searchParams.toString()}`, {
           state: {
             fromTab: location?.state?.fromTab,
             isEdit: false,

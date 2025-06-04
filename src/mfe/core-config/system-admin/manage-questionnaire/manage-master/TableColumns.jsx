@@ -1,88 +1,150 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../context/ManageQuestionnaireContext';
-import { useMultiCheckBox } from '../useMultiCheckBox';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
-export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails) => {
+function flattenMaterials(data) {
+  if (!data && !Array.isArray(data)) {
+    return [];
+  }
+
+  return data.reduce((acc, item) => {
+    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
+      item.therapies.forEach((material) => {
+        acc.push(material);
+      });
+    }
+    return acc;
+  }, []);
+}
+
+export const getColumnsByEntityType = ({
+  entityType,
+  entityData,
+  selectedRows,
+  setSelectedRows,
+  setOpenDetails,
+  setSelectedDetails,
+  isRowExpanded,
+  onExpandToggle
+}) => {
   const { paginationConfig } = useManagerQuestionnaire();
-  const [selectedData, setSelectedData] = useState([]);
-  useEffect(() => {
-    setSelectedRows(selectedData);
-  }, [selectedData]);
-
-  const handleRowClick = (e, row) => {
-    setSelectedDetails(row);
-    setOpenDetails(true);
-  };
-
-  switch (masterEntityType) {
+  const { t } = useTranslate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams(location.search);
+  switch (entityType) {
     case MasterEntityType.Material:
       return [
         {
           id: 'checkbox',
-          name:
-            entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedData, setSelectedData)
-              : null,
+          name: renderTableCheckBox(
+            { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+            flattenMaterials(entityData),
+            'materialNumber',
+            {
+              ...paginationConfig,
+              totalElements: entityData.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
+            },
+            selectedRows,
+            setSelectedRows
+          ),
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
+          cell: (row, index) => {
+            if (row.isExpandable && row.therapies.length > 1) {
+              const expanded = isRowExpanded?.(row);
+              return (
+                <div className="expand-icon-wrapper" onClick={() => onExpandToggle?.(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+                  <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+                    <ArrowAngleRight />
+                  </div>
+                </div>
+              );
+            }
+            return renderTableCheckBox(
+              row,
+              flattenMaterials(entityData),
+              'materialNumber',
+              {
+                ...paginationConfig,
+                totalElements: entityData.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
+              },
+              selectedRows,
+              setSelectedRows
+            );
+          },
           selector: (row) => row.MRN,
           width: '50px'
         },
         {
-          id: 'materialNumber',
-          name: t('labels.therapy.materialNumber'),
+          id: 'therapy',
+          name: t('labels.therapy'),
           selector: () => {},
           maxWidth: '250px',
-          cell: (props) => (
-            <div className="cellEllipse">
-              <Link
+          cell: (row) => {
+            const { tradeName, cellValue } = row;
+            return (
+              <span
                 className="MCP-table-link"
                 aria-label={t('table.columns.captions.accountNumber')}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenDetails(true);
-                  setSelectedDetails(props);
+                onClick={() => {
+                  searchParams.set('trade', tradeName);
+                  setSearchParams(searchParams);
                 }}>
-                <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
-              </Link>
-            </div>
-          )
+                <EclipsesTextcss str={cellValue} maxWidth={240} />
+              </span>
+            );
+          }
         },
         {
-          id: 'materialDescription',
-          name: t('labels.therapy.materialDescription'),
-          selector: (row) => row.materialDescription || '',
+          id: 'genericName',
+          name: t('labels.genericName'),
+          selector: (row) => row.genericName || '',
           maxWidth: '230px',
-          cell: (props) => (
-            <span aria-label={t('labels.therapy.materialDescription')}>
-              <EclipsesTextcss str={props.materialDescription} maxWidth={220} />
+          cell: (row) => (
+            <span aria-label={t('labels.genericName')}>
+              <EclipsesTextcss str={row.genericName} maxWidth={220} />
             </span>
           )
         },
         {
           id: 'ndc',
-          name: t('table.columns.captions.nationalDrugCode'),
-          selector: (row) => row.ndcNumber || '',
+          name: t('labels.ndc'),
+          selector: (row) => row.ndc || '',
+          sortable: true,
+          sortKey: 'ndc',
           maxWidth: '200px',
           cell: (props) => (
-            <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-              <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
+            <span aria-label={t('label.ndc')}>
+              <EclipsesTextcss str={props.ndc} maxWidth={180} />
             </span>
           )
         },
         {
-          id: 'strength',
-          name: t('table.columns.captions.strength'),
-          selector: (row) => row.strength || '',
+          id: 'manufacturer',
+          name: t('labels.manufacturer'),
+          selector: (row) => row.manufacturerName || '',
+          sortable: true,
+          sortKey: 'manufacturerName',
+          maxWidth: '200px',
+          cell: (row) => (
+            <span aria-label={t('label.manufacturerName')}>
+              <EclipsesTextcss str={row.manufacturerName} maxWidth={180} />
+            </span>
+          )
+        },
+        {
+          id: 'formulation',
+          name: t('labels.formulation'),
+          selector: (row) => row.formulation || '',
           maxWidth: '200px',
           sortable: false,
-          cell: (props) => (
-            <span aria-label={t('table.columns.captions.strength')}>
-              <EclipsesTextcss str={props.strength} maxWidth={180} />
+          cell: (rows) => (
+            <span aria-label={t('labels.formulation')}>
+              <EclipsesTextcss str={rows.formulation} maxWidth={180} />
             </span>
           )
         },
@@ -105,10 +167,10 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'checkbox',
           name:
             entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedData, setSelectedData)
+              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedRows, setSelectedRows)
               : null,
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedRows, setSelectedRows),
           selector: (row) => row.MRN,
           width: '50px'
         },
@@ -183,10 +245,10 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'checkbox',
           name:
             entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedData, setSelectedData)
+              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedRows, setSelectedRows)
               : null,
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedRows, setSelectedRows),
           selector: (row) => row.MRN,
           width: '50px'
         },

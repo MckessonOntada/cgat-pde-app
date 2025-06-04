@@ -42,16 +42,16 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   const hiddenData = columns.filter((col) => !col.showInMobileHeader && !col.isAction && !col.omit);
   const actionItems = columns.filter((col) => col.isAction && !col.omit && !col.omit);
 
-  const inlineStatus = showDefaultData.filter(col => !!col.inlineStatus);
-  if (inlineStatus.length > 0) { 
-    showDefaultData = showDefaultData.filter(col => !col.inlineStatus);
-  
+  const inlineStatus = showDefaultData.filter((col) => !!col.inlineStatus);
+  if (inlineStatus.length > 0) {
+    showDefaultData = showDefaultData.filter((col) => !col.inlineStatus);
+
     if (showDefaultData.length > 0) {
       const lastRow = showDefaultData.pop();
       inlineStatus.unshift(lastRow);
     }
-  }  
-  
+  }
+
   const [expanded, setExpanded] = useState(defaultExpandedCardView || showDefaultData.length === 0);
 
   const handleCardClick = (e) => {
@@ -95,7 +95,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
 
   return (
     <div className={`table-card-container ${selectedCard ? `active` : ``}`} key={row.id} onClick={handleCardClick}>
-      {isSelectableInput.length > 0 && (
+      {!isSelectableInput[0]?.omit && isSelectableInput.length > 0 && (
         <div className="card-header">
           <div style={{ width: '100%' }}>
             {isSelectableInput.map((col) => (
@@ -119,43 +119,41 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
                       {col.name} {colIndex === 0 ? ':' : '-'}
                     </div>
                   )}
-                  <div
-                    onClick={(e) => handleActionClick(e, col.onClick)}
-                    className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
+                  <div onClick={(e) => handleActionClick(e, col.onClick)} className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
                     {renderCell(col, row)}
                   </div>
                 </div>
               ))}
             </div>
             <div className="collapsed-detail action-button">
-              {actionItems.map((col) =>
-                !!col.isContextMenu ? (
-                  <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
-                ) : (
-                  <MenuList
-                    menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
-                    handleSelect={() => {}}
-                    options={[{ label: renderCell(col, row) }]}
-                    aria-label="Order options"
-                  />
-                )
-              )}
+              {actionItems.map((col) => (
+                <React.Fragment key={col.id}>
+                  {!!col.isContextMenu ? (
+                    <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
+                  ) : (
+                    <MenuList
+                      menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
+                      handleSelect={() => {}}
+                      options={[{ label: renderCell(col, row) }]}
+                      aria-label="Order options"
+                    />
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
           {inlineStatus.map((col, colIndex) => (
-            <div className='inline-status'>
-                <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
-                  {col.showColumnNameInHeader && col.name && (
-                    <div className='column-name'>
-                      {col.name} {colIndex === 0 ? ':' : '-'}
-                    </div>
-                  )}
-                  <div
-                    onClick={(e) => handleActionClick(e, col.onClick)}
-                    className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
-                    {renderCell(col, row)}
+            <div key={col.id} className="inline-status">
+              <div className="collapsed-detail" style={col.mobileStyles}>
+                {col.showColumnNameInHeader && col.name && (
+                  <div className="column-name">
+                    {col.name} {colIndex === 0 ? ':' : '-'}
                   </div>
+                )}
+                <div onClick={(e) => handleActionClick(e, col.onClick)} className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
+                  {renderCell(col, row)}
                 </div>
+              </div>
             </div>
           ))}
         </>

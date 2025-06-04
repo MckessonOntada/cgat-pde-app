@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-  useFilters,
-  usePagination,
-  useSort,
-  useTable
-} from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
-import {
-  RadioGroup,
-  InputField,
-  Heading
-} from '@mckesson/mcp-component-library';
+import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { RadioGroup, InputField, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
@@ -18,71 +9,9 @@ import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-const getColumns = ({ t }) => {
-  const { state, setValue } = useGenericContext();
-  return [
-    {
-      id: 'id',
-      selector: () => {},
-      width: '40px',
-      sortable: false,
-      showInMobileHeader: true,
-      isSelectable: true,
-      cell: (props) => (
-        <div className="MCP-table-cell radio-button-wrapper">
-          <RadioGroup
-            direction="column"
-            id={`radio-button-material-${props.id}`}
-            items={[
-              {
-                isDisabled: false,
-                label: ' ',
-                value: props.id
-              }
-            ]}
-            onChangeValue={() => setValue('material', props)}
-            onOtherTextChange={() => {}}
-            onSubRadioFieldChange={() => {}}
-            radioBtnWidth="auto"
-            value={state.material?.id == props.id ? props.id : ''}
-          />
-        </div>
-      )
-    },
-    {
-      name: t('manageMaterial.table.bnbMaterialDescription'),
-      id: 'materialDescription',
-      selector: (row) => row.materialDescription,
-      wrap: true,
-      minWidth: '275px',
-      sortable: true,
-      sortKey: 'materialDescription',
-      cell: (props) => (
-        <Link
-          to={`?material=${props.materialNumber}`}
-          className="MCP-table-link">
-          <EclipsesTextcss
-            maxLength={240}
-            str={props?.materialDescription || '-'}
-          />
-        </Link>
-      )
-    },
-    {
-      name: t('manageMaterial.table.bnbNDC'),
-      id: 'ndcNumber',
-      selector: (row) => row.ndcNumber,
-      wrap: true,
-      sortable: false,
-      minWidth: '155px',
-      cell: (props) => (
-        <EclipsesTextcss maxLength={140} str={props?.ndcNumber || '-'} />
-      )
-    }
-  ];
-};
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const Materials = () => {
   const { t } = useTranslate();
@@ -90,6 +19,7 @@ const Materials = () => {
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
+  let beautifiedData = ServiceUtil.transformTherapies(data);
 
   const [materialQuery, setMaterialQuery] = React.useState(null);
   const debouncedApplyFilter = React.useCallback(
@@ -108,9 +38,128 @@ const Materials = () => {
     }
   };
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
+  const [expandedRows, setExpandedRows] = React.useState([]);
+  const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
+  };
+
+  const ExpandedComponent = ({ data }) => {
+    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
+    const expandedData = data.therapies || [];
+    const expandedColumns = getColumns();
+
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={expandedColumns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
+  };
+
+  const getColumns = () => {
+    const { state, setValue } = useGenericContext();
+    return [
+      {
+        id: 'id',
+        selector: () => {},
+        width: '40px',
+        sortable: false,
+        showInMobileHeader: true,
+        isSelectable: true,
+        cell: (row) => {
+          if (row.isExpandable && row.isParent) {
+            const expanded = isRowExpanded?.(row);
+            return (
+              <div
+                className="expand-icon-wrapper"
+                style={{ cursor: 'pointer' }}
+                onClick={() => onExpandToggle?.(row)}
+                aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+                <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+                  <ArrowAngleRight />
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div className="MCP-table-cell radio-button-wrapper">
+              <RadioGroup
+                direction="column"
+                id={`radio-button-material-${row.id}`}
+                items={[
+                  {
+                    isDisabled: false,
+                    label: ' ',
+                    value: row.id
+                  }
+                ]}
+                onChangeValue={() => setValue('material', row)}
+                onOtherTextChange={() => {}}
+                onSubRadioFieldChange={() => {}}
+                radioBtnWidth="auto"
+                value={state.material?.id == row.id ? row.id : ''}
+              />
+            </div>
+          );
+        }
+      },
+      {
+        name: t('labels.therapy'),
+        id: 'materialDescription',
+        selector: (row) => row.materialDescription,
+        wrap: true,
+        maxWidth: '180px',
+        sortable: true,
+        sortKey: 'materialDescription',
+        cell: ({ cellValue, tradeName }) => {
+          return (
+            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`}>
+              <EclipsesTextcss str={cellValue} />
+            </Link>
+          );
+        }
+      },
+      {
+        name: t('labels.ndc'),
+        id: 'ndcNumber',
+        selector: (row) => row.ndcNumber,
+        wrap: true,
+        sortable: true,
+        sortKey: 'ndc',
+        minWidth: '140px',
+        cell: ({ isExpandable, ndc }) => {
+          let toolTip = '',
+            cellValue = '';
+          if (isExpandable) {
+            toolTip = ndc.join(', ');
+            cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
+          } else {
+            toolTip = ndc;
+            cellValue = ndc;
+          }
+          return (
+            <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+              <Tooltip body={toolTip}>{cellValue}</Tooltip>
+            </span>
+          );
+        }
+      }
+    ];
+  };
+
   return (
     <React.Fragment>
       <div className={style['grid-item']}>
@@ -136,12 +185,12 @@ const Materials = () => {
           <Heading as="h3">{t('label.materialListing')}</Heading>
         </div>
       </div>
-      <div className={style['grid-item']}>
+      <div className={`${style['grid-item']} scrollable-table-wrapper`}>
         <CustomDataTable
           id="manage-material-table"
           type="normal"
-          columns={getColumns({ t })}
-          data={data}
+          columns={getColumns()}
+          data={beautifiedData}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
           pagination={false}
@@ -150,15 +199,17 @@ const Materials = () => {
           onSortIconClick={handleOnSort}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
           recordsPerPage={pagination.pageSize}
-          paginationTotalRecorsMessage={t(
-            'manageMaterial.table.pagination.totalRecords'
-          )}
-          paginationRecordsPerPageMessage={t(
-            'manageMaterial.table.pagination.perPage'
-          )}
+          paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
+          paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}
+          fixedHeaderScrollHeight={'380px'}
+          fixedHeader={true}
+          expandableRows
+          expandableRowExpanded={isRowExpanded}
+          expandableRowsComponent={ExpandedComponent}
+          expandableRowsHideExpander={true}
           noDataComponent={
             <EmptyDataTable
               isLoading={isLoading}
