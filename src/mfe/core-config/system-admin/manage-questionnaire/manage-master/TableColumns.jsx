@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../context/ManageQuestionnaireContext';
@@ -34,7 +34,8 @@ export const getColumnsByEntityType = ({
 }) => {
   const { paginationConfig } = useManagerQuestionnaire();
   const { t } = useTranslate();
-
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams(location.search);
   switch (entityType) {
     case MasterEntityType.Material:
       return [
@@ -84,18 +85,17 @@ export const getColumnsByEntityType = ({
           selector: () => {},
           maxWidth: '250px',
           cell: (row) => {
-            const { cellValue } = row;
+            const { tradeName, cellValue } = row;
             return (
-              <Link
+              <span
                 className="MCP-table-link"
                 aria-label={t('table.columns.captions.accountNumber')}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenDetails(true);
-                  setSelectedDetails(props);
+                onClick={() => {
+                  searchParams.set('trade', tradeName);
+                  setSearchParams(searchParams);
                 }}>
                 <EclipsesTextcss str={cellValue} maxWidth={240} />
-              </Link>
+              </span>
             );
           }
         },

@@ -129,7 +129,7 @@ async function getTherapies(requestParams) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     if (res.data?.content) {
-      res.data.content = ServiceUtil.transformContent(res.data.content);
+      res.data.content = ServiceUtil.transformTherapies(res.data.content);
     }
     return res.data;
   }
@@ -368,9 +368,15 @@ async function uploadDocument(payload) {
   if (res.data) return res.data;
 }
 
-async function getTherapyDetailsByTradeName(tradeName, channelType) {
+async function getTherapyDetailsByTradeName(tradeName) {
   if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
-  const url = `${ApiRoutes.USERS()}/current/therapies/details/${tradeName}?channelType=${channelType}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies/details/${tradeName}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+async function getTherapyDetailsByTradeName2(tradeName) {
+  if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
+  const url = `${ApiRoutes.THERAPIES()}/config/${tradeName}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
@@ -406,7 +412,8 @@ const OrderService = Object.freeze({
   getTherapyDetailsByCrossWalkId,
   uploadOrderDocument,
   uploadDocument,
-  getTherapyDetailsByTradeName
+  getTherapyDetailsByTradeName,
+  getTherapyDetailsByTradeName2
 });
 
 export default OrderService;

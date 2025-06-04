@@ -14,13 +14,23 @@ import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manag
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import SPMaterialDetails from '../../manage-sp-material/pages/SPMaterialDetails';
 import CommonUtils from '@src/util/CommonUtils';
+import {
+  TherapyDetailsConstantsForBB,
+  TherapyDetailsConstantsForSP
+} from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 
 const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert }) => {
   const { t } = useTranslate();
-  const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const showCardView = useResponsiveView();
   const [expandedRows, setExpandedRows] = useState([]);
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams(location.search);
+  const trade = searchParams.get('trade');
+  const [openDetails, setOpenDetails] = useState(Boolean(trade));
+
   const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
   const onExpandToggle = (row) => {
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
@@ -83,9 +93,9 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   };
 
   const ExpandedComponent = ({ data }) => {
-    const expandedData = data.therapies || [];
     if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
 
+    const expandedData = data.therapies || [];
     const expandedColumns = getColumnsByEntityType({
       entityType,
       entityData,
@@ -114,27 +124,12 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
     );
   };
 
-  const renderDetailsComponent = () => {
-    if (entityType === MasterEntityType.Material) {
-      return selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
-        <TherapyDetails
-          therapyId={selectedDetails?.materialNumber}
-          therapyData={MaterialDetailsConstants}
-          configurationData={ConfigConstants}
-          onClose={() => setOpenDetails(false)}
-          showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
-          heading={t('manageMaterial.drawer.heading')}
-          notify={({ type, message }) => {
-            showAlert(type, message);
-          }}
-        />
-      ) : (
-        <SPMaterialDetails openSPMaterialDetails={openDetails} setOpenSPMaterialDetails={setOpenDetails} viewSPMaterial={selectedDetails} />
-      );
-    }
+  const handleOnClose = () => {
+    searchParams.delete('trade');
+    setSearchParams(searchParams);
+  };
 
+  const renderDetailsComponent = () => {
     if (entityType === MasterEntityType.Catalog) {
       return selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
         <CatalogDetails
@@ -157,7 +152,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   };
 
   return (
-    <>
+    <React.Fragment>
       <CustomDataTable
         type={'normal'}
         columns={columns}
@@ -188,7 +183,18 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
         }
       />
       {openDetails && renderDetailsComponent()}
-    </>
+      {entityType === MasterEntityType.Material && trade && (
+        <TherapyDetailsWithTabs
+          trade={trade}
+          isMaterialListing={true}
+          onSelect={() => {}}
+          onClose={handleOnClose}
+          buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+          spTherapyConstants={TherapyDetailsConstantsForSP}
+          heading={t('manageMaterial.drawer.heading')}
+        />
+      )}
+    </React.Fragment>
   );
 };
 

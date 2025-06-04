@@ -17,19 +17,21 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import { ChannelType } from '../../manage-sp-account/util';
 import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonUtils from '@src/util/CommonUtils';
 
 export default function MapQuestionnaire() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { applyFilters, clearFilters, setEntity } = useManagerQuestionnaire();
 
-  const { setSelectedTemplates, selectedTemplates, setTemplates } = useQuestionnaire();
+  const { setSelectedTemplates, selectedTemplates = [], setTemplates } = useQuestionnaire();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
-  const selectedEntityType = location.state?.value || false;
+  const searchParams = new URLSearchParams(location.search);
+  const selectedEntityType = searchParams.get('entity');
   const templatesSelected = location.state?.selectedTemplates;
   const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(selectedEntityType);
 
@@ -133,6 +135,10 @@ export default function MapQuestionnaire() {
   const handleOnClick = () => {
     navigate('../', { state: { value: selectedEntityType, selectedTemplates: selectedTemplates } });
   };
+
+  if (!CommonUtils.isNonEmptyArray(selectedTemplates)) {
+    navigate('/system-admin/config/questionnaire');
+  }
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <div>
@@ -164,7 +170,6 @@ export default function MapQuestionnaire() {
             )}
           />
         </div>
-
         <TableHeading
           heading={t(isMaterial ? 'table.ariaLabel.materialList' : isCatalog ? 'table.ariaLabel.catalogList' : 'table.ariaLabel.accountList')}
           secondaryView={selectedRows && selectedRows.length > 0}

@@ -38,11 +38,14 @@ const getColumns = ({ t }) => {
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
-      cell: (props) => (
-        <Link to={`?catalog=${props.id}`} className="MCP-table-link">
-          {props?.materialDescription}
-        </Link>
-      )
+      cell: (props) => {
+        console.log(props);
+        return (
+          <Link to={`?catalog=${props.id}`} className="MCP-table-link">
+            {props?.materialDescription}
+          </Link>
+        );
+      }
     },
     {
       id: 'ndcNumber',
@@ -71,7 +74,7 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const beautifiedData = ServiceUtil.transformContent(data);
+  const beautifiedData = ServiceUtil.transformTherapies(data);
 
   const debouncedApplyFilter = React.useCallback(
     CommonUtils.debounce((value) => {
@@ -104,6 +107,8 @@ const Products = () => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
+  console.log(data, beautifiedData);
+
   return (
     <React.Fragment>
       <div className={style['grid-item']}>
@@ -129,7 +134,7 @@ const Products = () => {
           <Heading as="h3">{t('label.spProductListing')}</Heading>
         </div>
       </div>
-      <div className={style['grid-item']}>
+      <div className={`${style['grid-item']} scrollable-table-wrapper`}>
         <CustomDataTable
           siblingBreakpoint="md"
           totalCount={5}
@@ -170,7 +175,7 @@ const Products = () => {
           <SPMaterialDetails
             openSPMaterialDetails={true}
             setOpenSPMaterialDetails={handleOnDetailsPanelClose}
-            viewSPMaterial={data.find((item) => item.id == catalog)}
+            viewSPMaterial={beautifiedData.find((item) => item.id == catalog)}
           />
         )}
       </div>

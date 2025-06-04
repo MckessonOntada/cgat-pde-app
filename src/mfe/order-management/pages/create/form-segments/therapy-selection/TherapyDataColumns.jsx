@@ -63,7 +63,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     cell: (row) => {
       const { tradeName, cellValue } = row;
       return (
-        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}&channelType=${row.channelType}`}>
+        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`}>
           <EclipsesTextcss str={cellValue} />
         </Link>
       );
@@ -108,7 +108,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
       let toolTip = '',
         cellValue = '';
       if (isExpandable) {
-        toolTip = ndc.join(', <br/>');
+        toolTip = ndc.join(', ');
         cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
       } else {
         toolTip = ndc;

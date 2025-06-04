@@ -9,6 +9,10 @@ import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommonUtils from '@src/util/CommonUtils';
 import Alert from '../cgat-alert/Alert';
+import {
+  TherapyDetailsConstantsForBB,
+  TherapyDetailsConstantsForSP
+} from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -21,10 +25,11 @@ function TherapyDetailsWithTabs({
   therapyId,
   onClose,
   onSelect,
-  buyAndBillTherapyConstants,
-  spTherapyConstants,
+  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB,
+  spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
-  heading
+  heading,
+  isMaterialListing = false
 }) {
   const { t } = useTranslate();
   const [therapyTabs, setTherapyTabs] = useState(() => {
@@ -53,7 +58,13 @@ function TherapyDetailsWithTabs({
     error
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
-    queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade, channelType),
+    queryFn: async () => {
+      if (isMaterialListing) {
+        return OrderService.getTherapyDetailsByTradeName2(trade);
+      } else {
+        return OrderService.getTherapyDetailsByTradeName(trade);
+      }
+    },
     select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
@@ -75,6 +86,12 @@ function TherapyDetailsWithTabs({
           showCloseIcon: false
         });
       }
+    },
+    select: (data) => {
+      if (isMaterialListing) {
+        data = data.map(({ therapy, ...rest }) => ({ ...therapy, rest }));
+      }
+      return data;
     },
     onError: (err) => {
       const message = CommonUtils.getAxiosErrorMessage(err);

@@ -578,6 +578,7 @@ div.disable-all {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .row-space-between-center {
@@ -1565,7 +1566,8 @@ div[role="row"] {
 }
 
 .scrollable-table-wrapper {
-  div.fuwETZ {
+  div.fuwETZ,
+  div.jzrolw {
     height: 381px;
   }
 }

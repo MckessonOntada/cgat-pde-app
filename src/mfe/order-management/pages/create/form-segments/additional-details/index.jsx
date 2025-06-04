@@ -70,7 +70,7 @@ function AdditionalDetails() {
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
-  const { therapy = {} } = orderDetails;
+  const { therapy = {}, tradeDetails = {} } = orderDetails;
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -153,11 +153,11 @@ function AdditionalDetails() {
         {
           soldToAccountId,
           shipToAccountId,
-          ndc: therapy.ndcNumber
+          ndc: tradeDetails.ndc
         },
         variantsApiRequestParam
       ),
-    enabled: !!therapy.ndcNumber && !!soldToAccountId && !!shipToAccountId,
+    enabled: !!tradeDetails.ndc && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {},
     onError: (error) => {
@@ -296,26 +296,28 @@ function AdditionalDetails() {
     error: configuredQuestionsError,
     refetch: fetchConfiguredQuestions
   } = useQuery({
-    queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
+    queryKey: ['configured-questionnaire', orderId, variant ? variant.materialNumber : 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = orderDetails;
       if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
 
       let materialOrNdcNumber = '';
       if (isSPCrossWalked) {
-        materialOrNdcNumber = variant ? variant?.materialNumber : therapy.materialNumber;
-      } else if (isSPNonCrossWalked) {
-        materialOrNdcNumber = therapy.materialNumber;
+        materialOrNdcNumber = variant && variant?.materialNumber;
       } else {
-        materialOrNdcNumber = therapy.ndcNumber;
+        materialOrNdcNumber = tradeDetails.ndcNumber;
       }
+
+      // else if (isSPNonCrossWalked) {
+      //   materialOrNdcNumber = therapy.materialNumber;
+      // }
 
       const payload = {
         ...(variantType ? { variantType } : {}),
         materialOrNdcNumber,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
-        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy.materialNumber,
+        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : tradeDetails.ndcNumber,
         channelType: isSPCrossWalked || isSPNonCrossWalked ? CHANNEL_TYPE.SPECIALTY_PHARMA : CHANNEL_TYPE.BUY_AND_BILL
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
@@ -503,7 +505,7 @@ function AdditionalDetails() {
     const questionnaireDependencies = {
       soldToCustomer: accountDetails.soldToAccount.accountNumber,
       shipToCustomer: accountDetails.soldToAccount.accountNumber,
-      sapMaterial: therapy.materialNumber,
+      sapMaterial: tradeDetails.ndcNumber,
       variant
     };
 
@@ -603,10 +605,10 @@ function AdditionalDetails() {
     if (orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires) {
       const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
       if (soldToAccount && shipToAccount) {
-        fetchConfiguredQuestions();
+        if ((isSPCrossWalked && variant) || !isSPCrossWalked) fetchConfiguredQuestions();
       }
     }
-  }, [variant, orderDetails]);
+  }, [variant, orderDetails, isSPCrossWalked]);
 
   const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue, setFieldTouched) => {
     const updatedOptions = {

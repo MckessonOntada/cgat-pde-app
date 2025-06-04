@@ -39,7 +39,7 @@ function TemplateList({ onAlert }) {
     isError,
     isLoading,
     paginationConfig,
-    selectedTemplates,
+    selectedTemplates = [],
     setTemplates,
     setPageNumber,
     refetchTemplates
@@ -170,7 +170,7 @@ function TemplateList({ onAlert }) {
   ];
 
   const handleOnSelectMaster = (entity) => {
-    navigate('map-questionnaire', { state: { value: entity, selectedTemplates: selectedTemplates } });
+    navigate(`map-questionnaire?entity=${entity}`, { state: { value: entity, selectedTemplates: selectedTemplates } });
   };
 
   const {
