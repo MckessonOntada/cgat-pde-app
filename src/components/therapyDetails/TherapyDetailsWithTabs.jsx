@@ -307,7 +307,7 @@ function TherapyDetailsWithTabs({
                           <div>{renderConfiguration(section.sectionData, therapyDetails.materialConfig)}</div>
                         </div>
                       ) : null
-                    ) : therapyDetails?.questionnaires.length > 0 ? (
+                    ) : therapyDetails?.questionnaires?.length > 0 ? (
                       <div> {renderQuestionnaire(therapyDetails, section, hasDeleteConfigAccess)}</div>
                     ) : null}
                   </React.Fragment>
