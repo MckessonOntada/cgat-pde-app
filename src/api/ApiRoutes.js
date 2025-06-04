@@ -86,7 +86,7 @@ const ApiRoutes = Object.freeze({
   GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`),
   GET_SP_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/sp/config/${materials}`),
   CONFIGURE_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies/config/update`),
-  DELETE_MATERIAL_CONFIG: (materialId) => constructUserManagementServicePublicUrl(`therapies/config/${materialId}`),
+  DELETE_MATERIAL_CONFIG: (ndcnumber) => constructUserManagementServicePublicUrl(`therapies/config/ndc/${ndcnumber}`),
   RESET_PASSWORD: () => constructUserManagementServiceUrl(`users/current/reset-password`),
   GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-footer`),
   // Fetch all in-app notifications for the current user

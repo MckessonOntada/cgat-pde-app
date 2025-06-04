@@ -3,6 +3,8 @@ import styles from './assets/TherapyDetails.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
 import { Loader, Heading, Button, TabList, IconButton } from '@mckesson/mcp-component-library';
+
+import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import { ReactComponent as arrow_right } from '@src/assets/image/arrow_right_small.svg';
 import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small.svg';
 import OrderService from '@src/api/commonService/OrderService';
@@ -13,6 +15,13 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { ConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import AuthUtils from '@src/util/AuthUtils';
+import MaterialService from '@src/api/commonService/MaterialService';
+import { renderModal } from '@src/util/ModalUtil';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import { useNavigate } from 'react-router-dom';
+import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -32,6 +41,7 @@ function TherapyDetailsWithTabs({
   isMaterialListing = false
 }) {
   const { t } = useTranslate();
+  const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter();
   const [therapyTabs, setTherapyTabs] = useState(() => {
     if (!therapyId) return [];
 
@@ -50,11 +60,14 @@ function TherapyDetailsWithTabs({
   const [selectedTab, setSelectedTab] = useState(null);
   const [isCardExpanded, setIsCardExpanded] = useState(true);
   const [therapyDetails, setTherapyDetails] = useState(null);
+  const [configureDetails, setConfigureDetails] = useState(null);
+  const [questionnaires, setQuestionnaires] = useState(null);
   const [alert, setAlert] = React.useState(null);
 
   const {
     data: details,
     isLoading,
+    refetch,
     error
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
@@ -68,16 +81,21 @@ function TherapyDetailsWithTabs({
     select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
-        const therapyTabs = data.map((item, index) => ({
-          id: `details-by-therapy-id-${item.id}`,
-          therapyId: item.id,
-          configName: item.materialDescription,
-          isActiveTab: index === 0,
-          sequence: index,
-          labelForMobile: 'labels.tabs.submittedBuyAndBill'
-        }));
+        const therapyTabs = data
+          .sort((a, b) => a.id - b.id)
+          .map((item, index) => ({
+            id: `details-by-therapy-id-${item.id}`,
+            key: item.id,
+            therapyId: item.id,
+            configName: item.materialDescription,
+            isActiveTab: index === 0,
+            sequence: item.id,
+            labelForMobile: 'labels.tabs.submittedBuyAndBill'
+          }));
         setTherapyTabs(therapyTabs);
-        setSelectedTab(therapyTabs[0]);
+        if (!selectedTab || !selectedTab.therapyId) {
+          setSelectedTab(therapyTabs[0]);
+        }
       } else {
         setAlert({
           kind: 'info',
@@ -89,7 +107,7 @@ function TherapyDetailsWithTabs({
     },
     select: (data) => {
       if (isMaterialListing) {
-        data = data.map(({ therapy, ...rest }) => ({ ...therapy, rest }));
+        data = data.map(({ therapy, ...rest }) => ({ ...therapy, ...rest }));
       }
       return data;
     },
@@ -133,6 +151,107 @@ function TherapyDetailsWithTabs({
     setSelectedTab(selectedTab);
   };
 
+  const OnDelinkQuestionnaireClick = async (id, ndcNumber) => {
+    const payload = {
+      questionnaireId: id,
+      materialOrNdcNumber: ndcNumber
+    };
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('messages.confirmation.delink')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('label.no')
+        },
+        confirm: {
+          label: t('label.yes'),
+          action: async () => {
+            try {
+              await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
+              refetch();
+            } catch (error) {
+              const message = CommonUtils.getAxiosErrorMessage(error);
+              setAlert({
+                type: 'error',
+                description: message,
+                showTitle: false
+              });
+            }
+          }
+        }
+      }
+    });
+  };
+
+  const renderQuestionnaire = (details, section, hasDeleteConfigAccess) => {
+    let showHeader = true;
+    return details.questionnaires.map((questionnaire, index) => {
+      const item = (
+        <QuestionnaireItem
+          key={questionnaire.id}
+          section={section}
+          templateName={questionnaire.templateName}
+          onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id, details.ndcNumber)}
+          showHeader={showHeader}
+          questionnaire={details.questionnaires}
+          hasDeleteConfigAccess={hasDeleteConfigAccess}
+        />
+      );
+      showHeader = false;
+      return item;
+    });
+  };
+
+  const renderConfiguration = (fields, details) =>
+    fields.map(({ label, value, display = true, translation = true }) => {
+      const configValue = details?.materialConfig?.[value];
+      const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
+      return <ConfigItem key={label} label={translation ? t(label) : label} value={details[value] || '-'} display={display} />;
+    });
+
+  const onDeleteConfig = async (actionId) => {
+    if (actionId === 'delete-materialConfig') {
+      renderModal({
+        title: t('messages.header.confirmation'),
+        bodyContent: (
+          <div className="MCP-modal-body">
+            <p>{t('messages.confirmation.deleteConfiguration')}</p>
+          </div>
+        ),
+        footerActions: {
+          cancel: {
+            label: t('label.no')
+          },
+          confirm: {
+            label: t('label.yes'),
+            action: async () => {
+              try {
+                await MaterialService.deleteMaterialConfig(therapyDetails.materialConfig.ndcNumber);
+                setAlert({
+                  type: 'success',
+                  description: t('manageMaterial.drawer.controls.apply.success'),
+                  showTitle: false
+                });
+
+                refetch();
+              } catch (error) {
+                setAlert({
+                  type: 'error',
+                  description: t('manageMaterial.drawer.controls.apply.error'),
+                  showTitle: false
+                });
+              }
+            }
+          }
+        }
+      });
+    }
+  };
+
   return (
     <FloatingDrawer
       open={true}
@@ -169,51 +288,32 @@ function TherapyDetailsWithTabs({
           <Loader variant="circular" />
         ) : (
           <div className={`${styles.body}`}>
-            {therapyDetails && (
-              <>
-                {selectedTab === THERAPY_TABS.SP ? (
-                  <div className={styles.cardToggleWrapper}>
-                    {therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL &&
-                    therapyDetails?.isCrosswalked &&
-                    therapyDetails?.crosswalkedTherapies?.length > 0 ? (
-                      therapyDetails.crosswalkedTherapies.map((therapy, index) => (
-                        <div key={therapy.id || index} className={styles.therapyCard}>
-                          <div className={`${styles.cardHeader} ${index === 0 ? styles.cardHeaderWithTopBorder : ''}`}>
-                            <IconButton
-                              label={therapy?.materialDescription}
-                              size="lg"
-                              iconButton={false}
-                              textButton={true}
-                              Icon={isCardExpanded === therapy.id ? arrow_down : arrow_right}
-                              onClick={() => handleExpandCard(therapy.id)}
-                            />
+            {therapyDetails && <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} therapyData={buyAndBillTherapyConstants} />}
+            <div className={styles.detailsPanel}>
+              <div className={`${styles.drawerBodyContent} ${styles.bodyPadding} ${styles.cardToggleWrapper}`}>
+                {ConfigConstants?.map((section, index) => (
+                  <React.Fragment key={section.sectionHeading}>
+                    {!section.questionnaire ? (
+                      therapyDetails?.materialConfig ? (
+                        <div key={section.sectionHeading}>
+                          <div className={styles.configurationHeader}>
+                            <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
+                            <div className={styles.actions}>
+                              {section.actions?.map(
+                                (action) => hasDeleteConfigAccess && <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                              )}
+                            </div>
                           </div>
-
-                          {isCardExpanded === therapy.id && <DetailsPanel details={therapy} therapyData={spTherapyConstants} />}
+                          <div>{renderConfiguration(section.sectionData, therapyDetails.materialConfig)}</div>
                         </div>
-                      ))
-                    ) : (
-                      <>
-                        <div className={`${styles.cardHeader} ${styles.cardHeaderWithTopBorder}`}>
-                          <IconButton
-                            label={therapyDetails?.materialDescription}
-                            size="lg"
-                            iconButton={false}
-                            textButton={true}
-                            Icon={isCardExpanded === therapyDetails.id ? arrow_down : arrow_right}
-                            onClick={() => handleExpandCard(therapyDetails.id)}
-                          />
-                        </div>
-
-                        {isCardExpanded === therapyDetails.id && <DetailsPanel details={therapyDetails} therapyData={spTherapyConstants} />}
-                      </>
-                    )}
-                  </div>
-                ) : (
-                  <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} therapyData={buyAndBillTherapyConstants} />
-                )}
-              </>
-            )}
+                      ) : null
+                    ) : therapyDetails?.questionnaires.length > 0 ? (
+                      <div> {renderQuestionnaire(therapyDetails, section, hasDeleteConfigAccess)}</div>
+                    ) : null}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -247,6 +347,51 @@ function DetailItem({ label, value }) {
       <div className={styles.detailItem}>
         <p className={styles.leftContent}>{label}</p>
         <p className={styles.rightContent}>{value || '-'}</p>
+      </div>
+    </>
+  );
+}
+
+function ConfigItem({ label, value, display = true }) {
+  const { t } = useTranslate();
+  if (!display) return null;
+
+  return (
+    <>
+      <div className={styles.detailItem}>
+        <div className={styles.leftContentBold}>{label}</div>
+        <div className={styles.rightContentAction}>{typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}</div>
+      </div>
+    </>
+  );
+}
+
+function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire, hasDeleteConfigAccess = true }) {
+  const navigate = useNavigate();
+  const { t } = useTranslate();
+
+  return (
+    <>
+      {showHeader && (
+        <div className={styles.configurationHeader}>
+          <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
+          <div className={styles.actions}>
+            {section.actions?.map((action) => (
+              <Button key={action.id} size="md" textButton onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
+                {t(action.label)}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className={styles.detailItem}>
+        <div className={styles.leftContentBold}>{templateName}</div>
+        {hasDeleteConfigAccess && (
+          <div className={styles.rightContentAction} onClick={onDelete}>
+            <IconBinRed className={styles.deleteIcon} />
+          </div>
+        )}
       </div>
     </>
   );

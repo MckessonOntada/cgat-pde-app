@@ -81,7 +81,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
       const configValues = {
-        materialNumbers: selectedMaterials.map((material) => material.materialNumber),
+        ndcNumbers: selectedMaterials.map((material) => material.ndc),
         isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
         isCoiIdRequired: formValues.coiIdRequired === 'yes'
       };
