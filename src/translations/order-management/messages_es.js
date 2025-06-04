@@ -537,5 +537,6 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.zip': 'S_Zip is required.',
   'orderManagement.patientDetails.validation.state': 'S_State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.',
-  'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.'
+  'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.',
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page'
 };

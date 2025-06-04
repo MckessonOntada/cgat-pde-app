@@ -61,7 +61,7 @@ const Summary = () => {
   const { showAlert } = useAlert();
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader } = useOrder(orderId);
-  const { isApprover = false, isSimulate = false } = location.state || {};
+  const { isApprover = false, isSimulate = false, backToInvoiceListing = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
@@ -378,9 +378,13 @@ const Summary = () => {
   };
 
   const handleOnBackToOrders = () => {
-    navigate(RoutePaths.pathOrderManagement, {
-      state: { activeTab: location?.state?.fromTab }
-    });
+    if (backToInvoiceListing) {
+      navigate('/record/invoices');
+    } else {
+      navigate(RoutePaths.pathOrderManagement, {
+        state: { activeTab: location?.state?.fromTab }
+      });
+    }
   };
 
   const handleOnEditSection = (stage) => {
@@ -534,7 +538,7 @@ const Summary = () => {
     <div className="MCP-module-wrapper order-summary-container">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
-          {t('captions.btnBackToManageOrder')}
+          {backToInvoiceListing ? t('orderManagement.backToInvoiceDetails') : t('captions.btnBackToManageOrder')}
         </Button>
       </div>
       {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
