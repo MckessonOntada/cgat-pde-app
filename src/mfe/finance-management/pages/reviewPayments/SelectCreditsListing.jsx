@@ -4,7 +4,7 @@ import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 
 function SelectCreditsListing(props) {
   const { selectedCredits, setSelectedCredits, totalCreditsCount, settotalCreditsCount, settotalCreditsAmount } = props;
-  const { data, actualData } = usePaymentCredits();
+  const { data, actualData: allCreditData } = usePaymentCredits();
 
   useEffect(() => {
     let _sum = data
@@ -15,13 +15,12 @@ function SelectCreditsListing(props) {
     settotalCreditsCount(parseFloat(_sum).toFixed(2));
   }, [data]);
   useEffect(() => {
-    let _sum = actualData
-      .filter((i) => i.openAmount)
-      .reduce((accumulator, currentValue) => {
-        return parseFloat(currentValue.openAmount), accumulator + parseFloat(currentValue.openAmount);
-      }, 0);
-    settotalCreditsAmount(parseFloat(_sum).toFixed(2));
-  }, [actualData]);
+    const total = allCreditData.reduce((sum, item) => {
+      const amount = parseFloat(item.openAmount);
+      return sum + (isNaN(amount) ? 0 : amount);
+    }, 0);
+    settotalCreditsAmount(total.toFixed(2));
+  }, [allCreditData]);
 
   return (
     <React.Fragment>
