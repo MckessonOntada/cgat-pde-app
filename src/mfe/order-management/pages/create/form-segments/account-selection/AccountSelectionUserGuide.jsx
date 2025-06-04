@@ -70,7 +70,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
         serializeParams({
           ...(selectedChannel === CHANNEL_TYPE.BUY_AND_BILL ? { program: selectedProgram } : {}),
           channelType: selectedChannel,
-          therapyChannelType: channelType
+          ndcChannelType: channelType
         })
       ),
     enabled: Boolean(selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA) || Boolean(selectedProgram),
