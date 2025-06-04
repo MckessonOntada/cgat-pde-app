@@ -305,7 +305,7 @@ function AdditionalDetails() {
       if (isSPCrossWalked) {
         materialOrNdcNumber = variant && variant?.materialNumber;
       } else {
-        materialOrNdcNumber = tradeDetails.ndcNumber;
+        materialOrNdcNumber = tradeDetails.ndc;
       }
 
       // else if (isSPNonCrossWalked) {
@@ -317,7 +317,7 @@ function AdditionalDetails() {
         materialOrNdcNumber,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
-        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : tradeDetails.ndcNumber,
+        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : tradeDetails.ndc,
         channelType: isSPCrossWalked || isSPNonCrossWalked ? CHANNEL_TYPE.SPECIALTY_PHARMA : CHANNEL_TYPE.BUY_AND_BILL
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
