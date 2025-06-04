@@ -6,6 +6,9 @@ import { useManagerQuestionnaire } from '../context/ManageQuestionnaireContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import { useTranslate } from '@src/translations/useTranslation';
+import { Tooltip } from '@mckesson/mcp-component-library';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import CommonUtils from '@src/util/CommonUtils';
 
 function flattenMaterials(data) {
   if (!data && !Array.isArray(data)) {
@@ -83,18 +86,19 @@ export const getColumnsByEntityType = ({
           id: 'therapy',
           name: t('labels.therapy'),
           selector: () => {},
-          maxWidth: '250px',
+          maxWidth: '220px',
           cell: (row) => {
-            const { tradeName, cellValue } = row;
+            const { tradeName, cellValue, channelType } = row;
             return (
               <span
                 className="MCP-table-link"
                 aria-label={t('table.columns.captions.accountNumber')}
                 onClick={() => {
                   searchParams.set('trade', tradeName);
+                  if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) searchParams.set('channelType', channelType);
                   setSearchParams(searchParams);
                 }}>
-                <EclipsesTextcss str={cellValue} maxWidth={240} />
+                <EclipsesTextcss str={cellValue} maxWidth={220} />
               </span>
             );
           }
@@ -103,10 +107,10 @@ export const getColumnsByEntityType = ({
           id: 'genericName',
           name: t('labels.genericName'),
           selector: (row) => row.genericName || '',
-          maxWidth: '230px',
+          maxWidth: '200px',
           cell: (row) => (
             <span aria-label={t('labels.genericName')}>
-              <EclipsesTextcss str={row.genericName} maxWidth={220} />
+              <EclipsesTextcss str={row.genericName} maxWidth={200} />
             </span>
           )
         },
@@ -116,12 +120,23 @@ export const getColumnsByEntityType = ({
           selector: (row) => row.ndc || '',
           sortable: true,
           sortKey: 'ndc',
-          maxWidth: '200px',
-          cell: (props) => (
-            <span aria-label={t('label.ndc')}>
-              <EclipsesTextcss str={props.ndc} maxWidth={180} />
-            </span>
-          )
+          minWidth: '240px',
+          cell: ({ isExpandable, ndc }) => {
+            let toolTip = '',
+              cellValue = '';
+            if (isExpandable) {
+              toolTip = ndc.join(', ');
+              cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
+            } else {
+              toolTip = ndc;
+              cellValue = ndc;
+            }
+            return (
+              <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+                <Tooltip body={toolTip}>{cellValue}</Tooltip>
+              </span>
+            );
+          }
         },
         {
           id: 'manufacturer',
