@@ -95,7 +95,6 @@ export const ManageQuestionnaireProvider = ({ children }) => {
       }
 
       res.data.content = ServiceUtil.transformTherapies(res.data.content);
-      debugger;
       const { content: data, totalElements, totalPages } = res.data;
 
       setPaginationConfig((prevConfig) => ({

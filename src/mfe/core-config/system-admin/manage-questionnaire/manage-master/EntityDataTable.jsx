@@ -127,6 +127,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
 
   const handleOnClose = () => {
     searchParams.delete('trade');
+    searchParams.delete('channelType');
     setSearchParams(searchParams);
   };
 
@@ -187,7 +188,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
       {entityType === MasterEntityType.Material && trade && (
         <TherapyDetailsWithTabs
           trade={trade}
-          {...(channelType ? { channelType } : {})}
+          channelType={channelType}
           isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}

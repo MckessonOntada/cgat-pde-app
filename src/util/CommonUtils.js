@@ -663,6 +663,23 @@ const getListOverflowingDisplayLabel = (data = [], length = 3) => {
   }
 };
 
+function flattenTherapies(data) {
+  if (!data && !Array.isArray(data)) {
+    throw new Error('Invalid data provided to flattenMaterials function');
+  }
+
+  return data.reduce((acc, item) => {
+    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
+      item.therapies.forEach((material) => {
+        acc.push(material);
+      });
+    } else {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -712,7 +729,8 @@ const CommonUtils = Object.freeze({
   flattenToRoot,
   formatFields,
   getAxiosErrorMessage,
-  getListOverflowingDisplayLabel
+  getListOverflowingDisplayLabel,
+  flattenTherapies
 });
 
 export default CommonUtils;

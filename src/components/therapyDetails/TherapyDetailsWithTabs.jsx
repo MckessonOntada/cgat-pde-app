@@ -30,7 +30,7 @@ export const THERAPY_TABS = {
 
 function TherapyDetailsWithTabs({
   trade,
-  channelType = 'ALL',
+  channelType,
   therapyId,
   onClose,
   onSelect,
@@ -72,8 +72,9 @@ function TherapyDetailsWithTabs({
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
     queryFn: async () => {
+      debugger;
       if (isMaterialListing) {
-        return OrderService.getTherapyDetailsByTradeName2(trade);
+        return OrderService.getTherapyDetailsByTradeName2(trade, channelType);
       } else {
         return OrderService.getTherapyDetailsByTradeName(trade);
       }
@@ -88,7 +89,7 @@ function TherapyDetailsWithTabs({
             key: item.id,
             therapyId: item.id,
             configName: item.materialDescription,
-            isActiveTab: index === 0,
+            isActiveTab: selectedTab ? selectedTab.therapyId === item.id : index === 0,
             sequence: item.id,
             labelForMobile: 'labels.tabs.submittedBuyAndBill'
           }));
@@ -96,6 +97,9 @@ function TherapyDetailsWithTabs({
         if (!selectedTab || !selectedTab.therapyId) {
           setSelectedTab(therapyTabs[0]);
         }
+
+        const __therapyDetails = data.find((d) => d.id === selectedTab.therapyId);
+        setTherapyDetails({ ...__therapyDetails });
       } else {
         setAlert({
           kind: 'info',
@@ -192,7 +196,7 @@ function TherapyDetailsWithTabs({
     return details.questionnaires.map((questionnaire, index) => {
       const item = (
         <QuestionnaireItem
-          key={questionnaire.id}
+          key={`${questionnaire.id}-${index}`}
           section={section}
           templateName={questionnaire.templateName}
           onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id, details.ndcNumber)}

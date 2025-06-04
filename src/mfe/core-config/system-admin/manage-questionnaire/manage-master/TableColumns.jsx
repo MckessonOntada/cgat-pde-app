@@ -10,21 +10,6 @@ import { Tooltip } from '@mckesson/mcp-component-library';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import CommonUtils from '@src/util/CommonUtils';
 
-function flattenMaterials(data) {
-  if (!data && !Array.isArray(data)) {
-    return [];
-  }
-
-  return data.reduce((acc, item) => {
-    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
-      item.therapies.forEach((material) => {
-        acc.push(material);
-      });
-    }
-    return acc;
-  }, []);
-}
-
 export const getColumnsByEntityType = ({
   entityType,
   entityData,
@@ -46,7 +31,7 @@ export const getColumnsByEntityType = ({
           id: 'checkbox',
           name: renderTableCheckBox(
             { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-            flattenMaterials(entityData),
+            CommonUtils.flattenTherapies(entityData),
             'materialNumber',
             {
               ...paginationConfig,
@@ -69,7 +54,7 @@ export const getColumnsByEntityType = ({
             }
             return renderTableCheckBox(
               row,
-              flattenMaterials(entityData),
+              CommonUtils.flattenTherapies(entityData),
               'materialNumber',
               {
                 ...paginationConfig,
@@ -95,7 +80,7 @@ export const getColumnsByEntityType = ({
                 aria-label={t('table.columns.captions.accountNumber')}
                 onClick={() => {
                   searchParams.set('trade', tradeName);
-                  if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) searchParams.set('channelType', channelType);
+                  searchParams.set('channelType', channelType);
                   setSearchParams(searchParams);
                 }}>
                 <EclipsesTextcss str={cellValue} maxWidth={220} />
