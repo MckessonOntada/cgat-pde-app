@@ -79,15 +79,15 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       sortable: true,
       sortKey: 'spProductName',
       cell: (props) => (
-        // <Link
-        //   className="MCP-table-link"
-        //   onClick={(e) => {
-        //     e.preventDefault();
-        //     setViewSPMaterial(props);
-        //     setOpenSPMaterialDetails(true);
-        //   }}>
-        <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
-        //</Link>
+        <Link
+          className="MCP-table-link"
+          onClick={(e) => {
+            e.preventDefault();
+            setViewSPMaterial(props);
+            setOpenSPMaterialDetails(true);
+          }}>
+          <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
+        </Link>
       )
     },
     {
