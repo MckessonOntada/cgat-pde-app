@@ -304,20 +304,18 @@ function AdditionalDetails() {
       let materialOrNdcNumber = '';
       if (isSPCrossWalked) {
         materialOrNdcNumber = variant && variant?.materialNumber;
+      } else if (isSPNonCrossWalked) {
+        materialOrNdcNumber = therapy.materialNumber;
       } else {
         materialOrNdcNumber = tradeDetails.ndc;
       }
-
-      // else if (isSPNonCrossWalked) {
-      //   materialOrNdcNumber = therapy.materialNumber;
-      // }
 
       const payload = {
         ...(variantType ? { variantType } : {}),
         materialOrNdcNumber,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
-        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : tradeDetails.ndc,
+        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy?.materialNumber,
         channelType: isSPCrossWalked || isSPNonCrossWalked ? CHANNEL_TYPE.SPECIALTY_PHARMA : CHANNEL_TYPE.BUY_AND_BILL
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
