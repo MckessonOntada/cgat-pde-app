@@ -186,6 +186,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
       {entityType === MasterEntityType.Material && trade && (
         <TherapyDetailsWithTabs
           trade={trade}
+          isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}

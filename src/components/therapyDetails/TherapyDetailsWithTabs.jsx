@@ -28,7 +28,8 @@ function TherapyDetailsWithTabs({
   buyAndBillTherapyConstants = TherapyDetailsConstantsForBB,
   spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
-  heading
+  heading,
+  isMaterialListing = false
 }) {
   const { t } = useTranslate();
   const [therapyTabs, setTherapyTabs] = useState(() => {
@@ -57,7 +58,13 @@ function TherapyDetailsWithTabs({
     error
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
-    queryFn: async () => OrderService.getTherapyDetailsByTradeName(trade),
+    queryFn: async () => {
+      if (isMaterialListing) {
+        return OrderService.getTherapyDetailsByTradeName2(trade);
+      } else {
+        return OrderService.getTherapyDetailsByTradeName(trade);
+      }
+    },
     select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
@@ -79,6 +86,12 @@ function TherapyDetailsWithTabs({
           showCloseIcon: false
         });
       }
+    },
+    select: (data) => {
+      if (isMaterialListing) {
+        data = data.map(({ therapy, ...rest }) => ({ ...therapy, rest }));
+      }
+      return data;
     },
     onError: (err) => {
       const message = CommonUtils.getAxiosErrorMessage(err);
