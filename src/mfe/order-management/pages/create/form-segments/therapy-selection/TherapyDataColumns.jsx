@@ -57,7 +57,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     selector: () => {},
     minWidth: '200px',
     sortable: true,
-    sortKey: 'material_description',
+    sortKey: 'trade_name',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (row) => {
@@ -104,8 +104,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     name: t('labels.ndc'),
     selector: () => {},
     minWidth: '120px',
-    sortable: true,
-    sortKey: 'ndc',
+    sortable: false,
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cardHeader: true,
@@ -131,7 +130,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     name: t('labels.manufacturer'),
     selector: () => {},
     width: '180px',
-    sortable: true,
+    sortable: false,
     cell: ({ isExpandable, manufacturer }) => {
       let toolTip = '',
         cellValue = '';

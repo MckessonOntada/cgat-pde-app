@@ -1567,9 +1567,13 @@ div[role="row"] {
 }
 
 .scrollable-table-wrapper {
-  div.fuwETZ,
-  div.jzrolw {
+  div.fuwETZ {
     height: 381px;
+  }
+  &.products {
+    .jzrolw {
+      height: 381px;
+    }
   }
 }
 

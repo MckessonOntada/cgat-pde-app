@@ -762,5 +762,6 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.city': 'City is required.',
   'orderManagement.patientDetails.validation.zip': 'Zip is required.',
   'orderManagement.patientDetails.validation.state': 'State is required.',
-  'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.'
+  'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page'
 };

@@ -62,8 +62,8 @@ function TherapySelection() {
     searchParams.delete('channelType');
     navigate({
       pathname: '',
-      search: searchParams.toString() ? `?${searchParams.toString()}` : '',
-      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
+      search: searchParams.toString() ? `?${searchParams.toString()}` : '', 
+      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView } 
     });
   };
 

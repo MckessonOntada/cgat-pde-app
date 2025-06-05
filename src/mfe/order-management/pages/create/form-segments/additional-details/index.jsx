@@ -737,17 +737,25 @@ function AdditionalDetails() {
                     </div>
                   )}
 
-                  {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
-                    <div className="configured-questionnaire-form">
-                      <div className="MCP-module-body">
-                        <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
-                        <QuestionnaireTemplate
-                          onRemoveDocument={handleOnRemoveDocument}
-                          onDocumentChange={handleOnDocumentChange}
-                          config={questionnaireTemplateConfig}
-                          isPreview={false}
-                        />
-                      </div>
+                  {isFetchingConfiguredQuestions ? (
+                    <div>
+                      <Loader variant="circular" />
+                    </div>
+                  ) : (
+                    <div>
+                      {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
+                        <div className="configured-questionnaire-form">
+                          <div className="MCP-module-body">
+                            <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                            <QuestionnaireTemplate
+                              onRemoveDocument={handleOnRemoveDocument}
+                              onDocumentChange={handleOnDocumentChange}
+                              config={questionnaireTemplateConfig}
+                              isPreview={false}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

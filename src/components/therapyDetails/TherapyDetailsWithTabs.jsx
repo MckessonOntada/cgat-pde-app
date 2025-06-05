@@ -80,7 +80,6 @@ function TherapyDetailsWithTabs({
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
     queryFn: async () => {
-      debugger;
       if (isMaterialListing) {
         return OrderService.getTherapyDetailsByTradeName2(trade, channelType);
       } else {
