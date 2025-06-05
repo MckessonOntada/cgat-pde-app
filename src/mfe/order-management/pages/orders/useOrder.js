@@ -2,10 +2,13 @@ import React from 'react';
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
 import { Loader } from '@mckesson/mcp-component-library';
+import { useNavigate } from 'react-router-dom';
 
 const useOrder = (orderId) => {
+  const navigate = useNavigate();
+
   const result = useQuery({
-    queryKey: ['summary', orderId],
+    queryKey: ['order-details', orderId],
     queryFn: async () => OrderService.getOrderById(orderId),
     cacheTime: 0,
     enabled: Boolean(orderId),
@@ -27,6 +30,18 @@ const useOrder = (orderId) => {
       }
 
       return result;
+    },
+    onError: (error) => {
+      if (error.status === 404) {
+        navigate('/orders', {
+          state: {
+            alert: {
+              type: 'error',
+              description: 'Oder details not found.'
+            }
+          }
+        });
+      }
     }
   });
 
