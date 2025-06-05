@@ -40,6 +40,7 @@ export const QuestionnaireProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [selectedTemplates, setSelectedTemplates] = useState([]);
+  const [fileteredData, setfileteredData] = useState(false);
   const selectEntity = () => {};
   const removeEntity = () => {};
 
@@ -88,6 +89,7 @@ export const QuestionnaireProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
+    setfileteredData(true);
   };
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
@@ -97,6 +99,7 @@ export const QuestionnaireProvider = ({ children }) => {
   };
   const clearFilters = () => {
     setFilterConfig({ ...INITIAL_FILTER_STATE });
+    setfileteredData(false);
   };
 
   const setCurrentPage = (pageNumber) => {
@@ -123,7 +126,8 @@ export const QuestionnaireProvider = ({ children }) => {
         isError: isErrorTemplates,
         setTemplates,
         selectedTemplates,
-        setSelectedTemplates
+        setSelectedTemplates,
+        fileteredData
       }}>
       {children}
     </QuestionnaireContext.Provider>

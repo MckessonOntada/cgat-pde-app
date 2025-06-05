@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  Button,
-  Badge,
-  CheckboxGroup,
-  Modal,
-  Tooltip,
-  MenuList
-} from '@mckesson/mcp-component-library';
+import { Button, Badge, CheckboxGroup, Modal, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -28,10 +21,7 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { PATHS } from '../../routes';
 import { RoutePaths } from '@src/routes/constants';
-import {
-  CUSTOMER_CENTRE,
-  CUSTOMER_SERVICE
-} from '@src/api/commonService/CommonService';
+import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -50,17 +40,7 @@ function UserTable({ onActionSuccess }) {
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
-  const {
-    isLoading,
-    isError,
-    error,
-    data,
-    activeTab,
-    paginationConfig,
-    applySort,
-    refreshData,
-    setPageNumber
-  } = useUser();
+  const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber, fileteredData } = useUser();
   const location = useLocation();
   const { isBack = false } = location.state || {};
   const userPermissions = AuthUtils.getUserPermissions();
@@ -84,19 +64,9 @@ function UserTable({ onActionSuccess }) {
   const handleActivateDeactivateUser = async ({ userId, isActive }) => {
     let res;
     if (isActive) {
-      res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
-        httpVerb.DELETE,
-        null
-      );
+      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
     } else {
-      res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(
-          requestParams
-        )}`,
-        httpVerb.PATCH,
-        null
-      );
+      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(requestParams)}`, httpVerb.PATCH, null);
     }
     return res.data;
   };
@@ -107,21 +77,13 @@ function UserTable({ onActionSuccess }) {
       refreshData();
       setSelectedRows(null);
       const isSuccess = true;
-      const message = t(
-        selectedUserInfo?.isActive
-          ? 'messages.user_deactivate_success'
-          : 'messages.user_activate_success'
-      );
+      const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success');
       onActionSuccess(isSuccess, message);
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       const isSuccess = false;
-      const message = t(
-        selectedUserInfo?.isActive
-          ? 'messages.user_deactivate_failure'
-          : 'messages.user_activate_failure'
-      );
+      const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure');
       onActionSuccess(isSuccess, message);
     }
   });
@@ -131,8 +93,7 @@ function UserTable({ onActionSuccess }) {
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const handleActivateDeactivate = () => {
@@ -167,9 +128,7 @@ function UserTable({ onActionSuccess }) {
       status: 'REJECTED'
     };
     const rejectResponse = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(
-        reqParams
-      )}`,
+      `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
       httpVerb.PATCH,
       {}
     );
@@ -178,14 +137,9 @@ function UserTable({ onActionSuccess }) {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
-      navigate(
-        row.status == 'PENDING'
-          ? `../${PATHS.editUser}/${row.id}`
-          : `../${PATHS.reviewUser}/${row.id}`,
-        {
-          state: { isPending: true }
-        }
-      );
+      navigate(row.status == 'PENDING' ? `../${PATHS.editUser}/${row.id}` : `../${PATHS.reviewUser}/${row.id}`, {
+        state: { isPending: true }
+      });
     } else {
       rejectUser(
         { userId: row.id },
@@ -232,12 +186,7 @@ function UserTable({ onActionSuccess }) {
         ),
         wrap: true,
         width: '40px',
-        omit:
-          activeTab === 2 ||
-          !hasAnyPermission([
-            PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS,
-            PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR
-          ])
+        omit: activeTab === 2 || !hasAnyPermission([PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS, PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR])
       },
       // { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
@@ -251,26 +200,17 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 2 ? (
-              <EclipsesTextcss
-                str={CommonUtils.getFullName(props?.name)}
-                maxWidth={140}
-              />
+              <EclipsesTextcss str={CommonUtils.getFullName(props?.name)} maxWidth={140} />
             ) : (
               <React.Fragment>
                 {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS) ? (
                   <Link
                     to={`${props.id}`} // dynamically constructs the URL with userId
                     className="MCP-table-link">
-                    <EclipsesTextcss
-                      str={CommonUtils.getFullName(props?.name)}
-                      maxWidth={140}
-                    />
+                    <EclipsesTextcss str={CommonUtils.getFullName(props?.name)} maxWidth={140} />
                   </Link>
                 ) : (
-                  <EclipsesTextcss
-                    str={CommonUtils.getFullName(props?.name)}
-                    maxWidth={300}
-                  />
+                  <EclipsesTextcss str={CommonUtils.getFullName(props?.name)} maxWidth={300} />
                 )}
               </React.Fragment>
             )}
@@ -304,21 +244,9 @@ function UserTable({ onActionSuccess }) {
         maxWidth: '185px',
         cell: (props) =>
           props.role?.name ? (
-            <Tooltip
-              body={
-                props.role?.name === CUSTOMER_CENTRE
-                  ? CUSTOMER_SERVICE
-                  : props.role?.name
-              }>
+            <Tooltip body={props.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : props.role?.name}>
               <span className="ellipsis-center">
-                <Badge
-                  text={
-                    props.role?.name === CUSTOMER_CENTRE
-                      ? CUSTOMER_SERVICE
-                      : props.role?.name
-                  }
-                  type={getBackgroundColorByRole(props.role?.name)}
-                />
+                <Badge text={props.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
               </span>
             </Tooltip>
           ) : (
@@ -327,11 +255,7 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'status',
-        name: (
-          <span className="statusCenter">
-            {t('userManagement.table.status')}
-          </span>
-        ),
+        name: <span className="statusCenter">{t('userManagement.table.status')}</span>,
         selector: () => {},
         sortable: true,
         sortKey: 'is_active',
@@ -355,22 +279,13 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'dataAdded',
-        name: isSystemAdminView
-          ? t('userManagement.table.dateAdded')
-          : t('userManagement.table.dateAddedUpdated'),
-        selector: (row) =>
-          isSystemAdminView ? row.updated_At : row.updated_At || row.created_At,
+        name: isSystemAdminView ? t('userManagement.table.dateAdded') : t('userManagement.table.dateAddedUpdated'),
+        selector: (row) => (isSystemAdminView ? row.updated_At : row.updated_At || row.created_At),
         wrap: true,
         sortable: true,
         sortKey: isSystemAdminView ? 'created_At' : 'updated_At',
         minWidth: '100px',
-        cell: (props) =>
-          CommonUtils.convertDateStringFormat(
-            isSystemAdminView
-              ? props.createdAt
-              : props.updatedAt || props.createdAt,
-            'MM-DD-YYYY'
-          )
+        cell: (props) => CommonUtils.convertDateStringFormat(isSystemAdminView ? props.createdAt : props.updatedAt || props.createdAt, 'MM-DD-YYYY')
       },
       {
         id: 'dataUpdated',
@@ -380,8 +295,7 @@ function UserTable({ onActionSuccess }) {
         sortable: true,
         sortKey: 'updated_At',
         minWidth: '100px',
-        cell: (props) =>
-          CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY'),
+        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY'),
         omit: !isSystemAdminView
       },
       {
@@ -419,23 +333,12 @@ function UserTable({ onActionSuccess }) {
   return (
     <div>
       <TableHeading
-        heading={
-          isSystemAdminView
-            ? t('userManagement.table.systemadminlisting.label')
-            : t('userManagement.table.userlisting.label')
-        }
+        heading={isSystemAdminView ? t('userManagement.table.systemadminlisting.label') : t('userManagement.table.userlisting.label')}
         secondaryView={!!selectedRows}
         secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
         secondaryViewControls={
-          <Button
-            variant="secondary"
-            onClick={handleActivateDeactivate}
-            disabled={selectedRows == currentUserId ? true : false}>
-            {t(
-              selectedUserInfo?.isActive
-                ? 'userManagement.button.deactivate'
-                : 'userManagement.button.activate'
-            )}
+          <Button variant="secondary" onClick={handleActivateDeactivate} disabled={selectedRows == currentUserId ? true : false}>
+            {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
           </Button>
         }
         style={{ marginBottom: '16px' }}
@@ -465,14 +368,18 @@ function UserTable({ onActionSuccess }) {
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={
-              isSystemAdminView
-                ? t('userManagement.message.sysadminEmptyTableTitle')
-                : t('userManagement.message.userEmptyTableTitle')
+              !fileteredData
+                ? isSystemAdminView
+                  ? t('userManagement.message.sysadminEmptyTableTitle')
+                  : t('userManagement.message.userEmptyTableTitle')
+                : t('errors.messages.noRecordsFound')
             }
             description={
-              isSystemAdminView
-                ? t('userManagement.messages.sysadminEmptyTableSubtitle')
-                : t('userManagement.messages.userEmptyTableSubtitle')
+              !fileteredData
+                ? isSystemAdminView
+                  ? t('userManagement.messages.sysadminEmptyTableSubtitle')
+                  : t('userManagement.messages.userEmptyTableSubtitle')
+                : ''
             }
           />
         }
@@ -485,29 +392,16 @@ function UserTable({ onActionSuccess }) {
           modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>
-                {t(
-                  selectedUserInfo?.isActive
-                    ? 'popup.userDeactivation.question'
-                    : 'popup.userActivation.question'
-                )}
-              </p>
+              <p>{t(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
             </div>
           ),
           modalFooter: (
             <React.Fragment>
-              <Button
-                onClick={handleConfirmCancel}
-                variant="secondary"
-                size="md">
+              <Button onClick={handleConfirmCancel} variant="secondary" size="md">
                 {t('userManagement.label.cancel')}
               </Button>
               <Button size="md" onClick={handleConfirmActivateDeactivate}>
-                {t(
-                  selectedUserInfo?.isActive
-                    ? 'userManagement.button.deactivate'
-                    : 'userManagement.button.activate'
-                )}
+                {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
               </Button>
             </React.Fragment>
           ),

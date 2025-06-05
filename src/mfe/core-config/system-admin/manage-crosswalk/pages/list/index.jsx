@@ -34,7 +34,7 @@ const List = () => {
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-  const { data = [], refreshTable } = useTable();
+  const { data = [], refreshTable, fileteredData } = useTable();
   const dispatch = useDispatch();
   const { applySort } = useSort();
   const [notification, setNotification] = useState(null);
@@ -182,8 +182,8 @@ const List = () => {
           noDataComponent={
             <ErrorBanner
               image={<EmptyProviderTable />}
-              heading={t('controls.addMaterialCrosswalk')}
-              description={t('label.emptyMaterialCrosswalkTableDescription')}
+              heading={!fileteredData ? t('controls.addMaterialCrosswalk') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('label.emptyMaterialCrosswalkTableDescription')}
             />
           }
         />

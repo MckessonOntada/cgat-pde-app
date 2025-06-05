@@ -2,14 +2,7 @@ import AccountService from '@src/api/commonService/AccountService';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import AuthUtils from '@src/util/AuthUtils';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 
@@ -18,9 +11,7 @@ const LinkSpAccountContext = createContext();
 export const useLinkSpAccountContext = () => {
   const context = useContext(LinkSpAccountContext);
   if (!context) {
-    throw new Error(
-      'useLinkSpAccountContext must be used within a LinkSpAccountContext.'
-    );
+    throw new Error('useLinkSpAccountContext must be used within a LinkSpAccountContext.');
   }
   return context;
 };
@@ -43,19 +34,16 @@ const INITIAL_SORT_STATE = {
 
 export const LinkSpAccountProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(
-    INITIAL_PAGINATION_CONFIG
-  );
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const practiceId = AuthUtils.getPracticeId();
   const isAddSpAccount = useMemo(() => {
     return location.pathname.includes('link-sp-accounts');
   }, [location.pathname]);
-
+  const [fileteredData, setfileteredData] = useState(false);
   const { id: providerId } = useParams();
-  const providerIds =
-    searchParams.get('accounts')?.split(',').map(Number) || [];
+  const providerIds = searchParams.get('accounts')?.split(',').map(Number) || [];
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
 
   const requestParams = useMemo(
@@ -65,9 +53,9 @@ export const LinkSpAccountProvider = ({ children }) => {
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(!isAddSpAccount && {practiceId: practiceId}),
-      ...(!isAddSpAccount && {partnerFunction: 'SOLD_TO'}),
-      ...(!isAddSpAccount && {channelType: CHANNEL_TYPE.SPECIALTY_PHARMA}), 
+      ...(!isAddSpAccount && { practiceId: practiceId }),
+      ...(!isAddSpAccount && { partnerFunction: 'SOLD_TO' }),
+      ...(!isAddSpAccount && { channelType: CHANNEL_TYPE.SPECIALTY_PHARMA })
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
@@ -78,10 +66,7 @@ export const LinkSpAccountProvider = ({ children }) => {
       if (isAddSpAccount) {
         result = await ProviderService.getUnlinkSpAccountListByProviderId(requestParams, providerIds);
       } else {
-        result = await ProviderService.getSpAccountListByProviderId(
-          providerId,
-          requestParams
-        );
+        result = await ProviderService.getSpAccountListByProviderId(providerId, requestParams);
       }
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
@@ -110,11 +95,13 @@ export const LinkSpAccountProvider = ({ children }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
+    setfileteredData(false);
   };
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
+    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -138,13 +125,10 @@ export const LinkSpAccountProvider = ({ children }) => {
       applySort,
       setPageNumber,
       refreshData: refetch,
-      isAddSpAccount
+      isAddSpAccount,
+      fileteredData
     }),
     [updateFilterState, clearFilters, data]
   );
-  return (
-    <LinkSpAccountContext.Provider value={ctxValue}>
-      {children}
-    </LinkSpAccountContext.Provider>
-  );
+  return <LinkSpAccountContext.Provider value={ctxValue}>{children}</LinkSpAccountContext.Provider>;
 };

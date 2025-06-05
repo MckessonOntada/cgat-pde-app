@@ -21,7 +21,7 @@ import { useSearchParams } from 'react-router-dom';
 
 function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const { t } = useTranslate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, isAddLinkProvider, applySort } = useLinkProvider();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, isAddLinkProvider, applySort, fileteredData } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
   const [openProviderDetails, setOpenProviderDetails] = useState(false);
   const [drawerDetails, setDrawerDetails] = useState('');
@@ -180,8 +180,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={t('manageSPAccount.providers.noData')}
-                description={t('manageSPAccount.table.error.providers.listing')}
+                heading={!fileteredData ? t('manageSPAccount.providers.noData') : t('errors.messages.noRecordsFound')}
+                description={!fileteredData && t('manageSPAccount.table.error.providers.listing')}
               />
             }
           />

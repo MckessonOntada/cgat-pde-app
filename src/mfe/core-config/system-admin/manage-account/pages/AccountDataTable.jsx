@@ -12,7 +12,7 @@ import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnai
 
 function AccountDataTable(props) {
   const { t } = useTranslate();
-  const { paginationConfig, AccountList: data, setPageNumber, isLoading } = useAccountContext();
+  const { paginationConfig, AccountList: data, setPageNumber, isLoading, fileteredData } = useAccountContext();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
 
@@ -93,7 +93,11 @@ function AccountDataTable(props) {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         noDataComponent={
-          <EmptyDataTable image={EmptyDataImage} heading={t('ManageAccount.emptyTableTitle')} description={t('ManageAccount.emptyTableSubtitle')} />
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={!fileteredData ? t('ManageAccount.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('ManageAccount.emptyTableSubtitle')}
+          />
         }
       />
 

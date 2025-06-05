@@ -17,7 +17,8 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function SPMaterialDataTable({ isLinkCatalog = false }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial } = useSPMaterial();
+  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, fileteredData } =
+    useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -215,8 +216,8 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={t('manageSPMaterial.messageemptyTableTitle')}
-                description={t('manageSPMaterial.messages.emptyTableSubtitle')}
+                heading={!fileteredData ? t('manageSPMaterial.messageemptyTableTitle') : t('errors.messages.noRecordsFound')}
+                description={!fileteredData && t('manageSPMaterial.messages.emptyTableSubtitle')}
               />
             }
             progressPending={isLoading}

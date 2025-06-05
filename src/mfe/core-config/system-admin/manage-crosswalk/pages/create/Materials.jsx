@@ -15,7 +15,7 @@ import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const Materials = () => {
   const { t } = useTranslate();
-  const { data, error, isLoading } = useTable();
+  const { data, error, isLoading, fileteredData } = useTable();
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
@@ -214,8 +214,8 @@ const Materials = () => {
               isLoading={isLoading}
               error={error}
               image={EmptyDataImage}
-              heading={t('captions.emptyTableTitle')}
-              description={t('captions.emptyTableSubtitle')}
+              heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('captions.emptyTableSubtitle')}
             />
           }
         />

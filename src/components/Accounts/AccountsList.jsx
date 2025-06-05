@@ -26,7 +26,7 @@ export default function AccountsList(props) {
     practiceId,
     userId
   } = props;
-  const { data, paginationConfig, refetch, setPageNumber } = useAccounts();
+  const { data, paginationConfig, refetch, setPageNumber, fileteredData } = useAccounts();
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const [tableHeight, setTableHeight] = useState('100%');
@@ -39,9 +39,7 @@ export default function AccountsList(props) {
 
   useEffect(() => {
     setTimeout(() => {
-      let eleHeight = document.getElementById(
-        'data-table-my-data-table'
-      )?.offsetHeight;
+      let eleHeight = document.getElementById('data-table-my-data-table')?.offsetHeight;
       setTableHeight(eleHeight);
     }, 100);
   }, [data, isLoading]);
@@ -98,10 +96,7 @@ export default function AccountsList(props) {
         cell: (row) => {
           return (
             <div>
-              <EclipsesTextcss
-                str={CommonUtils.getDetailedAddress(row.address)}
-                maxWidth={140}
-              />
+              <EclipsesTextcss str={CommonUtils.getDetailedAddress(row.address)} maxWidth={140} />
             </div>
           );
         },
@@ -119,14 +114,7 @@ export default function AccountsList(props) {
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => (
-          <Actions
-            row={row}
-            userId={userId}
-            practiceId={practiceId}
-            refetch={refetch}
-          />
-        ),
+        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
         width: '120px',
         omit: !isAuthorized || omitColumns.includes('action'),
         isAction: true
@@ -145,14 +133,11 @@ export default function AccountsList(props) {
                   if (event.target.checked) {
                     setSelectedRows([...selectedRows, row]);
                   } else {
-                    setSelectedRows(
-                      selectedRows.filter((item) => item.id !== row.id)
-                    );
+                    setSelectedRows(selectedRows.filter((item) => item.id !== row.id));
                   }
                 },
                 value: '',
-                isChecked: !!selectedRows.filter((item) => item.id === row.id)
-                  .length
+                isChecked: !!selectedRows.filter((item) => item.id === row.id).length
               }
             ]}
           />
@@ -180,10 +165,7 @@ export default function AccountsList(props) {
       {/* {true && <Loader type={'screen'} />} */}
       {showSelectedAccounts && (
         <div className="selected-account-chips">
-          <SelectedAccountChips
-            selectedAccounts={selectedRows}
-            onRemoveAccount={onRemoveSelectedAccount}
-          />
+          <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
         </div>
       )}
       <div className="account-box">
@@ -210,18 +192,15 @@ export default function AccountsList(props) {
               <EmptyDataTable
                 isLoading={isLoading}
                 image={EmptyDataImage}
-                heading={t('account.add.label')}
-                description={t('account.empty_table.description')}
+                heading={!fileteredData ? t('account.add.label') : t('errors.messages.noRecordsFound')}
+                description={!fileteredData && t('account.empty_table.description')}
               />
             }
           />
         </div>
         {showSelectedAccounts && (
           <div className="selected-account-box" style={{ height: tableHeight }}>
-            <SelectedAccounts
-              selectedAccounts={selectedRows}
-              onRemoveAccount={onRemoveSelectedAccount}
-            />
+            <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
           </div>
         )}
       </div>

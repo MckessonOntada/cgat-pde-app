@@ -21,15 +21,7 @@ import useAlert from '@src/hooks/useAlert';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
-  const {
-    data,
-    isFetching,
-    paginationConfig,
-    setPageNumber,
-    applySort,
-    isError,
-    refetch
-  } = usePendingPayments();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, refetch, fileteredData } = usePendingPayments();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const { showAlert } = useAlert();
@@ -75,12 +67,7 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props.paymentInitiationDate,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'authorizedAmt',
@@ -91,11 +78,7 @@ export default function PendingPaymentTable() {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber
-            value={props?.authorizedAmt}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" />
         </div>
       ),
       right: true
@@ -124,8 +107,7 @@ export default function PendingPaymentTable() {
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id)
-      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -156,14 +138,8 @@ export default function PendingPaymentTable() {
 
   const { mutate } = useMutation(
     async ({ confirmationNo }) => {
-      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(
-        selectedAccount?.id
-      )}/${selectedAccount.companyCode}/${confirmationNo}`;
-      const res = await HttpResourceService.callRest(
-        apiUrl,
-        httpVerb.DELETE,
-        {}
-      );
+      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}/${selectedAccount.companyCode}/${confirmationNo}`;
+      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
       return res;
     },
     {
@@ -209,10 +185,8 @@ export default function PendingPaymentTable() {
           <EmptyDataTable
             isLoading={isFetching}
             image={EmptyDataImage}
-            heading={t('pendingPayments.table.bankAccount.emptyData')}
-            description={t(
-              'paymentInvoices.history.table.emptyDataDescription'
-            )}
+            heading={!fileteredData ? t('pendingPayments.table.bankAccount.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

@@ -12,7 +12,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount, applySort } = useShippingAddress();
+  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount, applySort, fileteredData } = useShippingAddress();
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
   const showCardView = useResponsiveView();
 
@@ -48,7 +48,13 @@ const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, 
           isLoading={isFetching}
           error={isError && error.message}
           image={EmptyDataImage}
-          heading={selectedAccount ? t('messages.noShippingAddressFound') : t('messages.selectAnAccountForShippingAddress')}
+          heading={
+            fileteredData
+              ? t('errors.messages.noRecordsFound')
+              : selectedAccount
+              ? t('messages.noShippingAddressFound')
+              : t('messages.selectAnAccountForShippingAddress')
+          }
           description={''}
         />
       }

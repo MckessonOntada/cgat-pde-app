@@ -31,7 +31,8 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
     applySort,
     refreshData,
     orderView,
-    changeOrderView
+    changeOrderView,
+    fileteredData
   } = useOrders();
   const [charSize, setCharSize] = useState(0);
   const calculateMinWidth = useMemo(() => {
@@ -49,8 +50,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
   };
 
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = getTableColumns(tab, t, alertContainerId);
@@ -63,10 +63,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
         heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
         controls={
           <div>
-            <ToggleButtonGroup
-              value={orderView}
-              onChange={handleOnViewChange}
-              exclusive>
+            <ToggleButtonGroup value={orderView} onChange={handleOnViewChange} exclusive>
               {toggleFilters.map((filter, index) => (
                 <ToggleButton key={index} value={filter}>
                   {t(`labels.orderView.${filter}`)}
@@ -98,8 +95,8 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
             isLoading={isFetching}
             error={error && error.message}
             image={EmptyDataImage}
-            heading={t('captions.emptyTableTitle')}
-            description={t('captions.emptyTableSubtitle')}
+            heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('captions.emptyTableSubtitle')}
           />
         }
       />

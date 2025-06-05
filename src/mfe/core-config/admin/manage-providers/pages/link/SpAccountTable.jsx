@@ -31,9 +31,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
 
   useEffect(() => {
     setTimeout(() => {
-      let eleHeight = document.getElementById(
-        'data-table-my-data-table'
-      )?.offsetHeight;
+      let eleHeight = document.getElementById('data-table-my-data-table')?.offsetHeight;
       setTableHeight(eleHeight);
     }, 500);
   }, []);
@@ -88,15 +86,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
     }
   );
 
-  const {
-    paginationConfig,
-    setPageNumber,
-    applyFilters,
-    clearFilters,
-    data,
-    applySort,
-    isAddSpAccount
-  } = useLinkSpAccountContext();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, fileteredData, data, applySort, isAddSpAccount } = useLinkSpAccountContext();
 
   const unLinkSpAccount = (selectedProviders) => {
     renderModal({
@@ -120,17 +110,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
     });
   };
   const columns = useMemo(
-    () =>
-      getTableColumn(
-        t,
-        data,
-        paginationConfig,
-        selectedSpAccount,
-        onSelectSpAccount,
-        isAddSpAccount,
-        unLinkSpAccount,
-        handleProviderDetails
-      ),
+    () => getTableColumn(t, data, paginationConfig, selectedSpAccount, onSelectSpAccount, isAddSpAccount, unLinkSpAccount, handleProviderDetails),
     [data, paginationConfig, selectedSpAccount, isAddSpAccount]
   );
   function onSelectSpAccount(data) {
@@ -139,9 +119,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   }
   const onRemoveSelectedAccount = useCallback(
     (item) => {
-      const updatedList = selectedSpAccount.filter(
-        (account) => account.id !== item.id
-      );
+      const updatedList = selectedSpAccount.filter((account) => account.id !== item.id);
       setSelectedSpAccount(updatedList);
       if (isAddSpAccount) setSpAccount(updatedList);
     },
@@ -151,8 +129,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
     setPageNumber(newPage);
   };
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -171,9 +148,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
         <TableHeading
           heading={''}
           secondaryView={selectedSpAccount?.length}
-          secondaryViewHeading={`${selectedSpAccount?.length} ${t(
-            'orgManagement.selected_items'
-          )}`}
+          secondaryViewHeading={`${selectedSpAccount?.length} ${t('orgManagement.selected_items')}`}
           secondaryViewControls={
             <Button
               variant="secondary"
@@ -185,9 +160,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
           }
         />
       )}
-      {isAddSpAccount && (
-        <TableHeading heading={t('provider.sp.account.spAccountListing')} />
-      )}
+      {isAddSpAccount && <TableHeading heading={t('provider.sp.account.spAccountListing')} />}
 
       <div className={style.accountBox}>
         <div className={style.customTableBox}>
@@ -208,16 +181,14 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={t('captions.questionnaire.account.emptyTableTitle')}
-                description={t('provider.sp.account.needToAddAccount')}
+                heading={!fileteredData ? t('captions.questionnaire.account.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+                description={!fileteredData && t('provider.sp.account.needToAddAccount')}
               />
             }
           />
         </div>
         {isAddSpAccount && (
-          <div
-            className={style.selectedAccountBox}
-            style={{ height: tableHeight }}>
+          <div className={style.selectedAccountBox} style={{ height: tableHeight }}>
             <SelectedAccounts
               selectedAccounts={selectedSpAccount}
               onRemoveAccount={onRemoveSelectedAccount}

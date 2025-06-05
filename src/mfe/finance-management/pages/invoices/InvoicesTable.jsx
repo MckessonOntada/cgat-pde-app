@@ -23,7 +23,8 @@ export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, fileteredData } = usePaymentInvoices();
+
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
 
@@ -280,8 +281,8 @@ export default function InvoicesTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={t('paymentInvoices.invoice.table.emptyData')}
-            description={t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={!fileteredData ? t('paymentInvoices.invoice.table.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

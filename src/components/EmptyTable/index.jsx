@@ -20,9 +20,7 @@ const EmptyDataTable = ({ image, heading, description, isLoading = false, error 
       <div className="emptyDataTableContainer">
         <img src={image} alt="No Data" className="emptyDataTableImage" />
         <h2 className="emptyDataTableHeading"> Error</h2>
-        <p className="emptyDataTableDescription">
-          {errorMessage.includes('date range') ? t('errors.messages.dateRange') : t('errors.messages.default')}
-        </p>
+        <p className="emptyDataTableDescription">{errorMessage.includes('date range') ? t('errors.messages.dateRange') : t('errors.messages.default')}</p>
       </div>
     );
   }
@@ -30,7 +28,7 @@ const EmptyDataTable = ({ image, heading, description, isLoading = false, error 
   return (
     <div className="emptyDataTableContainer">
       <img src={image} alt="No Data" className="emptyDataTableImage" />
-      <h2 className="emptyDataTableHeading">{heading}</h2>
+      <h2 className="emptyDataTableHeading">{heading ? heading : t('errors.messages.noRecords')}</h2>
       <p className="emptyDataTableDescription">{description}</p>
     </div>
   );

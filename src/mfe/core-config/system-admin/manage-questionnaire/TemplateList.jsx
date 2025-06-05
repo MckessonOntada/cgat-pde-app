@@ -42,7 +42,8 @@ function TemplateList({ onAlert }) {
     selectedTemplates = [],
     setTemplates,
     setPageNumber,
-    refetchTemplates
+    refetchTemplates,
+    fileteredData
   } = useQuestionnaire();
   // const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
   const [selectedData, setSelectedData] = useState([]);
@@ -274,8 +275,8 @@ function TemplateList({ onAlert }) {
               isLoading={isLoading}
               isError={isError && isError.message}
               image={EmptyDataImage}
-              heading={t('captions.questionnaire.emptyTableTitle')}
-              description={t('captions.questionnaire.emptyTableSubtitle')}
+              heading={!fileteredData ? t('captions.questionnaire.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('captions.questionnaire.emptyTableSubtitle')}
             />
           }
         />

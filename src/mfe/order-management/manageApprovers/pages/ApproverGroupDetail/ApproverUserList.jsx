@@ -40,9 +40,7 @@ function ApproverUserList({ data }) {
         columns={columns}
         data={data}
         onSortIconClick={handleOnSort}
-        noDataComponent={
-          <EmptyDataTable image={EmptyDataImage} heading={t('captions.emptyTableTitle')} description={t('captions.emptyTableSubtitle')} />
-        }
+        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('captions.emptyTableTitle')} description={t('captions.emptyTableSubtitle')} />}
       />
     </>
   );

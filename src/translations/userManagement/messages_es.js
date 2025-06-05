@@ -391,5 +391,7 @@ export const UserManagementES = {
   'messages.user_activate_success': 'S_User has been Activated successfully.',
   'messages.user_activate_failure': 'S_Failed to Activate the User.',
   'popup.userActivation.question': 'Are you sure you wish to Activate this User?',
-  'userManagement.upload-info': 'S_For filling up the user’s template, please refer to the instruction file.'
+  'userManagement.upload-info': 'S_For filling up the user’s template, please refer to the instruction file.',
+  'errors.messages.noRecords': 'S_No records found',
+  'errors.messages.noRecordsFound': 'S_No records found for the applied filters'
 };
