@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { RadioGroup, Tooltip } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import CommonUtils from '@src/util/CommonUtils';
 
-export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle, location }) => [
+export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle }) => [
   {
     id: 'expandOrSelect',
     selector: () => null,
@@ -62,12 +62,13 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showColumnNameInHeader: true,
     cell: (row) => {
       const { tradeName, cellValue } = row;
+      const location = useLocation();
       return (
         <Link
           className="MCP-table-link"
           aria-label={t('labels.therapyDescription')}
           to={`?trade=${tradeName}`}
-          state={{ fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }}>
+          state={{ ...location?.state, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }}>
           <EclipsesTextcss str={cellValue} />
         </Link>
       );

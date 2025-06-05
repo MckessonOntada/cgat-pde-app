@@ -13,6 +13,7 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { useLocation } from 'react-router-dom';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -31,6 +32,7 @@ function TherapyDetailsWithTabs({
   heading
 }) {
   const { t } = useTranslate();
+  const location = useLocation();
   const [therapyTabs, setTherapyTabs] = useState(() => {
     if (!therapyId) return [];
 
@@ -105,7 +107,6 @@ function TherapyDetailsWithTabs({
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
-      debugger;
       onSelect(therapyDetails);
       onClose();
     }

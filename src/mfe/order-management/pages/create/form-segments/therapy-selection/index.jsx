@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -22,7 +22,6 @@ import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
-import CommonUtils from '@src/util/CommonUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -41,11 +40,14 @@ function TherapySelection() {
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
+  const preservedStateRef = useRef(location.state);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder)
-      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
+      });
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -60,7 +62,8 @@ function TherapySelection() {
     searchParams.delete('channelType');
     navigate({
       pathname: '',
-      search: searchParams.toString() ? `?${searchParams.toString()}` : ''
+      search: searchParams.toString() ? `?${searchParams.toString()}` : '',
+      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
     });
   };
 
@@ -68,7 +71,7 @@ function TherapySelection() {
     onSuccess: (result) => {
       const { id } = result;
       navigate(`../${id}/accounts?${searchParams.toString()}`, {
-        state: { isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+        state: { isEdit: false, isApprover: isApprover, fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
       });
     },
     onError: (err) => {
@@ -93,8 +96,8 @@ function TherapySelection() {
             isEdit: false,
             isApprover: isApprover,
             isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName),
-            fromTab: location?.state?.fromTab,
-            fromOrderView: location?.state?.fromOrderView
+            fromTab: preservedStateRef.current?.fromTab,
+            fromOrderView: preservedStateRef.current?.fromOrderView
           }
         });
       },
@@ -139,8 +142,8 @@ function TherapySelection() {
     } else {
       navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
         state: {
-          activeTab: location?.state?.fromTab,
-          fromOrderView: location?.state?.fromOrderView
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     }
@@ -156,15 +159,15 @@ function TherapySelection() {
         state: {
           isEdit: true,
           isApprover: isApprover,
-          fromTab: location?.state?.fromTab,
-          fromOrderView: location?.state?.fromOrderView
+          fromTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     } else {
       navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
         state: {
-          activeTab: location?.state?.fromTab,
-          fromOrderView: location?.state?.fromOrderView
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     }
@@ -174,8 +177,8 @@ function TherapySelection() {
     if (modalSuccessCallback === 'list') {
       navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
         state: {
-          activeTab: location?.state?.fromTab,
-          fromOrderView: location?.state?.fromOrderView
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'summary') {
@@ -183,8 +186,8 @@ function TherapySelection() {
         state: {
           isEdit: true,
           isApprover: isApprover,
-          fromTab: location?.state?.fromTab,
-          fromOrderView: location?.state?.fromOrderView
+          fromTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     }

@@ -195,7 +195,9 @@ const AccountSelection = () => {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else if (modalSuccessCallback === 'details') {
       navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
         state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }

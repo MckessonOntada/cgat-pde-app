@@ -257,10 +257,10 @@ const Summary = () => {
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
     onSuccess: (_result, { action }) => {
       if (action === BUTTON_ACTIONS.SUBMIT) {
-        navigate(`../${orderId}/order-confirmed`);
+        navigate(`../${orderId}/order-confirmed`, { state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
       } else {
         navigate(`../${orderId}/order-confirmed`, {
-          state: { isApproved: true }
+          state: { isApproved: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
         });
       }
     },
@@ -413,12 +413,12 @@ const Summary = () => {
     };
 
     const route = stageRoutes[stage] || '/orders';
-    navigate(route, { state: { isEdit: true, isApprover: isApprover } });
+    navigate(route, { state: { isEdit: true, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   };
 
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
-    navigate(0);
+    navigate(0, { state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   };
 
   const getAllowedControls = () => {

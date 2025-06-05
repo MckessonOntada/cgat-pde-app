@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './OrderStatus.module.scss';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -17,6 +17,9 @@ const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
   const {
     data: orderDetails = {},
     isFetching,
@@ -53,7 +56,13 @@ const OrderStatus = () => {
   const isApprover =
     approver && typeof approver === 'object' && approver.id != null;
 
-  const backToOrders = () => navigate('/orders');
+  const backToOrders = () =>
+    navigate(`/orders?${searchParams.toString()}`, {
+      state: {
+        activeTab: location?.state?.fromTab,
+        fromOrderView: location?.state?.fromOrderView
+      }
+    });
 
   if (isLoader) {
     return isLoader;
