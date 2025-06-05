@@ -44,7 +44,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
           index: index + 1,
           label: item.name,
           value: item.id,
-          isChecked: false
+          isChecked: checkedOrganizations.length > 0 && checkedOrganizations.find((ele) => ele.value == item.id) ? true : false
         }));
         const mergedData = [...data, ...checkedOrganizations.filter((checkedOrg) => !data.some((newOrg) => newOrg.value === checkedOrg.value))];
         setOptions(mergedData);
@@ -87,7 +87,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
             ...item,
             label: item.accountName,
             value: item.accountNumber,
-            isChecked: false
+            isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
           })) || [];
 
         const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];

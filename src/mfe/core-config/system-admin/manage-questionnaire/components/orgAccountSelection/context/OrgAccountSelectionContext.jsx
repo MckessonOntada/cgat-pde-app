@@ -114,10 +114,11 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             ...item,
             label: item.accountName,
             value: item.accountNumber,
-            isChecked: false
+            isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
           })) || [];
-        setAccountOptions(_opt);
-        setSelectedAccount(_opt);
+        const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
+        setAccountOptions(mergedAcc);
+        setSelectedAccount(mergedAcc);
         return content || [];
       }
       return [];
