@@ -374,6 +374,15 @@ async function getTherapyDetailsByTradeName(tradeName) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
+async function getTherapyDetailsByTradeName2(tradeName, channelType) {
+  if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
+  let url = `${ApiRoutes.THERAPIES()}/config/${tradeName}`;
+  if (channelType) {
+    url += `?channelType=${channelType}`;
+  }
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
 
 const OrderService = Object.freeze({
   createOrder,
@@ -406,7 +415,8 @@ const OrderService = Object.freeze({
   getTherapyDetailsByCrossWalkId,
   uploadOrderDocument,
   uploadDocument,
-  getTherapyDetailsByTradeName
+  getTherapyDetailsByTradeName,
+  getTherapyDetailsByTradeName2
 });
 
 export default OrderService;

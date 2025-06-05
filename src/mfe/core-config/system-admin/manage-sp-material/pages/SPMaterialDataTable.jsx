@@ -83,7 +83,7 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       sortable: false,
       sortKey: 'ndc',
       wrap: true,
-      cell: (props) => <div>{props?.ndc || '-'}</div>
+      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
     },
     {
       id: 'siteName',

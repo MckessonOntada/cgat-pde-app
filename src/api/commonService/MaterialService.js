@@ -40,7 +40,16 @@ export const getMaterialList = async (requestParams) => {
 
 async function getSPMaterialById(spMaterialId, requestParams) {
   if (!spMaterialId) throw new Error('SP Material id is missing. SP Material id is required to fetch details.');
-  const url = `${ApiRoutes.GET_MATERIAL_CONFIG_BY_ID(spMaterialId)}?${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spMaterialId)}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function getSPMaterial(requestParams) {
+  const url = `${ApiRoutes.THERAPIES()}/type/speciality-pharma?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -53,7 +62,8 @@ const MaterialService = Object.freeze({
   getMaterialConfigById,
   deleteMaterialConfig,
   getMaterialList,
-  getSPMaterialById
+  getSPMaterialById,
+  getSPMaterial
 });
 
 export default MaterialService;

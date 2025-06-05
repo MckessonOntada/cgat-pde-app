@@ -300,18 +300,18 @@ function AdditionalDetails() {
     error: configuredQuestionsError,
     refetch: fetchConfiguredQuestions
   } = useQuery({
-    queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
+    queryKey: ['configured-questionnaire', orderId, variant ? variant.materialNumber : 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = orderDetails;
       if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
 
       let materialOrNdcNumber = '';
       if (isSPCrossWalked) {
-        materialOrNdcNumber = variant ? variant?.materialNumber : therapy.materialNumber;
+        materialOrNdcNumber = variant && variant?.materialNumber;
       } else if (isSPNonCrossWalked) {
         materialOrNdcNumber = therapy.materialNumber;
       } else {
-        materialOrNdcNumber = therapy.ndcNumber;
+        materialOrNdcNumber = tradeDetails.ndc;
       }
 
       const payload = {
@@ -319,7 +319,7 @@ function AdditionalDetails() {
         materialOrNdcNumber,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
-        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy.materialNumber,
+        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy?.materialNumber,
         channelType: isSPCrossWalked || isSPNonCrossWalked ? CHANNEL_TYPE.SPECIALTY_PHARMA : CHANNEL_TYPE.BUY_AND_BILL
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
@@ -510,7 +510,7 @@ function AdditionalDetails() {
     const questionnaireDependencies = {
       soldToCustomer: accountDetails.soldToAccount.accountNumber,
       shipToCustomer: accountDetails.soldToAccount.accountNumber,
-      sapMaterial: therapy.materialNumber,
+      sapMaterial: tradeDetails.ndcNumber,
       variant
     };
 
@@ -613,10 +613,10 @@ function AdditionalDetails() {
     if (orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires) {
       const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
       if (soldToAccount && shipToAccount) {
-        fetchConfiguredQuestions();
+        if ((isSPCrossWalked && variant) || !isSPCrossWalked) fetchConfiguredQuestions();
       }
     }
-  }, [variant, orderDetails]);
+  }, [variant, orderDetails, isSPCrossWalked]);
 
   const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue, setFieldTouched) => {
     const updatedOptions = {

@@ -22,21 +22,6 @@ import {
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 
-function flattenMaterials(data) {
-  if (!data && !Array.isArray(data)) {
-    throw new Error('Invalid data provided to flattenMaterials function');
-  }
-
-  return data.reduce((acc, item) => {
-    if (item.therapies && Array.isArray(item.therapies) && item.therapies.length > 0) {
-      item.therapies.forEach((material) => {
-        acc.push(material);
-      });
-    }
-    return acc;
-  }, []);
-}
-
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials } = useManageMaterial();
@@ -59,7 +44,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       id: 'checkbox',
       name: renderTableCheckBox(
         { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        flattenMaterials(data),
+        CommonUtils.flattenTherapies(data),
         'materialNumber',
         {
           ...paginationConfig,
@@ -81,7 +66,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         }
         return renderTableCheckBox(
           row,
-          flattenMaterials(data),
+          CommonUtils.flattenTherapies(data),
           'materialNumber',
           {
             ...paginationConfig,
@@ -264,6 +249,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       {trade && (
         <TherapyDetailsWithTabs
           trade={trade}
+          isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}

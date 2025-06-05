@@ -53,7 +53,9 @@ const PayerDetails = () => {
   const { mutate: savePayerDetails } = useMutation({
     mutationFn: async (payload) => OrderService.savePayerDetails(orderId, payload, orderDetails.channelType),
     onSuccess: (response) => {
-      navigate(`/orders/${orderId}/additional-details?${searchParams.toString()}`);
+      navigate(`/orders/${orderId}/additional-details?${searchParams.toString()}`, {
+        state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     },
     onError: console.error
   });
@@ -159,10 +161,19 @@ const PayerDetails = () => {
 
   const handleOnBackToOrders = () =>
     navigate(`/orders?${searchParams.toString()}`, {
-      state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      state: {
+        activeTab: location?.state?.fromTab,
+        fromOrderView: location?.state?.fromOrderView
+      }
     });
 
-  const handleOnBackClick = () => navigate(`/orders/${orderId}/patient?${searchParams.toString()}`);
+  const handleOnBackClick = () =>
+    navigate(`/orders/${orderId}/patient?${searchParams.toString()}`, {
+      state: {
+        fromTab: location?.state?.fromTab,
+        fromOrderView: location?.state?.fromOrderView
+      }
+    });
 
   return (
     <div className="MCP-module-wrapper">

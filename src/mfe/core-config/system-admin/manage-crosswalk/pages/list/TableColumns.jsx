@@ -17,13 +17,7 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
   ACTION: 'ACTION'
 };
-export const getColumns = ({
-  setOpenDetails,
-  setMaterialNumber,
-  setOpenSPMaterialDetails,
-  setViewSPMaterial,
-  confirmationUnlink
-}) => {
+export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial, confirmationUnlink }) => {
   const { t } = useTranslate();
   const dispatch = useDispatch();
 
@@ -44,20 +38,17 @@ export const getColumns = ({
       sortKey: 'bnbMaterialDescription',
       cell: (props) => (
         <div>
-          {(
-            <Link
-              className="MCP-table-link"
-              onClick={(e) => {
-                e.preventDefault();
-                setOpenDetails(true);
-                setMaterialNumber(props?.bnbMaterialNumber);
-              }}>
-              <EclipsesTextcss
-                str={props?.bnbMaterialDescription}
-                maxWidth={180}
-              />
-            </Link>
-          ) || '-'}
+          {
+            // <Link
+            //   className="MCP-table-link"
+            //   onClick={(e) => {
+            //     e.preventDefault();
+            //     setOpenDetails(true);
+            //     setMaterialNumber(props?.bnbMaterialNumber);
+            //   }}>
+            <EclipsesTextcss str={props?.bnbMaterialDescription} maxWidth={180} />
+            // </Link>
+          }
         </div>
       )
     },
@@ -111,14 +102,7 @@ export const getColumns = ({
       name: 'Action',
       minWidth: '130px',
       cell: (props) => (
-        <IconButton
-          label={t('button.caption.unlink')}
-          size="lg"
-          iconButton={false}
-          textButton={true}
-          Icon={LinkIcon}
-          onClick={confirmationUnlink(props.id)}
-        />
+        <IconButton label={t('button.caption.unlink')} size="lg" iconButton={false} textButton={true} Icon={LinkIcon} onClick={confirmationUnlink(props.id)} />
       )
     }
   ];

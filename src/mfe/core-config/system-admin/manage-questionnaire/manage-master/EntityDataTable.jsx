@@ -29,6 +29,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams(location.search);
   const trade = searchParams.get('trade');
+  const channelType = searchParams.get('channelType');
   const [openDetails, setOpenDetails] = useState(Boolean(trade));
 
   const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
@@ -126,6 +127,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
 
   const handleOnClose = () => {
     searchParams.delete('trade');
+    searchParams.delete('channelType');
     setSearchParams(searchParams);
   };
 
@@ -186,6 +188,8 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
       {entityType === MasterEntityType.Material && trade && (
         <TherapyDetailsWithTabs
           trade={trade}
+          channelType={channelType}
+          isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}

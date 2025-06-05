@@ -785,10 +785,7 @@ const Summary = () => {
                     <DetailSegment label={t('labels.soldToAccountName')} value={accountDetails?.soldToAccount?.accountName} />
                     <DetailSegment label={t('labels.soldToAccountAddress')} value={CommonUtils.getDetailedAddress(accountDetails?.soldToAccount?.address)} />
                     <DetailSegment label={t('labels.shipToAccountName')} value={accountDetails?.shipToAccount?.accountName} />
-                    <DetailSegment
-                      label={t('labels.shipToAccountAddress')}
-                      value={spOrder ? accountDetails?.shipToAccount?.id : CommonUtils.getDetailedAddress(accountDetails?.shipToAccount?.address)}
-                    />
+                    <DetailSegment label={t('labels.shipToAccountAddress')} value={CommonUtils.getDetailedAddress(accountDetails?.shipToAccount?.address)} />
                     <DetailSegment label={t('labels.orderChannel')} value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)} />
                     {!spOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier]} />}
                   </div>

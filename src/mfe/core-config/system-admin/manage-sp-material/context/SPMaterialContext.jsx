@@ -61,9 +61,7 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['SPMaterials', requestParams],
     queryFn: async () => {
-      const result = await MaterialService.getMaterialList(requestParams);
-
-      result.content = ServiceUtil.transformTherapies(result.content);
+      const result = await MaterialService.getSPMaterial(requestParams);
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,

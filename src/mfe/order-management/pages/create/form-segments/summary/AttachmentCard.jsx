@@ -55,7 +55,9 @@ function AttachmentCard(props) {
     <div className="attachment-wrapper" onClick={Boolean(url) && handleOnClick}>
       {fileIcon}
       <div className="meta">
-        <p className="name">{fileName}</p>
+        <p className="name fieldValue">
+          <div className="overflowing">{fileName}</div>
+        </p>
         <p className="size">{CommonUtils.getFileSize(fileSize)}</p>
       </div>
     </div>
