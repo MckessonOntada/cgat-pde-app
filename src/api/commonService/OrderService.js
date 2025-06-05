@@ -272,7 +272,7 @@ async function simulateOrder(orderId) {
 async function updateTherapy(orderId, requestBody) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/therapy`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/ndc`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, requestBody);
 
   if (res.data) {
