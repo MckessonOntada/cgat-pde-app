@@ -16,7 +16,7 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, fileteredData } = usePaymentCredits();
   const { selectedRows, setSelectedRows, selectableRows } = props;
   const location = useLocation();
   const { state } = location;
@@ -137,8 +137,8 @@ export default function CreditsTable(props) {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={t('paymentInvoices.credits.table.emptyData')}
-            description={t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={!fileteredData ? t('paymentInvoices.credits.table.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

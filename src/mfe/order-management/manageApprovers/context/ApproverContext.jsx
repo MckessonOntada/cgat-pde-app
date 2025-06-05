@@ -45,7 +45,7 @@ export const ApproverProvider = ({ children }) => {
       [field]: value
     }));
   }, []);
-
+  const [fileteredData, setfileteredData] = useState(false);
   const requestParams = useMemo(
     () => ({
       pageNo: paginationConfig.pageNumber - 1,
@@ -115,6 +115,7 @@ export const ApproverProvider = ({ children }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
+    setfileteredData(false);
   };
 
   const applySort = (newSortConfig) => {
@@ -126,6 +127,7 @@ export const ApproverProvider = ({ children }) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
     refetchApprovers;
+    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -150,7 +152,8 @@ export const ApproverProvider = ({ children }) => {
       refreshData: refetchApprovers,
       error,
       isLoadingApprovers,
-      isErrorApprovers
+      isErrorApprovers,
+      fileteredData
     }),
     [
       approverData,
@@ -165,7 +168,8 @@ export const ApproverProvider = ({ children }) => {
       refetchApprovers,
       error,
       isLoadingApprovers,
-      isErrorApprovers
+      isErrorApprovers,
+      fileteredData
     ]
   );
   return <ApproverContext.Provider value={ctxValue}>{children}</ApproverContext.Provider>;

@@ -29,7 +29,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
-  const { data = [], refreshTable, requestParams } = useTable();
+  const { data = [], refreshTable, requestParams, fileteredData } = useTable();
   const { applySort } = useSort();
   const dispatch = useDispatch();
   const { selectedRows, deselectAll, selectedRowObjects, setSelectedRowObjects, setSelection } = useSelection();
@@ -202,7 +202,11 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         noDataComponent={
-          <ErrorBanner image={<EmptyProviderTable />} heading={t('label.spCatalogDataGrid')} description={t('label.spCatalogDataGridDescription')} />
+          <ErrorBanner
+            image={<EmptyProviderTable />}
+            heading={!fileteredData ? t('label.spCatalogDataGrid') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('label.spCatalogDataGridDescription')}
+          />
         }
       />
       <SPMaterialDetails

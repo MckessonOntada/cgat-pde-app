@@ -22,7 +22,7 @@ const RolesDataTable = () => {
   const { hasPermission } = usePermission();
   const columns = createColumns(t, selectedRows, setSelectedRows, hasPermission);
   const { applySort } = useRole();
-  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage, isError, error } = useRole();
+  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage, isError, error, fileteredData } = useRole();
   const dispatch = useDispatch();
   const showCardView = useResponsiveView();
 
@@ -119,8 +119,8 @@ const RolesDataTable = () => {
             error={isError && error}
             isLoading={isLoading}
             image={EmptyDataImage}
-            heading={t('message.emptyTableTitle')}
-            description={t('orgManagement.messages.roleEmptyTableSubtitle')}
+            heading={!fileteredData ? t('message.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('orgManagement.messages.roleEmptyTableSubtitle')}
           />
         }
         stickyHeader

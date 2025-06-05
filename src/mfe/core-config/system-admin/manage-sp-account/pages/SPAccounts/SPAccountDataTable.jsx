@@ -18,7 +18,7 @@ import AccountDetails from '../../../manage-account/pages/AccountDetails';
 function SPAccountDataTable({ isLinkedAccount }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId } = useSPAccountContext();
+  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId, fileteredData } = useSPAccountContext();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
@@ -137,8 +137,8 @@ function SPAccountDataTable({ isLinkedAccount }) {
           <EmptyDataTable
             isLoading={isLoading}
             image={EmptyDataImage}
-            heading={t('manageSPAccount.table.emptyData')}
-            description={t('manageSPAccount.table.emptyDataDescription')}
+            heading={!fileteredData ? t('manageSPAccount.table.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('manageSPAccount.table.emptyDataDescription')}
           />
         }
       />

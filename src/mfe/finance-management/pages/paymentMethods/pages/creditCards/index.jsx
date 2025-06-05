@@ -7,7 +7,6 @@ import { usePaymentMethods } from '@src/mfe/finance-management/context/PaymentMe
 import ModuleHeader from '@src/components/module-header';
 import { Heading } from '@mckesson/mcp-component-library';
 
-
 export default function CreditCards(params) {
   const { t } = useTranslate();
   const { filterCreditCards, refetchPaymentMethods } = usePaymentMethods();
@@ -28,9 +27,7 @@ export default function CreditCards(params) {
           useRegister={false}
         />
       </div>
-       <ModuleHeader
-          heading={<Heading as="h2">{t('paymentInvoices.table.savedCards')}</Heading>}
-        />
+      <ModuleHeader heading={<Heading as="h2">{t('paymentInvoices.table.savedCards')}</Heading>} />
       <CreditCardsTable />
     </React.Fragment>
   );

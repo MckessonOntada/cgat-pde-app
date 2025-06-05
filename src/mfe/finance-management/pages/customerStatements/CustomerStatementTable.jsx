@@ -15,15 +15,7 @@ import CommonUtils from '@src/util/CommonUtils';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
-  const {
-    data,
-    isFetching,
-    paginationConfig,
-    setPageNumber,
-    applySort,
-    isError,
-    exportPDF
-  } = useCustomerStatements();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF, fileteredData } = useCustomerStatements();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const columns = [
@@ -58,12 +50,7 @@ export default function CustomerStatementTable() {
       width: '100px',
       sortable: true,
       wrap: true,
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props.date,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props.date, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'statementBalance',
@@ -74,11 +61,7 @@ export default function CustomerStatementTable() {
       maxWidth: '220px',
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber
-            value={props?.statementBalance}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.statementBalance} style="currency" currency="USD" />
         </div>
       ),
       right: true
@@ -120,8 +103,7 @@ export default function CustomerStatementTable() {
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id)
-      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -151,10 +133,8 @@ export default function CustomerStatementTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={t('paymentInvoices.CS.table.emptyData')}
-            description={t(
-              'paymentInvoices.history.table.emptyDataDescription'
-            )}
+            heading={!fileteredData ? t('paymentInvoices.CS.table.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

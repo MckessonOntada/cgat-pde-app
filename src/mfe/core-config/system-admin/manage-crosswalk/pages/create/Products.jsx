@@ -65,7 +65,7 @@ const getColumns = ({ t }) => {
 
 const Products = () => {
   const { t } = useTranslate();
-  const { data, isLoading, error } = useTable();
+  const { data, isLoading, error, fileteredData } = useTable();
   const navigate = useNavigate();
   const { pagination, changePage } = usePagination();
   const { applySort } = useSort();
@@ -166,8 +166,8 @@ const Products = () => {
               isLoading={isLoading}
               error={error}
               image={EmptyDataImage}
-              heading={t('captions.emptyTableTitle')}
-              description={t('captions.emptyTableSubtitle')}
+              heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('captions.emptyTableSubtitle')}
             />
           }
         />

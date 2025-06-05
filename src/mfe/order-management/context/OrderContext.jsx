@@ -34,28 +34,23 @@ export const useOrders = () => {
 };
 
 function getChannelTypeFromOrderType(orderType) {
-  if (orderType === ORDER_TABS.SUBMITTED_BUY_AND_BILL)
-    return CHANNEL_TYPE.BUY_AND_BILL;
-  if (orderType === ORDER_TABS.SUBMITTED_SP)
-    return CHANNEL_TYPE.SPECIALTY_PHARMA;
+  if (orderType === ORDER_TABS.SUBMITTED_BUY_AND_BILL) return CHANNEL_TYPE.BUY_AND_BILL;
+  if (orderType === ORDER_TABS.SUBMITTED_SP) return CHANNEL_TYPE.SPECIALTY_PHARMA;
   return null;
 }
 
 export const OrderProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = React.useState(
-    INITIAL_PAGINATION_STATE
-  );
+  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
-  const [tabVariant, setTabVariant] = React.useState(
-    ORDER_TABS.SUBMITTED_BUY_AND_BILL
-  );
+  const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
   const [assigneeList, setAssigneeList] = React.useState([]);
   const [assigneeRequestParams, setAssigneeRequestParams] = React.useState({
     userType: 'GENERAL'
   });
   const [orderView, setOrderView] = React.useState(ORDER_VIEW.ALL_ORDERS);
+  const [fileteredData, setfileteredData] = useState(false);
 
   const requestParams = React.useMemo(() => {
     const params = {
@@ -73,11 +68,7 @@ export const OrderProvider = ({ children }) => {
           channelType: getChannelTypeFromOrderType(filterConfig?.orderType)
         }),
 
-      showMyOrders:
-        orderView === ORDER_VIEW.MY_ORDERS ||
-        orderView === ORDER_VIEW.ASSIGNED_TO_ME
-          ? true
-          : false,
+      showMyOrders: orderView === ORDER_VIEW.MY_ORDERS || orderView === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
       ...(tabVariant === ORDER_TABS.SUBMITTED_SP && {
         channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
@@ -94,25 +85,13 @@ export const OrderProvider = ({ children }) => {
         params.startDate = dateRange.startDate;
         params.endDate = dateRange.endDate;
       } else {
-        (params.startDate = DateUtils.formatDate(
-          filterConfig.dateRange[0],
-          'dd/mm/yyyy'
-        )),
-          (params.endDate = DateUtils.formatDate(
-            filterConfig.dateRange[1],
-            'dd/mm/yyyy'
-          ));
+        (params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy')),
+          (params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy'));
       }
     }
 
     return params;
-  }, [
-    filterConfig,
-    paginationConfig.pageNumber,
-    sortConfig,
-    tabVariant,
-    orderView
-  ]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
 
   const {
     isFetching,
@@ -139,15 +118,10 @@ export const OrderProvider = ({ children }) => {
     queryKey: ['assignee', assigneeRequestParams],
     queryFn: async () => UserService.getAssignee(assigneeRequestParams),
     onSuccess: (result = []) => {
-      const alreadySelected =
-        assigneeList.filter((item) => item.isChecked) || [];
+      const alreadySelected = assigneeList.filter((item) => item.isChecked) || [];
       setAssigneeList([...alreadySelected, ...result]);
     },
-    enable: Boolean(
-      tabVariant &&
-        tabVariant === ORDER_TABS.PENDING_APPROVAL &&
-        orderView !== ORDER_VIEW.ASSIGNED_TO_ME
-    )
+    enable: Boolean(tabVariant && tabVariant === ORDER_TABS.PENDING_APPROVAL && orderView !== ORDER_VIEW.ASSIGNED_TO_ME)
   });
 
   const { data: assignedGroupsData = {} } = useQuery({
@@ -161,13 +135,7 @@ export const OrderProvider = ({ children }) => {
 
   React.useEffect(() => {
     refreshData();
-  }, [
-    filterConfig,
-    paginationConfig.pageNumber,
-    sortConfig,
-    tabVariant,
-    orderView
-  ]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -189,10 +157,12 @@ export const OrderProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filterConfig, ...filters });
+    setfileteredData(true);
   };
 
   const clearFilters = () => {
     setFilterConfig({ ...INITIAL_FILTER_STATE });
+    setfileteredData(false);
   };
 
   const setCurrentPage = (pageNumber) => {
@@ -241,7 +211,8 @@ export const OrderProvider = ({ children }) => {
         changeOrderView,
         assigneeList,
         searchAssigneeByTest,
-        setAssigneeOnChange
+        setAssigneeOnChange,
+        fileteredData
       }}>
       {children}
     </OrderContext.Provider>

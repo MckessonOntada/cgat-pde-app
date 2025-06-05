@@ -37,7 +37,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
   };
 
-  const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError } = useManagerQuestionnaire();
+  const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError, fileteredData } = useManagerQuestionnaire();
   const [entityData, setEntityData] = React.useState([]);
   const [attributes, setAttributes] = React.useState({});
 
@@ -179,8 +179,8 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
             isLoading={isLoading}
             error={isError && isError.message}
             image={EmptyDataImage}
-            heading={t(attributes.noDataComponentHeading)}
-            description={t(attributes.noDataComponentDescription)}
+            heading={!fileteredData ? t(attributes.noDataComponentHeading) : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t(attributes.noDataComponentDescription)}
           />
         }
       />

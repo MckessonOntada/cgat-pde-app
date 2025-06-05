@@ -35,6 +35,7 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [selectedSPMaterial, setSelectedSPMaterial] = useState([]);
+  const [fileteredData, setfileteredData] = useState(false);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -77,6 +78,7 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
+    setfileteredData(false);
   };
 
   useEffect(() => {
@@ -88,6 +90,7 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
+    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -112,7 +115,8 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
       setPageNumber,
       refreshData: refetch,
       selectedSPMaterial,
-      setSelectedSPMaterial
+      setSelectedSPMaterial,
+      fileteredData
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );

@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -46,10 +39,8 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState(INITIAL_SORT_PARAMS);
-  const [paginationConfig, setPaginationConfig] = useState(
-    INITIAL_PAGINATION_STATE
-  );
-
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [fileteredData, setfileteredData] = useState(false);
   const updateFilterState = useCallback((field, value) => {
     setFilterConfig((prevState) => ({
       ...prevState,
@@ -60,6 +51,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const clearFilters = () => {
     setFilterConfig(INITIAL_STATE);
     setPaginationConfig(INITIAL_PAGINATION_STATE);
+    setfileteredData(false);
   };
 
   useEffect(() => {
@@ -85,14 +77,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
     };
 
     if (userId) {
-      return `${
-        ApiRoutes.PUBLIC_ORGANIZATIONS
-      }/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
     }
     return practiceId
-      ? `${
-          ApiRoutes.PUBLIC_ORGANIZATIONS
-        }/${practiceId}/accounts?${serializeParams(params)}`
+      ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
       : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
 
@@ -100,11 +88,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: [apiUrl],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(
-        `${apiUrl}`,
-        httpVerb.GET,
-        {}
-      );
+      const response = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
       if (response) {
         const { content, totalElements, totalPages } = response.data;
 
@@ -126,6 +110,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
 
   const applyFilters = useCallback((values) => {
     setFilterConfig(values);
+    setfileteredData(true);
   }, []);
 
   const setPageNumber = (pageNumber) => {
@@ -157,7 +142,8 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       setFilterConfig,
       clearFilters,
       setPageNumber,
-      applyFilters
+      applyFilters,
+      fileteredData
     }),
     [
       data,
@@ -170,13 +156,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       filterConfig,
       paginationConfig,
       applyFilters,
-      refetch
+      refetch,
+      fileteredData
     ]
   );
 
-  return (
-    <AccountsContext.Provider value={ctxValue}>
-      {children}
-    </AccountsContext.Provider>
-  );
+  return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;
 };

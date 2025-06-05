@@ -49,6 +49,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
   const { selectedAccount } = useAccountContext();
+  const [fileteredData, setfileteredData] = useState(false);
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -56,6 +57,7 @@ export const PendingPaymentsProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
+    setfileteredData(true);
   };
 
   const filterData = (filters) => {
@@ -110,6 +112,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
     refetch();
+    setfileteredData(false);
   };
 
   const applySort = (newSortConfig) => {
@@ -279,7 +282,8 @@ export const PendingPaymentsProvider = ({ children }) => {
     clearFilters,
     applySort,
     setPageNumber,
-    exportPDF
+    exportPDF,
+    fileteredData
   };
   return <PaymentsInvoicesContext.Provider value={contextValue}>{children}</PaymentsInvoicesContext.Provider>;
 };

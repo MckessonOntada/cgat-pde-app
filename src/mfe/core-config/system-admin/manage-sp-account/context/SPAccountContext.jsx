@@ -39,7 +39,7 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const practiceId = AuthUtils.getPracticeId();
-
+  const [fileteredData, setfileteredData] = useState(false);
   const organizationId = selectedOrganization?.id || practiceId;
 
   useEffect(() => {
@@ -60,9 +60,13 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
       ...prevFilters,
       ...filters
     }));
+    setfileteredData(true);
   };
 
-  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
+  const clearFilters = () => {
+    setFilterConfig(INITIAL_FILTER_STATE);
+    setfileteredData(false);
+  };
 
   const requestParams = useMemo(() => {
     const baseParams = {
@@ -120,7 +124,8 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
     filterConfig,
     refetchSPAccountList,
     applySort,
-    organizationId
+    organizationId,
+    fileteredData
   };
   return <SPAccountContext.Provider value={contextValue}>{children}</SPAccountContext.Provider>;
 };

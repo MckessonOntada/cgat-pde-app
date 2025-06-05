@@ -11,13 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { PROVIDER_STATUS } from '../../config';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import {
-  useFilters,
-  usePagination,
-  useSelection,
-  useSort,
-  useTable
-} from '../../context/TableContext';
+import { useFilters, usePagination, useSelection, useSort, useTable } from '../../context/TableContext';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
@@ -35,7 +29,7 @@ const List = () => {
   const { filters, applyFilters, clearFilters } = useFilters();
   const { selectedRows } = useSelection();
   const { applySort } = useSort();
-  const { data = [] } = useTable();
+  const { data = [], fileteredData } = useTable();
   const { pagination, changePage } = usePagination();
   const breadcrumbItems = React.useMemo(() => {
     return [
@@ -111,36 +105,20 @@ const List = () => {
         heading={<Heading as="h1">{t('label.providers')}</Heading>}
         controls={
           <div className="controls">
-            <PermittedComponent
-              permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.UPLOAD_PROVIDER}>
-              <Button
-                Icon={FileUploadIcon}
-                className="button-icon"
-                onClick={handleOnClick('upload-providers')}
-                size="md">
+            <PermittedComponent permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.UPLOAD_PROVIDER}>
+              <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload-providers')} size="md">
                 {t('controls.uploadProviders')}
               </Button>
             </PermittedComponent>
-            <PermittedComponent
-              permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.ADD_PROVIDER}>
-              <Button
-                Icon={AddCircleFilled}
-                className="button-icon"
-                onClick={handleOnClick('create')}
-                size="md">
+            <PermittedComponent permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.ADD_PROVIDER}>
+              <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick('create')} size="md">
                 {t('controls.addProviders')}
               </Button>
             </PermittedComponent>
           </div>
         }
       />
-      {notification && (
-        <Alert
-          description={notification.description}
-          onClose={() => setNotification(null)}
-          type={notification.type}
-        />
-      )}
+      {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
 
       <div className="MCP-CardContainer">
         <div className="MCP-CardContainer">
@@ -148,26 +126,16 @@ const List = () => {
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}
             additionalFilters={additionalFiltersConfig}
-            searchPlaceholder={t(
-              'controls.placeholder.searchProviderPlaceholder'
-            )}
+            searchPlaceholder={t('controls.placeholder.searchProviderPlaceholder')}
           />
         </div>
         <TableHeading
           heading={t('label.providerListing')}
           secondaryView={selectedRows.size > 0}
-          secondaryViewHeading={`${selectedRows.size} ${t(
-            'orgManagement.selected_items'
-          )}`}
+          secondaryViewHeading={`${selectedRows.size} ${t('orgManagement.selected_items')}`}
           secondaryViewControls={
-            <PermittedComponent
-              permissions={[
-                PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
-              ]}>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleOnLinkSpAccounts}>
+            <PermittedComponent permissions={[PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN]}>
+              <Button variant="secondary" size="sm" onClick={handleOnLinkSpAccounts}>
                 {t('provider.linkSpAccounts')}
               </Button>
             </PermittedComponent>
@@ -189,8 +157,8 @@ const List = () => {
           noDataComponent={
             <ErrorBanner
               image={<EmptyProviderTable />}
-              heading={t('manageSPAccount.providers.noData')}
-              description={t('label.emptyProviderTableDescription')}
+              heading={!fileteredData ? t('manageSPAccount.providers.noData') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('label.emptyProviderTableDescription')}
             />
           }
         />

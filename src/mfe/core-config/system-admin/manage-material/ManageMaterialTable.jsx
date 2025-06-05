@@ -24,7 +24,7 @@ import {
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
-  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials } = useManageMaterial();
+  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials, fileteredData } = useManageMaterial();
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
@@ -228,8 +228,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             isLoading={isFetching}
             error={isError ? t('manageMaterial.table.error') : null}
             image={EmptyDataImage}
-            heading={t('manageMaterial.table.emptyData')}
-            description={t('manageMaterial.table.emptyDataDescription')}
+            heading={!fileteredData ? t('manageMaterial.table.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('manageMaterial.table.emptyDataDescription')}
           />
         }
         progressComponent={

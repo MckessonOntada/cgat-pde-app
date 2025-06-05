@@ -14,7 +14,7 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 function CatalogDataTable(props) {
   const { t } = useTranslate();
 
-  const { paginationConfig, catalogList: data, setPageNumber, isLoading } = useCatalogContext();
+  const { paginationConfig, catalogList: data, fileteredData, setPageNumber, isLoading } = useCatalogContext();
   const [selectedCatalogs, setSelectedCatalogs] = useState([]);
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const [openCatalogDetails, setOpenCatalogDetails] = useState(false);
@@ -133,7 +133,13 @@ function CatalogDataTable(props) {
         recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('ManageCatalog.Table.nodata')} description={t('ManageCatalog.Table.nodataMsg')} />}
+        noDataComponent={
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={!fileteredData ? t('ManageCatalog.Table.nodata') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('ManageCatalog.Table.nodataMsg')}
+          />
+        }
         progressPending={isLoading}
         progressComponent={
           <div

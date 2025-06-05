@@ -25,7 +25,7 @@ const OrgList = ({ onActionSuccess }) => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
+  const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort, fileteredData } = useOrg();
   const dispatch = useDispatch();
   const { hasPermission } = usePermission();
 
@@ -261,8 +261,8 @@ const OrgList = ({ onActionSuccess }) => {
             isLoading={isLoading}
             error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={t('orgManagement.add.label')}
-            description={t('orgManagement.empty_table.description')}
+            heading={!fileteredData ? t('orgManagement.add.label') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('orgManagement.empty_table.description')}
           />
         }
       />

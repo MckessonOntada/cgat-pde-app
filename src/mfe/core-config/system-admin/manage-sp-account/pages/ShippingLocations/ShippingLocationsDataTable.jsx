@@ -22,7 +22,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 function ShippingLocationsDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, applySort, accountId } = useShippingLocation();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, applySort, accountId, fileteredData } = useShippingLocation();
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [openShippingDrawer, setOpenShippingDrawer] = useState(false);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -186,8 +186,8 @@ function ShippingLocationsDataTable() {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={t('manageSPAccount.table.shippinglocations.emptyData')}
-                description={t('manageSPAccount.tables.shippinglocations.emptyDataDescription')}
+                heading={!fileteredData ? t('manageSPAccount.table.shippinglocations.emptyData') : t('errors.messages.noRecordsFound')}
+                description={!fileteredData && t('manageSPAccount.tables.shippinglocations.emptyDataDescription')}
               />
             }
           />

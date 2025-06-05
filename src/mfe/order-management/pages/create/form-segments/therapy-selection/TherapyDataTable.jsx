@@ -14,7 +14,7 @@ const TherapyDataTable = (props) => {
 
   const { t } = useTranslate();
   const [isInitialExpandSet, setIsInitialExpandSet] = React.useState(false);
-  const { data, paginationConfig, setPageNumber, isFetching, error, applySort } = useTherapy();
+  const { data, paginationConfig, setPageNumber, isFetching, error, applySort, fileteredData } = useTherapy();
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);
@@ -98,8 +98,8 @@ const TherapyDataTable = (props) => {
           isLoading={isFetching}
           error={error?.message}
           image={EmptyDataImage}
-          heading={t('table.labels.therapySelectionNoDataAvailable')}
-          description={t('table.labels.therapySelectionNoDataAvailableDescription')}
+          heading={!fileteredData ? t('table.labels.therapySelectionNoDataAvailable') : t('errors.messages.noRecordsFound')}
+          description={!fileteredData && t('table.labels.therapySelectionNoDataAvailableDescription')}
         />
       }
     />

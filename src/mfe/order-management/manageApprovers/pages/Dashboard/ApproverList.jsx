@@ -21,7 +21,7 @@ function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, applySort, setPageNumber, refreshData, error, isLoadingApprovers, isErrorApprovers } = useApprover();
+  const { data, paginationConfig, applySort, setPageNumber, refreshData, error, isLoadingApprovers, isErrorApprovers, fileteredData } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
   const showCardView = useResponsiveView();
@@ -165,10 +165,7 @@ function ApproverList({ onActionSuccess }) {
         secondaryView={!!selectedRows}
         secondaryViewHeading={`1 ${t('approvergroup.selected_items')}`}
         secondaryViewControls={
-          <Button
-            variant="secondary"
-            onClick={handleActivateDeactivate}
-            disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP)}>
+          <Button variant="secondary" onClick={handleActivateDeactivate} disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP)}>
             {selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
         }
@@ -198,8 +195,8 @@ function ApproverList({ onActionSuccess }) {
             isLoading={isLoadingApprovers}
             error={isErrorApprovers && error}
             image={EmptyDataImage}
-            heading={t('message.emptyTableApproverGroupTitle')}
-            description={t('approvergroup.empty_table.description')}
+            heading={!fileteredData ? t('message.emptyTableApproverGroupTitle') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('approvergroup.empty_table.description')}
           />
         }
       />
@@ -211,9 +208,7 @@ function ApproverList({ onActionSuccess }) {
           modalTitle: t('approvergroup.confirmationmessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              {selectedRows?.active
-                ? t('approvergroup.confirmationmessage.message')
-                : t('approvergroup.confirmationmessage.activatemessage')}
+              {selectedRows?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
             </div>
           ),
           modalFooter: (
@@ -221,11 +216,7 @@ function ApproverList({ onActionSuccess }) {
               <Button onClick={handleConfirmCancel} variant="secondary" size="md">
                 {t('approvergroup.button.cancel')}
               </Button>
-              <Button
-                size="md"
-                onClick={() =>
-                  handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
-                }>
+              <Button size="md" onClick={() => handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))}>
                 {selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
               </Button>
             </React.Fragment>

@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Badge,
-  Button,
-  Loader,
-  MenuList
-} from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader, MenuList } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
@@ -27,15 +22,7 @@ export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const {
-    data,
-    isFetching,
-    paginationConfig,
-    setPageNumber,
-    applySort,
-    isError,
-    exportExcel
-  } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, fileteredData } = usePaymentInvoices();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
 
@@ -51,15 +38,7 @@ export default function InvoicesTable() {
         setIncludeinvoiceData
       ),
       sortable: false,
-      cell: (row, index) =>
-        renderTableCheckBox(
-          row,
-          data,
-          'billNumber',
-          paginationConfig,
-          includeinvoiceData,
-          setIncludeinvoiceData
-        ),
+      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, includeinvoiceData, setIncludeinvoiceData),
       selector: (row) => row.MRN,
       width: '50px',
       showInMobileHeader: true,
@@ -101,9 +80,7 @@ export default function InvoicesTable() {
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => (
-        <div className="textCapitalize">{props?.soldToSite || '-'}</div>
-      )
+      cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.invoiceDate'),
@@ -111,12 +88,7 @@ export default function InvoicesTable() {
       sortable: true,
       id: 'billDate',
       width: '120px',
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props.billDate,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -124,12 +96,7 @@ export default function InvoicesTable() {
       width: '125px',
       sortable: true,
       id: 'dueDate',
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props?.dueDate,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
@@ -139,21 +106,13 @@ export default function InvoicesTable() {
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber
-            value={props?.openAmount || 0}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.openAmount || 0} style="currency" currency="USD" />
         </div>
       ),
       right: true
     },
     {
-      name: (
-        <span className="statusCenter">
-          {t('paymentInvoices.history.table.status')}
-        </span>
-      ),
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
       selector: (row) => row.status,
       minWidth: '195px',
       sortable: true,
@@ -186,11 +145,7 @@ export default function InvoicesTable() {
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber
-            value={props?.billAmount || 0}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
     },
@@ -238,8 +193,7 @@ export default function InvoicesTable() {
     }
   };
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id)
-      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -250,18 +204,12 @@ export default function InvoicesTable() {
       <TableHeading
         heading={t('paymentInvoices.table.invoiceHeading')}
         controls={
-          <Button
-            variant="secondary"
-            onClick={() => exportExcel()}
-            disabled={data.length === 0}
-            size="sm">
+          <Button variant="secondary" onClick={() => exportExcel()} disabled={data.length === 0} size="sm">
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         }
         secondaryView={includeinvoiceData.length > 0}
-        secondaryViewHeading={`${includeinvoiceData.length} ${t(
-          'paymentInvoices.history.table.selectedAccount'
-        )}`}
+        secondaryViewHeading={`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}
         secondaryViewControls={
           <Button
             variant="secondary"
@@ -304,10 +252,8 @@ export default function InvoicesTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={t('paymentInvoices.invoice.table.emptyData')}
-            description={t(
-              'paymentInvoices.history.table.emptyDataDescription'
-            )}
+            heading={!fileteredData ? t('paymentInvoices.invoice.table.emptyData') : t('errors.messages.noRecordsFound')}
+            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

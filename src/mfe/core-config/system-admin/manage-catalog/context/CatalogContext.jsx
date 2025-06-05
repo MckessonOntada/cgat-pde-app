@@ -38,7 +38,7 @@ export const CatalogProvider = ({ children }) => {
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { selectedAccount, selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-
+  const [fileteredData, setfileteredData] = useState(false);
   useEffect(() => {
     clearFilters();
   }, [selectedOrganization, selectedAccount]);
@@ -56,9 +56,13 @@ export const CatalogProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
+    setfileteredData(true);
   };
 
-  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
+  const clearFilters = () => {
+    setFilterConfig(INITIAL_FILTER_STATE);
+    setfileteredData(false);
+  };
 
   const requestParams = () => {
     if (selectedAccount && selectedAccount.length > 0) {
@@ -119,7 +123,8 @@ export const CatalogProvider = ({ children }) => {
     clearFilters,
     applyFilters,
     isLoading: isFetching,
-    filterConfig
+    filterConfig,
+    fileteredData
   };
   return <CatalogContext.Provider value={contextValue}>{children}</CatalogContext.Provider>;
 };

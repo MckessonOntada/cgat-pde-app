@@ -410,6 +410,8 @@ export const UserManagementEN = {
   'labels.caption.REJECTED': 'Rejected',
 
   'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.noRecords': 'No records found',
+  'errors.messages.noRecordsFound': 'No records found for the applied filters',
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
   'label.comment': 'Comment',
   'label.comments': 'Comments',

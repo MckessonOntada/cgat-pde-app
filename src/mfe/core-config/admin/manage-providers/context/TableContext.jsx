@@ -15,9 +15,7 @@ export const useTable = () => {
   const context = useContext(TableContext);
 
   if (!context) {
-    throw new TableContextError(
-      'useTable must be used within a TableProvider.'
-    );
+    throw new TableContextError('useTable must be used within a TableProvider.');
   }
 
   return context;
@@ -27,9 +25,7 @@ export const useColumns = () => {
   const context = useContext(TableContext);
 
   if (!context) {
-    throw new TableContextError(
-      'useColumns must be used within a TableProvider.'
-    );
+    throw new TableContextError('useColumns must be used within a TableProvider.');
   }
 
   const { columns } = context;
@@ -41,20 +37,10 @@ export const useSelection = () => {
   const context = useContext(TableContext);
 
   if (!context) {
-    throw new TableContextError(
-      'useSelection must be used within a TableProvider.'
-    );
+    throw new TableContextError('useSelection must be used within a TableProvider.');
   }
 
-  const {
-    selectedRows,
-    setSelection,
-    selectedRowObjects,
-    setSelectedRowObjects,
-    toggleRowSelection,
-    selectAll,
-    deselectAll
-  } = context;
+  const { selectedRows, setSelection, selectedRowObjects, setSelectedRowObjects, toggleRowSelection, selectAll, deselectAll } = context;
 
   return {
     selectedRows,
@@ -83,9 +69,7 @@ export const useFilters = () => {
   const context = useContext(TableContext);
 
   if (!context) {
-    throw new TableContextError(
-      'useFilters must be used within a TableProvider.'
-    );
+    throw new TableContextError('useFilters must be used within a TableProvider.');
   }
 
   const { filters, applyFilters, clearFilters } = context;
@@ -96,9 +80,7 @@ export const usePagination = () => {
   const context = useContext(TableContext);
 
   if (!context) {
-    throw new TableContextError(
-      'usePagination must be used within a TableProvider.'
-    );
+    throw new TableContextError('usePagination must be used within a TableProvider.');
   }
 
   const { pagination, changePage } = context;
@@ -118,19 +100,13 @@ const INITIAL_SORT_STATE = {
   sortOrder: 'asc'
 };
 
-export const TableProvider = ({
-  fetchFn,
-  defaultFilters,
-  defaultSort,
-  columns,
-  allowedSort = [],
-  children
-}) => {
+export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, allowedSort = [], children }) => {
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters || { query: '' });
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectedRowObjects, setSelectedRowObjects] = useState(new Set());
   const [pagination, setPagination] = useState(INITIAL_PAGINATION_STATE);
+  const [fileteredData, setfileteredData] = useState(false);
   const [sort, setSort] = React.useState(() => {
     return {
       ...INITIAL_SORT_STATE,
@@ -155,9 +131,7 @@ export const TableProvider = ({
     const otherParams = {
       pageNo: pagination.pageNo - 1,
       pageSize: pagination.pageSize,
-      sortBy: allowedSort.includes(sort.sortBy)
-        ? sort.sortBy
-        : allowedSort[0] || '',
+      sortBy: allowedSort.includes(sort.sortBy) ? sort.sortBy : allowedSort[0] || '',
       sortOrder: sort.sortOrder || 'desc'
     };
 
@@ -248,6 +222,7 @@ export const TableProvider = ({
   const applyFilters = (filters) => {
     setPagination((prev) => ({ ...prev, pageNo: 1 }));
     setFilters({ ...defaultFilters, ...filters });
+    setfileteredData(true);
   };
 
   const applySort = (sortBy, sortDirection) => {
@@ -267,16 +242,13 @@ export const TableProvider = ({
 
     setSort({
       sortBy: sortBy,
-      sortOrder: !sort.sortOrder
-        ? sortDirection
-        : sort.sortOrder === 'asc'
-        ? 'desc'
-        : 'asc'
+      sortOrder: !sort.sortOrder ? sortDirection : sort.sortOrder === 'asc' ? 'desc' : 'asc'
     });
   };
 
   const clearFilters = () => {
     setFilters(defaultFilters || { query: '' });
+    setfileteredData(false);
   };
 
   const changePage = (pageNo) => {
@@ -306,10 +278,9 @@ export const TableProvider = ({
     clearFilters,
     changePage,
     refreshTable: fetchData,
-    requestParams
+    requestParams,
+    fileteredData
   };
 
-  return (
-    <TableContext.Provider value={context}>{children}</TableContext.Provider>
-  );
+  return <TableContext.Provider value={context}>{children}</TableContext.Provider>;
 };
