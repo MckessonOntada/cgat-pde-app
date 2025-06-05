@@ -56,6 +56,8 @@ export const ManageMaterialProvider = ({ children }) => {
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
+      ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
+      ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder }),
       query: filterConfig.searchQuery || ''
     };
     return `${ApiRoutes.GET_ALL_MATERIALS()}?${serializeParams(params)}`;
