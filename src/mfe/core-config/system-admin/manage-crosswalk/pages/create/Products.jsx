@@ -134,7 +134,7 @@ const Products = () => {
           <Heading as="h3">{t('label.spProductListing')}</Heading>
         </div>
       </div>
-      <div className={`${style['grid-item']} scrollable-table-wrapper`}>
+      <div className={`${style['grid-item']} scrollable-table-wrapper products`}>
         <CustomDataTable
           siblingBreakpoint="md"
           totalCount={5}

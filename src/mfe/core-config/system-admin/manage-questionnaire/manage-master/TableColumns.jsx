@@ -72,6 +72,8 @@ export const getColumnsByEntityType = ({
           name: t('labels.therapy'),
           selector: () => {},
           maxWidth: '220px',
+          sortable: true,
+          sortKey: 'trade_name',
           cell: (row) => {
             const { tradeName, cellValue, channelType } = row;
             return (
@@ -103,8 +105,7 @@ export const getColumnsByEntityType = ({
           id: 'ndc',
           name: t('labels.ndc'),
           selector: (row) => row.ndc || '',
-          sortable: true,
-          sortKey: 'ndc',
+          sortable: false,
           minWidth: '240px',
           cell: ({ isExpandable, ndc }) => {
             let toolTip = '',
@@ -127,8 +128,7 @@ export const getColumnsByEntityType = ({
           id: 'manufacturer',
           name: t('labels.manufacturer'),
           selector: (row) => row.manufacturerName || '',
-          sortable: true,
-          sortKey: 'manufacturerName',
+          sortable: false,
           maxWidth: '200px',
           cell: (row) => (
             <span aria-label={t('label.manufacturerName')}>
