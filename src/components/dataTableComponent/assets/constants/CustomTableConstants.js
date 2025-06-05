@@ -79,13 +79,17 @@ export const renderTableCheckBox = (
     }
   };
 
-  const isAllChecked = () =>
-    selectedData.length ===
-    data.filter((item) => {
+  const isAllChecked = () => {
+    const activeRows = data.filter((item) => {
       if ('active' in item) return item.active === true;
       if ('isActive' in item) return item.isActive === true;
       return true;
-    }).length;
+    });
+
+    return activeRows.every((item) =>
+      selectedData.some((selected) => selected[dataKey] === item[dataKey])
+    );
+  };
 
   const handleIndividualCheck = () => {
     if (selectedData.find((item) => item[dataKey] === row[dataKey])) {
