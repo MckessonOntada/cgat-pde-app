@@ -47,6 +47,8 @@ function ReviewPayments() {
   const disablePay = useRef(false);
   const [SpecificDateError, setSpecificDateError] = useState('');
   const { controlRef } = useContext(FooterContext);
+  const [totalCreditsAmount, settotalCreditsAmount] = useState(0);
+
 
   const showAlert = (type, message) => {
     setAlert({ type });
@@ -461,6 +463,7 @@ function ReviewPayments() {
                     setSelectedCredits={setSelectedCredits}
                     totalCreditsCount={totalCreditsCount}
                     settotalCreditsCount={settotalCreditsCount}
+                    settotalCreditsAmount={settotalCreditsAmount}
                   />
                 </PaymentsCreditsProvider>
               )}
@@ -471,7 +474,7 @@ function ReviewPayments() {
                   <div className="label">{t('paymentInvoices.reviewPayments.TotalCreditAmount')}</div>{' '}
                   <div className="value">
                     <span className="currencySymbol">$</span>
-                    {`${FinanceUtils.formatCurrency(totalCreditsCount).slice(1)}`}
+                    {`${FinanceUtils.formatCurrency(totalCreditsAmount).slice(1)}`}
                   </div>
                 </div>
 
@@ -479,7 +482,7 @@ function ReviewPayments() {
                   <div className="label">{t('paymentInvoices.reviewPayments.TotalAmountAfterCreditApplied')}</div>{' '}
                   <div className="value">
                     <span className="currencySymbol">$</span>
-                    {`${FinanceUtils.formatCurrency(totalCreditsCount - creditsSum).slice(1)}`}
+                    {`${FinanceUtils.formatCurrency(totalCreditsAmount - creditsSum).slice(1)}`}
                   </div>
                 </div>
               </>

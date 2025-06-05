@@ -24,7 +24,7 @@ import {
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
-  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials, fileteredData } = useManageMaterial();
+  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials, fileteredData, applySort } = useManageMaterial();
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
@@ -83,11 +83,11 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
     },
     {
       name: t('labels.therapy'),
-      id: 'therapy',
+      id: 'trade_name',
       selector: (row) => row.therapy,
       wrap: true,
       sortable: true,
-      sortKey: 'therapy',
+      sortKey: 'trade_name',
       minWidth: '220px',
       cell: (row) => {
         const { tradeName, cellValue } = row;
@@ -104,8 +104,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
       wrap: true,
-      sortable: true,
-      sortKey: 'ndc',
+      sortable: false,
       minWidth: '214px',
       cell: ({ isExpandable, ndc }) => {
         let toolTip = '',
@@ -162,6 +161,15 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
     });
   };
 
+  const handleOnSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) {
+      applySort({
+        sortBy: selectedColumn.sortKey,
+        sortOrder: sortDirection
+      });
+    }
+  };
+
   const ExpandedComponent = ({ data }) => {
     if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
     const expandedData = data.therapies || [];
@@ -210,6 +218,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         pagination={true}
+        onSortIconClick={handleOnSort}
         totalRocords={paginationConfig.totalElements}
         handleChangePage={handleChangePage}
         recordsPerPage={paginationConfig.pageSize}

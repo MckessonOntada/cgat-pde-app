@@ -59,7 +59,8 @@ function TherapySelection() {
     searchParams.delete('channelType');
     navigate({
       pathname: '',
-      search: searchParams.toString() ? `?${searchParams.toString()}` : ''
+      search: searchParams.toString() ? `?${searchParams.toString()}` : '',
+      state: location.state
     });
   };
 

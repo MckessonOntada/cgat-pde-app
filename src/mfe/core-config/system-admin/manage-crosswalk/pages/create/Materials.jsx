@@ -123,7 +123,7 @@ const Materials = () => {
         wrap: true,
         maxWidth: '180px',
         sortable: true,
-        sortKey: 'materialDescription',
+        sortKey: 'trade_name',
         cell: ({ cellValue, tradeName }) => {
           return (
             <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`}>
@@ -137,8 +137,7 @@ const Materials = () => {
         id: 'ndcNumber',
         selector: (row) => row.ndcNumber,
         wrap: true,
-        sortable: true,
-        sortKey: 'ndc',
+        sortable: false,
         minWidth: '140px',
         cell: ({ isExpandable, ndc }) => {
           let toolTip = '',

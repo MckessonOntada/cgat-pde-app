@@ -72,7 +72,6 @@ function TherapyDetailsWithTabs({
   } = useQuery({
     queryKey: ['therapyDetailsByTrade', trade],
     queryFn: async () => {
-      debugger;
       if (isMaterialListing) {
         return OrderService.getTherapyDetailsByTradeName2(trade, channelType);
       } else {
@@ -140,7 +139,6 @@ function TherapyDetailsWithTabs({
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
-      debugger;
       onSelect(therapyDetails);
       onClose();
     }
