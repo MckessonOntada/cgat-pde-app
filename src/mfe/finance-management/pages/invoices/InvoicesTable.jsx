@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Badge,
-  Button,
-  Loader,
-  MenuList
-} from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader, MenuList } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
@@ -22,20 +17,13 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useAccountContext } from '../../context/AccountContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const {
-    data,
-    isFetching,
-    paginationConfig,
-    setPageNumber,
-    applySort,
-    isError,
-    exportExcel
-  } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel } = usePaymentInvoices();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
 
@@ -51,15 +39,7 @@ export default function InvoicesTable() {
         setIncludeinvoiceData
       ),
       sortable: false,
-      cell: (row, index) =>
-        renderTableCheckBox(
-          row,
-          data,
-          'billNumber',
-          paginationConfig,
-          includeinvoiceData,
-          setIncludeinvoiceData
-        ),
+      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, includeinvoiceData, setIncludeinvoiceData),
       selector: (row) => row.MRN,
       width: '50px',
       showInMobileHeader: true,
@@ -92,6 +72,33 @@ export default function InvoicesTable() {
       )
     },
     {
+      name: t('labels.sapId'),
+      id: 'mckessonOrderId',
+      selector: (row) => `${row.mckessonOrderId}`,
+      maxWidth: '140px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
+      cell: (props) => (
+        <Link
+          className="MCP-table-link"
+          to={`/orders/${props?.mckessonOrderId}/summary`}
+          state={{
+            backToInvoiceListing: true
+          }}>
+          <EclipsesTextcss str={props.mckessonOrderId} maxWidth={170} />
+        </Link>
+      )
+    },
+    {
+      name: t('labels.soldToAccountName'),
+      id: 'soldToName',
+      selector: (row) => `${row.soldToName}`,
+      maxWidth: '180px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
+      cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
+    },
+    {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
@@ -101,9 +108,7 @@ export default function InvoicesTable() {
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => (
-        <div className="textCapitalize">{props?.soldToSite || '-'}</div>
-      )
+      cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.invoiceDate'),
@@ -111,12 +116,7 @@ export default function InvoicesTable() {
       sortable: true,
       id: 'billDate',
       width: '120px',
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props.billDate,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -124,12 +124,7 @@ export default function InvoicesTable() {
       width: '125px',
       sortable: true,
       id: 'dueDate',
-      cell: (props) =>
-        CommonUtils.convertDateStringFormat(
-          props?.dueDate,
-          'MM/DD/YYYY',
-          'DD/MM/YYYY'
-        )
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
@@ -139,21 +134,13 @@ export default function InvoicesTable() {
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber
-            value={props?.openAmount || 0}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.openAmount || 0} style="currency" currency="USD" />
         </div>
       ),
       right: true
     },
     {
-      name: (
-        <span className="statusCenter">
-          {t('paymentInvoices.history.table.status')}
-        </span>
-      ),
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
       selector: (row) => row.status,
       minWidth: '195px',
       sortable: true,
@@ -186,11 +173,7 @@ export default function InvoicesTable() {
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber
-            value={props?.billAmount || 0}
-            style="currency"
-            currency="USD"
-          />
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
     },
@@ -238,8 +221,7 @@ export default function InvoicesTable() {
     }
   };
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id)
-      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -250,18 +232,12 @@ export default function InvoicesTable() {
       <TableHeading
         heading={t('paymentInvoices.table.invoiceHeading')}
         controls={
-          <Button
-            variant="secondary"
-            onClick={() => exportExcel()}
-            disabled={data.length === 0}
-            size="sm">
+          <Button variant="secondary" onClick={() => exportExcel()} disabled={data.length === 0} size="sm">
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         }
         secondaryView={includeinvoiceData.length > 0}
-        secondaryViewHeading={`${includeinvoiceData.length} ${t(
-          'paymentInvoices.history.table.selectedAccount'
-        )}`}
+        secondaryViewHeading={`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}
         secondaryViewControls={
           <Button
             variant="secondary"
@@ -305,9 +281,7 @@ export default function InvoicesTable() {
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.invoice.table.emptyData')}
-            description={t(
-              'paymentInvoices.history.table.emptyDataDescription'
-            )}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={
