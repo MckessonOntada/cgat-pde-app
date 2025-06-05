@@ -1,6 +1,25 @@
 import { US_STATES } from '@src/components/form/util';
 
-export const PATIENT_RELATIONSHIP = ['Self', 'Spouse', 'Father', 'Mother'];
+export const PATIENT_RELATIONSHIP = [
+  'Self',
+  'Spouse',
+  'Child',
+  'Parent',
+  'Sibling',
+  'Grandparent',
+  'Grandchild',
+  'Stepchild',
+  'Stepparent',
+  'Fosterchild',
+  'Guardian',
+  'Ward',
+  'Niece/Nephew',
+  'Aunt/Uncle',
+  'Cousin',
+  'Partner',
+  'Other'
+];
+
 export const PLAN_TYPES = ['HMO', 'PPO', 'EPO', 'POS', 'HDHP'];
 
 const getStates = () => {
@@ -152,7 +171,7 @@ export const insuranceCoverageDetailsTemplate = () => {
             value: item
           })),
           maxLength: 100,
-          isRequired: true,
+          isRequired: true
         },
         {
           id: 'insurance-effective-date',
@@ -161,7 +180,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           placeholder: ' ',
           maxLength: 100,
           type: 'datePicker',
-          isRequired: true,
+          isRequired: true
         },
         {
           id: 'insurance-rx-pcn-number',
@@ -170,7 +189,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           placeholder: ' ',
           maxLength: 100,
           type: 'input',
-          isRequired: true,
+          isRequired: true
         }
       ]
     },
@@ -184,7 +203,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           placeholder: ' ',
           maxLength: 100,
           type: 'input',
-          isRequired: true,
+          isRequired: true
         },
         {
           id: 'insurance-rx-id-number',
@@ -193,7 +212,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           placeholder: ' ',
           maxLength: 100,
           type: 'input',
-          isRequired: true,
+          isRequired: true
         },
         {
           id: 'insurance-rx-bin-number',
@@ -202,7 +221,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           placeholder: ' ',
           maxLength: 100,
           type: 'input',
-          isRequired: true,
+          isRequired: true
         }
       ]
     }
