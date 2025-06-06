@@ -50,27 +50,27 @@ export default function BalanceDetails() {
         {
           key: 'DUE',
           label: t('paymentInvoices.balanceCard.due'),
-          color: '#F7C91E80'
+          color: '#F7C91E'
         },
         {
           key: 'OVERDUE',
           label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'),
-          color: '#EFA22180'
+          color: '#EFA221'
         },
         {
           key: 'PLUS_31_DAYS_OVERDUE',
           label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'),
-          color: '#EA882380'
+          color: '#EA8823'
         },
         {
           key: 'PLUS_61_DAYS_OVERDUE',
           label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'),
-          color: '#E3612680'
+          color: '#E36126'
         },
         {
           key: 'PLUS_91_DAYS_OVERDUE',
           label: t('paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE'),
-          color: '#DB3A2980'
+          color: '#DB3A29'
         }
       ];
 
