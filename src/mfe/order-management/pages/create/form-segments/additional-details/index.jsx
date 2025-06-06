@@ -554,14 +554,34 @@ function AdditionalDetails() {
 
     const payload = {
       coiId,
-      orderQuantity,
-      slotNumber,
       poNumber,
-      dateOfAdministration,
       variantDetails: variantDetails,
       patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
+
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      const { hasAllergies, allergyDetails, hasDiseases, dateOfAdministration } = values;
+      const clinicalDetails = {
+        hasAllergies: hasAllergies === 'yes',
+        hasDiseaseIndication: hasDiseases === 'yes'
+      };
+
+      if (hasAllergies === 'yes') {
+        clinicalDetails.allergiesSpecification = allergyDetails;
+      }
+
+      if (dateOfAdministration) {
+        clinicalDetails.dateOfAdministration = dateOfAdministration;
+      }
+
+      payload.clinicalDetails = clinicalDetails;
+      payload.diagnosisCodes = values['diagnosisCode'];
+    } else {
+      payload.orderQuantity = orderQuantity;
+      payload.slotNumber = slotNumber;
+      payload.dateOfAdministration = dateOfAdministration;
+    }
 
     saveAdditionalDetails(payload);
   };
