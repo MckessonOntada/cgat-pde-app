@@ -19,14 +19,7 @@ const OrderStatus = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
-  const {
-    data: orderDetails = {},
-    isFetching,
-    isError,
-    error,
-    isLoader
-  } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
   const contentRef = useRef(null);
   const { controlRef } = useContext(FooterContext);
 
@@ -41,20 +34,10 @@ const OrderStatus = () => {
     }`
   );
 
-  const {
-    therapy = {},
-    orderCost,
-    patient = {},
-    status: orderStatus,
-    backendOrderId,
-    approver,
-    accountDetails
-  } = orderDetails || {};
-  const spOrder =
-    accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
+  const { therapy = {}, orderCost, patient = {}, status: orderStatus, backendOrderId, approver, accountDetails } = orderDetails || {};
+  const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
-  const isApprover =
-    approver && typeof approver === 'object' && approver.id != null;
+  const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
   const backToOrders = () =>
     navigate(`/orders?${searchParams.toString()}`, {
@@ -112,42 +95,17 @@ const OrderStatus = () => {
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             {orderStatus === 'SUBMITTED' ? (
-              <DetailSegment
-                label={t(!spOrder ? 'labels.sapId' : 'labels.orderId')}
-                value={backendOrderId}
-              />
+              <DetailSegment label={t(!spOrder ? 'labels.sapId' : 'labels.orderId')} value={backendOrderId} />
             ) : (
-              <DetailSegment
-                label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')}
-                value={orderId}
-              />
+              <DetailSegment label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')} value={orderId} />
             )}
-            <DetailSegment
-              label={t('labels.materialDescription')}
-              value={therapy?.materialDescription}
-            />
-            <DetailSegment
-              label={t('labels.patientName')}
-              value={getFullName(patient?.patientInfo) || '-'}
-            />
+            <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
+            <DetailSegment label={t('labels.patientName')} value={getFullName(patient?.patientInfo) || '-'} />
           </div>
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
-            <DetailSegment
-              label={t('labels.patientIdentifier')}
-              value={patient?.patientIdentifier || '-'}
-            />
-            <DetailSegment
-              label={t('labels.dob')}
-              value={patient?.patientInfo?.dateOfBirth || '-'}
-            />
-            <DetailSegment
-              label={t('labels.gender')}
-              value={
-                patient?.patientInfo?.gender
-                  ? patient?.patientInfo?.gender
-                  : '-'
-              }
-            />
+            <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+            <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
 
             <DetailSegment
               className={styles.orderCost}
@@ -174,11 +132,7 @@ const OrderStatus = () => {
           </div>
         </div>
 
-        {orderStatus === 'SUBMITTED' && (
-          <OrderFlowSteps
-            catalogConfiguration={orderDetails.catalogConfiguration}
-          />
-        )}
+        {orderStatus === 'SUBMITTED' && <OrderFlowSteps catalogConfiguration={orderDetails.catalogConfiguration} />}
       </div>
       <div className="footer-wrapper" ref={controlRef}>
         <div className={'controls footer-controls'}>

@@ -2,17 +2,9 @@ import React, { useEffect, useState } from 'react';
 import styles from './assets/TherapyDetails.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
-import {
-  Loader,
-  Heading,
-  Button,
-  TabList,
-  IconButton
-} from '@mckesson/mcp-component-library';
+import { Loader, Heading, Button, TabList, IconButton } from '@mckesson/mcp-component-library';
 
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as arrow_right } from '@src/assets/image/arrow_right_small.svg';
-import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommonUtils from '@src/util/CommonUtils';
@@ -101,9 +93,7 @@ function TherapyDetailsWithTabs({
             key: item.id,
             therapyId: item.id,
             configName: item.materialDescription,
-            isActiveTab: selectedTab
-              ? selectedTab.therapyId === item.id
-              : index === 0,
+            isActiveTab: selectedTab ? selectedTab.therapyId === item.id : index === 0,
             sequence: item.id,
             labelForMobile: 'labels.tabs.submittedBuyAndBill'
           }));
@@ -112,9 +102,7 @@ function TherapyDetailsWithTabs({
           setSelectedTab(therapyTabs[0]);
         }
 
-        const __therapyDetails = data.find(
-          (d) => d.id === selectedTab.therapyId
-        );
+        const __therapyDetails = data.find((d) => d.id === selectedTab.therapyId);
         setTherapyDetails({ ...__therapyDetails });
       } else {
         setAlert({
@@ -145,9 +133,7 @@ function TherapyDetailsWithTabs({
 
   React.useEffect(() => {
     if (selectedTab && selectedTab.therapyId) {
-      const currentTherapyDetails = details?.find(
-        (item) => item.id === selectedTab.therapyId
-      );
+      const currentTherapyDetails = details?.find((item) => item.id === selectedTab.therapyId);
       setTherapyDetails(currentTherapyDetails);
     }
   }, [selectedTab]);
@@ -192,10 +178,7 @@ function TherapyDetailsWithTabs({
           label: t('label.yes'),
           action: async () => {
             try {
-              await QuestionnaireService.deLinkConfigureQuestionnaire(
-                'Material',
-                payload
-              );
+              await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
               refetch();
             } catch (error) {
               const message = CommonUtils.getAxiosErrorMessage(error);
@@ -219,9 +202,7 @@ function TherapyDetailsWithTabs({
           key={`${questionnaire.id}-${index}`}
           section={section}
           templateName={questionnaire.templateName}
-          onDelete={() =>
-            OnDelinkQuestionnaireClick(questionnaire.id, details.ndcNumber)
-          }
+          onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id, details.ndcNumber)}
           showHeader={showHeader}
           questionnaire={details.questionnaires}
           hasDeleteConfigAccess={hasDeleteConfigAccess}
@@ -235,20 +216,8 @@ function TherapyDetailsWithTabs({
   const renderConfiguration = (fields, details) =>
     fields.map(({ label, value, display = true, translation = true }) => {
       const configValue = details?.materialConfig?.[value];
-      const displayValue =
-        typeof configValue === 'boolean'
-          ? configValue
-            ? 'YES'
-            : 'NO'
-          : configValue ?? '-';
-      return (
-        <ConfigItem
-          key={label}
-          label={translation ? t(label) : label}
-          value={details[value] || '-'}
-          display={display}
-        />
-      );
+      const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
+      return <ConfigItem key={label} label={translation ? t(label) : label} value={details[value] || '-'} display={display} />;
     });
 
   const onDeleteConfig = async (actionId) => {
@@ -268,14 +237,10 @@ function TherapyDetailsWithTabs({
             label: t('label.yes'),
             action: async () => {
               try {
-                await MaterialService.deleteMaterialConfig(
-                  therapyDetails.materialConfig.ndcNumber
-                );
+                await MaterialService.deleteMaterialConfig(therapyDetails.materialConfig.ndcNumber);
                 setAlert({
                   type: 'success',
-                  description: t(
-                    'manageMaterial.drawer.controls.apply.success'
-                  ),
+                  description: t('manageMaterial.drawer.controls.apply.success'),
                   showTitle: false
                 });
 
@@ -304,20 +269,8 @@ function TherapyDetailsWithTabs({
       controls={
         showFooter && (
           <div className="controls">
-            <Button
-              label={t('captions.btnCancel')}
-              onClick={onClose}
-              variant="secondary"
-              size="md"
-              aria-label={t('captions.cancel')}
-            />
-            <Button
-              label={t('captions.btnSelecttherapy')}
-              onClick={handleSelect}
-              variant="primary"
-              size="md"
-              aria-label={t('captions.selectAccount')}
-            />
+            <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
+            <Button label={t('captions.btnSelecttherapy')} onClick={handleSelect} variant="primary" size="md" aria-label={t('captions.selectAccount')} />
           </div>
         )
       }>
@@ -342,56 +295,27 @@ function TherapyDetailsWithTabs({
           <Loader variant="circular" />
         ) : (
           <div className={`${styles.body}`}>
-            {therapyDetails && (
-              <DetailsPanel
-                details={therapyDetails}
-                handleSelect={handleSelect}
-                onClose={onClose}
-                therapyData={buyAndBillTherapyConstants}
-              />
-            )}
+            {therapyDetails && <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} therapyData={buyAndBillTherapyConstants} />}
             <div className={styles.detailsPanel}>
-              <div
-                className={`${styles.drawerBodyContent} ${styles.bodyPadding} ${styles.cardToggleWrapper}`}>
+              <div className={`${styles.drawerBodyContent} ${styles.bodyPadding} ${styles.cardToggleWrapper}`}>
                 {ConfigConstants?.map((section, index) => (
                   <React.Fragment key={section.sectionHeading}>
                     {!section.questionnaire ? (
                       therapyDetails?.materialConfig ? (
                         <div key={section.sectionHeading}>
                           <div className={styles.configurationHeader}>
-                            <div className={styles.sectionHeadingkey}>
-                              {t(section.sectionHeading)}
-                            </div>
+                            <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
                             <div className={styles.actions}>
                               {section.actions?.map(
-                                (action) =>
-                                  hasDeleteConfigAccess && (
-                                    <IconBinRed
-                                      key={action.id}
-                                      role="button"
-                                      onClick={() => onDeleteConfig(action.id)}
-                                    />
-                                  )
+                                (action) => hasDeleteConfigAccess && <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
                               )}
                             </div>
                           </div>
-                          <div>
-                            {renderConfiguration(
-                              section.sectionData,
-                              therapyDetails.materialConfig
-                            )}
-                          </div>
+                          <div>{renderConfiguration(section.sectionData, therapyDetails.materialConfig)}</div>
                         </div>
                       ) : null
                     ) : therapyDetails?.questionnaires?.length > 0 ? (
-                      <div>
-                        {' '}
-                        {renderQuestionnaire(
-                          therapyDetails,
-                          section,
-                          hasDeleteConfigAccess
-                        )}
-                      </div>
+                      <div> {renderQuestionnaire(therapyDetails, section, hasDeleteConfigAccess)}</div>
                     ) : null}
                   </React.Fragment>
                 ))}
@@ -406,10 +330,7 @@ function TherapyDetailsWithTabs({
 
 function DetailsPanel({ details, therapyData }) {
   const { t } = useTranslate();
-  const renderDetails = (fields, details) =>
-    fields.map(({ label, value }) => (
-      <DetailItem key={label} label={t(label)} value={details[value] || '-'} />
-    ));
+  const renderDetails = (fields, details) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
   return (
     <div className={styles.detailsPanel}>
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
@@ -446,22 +367,13 @@ function ConfigItem({ label, value, display = true }) {
     <>
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{label}</div>
-        <div className={styles.rightContentAction}>
-          {typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}
-        </div>
+        <div className={styles.rightContentAction}>{typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}</div>
       </div>
     </>
   );
 }
 
-function QuestionnaireItem({
-  templateName,
-  section,
-  onDelete,
-  showHeader,
-  questionnaire,
-  hasDeleteConfigAccess = true
-}) {
+function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire, hasDeleteConfigAccess = true }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
 
@@ -469,9 +381,7 @@ function QuestionnaireItem({
     <>
       {showHeader && (
         <div className={styles.configurationHeader}>
-          <div className={styles.sectionHeadingkey}>
-            {t(section.sectionHeading)}
-          </div>
+          <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
           <div className={styles.actions}>
             {section.actions?.map((action) => (
               <Button

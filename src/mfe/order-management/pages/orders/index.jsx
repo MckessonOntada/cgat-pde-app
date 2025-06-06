@@ -15,7 +15,6 @@ import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import Alert from '@src/components/cgat-alert/Alert';
-import { get } from '@okta/okta-auth-js';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
