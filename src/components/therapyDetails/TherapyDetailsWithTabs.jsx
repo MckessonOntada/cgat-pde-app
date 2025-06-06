@@ -3,7 +3,6 @@ import styles from './assets/TherapyDetails.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
 import { Loader, Heading, Button, TabList, IconButton } from '@mckesson/mcp-component-library';
-
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -20,7 +19,6 @@ import { renderModal } from '@src/util/ModalUtil';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
-import { useLocation } from 'react-router-dom';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -41,7 +39,6 @@ function TherapyDetailsWithTabs({
 }) {
   const { t } = useTranslate();
   const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter();
-  const location = useLocation();
   const [therapyTabs, setTherapyTabs] = useState(() => {
     if (!therapyId) return [];
 
@@ -78,12 +75,7 @@ function TherapyDetailsWithTabs({
         return OrderService.getTherapyDetailsByTradeName(trade);
       }
     },
-    select: (data) =>
-      data.map(({ ndcNumber, ...rest }) => ({
-        ndc: ndcNumber,
-        ndcNumber,
-        ...rest
-      })),
+    select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
         const therapyTabs = data
@@ -384,15 +376,7 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader, questi
           <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
           <div className={styles.actions}>
             {section.actions?.map((action) => (
-              <Button
-                key={action.id}
-                size="md"
-                textButton
-                onClick={() =>
-                  navigate(PREVIEW_URL, {
-                    state: { isMaterial: true, questionnaire: questionnaire }
-                  })
-                }>
+              <Button key={action.id} size="md" textButton onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
                 {t(action.label)}
               </Button>
             ))}
