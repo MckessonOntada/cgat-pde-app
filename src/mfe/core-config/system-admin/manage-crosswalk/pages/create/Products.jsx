@@ -39,7 +39,6 @@ const getColumns = ({ t }) => {
       sortKey: 'material_description',
       wrap: true,
       cell: (props) => {
-        console.log(props);
         return (
           <Link to={`?catalog=${props.id}`} className="MCP-table-link">
             {props?.materialDescription}
@@ -74,7 +73,7 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const beautifiedData = ServiceUtil.transformTherapies(data);
+  const beautifiedData = CommonUtils.flattenTherapies(data);
 
   const debouncedApplyFilter = React.useCallback(
     CommonUtils.debounce((value) => {
@@ -107,7 +106,7 @@ const Products = () => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  console.log(data, beautifiedData);
+  console.log('beautifiedData', beautifiedData);
 
   return (
     <React.Fragment>

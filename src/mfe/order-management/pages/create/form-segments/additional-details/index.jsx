@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError, Divider } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -7,7 +7,7 @@ import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_fil
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import PageHeader from '@src/components/pageHeader';
 import { Field, Form, Formik } from 'formik';
-import { getFormFields } from './fields';
+import { getClinicalDetailFields, getFormFields } from './fields';
 import * as Yup from 'yup';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
@@ -36,6 +36,12 @@ const INITIAL_VALUES = {
   slotNumber: '',
   poNumber: '',
   dateOfAdministration: '',
+
+  diagnosisCode: '',
+  hasAllergies: '',
+  allergyDetails: '',
+  hasDiseases: '',
+
   variant: {
     variant: '',
     variantDescription: '',
@@ -69,12 +75,10 @@ function AdditionalDetails() {
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
-  const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
-  const { therapy = {}, tradeDetails = {} } = orderDetails;
+  const { tradeDetails = {}, isCoiIdRequired, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
-  const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const therapyChannelType = orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
 
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -98,26 +102,10 @@ function AdditionalDetails() {
     null
   );
 
-  const initialValidationSchema = (isVariantRequired) => {
-    return Yup.object({
-      coiId: Yup.string()
-        .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-        .max(10, t('labels.COI_IdExceedDigits'))
-        .when([], {
-          is: () => isCoiIdRequired === true,
-          then: (schema) => schema.required(t('labels.COIIdRequired')),
-          otherwise: (schema) => schema
-        }),
-      orderQuantity: Yup.number()
-        .typeError(t('labels.OrderQuantityShouldPositive'))
-        .required(t('labels.orderQuantityRequired'))
-        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-        .integer(t('labels.OrderQuantityMustBeInteger')),
-      slotNumber: Yup.string().required(t('labels.slotNumberRequired')).max(20, t('labels.slotNumberLengthError')).trim(t('labels.slotNumberExtraSpaceError')),
+  const initialValidationSchema = (isVariantRequired, channelType) => {
+    let schema = Yup.object({
       poNumber: Yup.string().required(t('labels.PONumberRequired')).max(35, t('labels.PONumberLengthError')).trim(t('labels.poNumberExtraSpaceError')),
       dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
-
-      // Conditionally Require Variant
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
@@ -136,14 +124,52 @@ function AdditionalDetails() {
             .nullable()
         })
         .nullable(),
-
-      // Conditionally Require Acknowledgement Checkbox
       variantAcknowledgement: Yup.boolean().when([], {
         is: () => isVariantRequired,
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
       })
     });
+
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      schema = schema.concat(
+        Yup.object({
+          diagnosisCode: Yup.string().required('labels.diagnosisCodeRequired').max(50, t('labels.COI_IdExceedDigits')),
+          hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
+
+          allergyDetails: Yup.string().when('hasAllergies', {
+            is: (val) => val === 'yes',
+            then: (schema) => schema.required(t('labels.allergiesDetailsRequired')),
+            otherwise: (schema) => schema.notRequired()
+          }),
+          hasDiseases: Yup.string().required(t('labels.selectHasDiseases')).oneOf(['yes', 'no'], t('labels.invalidSelection'))
+        })
+      );
+    } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      schema = schema.concat(
+        Yup.object({
+          coiId: Yup.string()
+            .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
+            .max(10, t('labels.COI_IdExceedDigits'))
+            .when([], {
+              is: () => isCoiIdRequired === true,
+              then: (schema) => schema.required(t('labels.COIIdRequired')),
+              otherwise: (schema) => schema
+            }),
+          orderQuantity: Yup.number()
+            .typeError(t('labels.OrderQuantityShouldPositive'))
+            .required(t('labels.orderQuantityRequired'))
+            .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+            .integer(t('labels.OrderQuantityMustBeInteger')),
+          slotNumber: Yup.string()
+            .required(t('labels.slotNumberRequired'))
+            .max(20, t('labels.slotNumberLengthError'))
+            .trim(t('labels.slotNumberExtraSpaceError'))
+        })
+      );
+    }
+
+    return schema;
   };
 
   const { isLoading, data: variantsData = {} } = useQuery({
@@ -175,8 +201,8 @@ function AdditionalDetails() {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
 
     // Get the Initial Validation Schema based on Variant Required
-    const updatedValidationSchema = initialValidationSchema(isVariantRequired);
-
+    const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
+    console.log(updatedValidationSchema);
     // Prepare Questionnaire Fields and Get its Validation Schema
     let questionnaireValidationSchema = Yup.object();
     let questionnaireFields = {};
@@ -194,7 +220,7 @@ function AdditionalDetails() {
       ...questionnaireFields
     }));
     setValidationSchema(finalValidationSchema);
-  }, [variantsData, questionnaireTemplateConfig]);
+  }, [variantsData, questionnaireTemplateConfig, channelType]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -667,7 +693,7 @@ function AdditionalDetails() {
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-                    {getFormFields(t, { isCoiIdRequired }, setFieldValue).map(
+                    {getFormFields(t, { isCoiIdRequired, channelType }, setFieldValue).map(
                       ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                         <Field
                           key={index}
@@ -682,8 +708,36 @@ function AdditionalDetails() {
                       )
                     )}
                   </div>
+                  {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                    <React.Fragment>
+                      <hr className="form-section-separator" />
+                      <div className="row-space-between-center">
+                        <Heading as="h3">{t('labels.clinicalDetails')}</Heading>
+                        <p className="form-instruction">
+                          <span className="required">*</span> {t('labels.required')}
+                        </p>
+                      </div>
+                      <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline">
+                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue).map(
+                          ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
+                            <Field
+                              key={index}
+                              name={name}
+                              label={label}
+                              placeholder={placeholder}
+                              isRequired={isRequired}
+                              component={component}
+                              maxLength={maxLength}
+                              {...otherProps}
+                            />
+                          )
+                        )}
+                      </div>
+                    </React.Fragment>
+                  )}
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <div>
+                      <hr className="form-section-separator" />
                       <div className="MCP-module-body">
                         <Heading as="h3">{t('labels.selectVariant')}</Heading>
                         <div>
@@ -734,17 +788,20 @@ function AdditionalDetails() {
                   ) : (
                     <div>
                       {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
-                        <div className="configured-questionnaire-form">
-                          <div className="MCP-module-body">
-                            <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
-                            <QuestionnaireTemplate
-                              onRemoveDocument={handleOnRemoveDocument}
-                              onDocumentChange={handleOnDocumentChange}
-                              config={questionnaireTemplateConfig}
-                              isPreview={false}
-                            />
+                        <React.Fragment>
+                          <hr className="form-section-separator" />
+                          <div className="configured-questionnaire-form">
+                            <div className="MCP-module-body">
+                              <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                              <QuestionnaireTemplate
+                                onRemoveDocument={handleOnRemoveDocument}
+                                onDocumentChange={handleOnDocumentChange}
+                                config={questionnaireTemplateConfig}
+                                isPreview={false}
+                              />
+                            </div>
                           </div>
-                        </div>
+                        </React.Fragment>
                       )}
                     </div>
                   )}

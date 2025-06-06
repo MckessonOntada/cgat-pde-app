@@ -1588,3 +1588,10 @@ div[role="row"] {
     flex-direction: column;
   }
 }
+
+hr.form-section-separator {
+  margin-top: var(--spacing-04);
+  margin-bottom: var(--spacing-04);
+  border: none;
+  border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+}
