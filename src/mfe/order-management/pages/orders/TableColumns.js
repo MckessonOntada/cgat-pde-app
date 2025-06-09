@@ -37,12 +37,12 @@ function getOptionsByStatus(props) {
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData, assignedGroupsData } = useOrders();
+  const { refreshData, assignedGroupsData, orderView } = useOrders();
   const { hasPermission } = usePermission();
 
   // Mutations
-  const { mutate: assignToMe } = useMutation(() => OrderService.setOrderAssignToMe(id), {
-    onSuccess: () => navigate(`${id}/summary`, { state: { isApprover: true } }),
+  const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
+    onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { isApprover: true, ...variables.preservedState } }),
     onError: (err) =>
       showAlert({
         description: t(handleApiError(err)),
@@ -51,8 +51,8 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: unassignFromMe } = useMutation(() => OrderService.setOrderUnassignToMe(id), {
-    onSuccess: () => {
+  const { mutate: unassignFromMe } = useMutation(({ preservedState }) => OrderService.setOrderUnassignToMe(id), {
+    onSuccess: (_, variables) => {
       refreshData();
       showAlert({
         description: translate('messages.success.release'),
@@ -68,8 +68,8 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: deleteOrder } = useMutation(() => OrderService.deleteOrder(id), {
-    onSuccess: () => {
+  const { mutate: deleteOrder } = useMutation(({ preservedState }) => OrderService.deleteOrder(id), {
+    onSuccess: (_, variables) => {
       refreshData();
       showAlert({
         description: translate('messages.success.delete'),
@@ -85,8 +85,8 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: discardVersion } = useMutation((orderId) => OrderService.discardCurrentOrderVersion(orderId), {
-    onSuccess: () => {
+  const { mutate: discardVersion } = useMutation(({ orderId, preservedState }) => OrderService.discardCurrentOrderVersion(orderId), {
+    onSuccess: (_, variables) => {
       refreshData();
       showAlert({
         description: translate('message.success.discardVersionChanges'),
@@ -106,10 +106,11 @@ function getOptionsByStatus(props) {
 
   const handleOnOptionSelection = (value) => {
     const { tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL } = this.__meta__ || {};
+    const preservedState = { fromTab: tab, fromOrderView: orderView };
     switch (value) {
       case ORDER_ENTITY_ACTION.VIEW:
         navigate(`${id}/summary?${queryString}`, {
-          state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true, fromTab: tab } : {}
+          state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : preservedState
         });
         break;
       case ORDER_ENTITY_ACTION.RESUME:
@@ -119,7 +120,7 @@ function getOptionsByStatus(props) {
             search: `?${queryString}`
           },
           {
-            state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true, fromTab: tab } : { isSimulate: true, fromTab: tab }
+            state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : { ...preservedState, isSimulate: true }
           }
         );
         break;
@@ -131,7 +132,7 @@ function getOptionsByStatus(props) {
             cancel: { label: translate('label.no') },
             confirm: {
               label: translate('label.yes'),
-              action: () => deleteOrder()
+              action: () => deleteOrder({ preservedState })
             }
           }
         });
@@ -151,7 +152,8 @@ function getOptionsByStatus(props) {
           state: {
             isEdit: props.approver?.id === loggedInUserId,
             isApprover: props.approver?.id === loggedInUserId,
-            fromTab: tab
+            fromTab: tab,
+            fromOrderView: orderView
           }
         });
         break;
@@ -163,18 +165,18 @@ function getOptionsByStatus(props) {
             anchorEl: alertContainerId
           });
         } else {
-          assignToMe();
+          assignToMe({ preservedState });
         }
         break;
       case ORDER_ENTITY_ACTION.UNASSIGN:
-        unassignFromMe();
+        unassignFromMe({ preservedState });
         break;
       case ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES:
-        discardVersion(props.id);
+        discardVersion({ orderId: props.id, preservedState });
         break;
       case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT: {
         navigate(`${props.id}/upload-document?${queryString}`, {
-          state: { fromTab: tab }
+          state: { fromTab: tab, fromOrderView: orderView }
         });
         break;
       }
