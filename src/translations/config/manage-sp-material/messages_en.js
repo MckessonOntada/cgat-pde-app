@@ -54,7 +54,7 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.drawer.details.body.therapyNumber': 'Therapy Number',
   'manageSPMaterial.drawer.details.body.therapy': 'Therapy',
   'manageSPMaterial.drawer.details.body.strength': 'Strength',
-  'manageSPMaterial.drawer.details.body.dosage': 'NDC',
+  'manageSPMaterial.drawer.details.body.dosage': 'Dosage',
   'manageSPMaterial.drawer.details.body.sellingUnitCode': 'Selling Unit Code',
   'manageSPMaterial.drawer.details.body.manufacturerName': 'Manufacturer Name',
   'manageSPMaterial.drawer.details.body.dropshipIndicator': 'Dropship Indicator',
