@@ -134,7 +134,7 @@ function AdditionalDetails() {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
-          diagnosisCode: Yup.string().required('labels.diagnosisCodeRequired').max(50, t('labels.COI_IdExceedDigits')),
+          diagnosisCode: Yup.string().required(t('labels.diagnosisCodeRequired')).max(50, t('labels.COI_IdExceedDigits')),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
 
           allergyDetails: Yup.string().when('hasAllergies', {
@@ -435,7 +435,9 @@ function AdditionalDetails() {
         poNumber,
         slotNumber,
         variantDetails = {},
-        configuredQuestionnaires
+        configuredQuestionnaires,
+        diagnosisCode,
+        clinicalDetails
       } = additionalDetails;
 
       const { variantDocumentPath, ...otherDetails } = variantDetails || {};
@@ -444,7 +446,14 @@ function AdditionalDetails() {
         coiId,
         orderQuantity,
         poNumber,
+        diagnosisCode,
         slotNumber,
+
+        allergyDetails: clinicalDetails.allergiesSpecification,
+        dateOfAdministration: clinicalDetails.dateOfAdministration,
+        hasAllergies: clinicalDetails.hasAllergies ? 'yes' : 'no',
+        hasDiseases: clinicalDetails.hasDiseaseIndication ? 'yes' : 'no',
+
         variant: {
           ...otherDetails,
           document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
@@ -553,7 +562,6 @@ function AdditionalDetails() {
     });
 
     const payload = {
-      coiId,
       poNumber,
       variantDetails: variantDetails,
       patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
@@ -576,8 +584,9 @@ function AdditionalDetails() {
       }
 
       payload.clinicalDetails = clinicalDetails;
-      payload.diagnosisCodes = values['diagnosisCode'];
+      payload.diagnosisCode = values['diagnosisCode'];
     } else {
+      payload.coiId = payload.codId;
       payload.orderQuantity = orderQuantity;
       payload.slotNumber = slotNumber;
       payload.dateOfAdministration = dateOfAdministration;
