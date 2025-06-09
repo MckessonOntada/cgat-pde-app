@@ -64,6 +64,7 @@ function UploadOrderDocument() {
           navigate(`/orders?${searchParams.toString()}`, {
             state: {
               activeTab: location.state?.fromTab,
+              fromOrderView: location.state?.fromOrderView,
               alert: {
                 from: 'UPLOAD_ORDER_DOCUMENT',
                 type: 'success',
@@ -85,7 +86,7 @@ function UploadOrderDocument() {
 
   const handleOnCancel = () => {
     navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-      state: { activeTab: location?.state?.fromTab }
+      state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView }
     });
   };
 
@@ -93,7 +94,7 @@ function UploadOrderDocument() {
     orderDetails.id &&
     (orderDetails.status !== ORDER_STATUS.SUBMITTED || ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(orderDetails.channelType))
   ) {
-    navigate(`/orders?${searchParams.toString()}`);
+    navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView } });
   }
   return (
     <div className="MCP-module-wrapper">
