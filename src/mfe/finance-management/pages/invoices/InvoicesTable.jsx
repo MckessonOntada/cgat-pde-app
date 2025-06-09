@@ -77,8 +77,6 @@ export default function InvoicesTable() {
       id: 'mckessonOrderId',
       selector: (row) => `${row.mckessonOrderId}`,
       maxWidth: '140px',
-      showInMobileHeader: true,
-      showColumnNameInHeader: true,
       cell: (props) => (
         <Link
           className="MCP-table-link"
@@ -95,8 +93,6 @@ export default function InvoicesTable() {
       id: 'soldToName',
       selector: (row) => `${row.soldToName}`,
       maxWidth: '180px',
-      showInMobileHeader: true,
-      showColumnNameInHeader: true,
       cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
     },
     {

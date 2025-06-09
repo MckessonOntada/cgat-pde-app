@@ -148,7 +148,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
   const getProgramDisabled = (program, selectedChannel) =>
     !programs.includes(program) || !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) || selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
-  const { programs = [], channels = [] } = programChannelConfig;
+  const { programs = [], channels = [] } = programChannelConfig || {};
 
   const channelList = [
     { label: t('labels.BUY_AND_BILL'), value: CHANNEL_TYPE.BUY_AND_BILL },

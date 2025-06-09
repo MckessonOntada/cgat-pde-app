@@ -1,7 +1,7 @@
 import EclipsesTextCss from '@src/components/EclipsesText/EclipsesTextcss';
 import { COLUMNS, ORDER_ENTITY_ACTION, ORDER_STATUS, ORDER_TABS, TABLE_COLUMNS } from './config';
 import CommonUtils from '@src/util/CommonUtils';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import React from 'react';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
@@ -37,12 +37,12 @@ function getOptionsByStatus(props) {
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData, assignedGroupsData } = useOrders();
+  const { refreshData, assignedGroupsData, orderView } = useOrders();
   const { hasPermission } = usePermission();
 
   // Mutations
-  const { mutate: assignToMe } = useMutation(() => OrderService.setOrderAssignToMe(id), {
-    onSuccess: () => navigate(`${id}/summary`, { state: { isApprover: true } }),
+  const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
+    onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { isApprover: true, ...variables.preservedState } }),
     onError: (err) =>
       showAlert({
         description: t(handleApiError(err)),
@@ -51,8 +51,8 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: unassignFromMe } = useMutation(() => OrderService.setOrderUnassignToMe(id), {
-    onSuccess: () => {
+  const { mutate: unassignFromMe } = useMutation(({ preservedState }) => OrderService.setOrderUnassignToMe(id), {
+    onSuccess: (_, variables) => {
       refreshData();
       showAlert({
         description: translate('messages.success.release'),
@@ -68,8 +68,8 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: deleteOrder } = useMutation(() => OrderService.deleteOrder(id), {
-    onSuccess: () => {
+  const { mutate: deleteOrder } = useMutation(({ preservedState }) => OrderService.deleteOrder(id), {
+    onSuccess: (_, variables) => {
       refreshData();
       showAlert({
         description: translate('messages.success.delete'),
@@ -85,8 +85,8 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: discardVersion } = useMutation((orderId) => OrderService.discardCurrentOrderVersion(orderId), {
-    onSuccess: () => {
+  const { mutate: discardVersion } = useMutation(({ orderId, preservedState }) => OrderService.discardCurrentOrderVersion(orderId), {
+    onSuccess: (_, variables) => {
       refreshData();
       showAlert({
         description: translate('message.success.discardVersionChanges'),
@@ -101,19 +101,28 @@ function getOptionsByStatus(props) {
         anchorEl: alertContainerId
       })
   });
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
 
   const handleOnOptionSelection = (value) => {
     const { tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL } = this.__meta__ || {};
+    const preservedState = { fromTab: tab, fromOrderView: orderView };
     switch (value) {
       case ORDER_ENTITY_ACTION.VIEW:
-        navigate(`${id}/summary`, {
-          state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true } : {}
+        navigate(`${id}/summary?${queryString}`, {
+          state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : preservedState
         });
         break;
       case ORDER_ENTITY_ACTION.RESUME:
-        navigate(getPathByOrderStage(props), {
-          state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true } : { isSimulate: true }
-        });
+        navigate(
+          {
+            pathname: getPathByOrderStage(props),
+            search: `?${queryString}`
+          },
+          {
+            state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : { ...preservedState, isSimulate: true }
+          }
+        );
         break;
       case ORDER_ENTITY_ACTION.DELETE:
         renderModal({
@@ -123,7 +132,7 @@ function getOptionsByStatus(props) {
             cancel: { label: translate('label.no') },
             confirm: {
               label: translate('label.yes'),
-              action: () => deleteOrder()
+              action: () => deleteOrder({ preservedState })
             }
           }
         });
@@ -139,10 +148,12 @@ function getOptionsByStatus(props) {
         });
         break;
       case ORDER_ENTITY_ACTION.REVIEW:
-        navigate(`${id}/summary`, {
+        navigate(`${id}/summary?${queryString}`, {
           state: {
             isEdit: props.approver?.id === loggedInUserId,
-            isApprover: props.approver?.id === loggedInUserId
+            isApprover: props.approver?.id === loggedInUserId,
+            fromTab: tab,
+            fromOrderView: orderView
           }
         });
         break;
@@ -154,17 +165,19 @@ function getOptionsByStatus(props) {
             anchorEl: alertContainerId
           });
         } else {
-          assignToMe();
+          assignToMe({ preservedState });
         }
         break;
       case ORDER_ENTITY_ACTION.UNASSIGN:
-        unassignFromMe();
+        unassignFromMe({ preservedState });
         break;
       case ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES:
-        discardVersion(props.id);
+        discardVersion({ orderId: props.id, preservedState });
         break;
       case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT: {
-        navigate(`${props.id}/upload-document`, { state: { fromTab: tab } });
+        navigate(`${props.id}/upload-document?${queryString}`, {
+          state: { fromTab: tab, fromOrderView: orderView }
+        });
         break;
       }
       default:
@@ -278,26 +291,26 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
 
 const getState = (props) => {
   const { status, approver } = props;
-  const { tabVariant } = useOrders();
+  const { tabVariant, orderView } = useOrders();
   if (!status) throw new Error('Order status not found, to get state.');
 
   const loggedInUserId = AuthUtils.getUserId();
   if (status === ORDER_STATUS.SUBMITTED) {
-    return { ...props, fromTab: tabVariant };
+    return { ...props, fromTab: tabVariant, fromOrderView: orderView };
   } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
     if (approver?.id === loggedInUserId) {
-      return { isEdit: true, isApprover: true, props, fromTab: tabVariant };
+      return { isEdit: true, isApprover: true, props, fromTab: tabVariant, fromOrderView: orderView };
     } else {
-      return { isApprover: false, props, fromTab: tabVariant };
+      return { isApprover: false, props, fromTab: tabVariant, fromOrderView: orderView };
     }
   } else if (status === ORDER_STATUS.IN_DRAFT) {
-    return { isSimulate: true, props, fromTab: tabVariant };
+    return { isSimulate: true, props, fromTab: tabVariant, fromOrderView: orderView };
   } else {
-    return { props, props, fromTab: tabVariant };
+    return { props, props, fromTab: tabVariant, fromOrderView: orderView };
   }
 };
 
-const jsxColumns = [
+const jsxColumns = (queryString) => [
   {
     id: COLUMNS.SAP_ID,
     name: 'labels.orderId',
@@ -307,7 +320,13 @@ const jsxColumns = [
     minWidth: '130px',
     cell: function (props) {
       return (
-        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
+        <Link
+          className="MCP-table-link"
+          to={{
+            pathname: getPathByOrderStage(props),
+            search: `?${queryString}`
+          }}
+          state={getState(props)}>
           <EclipsesTextCss str={props.backendOrderId} maxWidth={170} />
         </Link>
       );
@@ -334,7 +353,13 @@ const jsxColumns = [
     showColumnNameInHeader: true,
     minWidth: '140px',
     cell: (props) => (
-      <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
+      <Link
+        className="MCP-table-link"
+        to={{
+          pathname: getPathByOrderStage(props),
+          search: `?${queryString}`
+        }}
+        state={getState(props)}>
         <Tooltip body={props.id}>{props.id}</Tooltip>
       </Link>
     )
@@ -349,7 +374,13 @@ const jsxColumns = [
     showColumnNameInHeader: true,
     minWidth: '140px',
     cell: (props) => (
-      <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
+      <Link
+        className="MCP-table-link"
+        to={{
+          pathname: getPathByOrderStage(props),
+          search: `?${queryString}`
+        }}
+        state={getState(props)}>
         <Tooltip body={props.id}>{props.id}</Tooltip>
       </Link>
     )
@@ -482,11 +513,14 @@ const jsxColumns = [
 ];
 
 export const getTableColumns = (tab, translate, alertContainerId) => {
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
   if (!tab) throw new Error('table type is missing');
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
   const columns = TABLE_COLUMNS[tab];
-  const tableColumns = columns.map((col) => jsxColumns.find((item) => item.id === col)).filter(Boolean);
+  const getJsxColumns = jsxColumns(queryString);
+  const tableColumns = columns.map((col) => getJsxColumns.find((item) => item.id === col)).filter(Boolean);
 
   const protoObject = {
     translate,

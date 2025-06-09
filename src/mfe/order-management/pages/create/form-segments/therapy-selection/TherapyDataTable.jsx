@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './TherapyDataColumns';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
@@ -11,7 +11,6 @@ import CommonUtils from '@src/util/CommonUtils';
 
 const TherapyDataTable = (props) => {
   const { trade, onChange } = props;
-
   const { t } = useTranslate();
   const [isInitialExpandSet, setIsInitialExpandSet] = React.useState(false);
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort, fileteredData } = useTherapy();
