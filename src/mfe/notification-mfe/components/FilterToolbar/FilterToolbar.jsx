@@ -105,8 +105,6 @@ const FilterToolbar = ({ isMobileView }) => {
 
   // --- Render ---
 
-  // write validate function to validate the date range, dateRangeValue[0] i.e. startDAte should be more than minDate and dateRangeValue[1] i.e. endDate should be less than maxDate
-
   // Formik validation function for the whole form
   const validate = (values) => {
     const errors = {};
