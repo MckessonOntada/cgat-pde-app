@@ -52,14 +52,15 @@ export const getValidationSchema = (t, isProviderRequired) => {
             required: isProviderRequired ? true : false
           }),
           dateOfBirth: Yup.date()
-            .max(yesterday, 'Date of birth must be yesterday or earlier.')
+            .max(yesterday, t('labels.invalidDateOfBirth'))
+            .typeError(t('labels.selectValidDate'))
             .when([], {
               is: () => isProviderRequired,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.dateOfBirth')),
               otherwise: (schema) => schema.nullable()
             }),
           gender: Yup.string()
-            .oneOf(['Male', 'Female', 'Other'], 'Invalid gender selection')
+            .oneOf(['Male', 'Female', 'Other'], '')
             .when([], {
               is: () => isProviderRequired,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.gender')),
