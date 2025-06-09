@@ -132,12 +132,10 @@ const FilterToolbar = ({ isMobileView }) => {
     if (!start || isNaN(start) || !end || isNaN(end)) {
       errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
     } else if (start < min) {
-      errors.notificationDateRange = t('notification.filter.dateRange.rangeError', { minDate: formatDate(min) });
-    } else if (end > max) {
-      errors.notificationDateRange = t('notification.filter.dateRange.rangeError', { maxDate: formatDate(max) });
-    } else if (start > end) {
       errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
-    } else if (end < start) {
+    } else if (end > max) {
+      errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
+    } else if (start > end) {
       errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
     }
     return errors;
