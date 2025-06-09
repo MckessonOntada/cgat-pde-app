@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
@@ -6,10 +6,13 @@ import CommonFilters from '@src/components/Filters';
 import SPMaterialDataTable from './pages/SPMaterialDataTable';
 import ModuleHeader from '@src/components/module-header';
 import { useSPMaterial } from './context/SPMaterialContext';
+import MaterialService from '@src/api/commonService/MaterialService';
+import { useMutation } from 'react-query';
 
 function ManageSPMaterial() {
   const { t } = useTranslate();
   const { applyFilters, clearFilters } = useSPMaterial();
+  const [manufacturerList, setManufacturerList] = useState([]);
 
   const translatedBreadcrumbs = [
     {
@@ -28,6 +31,25 @@ function ManageSPMaterial() {
     label: t(`dashboard.card.${item.label}`)
   }));
 
+  const { mutate: manufacturerFilterList } = useMutation(
+    async () => {
+      return MaterialService.getManufacturerListSPMaterial('ALL');
+    },
+    {
+      onSuccess: (data) => {
+        console.log('Fetched manufacturers:', data);
+        setManufacturerList(data);
+      },
+      onError: (error) => {
+        console.error('Error fetching manufacturers:', error);
+      }
+    }
+  );
+
+  useEffect(() => {
+    manufacturerFilterList();
+  }, []);
+
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
@@ -36,9 +58,9 @@ function ManageSPMaterial() {
         label: t('manageSPMaterial.table.status'),
         placeholder: t('placeholders.search'),
         options: [
-          { label: 'All', value: 'all' },
-          { label: 'Inactive', value: 'inactive' },
-          { label: 'Active', value: 'active' }
+          { label: 'All', value: 'ALL' },
+          { label: 'Inactive', value: 'INACTIVE' },
+          { label: 'Active', value: 'ACTIVE' }
         ]
       },
       {
@@ -46,14 +68,13 @@ function ManageSPMaterial() {
         name: 'manufacturer',
         label: t('manageSPMaterial.manufacturer'),
         placeholder: t('placeholders.search'),
-        options: [
-          { label: 'All', value: 'all' },
-          { label: 'Inactive', value: 'inactive' },
-          { label: 'Active', value: 'active' }
-        ]
+        options: manufacturerList.map((item) => ({
+          label: item,
+          value: item
+        }))
       }
     ];
-  }, []);
+  }, [manufacturerList]);
 
   return (
     <div className="MCP-module-wrapper catalog-module">
