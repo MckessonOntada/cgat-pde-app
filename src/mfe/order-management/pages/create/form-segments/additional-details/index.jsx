@@ -55,7 +55,7 @@ function AdditionalDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const { controlRef } = useContext(FooterContext);
-
+  const searchParams = new URLSearchParams(location.search);
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
@@ -224,17 +224,21 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab }
+      });
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`../${id}/summary`, {
+      navigate(`../${id}/summary?${searchParams.toString()}`, {
         state: {
-          activeTab: location?.state?.fromTab,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     },
@@ -494,29 +498,32 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
         const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
-        navigate(`../${orderId}/${targetPage}`, {
+        navigate(`../${orderId}/${targetPage}?${searchParams.toString()}`, {
           state: {
             fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover
+            isApprover: isApprover,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       } else {
-        navigate(`../${orderId}/accounts`, {
+        navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
           state: {
             fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover: isApprover
+            isApprover: isApprover,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       }
@@ -601,39 +608,42 @@ function AdditionalDetails() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`../${orderId}/patient`, {
+      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }

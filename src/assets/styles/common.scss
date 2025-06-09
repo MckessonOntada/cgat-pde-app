@@ -1175,7 +1175,6 @@ div.disable-all {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
     gap: var(--spacing-03);
   }
 }
@@ -1414,6 +1413,10 @@ div[role="row"] {
     border-radius: var(--brand-border-radius--8);
     background-color: var(--brand-color-background-white);
     margin-top: var(--spacing-03);
+    @media only screen and (max-width: 768px) {
+      margin-top: var(--spacing-02);
+      padding: 12px; //spacing is not avilable.
+    }
 
     .details-title {
       font-weight: var(--brand-font-weight-700);

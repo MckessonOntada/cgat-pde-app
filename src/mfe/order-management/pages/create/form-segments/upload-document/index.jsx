@@ -31,7 +31,7 @@ function UploadOrderDocument() {
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
-
+  const searchParams = new URLSearchParams(location.search);
   const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {
@@ -61,7 +61,7 @@ function UploadOrderDocument() {
       OrderService.uploadOrderDocument(orderId, payload)
         .then((response) => {
           setComment('');
-          navigate('/orders', {
+          navigate(`/orders?${searchParams.toString()}`, {
             state: {
               activeTab: location.state?.fromTab,
               alert: {
@@ -84,7 +84,7 @@ function UploadOrderDocument() {
   };
 
   const handleOnCancel = () => {
-    navigate(RoutePaths.pathOrderManagement, {
+    navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
       state: { activeTab: location?.state?.fromTab }
     });
   };
@@ -93,7 +93,7 @@ function UploadOrderDocument() {
     orderDetails.id &&
     (orderDetails.status !== ORDER_STATUS.SUBMITTED || ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(orderDetails.channelType))
   ) {
-    navigate('/orders');
+    navigate(`/orders?${searchParams.toString()}`);
   }
   return (
     <div className="MCP-module-wrapper">

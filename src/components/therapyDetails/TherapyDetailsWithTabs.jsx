@@ -3,10 +3,7 @@ import styles from './assets/TherapyDetails.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
 import { Loader, Heading, Button, TabList, IconButton } from '@mckesson/mcp-component-library';
-
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as arrow_right } from '@src/assets/image/arrow_right_small.svg';
-import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommonUtils from '@src/util/CommonUtils';
