@@ -342,6 +342,9 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.patient_identifier_max': 'S_Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'S_Date of Birth',
   'orderManagement.patientDetails.option.please_select': 'S_Please select',
+  'labels.selectValidDate': 'S_Please select valid date.',
+  'labels.invalidDateOfBirth': 'S_Date of birth must be yesterday or earlier.',
+  'labels.invalidGenderSelection': 'S_Invalid gender selection',
 
   'labels.description.approval': 'S_Order is reviewed and confirmed for accuracy and payment',
   'labels.description.fulfillment': 'S_Items are picked, packed, and prepared for shipment',
