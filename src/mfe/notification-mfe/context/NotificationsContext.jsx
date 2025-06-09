@@ -23,7 +23,7 @@ export const useNotifications = () => useContext(NotificationsContext);
 const initialSearchState = {
   searchText: '',
   notificationDateRange: [dayjs().subtract(90, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
-  notificationCategory: '',
+  notificationCategory: 'All',
   page: 1,
   pageSize: NOTIFICATION_PAGE_SIZE,
   totalElements: 0,
@@ -82,9 +82,13 @@ export const NotificationsProvider = ({ children }) => {
   // 1. Fetch unread notifications count (global)
   const unreadCountMutation = useMutation(
     async (searchObj) => {
+      let searchCategoryValue = searchObj?.category || initialSearchState.notificationCategory;
+      if (searchCategoryValue === 'All') {
+        searchCategoryValue = ''; // Convert 'All' to empty string for API call
+      }
       const payload = {
         searchText: searchObj?.searchText || initialSearchState.searchText,
-        category: searchObj?.category || initialSearchState.notificationCategory,
+        category: searchCategoryValue,
         startDate: searchObj?.startDate || dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
         endDate: searchObj?.endDate || dayjs().format('YYYY-MM-DD')
       };
@@ -104,7 +108,7 @@ export const NotificationsProvider = ({ children }) => {
     async (searchObj) => {
       const payload = {
         searchText: searchObj?.searchText,
-        category: searchObj?.category,
+        category: searchObj?.category === 'All' ? '' : searchObj?.category, // Convert 'All' to empty string for API call
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
         endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
       };
@@ -125,7 +129,7 @@ export const NotificationsProvider = ({ children }) => {
       if (notificationDrawerOpen) setLoadingDrawerNotifications(true);
       const payload = {
         searchText: searchObj?.searchText,
-        category: searchObj?.category,
+        category: searchObj?.category === 'All' ? '' : searchObj?.category, // Convert 'All' to empty string for API call
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
         endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
       };
@@ -165,7 +169,7 @@ export const NotificationsProvider = ({ children }) => {
 
       const payload = {
         searchText: searchObj.searchText,
-        category: searchObj.category,
+        category: searchObj.category === 'All' ? '' : searchObj.category, // Convert 'All' to empty string for API call
         startDate: dayjs(searchObj.startDate).format('YYYY-MM-DD'),
         endDate: dayjs(searchObj.endDate).format('YYYY-MM-DD')
       };
@@ -219,7 +223,7 @@ export const NotificationsProvider = ({ children }) => {
     async (searchObj) => {
       const payload = {
         searchText: searchObj?.searchText,
-        category: searchObj?.category,
+        category: searchObj?.category === 'All' ? '' : searchObj?.category, // Convert 'All' to empty string for API call
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
         endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
       };
@@ -491,9 +495,8 @@ export const NotificationsProvider = ({ children }) => {
         isMobileView,
         setIsMobileView,
         isDetailView,
-        setIsDetailView,
-      }}
-    >
+        setIsDetailView
+      }}>
       {children}
     </NotificationsContext.Provider>
   );

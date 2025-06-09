@@ -21,6 +21,7 @@ export const NotificationMessagesES = {
 
   // Errors
   'notifications.error': 'Error al obtener los datos de las notificaciones',
+  'notification.filter.dateRange.rangeError': 'Por favor, selecciona un rango de fechas válido.',
 
   // Success and Error Messages for Mark All/Read by ID
   'notifications.markAllReadSuccess': 'Todas las notificaciones marcadas como leídas.',
