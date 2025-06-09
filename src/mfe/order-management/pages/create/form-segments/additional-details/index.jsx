@@ -13,7 +13,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_ONLY, DIAGNOSIS_CODE } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -134,7 +134,10 @@ function AdditionalDetails() {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
-          diagnosisCode: Yup.string().required(t('labels.diagnosisCodeRequired')).max(50, t('labels.COI_IdExceedDigits')),
+          diagnosisCode: Yup.string()
+            .matches(DIAGNOSIS_CODE, t('labels.invalidDiagnosis'))
+            .required(t('labels.diagnosisCodeRequired'))
+            .max(50, t('labels.COI_IdExceedDigits')),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
 
           allergyDetails: Yup.string().when('hasAllergies', {
@@ -151,10 +154,10 @@ function AdditionalDetails() {
           coiId: Yup.string()
             .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
             .max(10, t('labels.COI_IdExceedDigits'))
-            .when([], {
-              is: () => isCoiIdRequired === true,
+            .when('$isCoiIdRequired', {
+              is: true,
               then: (schema) => schema.required(t('labels.COIIdRequired')),
-              otherwise: (schema) => schema
+              otherwise: (schema) => schema.notRequired()
             }),
           orderQuantity: Yup.number()
             .typeError(t('labels.OrderQuantityShouldPositive'))
@@ -197,13 +200,10 @@ function AdditionalDetails() {
   });
 
   React.useEffect(() => {
-    // To check if variant selection is required
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
 
-    // Get the Initial Validation Schema based on Variant Required
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
-    console.log(updatedValidationSchema);
-    // Prepare Questionnaire Fields and Get its Validation Schema
+
     let questionnaireValidationSchema = Yup.object();
     let questionnaireFields = {};
 
@@ -442,24 +442,26 @@ function AdditionalDetails() {
 
       const { variantDocumentPath, ...otherDetails } = variantDetails || {};
       const initialValues = {
-        dateOfAdministration,
-        coiId,
-        orderQuantity,
         poNumber,
-        diagnosisCode,
-        slotNumber,
-
-        allergyDetails: clinicalDetails.allergiesSpecification,
-        dateOfAdministration: clinicalDetails.dateOfAdministration,
-        hasAllergies: clinicalDetails.hasAllergies ? 'yes' : 'no',
-        hasDiseases: clinicalDetails.hasDiseaseIndication ? 'yes' : 'no',
-
         variant: {
           ...otherDetails,
           document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
         },
         variantAcknowledgement: patientConsentTaken
       };
+
+      if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+        initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
+        initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
+        initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
+        initialValues.hasDiseases = clinicalDetails.hasDiseaseIndication ? 'yes' : 'no';
+        initialValues.diagnosisCode = diagnosisCode;
+      } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+        initialValues.dateOfAdministration = dateOfAdministration;
+        initialValues.coiId = coiId;
+        initialValues.orderQuantity = orderQuantity;
+        initialValues.slotNumber = slotNumber;
+      }
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
 
@@ -694,9 +696,8 @@ function AdditionalDetails() {
         initialValues={initialFormValues}
         enableReinitialize={true}
         validationSchema={validationSchema}
-        onError={(value) => {
-          console.log(value);
-        }}
+        onError={console.log}
+        validationContext={{ isCoiIdRequired }}
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
@@ -746,22 +747,23 @@ function AdditionalDetails() {
                           <span className="required">*</span> {t('labels.required')}
                         </p>
                       </div>
-                      <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline">
+                      <React.Fragment>
                         {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue).map(
-                          ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
-                            <Field
-                              key={index}
-                              name={name}
-                              label={label}
-                              placeholder={placeholder}
-                              isRequired={isRequired}
-                              component={component}
-                              maxLength={maxLength}
-                              {...otherProps}
-                            />
+                          ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
+                            <div key={index} className={`${layout.classes}`}>
+                              <Field
+                                name={name}
+                                label={label}
+                                placeholder={placeholder}
+                                isRequired={isRequired}
+                                component={component}
+                                maxLength={maxLength}
+                                {...otherProps}
+                              />
+                            </div>
                           )
                         )}
-                      </div>
+                      </React.Fragment>
                     </React.Fragment>
                   )}
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (

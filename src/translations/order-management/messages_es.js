@@ -125,6 +125,7 @@ export const MessageEs = {
   'labels.orderQuantityRequired': 'S_Order Quantity is required',
   'labels.slotNumberRequired': 'S_Slot number is required',
   'labels.diagnosisCodeRequired': 'S_Diagnosis code is required',
+  'labels.invalidDiagnosis': 'S_Diagnosis code is not valid',
   'labels.allergiesDetailsRequired': 'S_Please specify your allergies',
   'labels.selectHasDiseases': 'S_Please select if you have diseases',
   'labels.invalidSelection': 'S_Invalid selection',

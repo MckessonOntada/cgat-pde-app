@@ -100,7 +100,10 @@ export const getClinicalDetailFields = (t, config, setFieldValue) => {
         isRequired: true,
         placeholder: ' ',
         component: Components['radioGroup'],
-        items: getBinaryOptions('allergies')
+        items: getBinaryOptions('allergies'),
+        layout: {
+          classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
+        }
       },
       {
         name: 'allergyDetails',
@@ -108,7 +111,10 @@ export const getClinicalDetailFields = (t, config, setFieldValue) => {
         isRequired: true,
         placeholder: ' ',
         isDisabled: values && values['hasAllergies'] === 'yes' ? false : true,
-        component: Components['input']
+        component: Components['input'],
+        layout: {
+          classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
+        }
       },
       {
         name: 'hasDiseases',
@@ -117,7 +123,10 @@ export const getClinicalDetailFields = (t, config, setFieldValue) => {
         isRequired: true,
         placeholder: ' ',
         component: Components['radioGroup'],
-        items: getBinaryOptions('diseases')
+        items: getBinaryOptions('diseases'),
+        layout: {
+          classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
+        }
       },
       {
         name: 'dateOfAdministration',
@@ -125,7 +134,10 @@ export const getClinicalDetailFields = (t, config, setFieldValue) => {
         placeholder: ' ',
         component: Components['datePicker'],
         disableDateTill: new Date(),
-        disablePast: true
+        disablePast: true,
+        layout: {
+          classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline'
+        }
       }
     ]
   );
