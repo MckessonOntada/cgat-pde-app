@@ -21,6 +21,7 @@ export const ConfigurationMessagesEN = {
   'providerStatus.INACTIVE': 'Inactive',
   'providerStatus.ALL': 'All',
   'labels.caption.All': 'All',
+  'labels.caption.all': 'All',
   'labels.caption.SUBMITTED_BUY_AND_BILL': 'Buy and Bill',
   'labels.caption.SUBMITTED_SP': 'SP',
   'placeholder.selectAssignee': 'Search assignee',

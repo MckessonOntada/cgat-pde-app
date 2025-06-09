@@ -52,7 +52,7 @@ const PatientDetails = () => {
   const { showAlert } = useAlert();
   const location = useLocation();
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
-
+  const searchParams = new URLSearchParams(location.search);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
@@ -61,7 +61,7 @@ const PatientDetails = () => {
   React.useEffect(() => {
     if (orderDetails.channelType) {
       if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired)
-        navigate(`/orders/${orderId}/additional-details`, {
+        navigate(`/orders/${orderId}/additional-details?${searchParams.toString()}`, {
           state: { ...location.state }
         });
     }
@@ -99,7 +99,10 @@ const PatientDetails = () => {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
   }, [orderDetails]);
 
   useEffect(() => {
@@ -143,19 +146,21 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-          navigate(`../${id}/payer`, {
+          navigate(`../${id}/payer?${searchParams.toString()}`, {
             state: {
               fromTab: location?.state?.fromTab,
               isEdit: false,
-              isApprover: isApprover
+              isApprover: isApprover,
+              fromOrderView: location?.state?.fromOrderView
             }
           });
         } else {
-          navigate(`../${id}/additional-details`, {
+          navigate(`../${id}/additional-details?${searchParams.toString()}`, {
             state: {
               fromTab: location?.state?.fromTab,
               isEdit: false,
-              isApprover: isApprover
+              isApprover: isApprover,
+              fromOrderView: location?.state?.fromOrderView
             }
           });
         }
@@ -181,19 +186,21 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: true,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }
@@ -214,31 +221,33 @@ const PatientDetails = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }

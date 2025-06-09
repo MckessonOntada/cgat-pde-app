@@ -1,15 +1,16 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const OrderSummary = () => {
   const { id } = useParams();
-  const { t } = useTranslate;
+  const { t } = useTranslate();
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (!id) {
-      navigate('/orders');
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab } });
     }
   }, []);
 

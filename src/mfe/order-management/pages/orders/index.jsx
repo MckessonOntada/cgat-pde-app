@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
@@ -19,8 +19,24 @@ import Alert from '@src/components/cgat-alert/Alert';
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [_isOrderCountAdded, setIsOrderCountAdded] = React.useState(false);
-  const { applyFilters, clearFilters, changeTab, tabVariant, orderView, isError, assigneeList, error, searchAssigneeByTest, setAssigneeOnChange } = useOrders();
+  const {
+    applyFilters,
+    clearFilters,
+    changeTab,
+    tabVariant,
+    orderView,
+    isError,
+    assigneeList,
+    error,
+    searchAssigneeByTest,
+    setAssigneeOnChange,
+    filterConfig,
+    changeOrderView
+  } = useOrders();
   const [alert, setAlert] = React.useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const assigneeIdsFromURL = searchParams.get('assigneeIds')?.split(',') || [];
+
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -43,6 +59,49 @@ const OrderIndex = () => {
       setIsOrderCountAdded(true);
     }
   }, [orderCounts]);
+
+  React.useEffect(() => {
+    const filters = {
+      searchQuery: searchParams.get('query') || '',
+      status: searchParams.get('status') || null,
+      orderType: searchParams.get('orderType') || null,
+      orderDate: searchParams.get('orderDate') || null,
+      dateRange: [searchParams.get('dateRangeStart') || '', searchParams.get('dateRangeEnd') || ''],
+      assigneeIds: searchParams.get('assigneeIds')?.split(',') || []
+    };
+    const hasFilter = Object.values(filters).some((val) => val !== '' && val !== null && !(Array.isArray(val) && val.length === 0));
+
+    if (hasFilter) {
+      applyFilters(filters);
+    }
+  }, []);
+
+  const handleApplyFilters = (filters) => {
+    applyFilters(filters);
+
+    const rawParams = {
+      query: filters.searchQuery,
+      status: filters.status,
+      orderType: filters.orderType,
+      assigneeIds: filters.assigneeIds?.join(','),
+      orderDate: filters.orderDate,
+      dateRangeStart: filters.dateRange?.[0],
+      dateRangeEnd: filters.dateRange?.[1]
+    };
+
+    const cleanedParams = {};
+    Object.entries(rawParams).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        cleanedParams[key] = value;
+      }
+    });
+    setSearchParams(cleanedParams);
+  };
+
+  const handleClearFilters = () => {
+    clearFilters();
+    setSearchParams({});
+  };
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,7 +127,7 @@ const OrderIndex = () => {
       });
     }
     if (tabVariant === ORDER_TABS.PENDING_APPROVAL || tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
-      const orderTypes = ['All', ORDER_TABS.SUBMITTED_BUY_AND_BILL, ORDER_TABS.SUBMITTED_SP];
+      const orderTypes = ['all', ORDER_TABS.SUBMITTED_BUY_AND_BILL, ORDER_TABS.SUBMITTED_SP];
       filters.push({
         type: 'dropdown',
         name: 'orderType',
@@ -90,11 +149,11 @@ const OrderIndex = () => {
           onSearch: searchAssigneeByTest,
           recordsCountToEnableSearch: 2,
           getUpdatedOptions: (e) => {
-            if (e.length > 0) {
+            if (assigneeIdsFromURL?.length === 0 && e?.length > 0) {
               setAssigneeOnChange(e);
+              return;
             }
-          },
-          size: 'lg'
+          }
         });
       }
     }
@@ -125,13 +184,29 @@ const OrderIndex = () => {
     return filters;
   }, [activeTab, orderView, assigneeList]);
 
+  const [initialized, setInitialized] = useState(false);
+
+  React.useEffect(() => {
+    if (!initialized && assigneeIdsFromURL.length > 0 && assigneeList.length > 0) {
+      const existingMap = new Map(assigneeList.map((opt) => [String(opt.value), opt]));
+
+      const selectedItems = assigneeIdsFromURL.map((id) => {
+        const item = existingMap.get(String(id));
+        return item ? { ...item, isChecked: true } : { value: id, label: id, isChecked: true };
+      });
+
+      setAssigneeOnChange([...assigneeList.filter((opt) => !assigneeIdsFromURL.includes(String(opt.value))), ...selectedItems]);
+    }
+  }, [assigneeIdsFromURL.join(','), assigneeList.length, initialized]);
+
   const handleOnTabChange = (newTab) => {
     const newTabs = tabList.map((tab) => ({
       ...tab,
       isActiveTab: tab.id === newTab.id
     }));
     setTabList(newTabs);
-    changeTab(newTab.id);
+    changeTab(newTab.id, true);
+    setSearchParams({});
   };
 
   React.useEffect(() => {
@@ -146,7 +221,9 @@ const OrderIndex = () => {
   }, [location]);
 
   const handleOnClick = () => {
-    navigate(routesConfig.createOrder);
+    navigate(`${routesConfig.createOrder}?${searchParams.toString()}`, {
+      state: { fromTab: tabVariant, fromOrderView: orderView }
+    });
   };
 
   React.useEffect(() => {
@@ -155,9 +232,12 @@ const OrderIndex = () => {
         tab.isActiveTab = tab.id === activeTabFromState;
       });
       setTabList(tabList);
-      changeTab(activeTabFromState);
+      changeTab(activeTabFromState, false);
     }
-  }, [activeTabFromState]);
+    if (location?.state?.fromOrderView) {
+      changeOrderView(location.state.fromOrderView);
+    }
+  }, [activeTabFromState, location?.state?.fromOrderView]);
 
   React.useEffect(() => {
     if (error) {
@@ -206,12 +286,13 @@ const OrderIndex = () => {
             </div>
             <div className="MCP-CardContainer" key={currentTab.id}>
               <CommonFilters
-                onApplyFilters={applyFilters}
-                onClearFilters={clearFilters}
+                onApplyFilters={handleApplyFilters}
+                onClearFilters={handleClearFilters}
                 additionalFilters={additionalFiltersConfig}
                 searchPlaceholder={t(
                   tabVariant === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
                 )}
+                initialData={filterConfig || {}}
               />
             </div>
             <div className="MCP-table-wrapper">
