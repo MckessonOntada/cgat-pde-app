@@ -78,6 +78,8 @@ function TemplateList({ onAlert }) {
   };
 
   const handleView = (id) => {};
+  const hasActive = selectedTemplates?.every((item) => item.active === true);
+  const hasMixedStatus = selectedTemplates?.some((item) => item.active === true) && selectedTemplates?.some((item) => item.active === false);
 
   const columns = [
     {
@@ -85,10 +87,10 @@ function TemplateList({ onAlert }) {
       // name: data?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
       name:
         data?.length > 0
-          ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'id', paginationConfig, selectedData, setSelectedData)
+          ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'id', paginationConfig, selectedData, setSelectedData, true, true)
           : null,
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedData, setSelectedData),
+      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedData, setSelectedData, true, true),
       selector: (row) => row.id,
       width: '50px',
       omit: !hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE)
@@ -175,18 +177,18 @@ function TemplateList({ onAlert }) {
   };
 
   const {
-    mutate: deactivateQuestionnaire,
+    mutate: activateDeactivateQuestionnaire,
     isLoading: isDeactivating,
     isError: deactivateError,
     data: deactivateResponse
-  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
+  } = useMutation(async (id) => (hasActive ? QuestionnaireService.deactivateQuestionnaireById(id) : QuestionnaireService.activateQuestionnaireById(id)), {
     onSuccess: (response) => {
       refetchTemplates();
       setSelectedData([]);
       setTemplates([]);
       onAlert({
         isVisible: true,
-        description: t('message.questionnaireDeactivated'),
+        description: t(hasActive ? 'message.questionnaireDeactivated' : 'message.questionnaireActivated'),
         type: 'success'
       });
     },
@@ -199,12 +201,12 @@ function TemplateList({ onAlert }) {
     }
   });
 
-  const handleOnDeactivateQuestionnaire = () => {
+  const handleOnActivateDeactivateQuestionnaire = () => {
     const state = {};
     state.title = t('labels.confirmationmessage');
     state.body = (
       <div className="MCP-modal-body">
-        <p>{t('labels.template_deactivateConfirmation')}</p>
+        <p>{t(hasActive ? 'labels.template_deactivateConfirmation' : 'labels.template_activateConfirmation')}</p>
       </div>
     );
     state.footer = (
@@ -217,7 +219,7 @@ function TemplateList({ onAlert }) {
           variant="primary"
           onClick={() => {
             const selectedIds = selectedData.map((item) => item.id);
-            deactivateQuestionnaire(selectedIds);
+            activateDeactivateQuestionnaire(selectedIds);
             dispatch(closeModal());
           }}>
           Yes
@@ -226,7 +228,6 @@ function TemplateList({ onAlert }) {
     );
     dispatch(openModal(state));
   };
-
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -245,12 +246,16 @@ function TemplateList({ onAlert }) {
           secondaryViewHeading={`${selectedTemplates.length} ${t('userManagement.selected_items')}`}
           secondaryViewControls={
             <div className="controls">
-              <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
-                {t('label.configure')}
-              </Button>
-              <Button onClick={() => handleOnDeactivateQuestionnaire()} size="sm" variant="secondary">
-                {t('captions.btndeactivate')}
-              </Button>
+              {hasActive && (
+                <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
+                  {t('label.configure')}
+                </Button>
+              )}
+              {!hasMixedStatus && (
+                <Button onClick={() => handleOnActivateDeactivateQuestionnaire()} size="sm" variant="secondary">
+                  {t(hasActive ? 'captions.btndeactivate' : 'captions.btnactivate')}
+                </Button>
+              )}
             </div>
           }
           style={{ marginBottom: '16px' }}
