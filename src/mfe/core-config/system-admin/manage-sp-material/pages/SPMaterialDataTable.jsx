@@ -46,7 +46,7 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       id: 'trade_name',
       selector: (row) => {},
       wrap: true,
-      minWidth: '220px',
+      minWidth: '200px',
       sortable: true,
       sortKey: 'trade_name',
       cell: (props) => (
@@ -61,41 +61,48 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
               setViewSPMaterial(props);
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.materialNumber} maxWidth={280} />
+            <EclipsesTextcss str={props?.materialNumber} maxWidth={190} />
           </Link>
         </div>
       )
     },
     {
-      id: 'genericName',
+      id: 'materialDescription',
       name: t('manageSPMaterial.table.productname'),
       selector: (row) => {},
-      minWidth: '350px',
+      minWidth: '240px',
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={350} />
+      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={230} />
+    },
+    {
+      id: 'genericName',
+      name: t('manageSPMaterial.table.genericName'),
+      selector: (row) => {},
+      minWidth: '160px',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
+    },
+    {
+      id: 'manufacturerName',
+      name: t('manageSPMaterial.table.manufacturerName'),
+      selector: (row) => {},
+      minWidth: '200px',
+      sortable: true,
+      sortKey: 'manufacturerName',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.manufacturerName} maxWidth={190} />
     },
     {
       id: 'ndcNumber',
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
-      minWidth: '250px',
+      minWidth: '120px',
       sortable: false,
       sortKey: 'ndc',
       wrap: true,
-      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
-    },
-    {
-      id: 'siteName',
-      name: t('manageSPMaterial.table.sitename'),
-      selector: (row) => {},
-      minWidth: '250px',
-      sortable: true,
-      sortKey: 'site_name',
-      wrap: true,
-      cell: (props) => <div>{props?.siteName || '-'}</div>,
-      omit: isLinkCatalog ? true : false
+      cell: (props) => <EclipsesTextcss str={props?.ndcNumber} maxWidth={100} />
     },
     {
       id: 'status',

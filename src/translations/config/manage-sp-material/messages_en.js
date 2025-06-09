@@ -1,14 +1,15 @@
 export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.heading.spmaterial': 'SP Material',
-  'manageSPMaterial.heading': 'Manage SP Material',
+  'manageSPMaterial.heading': 'SP Material Master',
   'manageSPMaterial.heading.materialListing': 'SP Material Listing',
   'manageSPMaterial.breadcrumbs.systemAdministrator': 'System Administrator',
   'manageSPMaterial.breadcrumbs.systemConfiguration': 'System Configuration',
   'manageSPMaterial.breadcrumbs.manageSPMaterial': 'Manage SP Material',
-  'manageSPMaterial.filters.searchPlaceholder':
-    'Search by SP Product ID, Product Name, NDC, Site Name...',
+  'manageSPMaterial.filters.searchPlaceholder': 'Search by SP Product ID, Product Name, NDC...',
   'manageSPMaterial.table.spproductId': 'SP Product ID',
   'manageSPMaterial.table.productname': 'Product Name',
+  'manageSPMaterial.table.genericName': 'Generic Name',
+  'manageSPMaterial.table.manufacturerName': 'Manufacturer Name',
   'manageSPMaterial.table.ndc': 'NDC',
   'manageSPMaterial.table.sitename': 'Site Name',
   'manageSPMaterial.table.status': 'Status',
@@ -37,14 +38,10 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.button.Edit': 'Edit',
   'manageSPMaterial.button.Deactivate': 'Deactivate',
   'manageSPMaterial.button.setspaccounts': 'Set Associated SP Accounts',
-  'manageSPMaterial.message.addsuccess':
-    'SP Material has been added successfully.',
-  'manageSPMaterial.message.deactivateConfirmaiton':
-    'Are you sure, you want to deactivate this SP Material?',
-  'manageSPMaterial.message.deactivate_success':
-    'SP Material(s) have been Deactivated successfully.',
-  'manageSPMaterial.message.deactivate_failure':
-    'Failed to Deactivate the SP Material(s).',
+  'manageSPMaterial.message.addsuccess': 'SP Material has been added successfully.',
+  'manageSPMaterial.message.deactivateConfirmaiton': 'Are you sure, you want to deactivate this SP Material?',
+  'manageSPMaterial.message.deactivate_success': 'SP Material(s) have been Deactivated successfully.',
+  'manageSPMaterial.message.deactivate_failure': 'Failed to Deactivate the SP Material(s).',
   'errors.default': 'An unexpected error occurred.',
 
   'manageSPMaterial.drawer.heading': 'SP Product Details',
@@ -54,34 +51,34 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.drawer.details.body.productName': 'Product Name',
   'manageSPMaterial.drawer.details.body.siteName': 'Site Name',
   'manageSPMaterial.drawer.details.body.NDC': 'NDC',
-  'manageSPMaterial.drawer.details.configuration.heading.Configurations':
-    'Configurations',
+  'manageSPMaterial.drawer.details.body.therapyNumber': 'Therapy Number',
+  'manageSPMaterial.drawer.details.body.therapy': 'Therapy',
+  'manageSPMaterial.drawer.details.body.strength': 'Strength',
+  'manageSPMaterial.drawer.details.body.dosage': 'NDC',
+  'manageSPMaterial.drawer.details.body.sellingUnitCode': 'Selling Unit Code',
+  'manageSPMaterial.drawer.details.body.manufacturerName': 'Manufacturer Name',
+  'manageSPMaterial.drawer.details.body.dropshipIndicator': 'Dropship Indicator',
+  'manageSPMaterial.drawer.details.body.baseUnitOfMeasure': 'Base Unit Of Measure',
+  'manageSPMaterial.manufacturer': 'Manufacturer',
+
+  'manageSPMaterial.drawer.details.configuration.heading.Configurations': 'Configurations',
   'manageSPMaterial.drawer.details.configuration.actions.preview': 'PREVIEW',
   'manageSPMaterial.drawer.details.configuration.actions.delete': 'Delete',
 
   'manageSPMaterial.BacktoPage': 'BACK TO MANAGE SP MATERIAL',
   'manageSPMaterial.messageemptyTableTitle': 'No SP Materials Found',
-  'manageSPMaterial.messages.emptyTableSubtitle':
-    'Please add SP Materials to view the table content.',
+  'manageSPMaterial.messages.emptyTableSubtitle': 'Please add SP Materials to view the table content.',
 
-  'messages.confirmation.deleteConfiguration':
-    'Are you sure you want to delete the configuration ?',
-  'manageSPMaterial.drawer.configuration.alert.error':
-    'Please select Required Field',
+  'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
+  'manageSPMaterial.drawer.configuration.alert.error': 'Please select Required Field',
 
-  'manageSPMaterial.messages.button.requiredupload':
-    'Please upload csv to add SP Materials',
-  'manageSPMaterial.messages.button.uploadError':
-    'Error while Uploading SP Materials',
+  'manageSPMaterial.messages.button.requiredupload': 'Please upload csv to add SP Materials',
+  'manageSPMaterial.messages.button.uploadError': 'Error while Uploading SP Materials',
   'manageSPMaterial.messages.button.uploadConflict':
     'Issue in Uploading SP Materials. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
-  'manageSPMaterial.messages.button.uploadSuccess':
-    'SP Materials have uploaded succesfully ',
-  'manageSPMaterial.messages.button.downloadFail':
-    'Failed while downloading CSV',
-  'upload.file.error.unsupportedFile':
-    'Unsupported file type. Please upload one of: {{file}}',
+  'manageSPMaterial.messages.button.uploadSuccess': 'SP Materials have uploaded succesfully ',
+  'manageSPMaterial.messages.button.downloadFail': 'Failed while downloading CSV',
+  'upload.file.error.unsupportedFile': 'Unsupported file type. Please upload one of: {{file}}',
   'upload.file.success.validFile': 'File is valid.',
-  'unlink.tooltip.disabledtext':
-    'Please refer to associated B&B material to remove the configured questionnaire for this material.'
+  'unlink.tooltip.disabledtext': 'Please refer to associated B&B material to remove the configured questionnaire for this material.'
 };

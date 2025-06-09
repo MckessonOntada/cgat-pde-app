@@ -1,9 +1,9 @@
 export const ManageSPMaterialMessagesES = {
-  'manageSPMaterial.heading': 'S_Manage SP Material',
+  'manageSPMaterial.heading': 'S_SP Material Master',
   'manageSPMaterial.heading.materialListing': 'S_S_SP Material Listing',
   'manageSPMaterial.breadcrumbs.systemAdministrator': 'S_S_System Administrator',
   'manageSPMaterial.breadcrumbs.systemConfiguration': 'S_S_System Configuration',
-  'manageSPMaterial.breadcrumbs.manageSPMaterial': 'S_S_Manage SP Material',
+  'manageSPMaterial.breadcrumbs.manageSPMaterial': 'S_Manage SP Material',
   'manageSPMaterial.filters.searchPlaceholder': 'S_S_Search by Product Name, NDC, ID...',
   'manageSPMaterial.table.spproductId': 'S_S_SP Product ID',
   'manageSPMaterial.table.productname': 'S_S_Product Name',
