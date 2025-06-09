@@ -82,7 +82,10 @@ export const NotificationsProvider = ({ children }) => {
   // 1. Fetch unread notifications count (global)
   const unreadCountMutation = useMutation(
     async (searchObj) => {
-      const searchCategoryValue = normalizeCategory(searchObj?.category || initialSearchState.notificationCategory);
+      let searchCategoryValue = searchObj?.category || initialSearchState.notificationCategory;
+      if (searchCategoryValue === 'All') {
+        searchCategoryValue = ''; // Convert 'All' to empty string for API call
+      }
       const payload = {
         searchText: searchObj?.searchText || initialSearchState.searchText,
         category: searchCategoryValue,
