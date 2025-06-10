@@ -384,6 +384,14 @@ async function getTherapyDetailsByTradeName2(tradeName, channelType) {
   if (res.data) return res.data;
 }
 
+async function getBackendOrderId(OrderID) {
+  const url = `${ApiRoutes.ORDERS()}/backendOrderId/${OrderID}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -416,7 +424,8 @@ const OrderService = Object.freeze({
   uploadOrderDocument,
   uploadDocument,
   getTherapyDetailsByTradeName,
-  getTherapyDetailsByTradeName2
+  getTherapyDetailsByTradeName2,
+  getBackendOrderId
 });
 
 export default OrderService;
