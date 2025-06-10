@@ -30,7 +30,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
           placeholder: '',
           type: 'input',
           isRequired: true,
-          maxLength: 50
+          maxLength: 100
         },
         {
           id: `${parentKey}-member-number`,
@@ -123,7 +123,7 @@ export const insuranceCardTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-card-front`,
-          name: `${parentKey}.insuranceCardFront`,
+          name: `${parentKey}.insuranceCard.front`,
           label: 'form.label.front',
           placeholder: '',
           type: 'inputFile',
@@ -132,7 +132,7 @@ export const insuranceCardTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-insurance-card-back`,
-          name: `${parentKey}.insuranceCardBack`,
+          name: `${parentKey}.insuranceCard.back`,
           label: 'form.label.back',
           placeholder: '',
           type: 'inputFile',
@@ -156,7 +156,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           placeholder: '',
           type: 'input',
           isRequired: true,
-          maxLength: 50
+          maxLength: 100
         },
         {
           id: `${parentKey}-rx-group-number`,
@@ -174,7 +174,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           placeholder: '',
           type: 'input',
           isRequired: true,
-          maxLength: 50
+          maxLength: 20
         }
       ]
     },
@@ -189,7 +189,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           placeholder: '',
           type: 'input',
           isRequired: true,
-          maxLength: 50
+          maxLength: 100
         },
         {
           id: `${parentKey}-rx-bin`,
@@ -198,7 +198,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           placeholder: '',
           type: 'input',
           isRequired: true,
-          maxLength: 50
+          maxLength: 30
         }
       ]
     }
