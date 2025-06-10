@@ -39,10 +39,12 @@ export const FormProvider = ({ children }) => {
       const transformedRules = [];
 
       const { price, accounts, therapies, roles, users } = rules;
-      transformedRules.push({
-        attributeType: CONTROL_OPTIONS.Price,
-        value: price
-      });
+      if (price != null) {
+        transformedRules.push({
+          attributeType: CONTROL_OPTIONS.Price,
+          value: price
+        });
+      }
       if (accounts)
         transformedRules.push({
           attributeType: CONTROL_OPTIONS.Account,
@@ -51,7 +53,7 @@ export const FormProvider = ({ children }) => {
       if (therapies)
         transformedRules.push({
           attributeType: CONTROL_OPTIONS.Material,
-          value: therapies.map((item) => item.therapyId)
+          value: therapies.map((item) => item.tradeName)
         });
       if (roles)
         transformedRules.push({
