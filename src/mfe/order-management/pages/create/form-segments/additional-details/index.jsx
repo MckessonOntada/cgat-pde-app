@@ -595,7 +595,7 @@ function AdditionalDetails() {
       payload.clinicalDetails = clinicalDetails;
       payload.diagnosisCode = values['diagnosisCode'];
     } else {
-      payload.coiId = payload.codId;
+      payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
       payload.slotNumber = slotNumber;
       payload.dateOfAdministration = dateOfAdministration;
