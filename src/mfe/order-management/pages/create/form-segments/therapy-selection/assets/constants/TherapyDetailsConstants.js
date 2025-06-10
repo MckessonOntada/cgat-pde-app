@@ -1,6 +1,6 @@
-export const TherapyDetailsConstantsForBB = [
+export const TherapyDetailsConstantsForBB = (isInvoice = false) => [
   {
-    sectionHeading: 'labels.therapy.generalDetails',
+    sectionHeading: isInvoice ? 'paymentInvoices.table.therapyInfo' : 'labels.therapy.generalDetails',
     sectionData: [
       { label: 'labels.therapy.materialNumber', value: 'materialNumber' },
       {
@@ -14,7 +14,7 @@ export const TherapyDetailsConstantsForBB = [
       { label: 'labels.therapy.manufacturerName', value: 'vendorName' },
       { label: 'labels.therapy.upcCode', value: 'upcCode' },
       { label: 'labels.therapy.dropshipIndicator', value: 'dropshipIndicator' },
-      { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' },
+      { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
   }
 ];

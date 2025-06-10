@@ -44,6 +44,15 @@ async function deactivateQuestionnaireById(requestBody) {
   return {};
 }
 
+async function activateQuestionnaireById(requestBody) {
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/reactivate`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, requestBody);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function applyQuestionnaireConfig(payload) {
   return {};
 }
@@ -139,6 +148,7 @@ const QuestionnaireService = Object.freeze({
   updateQuestionnaire,
   getQuestionnaireById,
   deactivateQuestionnaireById,
+  activateQuestionnaireById,
   getConfiguredQuestionnaire,
   uploadQuestionnaireDocument,
   uploadVariantDocument,

@@ -18,10 +18,15 @@ export const SPMaterialDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
-      { label: 'id', value: 'materialNumber' },
-      { label: 'productName', value: 'materialDescription' },
-      { label: 'siteName', value: 'siteName' },
-      { label: 'NDC', value: 'ndcNumber' }
+      { label: 'therapyNumber', value: 'materialNumber' },
+      { label: 'therapy', value: 'materialDescription' },
+      { label: 'NDC', value: 'ndcNumber' },
+      { label: 'strength', value: 'strength' },
+      { label: 'dosage', value: 'dosage' },
+      { label: 'sellingUnitCode', value: 'sellingUnitCode' },
+      { label: 'manufacturerName', value: 'manufacturerName' },
+      { label: 'dropshipIndicator', value: 'dropshipIndicator' },
+      { label: 'baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
   }
 ];

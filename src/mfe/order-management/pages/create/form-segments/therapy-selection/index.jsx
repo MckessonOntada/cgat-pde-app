@@ -62,8 +62,8 @@ function TherapySelection() {
     searchParams.delete('channelType');
     navigate({
       pathname: '',
-      search: searchParams.toString() ? `?${searchParams.toString()}` : '', 
-      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView } 
+      search: searchParams.toString() ? `?${searchParams.toString()}` : '',
+      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
     });
   };
 
@@ -248,7 +248,7 @@ function TherapySelection() {
               channelType={channelType}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
-              buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+              buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
               spTherapyConstants={TherapyDetailsConstantsForSP}
               heading={t('manageMaterial.drawer.heading')}
             />
