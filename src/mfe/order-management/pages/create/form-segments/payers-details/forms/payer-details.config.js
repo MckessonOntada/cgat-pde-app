@@ -123,7 +123,7 @@ export const insuranceCardTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-card-front`,
-          name: `${parentKey}.insuranceCardFront`,
+          name: `${parentKey}.insuranceCard.front`,
           label: 'form.label.front',
           placeholder: '',
           type: 'inputFile',
@@ -132,7 +132,7 @@ export const insuranceCardTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-insurance-card-back`,
-          name: `${parentKey}.insuranceCardBack`,
+          name: `${parentKey}.insuranceCard.back`,
           label: 'form.label.back',
           placeholder: '',
           type: 'inputFile',

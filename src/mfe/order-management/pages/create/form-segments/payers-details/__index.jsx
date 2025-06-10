@@ -192,7 +192,7 @@ const PayerDetails = () => {
         />
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
       </div>
-      <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
+      <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onSubmit={handleOnSubmit}>
         {({ setFieldValue }) => {
           return (
             <Form>
