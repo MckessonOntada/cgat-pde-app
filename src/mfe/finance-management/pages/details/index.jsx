@@ -18,7 +18,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { useQuery } from 'react-query';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
+import { TherapyDetailsConstantsForBB } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { FormattedNumber } from 'react-intl';
@@ -297,15 +297,15 @@ function Details(props) {
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
             <div className="footer-wrapper" ref={controlRef}>
               <div className="controls footer-controls">
-              <Button
-                size="md"
-                variant="primary"
-                type="submit"
-                onClick={() => {
-                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                }}>
-                {t('paymentInvoices.Details.ReviewAndPay')}
-              </Button>
+                <Button
+                  size="md"
+                  variant="primary"
+                  type="submit"
+                  onClick={() => {
+                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                  }}>
+                  {t('paymentInvoices.Details.ReviewAndPay')}
+                </Button>
               </div>
             </div>
           )}
@@ -316,7 +316,7 @@ function Details(props) {
           therapyId={therapy}
           onSelect={() => {}}
           onClose={() => setOpen(!open)}
-          therapyData={TherapyDetailsConstants}
+          therapyData={TherapyDetailsConstantsForBB(true)}
           showFooter={false}
           heading={t('labels.therapyDetails')}
           useUserService={true}
