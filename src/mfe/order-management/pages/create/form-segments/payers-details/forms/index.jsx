@@ -12,92 +12,15 @@ import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/Form
 import { getMedicalInsuranceUiTemplate, getPharmacyInsuranceUiTemplate, PATIENT_RELATIONSHIP } from './payer-details.config';
 import { Form, Formik } from 'formik';
 import { ReactComponent as AddIcon } from '@src/assets/svg/add-circle-bold.svg';
-import * as Yup from 'yup';
 import { FooterContext } from '@src/components/footer/FooterContext';
-const ALPHABETIC_ONLY = /^[A-Za-z\s'-]+$/;
-const NUMERIC_ONLY = /^\d+$/;
-const ALPHANUMERIC_ONLY = /^[A-Za-z0-9]+$/;
-const RX_SYMBOLS_ALLOWED = /^[A-Za-z&\s-]+$/;
-
-const getMedicalInsuranceSchema = (key, t) => ({
-  [key]: Yup.object().shape({
-    insuranceCompany: Yup.string()
-      .required(t('messages.enterInsuranceCompanyName'))
-      .max(100, t('messages.insuranceCompanyNameCharLimit'))
-      .matches(/^[A-Za-z\s'-]+$/, t('messages.avoidSpecialCharsNumbers')),
-
-    memberNumber: Yup.string().required('messages.memberNumberRequired').max(50, t('messages.memberMax')).matches(NUMERIC_ONLY, t('messages.onlyNumeric')),
-    groupNumber: Yup.string()
-      .notRequired()
-      .max(50, t('messages.groupMax'))
-      .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
-    phoneNumber: Yup.string()
-      .required(t('messages.enterPhone'))
-      .matches(/^\d{10}$/, t('messages.phoneExact')),
-    policyHolderFirstName: Yup.string()
-      .required(t('messages.enterFirstName'))
-      .max(50, t('messages.firstNameMax'))
-      .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
-    policyHolderLastName: Yup.string()
-      .required(t('messages.enterLastName'))
-      .max(50, t('messages.lastNameMax'))
-      .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
-    dob: Yup.date().required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
-    relationshipToPatient: Yup.string().required(t('messages.selectRelation')).oneOf(PATIENT_RELATIONSHIP, t('messages.invalidRelation')),
-    insuranceCard: Yup.object().shape({
-      front: Yup.mixed().nullable(),
-      back: Yup.mixed().nullable()
-    })
-  })
-});
-
-const getPharmacyInsuranceSchema = (key, t) => ({
-  [key]: Yup.object().shape({
-    pharmacyBenefitManagerName: Yup.string()
-      .required(t('messages.enterPBM'))
-      .max(100, t('messages.pbmNameMax'))
-      .matches(RX_SYMBOLS_ALLOWED, t('messages.alphaSymbols')),
-    rxGroupNumber: Yup.string()
-      .notRequired()
-      .max(50, t('messages.rxGroupMax'))
-      .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
-    rxMemberId: Yup.string().required(t('messages.enterRxID')).max(20, t('messages.rxIdMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
-    rxPcn: Yup.string().required(t('messages.enterRxPCN')).max(100, t('messages.rxPcnMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
-    rxBin: Yup.string().required(t('messages.enterRxBIN')).max(30, t('messages.rxBinMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
-    insuranceCard: Yup.object().shape({
-      front: Yup.mixed().nullable(),
-      back: Yup.mixed().nullable()
-    })
-  })
-});
-
-const getBaseMedicalInsuranceValues = () => ({
-  insuranceCompany: '',
-  memberNumber: '',
-  groupNumber: '',
-  phoneNumber: '',
-  policyHolderFirstName: '',
-  policyHolderLastName: '',
-  dob: '',
-  relationshipToPatient: '',
-  cardFrontImage: null,
-  cardBackImage: null
-});
-
-const getBasePharmacyInsuranceValues = () => ({
-  pharmacyBenefitManagerName: '',
-  rxGroupNumber: '',
-  rxMemberId: '',
-  rxPcn: '',
-  rxBin: '',
-  rxCardFrontImage: null,
-  rxCardBackImage: null
-});
-
-const baseValues = {
-  primaryMedicalInsurance: getBaseMedicalInsuranceValues(),
-  primaryPharmacyInsurance: getBasePharmacyInsuranceValues()
-};
+import * as Yup from 'yup';
+import {
+  baseValues,
+  getBaseMedicalInsuranceValues,
+  getBasePharmacyInsuranceValues,
+  getMedicalInsuranceSchema,
+  getPharmacyInsuranceSchema
+} from './validation.schema';
 
 function Payer() {
   const [validationSchema, setValidationSchema] = React.useState(null);
