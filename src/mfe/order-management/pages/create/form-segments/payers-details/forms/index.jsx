@@ -78,8 +78,6 @@ function Payer() {
     setFormValues({ ...newValues });
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
-  console.log(formValues);
-
   const handleOnBackToOrders = () =>
     navigate(`/orders?${searchParams.toString()}`, {
       state: {

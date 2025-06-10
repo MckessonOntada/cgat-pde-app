@@ -1,12 +1,26 @@
 import React from 'react';
-import { Field } from 'formik';
+import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
+import OrderService from '@src/api/commonService/OrderService';
+import { useParams } from 'react-router-dom';
 
 const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
   const { t } = useTranslate();
+  const { setFieldValue } = useFormikContext();
+  const { orderId } = useParams();
+  const uploadDocument = (file, fieldName) => {
+    const payload = {
+      orderId,
+      file
+    };
+    OrderService.uploadDocument(payload).then((response) => {
+      setFieldValue(fieldName, response);
+    });
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -52,6 +66,7 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
                           component={Component}
                           options={control.options}
                           maxLength={control.maxLength}
+                          {...(control.type && { onFileChange: (file) => uploadDocument(file, control.name) })}
                         />
                       );
                     })}

@@ -29,7 +29,7 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .required(t('messages.enterLastName'))
       .max(50, t('messages.lastNameMax'))
       .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
-    dob: Yup.date().required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
+    dob: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
     relationshipToPatient: Yup.string().required(t('messages.selectRelation')).oneOf(PATIENT_RELATIONSHIP, t('messages.invalidRelation')),
     insuranceCard: Yup.object().shape({
       front: Yup.mixed().nullable(),
@@ -67,8 +67,10 @@ export const getBaseMedicalInsuranceValues = () => ({
   policyHolderLastName: '',
   dob: '',
   relationshipToPatient: '',
-  cardFrontImage: null,
-  cardBackImage: null
+  insuranceCard: {
+    back: null,
+    front: null
+  }
 });
 
 export const getBasePharmacyInsuranceValues = () => ({
@@ -77,8 +79,10 @@ export const getBasePharmacyInsuranceValues = () => ({
   rxMemberId: '',
   rxPcn: '',
   rxBin: '',
-  rxCardFrontImage: null,
-  rxCardBackImage: null
+  insuranceCard: {
+    back: null,
+    front: null
+  }
 });
 
 export const baseValues = {

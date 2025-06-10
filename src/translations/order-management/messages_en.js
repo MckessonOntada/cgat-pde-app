@@ -843,6 +843,7 @@ export const MessageEn = {
   'messages.onlyAlpha': 'Only alphabetic characters are allowed.',
   'messages.enterLastName': "Please enter the Policy Holder's Last Name.",
   'messages.lastNameMax': 'Last Name should not exceed 50 characters.',
+  'messages.invalidDate': 'Please select valid date',
   'messages.enterDOB': 'Date of Birth is required.',
   'messages.dobFuture': 'Date of Birth cannot be in the future.',
   'messages.selectRelation': 'Please select the relationship to the patient.',

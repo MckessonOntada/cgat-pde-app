@@ -61,7 +61,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
           name: `${parentKey}.phoneNumber`,
           label: 'form.label.phoneNumber',
           placeholder: '',
-          type: 'input',
+          type: 'phoneInput',
           isRequired: true,
           maxLength: 50
         },
@@ -106,7 +106,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
           type: 'dropdown',
           options: PATIENT_RELATIONSHIP.map((item) => ({
             label: item,
-            value: item.toUpperCase()
+            value: item
           })),
           isRequired: true,
           maxLength: 50
