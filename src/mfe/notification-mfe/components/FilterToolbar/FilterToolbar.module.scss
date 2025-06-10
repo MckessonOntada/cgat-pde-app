@@ -64,3 +64,24 @@
     }
   }
 }
+
+// ---------------------------------------------------------------------------
+// Error Message Styling
+// ---------------------------------------------------------------------------
+.errorMessage {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  align-items: center;
+  color: var(--brand-color-warning-dark-coral, #db3a29);
+  font-weight: var(--brand-font-weight-600);
+  font-size: var(--brand-font-size--extra-small);
+  line-height: var(--brand-line-height--medium);
+  letter-spacing: .001em;
+
+  @include mixins.respond(sm) {
+    .emptyErrorPlaceholder {
+      height: 16px;
+    }
+  }
+}

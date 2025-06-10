@@ -80,31 +80,65 @@ const FilterToolbar = ({ isMobileView }) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let min;
+    let min = new Date(today);
+    min.setDate(min.getDate() - 90);
+    min.setHours(0, 0, 0, 0);
+
+    let startDate = Array.isArray(dateRange) ? dateRange[0] : null;
     let endDate = Array.isArray(dateRange) ? dateRange[1] : null;
 
+    // Only set minDate based on endDate if endDate is a valid date and within allowed range
     if (endDate) {
       const end = endDate instanceof Date ? endDate : new Date(endDate);
       if (!isNaN(end)) {
-        min = new Date(end);
-        min.setDate(min.getDate() - 90);
-        min.setHours(0, 0, 0, 0);
-      } else {
-        min = new Date(today);
-        min.setDate(min.getDate() - 90);
-        min.setHours(0, 0, 0, 0);
+        // endDate must not be after today and not before min
+        if (end <= today && end >= min) {
+          min = new Date(end);
+          min.setDate(min.getDate() - 90);
+          min.setHours(0, 0, 0, 0);
+        }
       }
-    } else {
-      min = new Date(today);
-      min.setDate(min.getDate() - 90);
-      min.setHours(0, 0, 0, 0);
     }
-
     setMinDate(min);
     setMaxDate(today);
   }, [localDateRange]);
 
   // --- Render ---
+
+  // Formik validation function for the whole form
+  const validate = (values) => {
+    const errors = {};
+    const [startDate, endDate] = values.notificationDateRange || [];
+
+    // Helper to format date as MM/DD/YYYY
+    const formatDate = (date) => {
+      if (!date) return '';
+      const d = new Date(date);
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${mm}/${dd}/${yyyy}`;
+    };
+
+    // Use actual Date objects for comparison
+    const min = minDate;
+    const max = maxDate;
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    // Both start and end must be valid
+    if (!start || isNaN(start) || !end || isNaN(end)) {
+      errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
+    } else if (start < min) {
+      errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
+    } else if (end > max) {
+      errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
+    } else if (start > end) {
+      errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
+    }
+    return errors;
+  }
+
 
   return (
     <Formik
@@ -113,6 +147,7 @@ const FilterToolbar = ({ isMobileView }) => {
         notificationCategory: searchState.notificationCategory
       }}
       enableReinitialize
+      validate={validate}
       // On form submit, update search state and reset page
       onSubmit={(values) => {
         applyFilters({
@@ -123,7 +158,7 @@ const FilterToolbar = ({ isMobileView }) => {
         });
       }}
     >
-      {({ values, setFieldValue }) => (
+      {({ values, setFieldValue, errors, touched }) => (
         <Form ref={formRef} autoComplete="off" className={styles.filterForm}>
           <div className={styles.filterToolbar}>
             {/* Date Range Picker */}
@@ -134,13 +169,28 @@ const FilterToolbar = ({ isMobileView }) => {
                 onChange={(dateRange) => {
                   setFieldValue('notificationDateRange', dateRange);
                   setLocalDateRange(dateRange);
+                  // Immediately validate after value change
+                  setTimeout(() => {
+                    // Formik's validateForm will re-run validation
+                    if (formRef.current && formRef.current.dispatchEvent) {
+                      // Trigger a synthetic change event to force validation
+                      const event = new Event('change', { bubbles: true });
+                      formRef.current.dispatchEvent(event);
+                    }
+                  }, 0);
                 }}
                 size={elementSize}
                 isRequired={false}
                 dateFormat="MM/DD/YYYY"
                 maxDate={maxDate}
                 minDate={minDate}
+                isStartDateError={!!errors.notificationDateRange}
+                isEndDateError={!!errors.notificationDateRange}
               />
+              {/* Show Formik error for date range only if error is present and the user has interacted with the field */}
+              {errors.notificationDateRange && (
+                <div className={styles.errorMessage}>{errors.notificationDateRange}</div>
+              )}
             </div>
 
             {/* Category Dropdown */}
@@ -153,13 +203,25 @@ const FilterToolbar = ({ isMobileView }) => {
                 onChange={(value) => setFieldValue('notificationCategory', value)}
                 size={elementSize}
               />
+              {errors.notificationDateRange && (
+                <div className={styles.errorMessage}>
+                  {' '}
+                  <span className={styles.emptyErrorPlaceholder}></span>
+                </div>
+              )}
             </div>
 
             {/* Apply Button */}
             <div className={styles.filterCta}>
-              <Button size={elementSize} variant="secondary" type="submit" buttonWidth={isMobileView ? '100%' : 'auto'}>
+              <Button size={elementSize} variant="secondary" type="submit" buttonWidth={isMobileView ? '100%' : 'auto'} disabled={!!errors.notificationDateRange}>
                 {t('notifications.cta.apply')}
               </Button>
+              {errors.notificationDateRange && (
+                <div className={styles.errorMessage}>
+                  {' '}
+                  <span className={styles.emptyErrorPlaceholder}></span>
+                </div>
+              )}
             </div>
           </div>
         </Form>
