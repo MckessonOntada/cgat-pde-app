@@ -31,7 +31,7 @@ function TherapyDetailsWithTabs({
   therapyId,
   onClose,
   onSelect,
-  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB,
+  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB(false),
   spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
   heading,

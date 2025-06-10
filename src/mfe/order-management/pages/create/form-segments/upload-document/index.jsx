@@ -170,7 +170,7 @@ function UploadOrderDocument() {
       {showTherapyDetails && orderDetails.id && (
         <TherapyDetails
           therapyId={orderDetails.therapy.materialNumber}
-          therapyData={TherapyDetailsConstantsForBB}
+          therapyData={TherapyDetailsConstantsForBB(false)}
           onClose={() => setShowTherapyDetails(false)}
           showFooter={false}
           isMaterialConfiguration={true}

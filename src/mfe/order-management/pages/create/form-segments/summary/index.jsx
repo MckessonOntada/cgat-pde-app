@@ -385,8 +385,8 @@ const Summary = () => {
       navigate('/record/invoices');
     } else {
       navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-      state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-    });
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     }
   };
 
@@ -417,7 +417,9 @@ const Summary = () => {
     };
 
     const route = stageRoutes[stage] || '/orders';
-    navigate(route, { state: { isEdit: true, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
+    navigate(route, {
+      state: { isEdit: true, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+    });
   };
 
   const handleAfterRejectOrder = (data) => {
@@ -1084,11 +1086,11 @@ const Summary = () => {
       {openDetails && !spOrder && (
         <TherapyDetails
           therapyId={therapy.materialNumber}
-          therapyData={TherapyDetailsConstantsForBB}
+          therapyData={TherapyDetailsConstantsForBB(false)}
           onClose={() => setOpenDetails(!openDetails)}
           showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
+          isMaterialConfiguration={false}
+          useUserService={true}
           heading={t('labels.therapyDetails')}
           notify={({ type, message }) =>
             showAlert({
