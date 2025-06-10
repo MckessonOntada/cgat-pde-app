@@ -552,5 +552,21 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.state': 'S_State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.',
   'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.',
-  'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page'
+  'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page',
+
+  'form.label.insuranceCompany': 'S_Insurance Company',
+  'form.label.memberNumber': 'S_Member Number',
+  'form.label.groupNumber': 'S_Group Number',
+  'form.label.insuranceCompanyPhoneNumber': 'S_Insurance Company Phone Number',
+  'form.label.policyHolderFirstName': 'S_Policy Holder First Name',
+  'form.label.policyHolderLastName': 'S_Policy Holder Last Name',
+  'form.label.dob': 'S_DOB',
+  'form.label.relationshipToParent': 'S_Relationship to Parent',
+  'form.label.front': 'S_Insurance Card Front',
+  'form.label.back': 'S_Insurance Card Back',
+  'form.label.pharmacyBenefitManagerName': 'S_Pharmacy Benefit Manager Name',
+  'form.label.rxGroupNumber': 'S_RX Group Number',
+  'form.label.rxMemberId': 'S_RX Member ID',
+  'form.label.rxPcn': 'S_RX PCN',
+  'form.label.rxBin': 'S_RX BIN'
 };

@@ -778,5 +778,23 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.zip': 'Zip is required.',
   'orderManagement.patientDetails.validation.state': 'State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
-  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page'
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
+
+  'form.label.insuranceCompany': 'Insurance Company',
+  'form.label.memberNumber': 'Member Number',
+  'form.label.groupNumber': 'Group Number',
+  'form.label.insuranceCompanyPhoneNumber': 'Insurance Company Phone Number',
+  'form.label.policyHolderFirstName': 'Policy Holder First Name',
+  'form.label.policyHolderLastName': 'Policy Holder Last Name',
+  'form.label.dob': 'DOB',
+  'form.label.relationshipToParent': 'Relationship to Parent',
+  'form.label.front': 'Front',
+  'form.label.back': 'Back',
+  'form.label.pharmacyBenefitManagerName': 'Pharmacy Benefit Manager Name',
+  'form.label.rxGroupNumber': 'RX Group Number',
+  'form.label.rxMemberId': 'RX Member ID',
+  'form.label.rxPcn': 'RX PCN',
+  'form.label.rxBin': 'RX BIN',
+  'button.caption.addSecondaryMedicalInsurance': 'Add Secondary Medical Insurance',
+  'button.caption.addSecondaryPharmacyInsurance': 'Add Secondary Pharmacy Insurance'
 };
