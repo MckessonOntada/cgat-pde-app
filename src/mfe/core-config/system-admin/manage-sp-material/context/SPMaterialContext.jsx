@@ -15,7 +15,7 @@ export const useSPMaterial = () => {
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  status: 'all'
+  status: 'ALL'
 };
 
 const INITIAL_SORT_STATE = {
@@ -46,7 +46,7 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
   const requestParams = useMemo(() => {
     const statusFilter = filterConfig?.status;
 
-    const statusParam = isLinkCatalog ? 'active' : !statusFilter || statusFilter === 'all' ? ['active', 'inactive'] : [statusFilter];
+    const statusParam = isLinkCatalog ? 'ACTIVE' : !statusFilter || statusFilter === 'all' ? 'ALL' : [statusFilter];
 
     return {
       pageNo: paginationConfig.pageNumber - 1,
@@ -55,7 +55,8 @@ export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
       sortOrder: sortConfig.sortOrder || 'desc',
       channelTypes: 'SPECIALITY_PHARMA',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(statusParam && { status: statusParam })
+      ...(statusParam && { status: statusParam }),
+      ...(filterConfig.manufacturer && { manufacturer: filterConfig.manufacturer })
     };
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
