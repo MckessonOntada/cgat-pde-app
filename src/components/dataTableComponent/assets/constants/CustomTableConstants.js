@@ -12,7 +12,9 @@ export const renderTableCheckBox = (
   dataKey,
   paginationConfig,
   selectedData,
-  setSelectedData
+  setSelectedData,
+  disableInactive = true,
+  allowInactiveSelection = false
 ) => {
   const isCheckboxDisabled = () => {
     const isHeaderCheckbox =
@@ -23,7 +25,8 @@ export const renderTableCheckBox = (
       row.isActive === false ||
       row.isActive === 'Inactive';
     return (
-      (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) || isRowInactive
+      (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) ||
+      (disableInactive && isRowInactive && !allowInactiveSelection)
     );
   };
 
@@ -37,6 +40,7 @@ export const renderTableCheckBox = (
 
   const handleHeaderCheck = () => {
     const activeRows = data.filter((item) => {
+      if (!disableInactive) return true;
       if (item.hasOwnProperty('active') && item.active === true) {
         return true;
       }
@@ -47,40 +51,35 @@ export const renderTableCheckBox = (
       if (!item.hasOwnProperty('active') && !item.hasOwnProperty('isActive')) {
         return true;
       }
-
       return false;
     });
     const currentPageMaterialNumbers = activeRows.map((item) => item[dataKey]);
 
+    const cleanedSelection = selectedData.filter((item) => {
+      if (!disableInactive) return true;
+      if ('active' in item && item.active === false) return false;
+      if ('isActive' in item && item.isActive === false) return false;
+      return true;
+    });
+
     if (isAllChecked()) {
       setSelectedData(
-        selectedData.filter(
+        cleanedSelection.filter(
           (item) => !currentPageMaterialNumbers.includes(item[dataKey])
         )
       );
     } else {
-      const allDataIncluded = activeRows.every((item) =>
-        selectedData.some(
-          (includedItem) => includedItem[dataKey] === item[dataKey]
-        )
+      const newSelections = activeRows.filter(
+        (ele) =>
+          !cleanedSelection.some((item) => item[dataKey] === ele[dataKey])
       );
-      if (!allDataIncluded) {
-        const newSelections = activeRows.filter(
-          (ele) => !selectedData.some((item) => item[dataKey] === ele[dataKey])
-        );
-        setSelectedData([...selectedData, ...newSelections]);
-      } else {
-        setSelectedData(
-          selectedData.filter(
-            (item) => !currentPageMaterialNumbers.includes(item[dataKey])
-          )
-        );
-      }
+      setSelectedData([...cleanedSelection, ...newSelections]);
     }
   };
 
   const isAllChecked = () => {
     const activeRows = data.filter((item) => {
+      if (!disableInactive) return true;
       if ('active' in item) return item.active === true;
       if ('isActive' in item) return item.isActive === true;
       return true;
