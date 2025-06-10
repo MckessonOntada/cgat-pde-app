@@ -21,13 +21,14 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, loca
 
     case CONTROL_OPTIONS.Material:
     case CONTROL_OPTIONS.Account:
+      const placeholderText = attributeType === CONTROL_OPTIONS.Material ? 'Search Therapy' : 'Search Account';
       return (
         <div>
           <Field
             id={attributeType}
             name={name}
             label={caption}
-            placeholder=" "
+            placeholder={placeholderText}
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
@@ -48,13 +49,14 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, loca
 
     case CONTROL_OPTIONS['User Role']:
     case CONTROL_OPTIONS['User Name']:
+      const userPlaceholderText = attributeType === CONTROL_OPTIONS['User Role'] ? 'Search Role' : 'Search User';
       return (
         <div>
           <Field
             id={attributeType}
             name={name}
             label={caption}
-            placeholder=" "
+            placeholder={userPlaceholderText}
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
