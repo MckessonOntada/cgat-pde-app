@@ -19,35 +19,31 @@ const NUMERIC_ONLY = /^\d+$/;
 const ALPHANUMERIC_ONLY = /^[A-Za-z0-9]+$/;
 const RX_SYMBOLS_ALLOWED = /^[A-Za-z&\s-]+$/;
 
-const getMedicalInsuranceSchema = (key) => ({
+const getMedicalInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
     insuranceCompany: Yup.string()
-      .required('Please enter the Insurance Company name.')
-      .max(100, 'Insurance Company name must not exceed 100 characters.')
-      .matches(/^[A-Za-z\s'-]+$/, 'Avoid using special characters or numbers.'),
-    memberNumber: Yup.string()
-      .required('Please enter the Member Number.')
-      .max(50, 'Member Number should not exceed 50 digits.')
-      .matches(NUMERIC_ONLY, 'Only numeric values are allowed. No spaces or special characters are permitted.'),
+      .required(t('messages.enterInsuranceCompanyName'))
+      .max(100, t('messages.insuranceCompanyNameCharLimit'))
+      .matches(/^[A-Za-z\s'-]+$/, t('messages.avoidSpecialCharsNumbers')),
+
+    memberNumber: Yup.string().required('messages.memberNumberRequired').max(50, t('messages.memberMax')).matches(NUMERIC_ONLY, t('messages.onlyNumeric')),
     groupNumber: Yup.string()
       .notRequired()
-      .max(50, 'Group Number should not exceed 50 digits.')
-      .matches(NUMERIC_ONLY, { message: 'Only numeric values are allowed. No letters or special characters are allowed.', excludeEmptyString: true }),
+      .max(50, t('messages.groupMax'))
+      .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
     phoneNumber: Yup.string()
-      .required('Please enter the Insurance Company phone number.')
-      .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits. Only numeric values are allowed. No country codes, letters, or special characters.'),
+      .required(t('messages.enterPhone'))
+      .matches(/^\d{10}$/, t('messages.phoneExact')),
     policyHolderFirstName: Yup.string()
-      .required("Please enter the Policy Holder's First Name.")
-      .max(50, 'First Name should not exceed 50 characters.')
-      .matches(ALPHABETIC_ONLY, 'Only alphabetic characters are allowed.'),
+      .required(t('messages.enterFirstName'))
+      .max(50, t('messages.firstNameMax'))
+      .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
     policyHolderLastName: Yup.string()
-      .required("Please enter the Policy Holder's Last Name.")
-      .max(50, 'Last Name should not exceed 50 characters.')
-      .matches(ALPHABETIC_ONLY, 'Only alphabetic characters are allowed.'),
-    dob: Yup.date().required('Date of Birth is required.').max(new Date(), 'Date of Birth cannot be in the future.'),
-    relationshipToPatient: Yup.string()
-      .required('Please select the relationship to the patient.')
-      .oneOf(PATIENT_RELATIONSHIP, 'Invalid selection. Please choose a valid relationship.'),
+      .required(t('messages.enterLastName'))
+      .max(50, t('messages.lastNameMax'))
+      .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
+    dob: Yup.date().required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
+    relationshipToPatient: Yup.string().required(t('messages.selectRelation')).oneOf(PATIENT_RELATIONSHIP, t('messages.invalidRelation')),
     insuranceCard: Yup.object().shape({
       front: Yup.mixed().nullable(),
       back: Yup.mixed().nullable()
@@ -55,28 +51,19 @@ const getMedicalInsuranceSchema = (key) => ({
   })
 });
 
-const getPharmacyInsuranceSchema = (key) => ({
+const getPharmacyInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
     pharmacyBenefitManagerName: Yup.string()
-      .required('Please enter the Pharmacy Benefit Manager name.')
-      .max(100, 'Name must not exceed 100 characters.')
-      .matches(RX_SYMBOLS_ALLOWED, 'Only alphabetic characters and valid symbols (e.g., & or -) are allowed.'),
+      .required(t('messages.enterPBM'))
+      .max(100, t('messages.pbmNameMax'))
+      .matches(RX_SYMBOLS_ALLOWED, t('messages.alphaSymbols')),
     rxGroupNumber: Yup.string()
       .notRequired()
-      .max(50, 'RX Group Number should not exceed 50 digits.')
-      .matches(NUMERIC_ONLY, { message: 'Only numeric values are allowed. No letters or special characters are permitted.', excludeEmptyString: true }),
-    rxMemberId: Yup.string()
-      .required('Please enter the RX Member ID.')
-      .max(20, 'RX Member ID must not exceed 20 characters.')
-      .matches(ALPHANUMERIC_ONLY, 'Only alphanumeric characters are allowed. No spaces or special characters are allowed.'),
-    rxPcn: Yup.string()
-      .required('Please enter the RX PCN.')
-      .max(100, 'RX PCN must not exceed 100 characters.')
-      .matches(ALPHANUMERIC_ONLY, 'Alphanumeric characters only. Special characters are not allowed.'),
-    rxBin: Yup.string()
-      .required('Please enter the RX BIN.')
-      .max(30, 'RX BIN must not exceed 30 characters.')
-      .matches(ALPHANUMERIC_ONLY, 'Only alphanumeric characters are allowed. No spaces or special characters.'),
+      .max(50, t('messages.rxGroupMax'))
+      .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
+    rxMemberId: Yup.string().required(t('messages.enterRxID')).max(20, t('messages.rxIdMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
+    rxPcn: Yup.string().required(t('messages.enterRxPCN')).max(100, t('messages.rxPcnMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
+    rxBin: Yup.string().required(t('messages.enterRxBIN')).max(30, t('messages.rxBinMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
     insuranceCard: Yup.object().shape({
       front: Yup.mixed().nullable(),
       back: Yup.mixed().nullable()
@@ -135,21 +122,21 @@ function Payer() {
 
   React.useEffect(() => {
     let schemaShape = {
-      ...getMedicalInsuranceSchema('primaryMedicalInsurance'),
-      ...getPharmacyInsuranceSchema('primaryPharmacyInsurance')
+      ...getMedicalInsuranceSchema('primaryMedicalInsurance', t),
+      ...getPharmacyInsuranceSchema('primaryPharmacyInsurance', t)
     };
 
     if (isSecondaryMedicalInsuranceOpen) {
       schemaShape = {
         ...schemaShape,
-        ...getMedicalInsuranceSchema('secondaryMedicalInsurance')
+        ...getMedicalInsuranceSchema('secondaryMedicalInsurance', t)
       };
     }
 
     if (isSecondaryPharmacyInsuranceOpen) {
       schemaShape = {
         ...schemaShape,
-        ...getPharmacyInsuranceSchema('secondaryPharmacyInsurance')
+        ...getPharmacyInsuranceSchema('secondaryPharmacyInsurance', t)
       };
     }
 
