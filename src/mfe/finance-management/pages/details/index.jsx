@@ -93,11 +93,7 @@ function Details(props) {
       : {
           [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
           [t('paymentInvoices.Details.CreditRemaining')]: '',
-          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(
-            res.data.dueDate,
-            'MM/DD/YYYY',
-            'DD/MM/YYYY'
-          )
+          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
         };
     setBillDates(_invoiceDue);
   };
@@ -228,12 +224,7 @@ function Details(props) {
   return (
     <div className="view-details-container">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={onBackToPaymentsInvoices}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={onBackToPaymentsInvoices} size="md">
           {locationParams?.state?.reviewPay
             ? t('paymentInvoices.Details.backToReviewAndPay')
             : INVOICES_SCREEN
@@ -248,9 +239,7 @@ function Details(props) {
         <div className="details-card-container">
           {CommonUtils.isNonEmptyObject(selectedAccount) && (
             <div className="account-info">
-              <div className="account-name">
-                {CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}
-              </div>
+              <div className="account-name">{CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}</div>
               <div className="account-address">{selectedAccount ? GeographicUtils.addressAggregator(selectedAccount) : ''}</div>
             </div>
           )}
@@ -259,14 +248,13 @@ function Details(props) {
         {CommonUtils.isNonEmptyObject(billDates) && <DetailMetrics data={billDates} />}
         <div className="datatable-container">
           <CustomDataTable
-            id="my-data-table"
+            id="my-data-table-invoice-details"
             type="normal"
             columns={columns}
             data={data?.invoiceItems || []}
             onSortIconClick={() => {}}
             progressPending={isLoading}
             fixedHeader
-            fixedHeaderScrollHeight="20px"
             showCardView={showCardView}
             defaultExpandedCardView={false}
             noDataComponent={
