@@ -33,7 +33,7 @@ function Payer() {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const { isApprover = false } = location.state || {};
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isLoader } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
@@ -93,6 +93,8 @@ function Payer() {
   const handleOnSubmit = (values) => {
     console.log('Submitted values:', values);
   };
+
+  if (isLoader) return isLoader;
 
   return (
     <div className="MCP-module-wrapper">
