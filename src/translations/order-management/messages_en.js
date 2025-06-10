@@ -858,5 +858,6 @@ export const MessageEn = {
   'messages.enterRxPCN': 'Please enter the RX PCN.',
   'messages.rxPcnMax': 'RX PCN must not exceed 100 characters.',
   'messages.enterRxBIN': 'Please enter the RX BIN.',
-  'messages.rxBinMax': 'RX BIN must not exceed 30 characters.'
+  'messages.rxBinMax': 'RX BIN must not exceed 30 characters.',
+  'labels.payerDetails': 'Payer Details'
 };

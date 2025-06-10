@@ -218,8 +218,6 @@ export const sections = (channelType) => {
 
   return [
     {
-      title: 'orderManagement.patientDetails.patient_details',
-      isRequired: true,
       rows
     }
   ];
