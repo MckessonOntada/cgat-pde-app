@@ -248,7 +248,7 @@ function Details(props) {
         {CommonUtils.isNonEmptyObject(billDates) && <DetailMetrics data={billDates} />}
         <div className="datatable-container">
           <CustomDataTable
-            id="my-data-table-invoice-details"
+            id="my-data-table"
             type="normal"
             columns={columns}
             data={data?.invoiceItems || []}
