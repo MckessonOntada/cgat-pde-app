@@ -17,9 +17,17 @@ export const renderTableCheckBox = (
   allowInactiveSelection = false
 ) => {
   const isCheckboxDisabled = () => {
-    const isHeaderCheckbox = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber;
-    const isRowInactive = row.active === false || row.active === 'Inactive' || row.isActive === false || row.isActive === 'Inactive';
-    return (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) || (disableInactive && isRowInactive && !allowInactiveSelection);
+    const isHeaderCheckbox =
+      row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber;
+    const isRowInactive =
+      row.active === false ||
+      row.active === 'Inactive' ||
+      row.isActive === false ||
+      row.isActive === 'Inactive';
+    return (
+      (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) ||
+      (disableInactive && isRowInactive && !allowInactiveSelection)
+    );
   };
 
   const handleRowSelected = () => {
@@ -43,7 +51,6 @@ export const renderTableCheckBox = (
       if (!item.hasOwnProperty('active') && !item.hasOwnProperty('isActive')) {
         return true;
       }
-
       return false;
     });
     const currentPageMaterialNumbers = activeRows.map((item) => item[dataKey]);
@@ -56,9 +63,16 @@ export const renderTableCheckBox = (
     });
 
     if (isAllChecked()) {
-      setSelectedData(cleanedSelection.filter((item) => !currentPageMaterialNumbers.includes(item[dataKey])));
+      setSelectedData(
+        cleanedSelection.filter(
+          (item) => !currentPageMaterialNumbers.includes(item[dataKey])
+        )
+      );
     } else {
-      const newSelections = activeRows.filter((ele) => !cleanedSelection.some((item) => item[dataKey] === ele[dataKey]));
+      const newSelections = activeRows.filter(
+        (ele) =>
+          !cleanedSelection.some((item) => item[dataKey] === ele[dataKey])
+      );
       setSelectedData([...cleanedSelection, ...newSelections]);
     }
   };
@@ -71,12 +85,16 @@ export const renderTableCheckBox = (
       return true;
     });
 
-    return activeRows.every((item) => selectedData.some((selected) => selected[dataKey] === item[dataKey]));
+    return activeRows.every((item) =>
+      selectedData.some((selected) => selected[dataKey] === item[dataKey])
+    );
   };
 
   const handleIndividualCheck = () => {
     if (selectedData.find((item) => item[dataKey] === row[dataKey])) {
-      setSelectedData(selectedData.filter((item) => item[dataKey] !== row[dataKey]));
+      setSelectedData(
+        selectedData.filter((item) => item[dataKey] !== row[dataKey])
+      );
       return;
     }
     setSelectedData([...selectedData, ...[row]]);
@@ -89,12 +107,16 @@ export const renderTableCheckBox = (
       }
       return getindeterminate();
     }
-    let availableRow = selectedData.find((item) => item[dataKey] === row[dataKey]);
+    let availableRow = selectedData.find(
+      (item) => item[dataKey] === row[dataKey]
+    );
     return !!availableRow;
   };
 
   const getindeterminate = () => {
-    const allDataIncluded = data.every((element) => selectedData.some((item) => item[dataKey] === element[dataKey]));
+    const allDataIncluded = data.every((element) =>
+      selectedData.some((item) => item[dataKey] === element[dataKey])
+    );
     return allDataIncluded;
   };
 
