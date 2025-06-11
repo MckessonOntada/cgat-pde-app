@@ -7,7 +7,7 @@ export const MessageEs = {
   'headings.orderSummary': 'S_Order Summary',
   'headings.accountListing': 'S_Account Listing',
   'headings.shippingAddress': 'S_Shipping Address',
-  'headings.selectAccountToUpdate': 'S_Select the account you want to update',
+  'headings.selectAccountToUpdate': 'S_Please select an account to proceed',
   'headings.orderSubmitted': 'S_Order Submitted',
   'headings.orderApproved': 'S_Order Approved!',
   'headings.addShippingAddress': 'S_Add Shipping Address',

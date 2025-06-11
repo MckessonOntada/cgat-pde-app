@@ -251,6 +251,7 @@ const AccountSelection = () => {
               shipToAccount: selectedShipToAccount,
               soldToAccount: selectedSoldToAccount
             }}
+            channelType={selectedSoldToAccount?.channelType}
           />
           {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">

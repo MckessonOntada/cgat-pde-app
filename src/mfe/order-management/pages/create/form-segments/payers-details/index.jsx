@@ -190,7 +190,7 @@ const PayerDetails = () => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
-        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
       </div>
       <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
         {({ setFieldValue }) => {
