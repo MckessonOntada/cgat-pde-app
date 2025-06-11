@@ -512,7 +512,7 @@ const jsxColumns = (queryString) => [
   }
 ];
 
-export const getTableColumns = (tab, translate, alertContainerId) => {
+export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId) => {
   const [searchParams] = useSearchParams();
   const queryString = searchParams.toString();
   if (!tab) throw new Error('table type is missing');

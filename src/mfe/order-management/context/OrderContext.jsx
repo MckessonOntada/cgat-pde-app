@@ -1,11 +1,13 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS } from '../pages/orders/config';
+import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS, TOGGLE_FILTERS } from '../pages/orders/config';
 import { getDateRangeFromSelection } from '../pages/orders/dateRangeUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
 import { CHANNEL_TYPE } from '../pages/create/form-segments/Constants';
+import useOrderList from '../pages/orders/useOrderList';
+import { useLocation } from 'react-router-dom';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -23,8 +25,6 @@ const INITIAL_SORT_STATE = {
   sortOrder: null
 };
 
-const INITIAL_DATA_STATE = [];
-
 const OrderContext = createContext();
 
 export const useOrders = () => {
@@ -41,8 +41,7 @@ export const OrderProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
-  const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
-  const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
+  // const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
   const [assigneeList, setAssigneeList] = React.useState([]);
   const [assigneeRequestParams, setAssigneeRequestParams] = React.useState({
     userType: 'GENERAL'
@@ -50,14 +49,52 @@ export const OrderProvider = ({ children }) => {
   const [orderView, setOrderView] = React.useState(ORDER_VIEW.ALL_ORDERS);
   const [fileteredData, setfileteredData] = useState(false);
 
+  const location = useLocation();
+  const [config, setConfig] = React.useState({
+    pageNo: 1,
+    pageSize: 8,
+    view: TOGGLE_FILTERS.ALL_ORDERS,
+    tab: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+    sortBy: 'createdAt',
+    sortDirection: 'desc'
+  });
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pageNo = +params.get('page-no');
+    const pageSize = +params.get('page-size');
+    const view = params.get('view');
+    const tab = params.get('tab');
+    const sortBy = params.get('sort-by');
+    const direction = params.get('direction');
+
+    if (!pageNo || !pageSize || !view || !tab || !sortBy || !direction) {
+      if (!pageNo) params.set('page-no', 1);
+      if (!pageSize) params.set('page-size', 8);
+      if (!view) params.set('view', ORDER_VIEW.ALL_ORDERS);
+      if (!tab) params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
+      if (!sortBy) params.set('sort-by', 'createdAt');
+      if (!direction) params.set('direction', 'desc');
+      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
+    } else {
+      setConfig({
+        pageNo,
+        pageSize,
+        view,
+        tab,
+        sortBy,
+        sortDirection: direction
+      });
+    }
+  }, [location.search]);
+
   const requestParams = React.useMemo(() => {
-    const params = {
+    const _params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
+      statuses: filterConfig.status || (config.tab && TAB_FILTERS[config.tab].join(',')),
       ...(filterConfig?.assigneeIds && {
         assigneeIds: filterConfig.assigneeIds
       }),
@@ -66,12 +103,12 @@ export const OrderProvider = ({ children }) => {
           channelType: getChannelTypeFromOrderType(filterConfig?.orderType)
         }),
 
-      showMyOrders: orderView === ORDER_VIEW.MY_ORDERS || orderView === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
+      showMyOrders: config.view === ORDER_VIEW.MY_ORDERS || config.view === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
-      ...(tabVariant === ORDER_TABS.SUBMITTED_SP && {
+      ...(config.tab === ORDER_TABS.SUBMITTED_SP && {
         channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
       }),
-      ...(tabVariant === ORDER_TABS.SUBMITTED_BUY_AND_BILL && {
+      ...(config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL && {
         channelType: CHANNEL_TYPE.BUY_AND_BILL
       })
     };
@@ -80,36 +117,31 @@ export const OrderProvider = ({ children }) => {
     if (orderDateSelection) {
       const dateRange = getDateRangeFromSelection(orderDateSelection);
       if (dateRange) {
-        params.startDate = dateRange.startDate;
-        params.endDate = dateRange.endDate;
+        _params.startDate = dateRange.startDate;
+        _params.endDate = dateRange.endDate;
       } else {
-        (params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy')),
-          (params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy'));
+        (_params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy')),
+          (_params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy'));
       }
     }
 
-    return params;
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
+    return _params;
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, orderView]);
 
   const {
     isFetching,
+    data,
     refetch: refreshData,
     error
   } = useQuery({
-    queryKey: ['orders', tabVariant, requestParams],
-    queryFn: async () => OrderService.getOrders(requestParams),
+    queryKey: ['orders', config],
+    queryFn: async () => OrderService.getOrders({ ...requestParams, ...config }),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
-      setPaginationConfig((prevConfig) => ({
-        ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
-      }));
-      if (result.content) {
-        setDataState(result.content);
-      }
+      setConfig({ ...config, ...(totalElements && { totalElements }), ...(totalPages && { totalPages }) });
     },
-    onError: console.log
+    onError: console.log,
+    enabled: Boolean(config.pageNo) && Number.isInteger(config.pageNo)
   });
 
   const { refetch: refreshAssignee } = useQuery({
@@ -119,7 +151,7 @@ export const OrderProvider = ({ children }) => {
       const alreadySelected = assigneeList.filter((item) => item.isChecked) || [];
       setAssigneeList([...alreadySelected, ...result]);
     },
-    enable: Boolean(tabVariant && tabVariant === ORDER_TABS.PENDING_APPROVAL && orderView !== ORDER_VIEW.ASSIGNED_TO_ME)
+    enable: Boolean(config.tab && config.tab === ORDER_TABS.PENDING_APPROVAL && config.view !== ORDER_VIEW.ASSIGNED_TO_ME)
   });
 
   const { data: assignedGroupsData = {} } = useQuery({
@@ -133,7 +165,7 @@ export const OrderProvider = ({ children }) => {
 
   React.useEffect(() => {
     refreshData();
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, orderView]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -177,12 +209,12 @@ export const OrderProvider = ({ children }) => {
   const changeTab = (tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL, shouldReset = true) => {
     if (shouldReset) {
       setAssigneeList(resetAssigneeList);
-      setDataState(INITIAL_DATA_STATE);
+      // setDataState(INITIAL_DATA_STATE);
       setFilterConfig({ ...INITIAL_FILTER_STATE });
       setCurrentPage(1);
       setOrderView(ORDER_VIEW.ALL_ORDERS);
     }
-    setTabVariant(tabType);
+    // setTabVariant(tabType);
   };
 
   const changeOrderView = (view) => {
@@ -192,14 +224,13 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  console.log(paginationConfig);
-
+  console.log(data);
   return (
     <OrderContext.Provider
       value={{
         filterConfig,
         paginationConfig,
-        dataState,
+        data: data?.content || [],
         isFetching,
         error,
         applyFilters,
@@ -208,14 +239,13 @@ export const OrderProvider = ({ children }) => {
         applySort,
         changeTab,
         refreshData,
-        tabVariant,
-        setTabVariant,
         assignedGroupsData: assignedGroupsData,
         orderView,
         changeOrderView,
         assigneeList,
         searchAssigneeByTest,
         setAssigneeOnChange,
+        config,
         fileteredData
       }}>
       {children}

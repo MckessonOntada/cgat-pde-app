@@ -9,7 +9,7 @@ import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
-import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
+import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TAB_FILTERS, TOGGLE_FILTERS } from './config';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import CommonUtils from '@src/util/CommonUtils';
@@ -26,18 +26,10 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 const OrderIndex = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const params = new URLSearchParams(location.search);
-  const pageNo = params.get('page-no');
-  const pageSize = params.get('page-size');
-  const view = params.get('view');
-  const tab = params.get('tab');
-  const sortBy = params.get('sort-by');
-  const direction = params.get('direction');
+  const [queryParams, setQueryParams] = React.useState({});
 
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
-  const [initialized, setInitialized] = useState(false);
   const [tabList, setTabList] = useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -63,13 +55,14 @@ const OrderIndex = () => {
     setAssigneeOnChange,
     filterConfig,
     changeOrderView,
-    dataState: data,
+    data,
     paginationConfig,
     isFetching,
     setCurrentPage,
     applySort,
+    config,
     fileteredData
-  } = useOrders();
+  } = useOrders(queryParams);
 
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
@@ -130,7 +123,7 @@ const OrderIndex = () => {
   };
 
   useEffect(() => {
-    if (!initialized && assigneeIdsFromURL.length > 0 && assigneeList.length > 0) {
+    if (assigneeIdsFromURL.length > 0 && assigneeList.length > 0) {
       const existingMap = new Map(assigneeList.map((opt) => [String(opt.value), opt]));
 
       const selectedItems = assigneeIdsFromURL.map((id) => {
@@ -140,11 +133,18 @@ const OrderIndex = () => {
 
       setAssigneeOnChange([...assigneeList.filter((opt) => !assigneeIdsFromURL.includes(String(opt.value))), ...selectedItems]);
     }
-  }, [assigneeIdsFromURL.join(','), assigneeList.length, initialized]);
+  }, [assigneeIdsFromURL.join(','), assigneeList.length]);
 
   const handleOnTabChange = (newTab) => {
     const params = new URLSearchParams(location.search);
     params.set('tab', newTab.id);
+
+    const isExistingViewAvailable = TOGGLE_FILTERS[newTab.id]?.includes(config.view);
+    if (!isExistingViewAvailable) {
+      const defaultView = TOGGLE_FILTERS[config.tab][0];
+      params.set('view', defaultView);
+    }
+
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
@@ -193,10 +193,10 @@ const OrderIndex = () => {
     }
   }, [error]);
 
-  const toggleFilters = TOGGLE_FILTERS[activeTab.id];
+  const toggleFilters = TOGGLE_FILTERS[config.tab];
   useEffect(() => {
     changeOrderView(() => toggleFilters && Array.isArray(toggleFilters) && toggleFilters[0]);
-  }, [activeTab.id]);
+  }, [config.tab]);
 
   const showCardView = useResponsiveView();
 
@@ -206,28 +206,13 @@ const OrderIndex = () => {
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
-  useEffect(() => {
-    if (!pageNo || !pageSize || !view || !tab || !sortBy || !direction) {
-      if (!pageNo) params.set('page-no', 1);
-      if (!pageSize) params.set('page-size', 8);
-      if (!view) params.set('view', ORDER_VIEW.ALL_ORDERS);
-      if (!tab) params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
-      if (!sortBy) params.set('sort-by', 'createdAt');
-      if (!direction) params.set('direction', 'desc');
-      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
-    } else {
-      setCurrentPage(+pageNo);
-      changeOrderView(view);
-    }
-  }, [location.search]);
-
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) {
       applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
     }
   };
 
-  const columns = getTableColumns(activeTab.id, t, alertContainerId);
+  const columns = getTableColumns(config.tab, t, alertContainerId);
 
   const handleOnViewChange = (view) => {
     const params = new URLSearchParams(location.search);
@@ -311,6 +296,8 @@ const OrderIndex = () => {
     return filters;
   }, [activeTab, orderView, assigneeList]);
 
+  console.log(config, data);
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -361,7 +348,7 @@ const OrderIndex = () => {
                 heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
                 controls={
                   <div>
-                    <ToggleButtonGroup value={orderView} onChange={handleOnViewChange} exclusive>
+                    <ToggleButtonGroup value={config.view} onChange={handleOnViewChange} exclusive>
                       {toggleFilters.map((filter, index) => (
                         <ToggleButton key={index} value={filter}>
                           {t(`labels.orderView.${filter}`)}
@@ -380,10 +367,10 @@ const OrderIndex = () => {
                 handleChangePage={handleOnPageChange}
                 onSortIconClick={handleOnSort}
                 pagination={true}
-                currentPage={+pageNo}
-                totalPageCount={paginationConfig.totalPages}
-                totalRocords={paginationConfig.totalElements}
-                recordsPerPage={paginationConfig.pageSize}
+                currentPage={Number(config.pageNo)}
+                totalPageCount={config.totalPages}
+                totalRocords={config.totalElements}
+                recordsPerPage={config.pageSize}
                 aria-label={t('table.ariaLabel.orderList')}
                 paginationRecordsPerPageMessage={t('labels.perPage')}
                 paginationTotalRecorsMessage={t('labels.results')}
