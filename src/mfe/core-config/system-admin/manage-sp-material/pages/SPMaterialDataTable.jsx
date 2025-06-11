@@ -90,7 +90,6 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       selector: (row) => {},
       minWidth: '120px',
       sortable: false,
-      sortKey: 'ndc',
       wrap: true,
       cell: (props) => <EclipsesTextcss str={props?.strength} maxWidth={100} />
     },
