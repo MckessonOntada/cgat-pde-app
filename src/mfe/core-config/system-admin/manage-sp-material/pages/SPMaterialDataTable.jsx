@@ -46,7 +46,7 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       id: 'trade_name',
       selector: (row) => {},
       wrap: true,
-      minWidth: '200px',
+      minWidth: '180px',
       sortable: true,
       sortKey: 'trade_name',
       cell: (props) => (
@@ -61,7 +61,7 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
               setViewSPMaterial(props);
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.materialNumber} maxWidth={190} />
+            <EclipsesTextcss str={props?.materialNumber} maxWidth={170} />
           </Link>
         </div>
       )
@@ -70,11 +70,11 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       id: 'materialDescription',
       name: t('manageSPMaterial.table.productname'),
       selector: (row) => {},
-      minWidth: '240px',
+      minWidth: '210px',
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={230} />
+      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={200} />
     },
     {
       id: 'genericName',
@@ -85,14 +85,13 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
     },
     {
-      id: 'manufacturerName',
-      name: t('manageSPMaterial.table.manufacturerName'),
+      id: 'strength',
+      name: t('manageSPMaterial.table.strength'),
       selector: (row) => {},
-      minWidth: '200px',
-      sortable: true,
-      sortKey: 'manufacturer_name',
+      minWidth: '120px',
+      sortable: false,
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.manufacturerName} maxWidth={190} />
+      cell: (props) => <EclipsesTextcss str={props?.strength} maxWidth={100} />
     },
     {
       id: 'ndcNumber',
@@ -100,9 +99,18 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       selector: (row) => {},
       minWidth: '120px',
       sortable: false,
-      sortKey: 'ndc',
       wrap: true,
       cell: (props) => <EclipsesTextcss str={props?.ndcNumber} maxWidth={100} />
+    },
+    {
+      id: 'manufacturerName',
+      name: t('manageSPMaterial.table.manufacturer'),
+      selector: (row) => {},
+      minWidth: '200px',
+      sortable: true,
+      sortKey: 'manufacturer_name',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.manufacturerName} maxWidth={190} />
     },
     {
       id: 'status',

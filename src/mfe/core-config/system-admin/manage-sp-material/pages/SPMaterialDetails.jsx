@@ -200,7 +200,9 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
         <div className="details-ul">
           {item.sectionData.map((subItem, subIndex) => {
             const value =
-              subItem.value === 'siteName' ? (isSPCatalog ? data?.siteName : data?.[dataSource]?.siteName) || '-' : data?.[dataSource]?.[subItem.value] || '-';
+              subItem.value === 'siteName'
+                ? (isSPCatalog ? data?.siteName : data?.[dataSource]?.siteName) || 'NA'
+                : data?.[dataSource]?.[subItem.value] || 'NA';
             return (
               <div className="details-li" key={subIndex}>
                 <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${subItem.label}`)}</div>
