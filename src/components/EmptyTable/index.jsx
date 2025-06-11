@@ -8,7 +8,7 @@ const EmptyDataTable = ({ image, heading, description, isLoading = false, error 
   const { t } = useTranslate();
   if (isLoading) {
     return (
-      <div className="dashboard-loader">
+      <div style={{ minHeight: '381px' }} className="dashboard-loader">
         <Loader variant="circular" />
       </div>
     );

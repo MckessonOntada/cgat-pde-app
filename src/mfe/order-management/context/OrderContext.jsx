@@ -7,7 +7,7 @@ import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
 import { CHANNEL_TYPE } from '../pages/create/form-segments/Constants';
 import useOrderList from '../pages/orders/useOrderList';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -38,6 +38,7 @@ function getChannelTypeFromOrderType(orderType) {
 }
 
 export const OrderProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);

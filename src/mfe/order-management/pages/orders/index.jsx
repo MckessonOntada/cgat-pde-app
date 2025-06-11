@@ -26,7 +26,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 const OrderIndex = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [queryParams, setQueryParams] = React.useState({});
+  const params = new URLSearchParams(location.search);
 
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
@@ -46,9 +46,7 @@ const OrderIndex = () => {
     applyFilters,
     clearFilters,
     changeTab,
-    tabVariant,
     orderView,
-    isError,
     assigneeList,
     error,
     searchAssigneeByTest,
@@ -56,16 +54,13 @@ const OrderIndex = () => {
     filterConfig,
     changeOrderView,
     data,
-    paginationConfig,
     isFetching,
-    setCurrentPage,
-    applySort,
     config,
     fileteredData
-  } = useOrders(queryParams);
+  } = useOrders();
 
   const activeTabFromState = location.state?.activeTab;
-  const activeTab = tabList.find((tab) => tab.id === tabVariant);
+  const activeTab = tabList.find((tab) => tab.id === config.tab);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
 
@@ -136,8 +131,9 @@ const OrderIndex = () => {
   }, [assigneeIdsFromURL.join(','), assigneeList.length]);
 
   const handleOnTabChange = (newTab) => {
-    const params = new URLSearchParams(location.search);
     params.set('tab', newTab.id);
+    params.set('sort-by', 'createdAt');
+    params.set('direction', 'desc');
 
     const isExistingViewAvailable = TOGGLE_FILTERS[newTab.id]?.includes(config.view);
     if (!isExistingViewAvailable) {
@@ -149,7 +145,6 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    const params = new URLSearchParams(location.search);
     const tabId = params.get('tab') || ORDER_TABS.SUBMITTED_BUY_AND_BILL;
     const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
     setTabList(newTabs);
@@ -166,7 +161,7 @@ const OrderIndex = () => {
 
   const handleOnClick = () => {
     navigate(`${routesConfig.createOrder}?${searchParams.toString()}`, {
-      state: { fromTab: tabVariant, fromOrderView: orderView }
+      state: { fromTab: config.tab, fromOrderView: orderView }
     });
   };
 
@@ -201,27 +196,26 @@ const OrderIndex = () => {
   const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {
-    const params = new URLSearchParams(location.search);
     params.set('page-no', pageIndex);
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) {
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+      params.set('sort-by', selectedColumn.sortKey);
+      params.set('direction', sortDirection);
+      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
     }
   };
 
   const columns = getTableColumns(config.tab, t, alertContainerId);
 
   const handleOnViewChange = (view) => {
-    const params = new URLSearchParams(location.search);
     params.set('view', view);
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
     const tab = params.get('tab');
     if (!tab) {
       params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
@@ -234,7 +228,7 @@ const OrderIndex = () => {
   const additionalFiltersConfig = useMemo(() => {
     let filters = [];
 
-    if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
+    if (config.tab === ORDER_TABS.PENDING_SUBMISSION) {
       const options = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
       filters.push({
         type: 'dropdown',
@@ -244,7 +238,7 @@ const OrderIndex = () => {
       });
     }
 
-    if ([ORDER_TABS.PENDING_APPROVAL, ORDER_TABS.PENDING_SUBMISSION].includes(tabVariant)) {
+    if ([ORDER_TABS.PENDING_APPROVAL, ORDER_TABS.PENDING_SUBMISSION].includes(config.tab)) {
       const orderTypes = ['all', ORDER_TABS.SUBMITTED_BUY_AND_BILL, ORDER_TABS.SUBMITTED_SP];
       filters.push({
         type: 'dropdown',
@@ -253,7 +247,7 @@ const OrderIndex = () => {
         options: orderTypes.map((opt) => ({ label: t(`labels.caption.${opt}`), value: opt }))
       });
 
-      if (orderView === ORDER_VIEW.ALL_ORDERS && tabVariant === ORDER_TABS.PENDING_APPROVAL) {
+      if (orderView === ORDER_VIEW.ALL_ORDERS && config.tab === ORDER_TABS.PENDING_APPROVAL) {
         filters.push({
           type: 'multiSelectDropdown',
           name: 'assigneeIds',
@@ -273,7 +267,7 @@ const OrderIndex = () => {
       }
     }
 
-    if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
+    if (config.tab !== ORDER_TABS.PENDING_APPROVAL) {
       filters.push({
         type: 'dropdown',
         name: 'orderDate',
@@ -296,7 +290,7 @@ const OrderIndex = () => {
     return filters;
   }, [activeTab, orderView, assigneeList]);
 
-  console.log(config, data);
+  console.log(config);
 
   return (
     <div className="MCP-module-wrapper">
@@ -337,7 +331,7 @@ const OrderIndex = () => {
                 onClearFilters={handleClearFilters}
                 additionalFilters={additionalFiltersConfig}
                 searchPlaceholder={t(
-                  tabVariant === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
+                  config.tab === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
                 )}
                 initialData={filterConfig || {}}
               />
@@ -370,7 +364,7 @@ const OrderIndex = () => {
                 currentPage={Number(config.pageNo)}
                 totalPageCount={config.totalPages}
                 totalRocords={config.totalElements}
-                recordsPerPage={config.pageSize}
+                recordsPerPage={8}
                 aria-label={t('table.ariaLabel.orderList')}
                 paginationRecordsPerPageMessage={t('labels.perPage')}
                 paginationTotalRecorsMessage={t('labels.results')}
