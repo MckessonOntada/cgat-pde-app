@@ -31,7 +31,8 @@ function TherapyDetailsWithTabs({
   therapyId,
   onClose,
   onSelect,
-  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB(false),
+  isDetailsByNdc = false,
+  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB(false, isDetailsByNdc),
   spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
   heading,
@@ -71,6 +72,8 @@ function TherapyDetailsWithTabs({
     queryFn: async () => {
       if (isMaterialListing) {
         return OrderService.getTherapyDetailsByTradeName2(trade, channelType);
+      } else if (isDetailsByNdc) {
+        return OrderService.getTherapyDetailsByNDC(trade, channelType);
       } else {
         return OrderService.getTherapyDetailsByTradeName(trade);
       }
@@ -273,21 +276,32 @@ function TherapyDetailsWithTabs({
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          <TabList
-            options={therapyTabs}
-            alignment="left"
-            onTabClick={handleOnTabChange}
-            showShadow={false}
-            variant={'text'}
-            useAsButton={true}
-            aria-label={t('controls.ariaLabels.orderTabList')}
-          />
+          {(!isDetailsByNdc || therapyTabs.length > 1) && (
+            <TabList
+              options={therapyTabs}
+              alignment="left"
+              onTabClick={handleOnTabChange}
+              showShadow={false}
+              variant={'text'}
+              useAsButton={true}
+              aria-label={t('controls.ariaLabels.orderTabList')}
+            />
+          )}
         </div>
         {isLoading ? (
           <Loader variant="circular" />
         ) : (
           <div className={`${styles.body}`}>
-            {therapyDetails && <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} therapyData={buyAndBillTherapyConstants} />}
+            {therapyDetails && (
+              <DetailsPanel
+                details={therapyDetails}
+                handleSelect={handleSelect}
+                onClose={onClose}
+                therapyData={buyAndBillTherapyConstants}
+                isDetailsByNdc={isDetailsByNdc}
+                therapyTabs={therapyTabs}
+              />
+            )}
             <div className={styles.detailsPanel}>
               <div className={`${styles.drawerBodyContent} ${styles.bodyPadding} ${styles.cardToggleWrapper}`}>
                 {ConfigConstants?.map((section, index) => (
@@ -320,7 +334,7 @@ function TherapyDetailsWithTabs({
   );
 }
 
-function DetailsPanel({ details, therapyData }) {
+function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
   const { t } = useTranslate();
   const renderDetails = (fields, details) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
   return (
@@ -328,9 +342,11 @@ function DetailsPanel({ details, therapyData }) {
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            <Heading as="h3" className={styles.details}>
-              {t(section.sectionHeading)}
-            </Heading>
+            {(!isDetailsByNdc || therapyTabs.length > 1) && (
+              <Heading as="h3" className={styles.details}>
+                {t(section.sectionHeading)}
+              </Heading>
+            )}
             <div>{renderDetails(section.sectionData, details)}</div>
           </div>
         ))}
