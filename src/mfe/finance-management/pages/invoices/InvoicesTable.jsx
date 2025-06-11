@@ -18,16 +18,41 @@ import { useAccountContext } from '../../context/AccountContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import OrderService from '@src/api/commonService/OrderService';
+import { useMutation } from 'react-query';
+import useAlert from '@src/hooks/useAlert';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, fileteredData } = usePaymentInvoices();
-
+  const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
-
+  const { mutate: handleOnClickOrderId } = useMutation(
+    async (orderId) => {
+      return OrderService.getBackendOrderId(orderId);
+    },
+    {
+      onSuccess: (data) => {
+        navigate(`/orders/${data.id}/summary`, {
+          state: {
+            backToInvoiceListing: true
+          }
+        });
+      },
+      onError: (error) => {
+        const { response } = error;
+        let errorMsg = response?.data?.message || 'Error fetching order details';
+        showAlert({
+          description: errorMsg,
+          type: 'error',
+          anchorEl: 'summary-alert-container'
+        });
+      }
+    }
+  );
   const columns = [
     {
       id: 'checkbox',
@@ -78,12 +103,7 @@ export default function InvoicesTable() {
       selector: (row) => `${row.mckessonOrderId}`,
       maxWidth: '140px',
       cell: (props) => (
-        <Link
-          className="MCP-table-link"
-          to={`/orders/${props?.mckessonOrderId}/summary`}
-          state={{
-            backToInvoiceListing: true
-          }}>
+        <Link className="MCP-table-link" onClick={() => handleOnClickOrderId(props.mckessonOrderId)}>
           <EclipsesTextcss str={props.mckessonOrderId} maxWidth={170} />
         </Link>
       )
