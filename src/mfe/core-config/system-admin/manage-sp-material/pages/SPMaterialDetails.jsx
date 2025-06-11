@@ -24,7 +24,7 @@ export const SPMaterialDetailsConstants = [
       { label: 'strength', value: 'strength' },
       { label: 'dosage', value: 'dosage' },
       { label: 'sellingUnitCode', value: 'sellingUnitCode' },
-      { label: 'manufacturerName', value: 'manufacturerName' },
+      { label: 'manufacturer', value: 'manufacturerName' },
       { label: 'dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
