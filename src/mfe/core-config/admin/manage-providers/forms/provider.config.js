@@ -56,6 +56,31 @@ export const sections = [
             name: 'npiNumber',
             isRequired: true,
             maxLength: 10
+          },
+          {
+            label: 'provider.tinNumber',
+            type: 'input',
+            name: 'tinNumber',
+            isRequired: true,
+            maxLength: 9
+          }
+        ]
+      },
+      {
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+        controls: [
+          {
+            label: 'provider.medicaidNumber',
+            type: 'input',
+            name: 'medicaidNumber',
+            isRequired: true,
+            maxLength: 6
+          },
+          {
+            label: 'provider.licenseState',
+            type: 'stateDropdown',
+            name: 'licenseState',
+            isRequired: false
           }
         ]
       }
@@ -112,11 +137,25 @@ export const sections = [
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
           {
+            label: 'provider.emailId',
+            type: 'input',
+            name: 'emailId',
+            isRequired: true,
+            maxLength: 50
+          },
+          {
             label: 'provider.phoneNumber',
             type: 'phoneInput',
             name: 'phoneNumber',
             isRequired: true,
             maxLength: 10
+          },
+          {
+            label: 'provider.fax',
+            type: 'input',
+            name: 'fax',
+            isRequired: false,
+            maxLength: 20
           }
         ]
       }

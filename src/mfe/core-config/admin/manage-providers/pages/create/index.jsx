@@ -19,12 +19,17 @@ const INITIAL_VALUES = {
   lastName: '',
   deaNumber: '',
   npiNumber: '',
+  tinNumber: '',
+  medicaidNumber: '',
+  licenseState: '',
   address1: '',
   address2: '',
   city: '',
   zip: '',
   state: '',
-  phoneNumber: ''
+  emailId: '',
+  phoneNumber: '',
+  fax: ''
 };
 
 const ProviderForm = (props) => {
@@ -60,7 +65,7 @@ const ProviderForm = (props) => {
     queryKey: ['provider', 'provider-details', id],
     queryFn: ProviderService.getProviderDetailsById.bind(null, id),
     onSuccess: setInitialValues,
-    enabled: isEditOperation
+    enabled: isEditOperation && !!id
   });
 
   const handleSubmit = (values) => {

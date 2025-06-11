@@ -35,6 +35,7 @@ export const ConfigurationMessagesEN = {
   'provider.address': 'Address',
   'provider.deaNumber': 'DEA Number',
   'provider.npiNumber': 'NPI Number',
+  'provider.licenseState': 'License State',
   'provider.phoneNumber': 'Phone Number',
 
   'provider.btnEditProviderDetails': 'Edit Provider Details',
@@ -89,6 +90,17 @@ export const ConfigurationMessagesEN = {
   'provider.npi.length': 'NPI Number should be exactly 10 digits.',
   'provider.npi.numeric': 'NPI Number should only contain numeric digits.',
 
+  'provider.tinNumber': 'TIN',
+  'provider.tin.required': 'Please Enter the TIN',
+  'provider.tin.length': 'TIN must be exactly 9 digits',
+  'provider.tin.numeric': 'TIN should only contain numeric digits.',
+
+  'provider.medicaidNumber': 'Medicaid Number',
+  'provider.medicaid.required': 'Please Enter the Medicaid Number',
+  'provider.medicaid.length': 'Medicaid Number must be exactly 6 digits',
+  'provider.medicaid.numeric':
+    'Medicaid Number should only contain numeric digits.',
+
   'provider.address1': 'Address1',
   'provider.address1.required': 'Please enter Address 1.',
   'provider.address1.max': 'Address 1 should not exceed 100 characters.',
@@ -122,6 +134,13 @@ export const ConfigurationMessagesEN = {
   'provider.phone.format':
     'Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.',
 
+  'provider.emailId': 'Email Id',
+  'provider.email.required': 'Please enter your Email ID.',
+  'provider.invalid_email': 'Please enter a valid email address',
+
+  'provider.fax': 'Fax',
+  'provider.fax.format': 'Only numeric values are allowed in the Fax number.',
+  'provider.fax.noSpaces': 'Fax number cannot contain spaces.',
   'provider.addProvider': 'Add Provider',
   'provider.editProvider': 'Edit Provider',
   'provider.btnBackToProviders': 'Back to manage providers page',

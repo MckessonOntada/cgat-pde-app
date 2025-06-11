@@ -11,6 +11,12 @@ import {
 import ProviderService from '@src/api/commonService/ProviderService';
 import { downloadFile } from '@src/util/CommonUtils';
 import { errorStatusCodes } from '@src/util/ApiUtils';
+import ContextMenu from '@src/mfe/core-config/system-admin/manage-sp-catalog/pages/context-menu';
+
+const DOWNLOAD_CONTEXT_OPTIONS = {
+  DOWNLOAD_TEMPLATE: 'Download Template',
+  DOWNLOAD_INFO: 'Download Instruction File'
+};
 
 const Upload = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -31,6 +37,27 @@ const Upload = () => {
       }
     ];
   }, [isSystemAdminView]);
+
+  const downloadTemplate = (option) => {
+    switch (option) {
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
+        handleDownload(
+          '/templates/upload_providers_template.csv',
+          'upload_providers_template.csv'
+        );
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_INFO: {
+        handleDownload(
+          '/templates/Provider_upload_instruction.txt',
+          'Provider_upload_instruction.txt'
+        );
+        break;
+      }
+      default:
+        return;
+    }
+  };
 
   const handleOnUpload = (values) => {
     setNotification(null);
@@ -106,12 +133,6 @@ const Upload = () => {
         }
       });
   };
-  const handleOnDownloadTemplate = () => {
-    handleDownload(
-      '/templates/upload_providers_template.csv',
-      'upload_providers_template.csv'
-    );
-  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -122,10 +143,19 @@ const Upload = () => {
         isLoading={false}
         messages={[notification]}
         onCloseAlert={() => setNotification(null)}
-        downloadTemplate={{
-          caption: t('controls.downloadCSVTemplate'),
-          fn: handleOnDownloadTemplate
-        }}
+        infoHeader={t('providers.upload-info')}
+        customDownload={
+          <ContextMenu
+            items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)}
+            onSelect={downloadTemplate}>
+            <Button
+              size="md"
+              variant={'secondary'}
+              className="context-menu__button">
+              {t('controls.downloadCSVTemplate')}
+            </Button>
+          </ContextMenu>
+        }
         upload={{
           caption: t('controls.uploadProviders'),
           fn: handleOnUpload
