@@ -14,7 +14,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import { PREVIEW_URL } from '../../manage-questionnaire/constants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
-export const SPMaterialDetailsConstants = (isCrosswalk = false) => [
+export const SPMaterialDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
@@ -24,7 +24,7 @@ export const SPMaterialDetailsConstants = (isCrosswalk = false) => [
       { label: 'strength', value: 'strength' },
       { label: 'dosage', value: 'dosage' },
       { label: 'sellingUnitCode', value: 'sellingUnitCode' },
-      { label: isCrosswalk ? 'manufacturer' : 'manufacturerName', value: 'manufacturerName' },
+      { label: 'manufacturer', value: 'manufacturerName' },
       { label: 'dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
@@ -207,7 +207,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
             } else if (isCrosswalk && (subItem.value === 'dropshipIndicator' || subItem.value === 'sellingUnitCode')) {
               value = 'NA';
             } else {
-              value = data?.[dataSource]?.[subItem.value] || '-';
+              value = data?.[dataSource]?.[subItem.value] ?? (isCrosswalk ? '-' : 'NA');
             }
             return (
               <div className="details-li" key={subIndex}>
@@ -233,7 +233,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
           <div className="details-main-wrapper">
             <div className={'details-body'}>
               {!isSPCatalog
-                ? renderDetails(SPMaterialDetailsConstants(isCrosswalk), 'therapy', isCrosswalk)
+                ? renderDetails(SPMaterialDetailsConstants, 'therapy', isCrosswalk)
                 : renderDetails(SPCatalogDetailsConstants, 'catalogPrice', false)}
               {data?.catalogConfiguration && (
                 <div className="configure-li">
