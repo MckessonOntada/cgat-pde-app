@@ -15,9 +15,7 @@ const INITIAL_FILTER_STATE = {
 
 const INITIAL_PAGINATION_STATE = {
   totalElements: 0,
-  pageSize: 8,
-  totalPages: 0,
-  pageNumber: 1
+  totalPages: 0
 };
 
 const INITIAL_SORT_STATE = {
@@ -176,10 +174,7 @@ export const OrderProvider = ({ children }) => {
     isChecked: false
   }));
 
-  const changeTab = (
-    tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL,
-    shouldReset = true
-  ) => {
+  const changeTab = (tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL, shouldReset = true) => {
     if (shouldReset) {
       setAssigneeList(resetAssigneeList);
       setDataState(INITIAL_DATA_STATE);
@@ -196,6 +191,8 @@ export const OrderProvider = ({ children }) => {
       setOrderView(view);
     }
   };
+
+  console.log(paginationConfig);
 
   return (
     <OrderContext.Provider

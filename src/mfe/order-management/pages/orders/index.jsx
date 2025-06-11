@@ -24,6 +24,17 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 const OrderIndex = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const params = new URLSearchParams(location.search);
+  const pageNo = params.get('page-no');
+  const pageSize = params.get('page-size');
+  const view = params.get('view');
+  const tab = params.get('tab');
+  const sortBy = params.get('sort-by');
+  const direction = params.get('direction');
+
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
   const [initialized, setInitialized] = useState(false);
@@ -57,18 +68,15 @@ const OrderIndex = () => {
     isFetching,
     setCurrentPage,
     applySort,
-    refreshData,
     fileteredData
   } = useOrders();
 
-  const navigate = useNavigate();
-  const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
 
-  const orderCounts = {}; // useOrderCount();
+  const orderCounts = {};
   useEffect(() => {
     if (!orderCounts || !CommonUtils.isNonEmptyObject(orderCounts)) return;
 
@@ -135,11 +143,6 @@ const OrderIndex = () => {
   }, [assigneeIdsFromURL.join(','), assigneeList.length, initialized]);
 
   const handleOnTabChange = (newTab) => {
-    // const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === newTab.id }));
-    // setTabList(newTabs);
-    // changeTab(newTab.id, true);
-    // setSearchParams({});
-
     const params = new URLSearchParams(location.search);
     params.set('tab', newTab.id);
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
@@ -151,7 +154,6 @@ const OrderIndex = () => {
     const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
     setTabList(newTabs);
     changeTab(tabId, true);
-    // setSearchParams({});
   }, [location.search]);
 
   useEffect(() => {
@@ -205,14 +207,6 @@ const OrderIndex = () => {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const pageNo = params.get('page-no');
-    const pageSize = params.get('page-size');
-    const view = params.get('view');
-    const tab = params.get('tab');
-    const sortBy = params.get('sort-by');
-    const direction = params.get('direction');
-
     if (!pageNo || !pageSize || !view || !tab || !sortBy || !direction) {
       if (!pageNo) params.set('page-no', 1);
       if (!pageSize) params.set('page-size', 8);
@@ -386,7 +380,7 @@ const OrderIndex = () => {
                 handleChangePage={handleOnPageChange}
                 onSortIconClick={handleOnSort}
                 pagination={true}
-                currentPage={paginationConfig.pageNumber}
+                currentPage={+pageNo}
                 totalPageCount={paginationConfig.totalPages}
                 totalRocords={paginationConfig.totalElements}
                 recordsPerPage={paginationConfig.pageSize}
