@@ -52,6 +52,7 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.drawer.details.body.dosage': 'S_Dosage',
   'manageSPMaterial.drawer.details.body.sellingUnitCode': 'S_Selling Unit Code',
   'manageSPMaterial.drawer.details.body.manufacturerName': 'S_Manufacturer Name',
+  'manageSPMaterial.drawer.details.body.manufacturer': 'S_Manufacturer',
   'manageSPMaterial.drawer.details.body.dropshipIndicator': 'S_Dropship Indicator',
   'manageSPMaterial.drawer.details.body.baseUnitOfMeasure': 'S_Base Unit Of Measure',
   'manageSPMaterial.manufacturer': 'S_Manufacturer',
