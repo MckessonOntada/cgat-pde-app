@@ -24,7 +24,7 @@ export const SPMaterialDetailsConstants = [
       { label: 'strength', value: 'strength' },
       { label: 'dosage', value: 'dosage' },
       { label: 'sellingUnitCode', value: 'sellingUnitCode' },
-      { label: 'manufacturerName', value: 'manufacturerName' },
+      { label: 'manufacturer', value: 'manufacturerName' },
       { label: 'dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
@@ -43,7 +43,7 @@ export const SPCatalogDetailsConstants = [
   }
 ];
 
-function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, isSPCatalog = false, sendNotification }) {
+function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, isSPCatalog = false, sendNotification, isCrosswalk = false }) {
   const { t } = useTranslate();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const navigate = useNavigate();
@@ -191,16 +191,24 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     return <Loader type={'screen'} />;
   }
   const data = isSPCatalog ? SPCatalogData : MaterialData;
-  const renderDetails = (constants, dataSource) => {
+  const renderDetails = (constants, dataSource, isCrosswalk) => {
     return constants.map((item, index) => (
       <React.Fragment key={index}>
-        <div className="styled-heading">
-          <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
-        </div>
+        {!isCrosswalk && (
+          <div className="styled-heading">
+            <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
+          </div>
+        )}
         <div className="details-ul">
           {item.sectionData.map((subItem, subIndex) => {
-            const value =
-              subItem.value === 'siteName' ? (isSPCatalog ? data?.siteName : data?.[dataSource]?.siteName) || '-' : data?.[dataSource]?.[subItem.value] || '-';
+            let value;
+            if (subItem.value === 'siteName') {
+              value = (isSPCatalog ? data?.siteName : data?.[dataSource]?.siteName) || '-';
+            } else if (isCrosswalk && (subItem.value === 'dropshipIndicator' || subItem.value === 'sellingUnitCode')) {
+              value = 'NA';
+            } else {
+              value = data?.[dataSource]?.[subItem.value] ?? (isCrosswalk ? '-' : 'NA');
+            }
             return (
               <div className="details-li" key={subIndex}>
                 <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${subItem.label}`)}</div>
@@ -217,10 +225,16 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   return (
     <React.Fragment>
       {data && (
-        <FloatingDrawer open={openSPMaterialDetails} anchor="right" onClose={handleCloseDrawer} heading={t('manageSPMaterial.drawer.heading')}>
+        <FloatingDrawer
+          open={openSPMaterialDetails}
+          anchor="right"
+          onClose={handleCloseDrawer}
+          heading={t(isCrosswalk ? 'manageMaterial.drawer.details.heading' : 'manageSPMaterial.drawer.heading')}>
           <div className="details-main-wrapper">
             <div className={'details-body'}>
-              {!isSPCatalog ? renderDetails(SPMaterialDetailsConstants, 'therapy') : renderDetails(SPCatalogDetailsConstants, 'catalogPrice')}
+              {!isSPCatalog
+                ? renderDetails(SPMaterialDetailsConstants, 'therapy', isCrosswalk)
+                : renderDetails(SPCatalogDetailsConstants, 'catalogPrice', false)}
               {data?.catalogConfiguration && (
                 <div className="configure-li">
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>

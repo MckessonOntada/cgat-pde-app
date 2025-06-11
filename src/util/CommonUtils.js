@@ -323,18 +323,18 @@ const sanitizeContent = (content) => {
 
 function searchAndRankOnPrefixFirst(data, searchText) {
   searchText = searchText.toLowerCase();
-  const filteredList = data.filter((string) => string.label.toLowerCase().includes(searchText));
+  const filteredList = data.filter((string) => string.label?.toLowerCase().includes(searchText));
   filteredList.sort((a, b) => {
-    const aStartsWith = a.label.toLowerCase().startsWith(searchText);
-    const bStartsWith = b.label.toLowerCase().startsWith(searchText);
+    const aStartsWith = a.label?.toLowerCase().startsWith(searchText);
+    const bStartsWith = b.label?.toLowerCase().startsWith(searchText);
     if (aStartsWith && !bStartsWith) {
       return -1;
     } else if (!aStartsWith && bStartsWith) {
       return 1;
     } else {
-      if (a.label.toLowerCase() < b.label.toLowerCase()) {
+      if (a.label?.toLowerCase() < b.label?.toLowerCase()) {
         return -1;
-      } else if (a.label.toLowerCase() > b.label.toLowerCase()) {
+      } else if (a.label?.toLowerCase() > b.label?.toLowerCase()) {
         return 1;
       } else {
         return 0;

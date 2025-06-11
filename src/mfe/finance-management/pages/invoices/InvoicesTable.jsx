@@ -109,13 +109,6 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('labels.soldToAccountName'),
-      id: 'soldToName',
-      selector: (row) => `${row.soldToName}`,
-      maxWidth: '180px',
-      cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
-    },
-    {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
@@ -126,6 +119,13 @@ export default function InvoicesTable() {
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
+    },
+    {
+      name: t('labels.soldToAccountName'),
+      id: 'soldToName',
+      selector: (row) => `${row.soldToName}`,
+      maxWidth: '180px',
+      cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
     },
     {
       name: t('paymentInvoices.history.table.invoiceDate'),

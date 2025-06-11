@@ -392,6 +392,14 @@ async function getBackendOrderId(OrderID) {
   }
   return [];
 }
+
+async function getTherapyDetailsByNDC(ndcNumber, channelType) {
+  if (!ndcNumber) throw new Error('NDC number is missing. NDC number is required to fetch therapy details.');
+  const url = `${ApiRoutes.THERAPIES()}/therapy/${ndcNumber}?channelType=${channelType}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -425,7 +433,8 @@ const OrderService = Object.freeze({
   uploadDocument,
   getTherapyDetailsByTradeName,
   getTherapyDetailsByTradeName2,
-  getBackendOrderId
+  getBackendOrderId,
+  getTherapyDetailsByNDC
 });
 
 export default OrderService;

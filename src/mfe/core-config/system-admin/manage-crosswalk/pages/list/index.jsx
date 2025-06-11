@@ -21,6 +21,8 @@ import { useDispatch } from 'react-redux';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
 import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import { ChannelType } from '../../../manage-sp-account/util';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -189,26 +191,24 @@ const List = () => {
         />
 
         {openDetails && (
-          <TherapyDetails
-            therapyId={materialNumber}
-            therapyData={MaterialDetailsConstants}
-            configurationData={ConfigConstants}
+          <TherapyDetailsWithTabs
+            isMaterialListing={false}
+            channelType={ChannelType.BUY_AND_BILL}
+            trade={materialNumber}
+            onSelect={() => {}}
             onClose={() => setOpenDetails(!openDetails)}
+            heading={t('manageMaterial.drawer.details.heading')}
             showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
-            hasDeleteConfigAccess={!isCustomerCenter}
-            heading={t('manageMaterial.drawer.heading')}
-            notify={({ type, message }) =>
-              setNotification({
-                type,
-                description: message
-              })
-            }
+            isDetailsByNdc={true}
           />
         )}
 
-        <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
+        <SPMaterialDetails
+          openSPMaterialDetails={openSPMaterialDetails}
+          setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+          viewSPMaterial={viewSPMaterial}
+          isCrosswalk={true}
+        />
       </div>
     </div>
   );
