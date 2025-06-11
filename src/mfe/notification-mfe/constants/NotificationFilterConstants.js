@@ -24,6 +24,7 @@ export const NOTIFICATION_CATEGORIES_LIST = [
   { label: 'All', value: 'All' },
   { label: 'User Management', value: 'User Management' },
   { label: 'Order Approval', value: 'Order Approval' },
+  { label: 'Order Management', value: 'Order Management' },
   { label: 'On Behalf', value: 'On Behalf' }
 ];
 
