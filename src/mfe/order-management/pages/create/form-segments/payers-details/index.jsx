@@ -1,13 +1,13 @@
 import PageHeader from '@src/components/pageHeader';
 import React, { useContext } from 'react';
-import OrderStepper from '../../OrderStepper';
-import OrderHeaderDetails from '../../OrderHeaderDetails';
+import OrderStepper from '../OrderStepper';
+import OrderHeaderDetails from '../OrderHeaderDetails';
 import { Button, IconButton, Alert, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useOrderPrice } from '../../additional-details/useOrderPrice';
+import { useOrderPrice } from '../additional-details/useOrderPrice';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getMedicalInsuranceUiTemplate, getPharmacyInsuranceUiTemplate, PATIENT_RELATIONSHIP } from './payer-details.config';
 import { Form, Formik } from 'formik';
@@ -125,7 +125,7 @@ function Payer() {
               />
               <FormRenderer sections={getMedicalInsuranceUiTemplate('primaryMedicalInsurance', 'Primary Medical Insurance')} />
               <hr className="form-section-separator" />
-              <FormRenderer sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Medical Insurance')} />
+              <FormRenderer sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Pharmacy Insurance')} />
               <hr className="form-section-separator" />
               <div>
                 {!isSecondaryMedicalInsuranceOpen ? (

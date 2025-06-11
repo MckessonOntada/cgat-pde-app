@@ -15,7 +15,7 @@ import { OrderProvider } from '../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import UploadOrderDocument from '../pages/create/form-segments/upload-document';
-import Payer from '../pages/create/form-segments/payers-details/forms';
+import Payer from '../pages/create/form-segments/payers-details';
 
 function OrderManagementRoutes() {
   const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
