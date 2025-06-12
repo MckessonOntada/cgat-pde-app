@@ -6,6 +6,7 @@ import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './
 import { useFormContext } from '../../context/FormContext';
 import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
+import CommonUtils from '@src/util/CommonUtils';
 
 const fieldAttributes = {
   Price: {
@@ -116,7 +117,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
 
   useEffect(() => {
     if (!isDataBinded.current) {
-      if (!queryResult?.data || (Array.isArray(queryResult.data) && queryResult.data.length === 0)) return;
+      if (!queryResult?.data || CommonUtils.isEmptyArray(queryResult.data)) return;
 
       let sourceData = useInitialValues.current ? initialValues : values;
       sourceData.rules = sourceData.rules.map((item) => {

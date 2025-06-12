@@ -87,6 +87,10 @@ const convertDate = function (date) {
   return null;
 };
 
+const isEmptyArray = function (arr) {
+  return Array.isArray(arr) && arr.length === 0;
+};
+
 const getCurrentDate = () =>
   new Date().toLocaleDateString('en-US', {
     day: '2-digit',
@@ -730,7 +734,8 @@ const CommonUtils = Object.freeze({
   formatFields,
   getAxiosErrorMessage,
   getListOverflowingDisplayLabel,
-  flattenTherapies
+  flattenTherapies,
+  isEmptyArray
 });
 
 export default CommonUtils;
