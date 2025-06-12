@@ -444,10 +444,10 @@ export const NotificationsProvider = ({ children }) => {
     const searchObj = {
       searchText: !notificationDrawerOpen ? searchState.searchText : '',
       category: !notificationDrawerOpen ? searchState.notificationCategory : '',
-      startDate: !notificationDrawerOpen ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'),
+      startDate: !notificationDrawerOpen ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD') : dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
       endDate: !notificationDrawerOpen
         ? dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
-        : dayjs().subtract(90, 'day').format('YYYY-MM-DD')
+        : dayjs().format('YYYY-MM-DD')
     };
     markAllNotificationsAsReadMutation.mutate(searchObj);
   };
