@@ -125,7 +125,8 @@ export const OrderProvider = ({ children }) => {
       })
     };
 
-    const orderDateSelection = filterConfig?.orderDate;
+    const orderDateSelection = filters?.orderDate;
+
     if (orderDateSelection) {
       const dateRange = getDateRangeFromSelection(orderDateSelection);
       if (dateRange) {
