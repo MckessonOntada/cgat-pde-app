@@ -116,7 +116,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
 
   useEffect(() => {
     if (!isDataBinded.current) {
-      if (!queryResult?.data) return;
+      if (!queryResult?.data || (Array.isArray(queryResult.data) && queryResult.data.length === 0)) return;
 
       let sourceData = useInitialValues.current ? initialValues : values;
       sourceData.rules = sourceData.rules.map((item) => {
