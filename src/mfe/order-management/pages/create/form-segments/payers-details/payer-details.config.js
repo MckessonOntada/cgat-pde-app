@@ -25,7 +25,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-company`,
-          name: `${parentKey}.insuranceCompany`,
+          name: `${parentKey}.insuranceCompanyName`,
           label: 'form.label.insuranceCompany',
           placeholder: '',
           type: 'input',
@@ -58,7 +58,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-company-phone-number`,
-          name: `${parentKey}.phoneNumber`,
+          name: `${parentKey}.insuranceCompanyPhone`,
           label: 'form.label.phoneNumber',
           placeholder: '',
           type: 'phoneInput',
@@ -91,7 +91,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-dob`,
-          name: `${parentKey}.dob`,
+          name: `${parentKey}.dateOfBirth`,
           label: 'form.label.dob',
           placeholder: '',
           type: 'datePicker',
@@ -116,14 +116,14 @@ export const medicalInsuranceTemplate = (parentKey) => {
   ];
 };
 
-export const insuranceCardTemplate = (parentKey) => {
+export const insuranceCardTemplate = (parentKey, cardKey) => {
   return [
     {
       grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start',
       controls: [
         {
           id: `${parentKey}-insurance-card-front`,
-          name: `${parentKey}.insuranceCard.front`,
+          name: `${parentKey}.${cardKey}Front`,
           label: 'form.label.front',
           placeholder: '',
           type: 'inputFile',
@@ -132,7 +132,7 @@ export const insuranceCardTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-insurance-card-back`,
-          name: `${parentKey}.insuranceCard.back`,
+          name: `${parentKey}.${cardKey}Back`,
           label: 'form.label.back',
           placeholder: '',
           type: 'inputFile',
@@ -212,7 +212,7 @@ export const getMedicalInsuranceUiTemplate = (parentKey, mainSectionTitle) => [
   },
   {
     subTitle: 'Upload Medical Insurance Card',
-    rows: insuranceCardTemplate(parentKey)
+    rows: insuranceCardTemplate(parentKey, 'medicalCard')
   }
 ];
 
@@ -223,6 +223,6 @@ export const getPharmacyInsuranceUiTemplate = (parentKey, mainSectionTitle) => [
   },
   {
     subTitle: 'Upload Medical Insurance Card',
-    rows: insuranceCardTemplate(parentKey)
+    rows: insuranceCardTemplate(parentKey, 'pharmacyCard')
   }
 ];

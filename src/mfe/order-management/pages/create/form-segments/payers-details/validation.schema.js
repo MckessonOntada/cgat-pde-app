@@ -8,7 +8,7 @@ const RX_SYMBOLS_ALLOWED = /^[A-Za-z&\s-]+$/;
 
 export const getMedicalInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
-    insuranceCompany: Yup.string()
+    insuranceCompanyName: Yup.string()
       .required(t('messages.enterInsuranceCompanyName'))
       .max(100, t('messages.insuranceCompanyNameCharLimit'))
       .matches(/^[A-Za-z\s'-]+$/, t('messages.avoidSpecialCharsNumbers')),
@@ -18,7 +18,7 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .notRequired()
       .max(50, t('messages.groupMax'))
       .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
-    phoneNumber: Yup.string()
+    insuranceCompanyPhone: Yup.string()
       .required(t('messages.enterPhone'))
       .matches(/^\d{10}$/, t('messages.phoneExact')),
     policyHolderFirstName: Yup.string()
@@ -29,12 +29,10 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .required(t('messages.enterLastName'))
       .max(50, t('messages.lastNameMax'))
       .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
-    dob: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
+    dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
     relationshipToPatient: Yup.string().required(t('messages.selectRelation')).oneOf(PATIENT_RELATIONSHIP, t('messages.invalidRelation')),
-    insuranceCard: Yup.object().shape({
-      front: Yup.mixed().nullable(),
-      back: Yup.mixed().nullable()
-    })
+    medicalCardFront: Yup.mixed().nullable(),
+    medicalCardBack: Yup.mixed().nullable()
   })
 });
 
@@ -51,26 +49,22 @@ export const getPharmacyInsuranceSchema = (key, t) => ({
     rxMemberId: Yup.string().required(t('messages.enterRxID')).max(20, t('messages.rxIdMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
     rxPcn: Yup.string().required(t('messages.enterRxPCN')).max(100, t('messages.rxPcnMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
     rxBin: Yup.string().required(t('messages.enterRxBIN')).max(30, t('messages.rxBinMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
-    insuranceCard: Yup.object().shape({
-      front: Yup.mixed().nullable(),
-      back: Yup.mixed().nullable()
-    })
+    pharmacyCardFront: Yup.mixed().nullable(),
+    pharmacyCardBack: Yup.mixed().nullable()
   })
 });
 
 export const getBaseMedicalInsuranceValues = () => ({
-  insuranceCompany: '',
+  insuranceCompanyName: '',
   memberNumber: '',
   groupNumber: '',
   phoneNumber: '',
   policyHolderFirstName: '',
   policyHolderLastName: '',
-  dob: '',
+  dateOfBirth: '',
   relationshipToPatient: '',
-  insuranceCard: {
-    back: null,
-    front: null
-  }
+  medicalCardFront: null,
+  medicalCardBack: null
 });
 
 export const getBasePharmacyInsuranceValues = () => ({
@@ -79,10 +73,8 @@ export const getBasePharmacyInsuranceValues = () => ({
   rxMemberId: '',
   rxPcn: '',
   rxBin: '',
-  insuranceCard: {
-    back: null,
-    front: null
-  }
+  pharmacyCardFront: null,
+  pharmacyCardBack: null
 });
 
 export const baseValues = {
