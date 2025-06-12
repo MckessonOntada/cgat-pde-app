@@ -19,6 +19,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -153,8 +154,9 @@ function TherapyDetailsWithTabs({
     setSelectedTab(selectedTab);
   };
 
-  const OnDelinkQuestionnaireClick = async (id, ndcNumber) => {
+  const OnDelinkQuestionnaireClick = async (id, ndcNumber, channelType) => {
     const payload = {
+      channelType: channelType,
       questionnaireId: id,
       materialOrNdcNumber: ndcNumber
     };
@@ -197,7 +199,13 @@ function TherapyDetailsWithTabs({
           key={`${questionnaire.id}-${index}`}
           section={section}
           templateName={questionnaire.templateName}
-          onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id, details.ndcNumber)}
+          onDelete={() =>
+            OnDelinkQuestionnaireClick(
+              questionnaire.id,
+              details.channelType === CHANNEL_TYPE.BUY_AND_BILL ? details.ndcNumber : details.materialNumber,
+              details.channelType
+            )
+          }
           showHeader={showHeader}
           questionnaire={details.questionnaires}
           hasDeleteConfigAccess={hasDeleteConfigAccess}
