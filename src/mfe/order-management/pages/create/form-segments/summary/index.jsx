@@ -82,7 +82,8 @@ const Summary = () => {
     status,
     payerDetails,
     provider,
-    submittedBy
+    submittedBy,
+    isCoiIdRequired
   } = orderDetails || {};
 
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -920,11 +921,11 @@ const Summary = () => {
                   )
                 }
               />
-              <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5'}>
+              <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isCoiIdRequired ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />
+                {isCoiIdRequired && <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />}
                 <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails?.orderQuantity) || '-'} />
               </div>
             </div>
