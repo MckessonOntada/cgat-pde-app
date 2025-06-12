@@ -139,7 +139,7 @@ export const sections = [
           {
             label: 'provider.emailId',
             type: 'input',
-            name: 'emailId',
+            name: 'email',
             isRequired: true,
             maxLength: 50
           },

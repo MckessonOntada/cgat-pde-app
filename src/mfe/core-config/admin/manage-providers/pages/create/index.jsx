@@ -27,7 +27,7 @@ const INITIAL_VALUES = {
   city: '',
   zip: '',
   state: '',
-  emailId: '',
+  email: '',
   phoneNumber: '',
   fax: ''
 };
@@ -69,7 +69,24 @@ const ProviderForm = (props) => {
   });
 
   const handleSubmit = (values) => {
-    const { firstName, middleName, lastName, deaNumber, npiNumber, phoneNumber, address1, address2, city, zip, state } = values;
+    const {
+      firstName,
+      middleName,
+      lastName,
+      deaNumber,
+      npiNumber,
+      phoneNumber,
+      address1,
+      address2,
+      city,
+      zip,
+      state,
+      tinNumber,
+      medicaidNumber,
+      licenseState,
+      email,
+      fax
+    } = values;
     const payload = {
       name: {
         firstName,
@@ -85,7 +102,12 @@ const ProviderForm = (props) => {
         city,
         state,
         zip
-      }
+      },
+      tin: tinNumber,
+      medicaidNumber: medicaidNumber,
+      licenseState: licenseState,
+      email: email,
+      fax: fax
     };
 
     if (isEditOperation) {

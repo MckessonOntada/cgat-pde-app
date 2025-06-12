@@ -12,6 +12,7 @@ const medicaidNumberRegex = /^\d{6}$/;
 const addressRegex = /^[A-Za-z0-9\s,./-]+$/;
 const cityRegex = /^[A-Za-z\s]+$/;
 const zipRegex = /^\d{5}(-\d{4})?$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
 
 export const getProviderSchema = (t) =>
   yup.object().shape({
@@ -127,9 +128,10 @@ export const getProviderSchema = (t) =>
         t('provider.state.trim'),
         (val) => val === val?.trim()
       ),
-    emailId: yup
+    email: yup
       .string()
       .email(t('provider.invalid_email'))
+      .matches(emailRegex, t('provider.invalid_email'))
       .required(t('provider.email.required')),
 
     phoneNumber: yup
