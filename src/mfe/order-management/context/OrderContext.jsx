@@ -51,14 +51,18 @@ export const OrderProvider = ({ children }) => {
   const [fileteredData, setfileteredData] = useState(false);
 
   const location = useLocation();
+  // const [data, setData] = React.useState([]);
   const [config, setConfig] = React.useState({
     pageNo: 1,
     pageSize: 8,
+    totalElements: 0,
+    totalPages: 0,
     view: TOGGLE_FILTERS.ALL_ORDERS,
     tab: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
     sortBy: 'createdAt',
     sortDirection: 'desc'
   });
+  const [filters, setFilters] = React.useState({});
   React.useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageNo = +params.get('page-no');
@@ -67,6 +71,7 @@ export const OrderProvider = ({ children }) => {
     const tab = params.get('tab');
     const sortBy = params.get('sort-by');
     const direction = params.get('direction');
+    const filters = params.get('filters');
 
     if (!pageNo || !pageSize || !view || !tab || !sortBy || !direction) {
       if (!pageNo) params.set('page-no', 1);
@@ -78,31 +83,37 @@ export const OrderProvider = ({ children }) => {
       navigate(`${location.pathname}?${params.toString()}`, { replace: false });
     } else {
       setConfig({
+        ...config,
         pageNo,
         pageSize,
         view,
         tab,
         sortBy,
-        sortDirection: direction
+        sortOrder: direction
       });
+    }
+    if (filters) {
+      try {
+        const parsedFilters = JSON.parse(filters);
+        setFilters(parsedFilters);
+      } catch (error) {}
+    } else {
+      setFilters({});
     }
   }, [location.search]);
 
   const requestParams = React.useMemo(() => {
     const _params = {
-      pageNo: paginationConfig.pageNumber - 1,
-      pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'createdAt',
-      sortOrder: sortConfig.sortOrder || 'desc',
-      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      statuses: filterConfig.status || (config.tab && TAB_FILTERS[config.tab].join(',')),
-      ...(filterConfig?.assigneeIds && {
-        assigneeIds: filterConfig.assigneeIds
-      }),
-      ...(filterConfig?.orderType &&
-        getChannelTypeFromOrderType(filterConfig?.orderType) && {
-          channelType: getChannelTypeFromOrderType(filterConfig?.orderType)
-        }),
+      pageNo: config.pageNo > 0 ? config.pageNo - 1 : 0,
+      pageSize: config.pageSize,
+      sortBy: config.sortBy || 'createdAt',
+      sortOrder: config.sortOrder || 'desc',
+      statuses: filters.status || (config.tab && TAB_FILTERS[config.tab].join(',')),
+      ...filters,
+      // ...(filterConfig?.orderType &&
+      //   getChannelTypeFromOrderType(filterConfig?.orderType) && {
+      //     channelType: getChannelTypeFromOrderType(filterConfig?.orderType)
+      //   }),
 
       showMyOrders: config.view === ORDER_VIEW.MY_ORDERS || config.view === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
@@ -127,22 +138,26 @@ export const OrderProvider = ({ children }) => {
     }
 
     return _params;
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, orderView]);
+  }, [config, filters]);
 
   const {
     isFetching,
-    data,
     refetch: refreshData,
-    error
+    error,
+    data
   } = useQuery({
     queryKey: ['orders', config],
-    queryFn: async () => OrderService.getOrders({ ...requestParams, ...config }),
+    queryFn: async () => OrderService.getOrders({ ...requestParams }),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
-      setConfig({ ...config, ...(totalElements && { totalElements }), ...(totalPages && { totalPages }) });
+      setConfig({
+        ...config,
+        totalElements,
+        totalPages
+      });
     },
     onError: console.log,
-    enabled: Boolean(config.pageNo) && Number.isInteger(config.pageNo)
+    enabled: Boolean(config.pageNo) && Boolean(config.tab) && Number.isInteger(config.pageNo)
   });
 
   const { refetch: refreshAssignee } = useQuery({
@@ -225,7 +240,6 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  console.log(data);
   return (
     <OrderContext.Provider
       value={{

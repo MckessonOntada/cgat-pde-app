@@ -91,30 +91,42 @@ const OrderIndex = () => {
   }, []);
 
   const handleApplyFilters = (filters) => {
-    applyFilters(filters);
-
-    const rawParams = {
-      query: filters.searchQuery,
-      status: filters.status,
-      orderType: filters.orderType,
-      assigneeIds: filters.assigneeIds?.join(','),
-      orderDate: filters.orderDate,
-      dateRangeStart: filters.dateRange?.[0],
-      dateRangeEnd: filters.dateRange?.[1]
+    // applyFilters(filters);
+    const searchParams = {
+      query: filters.searchQuery
     };
+    if (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
+      searchParams.orderDate = filters.orderDate;
+      searchParams.startDate = filters.dateRange?.[0];
+      searchParams.endDate = filters.dateRange?.[1];
+    } else if (config.tab === ORDER_TABS.SUBMITTED_SP) {
+      searchParams.orderDate = filters.orderDate;
+      searchParams.startDate = filters.dateRange?.[0];
+      searchParams.endDate = filters.dateRange?.[1];
+    } else if (config.tab === ORDER_TABS.PENDING_SUBMISSION) {
+      searchParams.orderType = filters.orderType;
+      searchParams.orderDate = filters.orderDate;
+      searchParams.startDate = filters.dateRange?.[0];
+      searchParams.status = filters.status;
+      searchParams.endDate = filters.dateRange?.[1];
+    } else if (config.tab === ORDER_TABS.PENDING_APPROVAL) {
+      searchParams.orderType = filters.orderType;
+      searchParams.assigneeIds = filters.assigneeIds?.join(',');
+    }
 
     const cleanedParams = {};
-    Object.entries(rawParams).forEach(([key, value]) => {
+    Object.entries(searchParams).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         cleanedParams[key] = value;
       }
     });
-    setSearchParams(cleanedParams);
+    params.set('filters', JSON.stringify(cleanedParams));
+    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
   const handleClearFilters = () => {
-    clearFilters();
-    setSearchParams({});
+    params.delete('filters');
+    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
   useEffect(() => {
@@ -132,8 +144,10 @@ const OrderIndex = () => {
 
   const handleOnTabChange = (newTab) => {
     params.set('tab', newTab.id);
+    params.set('page-no', 1);
     params.set('sort-by', 'createdAt');
     params.set('direction', 'desc');
+    params.delete('filters');
 
     const isExistingViewAvailable = TOGGLE_FILTERS[newTab.id]?.includes(config.view);
     if (!isExistingViewAvailable) {
@@ -289,8 +303,6 @@ const OrderIndex = () => {
     }
     return filters;
   }, [activeTab, orderView, assigneeList]);
-
-  console.log(config);
 
   return (
     <div className="MCP-module-wrapper">
