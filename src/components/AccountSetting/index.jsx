@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModuleHeader from '../module-header';
 import { Heading, Button, IconButton } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
