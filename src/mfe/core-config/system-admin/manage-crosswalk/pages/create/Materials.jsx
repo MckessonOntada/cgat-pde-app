@@ -214,8 +214,8 @@ const Materials = () => {
               isLoading={isLoading}
               error={error}
               image={EmptyDataImage}
-              heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('captions.emptyTableSubtitle')}
+              heading={!fileteredData ? t('captions.emptyTableTitle.material-crosswalk') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('captions.emptyTableSubtitle.material-crosswalk')}
             />
           }
         />

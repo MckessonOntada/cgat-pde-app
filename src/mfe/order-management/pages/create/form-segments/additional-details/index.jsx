@@ -722,7 +722,7 @@ function AdditionalDetails() {
               <div className="MCP-module-body">
                 <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
 
-                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
                 <div id={alertContainerId} />
 
                 <div className="MCP-CardContainer">

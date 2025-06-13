@@ -1,16 +1,13 @@
 export const ConfigurationMessagesEN = {
   'providers.errorMessage.fileUploadRequired': 'Please select file to upload.',
-  'providers.message.fileUploadSuccess':
-    'File processed successfully, No errors were found',
+  'providers.message.fileUploadSuccess': 'File processed successfully, No errors were found',
   'providers.message.fileUploadPartialSuccess':
     'File processing completed, Some records were not processed successfully. Please review the downloaded error report',
   'providers.errorMessage.fileUploadFailed': 'Please select file to upload.',
   'providers.label.activateProvider': 'Activate Provider?',
   'providers.label.deactivateProvider': 'Deactivate Provider?',
-  'providers.label.activateRecordDescription':
-    'Are you sure you want to activate this provider?',
-  'providers.label.deactivateRecordDescription':
-    'Are you sure you want to deactivate this provider?',
+  'providers.label.activateRecordDescription': 'Are you sure you want to activate this provider?',
+  'providers.label.deactivateRecordDescription': 'Are you sure you want to deactivate this provider?',
   'providers.columnCaption.providerName': 'Provider Name',
   'providers.columnCaption.address': 'Address',
   'providers.columnCaption.deaNumber': 'DEA Number',
@@ -26,16 +23,15 @@ export const ConfigurationMessagesEN = {
   'labels.caption.SUBMITTED_SP': 'SP',
   'placeholder.selectAssignee': 'Search assignee',
   'provider.activationSuccess': 'Provider has been activated successfully.',
-  'provider.activationFailure':
-    'Failed to activate provider. Please try again.',
+  'provider.activationFailure': 'Failed to activate provider. Please try again.',
   'provider.deactivationSuccess': 'Provider has been deactivated successfully.',
-  'provider.deactivationFailure':
-    'Failed to deactivate provider. Please try again.',
+  'provider.deactivationFailure': 'Failed to deactivate provider. Please try again.',
 
   'provider.name': 'Name',
   'provider.address': 'Address',
   'provider.deaNumber': 'DEA Number',
   'provider.npiNumber': 'NPI Number',
+  'provider.licenseState': 'License State',
   'provider.phoneNumber': 'Phone Number',
 
   'provider.btnEditProviderDetails': 'Edit Provider Details',
@@ -52,22 +48,18 @@ export const ConfigurationMessagesEN = {
   'provider.btnSubmit': 'Submit',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
-  'SPCatalog.deLinkConfirmationDescription':
-    'Do you want to unlink the selected SP Catalogs?',
+  'SPCatalog.deLinkConfirmationDescription': 'Do you want to unlink the selected SP Catalogs?',
   'SPCatalog.deLinkConfirmationTitle': 'Unlink Catalogs?',
-  'provider.disabledEditOnMultiSelect':
-    'Only one record can be edited at a time',
+  'provider.disabledEditOnMultiSelect': 'Only one record can be edited at a time',
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',
   'provider.firstName.max': 'First Name should not exceed 50 characters.',
-  'provider.firstName.invalid':
-    'First Name can only contain alphabets, spaces, ".", and "-".',
+  'provider.firstName.invalid': 'First Name can only contain alphabets, spaces, ".", and "-".',
   'provider.firstName.trim': 'First Name cannot start or end with a space.',
 
   'provider.middleName': 'Middle Name',
   'provider.middleName.max': 'Middle Name should not exceed 50 characters.',
-  'provider.middleName.invalid':
-    'Middle Name can only contain alphabets and ".".',
+  'provider.middleName.invalid': 'Middle Name can only contain alphabets and ".".',
   'provider.middleName.trim': 'Middle Name cannot start or end with a space.',
 
   'provider.lastName': 'Last Name',
@@ -79,16 +71,24 @@ export const ConfigurationMessagesEN = {
   'provider.deaNumber': 'DEA Number',
   'provider.dea.required': 'Please Enter DEA Number',
   'provider.dea.max': 'DEA Number should not exceed 9 characters.',
-  'provider.dea.alphaNum':
-    'DEA Number should only contain alphanumeric characters.',
-  'provider.dea.format':
-    'DEA Number must follow the format: 2 letters, 6 digits, 1 check digit.',
+  'provider.dea.alphaNum': 'DEA Number should only contain alphanumeric characters.',
+  'provider.dea.format': 'DEA Number must follow the format: 2 letters, 6 digits, 1 check digit.',
   'provider.dea.noSpaces': 'DEA Number cannot contain spaces or hyphens.',
 
   'provider.npiNumber': 'NPI Number',
   'provider.npi.required': 'Please Enter NPI Number',
   'provider.npi.length': 'NPI Number should be exactly 10 digits.',
   'provider.npi.numeric': 'NPI Number should only contain numeric digits.',
+
+  'provider.tinNumber': 'TIN',
+  'provider.tin.required': 'Please Enter the TIN',
+  'provider.tin.length': 'TIN must be exactly 9 digits',
+  'provider.tin.numeric': 'TIN must only contain numeric values.',
+
+  'provider.medicaidNumber': 'Medicaid Number',
+  'provider.medicaid.required': 'Please Enter the Medicaid Number',
+  'provider.medicaid.length': 'Medicaid Number must be exactly 6 digits',
+  'provider.medicaid.numeric': 'Medicaid Number must contain only numeric values.',
 
   'provider.address1': 'Address1',
   'provider.address1.required': 'Please enter Address 1.',
@@ -120,9 +120,15 @@ export const ConfigurationMessagesEN = {
 
   'provider.phone': 'Phone Number',
   'provider.phone.required': 'Please enter your Phone Number.',
-  'provider.phone.format':
-    'Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.',
+  'provider.phone.format': 'Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.',
+  'provider.emailID': 'Email-ID',
+  'provider.emailId': 'Email Id',
+  'provider.email.required': 'Please enter your Email ID.',
+  'provider.invalid_email': 'Please enter a valid email address',
 
+  'provider.fax': 'Fax',
+  'provider.fax.format': 'Only numeric values are allowed in the Fax number.',
+  'provider.fax.noSpaces': 'Fax number cannot contain spaces.',
   'provider.addProvider': 'Add Provider',
   'provider.editProvider': 'Edit Provider',
   'provider.btnBackToProviders': 'Back to manage providers page',
@@ -136,10 +142,8 @@ export const ConfigurationMessagesEN = {
   'provider.contextMenu.optionDeactivate': 'Deactivate',
   'provider.contextMenu.optionLinkSPAccount': 'Link SP Accounts',
 
-  'serverResponse.provider.dea.conflict':
-    'A provider with this DEA Number already exists. Please enter a unique DEA Number.',
-  'serverResponse.provider.npi.conflict':
-    'A provider with this NPI Number already exists. Please enter a unique NPI Number.',
+  'serverResponse.provider.dea.conflict': 'A provider with this DEA Number already exists. Please enter a unique DEA Number.',
+  'serverResponse.provider.npi.conflict': 'A provider with this NPI Number already exists. Please enter a unique NPI Number.',
   'serverResponse.provider.dea.conflict.provider.npi.conflict':
     'A provider with this DEA Number and NPI Number already exists. Please verify and enter unique details.',
   'button.caption.confirm': 'Confirm',
@@ -147,61 +151,49 @@ export const ConfigurationMessagesEN = {
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
   'label.backToMaterialCrosswalk': 'Back to Material Crosswalk',
   'label.createCrosswalk': 'Create Crosswalk',
-  'label.createCrosswalkSubtitle':
-    'Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
+  'label.createCrosswalkSubtitle': 'Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
   'label.materialListing': 'Material Listing',
   'label.spProductListing': 'SP Product Listing',
+  'captions.emptyTableTitle.material-crosswalk': 'No Matrrial found',
+  'captions.emptyTableSubtitle.material-crosswalk': 'You need to add Matrrial to see data in this table',
+  'captions.emptyTableTitle.product-crosswalk': 'No Product found',
+  'captions.emptyTableSubtitle.product-crosswalk': 'You need to add Product to see data in this table',
 
   'provider.btnUnlink': 'Unlink',
   'label.spCatalogDataGrid': 'SP Catalog',
   'label.spCatalogDataGridDescription': 'No data found',
 
-  'fileUpload.crosswalk.success':
-    'File processed successfully, No errors were found.',
-  'fileUpload.crosswalk.partialSuccess':
-    'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
-  'fileUpload.error.timeoutOrSystemError':
-    'Error: An unexpected error occurred during the upload. Please try again later.',
-  'invalid.csv.file.headers.empty':
-    'Error: The uploaded file is invalid. Please upload a valid file.',
-  'invalid.csv.file.headers.unstructured':
-    'Error: The uploaded file is invalid. Please upload a valid file.',
-  'invalid.csv.file.headers.missing':
-    'Error: The uploaded file is invalid. Please upload a valid file.',
-  'providers.message.fileUploadFailure':
-    'Something went wrong please try again later.',
+  'fileUpload.crosswalk.success': 'File processed successfully, No errors were found.',
+  'fileUpload.crosswalk.partialSuccess': 'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
+  'fileUpload.error.timeoutOrSystemError': 'Error: An unexpected error occurred during the upload. Please try again later.',
+  'invalid.csv.file.headers.empty': 'Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.headers.unstructured': 'Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.headers.missing': 'Error: The uploaded file is invalid. Please upload a valid file.',
+  'providers.message.fileUploadFailure': 'Something went wrong please try again later.',
   // catalog
   'SPCatalog.Configuration': 'Configuration',
   'SPCatalog.CatalogConfiguration': 'SP Catalog Configuration',
   'SPCatalog.deLinkSuccess': 'Catalog(s) unlinked successfully.',
 
-  'SPCrosswalk.unlinkCrosswalkSuccess':
-    'Crosswalk has been unlinked successfully.',
+  'SPCrosswalk.unlinkCrosswalkSuccess': 'Crosswalk has been unlinked successfully.',
 
-  'SPCrosswalk.deLinkFailure.generic':
-    'Failed to unlink crosswalk. Please try again.',
+  'SPCrosswalk.deLinkFailure.generic': 'Failed to unlink crosswalk. Please try again.',
 
   'SPCatalog.LinkSPMaterial': 'Link SP Material',
   'SPCatalog.continue': 'Continue',
   'SPCatalog.SelectSPMaterial': 'Select SP Material',
   'SPCatalog.SelectedMaterial': 'Selected Material',
-  'SPCatalog.Material.Placeholder':
-    'Search By SP Product ID, Product Name, NDC',
+  'SPCatalog.Material.Placeholder': 'Search By SP Product ID, Product Name, NDC',
   'SPCatalog.Material.selectall': 'select all',
   'SPCatalog.Material.clearall': 'Clear all',
   'SPCatalog.btnBack': 'Back to manage SP Catalog page',
-  'SPCatalog.Link.Success':
-    'SP Catalog for {{count}} Accounts has been updated successfully.',
-  'SPCatalog.unlink.SPMaterial.confirmation':
-    'Are you sure you want to unlink this SP Material?',
-  'SPCatalog.unlink.SPMaterial.success':
-    'SP Material(s) unlinked successfully.',
+  'SPCatalog.Link.Success': 'SP Catalog for {{count}} Accounts has been updated successfully.',
+  'SPCatalog.unlink.SPMaterial.confirmation': 'Are you sure you want to unlink this SP Material?',
+  'SPCatalog.unlink.SPMaterial.success': 'SP Material(s) unlinked successfully.',
   'SPCatalog.unlink.SPMaterial.error': 'Failed to unlink SP Material(s).',
   'SPCatalog.button.updatecatalog': 'update catalog',
-  'SPCatalog.error.RequiredMissing':
-    'You have removed all the data, Go back to Link SP Material Page to continue',
-  'SPCatalog.error.PeaseSelectRequired':
-    'Please select the required details to continue',
+  'SPCatalog.error.RequiredMissing': 'You have removed all the data, Go back to Link SP Material Page to continue',
+  'SPCatalog.error.PeaseSelectRequired': 'Please select the required details to continue',
 
   'crosswalk.submitConfirmationTitle': 'Confirmation',
   'crosswalk.submitConfirmationMessage': 'Are you sure you want to submit?',
@@ -209,30 +201,23 @@ export const ConfigurationMessagesEN = {
   'crosswalk.btnLinkMaterials': 'Link Materials',
   'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
   'crosswalk.product.searchProductTooltip': 'Search Products',
-  'crosswalk.create.noSelectionError':
-    'Invalid selection. Please make sure you have selected material and product.',
+  'crosswalk.create.noSelectionError': 'Invalid selection. Please make sure you have selected material and product.',
 
   'provider.sp.account.unlinkSuccessfully': 'SP Account Unlink Successfully.',
   'provider.sp.account.unabletounlink': 'Unable to unlink SP Account.',
   'provider.sp.account.selectSP': 'Please select SP Accounts.',
-  'provider.sp.account.linkSP_1':
-    'Provider(s) has been successfully linked with ',
+  'provider.sp.account.linkSP_1': 'Provider(s) has been successfully linked with ',
   'provider.sp.account.linkSP_2': 'SP Account.',
   'provider.sp.account.unableToLink': 'Unable to link SP Account(s).',
   'provider.sp.account.linkSPAccounts': 'Link SP Accounts',
   'provider.sp.account.fax': 'Fax Number',
   'provider.sp.account.email': 'Email-ID',
-  'manageSPAccount.error.message.failedToOpenSPDetails':
-    'Failed to open SA Account details. Please try again.',
-  'provider.sp.account.wantToUnlink_account':
-    'Are you sure you want to unlink this SP Account?',
-  'provider.sp.account.searchPlaceholderLinkSp':
-    'Search by Account Name, Number,...',
+  'manageSPAccount.error.message.failedToOpenSPDetails': 'Failed to open SA Account details. Please try again.',
+  'provider.sp.account.wantToUnlink_account': 'Are you sure you want to unlink this SP Account?',
+  'provider.sp.account.searchPlaceholderLinkSp': 'Search by Account Name, Number,...',
   'provider.sp.account.spAccountListing': 'SP Account Listing',
-  'provider.sp.account.needToAddAccount':
-    'You need to add account to see data in this table',
-  'provider.sp.account.haslinkedsuccessfully':
-    'SP Account(s) has been linked successfully.',
+  'provider.sp.account.needToAddAccount': 'You need to add account to see data in this table',
+  'provider.sp.account.haslinkedsuccessfully': 'SP Account(s) has been linked successfully.',
   'provider.sp.account.spAccount': 'SP Account(s).',
   'provider.sp.account.selected': 'Selected'
 };

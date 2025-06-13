@@ -299,7 +299,7 @@ const PatientDetails = () => {
         )}
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}
@@ -338,7 +338,7 @@ const PatientDetails = () => {
                             <div className="heading-provider">
                               <Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>
                               <p className="form-instruction">
-                                <span className="required">*</span> {t('labels.required')}
+                                <span className="required">*</span>
                               </p>
                             </div>
                             <div className="provider-field-wrap">

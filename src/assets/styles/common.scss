@@ -1390,8 +1390,12 @@ div[role="row"] {
 
   .heading-provider {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 16px;
+    gap: var(--spacing-01);
+    .required {
+      position: relative;
+      top: -4px;
+    }
   }
 
   .provider-field-wrap {

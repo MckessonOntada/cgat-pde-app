@@ -1,0 +1,176 @@
+ Provider Upload - Instructions
+==================================================
+
+This file provides guidance for filling out the Healthcare Provider Account Upload template.
+
+LEGEND:
+- M = Mandatory (must be filled)
+- O = Optional (can be left blank)
+- Text = Alphabets and special characters allowed
+- Number = Numeric only
+- Alphanumeric = Letters and/or numbers
+- Value Set = Use only specified values (see below)
+
+--------------------------------------------------
+FIELD-WISE INSTRUCTIONS:
+--------------------------------------------------
+
+1. First Name (M)
+   - Type: Text | Max Length: 50
+   - Example: John
+
+2. Middle Name (O)
+   - Type: Text | Max Length: 50
+   - Optional middle name
+
+3. Last Name (M)
+   - Type: Text | Max Length: 50
+   - Example: Smith
+
+4. DEA Number (M)
+   - Type: Text | Max Length: 9
+   - Must be exactly 9 characters
+   - Example: FS1234567
+
+5. NPI Number (M)
+   - Type: Number | Length: 10
+   - Numeric only, no spaces or dashes
+   - Example: 1234567890
+
+6. Address1 (M)
+   - Type: Text | Max Length: 100
+   - Example: 123 Elm Street
+
+7. Address2 (O)
+   - Type: Text | Max Length: 100
+   - Optional secondary address line
+
+8. City (M)
+   - Type: Alphanumeric | Max Length: 50
+   - Example: Los Angeles
+
+9. Zip (M)
+   - Type: Number | Max Length: 10
+   - Do not include spaces or hyphens
+
+10. State (M)
+    - Type: Alphanumeric | Max Length: 20
+    - Example: CA or California
+
+11. Phone Number (M)
+    - Type: Number | Length: 10
+    - Example: 2135559876 (do not include country code)
+
+12. Status (M)
+    - Type: Text (Value Set)
+    - Allowed Values: Active, Inactive
+
+13. Tin (M)
+    - Type: Numeric | Length: 9
+    - Example: 123456789
+
+14. Medicaid Number (M)
+    - Type: Numeric | Length: 6
+    - Example: 123456
+
+15. License State (O)
+    - Type: Dropdown
+    - Select from predefined U.S. state list
+
+16. Email ID (M)
+    - Type: String (Valid Email Format) | Max Length: 50
+    - Example: doctor@example.com
+
+17. Fax (O)
+    - Type: Numeric
+    - Optional field
+
+--------------------------------------------------
+✅ SAMPLE ROW:
+
+| First Name | Last Name | DEA Number | NPI Number | Address1       | City         | Zip     | State | Phone Number | Status | Tin       | Medicaid Number | Email ID           |
+|------------|-----------|------------|------------|----------------|--------------|---------|-------|---------------|--------|-----------|------------------|---------------------|
+| John       | Smith     | FS1234567  | 1234567890 | 456 Oak Street | San Diego    | 92101   | CA    | 8585551234    | Active | 123456789 | 987654           | john.smith@email.com |
+
+--------------------------------------------------
+NOTES:
+- All required (M) fields must be filled for successful upload.
+- Do not alter column headers.
+- Value Set fields must match allowed options exactly (e.g., "Active" not "active").
+- Contact your admin or support if you encounter issues.
+
+
+
+State field values :-
+
+Alabama
+Alaska
+Arizona
+Arkansas
+California
+Colorado
+Connecticut
+Delaware
+Florida
+Georgia
+Hawaii
+Idaho
+Illinois
+Indiana
+Iowa
+Kansas
+Kentucky
+Louisiana
+Maine
+Maryland
+Massachusetts
+Michigan
+Minnesota
+Mississippi
+Missouri
+Montana
+Nebraska
+Nevada
+New Hampshire
+New Jersey
+New Mexico
+New York
+North Carolina
+North Dakota
+Ohio
+Oklahoma
+Oregon
+Pennsylvania
+Rhode Island
+South Carolina
+South Dakota
+Tennessee
+Texas
+Utah
+Vermont
+Virginia
+Washington
+West Virginia
+Wisconsin
+Wyoming
+Puerto Rico
+Virgin Islands
+Washington, D.C.
+US Armed Forces Pacific
+American Samoa
+Guam
+Palau
+Federated States of Micronesia
+Northern Mariana Islands
+Marshall Islands
+US Armed Forces Europe
+-------------------------------
+IMPORTANT NOTES:
+-------------------------------
+- Do not remove or rename any column headers.
+- Ensure all mandatory fields are filled before upload.
+- Only use the accepted values for the “Status” field.
+- Avoid special characters in numeric fields.
+- Ensure NPI and DEA formats are exact.
+
+For help or troubleshooting, contact the support team or your system administrator.

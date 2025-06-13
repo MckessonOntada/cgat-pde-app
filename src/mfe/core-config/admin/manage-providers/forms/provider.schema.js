@@ -6,9 +6,13 @@ const middleNameRegex = /^[A-Za-z.]+$/;
 const lastNameRegex = /^[A-Za-z]+$/;
 const deaRegex = /^[A-Z]{2}\d{6}\d$/;
 const npiRegex = /^\d{10}$/;
+const tinRegex = /^\d{9}$/;
+const faxRegex = /^\d{1,20}$/;
+const medicaidNumberRegex = /^\d{6}$/;
 const addressRegex = /^[A-Za-z0-9\s,./-]+$/;
 const cityRegex = /^[A-Za-z\s]+$/;
 const zipRegex = /^\d{5}(-\d{4})?$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
 
 export const getProviderSchema = (t) =>
   yup.object().shape({
@@ -61,7 +65,17 @@ export const getProviderSchema = (t) =>
       .required(t('provider.npi.required'))
       .length(10, t('provider.npi.length'))
       .matches(npiRegex, t('provider.npi.numeric')),
+    tinNumber: yup
+      .string()
+      .required(t('provider.tin.required'))
+      .length(9, t('provider.tin.length'))
+      .matches(tinRegex, t('provider.tin.numeric')),
 
+    medicaidNumber: yup
+      .string()
+      .required(t('provider.medicaid.required'))
+      .length(6, t('provider.medicaid.length'))
+      .matches(medicaidNumberRegex, t('provider.medicaid.numeric')),
     address1: yup
       .string()
       .required(t('provider.address1.required'))
@@ -114,9 +128,16 @@ export const getProviderSchema = (t) =>
         t('provider.state.trim'),
         (val) => val === val?.trim()
       ),
+    email: yup
+      .string()
+      .email(t('provider.invalid_email'))
+      .matches(emailRegex, t('provider.invalid_email'))
+      .required(t('provider.email.required')),
 
     phoneNumber: yup
       .string()
       .required(t('provider.phone.required'))
-      .matches(/^[1-9]\d{9}$/, t('provider.phone.format'))
+      .matches(/^[1-9]\d{9}$/, t('provider.phone.format')),
+
+    fax: yup.string().matches(faxRegex, t('provider.fax.format'))
   });
