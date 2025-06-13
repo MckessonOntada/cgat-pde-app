@@ -93,13 +93,13 @@ export const ConfigurationMessagesEN = {
   'provider.tinNumber': 'TIN',
   'provider.tin.required': 'Please Enter the TIN',
   'provider.tin.length': 'TIN must be exactly 9 digits',
-  'provider.tin.numeric': 'TIN should only contain numeric digits.',
+  'provider.tin.numeric': 'TIN must only contain numeric values.',
 
   'provider.medicaidNumber': 'Medicaid Number',
   'provider.medicaid.required': 'Please Enter the Medicaid Number',
   'provider.medicaid.length': 'Medicaid Number must be exactly 6 digits',
   'provider.medicaid.numeric':
-    'Medicaid Number should only contain numeric digits.',
+    'Medicaid Number must contain only numeric values.',
 
   'provider.address1': 'Address1',
   'provider.address1.required': 'Please enter Address 1.',
