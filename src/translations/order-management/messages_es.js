@@ -556,5 +556,11 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.',
   'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.',
   'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page',
-  'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.'
+  'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.',
+  'column.material.crosswalk.buyBillNDC': 'S_Buy & Bill NDC',
+  'column.material.crosswalk.Therapy': 'S_Therapy',
+  'column.material.crosswalk.spProductID': 'S_SP Product ID',
+  'column.material.crosswalk.spProductName': 'S_SP Product Name',
+  'column.material.crosswalk.spNDC': 'S_SP NDC',
+  'column.material.crosswalk.action': 'S_Action'
 };

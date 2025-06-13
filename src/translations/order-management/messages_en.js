@@ -782,6 +782,11 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.state': 'State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
   'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
-
-  'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.'
+  'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
+  'column.material.crosswalk.buyBillNDC': 'Buy & Bill NDC',
+  'column.material.crosswalk.Therapy': 'Therapy',
+  'column.material.crosswalk.spProductID': 'SP Product ID',
+  'column.material.crosswalk.spProductName': 'SP Product Name',
+  'column.material.crosswalk.spNDC': 'SP NDC',
+  'column.material.crosswalk.action': 'Action'
 };
