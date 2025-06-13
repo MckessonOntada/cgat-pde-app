@@ -725,7 +725,7 @@ function AdditionalDetails() {
                 <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
                 <div id={alertContainerId} />
 
-                <div className="MCP-panel-container">
+                <div className="MCP-CardContainer">
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>
                     <p className="form-instruction">
@@ -778,8 +778,8 @@ function AdditionalDetails() {
                   )}
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <div>
-                      <hr className="form-section-separator" />
                       <div className="MCP-module-body">
+                        <hr className="form-section-separator" />
                         <Heading as="h3">{t('labels.selectVariant')}</Heading>
                         <div>
                           <VariantTable
@@ -830,9 +830,9 @@ function AdditionalDetails() {
                     <div>
                       {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
                         <React.Fragment>
-                          <hr className="form-section-separator" />
                           <div className="configured-questionnaire-form">
                             <div className="MCP-module-body">
+                              <hr className="form-section-separator" />
                               <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
                               <QuestionnaireTemplate
                                 onRemoveDocument={handleOnRemoveDocument}
