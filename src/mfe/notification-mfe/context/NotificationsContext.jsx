@@ -430,7 +430,8 @@ export const NotificationsProvider = ({ children }) => {
     setSearchState((prevState) => ({
       ...prevState,
       ...newSearchState,
-      page: 1
+      page: 1,
+      filterReset: Math.random() // Force re-render
     }));
   };
 
