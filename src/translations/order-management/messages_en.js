@@ -800,7 +800,6 @@ export const MessageEn = {
   'form.label.rxBin': 'RX BIN',
   'button.caption.addSecondaryMedicalInsurance': 'Add Secondary Medical Insurance',
   'button.caption.addSecondaryPharmacyInsurance': 'Add Secondary Pharmacy Insurance',
-
   'message.enterInsuranceCompanyName': 'Please enter the Insurance Company name.',
   'message.insuranceCompanyNameCharLimit': 'Insurance Company name must not exceed 100 characters.',
   'message.avoidSpecialCharsNumbers': 'Avoid using special characters or numbers.',

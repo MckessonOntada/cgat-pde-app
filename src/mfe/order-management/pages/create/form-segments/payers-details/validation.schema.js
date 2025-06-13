@@ -9,7 +9,7 @@ const RX_SYMBOLS_ALLOWED = /^[A-Za-z&\s-]+$/;
 export const getMedicalInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
     insuranceCompanyName: Yup.string()
-      .required(t('messages.enterInsuranceCompanyName'))
+      .required(t('message.enterInsuranceCompanyName'))
       .max(100, t('messages.insuranceCompanyNameCharLimit'))
       .matches(/^[A-Za-z\s'-]+$/, t('messages.avoidSpecialCharsNumbers')),
 
