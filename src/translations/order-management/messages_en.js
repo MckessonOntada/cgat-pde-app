@@ -858,7 +858,7 @@ export const MessageEn = {
   'messages.rxPcnMax': 'RX PCN must not exceed 100 characters.',
   'messages.enterRxBIN': 'Please enter the RX BIN.',
   'messages.rxBinMax': 'RX BIN must not exceed 30 characters.',
-  'labels.payerDetails': 'Payer Details'
+  'labels.payerDetails': 'Payer Details',
   'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
   'column.material.crosswalk.buyBillNDC': 'Buy & Bill NDC',
   'column.material.crosswalk.Therapy': 'Therapy',
