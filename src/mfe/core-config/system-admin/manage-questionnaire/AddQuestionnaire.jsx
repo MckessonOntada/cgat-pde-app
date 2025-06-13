@@ -135,22 +135,26 @@ function AddQuestionnaire() {
   });
 
   const {
-    mutate: deactivateQuestionnaire,
+    mutate: activateDeactivateQuestionnaire,
     isLoading: isDeactivating,
     isError: deactivateError,
     data: deactivateResponse
-  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById([id]), {
-    onSuccess: (response) => {
-      setMode(MODE.VIEW);
-      getQuestionnaireDetails();
-      setAlertConfig({
-        isVisible: true,
-        description: t('message.questionnaireDeactivated'),
-        type: 'success'
-      });
-    },
-    onError: (error) => {}
-  });
+  } = useMutation(
+    async (id) =>
+      questionnaireDetails?.active ? QuestionnaireService.deactivateQuestionnaireById([id]) : QuestionnaireService.activateQuestionnaireById([id]),
+    {
+      onSuccess: (response) => {
+        setMode(MODE.VIEW);
+        getQuestionnaireDetails();
+        setAlertConfig({
+          isVisible: true,
+          description: t(questionnaireDetails?.active ? 'message.questionnaireDeactivated' : 'message.questionnaireActivated'),
+          type: 'success'
+        });
+      },
+      onError: (error) => {}
+    }
+  );
 
   const {
     data: questionnaireDetails,
@@ -319,12 +323,12 @@ function AddQuestionnaire() {
     }
   };
 
-  const handleOnDeactivateQuestionnaire = () => {
+  const handleOnActivateDeactivateQuestionnaire = () => {
     const state = {};
     state.title = t('labels.confirmationmessage');
     state.body = (
       <div className="MCP-modal-body">
-        <p>{t('labels.template_deactivateConfirmation')}</p>
+        <p>{t(questionnaireDetails?.active ? 'labels.template_deactivateConfirmation' : 'labels.template_activateConfirmation')}</p>
       </div>
     );
     state.footer = (
@@ -336,7 +340,7 @@ function AddQuestionnaire() {
           size="md"
           variant="primary"
           onClick={() => {
-            deactivateQuestionnaire(id);
+            activateDeactivateQuestionnaire(id);
             dispatch(closeModal());
           }}>
           Yes
@@ -391,15 +395,21 @@ function AddQuestionnaire() {
                           <div className="styledHeading">
                             <Heading as="h2">{t('heading.templateDetails')}</Heading>
                           </div>
-                          {mode !== MODE.CREATE && questionnaireDetails?.active && (
+                          {mode !== MODE.CREATE && (
                             <div className="controls">
-                              {mode !== MODE.EDIT && hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
+                              {mode !== MODE.EDIT && questionnaireDetails?.active && hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
                                 <Button Icon={EditPencil} variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
                                   {t('captions.btnEdit')}
                                 </Button>
                               )}
                               {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE) && (
-                                <Switch handleToggle={handleOnDeactivateQuestionnaire} id="id" name="Toggle" size="lg" value={questionnaireDetails?.active} />
+                                <Switch
+                                  handleToggle={handleOnActivateDeactivateQuestionnaire}
+                                  id="id"
+                                  name="Toggle"
+                                  size="lg"
+                                  value={questionnaireDetails?.active}
+                                />
                               )}
                             </div>
                           )}

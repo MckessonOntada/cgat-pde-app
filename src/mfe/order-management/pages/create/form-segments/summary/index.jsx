@@ -58,6 +58,7 @@ const Summary = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { orderId } = useParams();
+  const searchParams = new URLSearchParams(location.search);
   const { showAlert } = useAlert();
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader } = useOrder(orderId);
@@ -81,7 +82,8 @@ const Summary = () => {
     status,
     payerDetails,
     provider,
-    submittedBy
+    submittedBy,
+    isCoiIdRequired
   } = orderDetails || {};
 
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -256,10 +258,10 @@ const Summary = () => {
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
     onSuccess: (_result, { action }) => {
       if (action === BUTTON_ACTIONS.SUBMIT) {
-        navigate(`../${orderId}/order-confirmed`);
+        navigate(`../${orderId}/order-confirmed`, { state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
       } else {
         navigate(`../${orderId}/order-confirmed`, {
-          state: { isApproved: true }
+          state: { isApproved: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
         });
       }
     },
@@ -304,9 +306,11 @@ const Summary = () => {
 
   const handleOnBackButtonClick = () => {
     if (isApprover || isSimulate) {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else {
-      navigate('/orders');
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
     }
   };
 
@@ -381,8 +385,8 @@ const Summary = () => {
     if (backToInvoiceListing) {
       navigate('/record/invoices');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
@@ -414,12 +418,14 @@ const Summary = () => {
     };
 
     const route = stageRoutes[stage] || '/orders';
-    navigate(route, { state: { isEdit: true, isApprover: isApprover } });
+    navigate(route, {
+      state: { isEdit: true, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+    });
   };
 
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
-    navigate(0);
+    navigate(0, { state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   };
 
   const getAllowedControls = () => {
@@ -915,11 +921,11 @@ const Summary = () => {
                   )
                 }
               />
-              <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5'}>
+              <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isCoiIdRequired ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />
+                {isCoiIdRequired && <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />}
                 <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails?.orderQuantity) || '-'} />
               </div>
             </div>
@@ -1081,11 +1087,11 @@ const Summary = () => {
       {openDetails && !spOrder && (
         <TherapyDetails
           therapyId={therapy.materialNumber}
-          therapyData={TherapyDetailsConstantsForBB}
+          therapyData={TherapyDetailsConstantsForBB(false)}
           onClose={() => setOpenDetails(!openDetails)}
           showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
+          isMaterialConfiguration={false}
+          useUserService={true}
           heading={t('labels.therapyDetails')}
           notify={({ type, message }) =>
             showAlert({

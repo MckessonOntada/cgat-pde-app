@@ -18,16 +18,41 @@ import { useAccountContext } from '../../context/AccountContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import OrderService from '@src/api/commonService/OrderService';
+import { useMutation } from 'react-query';
+import useAlert from '@src/hooks/useAlert';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, fileteredData } = usePaymentInvoices();
-
+  const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
-
+  const { mutate: handleOnClickOrderId } = useMutation(
+    async (orderId) => {
+      return OrderService.getBackendOrderId(orderId);
+    },
+    {
+      onSuccess: (data) => {
+        navigate(`/orders/${data.id}/summary`, {
+          state: {
+            backToInvoiceListing: true
+          }
+        });
+      },
+      onError: (error) => {
+        const { response } = error;
+        let errorMsg = response?.data?.message || 'Error fetching order details';
+        showAlert({
+          description: errorMsg,
+          type: 'error',
+          anchorEl: 'summary-alert-container'
+        });
+      }
+    }
+  );
   const columns = [
     {
       id: 'checkbox',
@@ -77,27 +102,11 @@ export default function InvoicesTable() {
       id: 'mckessonOrderId',
       selector: (row) => `${row.mckessonOrderId}`,
       maxWidth: '140px',
-      showInMobileHeader: true,
-      showColumnNameInHeader: true,
       cell: (props) => (
-        <Link
-          className="MCP-table-link"
-          to={`/orders/${props?.mckessonOrderId}/summary`}
-          state={{
-            backToInvoiceListing: true
-          }}>
+        <Link className="MCP-table-link" onClick={() => handleOnClickOrderId(props.mckessonOrderId)}>
           <EclipsesTextcss str={props.mckessonOrderId} maxWidth={170} />
         </Link>
       )
-    },
-    {
-      name: t('labels.soldToAccountName'),
-      id: 'soldToName',
-      selector: (row) => `${row.soldToName}`,
-      maxWidth: '180px',
-      showInMobileHeader: true,
-      showColumnNameInHeader: true,
-      cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
     },
     {
       id: 'soldToSite',
@@ -110,6 +119,13 @@ export default function InvoicesTable() {
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
+    },
+    {
+      name: t('labels.soldToAccountName'),
+      id: 'soldToName',
+      selector: (row) => `${row.soldToName}`,
+      maxWidth: '180px',
+      cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
     },
     {
       name: t('paymentInvoices.history.table.invoiceDate'),

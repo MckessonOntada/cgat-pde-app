@@ -21,9 +21,10 @@ export const NOTIFICATION_FETCH_TIME_IN_MINS = parseInt(process.env.REACT_APP_NO
  * Each object contains a label (for display) and a value (for logic).
  */
 export const NOTIFICATION_CATEGORIES_LIST = [
-  { label: 'All', value: '' },
+  { label: 'All', value: 'All' },
   { label: 'User Management', value: 'User Management' },
   { label: 'Order Approval', value: 'Order Approval' },
+  { label: 'Order Management', value: 'Order Management' },
   { label: 'On Behalf', value: 'On Behalf' }
 ];
 

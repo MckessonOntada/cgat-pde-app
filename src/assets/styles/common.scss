@@ -1175,7 +1175,6 @@ div.disable-all {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
     gap: var(--spacing-03);
   }
 }
@@ -1391,8 +1390,12 @@ div[role="row"] {
 
   .heading-provider {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 16px;
+    gap: var(--spacing-01);
+    .required {
+      position: relative;
+      top: -4px;
+    }
   }
 
   .provider-field-wrap {
@@ -1414,6 +1417,10 @@ div[role="row"] {
     border-radius: var(--brand-border-radius--8);
     background-color: var(--brand-color-background-white);
     margin-top: var(--spacing-03);
+    @media only screen and (max-width: 768px) {
+      margin-top: var(--spacing-02);
+      padding: 12px; //spacing is not avilable.
+    }
 
     .details-title {
       font-weight: var(--brand-font-weight-700);
@@ -1587,4 +1594,11 @@ div[role="row"] {
   &.column {
     flex-direction: column;
   }
+}
+
+hr.form-section-separator {
+  margin-top: var(--spacing-04);
+  margin-bottom: var(--spacing-04);
+  border: none;
+  border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
 }

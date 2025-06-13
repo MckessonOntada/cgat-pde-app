@@ -18,7 +18,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { useQuery } from 'react-query';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
+import { TherapyDetailsConstantsForBB } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { FormattedNumber } from 'react-intl';
@@ -93,11 +93,7 @@ function Details(props) {
       : {
           [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
           [t('paymentInvoices.Details.CreditRemaining')]: '',
-          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(
-            res.data.dueDate,
-            'MM/DD/YYYY',
-            'DD/MM/YYYY'
-          )
+          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
         };
     setBillDates(_invoiceDue);
   };
@@ -228,12 +224,7 @@ function Details(props) {
   return (
     <div className="view-details-container">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={onBackToPaymentsInvoices}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={onBackToPaymentsInvoices} size="md">
           {locationParams?.state?.reviewPay
             ? t('paymentInvoices.Details.backToReviewAndPay')
             : INVOICES_SCREEN
@@ -248,9 +239,7 @@ function Details(props) {
         <div className="details-card-container">
           {CommonUtils.isNonEmptyObject(selectedAccount) && (
             <div className="account-info">
-              <div className="account-name">
-                {CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}
-              </div>
+              <div className="account-name">{CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}</div>
               <div className="account-address">{selectedAccount ? GeographicUtils.addressAggregator(selectedAccount) : ''}</div>
             </div>
           )}
@@ -266,7 +255,6 @@ function Details(props) {
             onSortIconClick={() => {}}
             progressPending={isLoading}
             fixedHeader
-            fixedHeaderScrollHeight="20px"
             showCardView={showCardView}
             defaultExpandedCardView={false}
             noDataComponent={
@@ -297,15 +285,15 @@ function Details(props) {
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
             <div className="footer-wrapper" ref={controlRef}>
               <div className="controls footer-controls">
-              <Button
-                size="md"
-                variant="primary"
-                type="submit"
-                onClick={() => {
-                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                }}>
-                {t('paymentInvoices.Details.ReviewAndPay')}
-              </Button>
+                <Button
+                  size="md"
+                  variant="primary"
+                  type="submit"
+                  onClick={() => {
+                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                  }}>
+                  {t('paymentInvoices.Details.ReviewAndPay')}
+                </Button>
               </div>
             </div>
           )}
@@ -316,7 +304,7 @@ function Details(props) {
           therapyId={therapy}
           onSelect={() => {}}
           onClose={() => setOpen(!open)}
-          therapyData={TherapyDetailsConstants}
+          therapyData={TherapyDetailsConstantsForBB(true)}
           showFooter={false}
           heading={t('labels.therapyDetails')}
           useUserService={true}

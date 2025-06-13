@@ -41,7 +41,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  const searchParams = new URLSearchParams(location.search);
   const filteredStepperItems = forms.filter((form) => {
     if (!patientDetailsRequired && form.name === ORDER_STAGES.PATIENT_DETAILS) {
       return false;
@@ -72,12 +72,12 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
       if (currentStage[stepByTitle] <= currentStage[status]) {
         const newNavLink = navLinks[stepByTitle];
         if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
-          navigate(`/orders/edit-order/${orderId}`, {
-            state: { fromTab: location?.state?.fromTab }
+          navigate(`/orders/edit-order/${orderId}?${searchParams.toString()}`, {
+            state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
           });
         else {
-          navigate(newNavLink, {
-            state: { fromTab: location?.state?.fromTab }
+          navigate(`${newNavLink}?${searchParams.toString()}`, {
+            state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
           });
         }
       }

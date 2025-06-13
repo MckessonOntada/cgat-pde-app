@@ -40,7 +40,7 @@ const AccountSelection = () => {
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
-
+  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (!isTherapyChanged) {
       setSelectedSoldToAccount(orderDetails.accountDetails?.soldToAccount);
@@ -62,7 +62,17 @@ const AccountSelection = () => {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders');
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
+  }, [orderDetails]);
+
+  React.useEffect(() => {
+    if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
+      setAccountConfig({
+        program: CGAT_IDENTIFIER[orderDetails.accountDetails.shipToAccount.cgatIdentifier],
+        channelType: orderDetails.accountDetails.shipToAccount.channelType
+      });
+    }
   }, [orderDetails]);
   React.useEffect(() => {
     if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
@@ -77,8 +87,8 @@ const AccountSelection = () => {
     onSuccess: async (result) => {
       const { id } = result;
       try {
-        navigate(`../${id}/patient`, {
-          state: { alertState, isEdit: false, isApprover: isApprover }
+        navigate(`../${id}/patient?${searchParams.toString()}`, {
+          state: { alertState, isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
         });
       } catch (err) {
         console.error(err);
@@ -115,12 +125,12 @@ const AccountSelection = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: { isEdit: isEdit, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else {
-      navigate(`../edit-order/${orderId}`, {
-        state: { isEdit: false, isApprover: isApprover, isBack: true }
+      navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
@@ -177,22 +187,24 @@ const AccountSelection = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else if (modalSuccessCallback === 'details') {
-      navigate(`../edit-order/${orderId}`, {
-        state: { isEdit: false, isApprover: isApprover, isBack: true }
+      navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, {
-        state: { isEdit: false, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
@@ -239,6 +251,7 @@ const AccountSelection = () => {
               shipToAccount: selectedShipToAccount,
               soldToAccount: selectedSoldToAccount
             }}
+            channelType={selectedSoldToAccount?.channelType}
           />
           {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">

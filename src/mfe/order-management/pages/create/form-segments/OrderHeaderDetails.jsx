@@ -6,12 +6,14 @@ import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import { Tooltip } from '@mckesson/mcp-component-library';
+import { CHANNEL_TYPE } from './Constants';
 
-function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {} }) {
+function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {}, channelType }) {
   const { t } = useTranslate();
   const { therapy = {}, patient = {}, tradeDetails = {} } = orderDetails;
   const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
+  const isBuyAndBillOrder = channelType === CHANNEL_TYPE.BUY_AND_BILL;
 
   const detailsSegments = [];
   if (tradeDetails.tradeName || therapy.materialDescription) {
@@ -26,7 +28,7 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
                 {tradeDetails.tradeName} {therapy.materialDescription ? `(${therapy.materialDescription})` : null}
               </div>
             </Tooltip>
-            <InventoryIndicator status={status} />
+            {isBuyAndBillOrder && <InventoryIndicator status={status} />}
           </div>
         }
       />

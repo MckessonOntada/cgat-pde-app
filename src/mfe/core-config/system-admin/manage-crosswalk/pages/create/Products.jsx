@@ -166,8 +166,8 @@ const Products = () => {
               isLoading={isLoading}
               error={error}
               image={EmptyDataImage}
-              heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('captions.emptyTableSubtitle')}
+              heading={!fileteredData ? t('captions.emptyTableTitle.product-crosswalk') : t('errors.messages.noRecordsFound')}
+              description={!fileteredData && t('captions.emptyTableSubtitle.product-crosswalk')}
             />
           }
         />

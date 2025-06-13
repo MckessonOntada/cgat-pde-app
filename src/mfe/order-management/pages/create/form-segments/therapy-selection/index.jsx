@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -22,7 +22,6 @@ import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
-import CommonUtils from '@src/util/CommonUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -41,10 +40,14 @@ function TherapySelection() {
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
+  const preservedStateRef = useRef(location.state);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders');
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
+      });
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -60,15 +63,15 @@ function TherapySelection() {
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : '',
-      state: location.state
+      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
     });
   };
 
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`../${id}/accounts`, {
-        state: { isEdit: false, isApprover: isApprover }
+      navigate(`../${id}/accounts?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
       });
     },
     onError: (err) => {
@@ -88,11 +91,13 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/accounts`, {
+        navigate(`../${id}/accounts?${searchParams.toString()}`, {
           state: {
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName)
+            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName),
+            fromTab: preservedStateRef.current?.fromTab,
+            fromOrderView: preservedStateRef.current?.fromOrderView
           }
         });
       },
@@ -135,8 +140,11 @@ function TherapySelection() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
       });
     }
   };
@@ -147,20 +155,40 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, {
-        state: { isEdit: true, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: {
+          isEdit: true,
+          isApprover: isApprover,
+          fromTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
       });
     } else {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
+      });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
+      });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, {
-        state: { isEdit: true, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: {
+          isEdit: true,
+          isApprover: isApprover,
+          fromTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
       });
     }
   };
@@ -202,7 +230,7 @@ function TherapySelection() {
             {therapySelectionMessage && (
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
@@ -220,7 +248,7 @@ function TherapySelection() {
               channelType={channelType}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
-              buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+              buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
               spTherapyConstants={TherapyDetailsConstantsForSP}
               heading={t('manageMaterial.drawer.heading')}
             />

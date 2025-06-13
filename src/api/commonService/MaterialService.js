@@ -56,6 +56,14 @@ async function getSPMaterial(requestParams) {
   }
   return [];
 }
+async function getManufacturerListSPMaterial(status) {
+  const url = `${ApiRoutes.THERAPIES()}/manufacturers?status=${status}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 
 const MaterialService = Object.freeze({
   getMaterialById,
@@ -63,7 +71,8 @@ const MaterialService = Object.freeze({
   deleteMaterialConfig,
   getMaterialList,
   getSPMaterialById,
-  getSPMaterial
+  getSPMaterial,
+  getManufacturerListSPMaterial
 });
 
 export default MaterialService;

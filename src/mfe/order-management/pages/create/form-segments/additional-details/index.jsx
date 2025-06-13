@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError, Divider } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -7,13 +7,13 @@ import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_fil
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import PageHeader from '@src/components/pageHeader';
 import { Field, Form, Formik } from 'formik';
-import { getFormFields } from './fields';
+import { getClinicalDetailFields, getFormFields } from './fields';
 import * as Yup from 'yup';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_ONLY, DIAGNOSIS_CODE } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -36,6 +36,12 @@ const INITIAL_VALUES = {
   slotNumber: '',
   poNumber: '',
   dateOfAdministration: '',
+
+  diagnosisCode: '',
+  hasAllergies: '',
+  allergyDetails: '',
+  hasDiseases: '',
+
   variant: {
     variant: '',
     variantDescription: '',
@@ -49,7 +55,7 @@ function AdditionalDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const { controlRef } = useContext(FooterContext);
-
+  const searchParams = new URLSearchParams(location.search);
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
@@ -69,12 +75,10 @@ function AdditionalDetails() {
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
-  const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
-  const { therapy = {}, tradeDetails = {} } = orderDetails;
+  const { tradeDetails = {}, isCoiIdRequired, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
-  const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const therapyChannelType = orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
 
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -98,26 +102,10 @@ function AdditionalDetails() {
     null
   );
 
-  const initialValidationSchema = (isVariantRequired) => {
-    return Yup.object({
-      coiId: Yup.string()
-        .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-        .max(10, t('labels.COI_IdExceedDigits'))
-        .when([], {
-          is: () => isCoiIdRequired === true,
-          then: (schema) => schema.required(t('labels.COIIdRequired')),
-          otherwise: (schema) => schema
-        }),
-      orderQuantity: Yup.number()
-        .typeError(t('labels.OrderQuantityShouldPositive'))
-        .required(t('labels.orderQuantityRequired'))
-        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-        .integer(t('labels.OrderQuantityMustBeInteger')),
-      slotNumber: Yup.string().required(t('labels.slotNumberRequired')).max(20, t('labels.slotNumberLengthError')).trim(t('labels.slotNumberExtraSpaceError')),
+  const initialValidationSchema = (isVariantRequired, channelType) => {
+    let schema = Yup.object({
       poNumber: Yup.string().required(t('labels.PONumberRequired')).max(35, t('labels.PONumberLengthError')).trim(t('labels.poNumberExtraSpaceError')),
       dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
-
-      // Conditionally Require Variant
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
@@ -136,14 +124,55 @@ function AdditionalDetails() {
             .nullable()
         })
         .nullable(),
-
-      // Conditionally Require Acknowledgement Checkbox
       variantAcknowledgement: Yup.boolean().when([], {
         is: () => isVariantRequired,
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
       })
     });
+
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      schema = schema.concat(
+        Yup.object({
+          diagnosisCode: Yup.string()
+            .matches(DIAGNOSIS_CODE, t('labels.invalidDiagnosis'))
+            .required(t('labels.diagnosisCodeRequired'))
+            .max(50, t('labels.COI_IdExceedDigits')),
+          hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
+
+          allergyDetails: Yup.string().when('hasAllergies', {
+            is: (val) => val === 'yes',
+            then: (schema) => schema.required(t('labels.allergiesDetailsRequired')),
+            otherwise: (schema) => schema.notRequired()
+          }),
+          hasDiseases: Yup.string().required(t('labels.selectHasDiseases')).oneOf(['yes', 'no'], t('labels.invalidSelection'))
+        })
+      );
+    } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      schema = schema.concat(
+        Yup.object({
+          coiId: Yup.string()
+            .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
+            .max(10, t('labels.COI_IdExceedDigits'))
+            .when('$isCoiIdRequired', {
+              is: true,
+              then: (schema) => schema.required(t('labels.COIIdRequired')),
+              otherwise: (schema) => schema.notRequired()
+            }),
+          orderQuantity: Yup.number()
+            .typeError(t('labels.OrderQuantityShouldPositive'))
+            .required(t('labels.orderQuantityRequired'))
+            .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+            .integer(t('labels.OrderQuantityMustBeInteger')),
+          slotNumber: Yup.string()
+            .required(t('labels.slotNumberRequired'))
+            .max(20, t('labels.slotNumberLengthError'))
+            .trim(t('labels.slotNumberExtraSpaceError'))
+        })
+      );
+    }
+
+    return schema;
   };
 
   const { isLoading, data: variantsData = {} } = useQuery({
@@ -171,13 +200,10 @@ function AdditionalDetails() {
   });
 
   React.useEffect(() => {
-    // To check if variant selection is required
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
 
-    // Get the Initial Validation Schema based on Variant Required
-    const updatedValidationSchema = initialValidationSchema(isVariantRequired);
+    const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
 
-    // Prepare Questionnaire Fields and Get its Validation Schema
     let questionnaireValidationSchema = Yup.object();
     let questionnaireFields = {};
 
@@ -194,21 +220,25 @@ function AdditionalDetails() {
       ...questionnaireFields
     }));
     setValidationSchema(finalValidationSchema);
-  }, [variantsData, questionnaireTemplateConfig]);
+  }, [variantsData, questionnaireTemplateConfig, channelType]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab }
+      });
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`../${id}/summary`, {
+      navigate(`../${id}/summary?${searchParams.toString()}`, {
         state: {
-          activeTab: location?.state?.fromTab,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     },
@@ -409,22 +439,33 @@ function AdditionalDetails() {
         poNumber,
         slotNumber,
         variantDetails = {},
-        configuredQuestionnaires
+        configuredQuestionnaires,
+        diagnosisCode,
+        clinicalDetails
       } = additionalDetails;
 
       const { variantDocumentPath, ...otherDetails } = variantDetails || {};
       const initialValues = {
-        dateOfAdministration,
-        coiId,
-        orderQuantity,
         poNumber,
-        slotNumber,
         variant: {
           ...otherDetails,
           document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
         },
         variantAcknowledgement: patientConsentTaken
       };
+
+      if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+        initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
+        initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
+        initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
+        initialValues.hasDiseases = clinicalDetails.hasDiseaseIndication ? 'yes' : 'no';
+        initialValues.diagnosisCode = diagnosisCode;
+      } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+        initialValues.dateOfAdministration = dateOfAdministration;
+        initialValues.coiId = coiId;
+        initialValues.orderQuantity = orderQuantity;
+        initialValues.slotNumber = slotNumber;
+      }
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
 
@@ -457,29 +498,32 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
         const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
-        navigate(`../${orderId}/${targetPage}`, {
+        navigate(`../${orderId}/${targetPage}?${searchParams.toString()}`, {
           state: {
             fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover
+            isApprover: isApprover,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       } else {
-        navigate(`../${orderId}/accounts`, {
+        navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
           state: {
             fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover: isApprover
+            isApprover: isApprover,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       }
@@ -527,15 +571,35 @@ function AdditionalDetails() {
     });
 
     const payload = {
-      coiId,
-      orderQuantity,
-      slotNumber,
       poNumber,
-      dateOfAdministration,
       variantDetails: variantDetails,
       patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
+
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      const { hasAllergies, allergyDetails, hasDiseases, dateOfAdministration } = values;
+      const clinicalDetails = {
+        hasAllergies: hasAllergies === 'yes',
+        hasDiseaseIndication: hasDiseases === 'yes'
+      };
+
+      if (hasAllergies === 'yes') {
+        clinicalDetails.allergiesSpecification = allergyDetails;
+      }
+
+      if (dateOfAdministration) {
+        clinicalDetails.dateOfAdministration = dateOfAdministration;
+      }
+
+      payload.clinicalDetails = clinicalDetails;
+      payload.diagnosisCode = values['diagnosisCode'];
+    } else {
+      payload.coiId = coiId;
+      payload.orderQuantity = orderQuantity;
+      payload.slotNumber = slotNumber;
+      payload.dateOfAdministration = dateOfAdministration;
+    }
 
     saveAdditionalDetails(payload);
   };
@@ -544,39 +608,42 @@ function AdditionalDetails() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement, {
-        state: { activeTab: location?.state?.fromTab }
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`../${orderId}/patient`, {
+      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
         state: {
           fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }
@@ -639,9 +706,8 @@ function AdditionalDetails() {
         initialValues={initialFormValues}
         enableReinitialize={true}
         validationSchema={validationSchema}
-        onError={(value) => {
-          console.log(value);
-        }}
+        onError={console.log}
+        validationContext={{ isCoiIdRequired }}
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
@@ -656,7 +722,7 @@ function AdditionalDetails() {
               <div className="MCP-module-body">
                 <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
 
-                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
                 <div id={alertContainerId} />
 
                 <div className="MCP-panel-container">
@@ -667,7 +733,7 @@ function AdditionalDetails() {
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-                    {getFormFields(t, { isCoiIdRequired }, setFieldValue).map(
+                    {getFormFields(t, { isCoiIdRequired, channelType }, setFieldValue).map(
                       ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                         <Field
                           key={index}
@@ -682,8 +748,37 @@ function AdditionalDetails() {
                       )
                     )}
                   </div>
+                  {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                    <React.Fragment>
+                      <hr className="form-section-separator" />
+                      <div className="row-space-between-center">
+                        <Heading as="h3">{t('labels.clinicalDetails')}</Heading>
+                        <p className="form-instruction">
+                          <span className="required">*</span> {t('labels.required')}
+                        </p>
+                      </div>
+                      <React.Fragment>
+                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue).map(
+                          ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
+                            <div key={index} className={`${layout.classes}`}>
+                              <Field
+                                name={name}
+                                label={label}
+                                placeholder={placeholder}
+                                isRequired={isRequired}
+                                component={component}
+                                maxLength={maxLength}
+                                {...otherProps}
+                              />
+                            </div>
+                          )
+                        )}
+                      </React.Fragment>
+                    </React.Fragment>
+                  )}
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <div>
+                      <hr className="form-section-separator" />
                       <div className="MCP-module-body">
                         <Heading as="h3">{t('labels.selectVariant')}</Heading>
                         <div>
@@ -734,17 +829,20 @@ function AdditionalDetails() {
                   ) : (
                     <div>
                       {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
-                        <div className="configured-questionnaire-form">
-                          <div className="MCP-module-body">
-                            <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
-                            <QuestionnaireTemplate
-                              onRemoveDocument={handleOnRemoveDocument}
-                              onDocumentChange={handleOnDocumentChange}
-                              config={questionnaireTemplateConfig}
-                              isPreview={false}
-                            />
+                        <React.Fragment>
+                          <hr className="form-section-separator" />
+                          <div className="configured-questionnaire-form">
+                            <div className="MCP-module-body">
+                              <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                              <QuestionnaireTemplate
+                                onRemoveDocument={handleOnRemoveDocument}
+                                onDocumentChange={handleOnDocumentChange}
+                                config={questionnaireTemplateConfig}
+                                isPreview={false}
+                              />
+                            </div>
                           </div>
-                        </div>
+                        </React.Fragment>
                       )}
                     </div>
                   )}

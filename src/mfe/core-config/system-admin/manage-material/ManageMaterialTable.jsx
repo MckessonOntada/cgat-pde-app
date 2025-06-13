@@ -261,7 +261,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
-          buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+          buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
           spTherapyConstants={TherapyDetailsConstantsForSP}
           heading={t('manageMaterial.drawer.heading')}
           showFooter={false}
