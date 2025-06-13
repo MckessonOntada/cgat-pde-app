@@ -781,5 +781,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.zip': 'Zip is required.',
   'orderManagement.patientDetails.validation.state': 'State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
-  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page'
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
+
+  'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.'
 };

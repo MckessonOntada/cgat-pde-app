@@ -186,6 +186,9 @@ const DetailsPanel = ({ details }) => {
     }),
     deaNumber: details.deaNumber,
     npiNumber: details.npiNumber,
+    tinNumber: details.tinNumber,
+    medicaidNumber: details.medicaidNumber,
+    licenseState: details.licenseState,
     address: CommonUtils.getAddress({
       address1: details.address1,
       address2: details.address2,
@@ -193,7 +196,8 @@ const DetailsPanel = ({ details }) => {
       state: details.state,
       zipCode: details.zipCode
     }),
-    phoneNumber: details.phoneNumber
+    phoneNumber: CommonUtils.formatPhoneNumber(details.phoneNumber),
+    emailID: details.email
   };
 
   return (

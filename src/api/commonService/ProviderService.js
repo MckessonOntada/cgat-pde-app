@@ -94,7 +94,12 @@ async function getProviderDetailsById(id) {
       phoneNumber: phone,
       city: sanitizeString(address?.city),
       zip: sanitizeString(address?.zip),
-      state: sanitizeString(address?.state)
+      state: sanitizeString(address?.state),
+      tinNumber: sanitizeString(res.data.tin),
+      medicaidNumber: sanitizeString(res.data.medicaidNumber),
+      email: sanitizeString(res.data.email),
+      fax: sanitizeString(res.data.fax),
+      licenseState: sanitizeString(res.data.licenseState)
     };
 
     return sanitizedResponse;
@@ -164,13 +169,18 @@ async function getSpAccountListByProviderId(providerId, requestParams) {
   }
   return [];
 }
-async function getUnlinkSpAccountListByProviderId( requestParams, providerIds) {
+async function getUnlinkSpAccountListByProviderId(requestParams, providerIds) {
   const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/unlinked-accounts?${serializeParams(
     requestParams
   )}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.POST, providerIds, {
-    'Content-Type': 'application/json'
-  });
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    providerIds,
+    {
+      'Content-Type': 'application/json'
+    }
+  );
   if (res.data) {
     return res.data;
   }
