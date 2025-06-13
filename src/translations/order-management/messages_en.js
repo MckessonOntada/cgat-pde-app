@@ -859,4 +859,11 @@ export const MessageEn = {
   'messages.enterRxBIN': 'Please enter the RX BIN.',
   'messages.rxBinMax': 'RX BIN must not exceed 30 characters.',
   'labels.payerDetails': 'Payer Details'
+  'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
+  'column.material.crosswalk.buyBillNDC': 'Buy & Bill NDC',
+  'column.material.crosswalk.Therapy': 'Therapy',
+  'column.material.crosswalk.spProductID': 'SP Product ID',
+  'column.material.crosswalk.spProductName': 'SP Product Name',
+  'column.material.crosswalk.spNDC': 'SP NDC',
+  'column.material.crosswalk.action': 'Action'
 };

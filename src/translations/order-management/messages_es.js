@@ -605,4 +605,11 @@ export const MessageEs = {
   'messages.rxPcnMax': 'S_RX PCN must not exceed 100 characters.',
   'messages.enterRxBIN': 'S_Please enter the RX BIN.',
   'messages.rxBinMax': 'S_RX BIN must not exceed 30 characters.'
+  'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.',
+  'column.material.crosswalk.buyBillNDC': 'S_Buy & Bill NDC',
+  'column.material.crosswalk.Therapy': 'S_Therapy',
+  'column.material.crosswalk.spProductID': 'S_SP Product ID',
+  'column.material.crosswalk.spProductName': 'S_SP Product Name',
+  'column.material.crosswalk.spNDC': 'S_SP NDC',
+  'column.material.crosswalk.action': 'S_Action'
 };
