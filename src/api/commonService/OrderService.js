@@ -351,7 +351,20 @@ async function uploadOrderDocument(orderId, payload) {
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
   return res;
 }
+async function uploadPayerDocument(orderId, data) {
+  const { file, side, ...rest } = data;
+  const payload = {};
+  if (side === 'FRONT') payload.frontImage = file;
+  else payload.backImage = file;
 
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer/documents?${serializeParams(rest)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
+  if (res.data) return res.data;
+
+  return {};
+}
 async function uploadDocument(payload) {
   const { orderId, file } = payload;
   const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${orderId}`;
@@ -416,7 +429,8 @@ const OrderService = Object.freeze({
   uploadOrderDocument,
   uploadDocument,
   getTherapyDetailsByTradeName,
-  getTherapyDetailsByTradeName2
+  getTherapyDetailsByTradeName2,
+  uploadPayerDocument
 });
 
 export default OrderService;

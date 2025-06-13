@@ -12,13 +12,7 @@ import { Link } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 
 function InputFileFormik(props) {
-  const {
-    field,
-    form,
-    onFileChange,
-    primaryButtonCaption,
-    fileInputRef: parentFileInputRef
-  } = props;
+  const { field, form, onFileChange, primaryButtonCaption, fileInputRef: parentFileInputRef } = props;
   const { setFieldError, values } = useFormikContext();
   const [errorFile, setErrorFile] = useState(false);
   const { label, value, validateOnChange, attachmentValue } = props;
@@ -28,9 +22,7 @@ function InputFileFormik(props) {
   const [file, setFile] = React.useState(null);
   const { errors, touched, setFieldValue } = form;
   const errorMessage = getNestedValue(errors, `${field.name}`);
-  const isFieldTouched = field.name.includes('.')
-    ? getNestedValue(touched, field.name.split('.')[0])
-    : getNestedValue(touched, field.name);
+  const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
 
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
@@ -49,10 +41,7 @@ function InputFileFormik(props) {
   const handleOnChange = (event) => {
     const selectedFile = event.target.files[0];
     setFieldError(`${field.name}`, null);
-    if (
-      (validateOnChange && validateBeforeChange(selectedFile, event)) ||
-      !validateOnChange
-    )
+    if ((validateOnChange && validateBeforeChange(selectedFile, event)) || !validateOnChange)
       if (selectedFile) {
         if (onFileChange) onFileChange(selectedFile, event);
         else setFieldValue(field.name, selectedFile);
@@ -99,10 +88,7 @@ function InputFileFormik(props) {
   }, []);
 
   return (
-    <div
-      className={`${styles['component-wrapper']} ${
-        errorMessage ? styles['has-error'] : null
-      }`}>
+    <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>
       <div className={styles['caption-container']}>
         <p className={styles['caption']}>
           {label}
@@ -169,15 +155,9 @@ function InputFileFormik(props) {
               <div>
                 {file.type?.startsWith('image/') ? (
                   file.type.startsWith('image/') ? (
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt="Preview"
-                      className={styles['image-preview']}
-                    />
+                    <img src={URL.createObjectURL(file)} alt="Preview" className={styles['image-preview']} />
                   ) : (
-                    <p className={styles['error-message']}>
-                      {t('file.browsInput.error.invalidFileType')}
-                    </p>
+                    <p className={styles['error-message']}>{t('file.browsInput.error.invalidFileType')}</p>
                   )
                 ) : (
                   <FileUploadIcon width={20} />

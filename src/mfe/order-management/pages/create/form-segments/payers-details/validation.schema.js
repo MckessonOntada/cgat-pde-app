@@ -13,7 +13,7 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .max(100, t('messages.insuranceCompanyNameCharLimit'))
       .matches(/^[A-Za-z\s'-]+$/, t('messages.avoidSpecialCharsNumbers')),
 
-    memberNumber: Yup.string().required('messages.memberNumberRequired').max(50, t('messages.memberMax')).matches(NUMERIC_ONLY, t('messages.onlyNumeric')),
+    memberNumber: Yup.string().required(t('messages.memberNumberRequired')).max(50, t('messages.memberMax')).matches(NUMERIC_ONLY, t('messages.onlyNumeric')),
     groupNumber: Yup.string()
       .notRequired()
       .max(50, t('messages.groupMax'))
@@ -30,7 +30,12 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .max(50, t('messages.lastNameMax'))
       .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
     dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
-    relationshipToPatient: Yup.string().required(t('messages.selectRelation')).oneOf(PATIENT_RELATIONSHIP, t('messages.invalidRelation')),
+    relationshipToPatient: Yup.string()
+      .required(t('messages.selectRelation'))
+      .oneOf(
+        PATIENT_RELATIONSHIP.map((t) => t.toUpperCase()),
+        t('messages.invalidRelation')
+      ),
     medicalCardFront: Yup.mixed().nullable(),
     medicalCardBack: Yup.mixed().nullable()
   })
@@ -58,7 +63,7 @@ export const getBaseMedicalInsuranceValues = () => ({
   insuranceCompanyName: '',
   memberNumber: '',
   groupNumber: '',
-  phoneNumber: '',
+  insuranceCompanyPhone: '',
   policyHolderFirstName: '',
   policyHolderLastName: '',
   dateOfBirth: '',

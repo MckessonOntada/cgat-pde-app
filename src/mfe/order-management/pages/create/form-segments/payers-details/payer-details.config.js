@@ -106,7 +106,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
           type: 'dropdown',
           options: PATIENT_RELATIONSHIP.map((item) => ({
             label: item,
-            value: item
+            value: item.toUpperCase()
           })),
           isRequired: true,
           maxLength: 50

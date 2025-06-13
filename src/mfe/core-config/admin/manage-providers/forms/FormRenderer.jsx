@@ -2,24 +2,26 @@ import React from 'react';
 import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Heading } from '@mckesson/mcp-component-library';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
-import OrderService from '@src/api/commonService/OrderService';
 import { useParams } from 'react-router-dom';
+import { getNestedValue } from '@src/components/form/util';
 
-const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
-  const { t } = useTranslate();
-  const { setFieldValue } = useFormikContext();
-  const { orderId } = useParams();
-  const uploadDocument = (file, fieldName) => {
-    const payload = {
-      orderId,
-      file
-    };
-    OrderService.uploadDocument(payload).then((response) => {
-      setFieldValue(fieldName, response);
-    });
+function getFileNameAndType(url) {
+  const cleanUrl = url.split('?')[0].split('#')[0];
+
+  const name = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1);
+  const type = name.includes('.') ? name.substring(name.lastIndexOf('.') + 1) : null;
+
+  return {
+    name,
+    type
   };
+}
+
+const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections = [], insurance, insuranceLevel }) => {
+  const { t } = useTranslate();
+  const { values, setFieldValue } = useFormikContext();
 
   return (
     <div className="MCP-module-wrapper">
@@ -44,7 +46,14 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
               {(section.subTitle || section.secondaryActions) && (
                 <div className={'row-space-between-center'}>
                   <div classname="form-section-heading">{section.subTitle && <Heading as="h3">{t(section.subTitle)}</Heading>}</div>
-                  <div className="controls">{section.secondaryActions}</div>
+                  <div className="controls">
+                    {onClose && sectionIndex === 0 && (
+                      <div className="styled-icon-button error-button">
+                        <Button Icon={closeIcon} size="md" variant="tertiary" color="error" type="button" onClick={onClose}></Button>
+                      </div>
+                    )}
+                    {section.secondaryActions}
+                  </div>
                 </div>
               )}
 
@@ -54,6 +63,13 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
                     {row.controls.map((control, controlIndex) => {
                       const Component = Components[control.type]; // dynamic component
                       if (!Component) return null;
+
+                      const uploadControlAttributes = {};
+                      if (control.type === 'inputFile') {
+                        const url = getNestedValue(values, control.name);
+                        if (url) uploadControlAttributes.attachmentValue = getFileNameAndType(url);
+                        uploadControlAttributes.onFileChange = (file) => onUpload(file, setFieldValue, control.name);
+                      }
 
                       return (
                         <Field
@@ -66,7 +82,7 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
                           component={Component}
                           options={control.options}
                           maxLength={control.maxLength}
-                          {...(control.type && { onFileChange: (file) => uploadDocument(file, control.name) })}
+                          {...uploadControlAttributes}
                         />
                       );
                     })}
