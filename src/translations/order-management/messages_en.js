@@ -783,5 +783,8 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
   'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
 
-  'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.'
+  'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
+  'controls.uploadAccount': 'Upload Account',
+  'label.uploadAccountListCSV': 'Upload Account List CSV',
+  'controls.uploadAccount': 'Upload Account'
 };
