@@ -12,7 +12,7 @@ import { useNotifications } from '../../context/NotificationsContext';
 
 // Formik for form state management
 import { Formik, Form } from 'formik';
-import { NOTIFICATION_CATEGORIES_LIST } from '../../constants/NotificationFilterConstants';
+import { NOTIFICATION_CATEGORIES_LIST, NOTIFICATION_READ_STATUS_LIST } from '../../constants/NotificationFilterConstants';
 
 /**
  * FilterToolbar component
@@ -137,14 +137,14 @@ const FilterToolbar = ({ isMobileView }) => {
       errors.notificationDateRange = t('notification.filter.dateRange.rangeError');
     }
     return errors;
-  }
-
+  };
 
   return (
     <Formik
       initialValues={{
         notificationDateRange: localDateRange,
-        notificationCategory: searchState.notificationCategory
+        notificationCategory: searchState.notificationCategory,
+        notificationReadStatus: searchState.notificationReadStatus // <-- Added
       }}
       enableReinitialize
       validate={validate}
@@ -154,10 +154,10 @@ const FilterToolbar = ({ isMobileView }) => {
           ...searchState,
           notificationDateRange: values.notificationDateRange,
           notificationCategory: values.notificationCategory,
+          notificationReadStatus: values.notificationReadStatus, // <-- Added
           page: 1 // Reset page on filter change
         });
-      }}
-    >
+      }}>
       {({ values, setFieldValue, errors, touched }) => (
         <Form ref={formRef} autoComplete="off" className={styles.filterForm}>
           <div className={styles.filterToolbar}>
@@ -188,8 +188,24 @@ const FilterToolbar = ({ isMobileView }) => {
                 isEndDateError={!!errors.notificationDateRange}
               />
               {/* Show Formik error for date range only if error is present and the user has interacted with the field */}
+              {errors.notificationDateRange && <div className={styles.errorMessage}>{errors.notificationDateRange}</div>}
+            </div>
+
+            {/* Read Status Dropdown */}
+            <div className={styles.dropdownFilter}>
+              <Dropdown
+                id="notification-filter-read-status"
+                options={NOTIFICATION_READ_STATUS_LIST}
+                value={values.notificationReadStatus}
+                label={t('notification.readStatus')}
+                onChange={(value) => setFieldValue('notificationReadStatus', value)}
+                size={elementSize}
+              />
               {errors.notificationDateRange && (
-                <div className={styles.errorMessage}>{errors.notificationDateRange}</div>
+                <div className={styles.errorMessage}>
+                  {' '}
+                  <span className={styles.emptyErrorPlaceholder}></span>
+                </div>
               )}
             </div>
 
@@ -213,7 +229,12 @@ const FilterToolbar = ({ isMobileView }) => {
 
             {/* Apply Button */}
             <div className={styles.filterCta}>
-              <Button size={elementSize} variant="secondary" type="submit" buttonWidth={isMobileView ? '100%' : 'auto'} disabled={!!errors.notificationDateRange}>
+              <Button
+                size={elementSize}
+                variant="secondary"
+                type="submit"
+                buttonWidth={isMobileView ? '100%' : 'auto'}
+                disabled={!!errors.notificationDateRange}>
                 {t('notifications.cta.apply')}
               </Button>
               {errors.notificationDateRange && (

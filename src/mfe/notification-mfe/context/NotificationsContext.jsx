@@ -24,6 +24,7 @@ const initialSearchState = {
   searchText: '',
   notificationDateRange: [dayjs().subtract(90, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
   notificationCategory: 'All',
+  notificationReadStatus: 'ALL', // <-- Added
   page: 1,
   pageSize: NOTIFICATION_PAGE_SIZE,
   totalElements: 0,
@@ -84,13 +85,14 @@ export const NotificationsProvider = ({ children }) => {
     async (searchObj) => {
       let searchCategoryValue = searchObj?.category || initialSearchState.notificationCategory;
       if (searchCategoryValue === 'All') {
-        searchCategoryValue = ''; // Convert 'All' to empty string for API call
+        searchCategoryValue = '';
       }
       const payload = {
         searchText: searchObj?.searchText || initialSearchState.searchText,
         category: searchCategoryValue,
         startDate: searchObj?.startDate || dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
-        endDate: searchObj?.endDate || dayjs().format('YYYY-MM-DD')
+        endDate: searchObj?.endDate || dayjs().format('YYYY-MM-DD'),
+        readStatus: searchObj?.readStatus || initialSearchState.notificationReadStatus // <-- Added
       };
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
@@ -108,9 +110,10 @@ export const NotificationsProvider = ({ children }) => {
     async (searchObj) => {
       const payload = {
         searchText: searchObj?.searchText,
-        category: searchObj?.category === 'All' ? '' : searchObj?.category, // Convert 'All' to empty string for API call
+        category: searchObj?.category === 'All' ? '' : searchObj?.category,
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
-        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
+        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD'),
+        readStatus: searchObj?.readStatus // <-- Added
       };
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
@@ -129,9 +132,10 @@ export const NotificationsProvider = ({ children }) => {
       if (notificationDrawerOpen) setLoadingDrawerNotifications(true);
       const payload = {
         searchText: searchObj?.searchText,
-        category: searchObj?.category === 'All' ? '' : searchObj?.category, // Convert 'All' to empty string for API call
+        category: searchObj?.category === 'All' ? '' : searchObj?.category,
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
-        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
+        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD'),
+        readStatus: searchObj?.readStatus
       };
       const paramsObj = {
         pageNo: searchObj?.page - 1,
@@ -169,9 +173,10 @@ export const NotificationsProvider = ({ children }) => {
 
       const payload = {
         searchText: searchObj.searchText,
-        category: searchObj.category === 'All' ? '' : searchObj.category, // Convert 'All' to empty string for API call
+        category: searchObj.category === 'All' ? '' : searchObj.category,
         startDate: dayjs(searchObj.startDate).format('YYYY-MM-DD'),
-        endDate: dayjs(searchObj.endDate).format('YYYY-MM-DD')
+        endDate: dayjs(searchObj.endDate).format('YYYY-MM-DD'),
+        readStatus: searchObj.readStatus
       };
       const paramsObj = {
         pageNo: searchObj.page - 1,
@@ -223,9 +228,10 @@ export const NotificationsProvider = ({ children }) => {
     async (searchObj) => {
       const payload = {
         searchText: searchObj?.searchText,
-        category: searchObj?.category === 'All' ? '' : searchObj?.category, // Convert 'All' to empty string for API call
+        category: searchObj?.category === 'All' ? '' : searchObj?.category,
         startDate: dayjs(searchObj?.startDate).format('YYYY-MM-DD'),
-        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD')
+        endDate: dayjs(searchObj?.endDate).format('YYYY-MM-DD'),
+        readStatus: searchObj?.readStatus
       };
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_READ_ALL(), httpVerb.PATCH, payload);
     },
@@ -409,7 +415,8 @@ export const NotificationsProvider = ({ children }) => {
       startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
       endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
       page: searchState.page,
-      pageSize: searchState.pageSize
+      pageSize: searchState.pageSize,
+      readStatus: searchState.notificationReadStatus // <-- Added
     };
     notificationsMutation.mutate(searchObj);
   };
@@ -445,10 +452,11 @@ export const NotificationsProvider = ({ children }) => {
     const searchObj = {
       searchText: !notificationDrawerOpen ? searchState.searchText : '',
       category: !notificationDrawerOpen ? searchState.notificationCategory : '',
-      startDate: !notificationDrawerOpen ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD') : dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
-      endDate: !notificationDrawerOpen
-        ? dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
-        : dayjs().format('YYYY-MM-DD')
+      startDate: !notificationDrawerOpen
+        ? dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD')
+        : dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
+      endDate: !notificationDrawerOpen ? dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'),
+      readStatus: !notificationDrawerOpen ? searchState.notificationReadStatus : initialSearchState.notificationReadStatus // <-- Added
     };
     markAllNotificationsAsReadMutation.mutate(searchObj);
   };
