@@ -203,32 +203,14 @@ const CreateCrosswalk = () => {
           </Button>
         </div>
 
-        {trade && (
+        {(trade || material) && (
           <TherapyDetailsWithTabs
             isMaterialListing={true}
             trade={trade}
             onSelect={() => {}}
             onClose={handleOnClose}
-            heading={t('manageMaterial.drawer.heading')}
+            heading={t('manageMaterial.drawer.details.heading')}
             showFooter={false}
-          />
-        )}
-
-        {material && (
-          <TherapyDetails
-            // therapyId={material}
-            // therapyData={MaterialDetailsConstants}
-            onClose={handleOnDetailsPanelClose}
-            showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
-            heading={t('manageMaterial.drawer.heading')}
-            notify={({ type, message }) =>
-              addNotification({
-                type,
-                description: message
-              })
-            }
           />
         )}
       </div>

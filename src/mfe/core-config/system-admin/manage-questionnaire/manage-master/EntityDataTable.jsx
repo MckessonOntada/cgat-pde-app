@@ -194,7 +194,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
           spTherapyConstants={TherapyDetailsConstantsForSP}
-          heading={t('manageMaterial.drawer.heading')}
+          heading={t('manageMaterial.drawer.details.heading')}
         />
       )}
     </React.Fragment>

@@ -250,7 +250,7 @@ function TherapySelection() {
               onClose={handleOnClose}
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
               spTherapyConstants={TherapyDetailsConstantsForSP}
-              heading={t('manageMaterial.drawer.heading')}
+              heading={t('manageMaterial.drawer.details.heading')}
             />
           )}
         </div>
