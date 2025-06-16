@@ -66,6 +66,13 @@ async function updateSPAccount(payload, spAccountId) {
 
   return {};
 }
+async function uploadAccountData(payload, organizationId) {
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/for-practice/${organizationId}/upload`;
+  const response = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
+  return response;
+}
 
 const AccountService = Object.freeze({
   getAccountList,
@@ -73,7 +80,8 @@ const AccountService = Object.freeze({
   getAccountListConfigurationById,
   saveSPAccountDetails,
   deactivateSPAccount,
-  updateSPAccount
+  updateSPAccount,
+  uploadAccountData
 });
 
 export default AccountService;

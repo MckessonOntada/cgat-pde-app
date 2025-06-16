@@ -555,8 +555,11 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.state': 'S_State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.',
   'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.',
-  'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page',
-
+  'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page', 
+  'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.',
+  'controls.uploadAccount': 'S_Upload Account',
+  'label.uploadAccountListCSV': 'S_Upload Account List CSV',
+  'controls.uploadAccount': 'S_Upload Account', 
   'form.label.insuranceCompany': 'S_Insurance Company',
   'form.label.memberNumber': 'S_Member Number',
   'form.label.groupNumber': 'S_Group Number',
@@ -611,5 +614,5 @@ export const MessageEs = {
   'column.material.crosswalk.spProductID': 'S_SP Product ID',
   'column.material.crosswalk.spProductName': 'S_SP Product Name',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
-  'column.material.crosswalk.action': 'S_Action'
+  'column.material.crosswalk.action': 'S_Action' 
 };

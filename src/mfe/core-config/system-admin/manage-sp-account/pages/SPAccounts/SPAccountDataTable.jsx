@@ -14,6 +14,7 @@ import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnai
 import AuthUtils from '@src/util/AuthUtils';
 import { ChannelType } from '../../util';
 import AccountDetails from '../../../manage-account/pages/AccountDetails';
+import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 
 function SPAccountDataTable({ isLinkedAccount }) {
   const { t } = useTranslate();
@@ -22,6 +23,7 @@ function SPAccountDataTable({ isLinkedAccount }) {
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
+  const handleOnClick = (url, organizationId) => () => navigate(url, { state: { organizationId } });
   const columns = [
     {
       id: 'accountNumber',
@@ -105,14 +107,19 @@ function SPAccountDataTable({ isLinkedAccount }) {
             !isLinkedAccount && (
               <div className="controls">
                 {
-                  <Button
-                    Icon={add_circle_bold}
-                    className="button-icon"
-                    variant="primary"
-                    size="md"
-                    onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
-                    {t('manageSPAccount.heading.addSPAccount')}
-                  </Button>
+                  <>
+                    <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload', organizationId)} size="md">
+                      {t('controls.uploadAccount')}
+                    </Button>
+                    <Button
+                      Icon={add_circle_bold}
+                      className="button-icon"
+                      variant="primary"
+                      size="md"
+                      onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
+                      {t('manageSPAccount.heading.addSPAccount')}
+                    </Button>
+                  </>
                 }
               </div>
             )
