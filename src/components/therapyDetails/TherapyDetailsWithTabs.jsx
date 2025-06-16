@@ -28,17 +28,18 @@ export const THERAPY_TABS = {
 
 function TherapyDetailsWithTabs({
   trade,
-  channelType,
+  channelType: _channelType,
   therapyId,
   onClose,
   onSelect,
   isDetailsByNdc = false,
-  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB(false, isDetailsByNdc),
+  buyAndBillTherapyConstants = TherapyDetailsConstantsForBB(false),
   spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
   heading,
   isMaterialListing = false
 }) {
+  const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
   const { t } = useTranslate();
   const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter();
   const [therapyTabs, setTherapyTabs] = useState(() => {
@@ -98,7 +99,7 @@ function TherapyDetailsWithTabs({
           setSelectedTab(therapyTabs[0]);
         }
 
-        const __therapyDetails = data.find((d) => d.id === selectedTab.therapyId);
+        const __therapyDetails = data.find((d) => d.id === (!selectedTab ? therapyTabs[0].therapyId : selectedTab.therapyId));
         setTherapyDetails({ ...__therapyDetails });
       } else {
         setAlert({
@@ -284,7 +285,7 @@ function TherapyDetailsWithTabs({
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          {(!isDetailsByNdc || therapyTabs.length > 1) && (
+          {((!isDetailsByNdc && channelType === CHANNEL_TYPE.BUY_AND_BILL) || (isDetailsByNdc && therapyTabs.length > 1)) && (
             <TabList
               options={therapyTabs}
               alignment="left"
@@ -344,13 +345,22 @@ function TherapyDetailsWithTabs({
 
 function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
   const { t } = useTranslate();
-  const renderDetails = (fields, details) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
+  const renderDetails = (fields, details) =>
+    fields.map(({ label, value }) => (
+      <DetailItem
+        key={label}
+        label={t(label)}
+        value={
+          details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (value === 'dropshipIndicator' || value === 'sellingUnitCode') ? 'NA' : details[value] || '-'
+        }
+      />
+    ));
   return (
     <div className={styles.detailsPanel}>
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            {(!isDetailsByNdc || therapyTabs.length > 1) && (
+            {((!isDetailsByNdc && details.channelType === CHANNEL_TYPE.BUY_AND_BILL) || (isDetailsByNdc && therapyTabs.length > 1)) && (
               <Heading as="h3" className={styles.details}>
                 {t(section.sectionHeading)}
               </Heading>
