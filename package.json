@@ -32,7 +32,7 @@
   },
   "scripts": {
     "dev": "webpack serve --open /dashboard --config webpack.dev.js",
-    "build": "webpack --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "lint": "eslint src",

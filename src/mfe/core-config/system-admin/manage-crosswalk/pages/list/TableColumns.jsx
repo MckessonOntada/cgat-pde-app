@@ -23,7 +23,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
   return [
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_NDC,
-      name: 'Buy & Bill NDC',
+      name: t('column.material.crosswalk.buyBillNDC'),
       minWidth: '160px',
       sortable: false,
       cell: (props) => (
@@ -44,7 +44,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.THERAPY,
-      name: 'Therapy',
+      name: t('column.material.crosswalk.Therapy'),
       minWidth: '80px',
       sortable: true,
       sortKey: 'tradeName',
@@ -52,7 +52,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
-      name: 'SP Product ID',
+      name: t('column.material.crosswalk.spProductID'),
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductId',
@@ -76,7 +76,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NAME,
-      name: 'SP Product Name',
+      name: t('column.material.crosswalk.spProductName'),
       minWidth: '130px',
       sortable: true,
       sortKey: 'spProductName',
@@ -84,15 +84,15 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
-      name: 'SP Product NDC',
+      name: t('column.material.crosswalk.spNDC'),
       minWidth: '90px',
       cell: (props) => <EclipsesTextcss str={props?.spNdc || '-'} />
     },
 
     {
       id: MATERIAL_CROSSWALK_COLUMNS.ACTION,
-      name: 'Action',
-      minWidth: '130px',
+      name: t('column.material.crosswalk.action'),
+      maxWidth: '130px',
       cell: (props) => (
         <IconButton label={t('button.caption.unlink')} size="lg" iconButton={false} textButton={true} Icon={LinkIcon} onClick={confirmationUnlink(props.id)} />
       )

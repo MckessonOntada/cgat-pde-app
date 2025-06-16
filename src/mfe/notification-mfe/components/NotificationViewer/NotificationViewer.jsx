@@ -42,7 +42,7 @@ const NotificationViewer = () => {
   }
 
   // Format the notification's creation date for display
-  const formattedDate = new Date(selectedNotification?.createdDate).toLocaleString('en-US', {
+  const formattedDate = new Date(selectedNotification?.eventDate).toLocaleString('en-US', {
     month: '2-digit',
     day: '2-digit',
     year: 'numeric',
