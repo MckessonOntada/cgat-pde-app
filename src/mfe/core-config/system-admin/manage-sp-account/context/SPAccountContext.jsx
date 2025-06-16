@@ -4,6 +4,7 @@ import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin
 import AccountService from '@src/api/commonService/AccountService';
 import { ChannelType } from '../util';
 import AuthUtils from '@src/util/AuthUtils';
+import { useLocation } from 'react-router-dom';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -33,7 +34,7 @@ const INITIAL_SORT_STATE = {
   sortOrder: 'desc'
 };
 
-export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
+export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMaterial = false }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
@@ -41,6 +42,10 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
   const practiceId = AuthUtils.getPracticeId();
   const [fileteredData, setfileteredData] = useState(false);
   const organizationId = selectedOrganization?.id || practiceId;
+
+  const location = useLocation();
+  const spMaterialId = location.state?.sapID?.materialNumber;
+  const salesOrg = location.state?.sapID?.salesOrg;
 
   useEffect(() => {
     clearFilters();
@@ -75,11 +80,12 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      practiceId: organizationId,
-      partnerFunction: 'SOLD_TO',
-      channelType: !practiceId ? ChannelType.SPECIALITY_PHARMA : 'ALL',
+      ...(!isSpMaterial && { practiceId: organizationId }),
+      ...(!isSpMaterial && { partnerFunction: 'SOLD_TO' }),
+      ...(!isSpMaterial && { channelType: !practiceId ? ChannelType.SPECIALITY_PHARMA : 'ALL' }),
       ...(isLinkedAccounts && filterConfig?.distributionChannel ? { channelType: filterConfig.distributionChannel } : {}),
-      ...(isLinkedAccounts && filterConfig?.salesOrg ? { salesOrg: filterConfig.salesOrg } : {})
+      ...(isLinkedAccounts && filterConfig?.salesOrg ? { salesOrg: filterConfig.salesOrg } : {}),
+      ...(isSpMaterial && { salesOrgs: salesOrg })
     };
 
     return baseParams;
@@ -91,10 +97,16 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false }) => {
     data: SPAccountList,
     refetch: refetchSPAccountList
   } = useQuery({
-    queryKey: ['SPAccounts', selectedOrganization?.id, requestParams, organizationId],
+    queryKey: ['SPAccounts', selectedOrganization?.id, requestParams, organizationId, isSpMaterial, spMaterialId],
     queryFn: async () => {
-      if (!organizationId) return [];
-      const result = await AccountService.getAccountList(requestParams, organizationId);
+      let result;
+      console.log(isSpMaterial, 'isSpMaterial');
+      if (!isSpMaterial) {
+        if (!organizationId) return [];
+        result = await AccountService.getAccountList(requestParams, organizationId);
+      } else {
+        result = await AccountService.getAssociatedMaterialSPAccountList(requestParams, spMaterialId);
+      }
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,

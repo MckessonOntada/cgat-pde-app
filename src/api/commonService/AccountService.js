@@ -67,13 +67,35 @@ async function updateSPAccount(payload, spAccountId) {
   return {};
 }
 
+export const getAssociatedMaterialSPAccountList = async (requestParams, materialId) => {
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/linked-accounts/${materialId}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+};
+
+async function removeLinkedSpAccount(spAccountId, spMaterialId) {
+  if (!Array.isArray(providerIds)) {
+    throw new Error('Provider Ids must be an array.');
+  }
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/material/${spAccountId}/account/${spMaterialId}/unlink`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PUT, {
+    accept: 'application/json'
+  });
+  return res.data || {};
+}
+
 const AccountService = Object.freeze({
   getAccountList,
   getAccountListById,
   getAccountListConfigurationById,
   saveSPAccountDetails,
   deactivateSPAccount,
-  updateSPAccount
+  updateSPAccount,
+  getAssociatedMaterialSPAccountList,
+  removeLinkedSpAccount
 });
 
 export default AccountService;

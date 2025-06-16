@@ -8,14 +8,15 @@ import { useSPAccountContext } from '../../context/SPAccountContext';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button, Alert, IconButton } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import AuthUtils from '@src/util/AuthUtils';
 import { ChannelType } from '../../util';
 import AccountDetails from '../../../manage-account/pages/AccountDetails';
+import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
 
-function SPAccountDataTable({ isLinkedAccount }) {
+function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccounts }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId, fileteredData } = useSPAccountContext();
@@ -84,6 +85,28 @@ function SPAccountDataTable({ isLinkedAccount }) {
         />
       ),
       omit: !isLinkedAccount ? true : false
+    },
+    {
+      id: 'action',
+      center: true,
+      name: t('manageSPAccount.table.action'),
+      isAction: true,
+      width: '200px',
+      cell: (row) => {
+        return (
+          <IconButton
+            label={t('manageSPAccount.providers.column.unlink')}
+            size="lg"
+            iconButton={false}
+            textButton={true}
+            Icon={linkIcon}
+            onClick={(row) => {
+              handleUnlinkSpAccounts(row.accountNumber);
+            }}
+          />
+        );
+      },
+      omit: !isSpMaterial
     }
   ];
 
@@ -97,28 +120,30 @@ function SPAccountDataTable({ isLinkedAccount }) {
 
   return (
     <div>
-      <div style={{ marginBottom: '24px', marginTop: '16px' }}>
-        <ModuleHeader
-          heading={<Heading as="h2">{!isLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
-          controls={
-            !isCustomerCenter &&
-            !isLinkedAccount && (
-              <div className="controls">
-                {
-                  <Button
-                    Icon={add_circle_bold}
-                    className="button-icon"
-                    variant="primary"
-                    size="md"
-                    onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
-                    {t('manageSPAccount.heading.addSPAccount')}
-                  </Button>
-                }
-              </div>
-            )
-          }
-        />
-      </div>
+      {!isSpMaterial && (
+        <div style={{ marginBottom: '24px', marginTop: '16px' }}>
+          <ModuleHeader
+            heading={<Heading as="h2">{!isLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
+            controls={
+              !isCustomerCenter &&
+              !isLinkedAccount && (
+                <div className="controls">
+                  {
+                    <Button
+                      Icon={add_circle_bold}
+                      className="button-icon"
+                      variant="primary"
+                      size="md"
+                      onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
+                      {t('manageSPAccount.heading.addSPAccount')}
+                    </Button>
+                  }
+                </div>
+              )
+            }
+          />
+        </div>
+      )}
       <CustomDataTable
         id="my-data-table"
         type="normal"
@@ -138,7 +163,7 @@ function SPAccountDataTable({ isLinkedAccount }) {
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={!fileteredData ? t('manageSPAccount.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('manageSPAccount.table.emptyDataDescription')}
+            description={!fileteredData && !isSpMaterial && t('manageSPAccount.table.emptyDataDescription')}
           />
         }
       />

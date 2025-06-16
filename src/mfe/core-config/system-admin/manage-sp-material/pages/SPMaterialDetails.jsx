@@ -293,6 +293,9 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                   </div>
                 </>
               )}
+              <div className="associated-li" onClick={() => navigate('associted-accounts', { state: { sapID: MaterialData.therapy } })}>
+                {t('manageSPAccount.seeAssociatedAccounts')}
+              </div>
             </div>
           </div>
         </FloatingDrawer>

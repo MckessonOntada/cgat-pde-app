@@ -193,5 +193,10 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.channelType.buynbill': 'S_Buy and Bill',
   'manageSPAccount.channelType.specialtyPharma': 'S_SP',
 
-  'manageLinkedAccounts.backToLinkedAccountdetails': 'S_Back to Linked account details page'
+  'manageLinkedAccounts.backToLinkedAccountdetails': 'S_Back to Linked account details page',
+  'manageLinkedAccounts.backToLinkedAccountdetails': 'S_Back to Linked account details page',
+  'manageSPAccount.message.remove.spAccount': 'S_Are you sure you want to unlink this Account?',
+  'manageSPAccount.message.removeSpAccount.success': 'S_Account has been unlinked successfully.',
+  'manageSPAccount.error.message.unableToUnlinkAccount': 'S_Unable to unlink Account.',
+  'manageSPAccount.seeAssociatedAccounts': 'S_SEE ASSOCIATED SP ACCOUNTS'
 };
