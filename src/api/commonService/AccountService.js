@@ -74,6 +74,23 @@ async function uploadAccountData(payload, organizationId) {
   return response;
 }
 
+export const getAssociatedMaterialSPAccountList = async (requestParams, materialId) => {
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/linked-accounts/${materialId}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+};
+
+async function removeLinkedSpAccount(spAccountId, spMaterialId) {
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/material/${spMaterialId}/account/${spAccountId}/unlink`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PUT, {
+    accept: 'application/json'
+  });
+  return res.data || {};
+}
+
 const AccountService = Object.freeze({
   getAccountList,
   getAccountListById,
@@ -81,6 +98,8 @@ const AccountService = Object.freeze({
   saveSPAccountDetails,
   deactivateSPAccount,
   updateSPAccount,
+  getAssociatedMaterialSPAccountList,
+  removeLinkedSpAccount,
   uploadAccountData
 });
 
