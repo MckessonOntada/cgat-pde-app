@@ -66,6 +66,13 @@ async function updateSPAccount(payload, spAccountId) {
 
   return {};
 }
+async function uploadAccountData(payload, organizationId) {
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/for-practice/${organizationId}/upload`;
+  const response = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
+  return response;
+}
 
 export const getAssociatedMaterialSPAccountList = async (requestParams, materialId) => {
   const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/linked-accounts/${materialId}?${serializeParams(requestParams)}`;
@@ -77,7 +84,7 @@ export const getAssociatedMaterialSPAccountList = async (requestParams, material
 };
 
 async function removeLinkedSpAccount(spAccountId, spMaterialId) {
-  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/material/${spAccountId}/account/${spMaterialId}/unlink`;
+  const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/material/${spMaterialId}/account/${spAccountId}/unlink`;
   const res = await HttpResourceService.callRest(url, httpVerb.PUT, {
     accept: 'application/json'
   });
@@ -92,7 +99,8 @@ const AccountService = Object.freeze({
   deactivateSPAccount,
   updateSPAccount,
   getAssociatedMaterialSPAccountList,
-  removeLinkedSpAccount
+  removeLinkedSpAccount,
+  uploadAccountData
 });
 
 export default AccountService;

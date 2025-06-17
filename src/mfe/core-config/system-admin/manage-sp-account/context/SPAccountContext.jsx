@@ -34,11 +34,16 @@ const INITIAL_SORT_STATE = {
   sortOrder: 'desc'
 };
 
+const INITIAL_SORT_STATE_SP_MATERIAL = {
+  sortBy: 'accountNumber',
+  sortOrder: 'desc'
+};
+
 export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMaterial = false }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const [sortConfig, setSortConfig] = useState(!isSpMaterial ? INITIAL_SORT_STATE : INITIAL_SORT_STATE_SP_MATERIAL);
   const practiceId = AuthUtils.getPracticeId();
   const [fileteredData, setfileteredData] = useState(false);
   const organizationId = selectedOrganization?.id || practiceId;
@@ -77,8 +82,8 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMate
     const baseParams = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      ...(!isSpMaterial && { sortBy: sortConfig.sortBy }),
-      ...(!isSpMaterial && { sortOrder: sortConfig.sortOrder }),
+      sortBy: sortConfig.sortBy,
+      sortOrder: sortConfig.sortOrder,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(!isSpMaterial && { practiceId: organizationId }),
       ...(!isSpMaterial && { partnerFunction: 'SOLD_TO' }),

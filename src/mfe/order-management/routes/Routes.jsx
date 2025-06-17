@@ -14,14 +14,11 @@ import { TherapyProvider } from '../context/TherapyContext';
 import { OrderProvider } from '../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
-import PayerDetails from '../pages/create/form-segments/payers-details';
 import UploadOrderDocument from '../pages/create/form-segments/upload-document';
+import Payer from '../pages/create/form-segments/payers-details';
 
 function OrderManagementRoutes() {
-  const addEditPermission = [
-    PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS,
-    PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
-  ];
+  const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
   return (
     <Routes>
       <Route
@@ -35,8 +32,7 @@ function OrderManagementRoutes() {
       <Route
         path={`create-order`}
         element={
-          <ProtectedRoute
-            permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS]}>
+          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS]}>
             <TherapyProvider>
               <TherapySelection />
             </TherapyProvider>
@@ -46,8 +42,7 @@ function OrderManagementRoutes() {
       <Route
         path={`edit-order/:orderId`}
         element={
-          <ProtectedRoute
-            permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
             <TherapyProvider>
               <TherapySelection />
             </TherapyProvider>
@@ -70,7 +65,7 @@ function OrderManagementRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path={`:orderId/payer`} element={<PayerDetails />} />
+      <Route path={`:orderId/payer`} element={<Payer />} />
       <Route
         path={`:orderId/additional-details`}
         element={

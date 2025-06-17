@@ -15,6 +15,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { ChannelType } from '../../util';
 import AccountDetails from '../../../manage-account/pages/AccountDetails';
 import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
+import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 
 function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccounts }) {
   const { t } = useTranslate();
@@ -23,6 +24,7 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
+  const handleOnClick = (url, organizationId) => () => navigate(url, { state: { organizationId } });
   const columns = [
     {
       id: 'accountNumber',
@@ -30,24 +32,28 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
       selector: (row) => row.accountNumber || '',
       maxWidth: '350px',
       cell: (props) =>
-        props.channelType === ChannelType.BUY_AND_BILL ? (
-          <Link
-            className="MCP-table-link"
-            aria-label={t('table.columns.captions.accountNumber')}
-            onClick={(e) => {
-              e.preventDefault();
-              setOpenDetails(true);
-              setSelectedDetails(props);
-            }}>
-            <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
-          </Link>
+        !isSpMaterial ? (
+          props.channelType === ChannelType.BUY_AND_BILL ? (
+            <Link
+              className="MCP-table-link"
+              aria-label={t('table.columns.captions.accountNumber')}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setSelectedDetails(props);
+              }}>
+              <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
+            </Link>
+          ) : (
+            <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
+              <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
+            </Link>
+          )
         ) : (
-          <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
-            <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
-          </Link>
+          <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
         ),
       sortable: true,
-      sortKey: 'sap_partner'
+      sortKey: !isSpMaterial ? 'sap_partner' : 'accountNumber'
     },
     {
       id: 'accountName',
@@ -56,7 +62,7 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
       maxWidth: '350px',
       cell: (props) => <EclipsesTextcss str={props.accountName} maxWidth={330} />,
       sortable: true,
-      sortKey: 'name_1'
+      sortKey: !isSpMaterial ? 'name_1' : 'accountName'
     },
     {
       id: 'address',
@@ -129,14 +135,19 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
               !isLinkedAccount && (
                 <div className="controls">
                   {
-                    <Button
-                      Icon={add_circle_bold}
-                      className="button-icon"
-                      variant="primary"
-                      size="md"
-                      onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
-                      {t('manageSPAccount.heading.addSPAccount')}
-                    </Button>
+                    <>
+                      <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload', organizationId)} size="md">
+                        {t('controls.uploadAccount')}
+                      </Button>
+                      <Button
+                        Icon={add_circle_bold}
+                        className="button-icon"
+                        variant="primary"
+                        size="md"
+                        onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
+                        {t('manageSPAccount.heading.addSPAccount')}
+                      </Button>
+                    </>
                   }
                 </div>
               )

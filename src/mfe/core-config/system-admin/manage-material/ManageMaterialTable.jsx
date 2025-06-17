@@ -263,37 +263,10 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
           spTherapyConstants={TherapyDetailsConstantsForSP}
-          heading={t('manageMaterial.drawer.heading')}
+          heading={t('manageMaterial.drawer.details.heading')}
           showFooter={false}
         />
       )}
-
-      {/* {openDetails && (
-        <TherapyDetails
-          therapyId={materialNumber}
-          therapyData={MaterialDetailsConstants}
-          configurationData={ConfigConstants}
-          onClose={() => setOpenDetails(!openDetails)}
-          showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
-          hasDeleteConfigAccess={!isCustomerCenter}
-          heading={t('manageMaterial.drawer.heading')}
-          notify={({ type, message }) => {
-            if (type === 'success') {
-              onSuccess({
-                type,
-                description: message
-              });
-            } else {
-              onError({
-                type,
-                description: message
-              });
-            }
-          }}
-        />
-      )} */}
       {openConfiguration && <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
     </React.Fragment>
   );

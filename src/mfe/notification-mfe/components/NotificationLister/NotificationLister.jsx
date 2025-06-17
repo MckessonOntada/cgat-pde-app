@@ -231,7 +231,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
                       {!notification.readStatus && <span className="notification-unread-dot" />}
                     </div>
                     <div className="notification-description">{notification.messageDescription}</div>
-                    <div className="notification-date">{formatCreatedDate(notification.createdDate)}</div>
+                    <div className="notification-date">{formatCreatedDate(notification.eventDate)}</div>
                   </CustomCard>
                 </div>
               );

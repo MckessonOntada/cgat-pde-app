@@ -41,6 +41,7 @@ const mockApplyFilters = jest.fn();
 let mockSearchState = {
   notificationDateRange: [new Date('2023-01-01'), new Date('2023-01-31')],
   notificationCategory: 'all',
+  notificationReadStatus: 'ALL',
   page: 2,
 };
 jest.mock('../../context/NotificationsContext', () => ({
@@ -56,6 +57,11 @@ jest.mock('../../constants/NotificationFilterConstants', () => ({
     { value: 'all', label: 'All' },
     { value: 'urgent', label: 'Urgent' },
   ],
+  NOTIFICATION_READ_STATUS_LIST: [
+    { value: 'ALL', label: 'All' },
+    { value: 'READ', label: 'Read' },
+    { value: 'UNREAD', label: 'Unread' },
+  ],
 }));
 
 describe('FilterToolbar', () => {
@@ -64,6 +70,7 @@ describe('FilterToolbar', () => {
     mockSearchState = {
       notificationDateRange: [new Date('2023-01-01'), new Date('2023-01-31')],
       notificationCategory: 'all',
+      notificationReadStatus: 'ALL',
       page: 2,
     };
   });
@@ -72,6 +79,7 @@ describe('FilterToolbar', () => {
     render(<FilterToolbar isMobileView={false} />);
     expect(screen.getByTestId('date-range-picker')).toBeInTheDocument();
     expect(screen.getByTestId('dropdown')).toBeInTheDocument();
+    expect(screen.getAllByTestId('dropdown').length).toBe(2); // Category and Read Status
     expect(screen.getByTestId('apply-btn')).toHaveTextContent('notifications.cta.apply');
   });
 
@@ -82,38 +90,49 @@ describe('FilterToolbar', () => {
 
   it('shows initial values from searchState', () => {
     render(<FilterToolbar isMobileView={false} />);
-    // Compare stringified values for consistency
     expect(screen.getByTestId('date-range-picker')).toHaveTextContent(
       JSON.stringify([new Date('2023-01-01'), new Date('2023-01-31')])
     );
-    expect(screen.getByTestId('dropdown').value).toBe('all');
+    const dropdowns = screen.getAllByTestId('dropdown');
+    expect(dropdowns[0].value).toBe('all'); // Category
+    expect(dropdowns[1].value).toBe('ALL'); // Read Status
   });
 
   it('updates date range on change', () => {
     render(<FilterToolbar isMobileView={false} />);
     fireEvent.click(screen.getByTestId('date-range-picker'));
-    expect(screen.getByTestId('dropdown')).toBeInTheDocument();
+    expect(screen.getAllByTestId('dropdown').length).toBe(2);
     expect(screen.getByTestId('apply-btn')).toBeInTheDocument();
   });
 
   it('updates category on dropdown change', () => {
     render(<FilterToolbar isMobileView={false} />);
-    fireEvent.change(screen.getByTestId('dropdown'), { target: { value: 'urgent' } });
-    expect(screen.getByTestId('dropdown').value).toBe('urgent');
+    const dropdowns = screen.getAllByTestId('dropdown');
+    fireEvent.change(dropdowns[0], { target: { value: 'urgent' } });
+    expect(dropdowns[0].value).toBe('urgent');
+  });
+
+  it('updates read status on dropdown change', () => {
+    render(<FilterToolbar isMobileView={false} />);
+    const dropdowns = screen.getAllByTestId('dropdown');
+    fireEvent.change(dropdowns[1], { target: { value: 'READ' } });
+    expect(dropdowns[1].value).toBe('READ');
   });
 
   it('calls applyFilters with correct values on submit', async () => {
     render(<FilterToolbar isMobileView={false} />);
-    fireEvent.change(screen.getByTestId('dropdown'), { target: { value: 'urgent' } });
+    const dropdowns = screen.getAllByTestId('dropdown');
+    fireEvent.change(dropdowns[0], { target: { value: 'urgent' } });
+    fireEvent.change(dropdowns[1], { target: { value: 'UNREAD' } });
     fireEvent.click(screen.getByTestId('date-range-picker'));
     await act(async () => {
       fireEvent.click(screen.getByTestId('apply-btn'));
     });
-    // Accept both Date objects and string values for notificationDateRange
     expect(mockApplyFilters).toHaveBeenCalledWith(
       expect.objectContaining({
         notificationDateRange: [new Date('2023-01-01'), new Date('2023-01-31')],
         notificationCategory: 'urgent',
+        notificationReadStatus: 'UNREAD',
         page: 1,
       })
     );
@@ -121,15 +140,20 @@ describe('FilterToolbar', () => {
 
   it('reacts to searchState changes', () => {
     const { rerender } = render(<FilterToolbar isMobileView={false} />);
-    expect(screen.getByTestId('dropdown').value).toBe('all');
+    let dropdowns = screen.getAllByTestId('dropdown');
+    expect(dropdowns[0].value).toBe('all');
+    expect(dropdowns[1].value).toBe('ALL');
     // Change mockSearchState and rerender
     mockSearchState = {
       ...mockSearchState,
       notificationCategory: 'urgent',
+      notificationReadStatus: 'READ',
       notificationDateRange: [new Date('2023-02-01'), new Date('2023-02-28')],
     };
     rerender(<FilterToolbar isMobileView={false} />);
-    expect(screen.getByTestId('dropdown').value).toBe('urgent');
+    dropdowns = screen.getAllByTestId('dropdown');
+    expect(dropdowns[0].value).toBe('urgent');
+    expect(dropdowns[1].value).toBe('READ');
     expect(screen.getByTestId('date-range-picker')).toHaveTextContent(
       JSON.stringify([new Date('2023-02-01'), new Date('2023-02-28')])
     );
