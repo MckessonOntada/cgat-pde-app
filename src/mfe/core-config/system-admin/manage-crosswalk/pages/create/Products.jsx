@@ -24,8 +24,8 @@ const getColumns = ({ t }) => {
   return [
     {
       id: 'checkbox',
-      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
-      cell: (row, index) => renderTableCheckBox(row, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'tradeName', pagination, state.selectedProducts || [], onSelectProduct),
+      cell: (row, index) => renderTableCheckBox(row, data, 'tradeName', pagination, state.selectedProducts || [], onSelectProduct),
       selector: (row) => row.materialNumber,
       width: '50px',
       showInMobileHeader: true
