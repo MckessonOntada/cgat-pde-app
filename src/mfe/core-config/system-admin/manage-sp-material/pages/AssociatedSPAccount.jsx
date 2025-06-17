@@ -68,7 +68,12 @@ function AssociatedSPAccount() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate(-1)} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate('/system-admin/config/manage-sp-material', { state: { isAssociatedAccount: true } })}
+          size="md">
           {t('Back to sp material master')}
         </Button>
       </div>
