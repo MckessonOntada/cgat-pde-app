@@ -26,7 +26,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
 
 function Payer() {
-  const [validationSchema, setValidationSchema] = React.useState(null);
   const [formValues, setFormValues] = React.useState(baseValues);
   const [isSecondaryMedicalInsuranceOpen, setIsSecondaryMedicalInsuranceOpen] = React.useState(false);
   const [isSecondaryPharmacyInsuranceOpen, setIsSecondaryPharmacyInsuranceOpen] = React.useState(false);
@@ -51,31 +50,17 @@ function Payer() {
   });
 
   React.useEffect(() => {
-    if (flag) {
-      setFlag(false);
-      return;
-    }
-    let newValues = { ...formValues };
-
-    if (isSecondaryPharmacyInsuranceOpen) {
-      newValues.secondaryPharmacyInsurance = getBasePharmacyInsuranceValues();
-    }
-
-    setFormValues({ ...newValues });
-  }, [isSecondaryPharmacyInsuranceOpen]);
-
-  React.useEffect(() => {
-    if (flag) {
-      setFlag(false);
-      return;
-    }
-    let newValues = { ...formValues };
-    if (isSecondaryMedicalInsuranceOpen) {
-      newValues.secondaryMedicalInsurance = getBaseMedicalInsuranceValues();
-    }
-
-    setFormValues({ ...newValues });
-  }, [isSecondaryMedicalInsuranceOpen]);
+    const newValues = {
+      ...baseValues,
+      ...(isSecondaryMedicalInsuranceOpen && {
+        secondaryMedicalInsurance: getBaseMedicalInsuranceValues()
+      }),
+      ...(isSecondaryPharmacyInsuranceOpen && {
+        secondaryPharmacyInsurance: getBasePharmacyInsuranceValues()
+      })
+    };
+    setFormValues(newValues);
+  }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
   React.useEffect(() => {
     if (orderDetails.payerDetails) {
@@ -87,7 +72,7 @@ function Payer() {
     }
   }, [orderDetails]);
 
-  React.useEffect(() => {
+  const validationSchema = React.useMemo(() => {
     let schemaShape = {
       ...getMedicalInsuranceSchema('primaryMedicalInsurance', t),
       ...getPharmacyInsuranceSchema('primaryPharmacyInsurance', t)
@@ -107,7 +92,7 @@ function Payer() {
       };
     }
 
-    setValidationSchema(Yup.object().shape(schemaShape));
+    return Yup.object().shape(schemaShape);
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
   const handleOnBack = () =>
@@ -196,7 +181,15 @@ function Payer() {
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={orderDetails?.channelType} />
       <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
-      <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
+      <Formik
+        key={`payer-details-${isSecondaryMedicalInsuranceOpen ? 'secondary-medical-insurance' : ''}-${
+          isSecondaryPharmacyInsuranceOpen ? 'secondary-pharmacy-insurance' : ''
+        }`}
+        initialValues={formValues}
+        validationSchema={validationSchema}
+        enableReinitialize={true}
+        onError={console.log}
+        onSubmit={handleOnSubmit}>
         {({ dirty, setFieldValue }) => {
           React.useEffect(() => {
             setIsDirty(dirty);
