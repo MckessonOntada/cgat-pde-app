@@ -21,9 +21,11 @@
   // Responsive Padding
   @include mixins.respond(md) {
     padding: 24px;
+    overflow: auto;
   }
   @include mixins.respond(lg) {
     padding: 32px;
+    overflow: auto;
   }
 
   /* --------------------------------------------------------------------------
