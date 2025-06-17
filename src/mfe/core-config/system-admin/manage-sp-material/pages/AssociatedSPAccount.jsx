@@ -10,6 +10,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import AccountService from '@src/api/commonService/AccountService';
 import Alert from '@src/components/cgat-alert/Alert';
+import { renderModal } from '@src/util/ModalUtil';
 
 function AssociatedSPAccount() {
   const { t } = useTranslate();

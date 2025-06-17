@@ -100,7 +100,7 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
             iconButton={false}
             textButton={true}
             Icon={linkIcon}
-            onClick={(row) => {
+            onClick={() => {
               handleUnlinkSpAccounts(row.accountNumber);
             }}
           />

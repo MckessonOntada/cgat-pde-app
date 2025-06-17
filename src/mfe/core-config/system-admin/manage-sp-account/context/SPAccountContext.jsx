@@ -77,8 +77,8 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMate
     const baseParams = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy,
-      sortOrder: sortConfig.sortOrder,
+      ...(!isSpMaterial && { sortBy: sortConfig.sortBy }),
+      ...(!isSpMaterial && { sortOrder: sortConfig.sortOrder }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(!isSpMaterial && { practiceId: organizationId }),
       ...(!isSpMaterial && { partnerFunction: 'SOLD_TO' }),

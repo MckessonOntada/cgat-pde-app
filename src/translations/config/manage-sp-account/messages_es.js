@@ -4,7 +4,7 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.breadcrumbs.systemAdministrator': 'S_System Administrator',
   'manageSPAccount.breadcrumbs.systemConfiguration': 'S_System Configuration',
   'manageSPAccount.breadcrumbs.manageSPAccount': 'S_Manage SP Account',
-  'manageSPAccount.filters.searchPlaceholder': 'S_Search by Account Number, Account Name, Address...',
+  'manageSPAccount.filters.searchPlaceholder': 'S_Search by Number, Name, Address',
   'manageSPAccount.table.spproductId': 'S_SP Product ID',
   'manageSPAccount.table.productname': 'S_Product Name',
   'manageSPAccount.table.ndc': 'S_NDC',

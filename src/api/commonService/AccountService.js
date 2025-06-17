@@ -77,9 +77,6 @@ export const getAssociatedMaterialSPAccountList = async (requestParams, material
 };
 
 async function removeLinkedSpAccount(spAccountId, spMaterialId) {
-  if (!Array.isArray(providerIds)) {
-    throw new Error('Provider Ids must be an array.');
-  }
   const url = `${ApiRoutes.PUBLIC_ACCOUNTS}/specialty-pharma/material/${spAccountId}/account/${spMaterialId}/unlink`;
   const res = await HttpResourceService.callRest(url, httpVerb.PUT, {
     accept: 'application/json'
