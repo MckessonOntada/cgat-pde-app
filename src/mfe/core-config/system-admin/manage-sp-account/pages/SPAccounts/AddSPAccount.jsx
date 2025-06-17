@@ -114,6 +114,7 @@ const AddSPAccount = () => {
     if (modalSuccessCallback === 'list') {
       navigate('/system-admin/config/manage-sp-account');
     } else if (modalSuccessCallback === 'details') {
+      const idToRedirect = spAccountId;
       const redirectPath = `../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', idToRedirect)}?orgId=${selectedOrganization?.id}`;
       navigate(redirectPath);
     }

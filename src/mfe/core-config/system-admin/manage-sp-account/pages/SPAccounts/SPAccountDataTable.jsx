@@ -69,7 +69,8 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
       name: t('table.columns.captions.address'),
       selector: (row) => row.address || '',
       maxWidth: '450px',
-      cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={430} />
+      cell: (props) =>
+        !isSpMaterial ? <EclipsesTextcss str={getAddress(props.address)} maxWidth={430} /> : <EclipsesTextcss str={getAddress(props)} maxWidth={430} />
     },
     {
       id: 'salesOrg',
