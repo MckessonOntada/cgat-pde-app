@@ -72,7 +72,8 @@ export const ConfigurationMessagesEN = {
   'provider.dea.required': 'Please Enter DEA Number',
   'provider.dea.max': 'DEA Number should not exceed 9 characters.',
   'provider.dea.alphaNum': 'DEA Number should only contain alphanumeric characters.',
-  'provider.dea.format': 'DEA Number must follow the format: 2 letters, 6 digits, 1 check digit.',
+  'provider.dea.format': 'DEA Number must follow the format: 1 letter, 1 letter or digit, followed by 7 digits.',
+
   'provider.dea.noSpaces': 'DEA Number cannot contain spaces or hyphens.',
 
   'provider.npiNumber': 'NPI Number',
