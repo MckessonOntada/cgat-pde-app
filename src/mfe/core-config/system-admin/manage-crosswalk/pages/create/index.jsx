@@ -21,6 +21,8 @@ import { useGenericContext } from '../../config/GenericContext';
 import { errorStatusCodes } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import CommonUtils from '@src/util/CommonUtils';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -188,7 +190,13 @@ const CreateCrosswalk = () => {
                 sortOrder: 'ASC'
               }}
               allowedSort={['trade_name']}
-              fetchFn={MaterialService.getMaterialList}>
+              fetchFn={async (args) => {
+                const response = await MaterialService.getMaterialList(args);
+                if (response.content && CommonUtils.isNonEmptyArray(response.content)) {
+                  response.content = ServiceUtil.transformTherapies(response.content);
+                }
+                return response;
+              }}>
               <Products selection={selectedItems} setSelection={setSelectedItems} />
             </TableProvider>
             <Summary />

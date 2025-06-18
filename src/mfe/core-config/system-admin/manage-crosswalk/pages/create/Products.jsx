@@ -74,8 +74,6 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const beautifiedData = ServiceUtil.transformTherapies(data);
-
   const debouncedApplyFilter = React.useCallback(
     CommonUtils.debounce((value) => {
       applyFilters({
@@ -106,8 +104,6 @@ const Products = () => {
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
-
-  console.log(data, beautifiedData);
 
   return (
     <React.Fragment>
@@ -147,7 +143,7 @@ const Products = () => {
             setSelectedMaterials: () => {},
             data
           })}
-          data={beautifiedData}
+          data={data}
           onSortIconClick={handleOnSort}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
@@ -175,7 +171,7 @@ const Products = () => {
           <SPMaterialDetails
             openSPMaterialDetails={true}
             setOpenSPMaterialDetails={handleOnDetailsPanelClose}
-            viewSPMaterial={beautifiedData.find((item) => item.id == catalog)}
+            viewSPMaterial={data.find((item) => item.id == catalog)}
           />
         )}
       </div>
