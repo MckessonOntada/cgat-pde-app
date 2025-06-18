@@ -36,7 +36,7 @@ export default function InvoicesTable() {
     },
     {
       onSuccess: (data) => {
-        navigate(`/orders/${data.id}/summary`, {
+        navigate(`/orders/${data}/summary`, {
           state: {
             backToInvoiceListing: true
           }
