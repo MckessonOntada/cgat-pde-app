@@ -18,7 +18,7 @@ import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLink 2.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import Footer from './Footer';
+import Footer from '@src/components/footer';
 
 const Login = () => {
   const widgetRef = useRef();

@@ -22,7 +22,7 @@ export const LoginMessagesES = {
   'footer.help.content': 'S_User Help Content',
   'footer.contant': 'S_Contact',
   'footer.contant.no': 'S_Contact us at: 1-855-887-6788',
-  'footer.copyright.1': '© {year} 2025 McKesson Corporation',
+  'footer.copyright.1': '© {year} McKesson Corporation',
   'footer.copyright.2': 'InspiroLink is a trademark of McKesson Corporation.',
   'message.exitUserViewConfirmation': 'S_Do you wish to exit working as',
   'button.caption.no': 'S_No',
@@ -40,5 +40,5 @@ export const LoginMessagesES = {
   'reset.password.account.settings': 'S_Account Settings',
   'reset.password.login.userInformation': 'S_User Information',
   'reset.password.error': 'S_Failed to sent reset password email',
-  'footer.help.siteMap': 'Site Map'
+  'footer.siteMap': 'Site Map'
 };
