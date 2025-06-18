@@ -21,19 +21,12 @@ const useOrder = (orderId) => {
             result[key] = undefined;
           }
         });
-        const { accountDetails, additionalDetails = {}, provider } = result;
+        const { accountDetails, provider } = result;
         if (accountDetails?.soldToAccount?.channelType) {
           result.channelType = accountDetails.soldToAccount.channelType;
         }
         if (provider) {
           provider.id = +provider.id;
-        }
-
-        if (additionalDetails.additionalDocuments && CommonUtils.isNonEmptyArray(additionalDetails.additionalDocuments)) {
-          additionalDetails.additionalDocuments = additionalDetails.additionalDocuments.map((t) => ({
-            ...t,
-            uploadedDate: CommonUtils.getDateTimeLabel(t.uploadedDate, 'MM/DD/YYYY, HH:mm')
-          }));
         }
       }
 
