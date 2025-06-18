@@ -1,21 +1,19 @@
 export const LoginMessagesES = {
   'login.label.LOGIN': 's_LOG IN',
   'header.label.logout': 's_Logout',
-  'widget.footer.contextmessage':
-    'S_If you need further assistance, please contact support at help@mckesson.com',
+  'widget.footer.contextmessage': 'S_If you need further assistance, please contact support at help@mckesson.com',
   'header.label.notifications': 'S_Notifications',
   'header.label.help': 'S_Help',
   'header.label.systemAdminView': 'S_System Admin View',
   'header.label.loggedInAs': 'S_Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'S_Exit User View',
-  'login.header.1': 'S_Advancing',
+  'login.header.1': 'Simplifying complex orders like never before.',
   'login.header.2': 'S_Health Outcomes for All',
   'login.page.desc.1': 'S_Solutions for your pharmacy, hospital,',
   'login.page.desc.2': 'S_organization or biopharma company',
   'login.welcome': 'S_Welcome !',
   'login.ordringPortal': 'S_Ordering Portal',
-  'login.details':
-    'S_Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
+  'login.details': 'S_Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
   'login.note': 'S_Note',
   'footer.terms': 'S_Terms',
   'footer.privacy': 'S_Privacy Notice',
@@ -24,24 +22,23 @@ export const LoginMessagesES = {
   'footer.help.content': 'S_User Help Content',
   'footer.contant': 'S_Contact',
   'footer.contant.no': 'S_Contact us at: 1-855-887-6788',
-  'footer.copyright':
-    'S_© {year} McKesson Corporation Health Technology Products LLC.',
+  'footer.copyright.1': '© {year} 2025 McKesson Corporation',
+  'footer.copyright.2': 'InspiroLink is a trademark of McKesson Corporation.',
   'message.exitUserViewConfirmation': 'S_Do you wish to exit working as',
   'button.caption.no': 'S_No',
   'button.caption.yes': 'S_Yes',
   'forgot.password': 'S_Forgot Password?',
   'forgot.password.submit': 'S_Forgot Password',
-  'forgot.password.success':
-    'S_Your request to reset your password has been successfully submitted, Please check your email.',
+  'forgot.password.success': 'S_Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'S_Error sending password reset email.',
   'forgot.terms.agreement': 'S_Terms of use and Patient Agreement',
   'reset.password.user.email': 'S_User Name / Email Address',
   'reset.password.password': 'S_Password',
   'reset.password.change.password': 'S_Change Password',
-  'reset.password.confirmation.message':
-    'S_An email has been sent to your registered email address with the link and instructions to reset your password.',
+  'reset.password.confirmation.message': 'S_An email has been sent to your registered email address with the link and instructions to reset your password.',
   'reset.password.ok': 'S_OK',
   'reset.password.account.settings': 'S_Account Settings',
   'reset.password.login.userInformation': 'S_User Information',
-  'reset.password.error': 'S_Failed to sent reset password email'
+  'reset.password.error': 'S_Failed to sent reset password email',
+  'footer.help.siteMap': 'Site Map'
 };
