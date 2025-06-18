@@ -78,7 +78,7 @@ export const getFormFields = (t, config, setFieldValue) => {
           placeholder: ' ',
           isRequired: true,
           component: Components['input'],
-          maxLength: 35
+          maxLength: 50
         }
       ]
     );
