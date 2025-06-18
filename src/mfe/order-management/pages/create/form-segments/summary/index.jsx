@@ -1062,7 +1062,15 @@ const Summary = () => {
                                 {documentSegment.comment && <DetailSegment maxLength={60} label={'Comment'} value={documentSegment.comment} />}
                                 <div>
                                   <DetailSegment direction="row" label={'Uploaded by:'} value={documentSegment.uploadedBy} />
-                                  <DetailSegment direction="row" label={'Uploaded on:'} value={documentSegment.uploadedDate} />
+                                  <DetailSegment
+                                    direction="row"
+                                    label={'Uploaded on:'}
+                                    value={
+                                      documentSegment.uploadedDate
+                                        ? dayjs.utc(documentSegment.uploadedDate).tz(dayjs.tz.guess()).format('MM/DD/YYYY, HH:mm')
+                                        : '-'
+                                    }
+                                  />
                                 </div>
                               </div>
                               {documentSegment.name && documentSegment.url && (
