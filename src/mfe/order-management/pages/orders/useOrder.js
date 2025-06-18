@@ -3,6 +3,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
 import { Loader } from '@mckesson/mcp-component-library';
 import { useNavigate } from 'react-router-dom';
+import CommonUtils from '@src/util/CommonUtils';
 
 const useOrder = (orderId) => {
   const navigate = useNavigate();
@@ -20,12 +21,19 @@ const useOrder = (orderId) => {
             result[key] = undefined;
           }
         });
-        const { accountDetails, provider } = result;
+        const { accountDetails, additionalDetails = {}, provider } = result;
         if (accountDetails?.soldToAccount?.channelType) {
           result.channelType = accountDetails.soldToAccount.channelType;
         }
         if (provider) {
           provider.id = +provider.id;
+        }
+
+        if (additionalDetails.additionalDocuments && CommonUtils.isNonEmptyArray(additionalDetails.additionalDocuments)) {
+          additionalDetails.additionalDocuments = additionalDetails.additionalDocuments.map((t) => ({
+            ...t,
+            uploadedDate: CommonUtils.getDateTimeLabel(t.uploadedDate, 'MM/DD/YYYY, HH:mm')
+          }));
         }
       }
 

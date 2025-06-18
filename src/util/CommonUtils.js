@@ -684,6 +684,37 @@ function flattenTherapies(data) {
   }, []);
 }
 
+function getDateTimeLabel(value, pattern = 'YYYY-MM-DD, HH:mm:ss', padding = true) {
+  try {
+    const date = new Date(value);
+
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+
+    const pad = (n) => (padding ? n.toString().padStart(2, '0') : n);
+
+    const components = {
+      YYYY: date.getFullYear(),
+      YY: String(date.getFullYear()).slice(-2),
+      MM: pad(date.getMonth() + 1),
+      DD: pad(date.getDate()),
+      HH: pad(date.getHours()),
+      mm: pad(date.getMinutes()),
+      ss: pad(date.getSeconds())
+    };
+
+    let formatted = pattern;
+    for (const [key, val] of Object.entries(components)) {
+      formatted = formatted.replace(key, val);
+    }
+
+    return formatted;
+  } catch {
+    return '';
+  }
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -735,7 +766,8 @@ const CommonUtils = Object.freeze({
   getAxiosErrorMessage,
   getListOverflowingDisplayLabel,
   flattenTherapies,
-  isEmptyArray
+  isEmptyArray,
+  getDateTimeLabel
 });
 
 export default CommonUtils;
