@@ -92,7 +92,7 @@ export const NotificationsProvider = ({ children }) => {
         category: searchCategoryValue,
         startDate: searchObj?.startDate || dayjs().subtract(90, 'day').format('YYYY-MM-DD'),
         endDate: searchObj?.endDate || dayjs().format('YYYY-MM-DD'),
-        readStatus: searchObj?.readStatus || initialSearchState.notificationReadStatus // <-- Added
+        readStatus: initialSearchState.notificationReadStatus // <-- Added
       };
       return await HttpResourceService.callRest(ApiRoutes.NOTIFICATIONS_UNREAD_COUNT(), httpVerb.POST, payload);
     },
@@ -258,7 +258,8 @@ export const NotificationsProvider = ({ children }) => {
               searchText: searchState.searchText,
               category: searchState.notificationCategory,
               startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-              endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+              endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+              readStatus: searchState.notificationReadStatus // <-- Added
             });
           isNotificationsPage && setNotifications((prev) => prev.map((notification) => ({ ...notification, readStatus: true })));
         }
@@ -300,7 +301,8 @@ export const NotificationsProvider = ({ children }) => {
               searchText: searchState.searchText,
               category: searchState.notificationCategory,
               startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-              endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+              endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+              readStatus: searchState.notificationReadStatus // <-- Added
             });
         }
       },
@@ -362,7 +364,8 @@ export const NotificationsProvider = ({ children }) => {
         searchText: searchState.searchText,
         category: searchState.notificationCategory,
         startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-        endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+        endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        readStatus: searchState.notificationReadStatus // <-- Added
       });
     }
   }, [searchState.searchText, searchState.notificationCategory, searchState.notificationDateRange]);
@@ -371,12 +374,14 @@ export const NotificationsProvider = ({ children }) => {
   useEffect(() => {
     if (!isNotificationsPage) {
       setSelectedNotification(null);
+      setSearchState(initialSearchState);
     } else {
       const searchObj = {
         searchText: searchState.searchText,
         category: searchState.notificationCategory,
         startDate: dayjs(searchState.notificationDateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-        endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD')
+        endDate: dayjs(searchState.notificationDateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        readStatus: searchState.notificationReadStatus // <-- Added
       };
       filteredUnreadCountMutation.mutate(searchObj);
     }
@@ -408,7 +413,10 @@ export const NotificationsProvider = ({ children }) => {
 
   // Fetch notifications (main page)
   const fetchNotifications = () => {
-    if (!isNotificationsPage) return;
+    if (!isNotificationsPage) {
+      setSearchState(initialSearchState);
+      return;
+    }
     const searchObj = {
       searchText: searchState.searchText,
       category: searchState.notificationCategory,
