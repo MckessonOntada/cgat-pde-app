@@ -23,6 +23,8 @@ function UploadFile({
   uploadLabel = null,
   isRequired = false,
   infoHeader,
+  fileTypeText = 'Only CSV',
+  uploadFileSizeText,
   children
 }) {
   const { t } = useTranslate();
@@ -43,11 +45,7 @@ function UploadFile({
                 {customDownload}
                 {downloadTemplate && (
                   <div className="controls">
-                    <Button
-                      className="button-icon"
-                      variant="secondary"
-                      size="md"
-                      onClick={downloadTemplate.fn}>
+                    <Button className="button-icon" variant="secondary" size="md" onClick={downloadTemplate.fn}>
                       {downloadTemplate.caption}
                     </Button>
                   </div>
@@ -94,16 +92,14 @@ function UploadFile({
                   isRequired={isRequired}
                   primaryButtonCaption={t('button.upload.browse')}
                   fileInputRef={fileInputRef}
+                  fileTypeText={fileTypeText}
+                  uploadFileSizeText={uploadFileSizeText}
                 />
 
                 {!prefixChildren && suffixChildren && children}
               </div>
               <div className="controls uploadControls">
-                <Button
-                  variant="secondary"
-                  type="button"
-                  onClick={cancelFunction}
-                  size={'md'}>
+                <Button variant="secondary" type="button" onClick={cancelFunction} size={'md'}>
                   {t(cancel.caption || 'Cancel')}
                 </Button>
                 <Button type="submit" size={'md'}>

@@ -1,15 +1,24 @@
 import CommonUtils from '@src/util/CommonUtils';
 
-export const validateFile = (t, file, allowedTypes = ['text/csv']) => {
-  if (!allowedTypes.includes(file.type)) {
-    const displayTypes = allowedTypes.map((type) => {
-      if (type === 'text/csv') return 'csv';
-      return type;
-    });
+export const validateFile = (t, file, allowedTypes = ['text/csv'], maxSizeMB = 4) => {
+  const MAX_SIZE_BYTES = maxSizeMB * 1024 * 1024;
 
+  if (!allowedTypes.includes(file.type)) {
     return {
       isValid: false,
-      message: t('upload.file.error.unsupportedFile').replace('{{file}}', displayTypes.join(', '))
+      message: t('upload.file.error.unsupportedFile')
+    };
+  }
+  if (file.size > MAX_SIZE_BYTES) {
+    return {
+      isValid: false,
+      message: t('upload.file.error.fileSizeExceeded').replace('{{maxSize}}', maxSizeMB)
+    };
+  }
+  if (file.name.length > 100) {
+    return {
+      isValid: false,
+      message: t('upload.file.error.fileNameTooLong')
     };
   }
   return { isValid: true, message: t('upload.file.success.validFile') };

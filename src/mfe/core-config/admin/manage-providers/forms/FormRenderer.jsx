@@ -6,6 +6,7 @@ import { Heading, Button } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
 import { useParams } from 'react-router-dom';
 import { getNestedValue } from '@src/components/form/util';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
 function getFileNameAndType(url) {
   const cleanUrl = url.split('?')[0].split('#')[0];
@@ -18,6 +19,7 @@ function getFileNameAndType(url) {
     type
   };
 }
+const ALLOWED_FILE_TYPE = ['application/pdf', 'image/png', 'image/jpeg'];
 
 const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections = [], insurance, insuranceLevel }) => {
   const { t } = useTranslate();
@@ -68,7 +70,9 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                       if (control.type === 'inputFile') {
                         const url = getNestedValue(values, control.name);
                         if (url) uploadControlAttributes.attachmentValue = getFileNameAndType(url);
+                        uploadControlAttributes.validateOnChange = (file) => validateFile(t, file, ALLOWED_FILE_TYPE);
                         uploadControlAttributes.onFileChange = (file) => onUpload(file, setFieldValue, control.name);
+                        uploadControlAttributes.fileTypeText = 'PDF, PNG, JPEG, JPG';
                       }
 
                       return (
