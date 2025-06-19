@@ -39,6 +39,7 @@ function getOptionsByStatus(props) {
   const { showAlert } = useAlert();
   const { refreshData, assignedGroupsData, orderView } = useOrders();
   const { hasPermission } = usePermission();
+  const { search } = useLocation();
 
   // Mutations
   const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
@@ -103,8 +104,7 @@ function getOptionsByStatus(props) {
   });
 
   const handleOnOptionSelection = (value) => {
-    const { tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL } = this.__meta__ || {};
-    const preservedState = { fromTab: tab, fromOrderView: orderView };
+    const preservedState = { __prevSearch: search };
     switch (value) {
       case ORDER_ENTITY_ACTION.VIEW:
         navigate(`${id}/summary`, {
@@ -149,8 +149,7 @@ function getOptionsByStatus(props) {
           state: {
             isEdit: props.approver?.id === loggedInUserId,
             isApprover: props.approver?.id === loggedInUserId,
-            fromTab: tab,
-            fromOrderView: orderView
+            __prevSearch: search
           }
         });
         break;
@@ -173,7 +172,7 @@ function getOptionsByStatus(props) {
         break;
       case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT: {
         navigate(`${props.id}/upload-document?`, {
-          state: { fromTab: tab, fromOrderView: orderView }
+          state: { __prevSearch: search }
         });
         break;
       }

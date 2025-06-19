@@ -85,16 +85,16 @@ function UploadOrderDocument() {
   };
 
   const handleOnCancel = () => {
-    navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-      state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView }
-    });
+    const searchParams = location.state?.__prevSearch || '';
+    navigate(`/orders${searchParams}`);
   };
 
   if (
     orderDetails.id &&
     (orderDetails.status !== ORDER_STATUS.SUBMITTED || ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(orderDetails.channelType))
   ) {
-    navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView } });
+    const searchParams = location.state?.__prevSearch || '';
+    navigate(`/orders${searchParams}`);
   }
   return (
     <div className="MCP-module-wrapper">

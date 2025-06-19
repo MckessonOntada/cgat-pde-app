@@ -9,10 +9,9 @@ import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
-import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TAB_FILTERS, TOGGLE_FILTERS } from './config';
+import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
-import CommonUtils from '@src/util/CommonUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { getTableColumns } from './TableColumns';
@@ -44,7 +43,6 @@ const OrderIndex = () => {
 
   const {
     applyFilters,
-    clearFilters,
     changeTab,
     orderView,
     assigneeList,
@@ -59,21 +57,9 @@ const OrderIndex = () => {
     fileteredData
   } = useOrders();
 
-  const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === config.tab);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
-
-  const orderCounts = {};
-  useEffect(() => {
-    if (!orderCounts || !CommonUtils.isNonEmptyObject(orderCounts)) return;
-
-    const allTabs = getTabs();
-    allTabs.forEach((tab) => {
-      tab.configName = t(tab.configName);
-    });
-    setTabList(allTabs);
-  }, [orderCounts]);
 
   useEffect(() => {
     const filters = {
@@ -91,7 +77,6 @@ const OrderIndex = () => {
   }, []);
 
   const handleApplyFilters = (filters) => {
-    // applyFilters(filters);
     const searchParams = {
       query: filters.searchQuery
     };
@@ -165,7 +150,7 @@ const OrderIndex = () => {
     changeTab(tabId, true);
   }, [location.search]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const alert = location.state?.alert;
     if (alert) {
       setAlert({ type: alert.type, description: alert.description });
@@ -173,24 +158,11 @@ const OrderIndex = () => {
     }
   }, [location]);
 
-  const handleOnClick = () => {
-    navigate(`${routesConfig.createOrder}?${searchParams.toString()}`, {
-      state: { fromTab: config.tab, fromOrderView: orderView }
+  const handleOnCreateNewOrder = () => {
+    navigate(`${routesConfig.createOrder}`, {
+      state: { __prevSearch: location.search || '' }
     });
   };
-
-  useEffect(() => {
-    if (activeTabFromState) {
-      tabList.forEach((tab) => {
-        tab.isActiveTab = tab.id === activeTabFromState;
-      });
-      setTabList(tabList);
-      changeTab(activeTabFromState, false);
-    }
-    if (location?.state?.fromOrderView) {
-      changeOrderView(location.state.fromOrderView);
-    }
-  }, [activeTabFromState, location?.state?.fromOrderView]);
 
   useEffect(() => {
     if (error) {
@@ -312,7 +284,7 @@ const OrderIndex = () => {
           controls={
             <div className="controls">
               <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
-                <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick} size="lg" aria-label={t('controls.createNewOrder')}>
+                <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnCreateNewOrder} size="lg" aria-label={t('controls.createNewOrder')}>
                   {t('controls.ariaLabels.createNewOrder')}
                 </Button>
               </PermittedComponent>

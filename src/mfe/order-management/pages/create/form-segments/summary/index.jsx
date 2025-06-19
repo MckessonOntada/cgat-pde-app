@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -394,9 +394,9 @@ const Summary = () => {
     if (backToInvoiceListing) {
       navigate('/record/invoices');
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+      debugger;
+      const searchParams = location.state?.__prevSearch || '';
+      navigate(`/orders${searchParams}`);
     }
   };
 
