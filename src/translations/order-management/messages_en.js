@@ -524,7 +524,7 @@ export const MessageEn = {
   'labels.SubmittedBy': 'Submitted By',
   'labels.SubmittedOn': 'Submitted On',
   'labels.Approver_Name': 'Approver Name',
-  'labels.Approval_Date_and_Time': 'Approval Date and Time',
+  'labels.Approval_Date_and_Time': 'Approval Date',
   'labels.soldToAccountName': 'Sold to Account Name',
   'labels.soldToAccountAddress': 'Sold to Account Address',
   'labels.shipToAccountName': 'Ship to Account Name',
