@@ -140,12 +140,8 @@ function TherapySelection() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: {
-          activeTab: preservedStateRef.current?.fromTab,
-          fromOrderView: preservedStateRef.current?.fromOrderView
-        }
-      });
+      const searchParams = location.state?.__prevSearch || '';
+      navigate(`/orders${searchParams}`);
     }
   };
 

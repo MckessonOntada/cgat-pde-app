@@ -95,13 +95,10 @@ function Payer() {
     return Yup.object().shape(schemaShape);
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
-  const handleOnBack = () =>
-    navigate(`/orders?${searchParams.toString()}`, {
-      state: {
-        activeTab: location?.state?.fromTab,
-        fromOrderView: location?.state?.fromOrderView
-      }
-    });
+  const handleOnBack = () => {
+    const searchParams = location.state?.__prevSearch || '';
+    navigate(`/orders${searchParams}`);
+  };
 
   const handleOnCancel = () => {
     if (isDirty) {
@@ -131,8 +128,6 @@ function Payer() {
   };
 
   const handleOnSubmit = (values) => {
-    console.log('Submitted values:', values);
-
     OrderService.savePayerDetails(orderId, values).then((response) => {
       navigate(`../${orderId}/additional-details?${searchParams.toString()}`, {
         state: {
@@ -158,7 +153,6 @@ function Payer() {
       setFieldValue(key, response);
     });
   };
-  console.log(orderDetails.payerDetails, formValues);
   const handleOnClosePanel = (key, setFieldValue) => {
     setFieldValue(key, null);
     if (key === 'secondaryMedicalInsurance') {

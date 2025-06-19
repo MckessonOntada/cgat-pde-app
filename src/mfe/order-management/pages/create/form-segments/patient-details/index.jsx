@@ -222,9 +222,8 @@ const PatientDetails = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+      const searchParams = location.state?.__prevSearch || '';
+      navigate(`/orders${searchParams}`);
     }
   };
 
