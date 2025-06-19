@@ -1390,8 +1390,12 @@ div[role="row"] {
 
   .heading-provider {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 16px;
+    gap: var(--spacing-01);
+    .required {
+      position: relative;
+      top: -4px;
+    }
   }
 
   .provider-field-wrap {
@@ -1593,12 +1597,13 @@ div[role="row"] {
 }
 
 hr.form-section-separator {
-  margin-top: var(--spacing-04);
-  margin-bottom: var(--spacing-04);
   border: none;
   border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
 }
 
 div.empty-table-wrapper {
   min-height: 336px;
+}
+.icon-button {
+  letter-spacing: initial !important;
 }

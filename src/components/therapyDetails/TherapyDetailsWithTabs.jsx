@@ -19,6 +19,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -27,16 +28,18 @@ export const THERAPY_TABS = {
 
 function TherapyDetailsWithTabs({
   trade,
-  channelType,
+  channelType: _channelType,
   therapyId,
   onClose,
   onSelect,
+  isDetailsByNdc = false,
   buyAndBillTherapyConstants = TherapyDetailsConstantsForBB(false),
   spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
   heading,
   isMaterialListing = false
 }) {
+  const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
   const { t } = useTranslate();
   const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter();
   const [therapyTabs, setTherapyTabs] = useState(() => {
@@ -71,6 +74,8 @@ function TherapyDetailsWithTabs({
     queryFn: async () => {
       if (isMaterialListing) {
         return OrderService.getTherapyDetailsByTradeName2(trade, channelType);
+      } else if (isDetailsByNdc) {
+        return OrderService.getTherapyDetailsByNDC(trade, channelType);
       } else {
         return OrderService.getTherapyDetailsByTradeName(trade);
       }
@@ -94,7 +99,7 @@ function TherapyDetailsWithTabs({
           setSelectedTab(therapyTabs[0]);
         }
 
-        const __therapyDetails = data.find((d) => d.id === selectedTab.therapyId);
+        const __therapyDetails = data.find((d) => d.id === (!selectedTab ? therapyTabs[0].therapyId : selectedTab.therapyId));
         setTherapyDetails({ ...__therapyDetails });
       } else {
         setAlert({
@@ -150,8 +155,9 @@ function TherapyDetailsWithTabs({
     setSelectedTab(selectedTab);
   };
 
-  const OnDelinkQuestionnaireClick = async (id, ndcNumber) => {
+  const OnDelinkQuestionnaireClick = async (id, ndcNumber, channelType) => {
     const payload = {
+      channelType: channelType,
       questionnaireId: id,
       materialOrNdcNumber: ndcNumber
     };
@@ -194,7 +200,13 @@ function TherapyDetailsWithTabs({
           key={`${questionnaire.id}-${index}`}
           section={section}
           templateName={questionnaire.templateName}
-          onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id, details.ndcNumber)}
+          onDelete={() =>
+            OnDelinkQuestionnaireClick(
+              questionnaire.id,
+              details.channelType === CHANNEL_TYPE.BUY_AND_BILL ? details.ndcNumber : details.materialNumber,
+              details.channelType
+            )
+          }
           showHeader={showHeader}
           questionnaire={details.questionnaires}
           hasDeleteConfigAccess={hasDeleteConfigAccess}
@@ -273,21 +285,32 @@ function TherapyDetailsWithTabs({
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          <TabList
-            options={therapyTabs}
-            alignment="left"
-            onTabClick={handleOnTabChange}
-            showShadow={false}
-            variant={'text'}
-            useAsButton={true}
-            aria-label={t('controls.ariaLabels.orderTabList')}
-          />
+          {((!isDetailsByNdc && channelType === CHANNEL_TYPE.BUY_AND_BILL) || (isDetailsByNdc && therapyTabs.length > 1)) && (
+            <TabList
+              options={therapyTabs}
+              alignment="left"
+              onTabClick={handleOnTabChange}
+              showShadow={false}
+              variant={'text'}
+              useAsButton={true}
+              aria-label={t('controls.ariaLabels.orderTabList')}
+            />
+          )}
         </div>
         {isLoading ? (
           <Loader variant="circular" />
         ) : (
           <div className={`${styles.body}`}>
-            {therapyDetails && <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} therapyData={buyAndBillTherapyConstants} />}
+            {therapyDetails && (
+              <DetailsPanel
+                details={therapyDetails}
+                handleSelect={handleSelect}
+                onClose={onClose}
+                therapyData={buyAndBillTherapyConstants}
+                isDetailsByNdc={isDetailsByNdc}
+                therapyTabs={therapyTabs}
+              />
+            )}
             <div className={styles.detailsPanel}>
               <div className={`${styles.drawerBodyContent} ${styles.bodyPadding} ${styles.cardToggleWrapper}`}>
                 {ConfigConstants?.map((section, index) => (
@@ -320,17 +343,28 @@ function TherapyDetailsWithTabs({
   );
 }
 
-function DetailsPanel({ details, therapyData }) {
+function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
   const { t } = useTranslate();
-  const renderDetails = (fields, details) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
+  const renderDetails = (fields, details) =>
+    fields.map(({ label, value }) => (
+      <DetailItem
+        key={label}
+        label={t(label)}
+        value={
+          details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (value === 'dropshipIndicator' || value === 'sellingUnitCode') ? 'NA' : details[value] || '-'
+        }
+      />
+    ));
   return (
     <div className={styles.detailsPanel}>
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            <Heading as="h3" className={styles.details}>
-              {t(section.sectionHeading)}
-            </Heading>
+            {((!isDetailsByNdc && details.channelType === CHANNEL_TYPE.BUY_AND_BILL) || (isDetailsByNdc && therapyTabs.length > 1)) && (
+              <Heading as="h3" className={styles.details}>
+                {t(section.sectionHeading)}
+              </Heading>
+            )}
             <div>{renderDetails(section.sectionData, details)}</div>
           </div>
         ))}

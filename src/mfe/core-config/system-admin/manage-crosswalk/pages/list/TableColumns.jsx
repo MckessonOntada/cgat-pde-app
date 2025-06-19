@@ -9,9 +9,8 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
-  BUY_AND_BILL_MATERIAL_ID: 'BUY_AND_BILL_MATERIAL_ID',
-  BUY_AND_BILL_MATERIAL_DESCRIPTION: 'BUY_AND_BILL_MATERIAL_DESCRIPTION',
   BUY_AND_BILL_NDC: 'BUY_AND_BILL_NDC',
+  THERAPY: 'THERAPY',
   SP_PRODUCT_ID: 'SP_PRODUCT_ID',
   SP_PRODUCT_NAME: 'SP_PRODUCT_NAME',
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
@@ -23,50 +22,53 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
 
   return [
     {
-      id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_ID,
-      name: 'Buy & Bill Material ID',
-      minWidth: '120px',
-      sortable: true,
-      sortKey: 'bnbMaterialNumber',
-      cell: (props) => <EclipsesTextcss str={props?.bnbMaterialNumber || '-'} />
-    },
-    {
-      id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_DESCRIPTION,
-      name: 'Buy & Bill Material Description',
+      id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_NDC,
+      name: t('column.material.crosswalk.buyBillNDC'),
       minWidth: '160px',
-      sortable: true,
-      sortKey: 'bnbMaterialDescription',
+      sortable: false,
       cell: (props) => (
         <div>
           {
-            // <Link
-            //   className="MCP-table-link"
-            //   onClick={(e) => {
-            //     e.preventDefault();
-            //     setOpenDetails(true);
-            //     setMaterialNumber(props?.bnbMaterialNumber);
-            //   }}>
-            <EclipsesTextcss str={props?.bnbMaterialDescription} maxWidth={180} />
-            // </Link>
+            <Link
+              className="MCP-table-link"
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setMaterialNumber(props?.bnbNdc);
+              }}>
+              <EclipsesTextcss str={props?.bnbNdc} maxWidth={180} />
+            </Link>
           }
         </div>
       )
     },
     {
-      id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_NDC,
-      name: 'Buy & Bill Material NDC',
+      id: MATERIAL_CROSSWALK_COLUMNS.THERAPY,
+      name: t('column.material.crosswalk.Therapy'),
       minWidth: '80px',
-      cell: (props) => <EclipsesTextcss str={props?.bnbNdc || '-'} />
+      sortable: true,
+      sortKey: 'tradeName',
+      cell: (props) => <EclipsesTextcss str={props?.tradeName || '-'} />
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
-      name: 'SP Product ID',
+      name: t('column.material.crosswalk.spProductID'),
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductId',
       cell: (props) => {
         if (props?.spProductId) {
-          return <EclipsesTextcss maxWidth={150} str={props?.spProductId} />;
+          return (
+            <Link
+              className="MCP-table-link"
+              onClick={(e) => {
+                e.preventDefault();
+                setViewSPMaterial(props);
+                setOpenSPMaterialDetails(true);
+              }}>
+              <EclipsesTextcss str={props?.spProductId} maxWidth={150} />
+            </Link>
+          );
         } else {
           return <div>{'-'}</div>;
         }
@@ -74,33 +76,23 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NAME,
-      name: 'SP Product Name',
+      name: t('column.material.crosswalk.spProductName'),
       minWidth: '130px',
       sortable: true,
       sortKey: 'spProductName',
-      cell: (props) => (
-        <Link
-          className="MCP-table-link"
-          onClick={(e) => {
-            e.preventDefault();
-            setViewSPMaterial(props);
-            setOpenSPMaterialDetails(true);
-          }}>
-          <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
-        </Link>
-      )
+      cell: (props) => <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
-      name: 'SP Product NDC',
+      name: t('column.material.crosswalk.spNDC'),
       minWidth: '90px',
       cell: (props) => <EclipsesTextcss str={props?.spNdc || '-'} />
     },
 
     {
       id: MATERIAL_CROSSWALK_COLUMNS.ACTION,
-      name: 'Action',
-      minWidth: '130px',
+      name: t('column.material.crosswalk.action'),
+      maxWidth: '130px',
       cell: (props) => (
         <IconButton label={t('button.caption.unlink')} size="lg" iconButton={false} textButton={true} Icon={LinkIcon} onClick={confirmationUnlink(props.id)} />
       )

@@ -26,6 +26,7 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
 import Alert from '@src/components/cgat-alert/Alert';
+import ModuleHeader from '@src/components/module-header';
 
 export const getFilteredSections = (channelType) => {
   return sections(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA).map((section) => ({
@@ -298,7 +299,7 @@ const PatientDetails = () => {
         )}
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}
@@ -317,15 +318,27 @@ const PatientDetails = () => {
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
                     <div className="MCP-module-body test-shobhit">
+                      <ModuleHeader
+                        heading={
+                          <div>
+                            <Heading as="h2">{t('orderManagement.patientDetails.patient_details')}</Heading>
+                          </div>
+                        }
+                        controls={
+                          <p className="form-instruction">
+                            <span className="required">*</span> {t('labels.required')}
+                          </p>
+                        }
+                      />
                       <FormRenderer sections={filteredSections} />
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
-                          <hr />
+                          <hr className="form-section-separator" />
                           <div className="selected-provider">
                             <div className="heading-provider">
                               <Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>
                               <p className="form-instruction">
-                                <span className="required">*</span> {t('labels.required')}
+                                <span className="required">*</span>
                               </p>
                             </div>
                             <div className="provider-field-wrap">

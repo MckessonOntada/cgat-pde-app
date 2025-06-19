@@ -13,6 +13,10 @@ export const NotificationMessagesES = {
   // Filters
   'notifications.filter.all': 'Todas',
   'notification.category': 'Categoría',
+  'notification.readStatus': 'Estado',
+  'notification.readStatus.all': 'Todas',
+  'notification.readStatus.read': 'Leídas',
+  'notification.readStatus.unread': 'No leídas',
 
   // Empty States
   'notifications.empty': 'Sin Notificaciones',

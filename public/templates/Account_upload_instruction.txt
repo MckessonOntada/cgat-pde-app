@@ -1,0 +1,130 @@
+Account Upload Template - Instructions
+======================================
+
+Please follow the instructions below while filling in the account upload template.
+
+Note:
+- (M) = Mandatory – must be filled
+- (O) = Optional – can be left blank
+- Do NOT remove or rename the column headers
+- Ensure data format is clean and consistent to avoid upload errors
+
+----------------------------------
+FIELD-BY-FIELD INSTRUCTIONS
+----------------------------------
+
+
+1. Account Name (M)
+   - Full name of the account or organization
+   - Example: XYZ Medicals
+
+2. Address1 (M)
+   - Primary address line
+   - Example: 123 Main Street
+
+3. Address2 (O)
+   - Additional address info (e.g., Suite 101, Floor 2)
+
+4. Zip (M)
+   - 5-digit postal code
+   - Example: 10001
+
+5. City (M)
+   - Name of the city
+   - Example: New York
+
+6. State (M)
+   - Full name or abbreviation of the state
+   - Example: NY or New York
+
+7. Email (M)
+   - Valid email format
+   - Example: contact@xyzmedicals.com
+
+8. Phone (M)
+   - Enter 10-digit phone number (excluding country code)
+   - Example: 2125551234
+
+9. Fax (O)
+    - Optional fax number
+
+-------------------------------
+✅ SAMPLE DATA ROW:
+-------------------------------
+
+ Account Name | Address1      | Address2 | Zip   | City      | State | Email                  | Phone      | Fax       |
+--------------|---------------|----------|-------|-----------|-------|------------------------|------------|-----------|
+ XYZ Medicals | 123 Main St   | Suite 101| 10001 | New York  | NY    | contact@xyz.com        | 2125551234 | 2125554321 |
+
+-------------------------------
+IMPORTANT REMINDERS:
+-------------------------------
+- Do not leave any mandatory (M) fields empty
+- Email should be in correct format (e.g., name@domain.com)
+- Phone must be numeric and without special characters
+- Do not include the country code in the phone field
+
+For issues or support, please contact your system administrator.
+
+For the State :- Please user below Value 
+Alabama
+Alaska
+Arizona
+Arkansas
+California
+Colorado
+Connecticut
+Delaware
+Florida
+Georgia
+Hawaii
+Idaho
+Illinois
+Indiana
+Iowa
+Kansas
+Kentucky
+Louisiana
+Maine
+Maryland
+Massachusetts
+Michigan
+Minnesota
+Mississippi
+Missouri
+Montana
+Nebraska
+Nevada
+New Hampshire
+New Jersey
+New Mexico
+New York
+North Carolina
+North Dakota
+Ohio
+Oklahoma
+Oregon
+Pennsylvania
+Rhode Island
+South Carolina
+South Dakota
+Tennessee
+Texas
+Utah
+Vermont
+Virginia
+Washington
+West Virginia
+Wisconsin
+Wyoming
+Puerto Rico
+Virgin Islands
+Washington, D.C.
+US Armed Forces Pacific
+American Samoa
+Guam
+Palau
+Federated States of Micronesia
+Northern Mariana Islands
+Marshall Islands
+US Armed Forces Europe

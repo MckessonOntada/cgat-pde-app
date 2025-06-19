@@ -8,20 +8,23 @@ import { useSPAccountContext } from '../../context/SPAccountContext';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Button, Alert, IconButton } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import AuthUtils from '@src/util/AuthUtils';
 import { ChannelType } from '../../util';
 import AccountDetails from '../../../manage-account/pages/AccountDetails';
+import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
+import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 
-function SPAccountDataTable({ isLinkedAccount }) {
+function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccounts }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId, fileteredData } = useSPAccountContext();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
+  const handleOnClick = (url, organizationId) => () => navigate(url, { state: { organizationId } });
   const columns = [
     {
       id: 'accountNumber',
@@ -29,24 +32,28 @@ function SPAccountDataTable({ isLinkedAccount }) {
       selector: (row) => row.accountNumber || '',
       maxWidth: '350px',
       cell: (props) =>
-        props.channelType === ChannelType.BUY_AND_BILL ? (
-          <Link
-            className="MCP-table-link"
-            aria-label={t('table.columns.captions.accountNumber')}
-            onClick={(e) => {
-              e.preventDefault();
-              setOpenDetails(true);
-              setSelectedDetails(props);
-            }}>
-            <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
-          </Link>
+        !isSpMaterial ? (
+          props.channelType === ChannelType.BUY_AND_BILL ? (
+            <Link
+              className="MCP-table-link"
+              aria-label={t('table.columns.captions.accountNumber')}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setSelectedDetails(props);
+              }}>
+              <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
+            </Link>
+          ) : (
+            <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
+              <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
+            </Link>
+          )
         ) : (
-          <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
-            <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
-          </Link>
+          <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
         ),
       sortable: true,
-      sortKey: 'sap_partner'
+      sortKey: !isSpMaterial ? 'sap_partner' : 'accountNumber'
     },
     {
       id: 'accountName',
@@ -55,14 +62,15 @@ function SPAccountDataTable({ isLinkedAccount }) {
       maxWidth: '350px',
       cell: (props) => <EclipsesTextcss str={props.accountName} maxWidth={330} />,
       sortable: true,
-      sortKey: 'name_1'
+      sortKey: !isSpMaterial ? 'name_1' : 'accountName'
     },
     {
       id: 'address',
       name: t('table.columns.captions.address'),
       selector: (row) => row.address || '',
       maxWidth: '450px',
-      cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={430} />
+      cell: (props) =>
+        !isSpMaterial ? <EclipsesTextcss str={getAddress(props.address)} maxWidth={430} /> : <EclipsesTextcss str={getAddress(props)} maxWidth={430} />
     },
     {
       id: 'salesOrg',
@@ -84,6 +92,28 @@ function SPAccountDataTable({ isLinkedAccount }) {
         />
       ),
       omit: !isLinkedAccount ? true : false
+    },
+    {
+      id: 'action',
+      center: true,
+      name: t('manageSPAccount.table.action'),
+      isAction: true,
+      width: '200px',
+      cell: (row) => {
+        return (
+          <IconButton
+            label={t('manageSPAccount.providers.column.unlink')}
+            size="lg"
+            iconButton={false}
+            textButton={true}
+            Icon={linkIcon}
+            onClick={() => {
+              handleUnlinkSpAccounts(row.accountNumber);
+            }}
+          />
+        );
+      },
+      omit: !isSpMaterial
     }
   ];
 
@@ -97,28 +127,35 @@ function SPAccountDataTable({ isLinkedAccount }) {
 
   return (
     <div>
-      <div style={{ marginBottom: '24px', marginTop: '16px' }}>
-        <ModuleHeader
-          heading={<Heading as="h2">{!isLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
-          controls={
-            !isCustomerCenter &&
-            !isLinkedAccount && (
-              <div className="controls">
-                {
-                  <Button
-                    Icon={add_circle_bold}
-                    className="button-icon"
-                    variant="primary"
-                    size="md"
-                    onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
-                    {t('manageSPAccount.heading.addSPAccount')}
-                  </Button>
-                }
-              </div>
-            )
-          }
-        />
-      </div>
+      {!isSpMaterial && (
+        <div style={{ marginBottom: '24px', marginTop: '16px' }}>
+          <ModuleHeader
+            heading={<Heading as="h2">{!isLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
+            controls={
+              !isCustomerCenter &&
+              !isLinkedAccount && (
+                <div className="controls">
+                  {
+                    <>
+                      <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload', organizationId)} size="md">
+                        {t('controls.uploadAccount')}
+                      </Button>
+                      <Button
+                        Icon={add_circle_bold}
+                        className="button-icon"
+                        variant="primary"
+                        size="md"
+                        onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
+                        {t('manageSPAccount.heading.addSPAccount')}
+                      </Button>
+                    </>
+                  }
+                </div>
+              )
+            }
+          />
+        </div>
+      )}
       <CustomDataTable
         id="my-data-table"
         type="normal"
@@ -138,7 +175,7 @@ function SPAccountDataTable({ isLinkedAccount }) {
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={!fileteredData ? t('manageSPAccount.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('manageSPAccount.table.emptyDataDescription')}
+            description={!fileteredData && !isSpMaterial && t('manageSPAccount.table.emptyDataDescription')}
           />
         }
       />

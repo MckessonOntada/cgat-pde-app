@@ -24,7 +24,22 @@ export const NOTIFICATION_CATEGORIES_LIST = [
   { label: 'All', value: 'All' },
   { label: 'User Management', value: 'User Management' },
   { label: 'Order Approval', value: 'Order Approval' },
+  { label: 'Order Management', value: 'Order Management' },
   { label: 'On Behalf', value: 'On Behalf' }
+];
+
+// =========================
+// Read Status Filter Options
+// =========================
+
+/**
+ * List of notification read status options for filtering.
+ * Each object contains a label (for display) and a value (for logic).
+ */
+export const NOTIFICATION_READ_STATUS_LIST = [
+  { label: 'All', value: 'ALL' },
+  { label: 'Read', value: 'READ' },
+  { label: 'Unread', value: 'UNREAD' }
 ];
 
 // =========================
