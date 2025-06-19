@@ -252,23 +252,25 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
               </div>
             </div>
 
-            <div className="MCP-CardContainer">
-              <div className={styles.selectionBlock}>
-                <p>{t('labels.orderAssistance.selectProgram')}</p>
-                <div className="radio-btn-group">
-                  {programList.map((item, index) => (
-                    <div key={`radio-option-${index}`} className="radio-info-group">
-                      <label key={item.value} className="custom-radio">
-                        <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
-                        <span class="checkmark"></span>
-                        {item.label}
-                      </label>
-                      {infoModel(item.label)}
-                    </div>
-                  ))}
+            {selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+              <div className="MCP-CardContainer">
+                <div className={styles.selectionBlock}>
+                  <p>{t('labels.orderAssistance.selectProgram')}</p>
+                  <div className="radio-btn-group">
+                    {programList.map((item, index) => (
+                      <div key={`radio-option-${index}`} className="radio-info-group">
+                        <label key={item.value} className="custom-radio">
+                          <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
+                          <span class="checkmark"></span>
+                          {item.label}
+                        </label>
+                        {infoModel(item.label)}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             {selectedProgram === '340B' && selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
               <div className="MCP-modal-body">
                 <p>{t('order.account.selection.340b.checkboxHeading')}</p>
