@@ -375,11 +375,22 @@ const PatientDetails = () => {
                                   <Tooltip body={provider.detailedAddress}>
                                     <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
                                   </Tooltip>
-                                  {['dea', 'npi', 'phone'].map((key) => {
-                                    const value = provider[key];
+                                  {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
+                                    const rawValue = provider[key];
+                                    const labelMap = {
+                                      dea: t('provider.deaNumber'),
+                                      npi: t('provider.npiNumber'),
+                                      phone: t('provider.phoneNumber'),
+                                      email: t('provider.emailId'),
+                                      tin: t('provider.tinNumber')
+                                    };
+                                    const value =
+                                      key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
                                     return (
-                                      <Tooltip body={value}>
-                                        <p className="detail-segment inline-text-overflow">{value}</p>
+                                      <Tooltip key={key} body={value}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          {labelMap[key]} : {value}
+                                        </p>
                                       </Tooltip>
                                     );
                                   })}

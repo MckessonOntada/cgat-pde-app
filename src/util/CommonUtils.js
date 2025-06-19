@@ -462,6 +462,10 @@ const formatPhoneNumber = (phoneNumber) => {
   return phoneNumber;
 };
 
+const formatTIN = (value) => {
+  if (!value || value.length !== 9) return value;
+  return `${value.slice(0, 2)}-${value.slice(2)}`;
+};
 export const getFullName = (name) => {
   if (!name || typeof name !== 'object') return '';
   //defaults to an empty string ('') when firstnam,middlename,lastname is notavailable
@@ -715,6 +719,7 @@ const CommonUtils = Object.freeze({
   validateDateRange,
   truncateString,
   formatPhoneNumber,
+  formatTIN,
   getFullName,
   getUSFullName,
   downloadFile,
