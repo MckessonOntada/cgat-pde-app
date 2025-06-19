@@ -151,8 +151,8 @@ function InputFileFormik(props) {
           </Button>
         </div>
         <div className={styles['file-config']}>
-          <p>{`${t('File Type:')} ${fileTypeText}`}</p>
-          <p>{`${t('Maximum file size:')} ${uploadFileSizeText || '4MB'}`}</p>
+          <p>{`${t('upload.file.error.fileType')} ${fileTypeText}`}</p>
+          <p>{`${t('upload.file.error.maximumFileSize')} ${uploadFileSizeText || '4MB'}`}</p>
         </div>
         {file && (
           <div className={styles['preview-container']}>

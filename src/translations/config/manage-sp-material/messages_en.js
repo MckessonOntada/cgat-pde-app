@@ -82,7 +82,7 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.messages.button.uploadSuccess': 'SP Materials have uploaded succesfully ',
   'manageSPMaterial.messages.button.downloadFail': 'Failed while downloading CSV',
   'upload.file.error.unsupportedFile': 'Unsupported file type. Please upload valid file type.',
-  'upload.file.error.fileSizeExceeded': 'File size should not exceed {{maxSize}} MB.',
+  'upload.file.error.fileSizeExceeded': 'Please upload a file no larger than {{maxSize}} MB.',
   'upload.file.error.fileNameTooLong': 'File name exceeds the maximum length of 100 characters.',
   'upload.file.error.fileType': 'File Type:',
   'upload.file.error.maximumFileSize': 'Maximum file size:',
