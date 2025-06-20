@@ -19,7 +19,8 @@ const Filters = ({
   additionalFilters,
   searchPlaceholder = 'Search...',
   actualData = [],
-  initialData = {}
+  initialData = {},
+  onLoadExpanded = false
 }) => {
   const { t } = useTranslate();
 
@@ -40,7 +41,7 @@ const Filters = ({
   }, [actualData]);
 
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
-  const [isCardExpanded, setIsCardExpanded] = useState(false);
+  const [isCardExpanded, setIsCardExpanded] = useState(onLoadExpanded);
   const formRef = useRef(null);
 
   const handleExpandCard = () => {
@@ -123,8 +124,6 @@ const Filters = ({
 
   const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
   const initialValues = generateInitialFilterState(additionalFilters);
-
-  console.log(initialValues, initialData);
 
   return (
     <Formik

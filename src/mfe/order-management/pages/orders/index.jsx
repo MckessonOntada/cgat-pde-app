@@ -21,6 +21,7 @@ import ToggleButton from './ToggleButton';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { DateUtils } from '@src/util/DateUtil';
 
 const OrderIndex = () => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const OrderIndex = () => {
 
   const handleApplyFilters = (filters) => {
     const searchParams = {
-      query: filters.searchQuery
+      searchQuery: filters.searchQuery
     };
     if (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
       searchParams.orderDate = filters.orderDate;
@@ -282,12 +283,20 @@ const OrderIndex = () => {
     if (filterParams) {
       try {
         const parsedFilters = JSON.parse(filterParams);
-        return {
-          searchQuery: parsedFilters.query
-        };
+        if (parsedFilters.startDate) parsedFilters.startDate = DateUtils.formatDate(parsedFilters.startDate, 'mm/dd/yyyy');
+        if (parsedFilters.endDate) parsedFilters.endDate = DateUtils.formatDate(parsedFilters.endDate, 'mm/dd/yyyy');
+
+        return parsedFilters;
       } catch (error) {}
     }
     return {};
+  }, [location.search]);
+
+  const isCardExpanded = React.useMemo(() => {
+    const { searchQuery, ...rest } = initialFilterData;
+    if (Object.keys(rest).length > 0) return true;
+
+    return false;
   }, [location.search]);
 
   return (
@@ -328,6 +337,7 @@ const OrderIndex = () => {
                 onApplyFilters={handleApplyFilters}
                 onClearFilters={handleClearFilters}
                 additionalFilters={additionalFiltersConfig}
+                onLoadExpanded={isCardExpanded}
                 searchPlaceholder={t(
                   config.tab === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
                 )}
