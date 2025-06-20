@@ -19,8 +19,20 @@ import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/consta
 import { ORDER_STATUS } from '../../../orders/config';
 import { CHANNEL_TYPE } from '../Constants';
 import Alert from '@src/components/cgat-alert/Alert';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
 const COMMENT_MAX_LENGTH = 5000;
+const ALLOWED_FILE_TYPE = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'text/csv',
+  'image/png',
+  'image/jpeg'
+];
 function UploadOrderDocument() {
   const { orderId } = useParams();
   const location = useLocation();
@@ -154,7 +166,9 @@ function UploadOrderDocument() {
             }}
             isRequired={true}
             uploadLabel={'labels.upload.document'}
-            suffixChildren={true}>
+            suffixChildren={true}
+            fileTypeText={'PDF, Word, PNG, JPEG, JPG, .TXT'}
+            onFileSelection={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}>
             <Textarea
               name="document-comment"
               label={t('label.comments')}

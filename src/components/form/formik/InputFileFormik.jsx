@@ -24,6 +24,7 @@ function InputFileFormik(props) {
   const { errors, touched, setFieldValue } = form;
   const errorMessage = getNestedValue(errors, `${field.name}`);
   const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
+  const MAX_FILE_SIZE = Number(process.env.REACT_APP_MAX_FILE_SIZE_TO_UPLOAD, 10) || uploadFileSizeText;
 
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
@@ -152,7 +153,7 @@ function InputFileFormik(props) {
         </div>
         <div className={styles['file-config']}>
           <p>{`${t('upload.file.error.fileType')} ${fileTypeText}`}</p>
-          <p>{`${t('upload.file.error.maximumFileSize')} ${uploadFileSizeText || '4MB'}`}</p>
+          <p>{`${t('upload.file.error.maximumFileSize')} ${MAX_FILE_SIZE}MB`}</p>
         </div>
         {file && (
           <div className={styles['preview-container']}>
