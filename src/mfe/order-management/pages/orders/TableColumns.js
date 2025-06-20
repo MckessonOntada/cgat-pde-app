@@ -287,7 +287,7 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
 
 const getState = (props) => {
   const { status, approver } = props;
-  const { search } = useLocation();
+  const { state: locationState = {}, search } = useLocation();
   const { tabVariant, orderView } = useOrders();
   if (!status) throw new Error('Order status not found, to get state.');
 
@@ -295,17 +295,17 @@ const getState = (props) => {
   let state = {};
 
   if (status === ORDER_STATUS.SUBMITTED) {
-    state = { ...props, fromTab: tabVariant, fromOrderView: orderView };
+    state = { ...props };
   } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
     if (approver?.id === loggedInUserId) {
-      state = { isEdit: true, isApprover: true, props, fromTab: tabVariant, fromOrderView: orderView };
+      state = { isEdit: true, isApprover: true, props };
     } else {
-      state = { isApprover: false, props, fromTab: tabVariant, fromOrderView: orderView };
+      state = { isApprover: false, props };
     }
   } else if (status === ORDER_STATUS.IN_DRAFT) {
-    state = { isSimulate: true, props, fromTab: tabVariant, fromOrderView: orderView };
+    state = { isSimulate: true, props };
   } else {
-    state = { props, fromTab: tabVariant, fromOrderView: orderView };
+    state = { ...props };
   }
   return { ...state, __prevSearch: search };
 };

@@ -24,6 +24,7 @@ import {
 import ModuleHeader from '@src/components/module-header';
 import OrderService from '@src/api/commonService/OrderService';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
+import { RoutePaths } from '@src/routes/constants';
 
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -34,11 +35,10 @@ function Payer() {
   const [flag, setFlag] = React.useState(false);
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const { state: locationState = {} } = useLocation();
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
-  const { isApprover = false } = location.state || {};
+  const { isApprover = false } = locationState || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isLoader } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -96,8 +96,8 @@ function Payer() {
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
   const handleOnBack = () => {
-    const searchParams = location.state?.__prevSearch || '';
-    navigate(`/orders${searchParams}`);
+    const prevSearch = locationState?.__prevSearch || '';
+    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
   const handleOnCancel = () => {
@@ -107,21 +107,19 @@ function Payer() {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: true,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else {
-      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     }
@@ -129,12 +127,11 @@ function Payer() {
 
   const handleOnSubmit = (values) => {
     OrderService.savePayerDetails(orderId, values).then((response) => {
-      navigate(`../${orderId}/additional-details?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: false,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     });

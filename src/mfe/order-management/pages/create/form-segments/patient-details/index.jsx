@@ -51,9 +51,8 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { controlRef } = useContext(FooterContext);
   const { showAlert } = useAlert();
-  const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
-  const searchParams = new URLSearchParams(location.search);
+  const { state: locationState = {} } = useLocation();
+  const { isEdit = false, isApprover = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
@@ -62,8 +61,8 @@ const PatientDetails = () => {
   React.useEffect(() => {
     if (orderDetails.channelType) {
       if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired)
-        navigate(`/orders/${orderId}/additional-details?${searchParams.toString()}`, {
-          state: { ...location.state }
+        navigate(`/orders/${orderId}/additional-details`, {
+          state: { ...locationState }
         });
     }
   }, [orderDetails]);
@@ -100,10 +99,8 @@ const PatientDetails = () => {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder)
-      navigate(`/orders?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+    const prevSearch = locationState.__prevSearch || '';
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}}`);
   }, [orderDetails]);
 
   useEffect(() => {
@@ -147,21 +144,19 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-          navigate(`../${id}/payer?${searchParams.toString()}`, {
+          navigate(`${RoutePaths.pathOrderManagement}/${id}/payer}`, {
             state: {
-              fromTab: location?.state?.fromTab,
+              ...locationState,
               isEdit: false,
-              isApprover: isApprover,
-              fromOrderView: location?.state?.fromOrderView
+              isApprover: isApprover
             }
           });
         } else {
-          navigate(`../${id}/additional-details?${searchParams.toString()}`, {
+          navigate(`${RoutePaths.pathOrderManagement}/${id}/additional-details`, {
             state: {
-              fromTab: location?.state?.fromTab,
+              ...locationState,
               isEdit: false,
-              isApprover: isApprover,
-              fromOrderView: location?.state?.fromOrderView
+              isApprover: isApprover
             }
           });
         }
@@ -187,21 +182,19 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: true,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else {
-      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
+      navigate(`../${orderId}/accounts`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     }
@@ -222,32 +215,29 @@ const PatientDetails = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const searchParams = location.state?.__prevSearch || '';
-      navigate(`/orders${searchParams}`);
+      const prevSearch = locationState?.__prevSearch || '';
+      navigate(`/orders${prevSearch}`);
     }
   };
 
   const handleNavigate = () => {
+    const prevSearch = locationState?.__prevSearch || '';
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts}`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     }
