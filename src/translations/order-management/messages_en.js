@@ -150,8 +150,9 @@ export const MessageEn = {
   'labels.diagnosisCodes': 'Diagnosis codes (ICD10)',
 
   'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
-  'labels.PONumberRequired': 'PO Number is required',
-  'labels.PONumberLengthError': 'PO Number can not be greater than 35',
+  'labels.PONumberRequired': 'Please enter the PO Number',
+  'labels.PONumberLengthError': 'PO Number should not exceed 35 characters',
+  'labels.poNumberMustValid': 'PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',
   'labels.dateOfAdministrationFutureDateOnly': 'Date of Administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
@@ -523,7 +524,7 @@ export const MessageEn = {
   'labels.SubmittedBy': 'Submitted By',
   'labels.SubmittedOn': 'Submitted On',
   'labels.Approver_Name': 'Approver Name',
-  'labels.Approval_Date_and_Time': 'Approval Date and Time',
+  'labels.Approval_Date_and_Time': 'Approval Date',
   'labels.soldToAccountName': 'Sold to Account Name',
   'labels.soldToAccountAddress': 'Sold to Account Address',
   'labels.shipToAccountName': 'Ship to Account Name',
@@ -867,6 +868,8 @@ export const MessageEn = {
   'column.material.crosswalk.Therapy': 'Therapy',
   'column.material.crosswalk.spProductID': 'SP Product ID',
   'column.material.crosswalk.spProductName': 'SP Product Name',
-  'column.material.crosswalk.spNDC': 'SP NDC',
-  'column.material.crosswalk.action': 'Action'
+  'column.material.crosswalk.spNDC': 'SP NDC', 
+  'column.material.crosswalk.action': 'Action',
+  'controls.updateDocument': 'Update Document'
+ 
 };
