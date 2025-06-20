@@ -484,7 +484,7 @@ export const MessageEs = {
   'labels.SubmittedBy': 'S_Submitted By',
   'labels.SubmittedOn': 'S_Submitted On',
   'labels.Approver_Name': 'S_Approver Name',
-  'labels.Approval_Date_and_Time': 'S_Approval Date and Time',
+  'labels.Approval_Date_and_Time': 'S_Approval Date',
 
   'labels.soldToAccountName': 'S_Sold to Account Name',
   'labels.soldToAccountAddress': 'S_Sold to Account Address',
