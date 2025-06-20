@@ -150,8 +150,9 @@ export const MessageEn = {
   'labels.diagnosisCodes': 'Diagnosis codes (ICD10)',
 
   'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
-  'labels.PONumberRequired': 'PO Number is required',
-  'labels.PONumberLengthError': 'PO Number can not be greater than 35',
+  'labels.PONumberRequired': 'Please enter the PO Number',
+  'labels.PONumberLengthError': 'PO Number should not exceed 35 characters',
+  'labels.poNumberMustValid': 'PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',
   'labels.dateOfAdministrationFutureDateOnly': 'Date of Administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
@@ -523,7 +524,7 @@ export const MessageEn = {
   'labels.SubmittedBy': 'Submitted By',
   'labels.SubmittedOn': 'Submitted On',
   'labels.Approver_Name': 'Approver Name',
-  'labels.Approval_Date_and_Time': 'Approval Date and Time',
+  'labels.Approval_Date_and_Time': 'Approval Date',
   'labels.soldToAccountName': 'Sold to Account Name',
   'labels.soldToAccountAddress': 'Sold to Account Address',
   'labels.shipToAccountName': 'Ship to Account Name',
@@ -781,11 +782,11 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.zip': 'Zip is required.',
   'orderManagement.patientDetails.validation.state': 'State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
-  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page', 
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
   'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
   'controls.uploadAccount': 'Upload Account',
   'label.uploadAccountListCSV': 'Upload Account List CSV',
-  'controls.uploadAccount': 'Upload Account', 
+  'controls.uploadAccount': 'Upload Account',
   'form.label.insuranceCompany': 'Insurance Company',
   'form.label.memberNumber': 'Member Number',
   'form.label.groupNumber': 'Group Number',
@@ -868,5 +869,6 @@ export const MessageEn = {
   'column.material.crosswalk.spProductID': 'SP Product ID',
   'column.material.crosswalk.spProductName': 'SP Product Name',
   'column.material.crosswalk.spNDC': 'SP NDC',
-  'column.material.crosswalk.action': 'Action' 
+  'column.material.crosswalk.action': 'Action',
+  'controls.updateDocument': 'Update Document'
 };

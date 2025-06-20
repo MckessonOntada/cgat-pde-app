@@ -143,7 +143,7 @@ function UploadOrderDocument() {
             messages={[validationMessage]}
             onCloseAlert={() => setValidationMessage(null)}
             upload={{
-              caption: t('controls.updateOrder'),
+              caption: t('controls.updateDocument'),
               fn: handleOnUpload
             }}
             cancel={{

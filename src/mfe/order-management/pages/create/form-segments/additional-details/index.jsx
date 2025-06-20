@@ -103,7 +103,11 @@ function AdditionalDetails() {
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
-      poNumber: Yup.string().required(t('labels.PONumberRequired')).max(35, t('labels.PONumberLengthError')).trim(t('labels.poNumberExtraSpaceError')),
+      poNumber: Yup.string()
+        .required(t('labels.PONumberRequired'))
+        .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
+        .max(35, t('labels.PONumberLengthError'))
+        .trim(t('labels.poNumberExtraSpaceError')),
       dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
       variant: Yup.object()
         .shape({

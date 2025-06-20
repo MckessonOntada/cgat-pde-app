@@ -144,7 +144,7 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-          navigate(`${RoutePaths.pathOrderManagement}/${id}/payer}`, {
+          navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
             state: {
               ...locationState,
               isEdit: false,

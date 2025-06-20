@@ -16,9 +16,9 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as McKessonLogo } from '@src/assets/image/McKesson_logo.svg';
+import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLink 2.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import Footer from './Footer';
+import Footer from '@src/components/footer';
 
 const Login = () => {
   const widgetRef = useRef();
@@ -67,7 +67,7 @@ const Login = () => {
         scopes
       },
       helpLinks: {
-        forgotPassword: '/forgot-password',
+        forgotPassword: '/forgot-password'
       },
       customButtons: [
         {
@@ -180,14 +180,8 @@ const Login = () => {
       <div className={`${style.loginWrap} max-container`}>
         <div className={style.loginHeader}>
           <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
-          <Heading as="h2">
-            <span>{t('login.header.1')} </span>
-            {t('login.header.2')}
-          </Heading>
-          <p>
-            <span>{t('login.page.desc.1')} </span>
-            {t('login.page.desc.2')}
-          </p>
+          <Heading as="h2">{t('login.header.1')}</Heading>
+          <p>{t('login.page.desc.1')}</p>
         </div>
         <div className={style.loginContainor}>
           <p className={style.lWelcome}>{t('login.welcome')}</p>

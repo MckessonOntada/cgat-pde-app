@@ -38,7 +38,7 @@ function Payer() {
   const { state: locationState = {} } = useLocation();
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
-  const { isApprover = false } = locationState || {};
+  const { isEdit = false, isApprover = false } = locationState || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isLoader } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;

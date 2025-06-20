@@ -38,22 +38,22 @@ Please follow the guidelines below to correctly fill in each column of the bulk 
    - Mandatory.
    - Enter a valid email address (e.g., user@example.com).
 
-10. PHONE
+11. PHONE
     - Mandatory.
     - Enter only the numeric part of the phone number (exclude country code).
     - No special characters or spaces (e.g., 9876543210).
 
-11. FAX
+12. FAX
     - Optional.
     - Enter the fax number if available, following the same rules as for Phone.
 
-12. USER ROLE
+13. USER ROLE
     - Mandatory.
     - Accepted values (case-sensitive):
       - Organization Admin
       - Organization User
 
-13. ACCOUNT NUMBERS
+14. ACCOUNT NUMBERS
     - Mandatory.
     - Comma-separated list of account numbers associated with the user.
     - Example: 10012345,10067890
@@ -62,12 +62,75 @@ Please follow the guidelines below to correctly fill in each column of the bulk 
 
 ✅ VALID EXAMPLE ROW:
 
-| First Name | Middle Name  | Last Name | Address1     | Address2  | Zip     | City    | State      | Email              | Phone      | Fax        | User Role | Account Numbers      |
-|------------|--------------|-----------|--------------|-----------|---------|---------|------------|--------------------|------------|------------|-----------|----------------------|
-| John       | A.           | Doe       | 123 Main St  | Apt 4B    | 10001   | New York| New York   | john.doe@email.com | 5551234567 | 5559876543 | Org Admin | 10012345,10067890    |
+| First Name | Middle Name | Last Name | Address1     | Address2  | Zip     | City    | State      | Email              | Country Code | Phone      | Fax        | User Role | Account Numbers     |
+|------------|--------------|-----------|--------------|-----------|---------|---------|------------|--------------------|---------------|------------|------------|-----------|----------------------|
+| John       | A.           | Doe       | 123 Main St  | Apt 4B    | 10001   | New York| New York   | john.doe@email.com | +1            | 5551234567 | 5559876543 | Org Admin | 10012345,10067890    |
 
 -------------------------
 
+Value for State field:-
+
+Alabama
+Alaska
+Arizona
+Arkansas
+California
+Colorado
+Connecticut
+Delaware
+Florida
+Georgia
+Hawaii
+Idaho
+Illinois
+Indiana
+Iowa
+Kansas
+Kentucky
+Louisiana
+Maine
+Maryland
+Massachusetts
+Michigan
+Minnesota
+Mississippi
+Missouri
+Montana
+Nebraska
+Nevada
+New Hampshire
+New Jersey
+New Mexico
+New York
+North Carolina
+North Dakota
+Ohio
+Oklahoma
+Oregon
+Pennsylvania
+Rhode Island
+South Carolina
+South Dakota
+Tennessee
+Texas
+Utah
+Vermont
+Virginia
+Washington
+West Virginia
+Wisconsin
+Wyoming
+Puerto Rico
+Virgin Islands
+Washington, D.C.
+US Armed Forces Pacific
+American Samoa
+Guam
+Palau
+Federated States of Micronesia
+Northern Mariana Islands
+Marshall Islands
+US Armed Forces Europe
 IMPORTANT NOTES:
 - Do not change or rename the column headers in the template.
 - Make sure required fields are filled to avoid upload errors.
@@ -75,4 +138,3 @@ IMPORTANT NOTES:
 - Refer to this file before uploading to reduce errors.
 
 For support, contact your system administrator.
-
