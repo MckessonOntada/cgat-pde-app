@@ -123,12 +123,14 @@ export const ManageMaterialProvider = ({ children }) => {
       ...filters
     }));
     setfileteredData(true);
+    setSelectedMaterials([]);
   };
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
     setFilterConfig(INITIAL_FILTER_STATE);
     setfileteredData(false);
+    setSelectedMaterials([]);
   };
 
   return (

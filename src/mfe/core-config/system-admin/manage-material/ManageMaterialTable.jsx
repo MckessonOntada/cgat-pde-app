@@ -38,13 +38,17 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const onExpandToggle = (row) => {
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
   };
+  const processedTherapies = CommonUtils.flattenTherapies(data).map((item) => ({
+    ...item,
+    active: item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? false : true
+  }));
 
   const getColumns = () => [
     {
       id: 'checkbox',
       name: renderTableCheckBox(
         { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        CommonUtils.flattenTherapies(data),
+        processedTherapies,
         'materialNumber',
         {
           ...paginationConfig,
@@ -54,6 +58,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         setSelectedMaterials
       ),
       cell: (row, index) => {
+        const processedRow = row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? { ...row, active: false } : { ...row, active: true };
+        processedTherapies;
         if (row.isExpandable && row.therapies.length > 1) {
           const expanded = isRowExpanded?.(row);
           return (
@@ -64,9 +70,12 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             </div>
           );
         }
+        if (row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+          return <input type="checkbox" disabled checked={false} />;
+        }
         return renderTableCheckBox(
-          row,
-          CommonUtils.flattenTherapies(data),
+          processedRow,
+          processedTherapies,
           'materialNumber',
           {
             ...paginationConfig,
@@ -153,8 +162,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       id: 'manufacturerName',
       selector: (row) => row.manufacturerName,
       wrap: true,
-      sortable: true,
-      sortKey: 'manufacturerName',
+      sortable: false,
       minWidth: '224px',
       cell: (props) => {
         const { isExpandable, manufacturer, manufacturerName, channelType } = props;
