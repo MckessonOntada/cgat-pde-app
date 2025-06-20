@@ -615,5 +615,6 @@ export const MessageEs = {
   'column.material.crosswalk.spProductID': 'S_SP Product ID',
   'column.material.crosswalk.spProductName': 'S_SP Product Name',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
-  'column.material.crosswalk.action': 'S_Action'
+  'column.material.crosswalk.action': 'S_Action',
+  'controls.updateDocument': 'S_Update Document'
 };

@@ -869,5 +869,6 @@ export const MessageEn = {
   'column.material.crosswalk.spProductID': 'SP Product ID',
   'column.material.crosswalk.spProductName': 'SP Product Name',
   'column.material.crosswalk.spNDC': 'SP NDC',
-  'column.material.crosswalk.action': 'Action'
+  'column.material.crosswalk.action': 'Action',
+  'controls.updateDocument': 'Update Document'
 };
