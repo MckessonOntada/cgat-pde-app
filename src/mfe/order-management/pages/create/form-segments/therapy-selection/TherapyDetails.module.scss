@@ -31,6 +31,7 @@
       align-items: stretch;
       gap: var(--spacing-04);
       height: 100vh;
+
       .panelHeading {
         font-size: var(--brand-font-size--default);
         font-weight: var(--brand-font-weight-600);
@@ -47,6 +48,7 @@
         color: var(--brand-color-font-black);
       }
     }
+
     .controls {
       display: flex;
       flex-direction: row;
@@ -55,4 +57,8 @@
       gap: var(--spacing-03);
     }
   }
+}
+
+[class*="TherapyDetails-module--wrapper"] [class*="TabList-module--leftPadding"] {
+  padding-left: 0 !important;
 }

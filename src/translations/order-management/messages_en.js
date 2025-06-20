@@ -593,7 +593,7 @@ export const MessageEn = {
   'providers.message.fileUploadFailure': 'Something went wrong please try again later.',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
-  'labels.SPECIALITY_PHARMA': 'Specialty Pharmacy',
+  'labels.SPECIALITY_PHARMA': 'Specialty Pharma',
   'labels.BUY_AND_BILL': 'Buy & Bill',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
   'labels.Strength': 'Strength',
@@ -868,7 +868,8 @@ export const MessageEn = {
   'column.material.crosswalk.Therapy': 'Therapy',
   'column.material.crosswalk.spProductID': 'SP Product ID',
   'column.material.crosswalk.spProductName': 'SP Product Name',
-  'column.material.crosswalk.spNDC': 'SP NDC',
+  'column.material.crosswalk.spNDC': 'SP NDC', 
   'column.material.crosswalk.action': 'Action',
   'controls.updateDocument': 'Update Document'
+ 
 };

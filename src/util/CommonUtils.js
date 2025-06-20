@@ -658,12 +658,12 @@ function getAxiosErrorMessage(error) {
   return 'An unexpected error occurred';
 }
 
-const getListOverflowingDisplayLabel = (data = [], length = 3) => {
+const getListOverflowingDisplayLabel = (data = [], length = 3, delimiter = ', ') => {
   if (isNonEmptyArray(data) && data.length > length) {
-    const markerLabel = data.slice(0, length).join(', ');
+    const markerLabel = data.slice(0, length).join(delimiter);
     return `${markerLabel} and ${data.length - length} more`;
   } else {
-    return data.join(', ');
+    return data.join(delimiter);
   }
 };
 
