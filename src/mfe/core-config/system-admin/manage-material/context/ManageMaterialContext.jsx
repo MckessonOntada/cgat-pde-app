@@ -7,6 +7,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
 import ServiceUtil from '@src/api/commonService/ServiceUtil';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 // Create the context
 export const ManageMaterialContext = createContext();
@@ -15,7 +16,8 @@ const RECORDS_PER_PAGE = 8;
 const THERAPIES_PER_SEARCH = 20;
 
 const INITIAL_FILTER_STATE = {
-  searchQuery: ''
+  searchQuery: '',
+  channelType: 'ALL'
 };
 
 const INITIAL_SORT_STATE = {
@@ -53,12 +55,20 @@ export const ManageMaterialProvider = ({ children }) => {
   const alertContainerId = 'summary-alert-container';
 
   const getApiUrl = (searchText) => {
+    const channelTypesParam =
+      filterConfig.channelType === 'ALL' || filterConfig.channelType === ''
+        ? `${CHANNEL_TYPE.BUY_AND_BILL},${CHANNEL_TYPE.SPECIALTY_PHARMA}`
+        : filterConfig.channelType === 'SP'
+        ? CHANNEL_TYPE.SPECIALTY_PHARMA
+        : CHANNEL_TYPE.BUY_AND_BILL;
+
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
       ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder }),
-      query: filterConfig.searchQuery || ''
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      channelTypes: channelTypesParam
     };
     return `${ApiRoutes.GET_ALL_MATERIALS()}?${serializeParams(params)}`;
   };

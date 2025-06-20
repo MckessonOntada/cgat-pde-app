@@ -592,7 +592,7 @@ export const MessageEn = {
   'providers.message.fileUploadFailure': 'Something went wrong please try again later.',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
-  'labels.SPECIALITY_PHARMA': 'Specialty Pharmacy',
+  'labels.SPECIALITY_PHARMA': 'Specialty Pharma',
   'labels.BUY_AND_BILL': 'Buy & Bill',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
   'labels.Strength': 'Strength',
@@ -781,11 +781,11 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.zip': 'Zip is required.',
   'orderManagement.patientDetails.validation.state': 'State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
-  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page', 
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
   'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
   'controls.uploadAccount': 'Upload Account',
   'label.uploadAccountListCSV': 'Upload Account List CSV',
-  'controls.uploadAccount': 'Upload Account', 
+  'controls.uploadAccount': 'Upload Account',
   'form.label.insuranceCompany': 'Insurance Company',
   'form.label.memberNumber': 'Member Number',
   'form.label.groupNumber': 'Group Number',
@@ -868,5 +868,5 @@ export const MessageEn = {
   'column.material.crosswalk.spProductID': 'SP Product ID',
   'column.material.crosswalk.spProductName': 'SP Product Name',
   'column.material.crosswalk.spNDC': 'SP NDC',
-  'column.material.crosswalk.action': 'Action' 
+  'column.material.crosswalk.action': 'Action'
 };

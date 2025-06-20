@@ -5,8 +5,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link, useNavigate } from 'react-router-dom';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
@@ -21,6 +19,7 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
@@ -30,6 +29,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const [materialNumber, setMaterialNumber] = React.useState(null);
   const searchParams = new URLSearchParams(location.search);
   const trade = searchParams.get('trade');
+  const channelType = searchParams.get('channelType');
   const navigate = useNavigate();
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -90,12 +90,37 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       sortKey: 'trade_name',
       minWidth: '220px',
       cell: (row) => {
-        const { tradeName, cellValue } = row;
+        const { tradeName, channelType, cellValue } = row;
 
         return (
-          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?trade=${tradeName}`}>
+          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?trade=${tradeName}&channelType=${channelType}`}>
             <EclipsesTextcss str={tradeName} />
           </Link>
+        );
+      }
+    },
+
+    {
+      name: t('labels.genericName'),
+      id: 'genericName',
+      selector: (row) => row.genericName,
+      wrap: true,
+      sortable: false,
+      minWidth: '214px',
+      cell: ({ isExpandable, genericName }) => {
+        let toolTip = '',
+          cellValue = '';
+        if (isExpandable) {
+          toolTip = genericName?.join('/ ');
+          cellValue = CommonUtils.getListOverflowingDisplayLabel(genericName, 2, ' / ');
+        } else {
+          toolTip = genericName;
+          cellValue = genericName;
+        }
+        return (
+          <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+            <Tooltip body={toolTip}>{cellValue}</Tooltip>
+          </span>
         );
       }
     },
@@ -124,6 +149,37 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       }
     },
     {
+      name: t('labels.manufacturer'),
+      id: 'manufacturerName',
+      selector: (row) => row.manufacturerName,
+      wrap: true,
+      sortable: true,
+      sortKey: 'manufacturerName',
+      minWidth: '224px',
+      cell: (props) => {
+        const { isExpandable, manufacturer, manufacturerName, channelType } = props;
+
+        if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+          let toolTip = '',
+            cellValue = '';
+          if (isExpandable) {
+            toolTip = manufacturer?.join(' / ');
+            cellValue = CommonUtils.getListOverflowingDisplayLabel(manufacturer, 2, ' / ');
+          } else {
+            toolTip = manufacturerName;
+            cellValue = manufacturerName;
+          }
+          return (
+            <span aria-label={t('table.columns.captions.manufacturerName')}>
+              <Tooltip body={toolTip}>{cellValue}</Tooltip>
+            </span>
+          );
+        } else {
+          return <div className="cellEllipse">{manufacturerName || '-'}</div>;
+        }
+      }
+    },
+    {
       name: t('labels.formulation'),
       id: 'formulation',
       selector: (row) => row.strength,
@@ -147,6 +203,10 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   ];
 
   const columns = getColumns();
+  const isSPSelected = selectedMaterials?.every((item) => item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA);
+  const isBothSelected =
+    selectedMaterials?.some((item) => item.channelType === CHANNEL_TYPE.BUY_AND_BILL) &&
+    selectedMaterials?.some((item) => item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA);
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
@@ -204,7 +264,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             onClick={() => {
               setOpenConfiguration(!openConfiguration);
             }}
-            size="sm">
+            size="sm"
+            disabled={isBothSelected || isSPSelected}>
             {t('manageMaterial.table.header.button.configure')}
           </Button>
         }
@@ -258,6 +319,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       {trade && (
         <TherapyDetailsWithTabs
           trade={trade}
+          channelType={channelType}
           isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
