@@ -15,6 +15,7 @@ import { CustomDataTable } from '../dataTableComponent';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import CommonUtils from '@src/util/CommonUtils';
+import AccountDetails from './AccountDetails';
 
 export default function AccountsList(props) {
   const {
@@ -30,6 +31,8 @@ export default function AccountsList(props) {
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const [tableHeight, setTableHeight] = useState('100%');
+  const [openDetails, setOpenDetails] = useState(false);
+  const [selectedDetails, setSelectedDetails] = useState(null);
   const { hasPermission, hasAnyPermission } = usePermission();
   const isAuthorized = hasAnyPermission([
     PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS,
@@ -50,7 +53,14 @@ export default function AccountsList(props) {
         id: 'id',
         name: t('account.no'),
         cell: (row) => (
-          <Link to={row.url} className="MCP-table-link">
+          <Link
+            className="MCP-table-link"
+            aria-label={t('table.columns.captions.accountNumber')}
+            onClick={(e) => {
+              e.preventDefault();
+              setOpenDetails(true);
+              setSelectedDetails(row);
+            }}>
             {row.accountNumber}
           </Link>
         ),
@@ -203,6 +213,7 @@ export default function AccountsList(props) {
             <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
           </div>
         )}
+        <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} selectedDetails={selectedDetails} />
       </div>
     </>
   );
