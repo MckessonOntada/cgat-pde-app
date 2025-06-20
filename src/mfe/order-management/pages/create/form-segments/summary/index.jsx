@@ -663,7 +663,7 @@ const Summary = () => {
                             <DetailSegment label={t('labels.SubmittedBy')} value={submittedBy?.name || '-'} />
                             <DetailSegment
                               label={t('labels.SubmittedOn')}
-                              value={orderDetails?.submittedOn ? dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY, HH:mm') : '-'}
+                              value={orderDetails?.submittedOn ? dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY') : '-'}
                             />
                           </>
                         ) : (
@@ -672,7 +672,7 @@ const Summary = () => {
                             {orderDetails?.submittedOn && (
                               <DetailSegment
                                 label={t('labels.Approval_Date_and_Time')}
-                                value={dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY, HH:mm')}
+                                value={dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY')}
                               />
                             )}
                           </>
