@@ -39,8 +39,17 @@ const OrderIndex = () => {
     return allTabs;
   });
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const assigneeIdsFromURL = searchParams.get('assigneeIds')?.split(',') || [];
+  const filterParams = params.get('filters');
+  let assigneeIdsFromURL = React.useMemo(() => {
+    try {
+      const parsedFilters = JSON.parse(filterParams);
+      if (parsedFilters.assigneeIds) {
+        parsedFilters.assigneeIds = parsedFilters.assigneeIds.split(',').map((t) => Number(t));
+        return parsedFilters.assigneeIds;
+      }
+    } catch (error) {}
+    return [];
+  }, [location.search]);
 
   const {
     applyFilters,
@@ -63,18 +72,18 @@ const OrderIndex = () => {
   const alertContainerId = 'summary-alert-container';
 
   useEffect(() => {
-    const filters = {
-      searchQuery: searchParams.get('query') || '',
-      status: searchParams.get('status') || null,
-      orderType: searchParams.get('orderType') || null,
-      orderDate: searchParams.get('orderDate') || null,
-      dateRange: [searchParams.get('dateRangeStart') || '', searchParams.get('dateRangeEnd') || ''],
-      assigneeIds: assigneeIdsFromURL
-    };
+    try {
+      const parsedFilters = JSON.parse(filterParams);
+      if (parsedFilters.startDate) parsedFilters.startDate = DateUtils.formatDate(parsedFilters.startDate, 'mm/dd/yyyy');
+      if (parsedFilters.endDate) parsedFilters.endDate = DateUtils.formatDate(parsedFilters.endDate, 'mm/dd/yyyy');
+      parsedFilters.dateRange = [parsedFilters.startDate || '', parsedFilters.endDate || ''];
+      if (parsedFilters.assigneeIds) {
+        parsedFilters.assigneeIds = parsedFilters.assigneeIds.split(',');
+      }
+      const hasFilter = Object.values(parsedFilters).some((val) => val !== '' && val !== null && !(Array.isArray(val) && val.length === 0));
 
-    const hasFilter = Object.values(filters).some((val) => val !== '' && val !== null && !(Array.isArray(val) && val.length === 0));
-
-    if (hasFilter) applyFilters(filters);
+      if (hasFilter) applyFilters(parsedFilters);
+    } catch (error) {}
   }, []);
 
   const handleApplyFilters = (filters) => {
@@ -114,19 +123,6 @@ const OrderIndex = () => {
     params.delete('filters');
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
-
-  useEffect(() => {
-    if (assigneeIdsFromURL.length > 0 && assigneeList.length > 0) {
-      const existingMap = new Map(assigneeList.map((opt) => [String(opt.value), opt]));
-
-      const selectedItems = assigneeIdsFromURL.map((id) => {
-        const item = existingMap.get(String(id));
-        return item ? { ...item, isChecked: true } : { value: id, label: id, isChecked: true };
-      });
-
-      setAssigneeOnChange([...assigneeList.filter((opt) => !assigneeIdsFromURL.includes(String(opt.value))), ...selectedItems]);
-    }
-  }, [assigneeIdsFromURL.join(','), assigneeList.length]);
 
   const handleOnTabChange = (newTab) => {
     params.set('tab', newTab.id);
@@ -241,7 +237,7 @@ const OrderIndex = () => {
           isMultiSelect: true,
           placeholder: t('placeholder.selectAssignee'),
           label: t('labels.assignee'),
-          options: assigneeList,
+          options: assigneeList.map((t) => ({ ...t, isChecked: assigneeIdsFromURL.includes(t.value) })),
           variant: 'async',
           onSearch: searchAssigneeByTest,
           recordsCountToEnableSearch: 2,
@@ -275,17 +271,19 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [activeTab, orderView, assigneeList]);
+  }, [location]);
 
   const initialFilterData = React.useMemo(() => {
-    const filterParams = params.get('filters');
-
     if (filterParams) {
       try {
         const parsedFilters = JSON.parse(filterParams);
         if (parsedFilters.startDate) parsedFilters.startDate = DateUtils.formatDate(parsedFilters.startDate, 'mm/dd/yyyy');
         if (parsedFilters.endDate) parsedFilters.endDate = DateUtils.formatDate(parsedFilters.endDate, 'mm/dd/yyyy');
+        if (parsedFilters.assigneeIds) {
+          parsedFilters.assigneeIds = parsedFilters.assigneeIds.split(',').map((t) => Number(t));
+        }
 
+        parsedFilters.dateRange = [parsedFilters.startDate, parsedFilters.endDate];
         return parsedFilters;
       } catch (error) {}
     }

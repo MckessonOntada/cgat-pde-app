@@ -109,12 +109,8 @@ export const OrderProvider = ({ children }) => {
       sortBy: config.sortBy || 'createdAt',
       sortOrder: config.sortOrder || 'desc',
       statuses: filters.status || (config.tab && TAB_FILTERS[config.tab].join(',')),
+      ...(filters.searchQuery && { query: filters.searchQuery }),
       ...filters,
-      // ...(filterConfig?.orderType &&
-      //   getChannelTypeFromOrderType(filterConfig?.orderType) && {
-      //     channelType: getChannelTypeFromOrderType(filterConfig?.orderType)
-      //   }),
-
       showMyOrders: config.view === ORDER_VIEW.MY_ORDERS || config.view === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
       ...(config.tab === ORDER_TABS.SUBMITTED_SP && {
