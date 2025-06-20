@@ -271,7 +271,7 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [location]);
+  }, [activeTab, orderView, location]);
 
   const initialFilterData = React.useMemo(() => {
     if (filterParams) {
@@ -289,6 +289,8 @@ const OrderIndex = () => {
     }
     return {};
   }, [location.search]);
+
+  console.log(assigneeList);
 
   const isCardExpanded = React.useMemo(() => {
     const { searchQuery, ...rest } = initialFilterData;

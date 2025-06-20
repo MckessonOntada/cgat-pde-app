@@ -413,7 +413,7 @@ const jsxColumns = () => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    width: '150px',
+    width: '140px',
     cell: function (props) {
       return <span>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>;
     }
