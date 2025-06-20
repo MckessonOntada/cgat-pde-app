@@ -276,6 +276,20 @@ const OrderIndex = () => {
     return filters;
   }, [activeTab, orderView, assigneeList]);
 
+  const initialFilterData = React.useMemo(() => {
+    const filterParams = params.get('filters');
+
+    if (filterParams) {
+      try {
+        const parsedFilters = JSON.parse(filterParams);
+        return {
+          searchQuery: parsedFilters.query
+        };
+      } catch (error) {}
+    }
+    return {};
+  }, [location.search]);
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -317,7 +331,7 @@ const OrderIndex = () => {
                 searchPlaceholder={t(
                   config.tab === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
                 )}
-                initialData={filterConfig || {}}
+                initialData={initialFilterData}
               />
             </div>
 

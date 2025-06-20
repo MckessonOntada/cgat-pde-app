@@ -766,7 +766,12 @@ function AdditionalDetails() {
                     <div>
                       <div className="MCP-module-body">
                         <hr className="form-section-separator" />
-                        <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                        <div className="row-space-between-center">
+                          <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                          <p className="form-instruction">
+                            <span className="required">*</span> {t('labels.required')}
+                          </p>
+                        </div>
                         <div>
                           <VariantTable
                             variant={variant}
