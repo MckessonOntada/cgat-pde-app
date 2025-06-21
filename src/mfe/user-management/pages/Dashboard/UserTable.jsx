@@ -22,6 +22,7 @@ import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { PATHS } from '../../routes';
 import { RoutePaths } from '@src/routes/constants';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
+import { USER_TABS } from './constants';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -36,12 +37,14 @@ function getBackgroundColorByRole(Role) {
 
 function UserTable({ onActionSuccess }) {
   const { t } = useTranslate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const tab = params.get('tab');
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
-  const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber, fileteredData } = useUser();
-  const location = useLocation();
+  const { isLoading, isError, error, data, paginationConfig, applySort, refreshData, setPageNumber, fileteredData } = useUser();
   const { isBack = false } = location.state || {};
   const userPermissions = AuthUtils.getUserPermissions();
   const currentUserId = AuthUtils.getUserId();
@@ -186,9 +189,10 @@ function UserTable({ onActionSuccess }) {
         ),
         wrap: true,
         width: '40px',
-        omit: activeTab === 2 || !hasAnyPermission([PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS, PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR])
+        omit:
+          tab === USER_TABS.PENDING_REQUESTS ||
+          !hasAnyPermission([PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS, PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR])
       },
-      // { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
         id: 'name',
         name: t('userManagement.table.name'),
@@ -199,7 +203,7 @@ function UserTable({ onActionSuccess }) {
         minWidth: '150px',
         cell: (props) => (
           <div>
-            {activeTab === 2 ? (
+            {tab === USER_TABS.PENDING_REQUESTS ? (
               <EclipsesTextcss str={CommonUtils.getFullName(props?.name)} maxWidth={140} />
             ) : (
               <React.Fragment>
@@ -263,7 +267,7 @@ function UserTable({ onActionSuccess }) {
         minWidth: '80px',
         cell: (props) => (
           <div>
-            {activeTab === 2 ? (
+            {tab === USER_TABS.PENDING_REQUESTS ? (
               props.status == 'PENDING' ? (
                 <Badge text="PENDING" type="info-default" />
               ) : (
@@ -303,7 +307,7 @@ function UserTable({ onActionSuccess }) {
         center: true,
         name: t('userManagement.table.action'),
         cell: (row) =>
-          activeTab == 2 && (
+          tab === USER_TABS.PENDING_REQUESTS && (
             <MenuList
               menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
               handleSelect={(value) => handleOnOptionSelection(value, row)}
@@ -324,7 +328,7 @@ function UserTable({ onActionSuccess }) {
               aria-label="Order options"
             />
           ),
-        omit: isSystemAdminView || activeTab == 1,
+        omit: isSystemAdminView || tab === USER_TABS.USERS,
         isAction: true
       }
     ];
