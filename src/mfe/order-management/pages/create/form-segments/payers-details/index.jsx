@@ -24,7 +24,6 @@ import {
 import ModuleHeader from '@src/components/module-header';
 import OrderService from '@src/api/commonService/OrderService';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
-import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const FormStateTracker = ({ setFormValues, setIsDirty }) => {
@@ -55,10 +54,11 @@ function Payer() {
   const [flag, setFlag] = React.useState(false);
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
-  const { isEdit = false, isApprover = false } = locationState || {};
+  const { isApprover = false, isEdit = false } = location.state || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isLoader } = useOrder(orderId);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const therapyId = orderDetails?.therapy?.materialNumber;
@@ -130,10 +130,13 @@ function Payer() {
     return Yup.object().shape(schemaShape);
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
-  const handleOnBack = () => {
-    const prevSearch = locationState?.__prevSearch || '';
-    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
-  };
+  const handleOnBack = () =>
+    navigate(`/orders?${searchParams.toString()}`, {
+      state: {
+        activeTab: location?.state?.fromTab,
+        fromOrderView: location?.state?.fromOrderView
+      }
+    });
 
   const handleOnCancel = () => {
     if (isDirty) {
@@ -142,19 +145,21 @@ function Payer() {
     }
 
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: true,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }
@@ -162,21 +167,25 @@ function Payer() {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}${locationState.__prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }
@@ -184,11 +193,12 @@ function Payer() {
 
   const handleOnSubmit = (values) => {
     OrderService.savePayerDetails(orderId, values).then((response) => {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+      navigate(`../${orderId}/additional-details?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import useOrder from '../../../orders/useOrder';
+import { useOrderPrice } from '../additional-details/useOrderPrice';
 import PageHeader from '@src/components/pageHeader';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import UploadFile from '@src/components/uploadFile/UploadFile';
@@ -22,7 +23,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
   const { orderId } = useParams();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslate();
   const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);
@@ -30,6 +31,7 @@ function UploadOrderDocument() {
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
+  const searchParams = new URLSearchParams(location.search);
   const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {
@@ -59,9 +61,10 @@ function UploadOrderDocument() {
       OrderService.uploadOrderDocument(orderId, payload)
         .then((response) => {
           setComment('');
-          const prevSearch = locationState.__prevSearch || '';
-          navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`, {
+          navigate(`/orders?${searchParams.toString()}`, {
             state: {
+              activeTab: location.state?.fromTab,
+              fromOrderView: location.state?.fromOrderView,
               alert: {
                 from: 'UPLOAD_ORDER_DOCUMENT',
                 type: 'success',
@@ -82,16 +85,16 @@ function UploadOrderDocument() {
   };
 
   const handleOnCancel = () => {
-    const prevSearch = locationState?.__prevSearch || '';
-    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+      state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView }
+    });
   };
 
   if (
     orderDetails.id &&
     (orderDetails.status !== ORDER_STATUS.SUBMITTED || ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(orderDetails.channelType))
   ) {
-    const prevSearch = locationState?.__prevSearch || '';
-    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView } });
   }
   return (
     <div className="MCP-module-wrapper">

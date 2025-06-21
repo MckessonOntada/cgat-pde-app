@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StepperMui } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { CHANNEL_TYPE, ORDER_STAGES } from './Constants';
+import { CHANNEL_TYPE, FormList, ORDER_STAGES } from './Constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 import style from './OrderStepper.module.scss';
-import { RoutePaths } from '@src/routes/constants';
 
 function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navLinks = React.useMemo(() => {
-    const baseRoute = RoutePaths.pathOrderManagement;
     return {
-      ACCOUNT_DETAILS: `${baseRoute}/${orderId}/accounts`,
-      PATIENT_DETAILS: `${baseRoute}/${orderId}/patient`,
-      PATIENT_AND_PROVIDER_DETAILS: `${baseRoute}/${orderId}/patient`,
-      PAYER_DETAILS: `${baseRoute}/${orderId}/payer`,
-      ADDITIONAL_DETAILS: `${baseRoute}/${orderId}/additional-details`,
-      ORDER_SUMMARY: `${baseRoute}/${orderId}/summary`
+      ACCOUNT_DETAILS: `/orders/${orderId}/accounts`,
+      PATIENT_DETAILS: `/orders/${orderId}/patient`,
+      PATIENT_AND_PROVIDER_DETAILS: `/orders/${orderId}/patient`,
+      PAYER_DETAILS: `/orders/${orderId}/payer`,
+      ADDITIONAL_DETAILS: `/orders/${orderId}/additional-details`,
+      ORDER_SUMMARY: `/orders/${orderId}/summary`
     };
   }, []);
   const forms = React.useMemo(() => {
@@ -42,7 +40,8 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   }, [channelType, patientDetailsRequired]);
 
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const filteredStepperItems = forms.filter((form) => {
     if (!patientDetailsRequired && form.name === ORDER_STAGES.PATIENT_DETAILS) {
       return false;
@@ -73,16 +72,18 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
       if (currentStage[stepByTitle] <= currentStage[status]) {
         const newNavLink = navLinks[stepByTitle];
         if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
-          navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-            state: { ...locationState }
+          navigate(`/orders/edit-order/${orderId}?${searchParams.toString()}`, {
+            state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
           });
         else {
-          navigate(`${newNavLink}`, {
-            state: { ...locationState }
+          navigate(`${newNavLink}?${searchParams.toString()}`, {
+            state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
           });
         }
       }
     }
+    //}
+    //}
   };
 
   return (

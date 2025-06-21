@@ -8,7 +8,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ShippingAddressProvider } from '../../../../context/ShippingAddressContext';
 import PageHeader from '@src/components/pageHeader';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import OrderHeaderDetails from '../OrderHeaderDetails';
@@ -27,10 +27,10 @@ const AccountSelection = () => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { orderId } = useParams();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
   const [accountConfig, setAccountConfig] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = locationState;
+  const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = location.state || {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [accountError, setAccountError] = useState({
     isError: false,
@@ -40,6 +40,7 @@ const AccountSelection = () => {
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (!isTherapyChanged) {
       setSelectedSoldToAccount(orderDetails.accountDetails?.soldToAccount);
@@ -61,7 +62,8 @@ const AccountSelection = () => {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -85,8 +87,8 @@ const AccountSelection = () => {
     onSuccess: async (result) => {
       const { id } = result;
       try {
-        navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-          state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+        navigate(`../${id}/patient?${searchParams.toString()}`, {
+          state: { alertState, isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
         });
       } catch (err) {
         console.error(err);
@@ -121,13 +123,14 @@ const AccountSelection = () => {
       setModalSuccessCallback(isEdit ? 'summary' : 'details');
       return;
     }
+
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...locationState, isEdit: isEdit, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: { isEdit: isEdit, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover, isBack: true }
+      navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };
@@ -184,22 +187,24 @@ const AccountSelection = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     }
   };
 
   const handleNavigate = () => {
-    const prevSearch = locationState?.__prevSearch || '';
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else if (modalSuccessCallback === 'details') {
-      navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover, isBack: true }
+      navigate(`../edit-order/${orderId}?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, isBack: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover }
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
       });
     }
   };

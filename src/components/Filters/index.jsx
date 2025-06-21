@@ -19,8 +19,7 @@ const Filters = ({
   additionalFilters,
   searchPlaceholder = 'Search...',
   actualData = [],
-  initialData = {},
-  onLoadExpanded = false
+  initialData = {}
 }) => {
   const { t } = useTranslate();
 
@@ -29,7 +28,11 @@ const Filters = ({
 
     additionalFilters.forEach((filter, index) => {
       if (filter.tableColumnId) {
-        let currentFilterData = [...new Set(actualData.map((e) => e[filter.tableColumnId]).filter((e) => e))];
+        let currentFilterData = [
+          ...new Set(
+            actualData.map((e) => e[filter.tableColumnId]).filter((e) => e)
+          )
+        ];
         additionalFilters[index].options = currentFilterData.map((item) => {
           return {
             value: '' + item,
@@ -40,8 +43,11 @@ const Filters = ({
     });
   }, [actualData]);
 
-  const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
-  const [isCardExpanded, setIsCardExpanded] = useState(onLoadExpanded);
+  const initialFilters = useMemo(
+    () => generateInitialFilterState(additionalFilters),
+    [additionalFilters]
+  );
+  const [isCardExpanded, setIsCardExpanded] = useState(false);
   const formRef = useRef(null);
 
   const handleExpandCard = () => {
@@ -100,11 +106,17 @@ const Filters = ({
 
       let config = additionalFilters?.find((f) => f.name === key);
       // For Linked Filters
-      config = additionalFilters.flatMap((f) => f.linkedFilters?.(values[f.name] || '') || []).find((lf) => lf.name === key);
+      config = additionalFilters
+        .flatMap((f) => f.linkedFilters?.(values[f.name] || '') || [])
+        .find((lf) => lf.name === key);
 
       if (config?.required) {
         const [start, end] = value || [];
-        const range = CommonUtils.getDateRangeValidationError(start, end, config?.required ?? False);
+        const range = CommonUtils.getDateRangeValidationError(
+          start,
+          end,
+          config?.required ?? False
+        );
         // if (!start || !end) {
         //   errors[key] = 'Please select a valid date range.';
         //   return;
@@ -122,7 +134,8 @@ const Filters = ({
     return errors;
   };
 
-  const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
+  const isAdditionalFiltersAdded =
+    additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
   const initialValues = generateInitialFilterState(additionalFilters);
 
   return (
@@ -157,23 +170,47 @@ const Filters = ({
               <div className="filter-header">
                 <div className="search-box">
                   {isAdditionalFiltersAdded && (
-                    <Button variant="tertiary" type="button" onClick={handleExpandCard}>
-                      <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
+                    <Button
+                      variant="tertiary"
+                      type="button"
+                      onClick={handleExpandCard}>
+                      <img
+                        src={isCardExpanded ? arrow_down : arrow_right}
+                        alt="toggle-icon"
+                      />
                     </Button>
                   )}
                   <div className={'ctrl-search-box'}>
-                    <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
+                    <Field
+                      name={'searchQuery'}
+                      label={''}
+                      placeholder={searchPlaceholder}
+                      component={Components['input']}
+                    />
                   </div>
                 </div>
                 {showControls && !isCardExpanded && (
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && (
-                      <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
-                        {isAdditionalFiltersAdded ? t('filters.clearfilters') : t('filters.clearsearch')}
+                      <Button
+                        type="button"
+                        size="md"
+                        textButton
+                        className="txtbtn"
+                        onClick={() => handleClearFilters(formik.resetForm)}>
+                        {isAdditionalFiltersAdded
+                          ? t('filters.clearfilters')
+                          : t('filters.clearsearch')}
                       </Button>
                     )}
-                    <Button type="submit" size="md" variant="secondary" className="filter-btn">
-                      {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
+                    <Button
+                      type="submit"
+                      size="md"
+                      variant="secondary"
+                      className="filter-btn">
+                      {isAdditionalFiltersAdded
+                        ? t('filters.applyfilters')
+                        : t('filters.search')}
                     </Button>
                   </div>
                 )}
@@ -184,12 +221,27 @@ const Filters = ({
                     <AdditionalFilters filtersConfig={additionalFilters} />
                     {showControls && (
                       <div className="filter-control-buttons">
-                        <Button type="submit" size="md" variant="secondary" className="filter-btn">
-                          {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
+                        <Button
+                          type="submit"
+                          size="md"
+                          variant="secondary"
+                          className="filter-btn">
+                          {isAdditionalFiltersAdded
+                            ? t('filters.applyfilters')
+                            : t('filters.search')}
                         </Button>
                         {isAnyFilterApplied && (
-                          <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
-                            {isAdditionalFiltersAdded ? t('filters.clearfilters') : t('filters.clearsearch')}
+                          <Button
+                            type="button"
+                            size="md"
+                            textButton
+                            className="txtbtn"
+                            onClick={() =>
+                              handleClearFilters(formik.resetForm)
+                            }>
+                            {isAdditionalFiltersAdded
+                              ? t('filters.clearfilters')
+                              : t('filters.clearsearch')}
                           </Button>
                         )}
                       </div>
@@ -211,7 +263,12 @@ Filters.propTypes = {
   onClearFilters: PropTypes.func,
   additionalFilters: PropTypes.arrayOf(
     PropTypes.shape({
-      type: PropTypes.oneOf(['select', 'multiselect', 'datepicker', 'dateRange']),
+      type: PropTypes.oneOf([
+        'select',
+        'multiselect',
+        'datepicker',
+        'dateRange'
+      ]),
       name: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       options: PropTypes.arrayOf(
