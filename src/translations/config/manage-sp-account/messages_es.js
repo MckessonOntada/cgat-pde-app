@@ -198,5 +198,16 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.message.remove.spAccount': 'S_Are you sure you want to unlink this Account?',
   'manageSPAccount.message.removeSpAccount.success': 'S_Account has been unlinked successfully.',
   'manageSPAccount.error.message.unableToUnlinkAccount': 'S_Unable to unlink Account.',
-  'manageSPAccount.seeAssociatedAccounts': 'S_SEE ASSOCIATED SP ACCOUNTS'
+  'manageSPAccount.seeAssociatedAccounts': 'S_SEE ASSOCIATED SP ACCOUNTS',
+
+  'ManageAccount.accountNumber': 'S_Account Number',
+  'ManageAccount.accountName': 'S_Account Name',
+  'ManageAccount.accountAddress': 'S_Account Address',
+  'ManageAccount.contactPerson': 'Contact Person Name',
+  'ManageAccount.emaild': 'S_Email ID',
+  'ManageAccount.phoneNumber': 'S_Phone Number',
+  'ManageAccount.fax': 'S_Fax',
+  'ManageAccount.organization': 'S_Organization',
+  'ManageCatalog.contactDetails': 'S_Contact Details',
+  'ManageCatalog.AccountDetails': 'S_Account Details'
 };
