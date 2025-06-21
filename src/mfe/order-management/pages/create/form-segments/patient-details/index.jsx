@@ -61,7 +61,7 @@ const PatientDetails = () => {
   React.useEffect(() => {
     if (orderDetails.channelType) {
       if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired)
-        navigate(`/orders/${orderId}/additional-details`, {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
           state: { ...locationState }
         });
     }
@@ -100,7 +100,7 @@ const PatientDetails = () => {
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}}`);
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   }, [orderDetails]);
 
   useEffect(() => {
@@ -216,7 +216,7 @@ const PatientDetails = () => {
       setModalSuccessCallback('list');
     } else {
       const prevSearch = locationState?.__prevSearch || '';
-      navigate(`/orders${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 

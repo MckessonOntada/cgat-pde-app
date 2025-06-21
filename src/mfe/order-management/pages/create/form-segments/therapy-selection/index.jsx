@@ -151,7 +151,7 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
           isEdit: true,
