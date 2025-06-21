@@ -135,7 +135,7 @@ function Payer() {
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
-  const handleOnCancel = () => {
+  const handleOnBackButtonClick = () => {
     if (isDirty) {
       setModalSuccessCallback(isEdit ? 'summary' : 'patient');
       return;
@@ -150,7 +150,7 @@ function Payer() {
         }
       });
     } else {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
         state: {
           ...locationState,
           isEdit: isEdit,
@@ -324,7 +324,7 @@ function Payer() {
               </div>
               <div className="footer-wrapper" ref={controlRef}>
                 <div className="controls footer-controls">
-                  <Button size="md" variant="secondary" onClick={handleOnCancel}>
+                  <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                     {t('captions.btnBack')}
                   </Button>
                   <Button size="md" variant="primary" type="submit">
