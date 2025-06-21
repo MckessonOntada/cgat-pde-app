@@ -8,10 +8,16 @@ import { useParams } from 'react-router-dom';
 import { getNestedValue } from '@src/components/form/util';
 
 function getFileNameAndType(url) {
-  const cleanUrl = url.split('?')[0].split('#')[0];
+  if (url instanceof File) {
+    return {
+      name: url.name,
+      type: url.type
+    };
+  }
 
-  const name = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1);
-  const type = name.includes('.') ? name.substring(name.lastIndexOf('.') + 1) : null;
+  const cleanUrl = url?.split('?')[0].split('#')[0] || '';
+  const name = cleanUrl.split('/').pop() || '';
+  const type = name.includes('.') ? name.split('.').pop() : '';
 
   return {
     name,
