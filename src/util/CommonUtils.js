@@ -404,7 +404,9 @@ export const getDateRangeValidationError = (start, end, isRequired = false) => {
 
     const maxAllowedDate = new Date(startDate);
     maxAllowedDate.setMonth(startDate.getMonth() + 6);
-    if (endDate >= maxAllowedDate) {
+    if (startDate >= endDate) {
+      return 'Please select a valid date range.';
+    } else if (endDate >= maxAllowedDate) {
       return 'Date range must not exceed 6 months.';
     }
   }
