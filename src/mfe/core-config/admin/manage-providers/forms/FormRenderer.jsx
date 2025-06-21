@@ -11,7 +11,9 @@ function getFileNameAndType(url) {
   if (url instanceof File) {
     return {
       name: url.name,
-      type: url.type
+      type: url.type,
+      size: url.size,
+      lastModified: url.lastModified
     };
   }
 

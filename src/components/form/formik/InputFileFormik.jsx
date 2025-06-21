@@ -170,7 +170,11 @@ function InputFileFormik(props) {
                 {file.type?.startsWith('image/') ? (
                   file.type.startsWith('image/') ? (
                     <img
-                      src={URL.createObjectURL(file)}
+                      src={
+                        file instanceof File
+                          ? URL.createObjectURL(file)
+                          : file.url
+                      }
                       alt="Preview"
                       className={styles['image-preview']}
                     />
