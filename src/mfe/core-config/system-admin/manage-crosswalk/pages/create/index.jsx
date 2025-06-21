@@ -193,7 +193,7 @@ const CreateCrosswalk = () => {
               fetchFn={async (args) => {
                 const response = await MaterialService.getMaterialList(args);
                 if (response.content && CommonUtils.isNonEmptyArray(response.content)) {
-                  response.content = ServiceUtil.transformTherapies(response.content);
+                  response.content = response.content.flatMap((item) => item.therapies);
                 }
                 return response;
               }}>
