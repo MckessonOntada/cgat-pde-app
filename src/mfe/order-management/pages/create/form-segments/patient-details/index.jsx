@@ -190,7 +190,7 @@ const PatientDetails = () => {
         }
       });
     } else {
-      navigate(`../${orderId}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
         state: {
           ...locationState,
           isEdit: isEdit,
@@ -233,7 +233,7 @@ const PatientDetails = () => {
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
         state: {
           ...locationState,
           isEdit: isEdit,
