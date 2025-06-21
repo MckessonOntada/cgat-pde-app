@@ -141,6 +141,7 @@ export const MessageEs = {
   'labels.PONumberLengthError': 'S_PO Number should not exceed 35 characters.',
   'labels.poNumberMustValid': 'S_PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
+  'labels.enterValidDateOfAdministration': 'S_Enter valid date of administration.',
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',

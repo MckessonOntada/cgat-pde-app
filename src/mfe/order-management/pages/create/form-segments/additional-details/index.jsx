@@ -108,7 +108,10 @@ function AdditionalDetails() {
         .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
         .max(35, t('labels.PONumberLengthError'))
         .trim(t('labels.poNumberExtraSpaceError')),
-      dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
+      dateOfAdministration: Yup.date()
+        .typeError(t('labels.enterValidDateOfAdministration'))
+        .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+        .nullable(),
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
@@ -495,7 +498,7 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
           isEdit: isEdit,
