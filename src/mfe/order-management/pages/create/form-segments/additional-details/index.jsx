@@ -759,7 +759,7 @@ function AdditionalDetails() {
                         </p>
                       </div>
                       <React.Fragment>
-                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue).map(
+                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue, setFieldTouched).map(
                           ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
                             <div key={index} className={`${layout.classes}`}>
                               <Field
