@@ -104,7 +104,11 @@ function AdditionalDetails() {
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
-      poNumber: Yup.string().required(t('labels.PONumberRequired')).max(35, t('labels.PONumberLengthError')).trim(t('labels.poNumberExtraSpaceError')),
+      poNumber: Yup.string()
+        .required(t('labels.PONumberRequired'))
+        .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
+        .max(35, t('labels.PONumberLengthError'))
+        .trim(t('labels.poNumberExtraSpaceError')),
       dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
       variant: Yup.object()
         .shape({
@@ -755,7 +759,7 @@ function AdditionalDetails() {
                         </p>
                       </div>
                       <React.Fragment>
-                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue).map(
+                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue, setFieldTouched).map(
                           ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
                             <div key={index} className={`${layout.classes}`}>
                               <Field

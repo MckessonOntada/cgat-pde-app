@@ -133,7 +133,7 @@ function Details(props) {
         )
       },
       {
-        name: t('paymentInvoices.Details.referenceDocument'),
+        name: t(INVOICES_SCREEN ? 'labels.orderId' : 'paymentInvoices.Details.referenceDocument'),
         id: 'referenceDocument',
         selector: (row) => {
           row.referenceDocument;
