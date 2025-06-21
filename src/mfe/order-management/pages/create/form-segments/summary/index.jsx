@@ -862,7 +862,7 @@ const Summary = () => {
                       }
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5`}>
-                      <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+                      <DetailSegment label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
                       <DetailSegment
                         label={t('labels.patientName')}
                         value={
@@ -1095,7 +1095,9 @@ const Summary = () => {
                     {!spOrder && additionalDetails?.dateOfAdministration && (
                       <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
                     )}
-                    {!spOrder && isCoiIdRequired && <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />}
+                    {!spOrder && isCoiIdRequired && additionalDetails?.coiId && (
+                      <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />
+                    )}
                     {!spOrder && additionalDetails?.orderQuantity && (
                       <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails?.orderQuantity) || '-'} />
                     )}
