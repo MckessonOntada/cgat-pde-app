@@ -306,7 +306,7 @@ const PatientDetails = () => {
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    <div className="MCP-module-body test-shobhit">
+                    <div className="MCP-module-body">
                       <ModuleHeader
                         heading={
                           <div>
@@ -323,14 +323,17 @@ const PatientDetails = () => {
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
                           <hr className="form-section-separator" />
-                          <div className="selected-provider">
-                            <div className="heading-provider">
-                              <Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>
-                              <p className="form-instruction">
-                                <span className="required">*</span>
-                              </p>
-                            </div>
-                            <div className="provider-field-wrap">
+                          <div className="MCP-module-body">
+                            <ModuleHeader
+                              heading={<Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>}
+                              controls={
+                                <p className="form-instruction">
+                                  <span className="required">*</span> {t('labels.required')}
+                                </p>
+                              }
+                            />
+
+                            <div className="provider-details">
                               <Field
                                 component={Components['multiSelectDropdown']}
                                 id={'patient-info-provider'}
@@ -354,27 +357,27 @@ const PatientDetails = () => {
                                 refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                 asyncRecordsFound={totalProviders}
                               />
-                            </div>
-                            {provider && (
-                              <div className="details-card">
-                                <Heading className="details-title" as="h3">
-                                  {provider.fullname}
-                                </Heading>
-                                <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
-                                  <Tooltip body={provider.detailedAddress}>
-                                    <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
-                                  </Tooltip>
-                                  {['dea', 'npi', 'phone'].map((key) => {
-                                    const value = provider[key];
-                                    return (
-                                      <Tooltip body={value}>
-                                        <p className="detail-segment inline-text-overflow">{value}</p>
-                                      </Tooltip>
-                                    );
-                                  })}
+                              {provider && (
+                                <div className="details-card">
+                                  <Heading className="details-title" as="h3">
+                                    {provider.fullname}
+                                  </Heading>
+                                  <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
+                                    <Tooltip body={provider.detailedAddress}>
+                                      <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
+                                    </Tooltip>
+                                    {['dea', 'npi', 'phone'].map((key) => {
+                                      const value = provider[key];
+                                      return (
+                                        <Tooltip body={value}>
+                                          <p className="detail-segment inline-text-overflow">{value}</p>
+                                        </Tooltip>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </div>
                         </React.Fragment>
                       )}
