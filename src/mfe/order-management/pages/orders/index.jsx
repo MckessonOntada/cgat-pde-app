@@ -90,6 +90,7 @@ const OrderIndex = () => {
     const searchParams = {
       searchQuery: filters.searchQuery
     };
+
     if (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
       searchParams.orderDate = filters.orderDate;
       searchParams.startDate = filters.dateRange?.[0];
@@ -289,8 +290,6 @@ const OrderIndex = () => {
     }
     return {};
   }, [location.search]);
-
-  console.log(assigneeList);
 
   const isCardExpanded = React.useMemo(() => {
     const { searchQuery, ...rest } = initialFilterData;

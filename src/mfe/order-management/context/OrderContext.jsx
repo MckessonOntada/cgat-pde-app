@@ -113,10 +113,10 @@ export const OrderProvider = ({ children }) => {
       ...filters,
       showMyOrders: config.view === ORDER_VIEW.MY_ORDERS || config.view === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
-      ...(config.tab === ORDER_TABS.SUBMITTED_SP && {
+      ...([config.tab, filters.orderType].includes(ORDER_TABS.SUBMITTED_SP) && {
         channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
       }),
-      ...(config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL && {
+      ...([config.tab, filters.orderType].includes(ORDER_TABS.SUBMITTED_BUY_AND_BILL) && {
         channelType: CHANNEL_TYPE.BUY_AND_BILL
       })
     };
