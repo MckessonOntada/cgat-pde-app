@@ -404,7 +404,9 @@ export const getDateRangeValidationError = (start, end, isRequired = false) => {
 
     const maxAllowedDate = new Date(startDate);
     maxAllowedDate.setMonth(startDate.getMonth() + 6);
-    if (endDate >= maxAllowedDate) {
+    if (startDate >= endDate) {
+      return 'Please select a valid date range.';
+    } else if (endDate >= maxAllowedDate) {
       return 'Date range must not exceed 6 months.';
     }
   }
@@ -658,12 +660,12 @@ function getAxiosErrorMessage(error) {
   return 'An unexpected error occurred';
 }
 
-const getListOverflowingDisplayLabel = (data = [], length = 3) => {
+const getListOverflowingDisplayLabel = (data = [], length = 3, delimiter = ', ') => {
   if (isNonEmptyArray(data) && data.length > length) {
-    const markerLabel = data.slice(0, length).join(', ');
+    const markerLabel = data.slice(0, length).join(delimiter);
     return `${markerLabel} and ${data.length - length} more`;
   } else {
-    return data.join(', ');
+    return data.join(delimiter);
   }
 };
 
@@ -682,37 +684,6 @@ function flattenTherapies(data) {
     }
     return acc;
   }, []);
-}
-
-function getDateTimeLabel(value, pattern = 'YYYY-MM-DD, HH:mm:ss', padding = true) {
-  try {
-    const date = new Date(value);
-
-    if (isNaN(date.getTime())) {
-      return '';
-    }
-
-    const pad = (n) => (padding ? n.toString().padStart(2, '0') : n);
-
-    const components = {
-      YYYY: date.getFullYear(),
-      YY: String(date.getFullYear()).slice(-2),
-      MM: pad(date.getMonth() + 1),
-      DD: pad(date.getDate()),
-      HH: pad(date.getHours()),
-      mm: pad(date.getMinutes()),
-      ss: pad(date.getSeconds())
-    };
-
-    let formatted = pattern;
-    for (const [key, val] of Object.entries(components)) {
-      formatted = formatted.replace(key, val);
-    }
-
-    return formatted;
-  } catch {
-    return '';
-  }
 }
 
 const CommonUtils = Object.freeze({
@@ -766,8 +737,7 @@ const CommonUtils = Object.freeze({
   getAxiosErrorMessage,
   getListOverflowingDisplayLabel,
   flattenTherapies,
-  isEmptyArray,
-  getDateTimeLabel
+  isEmptyArray
 });
 
 export default CommonUtils;

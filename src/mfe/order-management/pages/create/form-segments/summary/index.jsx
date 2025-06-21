@@ -668,7 +668,7 @@ const Summary = () => {
                             <DetailSegment label={t('labels.SubmittedBy')} value={submittedBy?.name || '-'} />
                             <DetailSegment
                               label={t('labels.SubmittedOn')}
-                              value={orderDetails?.submittedOn ? dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY, HH:mm') : '-'}
+                              value={orderDetails?.submittedOn ? dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY') : '-'}
                             />
                           </>
                         ) : (
@@ -677,7 +677,7 @@ const Summary = () => {
                             {orderDetails?.submittedOn && (
                               <DetailSegment
                                 label={t('labels.Approval_Date_and_Time')}
-                                value={dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY, HH:mm')}
+                                value={dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY')}
                               />
                             )}
                           </>
@@ -963,11 +963,15 @@ const Summary = () => {
                     }
                   />
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isCoiIdRequired ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
-                    <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
-                    <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
-                    <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                    {isCoiIdRequired && <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />}
-                    <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails?.orderQuantity) || '-'} />
+                    {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />}
+                    {additionalDetails?.poNumber && <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />}
+                    {additionalDetails?.dateOfAdministration && (
+                      <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
+                    )}
+                    {isCoiIdRequired && additionalDetails?.coiId && <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />}
+                    {additionalDetails?.orderQuantity && (
+                      <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails?.orderQuantity) || '-'} />
+                    )}
                   </div>
                 </div>
 
@@ -1062,7 +1066,15 @@ const Summary = () => {
                                 {documentSegment.comment && <DetailSegment maxLength={60} label={'Comment'} value={documentSegment.comment} />}
                                 <div>
                                   <DetailSegment direction="row" label={'Uploaded by:'} value={documentSegment.uploadedBy} />
-                                  <DetailSegment direction="row" label={'Uploaded on:'} value={documentSegment.uploadedDate} />
+                                  <DetailSegment
+                                    direction="row"
+                                    label={'Uploaded on:'}
+                                    value={
+                                      documentSegment.uploadedDate
+                                        ? dayjs.utc(documentSegment.uploadedDate).tz(dayjs.tz.guess()).format('MM/DD/YYYY, HH:mm')
+                                        : '-'
+                                    }
+                                  />
                                 </div>
                               </div>
                               {documentSegment.name && documentSegment.url && (

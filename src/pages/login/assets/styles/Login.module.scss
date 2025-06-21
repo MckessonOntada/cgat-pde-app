@@ -18,15 +18,16 @@
   display: flex;
   margin: var(--spacing-08) auto 0px;
   justify-content: space-between;
-  width: 100%;
   z-index: 999;
   padding: 0px var(--spacing-16) var(--spacing-06);
+  gap: 100px;
 
   .loginContainor {
-    box-shadow: 0px 4px 8px 0px #262C3626 !important;
+    box-shadow: 0px 4px 8px 0px #262c3626 !important;
     border-radius: var(--brand-border-radius--22-5);
+    margin-bottom: -100px;
     width: 500px;
-    margin-bottom: -115px;
+    min-width: 500px;
     background: var(--brand-color-background-white);
     padding: var(--spacing-07) var(--spacing-05);
     height: fit-content;
@@ -73,7 +74,7 @@
     .lHead {
       font-size: var(--brand-font-size--24) !important;
       font-weight: var(--brand-font-weight-700);
-      color: #0068AC;
+      color: #0068ac;
     }
 
     .lDetails {
@@ -87,13 +88,14 @@
       color: var(--brand-color-primary-slate);
 
       span {
-        color: #CA2C1F;
+        color: #ca2c1f;
         font-weight: var(--brand-font-weight-700);
       }
     }
   }
 
   .loginHeader {
+    width: 60%;
     padding-top: var(--spacing-05);
 
     h2 {
@@ -108,7 +110,7 @@
     }
 
     p {
-      font-size: var(--brand-font-size--large);
+      font-size: var(--brand-font-size--default);
       color: var(--brand-color-primary-slate);
 
       span {
@@ -132,12 +134,13 @@
 }
 
 .loginFooter {
-  background-color: #1B3150;
+  background-color: #1b3150;
   justify-content: flex-end;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 180px;
+  padding-top: var(--spacing-09);
+  padding-bottom: var(--spacing-04);
 
   .footerWrapper {
     width: 80%;
@@ -174,17 +177,16 @@
     }
 
     .footerBase {
-      display: flex;
       margin: 0px var(--spacing-04);
       padding: var(--spacing-03) 0px;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--spacing-03);
 
       p {
         font-size: var(--brand-font-size--large);
         font-weight: var(--brand-font-weight-400);
         color: var(--brand-color-background-white);
+        display: flex;
+        flex-direction: column;
+        padding-top: var(--spacing-01);
       }
     }
   }
@@ -198,10 +200,6 @@
 
     .loginHeader {
       text-align: center;
-
-      svg {
-        transform: scale(0.8);
-      }
 
       h2 {
         font-size: var(--brand-font-size--24) !important;
@@ -221,8 +219,6 @@
   }
 
   .loginFooter {
-    padding-top: var(--spacing-20);
-
     .footerContant {
       div {
         a {
@@ -243,9 +239,9 @@
     .loginHeader {
       text-align: left;
       padding-top: 0px;
+      width: 100%;
 
       svg {
-        transform: scale(0.55);
         transform-origin: left center;
       }
 
@@ -256,6 +252,7 @@
 
     .loginContainor {
       width: fit-content;
+      min-width: fit-content;
       padding: var(--spacing-03);
       margin-bottom: var(--spacing-05);
       border-radius: var(--brand-border-radius--10);

@@ -10,7 +10,7 @@ export const SignupES = {
   'form.organization_required': 'S_Organization Required',
 
   'footer.terms': 'S_Terms',
-  'footer.privacy': 'S_Privacy',
+  'footer.privacy': 'S_Privacy Notice',
   'footer.do_not_sell_myinformation': 'S_Do Not Sell My Information',
   'footer.help': 'S_Help',
   'footer.user_help': 'S_User Help',

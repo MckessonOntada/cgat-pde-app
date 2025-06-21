@@ -137,8 +137,9 @@ export const MessageEs = {
   'labels.diagnosisCodes': 'S_Diagnosis codes (ICD10)',
 
   'labels.slotNumberLengthError': 'S_Slot Number length can not be greater than 20',
-  'labels.PONumberRequired': 'S_PO number is required',
-  'labels.PONumberLengthError': 'S_PO Number can not be greater than 35',
+  'labels.PONumberRequired': 'S_Please enter the PO Number',
+  'labels.PONumberLengthError': 'S_PO Number should not exceed 35 characters.',
+  'labels.poNumberMustValid': 'S_PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
@@ -483,7 +484,7 @@ export const MessageEs = {
   'labels.SubmittedBy': 'S_Submitted By',
   'labels.SubmittedOn': 'S_Submitted On',
   'labels.Approver_Name': 'S_Approver Name',
-  'labels.Approval_Date_and_Time': 'S_Approval Date and Time',
+  'labels.Approval_Date_and_Time': 'S_Approval Date',
 
   'labels.soldToAccountName': 'S_Sold to Account Name',
   'labels.soldToAccountAddress': 'S_Sold to Account Address',
@@ -555,11 +556,11 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.state': 'S_State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.',
   'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.',
-  'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page', 
+  'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page',
   'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.',
   'controls.uploadAccount': 'S_Upload Account',
   'label.uploadAccountListCSV': 'S_Upload Account List CSV',
-  'controls.uploadAccount': 'S_Upload Account', 
+  'controls.uploadAccount': 'S_Upload Account',
   'form.label.insuranceCompany': 'S_Insurance Company',
   'form.label.memberNumber': 'S_Member Number',
   'form.label.groupNumber': 'S_Group Number',
@@ -614,5 +615,6 @@ export const MessageEs = {
   'column.material.crosswalk.spProductID': 'S_SP Product ID',
   'column.material.crosswalk.spProductName': 'S_SP Product Name',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
-  'column.material.crosswalk.action': 'S_Action' 
+  'column.material.crosswalk.action': 'S_Action',
+  'controls.updateDocument': 'S_Upload Document'
 };
