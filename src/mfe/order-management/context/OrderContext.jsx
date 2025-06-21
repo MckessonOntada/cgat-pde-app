@@ -121,8 +121,17 @@ export const OrderProvider = ({ children }) => {
       })
     };
 
-    if (_params.startDate) _params.startDate = DateUtils.formatDate(_params.startDate, 'dd/mm/yyyy');
-    if (_params.endDate) _params.endDate = DateUtils.formatDate(_params.endDate, 'dd/mm/yyyy');
+    const orderDateSelection = filters?.orderDate;
+    if (orderDateSelection) {
+      const dateRange = getDateRangeFromSelection(orderDateSelection);
+      if (dateRange) {
+        _params.startDate = dateRange.startDate;
+        _params.endDate = dateRange.endDate;
+      } else {
+        _params.startDate = DateUtils.formatDate(filters.startDate, 'dd/mm/yyyy');
+        _params.endDate = DateUtils.formatDate(filters.endDate, 'dd/mm/yyyy');
+      }
+    }
 
     return _params;
   }, [config, filters]);
