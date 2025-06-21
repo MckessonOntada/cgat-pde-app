@@ -53,9 +53,10 @@ const INITIAL_VALUES = {
 function AdditionalDetails() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
   const { controlRef } = useContext(FooterContext);
-  const { isEdit = false, isApprover = false, alertState } = locationState;
+  const searchParams = new URLSearchParams(location.search);
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [storedValue, setStoredValue] = useState([]);
@@ -224,18 +225,21 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab }
+      });
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
+      navigate(`../${id}/summary?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     },
@@ -495,29 +499,32 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary}`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
         const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/${targetPage}`, {
+        navigate(`../${orderId}/${targetPage}?${searchParams.toString()}`, {
           state: {
-            ...locationState,
+            fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover: isApprover
+            isApprover: isApprover,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       } else {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
+        navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
           state: {
-            ...locationState,
+            fromTab: location?.state?.fromTab,
             isEdit: false,
-            isApprover: isApprover
+            isApprover: isApprover,
+            fromOrderView: location?.state?.fromOrderView
           }
         });
       }
@@ -602,38 +609,42 @@ function AdditionalDetails() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     }
   };
 
   const handleNavigate = () => {
-    const prevSearch = locationState?.__prevSearch || '';
-
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
-          ...state.location,
+          fromTab: location?.state?.fromTab,
           isEdit: isEdit,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`/${orderId}/accounts`, {
+      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          fromTab: location?.state?.fromTab,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromOrderView: location?.state?.fromOrderView
         }
       });
     }
@@ -770,12 +781,7 @@ function AdditionalDetails() {
                     <div>
                       <div className="MCP-module-body">
                         <hr className="form-section-separator" />
-                        <div className="row-space-between-center">
-                          <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                          <p className="form-instruction">
-                            <span className="required">*</span> {t('labels.required')}
-                          </p>
-                        </div>
+                        <Heading as="h3">{t('labels.selectVariant')}</Heading>
                         <div>
                           <VariantTable
                             variant={variant}

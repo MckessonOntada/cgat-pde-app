@@ -49,7 +49,14 @@ const MultiSelectDropdownFormik = (props) => {
       />
       {ispillsVisible && value.length > 0 && (
         <div className="pills-container">
-          <Pills id={`pills-${name}`} labels={pillsLabels} variant="secondary" hasDeleteIcon onDelete={onRemoveClick} showPillsCount={pillsCount} />
+          <Pills
+            id={`pills-${name}`}
+            labels={pillsLabels}
+            variant="secondary"
+            hasDeleteIcon
+            onDelete={onRemoveClick}
+            showPillsCount={pillsCount}
+          />
         </div>
       )}
     </div>

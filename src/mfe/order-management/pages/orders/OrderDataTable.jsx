@@ -12,13 +12,9 @@ import ModuleHeader from '@src/components/module-header';
 import { getTableColumns } from './TableColumns';
 import ToggleButtonGroup from './ToggleButtonGroup';
 import ToggleButton from './ToggleButton';
-import { ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { TOGGLE_FILTERS } from './config';
 
 const OrderDataTable = ({ tab, alertContainerId }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const toggleFilters = TOGGLE_FILTERS[tab];
   React.useEffect(() => {
     changeOrderView(() => {
@@ -38,47 +34,29 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
     changeOrderView,
     fileteredData
   } = useOrders();
+  const [charSize, setCharSize] = useState(0);
+  const calculateMinWidth = useMemo(() => {
+    if (typeof charSize === 'number' && charSize > 0) {
+      return `${70 + charSize * 10}px`;
+    }
+    return '80px';
+  }, [charSize]);
 
   // const columns = createColumns(t, navigate, tab, alertContainerId, calculateMinWidth, setCharSize);
   const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {
-    const params = new URLSearchParams(location.search);
-    params.set('pageNo', pageIndex);
-    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
+    setCurrentPage(pageIndex);
   };
-
-  React.useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const pageNo = params.get('pageNo');
-    const pageSize = params.get('pageSize');
-    const view = params.get('view');
-    const tab = params.get('tab');
-
-    // check if required params are there else adding and then navigating
-    if (!pageNo || !pageSize || !view || !tab) {
-      if (!pageNo) params.set('pageNo', 1);
-      if (!pageSize) params.set('pageSize', 8);
-      if (!view) params.set('view', ORDER_VIEW.ALL_ORDERS);
-      if (!tab) params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
-      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
-    } else {
-      setCurrentPage(+pageNo);
-      changeOrderView(view);
-    }
-  }, [location.search]);
 
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = getTableColumns(tab, t, alertContainerId);
-  const handleOnViewChange = (view) => {
-    const params = new URLSearchParams(location.search);
-    params.set('view', view);
-    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
+  const handleOnViewChange = (val) => {
+    changeOrderView(val);
   };
-
   return (
     <>
       <ModuleHeader

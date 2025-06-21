@@ -27,23 +27,27 @@ function TherapySelection() {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
-  const { state: locationState = {}, search } = useLocation();
+  const location = useLocation();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
   const { data: orderDetails = {} } = useOrder(orderId);
   const [tradeDetails, setTradeDetails] = useState(orderDetails?.tradeDetails);
-  const searchParams = new URLSearchParams(search);
+  const searchParams = new URLSearchParams(location.search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { isEdit = false, isApprover = false, isBack = false } = locationState || {};
+  const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
+  const preservedStateRef = useRef(location.state);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`/orders${locationState?.__prevSearch}`);
+    if (isPapOrder)
+      navigate(`/orders?${searchParams.toString()}`, {
+        state: { activeTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
+      });
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -58,21 +62,16 @@ function TherapySelection() {
     searchParams.delete('channelType');
     navigate({
       pathname: '',
-      state: {
-        ...locationState
-      }
+      search: searchParams.toString() ? `?${searchParams.toString()}` : '',
+      state: { fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
     });
   };
 
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`/orders/${id}/accounts`, {
-        state: {
-          ...locationState,
-          isEdit: false,
-          isApprover: isApprover
-        }
+      navigate(`../${id}/accounts?${searchParams.toString()}`, {
+        state: { isEdit: false, isApprover: isApprover, fromTab: preservedStateRef.current?.fromTab, fromOrderView: preservedStateRef.current?.fromOrderView }
       });
     },
     onError: (err) => {
@@ -92,12 +91,13 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/accounts`, {
+        navigate(`../${id}/accounts?${searchParams.toString()}`, {
           state: {
-            ...locationState,
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName)
+            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName),
+            fromTab: preservedStateRef.current?.fromTab,
+            fromOrderView: preservedStateRef.current?.fromOrderView
           }
         });
       },
@@ -140,8 +140,12 @@ function TherapySelection() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`/orders${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
+      });
     }
   };
 
@@ -151,28 +155,39 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary}`, {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
         state: {
-          ...locationState,
           isEdit: true,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: {
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
+      });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
-    } else if (modalSuccessCallback === 'summary') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
         state: {
-          ...locationState,
+          activeTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
+        }
+      });
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+        state: {
           isEdit: true,
-          isApprover: isApprover
+          isApprover: isApprover,
+          fromTab: preservedStateRef.current?.fromTab,
+          fromOrderView: preservedStateRef.current?.fromOrderView
         }
       });
     }

@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -56,12 +56,13 @@ const getOrderCost = (originalOrderCost, updatedOrderCost) => {
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
   const { orderId } = useParams();
+  const searchParams = new URLSearchParams(location.search);
   const { showAlert } = useAlert();
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader, isError, error } = useOrder(orderId);
-  const { isApprover = false, isSimulate = false, backToInvoiceListing = false } = locationState || {};
+  const { isApprover = false, isSimulate = false, backToInvoiceListing = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
@@ -266,10 +267,10 @@ const Summary = () => {
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
     onSuccess: (_result, { action }) => {
       if (action === BUTTON_ACTIONS.SUBMIT) {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, { state: { ...locationState } });
+        navigate(`../${orderId}/order-confirmed`, { state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
       } else {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, {
-          state: { ...locationState, isApproved: true }
+        navigate(`../${orderId}/order-confirmed`, {
+          state: { isApproved: true, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
         });
       }
     },
@@ -313,8 +314,13 @@ const Summary = () => {
   };
 
   const handleOnBackButtonClick = () => {
-    const prevSearch = locationState.__prevSearch || '';
-    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    if (isApprover || isSimulate) {
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
+    } else {
+      navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
+    }
   };
 
   const isImpersonatedAdmin = () => {
@@ -388,8 +394,9 @@ const Summary = () => {
     if (backToInvoiceListing) {
       navigate('/record/invoices');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
+        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
+      });
     }
   };
 
@@ -411,25 +418,23 @@ const Summary = () => {
       });
       return;
     }
-    const basePath = RoutePaths.pathOrderManagement;
-
     const stageRoutes = {
-      [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit-order/${orderId}`,
-      [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/${orderId}/accounts`,
-      [ORDER_STAGES.PATIENT_DETAILS]: `${basePath}/${orderId}/patient`,
-      [ORDER_STAGES.PAYER_DETAILS]: `${basePath}/${orderId}/payer`,
-      [ORDER_STAGES.ADDITIONAL_DETAILS]: `${basePath}/${orderId}/additional-details`
+      [ORDER_STAGES.THERAPY_SELECTION]: `../edit-order/${orderId}`,
+      [ORDER_STAGES.ACCOUNT_DETAILS]: `../${orderId}/accounts`,
+      [ORDER_STAGES.PATIENT_DETAILS]: `../${orderId}/patient`,
+      [ORDER_STAGES.PAYER_DETAILS]: `../${orderId}/payer`,
+      [ORDER_STAGES.ADDITIONAL_DETAILS]: `../${orderId}/additional-details`
     };
 
-    const route = stageRoutes[stage] || basePath;
+    const route = stageRoutes[stage] || '/orders';
     navigate(route, {
-      state: { ...locationState, isEdit: true, isApprover }
+      state: { isEdit: true, isApprover: isApprover, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
     });
   };
 
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
-    navigate(0, { state: { ...locationState } });
+    navigate(0, { state: { fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView } });
   };
 
   const getAllowedControls = () => {
