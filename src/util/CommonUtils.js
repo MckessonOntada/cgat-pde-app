@@ -404,7 +404,9 @@ export const getDateRangeValidationError = (start, end, isRequired = false) => {
 
     const maxAllowedDate = new Date(startDate);
     maxAllowedDate.setMonth(startDate.getMonth() + 6);
-    if (endDate >= maxAllowedDate) {
+    if (startDate >= endDate) {
+      return 'Please select a valid date range.';
+    } else if (endDate >= maxAllowedDate) {
       return 'Date range must not exceed 6 months.';
     }
   }
@@ -658,12 +660,12 @@ function getAxiosErrorMessage(error) {
   return 'An unexpected error occurred';
 }
 
-const getListOverflowingDisplayLabel = (data = [], length = 3) => {
+const getListOverflowingDisplayLabel = (data = [], length = 3, delimiter = ', ') => {
   if (isNonEmptyArray(data) && data.length > length) {
-    const markerLabel = data.slice(0, length).join(', ');
+    const markerLabel = data.slice(0, length).join(delimiter);
     return `${markerLabel} and ${data.length - length} more`;
   } else {
-    return data.join(', ');
+    return data.join(delimiter);
   }
 };
 

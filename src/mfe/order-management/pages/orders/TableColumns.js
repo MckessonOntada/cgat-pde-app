@@ -1,7 +1,7 @@
 import EclipsesTextCss from '@src/components/EclipsesText/EclipsesTextcss';
 import { COLUMNS, ORDER_ENTITY_ACTION, ORDER_STATUS, ORDER_TABS, TABLE_COLUMNS } from './config';
 import CommonUtils from '@src/util/CommonUtils';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import React from 'react';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
@@ -39,7 +39,6 @@ function getOptionsByStatus(props) {
   const { showAlert } = useAlert();
   const { refreshData, assignedGroupsData, orderView } = useOrders();
   const { hasPermission } = usePermission();
-  const { search } = useLocation();
 
   // Mutations
   const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
@@ -102,19 +101,23 @@ function getOptionsByStatus(props) {
         anchorEl: alertContainerId
       })
   });
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
 
   const handleOnOptionSelection = (value) => {
-    const preservedState = { __prevSearch: search };
+    const { tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL } = this.__meta__ || {};
+    const preservedState = { fromTab: tab, fromOrderView: orderView };
     switch (value) {
       case ORDER_ENTITY_ACTION.VIEW:
-        navigate(`${id}/summary`, {
+        navigate(`${id}/summary?${queryString}`, {
           state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : preservedState
         });
         break;
       case ORDER_ENTITY_ACTION.RESUME:
         navigate(
           {
-            pathname: getPathByOrderStage(props)
+            pathname: getPathByOrderStage(props),
+            search: `?${queryString}`
           },
           {
             state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : { ...preservedState, isSimulate: true }
@@ -145,11 +148,12 @@ function getOptionsByStatus(props) {
         });
         break;
       case ORDER_ENTITY_ACTION.REVIEW:
-        navigate(`${id}/summary`, {
+        navigate(`${id}/summary?${queryString}`, {
           state: {
             isEdit: props.approver?.id === loggedInUserId,
             isApprover: props.approver?.id === loggedInUserId,
-            __prevSearch: search
+            fromTab: tab,
+            fromOrderView: orderView
           }
         });
         break;
@@ -171,8 +175,8 @@ function getOptionsByStatus(props) {
         discardVersion({ orderId: props.id, preservedState });
         break;
       case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT: {
-        navigate(`${props.id}/upload-document?`, {
-          state: { __prevSearch: search }
+        navigate(`${props.id}/upload-document?${queryString}`, {
+          state: { fromTab: tab, fromOrderView: orderView }
         });
         break;
       }
@@ -287,30 +291,26 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
 
 const getState = (props) => {
   const { status, approver } = props;
-  const { state: locationState = {}, search } = useLocation();
   const { tabVariant, orderView } = useOrders();
   if (!status) throw new Error('Order status not found, to get state.');
 
   const loggedInUserId = AuthUtils.getUserId();
-  let state = {};
-
   if (status === ORDER_STATUS.SUBMITTED) {
-    state = { ...props };
+    return { ...props, fromTab: tabVariant, fromOrderView: orderView };
   } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
     if (approver?.id === loggedInUserId) {
-      state = { isEdit: true, isApprover: true, props };
+      return { isEdit: true, isApprover: true, props, fromTab: tabVariant, fromOrderView: orderView };
     } else {
-      state = { isApprover: false, props };
+      return { isApprover: false, props, fromTab: tabVariant, fromOrderView: orderView };
     }
   } else if (status === ORDER_STATUS.IN_DRAFT) {
-    state = { isSimulate: true, props };
+    return { isSimulate: true, props, fromTab: tabVariant, fromOrderView: orderView };
   } else {
-    state = { ...props };
+    return { props, props, fromTab: tabVariant, fromOrderView: orderView };
   }
-  return { ...state, __prevSearch: search };
 };
 
-const jsxColumns = () => [
+const jsxColumns = (queryString) => [
   {
     id: COLUMNS.SAP_ID,
     name: 'labels.orderId',
@@ -320,12 +320,29 @@ const jsxColumns = () => [
     minWidth: '130px',
     cell: function (props) {
       return (
-        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
+        <Link
+          className="MCP-table-link"
+          to={{
+            pathname: getPathByOrderStage(props),
+            search: `?${queryString}`
+          }}
+          state={getState(props)}>
           <EclipsesTextCss str={props.backendOrderId} maxWidth={170} />
         </Link>
       );
     }
   },
+  // {
+  //   id: COLUMNS.PDE_ID,
+  //   name: 'labels.pdeId',
+  //   selector: () => {},
+  //   sortable: true,
+  //   sortKey: 'id',
+  //   showInMobileHeader: true,
+  //   showColumnNameInHeader: true,
+  //   minWidth: '140px',
+  //   cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
+  // },
   {
     id: COLUMNS.ORDER_ID,
     name: 'labels.orderView.internalOrderId',
@@ -335,14 +352,17 @@ const jsxColumns = () => [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     minWidth: '140px',
-    cell: (props) => {
-      const state = getState(props);
-      return (
-        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={state}>
-          <Tooltip body={props.id}>{props.id}</Tooltip>
-        </Link>
-      );
-    }
+    cell: (props) => (
+      <Link
+        className="MCP-table-link"
+        to={{
+          pathname: getPathByOrderStage(props),
+          search: `?${queryString}`
+        }}
+        state={getState(props)}>
+        <Tooltip body={props.id}>{props.id}</Tooltip>
+      </Link>
+    )
   },
   {
     id: COLUMNS.ORDER_ID_SP,
@@ -353,14 +373,17 @@ const jsxColumns = () => [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     minWidth: '140px',
-    cell: (props) => {
-      const state = getState(props);
-      return (
-        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={state}>
-          <Tooltip body={props.id}>{props.id}</Tooltip>
-        </Link>
-      );
-    }
+    cell: (props) => (
+      <Link
+        className="MCP-table-link"
+        to={{
+          pathname: getPathByOrderStage(props),
+          search: `?${queryString}`
+        }}
+        state={getState(props)}>
+        <Tooltip body={props.id}>{props.id}</Tooltip>
+      </Link>
+    )
   },
   {
     id: COLUMNS.PATIENT_NAME,
@@ -413,7 +436,7 @@ const jsxColumns = () => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    width: '140px',
+    width: '150px',
     cell: function (props) {
       return <span>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>;
     }
@@ -489,12 +512,14 @@ const jsxColumns = () => [
   }
 ];
 
-export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId) => {
+export const getTableColumns = (tab, translate, alertContainerId) => {
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
   if (!tab) throw new Error('table type is missing');
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
   const columns = TABLE_COLUMNS[tab];
-  const getJsxColumns = jsxColumns();
+  const getJsxColumns = jsxColumns(queryString);
   const tableColumns = columns.map((col) => getJsxColumns.find((item) => item.id === col)).filter(Boolean);
 
   const protoObject = {

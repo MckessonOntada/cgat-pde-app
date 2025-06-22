@@ -6,7 +6,6 @@ import { getDateRangeFromSelection } from '../pages/orders/dateRangeUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
 import { CHANNEL_TYPE } from '../pages/create/form-segments/Constants';
-import useOrderList from '../pages/orders/useOrderList';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const INITIAL_FILTER_STATE = {

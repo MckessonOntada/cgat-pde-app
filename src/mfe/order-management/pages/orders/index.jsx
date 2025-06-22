@@ -109,7 +109,7 @@ const OrderIndex = () => {
       searchParams.assigneeIds = filters.assigneeIds?.join(',');
     }
 
-    searchParams.set('page-no', 1);
+    searchParams['page-no'] = 1;
 
     const cleanedParams = {};
     Object.entries(searchParams).forEach(([key, value]) => {
@@ -243,12 +243,12 @@ const OrderIndex = () => {
           options: assigneeList.map((t) => ({ ...t, isChecked: assigneeIdsFromURL.includes(t.value) })),
           variant: 'async',
           onSearch: searchAssigneeByTest,
-          recordsCountToEnableSearch: 2,
-          getUpdatedOptions: (e) => {
-            if (assigneeIdsFromURL?.length === 0 && e?.length > 0) {
-              setAssigneeOnChange(e);
-            }
-          }
+          recordsCountToEnableSearch: 2
+          // getUpdatedOptions: (e) => {
+          //   if (assigneeIdsFromURL?.length === 0 && e?.length > 0) {
+          //     setAssigneeOnChange(e);
+          //   }
+          // }
         });
       }
     }

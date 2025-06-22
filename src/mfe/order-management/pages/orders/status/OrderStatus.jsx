@@ -12,13 +12,13 @@ import useOrder from '../useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { FooterContext } from '@src/components/footer/FooterContext';
-import { RoutePaths } from '@src/routes/constants';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
   const contentRef = useRef(null);
   const { controlRef } = useContext(FooterContext);
@@ -39,10 +39,13 @@ const OrderStatus = () => {
 
   const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
-  const backToOrders = () => {
-    const prevSearch = locationState.__prevSearch;
-    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
-  };
+  const backToOrders = () =>
+    navigate(`/orders?${searchParams.toString()}`, {
+      state: {
+        activeTab: location?.state?.fromTab,
+        fromOrderView: location?.state?.fromOrderView
+      }
+    });
 
   if (isLoader) {
     return isLoader;
@@ -130,10 +133,10 @@ const OrderStatus = () => {
       </div>
       <div className="footer-wrapper" ref={controlRef}>
         <div className={'controls footer-controls'}>
-          <Button size="md" variant="secondary" onClick={printPage}>
+          <Button size="md" variant="secondary" onClick={() => printPage()}>
             {t('captions.btnPrintSummary')}
           </Button>
-          <Button size="md" variant="primary" onClick={backToOrders}>
+          <Button size="md" variant="primary" onClick={() => backToOrders()}>
             {t('captions.btnGoToOrders')}
           </Button>
         </div>

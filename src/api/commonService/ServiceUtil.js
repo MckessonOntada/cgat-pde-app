@@ -13,7 +13,7 @@ function transformTherapies(content) {
         isParent: true,
         genericName: getUniqueValues(therapies, 'genericName'),
         ndc: getUniqueValues(therapies, 'ndc'),
-        manufacturer: getUniqueValues(therapies, 'manufacturer'),
+        manufacturer: getUniqueValues(therapies, 'manufacturerName'),
         formulation: '-',
         dosage: '-',
         therapies: therapies.map((therapy) => ({
