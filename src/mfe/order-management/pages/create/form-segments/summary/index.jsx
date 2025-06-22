@@ -548,12 +548,15 @@ const Summary = () => {
   }
 
   const askForPapOrder = Boolean(!spOrder && isImpersonatedAdmin());
-  const primaryPolicyHolderName = `${payerDetails?.primaryMedicalInsurance?.policyHolderFirstName || ''} ${
-    payerDetails?.primaryMedicalInsurance?.policyHolderLastName || ''
-  }`;
-  const secondaryPolicyHolderName = `${payerDetails?.secondaryMedicalInsurance?.policyHolderFirstName || ''} ${
-    payerDetails?.secondaryMedicalInsurance?.policyHolderLastName || ''
-  }`;
+  const primaryPolicyHolderName = CommonUtils.getUSFullName({
+    firstName: payerDetails?.primaryMedicalInsurance?.policyHolderFirstName,
+    lastName: payerDetails?.primaryMedicalInsurance?.policyHolderLastName
+  });
+  const secondaryPolicyHolderName = CommonUtils.getUSFullName({
+    firstName: payerDetails?.secondaryMedicalInsurance?.policyHolderFirstName,
+    lastName: payerDetails?.secondaryMedicalInsurance?.policyHolderLastName
+  });
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {!isError && (
@@ -728,21 +731,19 @@ const Summary = () => {
                         </div>
                       }
                     />
-                    <div className="price-wrapper">
-                      <DetailSegment
-                        label={t('labels.orderCost')}
-                        value={
-                          spOrder ? (
-                            'N/A'
-                          ) : (
+                    {!spOrder && (
+                      <div className="price-wrapper">
+                        <DetailSegment
+                          label={t('labels.orderCost')}
+                          value={
                             <span className="dollarSign ">
                               <span>$</span>
                               {getOrderCost(orderCost, simulationData.updatedCost)}
                             </span>
-                          )
-                        }
-                      />
-                    </div>
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className={'equal-height-grid grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
@@ -1085,10 +1086,7 @@ const Summary = () => {
                       )
                     }
                   />
-                  <div
-                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${
-                      spOrder ? 'xl:grid-cols-2' : isCoiIdRequired ? 'xl:grid-cols-5' : 'xl:grid-cols-4'
-                    }`}>
+                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${spOrder ? 'xl:grid-cols-2' : 'xl:grid-cols-5'}`}>
                     {!spOrder && additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />}
                     {spOrder && <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode} />}
                     <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
