@@ -112,7 +112,7 @@ export const OrderProvider = ({ children }) => {
       ...(filters.searchQuery && { query: filters.searchQuery }),
       ...filters,
       showMyOrders: config.view === ORDER_VIEW.MY_ORDERS || config.view === ORDER_VIEW.ASSIGNED_TO_ME ? true : false,
-      showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
+      showPAPOrders: Boolean(config.view === ORDER_VIEW.PAP_ORDERS),
       ...([config.tab, filters.orderType].includes(ORDER_TABS.SUBMITTED_SP) && {
         channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
       }),
