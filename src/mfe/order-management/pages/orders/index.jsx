@@ -59,7 +59,6 @@ const OrderIndex = () => {
     error,
     searchAssigneeByTest,
     setAssigneeOnChange,
-    filterConfig,
     changeOrderView,
     data,
     isFetching,
@@ -109,6 +108,8 @@ const OrderIndex = () => {
       searchParams.orderType = filters.orderType;
       searchParams.assigneeIds = filters.assigneeIds?.join(',');
     }
+
+    searchParams.set('page-no', 1);
 
     const cleanedParams = {};
     Object.entries(searchParams).forEach(([key, value]) => {
@@ -196,6 +197,7 @@ const OrderIndex = () => {
 
   const handleOnViewChange = (view) => {
     params.set('view', view);
+    params.set('page-no', 1);
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
@@ -272,7 +274,7 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [activeTab, orderView, location]);
+  }, [activeTab, orderView, assigneeList, location]);
 
   const initialFilterData = React.useMemo(() => {
     if (filterParams) {
