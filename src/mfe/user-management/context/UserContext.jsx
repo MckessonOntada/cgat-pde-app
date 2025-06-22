@@ -5,6 +5,8 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { DateUtils } from '@src/util/DateUtil';
+import { USER_TABS } from '../pages/Dashboard/constants';
+import { useLocation } from 'react-router-dom';
 
 const UserContext = createContext();
 
@@ -43,10 +45,12 @@ const UserProvisioningStatusEnum = {
 };
 
 export const UserProvider = ({ children }) => {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const tab = params.get('tab');
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [activeTab, setActiveTab] = useState(1);
   const [fileteredData, setfileteredData] = useState(false);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -57,8 +61,7 @@ export const UserProvider = ({ children }) => {
 
   const requestParams = useMemo(() => {
     let statusArray = [];
-
-    if (activeTab === 2) {
+    if (tab === USER_TABS.USERS) {
       if (filterConfig?.status === 'all') {
         statusArray = [UserProvisioningStatusEnum.PENDING, UserProvisioningStatusEnum.REJECTED];
       } else if (filterConfig?.status) {
@@ -73,12 +76,12 @@ export const UserProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'first_name',
       sortOrder: sortConfig.sortOrder || 'asc',
-      ...(activeTab === 1 && {
+      ...(tab === USER_TABS.USERS && {
         userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
       }),
-      ...(activeTab === 1 && filterConfig?.role && { roleIds: [filterConfig.role] }),
+      ...(tab === USER_TABS.USERS && filterConfig?.role && { roleIds: [filterConfig.role] }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(activeTab === 1 ? statusArray.length && { status: statusArray } : statusArray.length && { provisioningStatuses: statusArray }),
+      ...(tab === USER_TABS.USERS ? statusArray.length && { status: statusArray } : statusArray.length && { provisioningStatuses: statusArray }),
       ...(filterConfig?.dateRange?.[0] && {
         startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy')
       }),
@@ -86,13 +89,15 @@ export const UserProvider = ({ children }) => {
         endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy')
       })
     };
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, activeTab]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, location.search]);
 
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['users', activeTab, requestParams],
+    queryKey: ['users', tab, requestParams],
     queryFn: async () => {
       const url =
-        activeTab === 1 ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
+        tab === USER_TABS.USERS
+          ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
+          : `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         const { content: data, totalElements, totalPages } = res.data;
@@ -165,12 +170,10 @@ export const UserProvider = ({ children }) => {
       applyFilters,
       applySort,
       setPageNumber,
-      activeTab,
-      setActiveTab,
       refreshData: refetch,
       fileteredData
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data, activeTab, setActiveTab, refetch]
+    [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );
   return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
 };
