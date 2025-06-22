@@ -24,6 +24,7 @@ import {
 import ModuleHeader from '@src/components/module-header';
 import OrderService from '@src/api/commonService/OrderService';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
+import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const FormStateTracker = ({ setFormValues, setIsDirty }) => {
@@ -54,11 +55,10 @@ function Payer() {
   const [flag, setFlag] = React.useState(false);
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const { state: locationState = {} } = useLocation();
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
-  const { isApprover = false, isEdit = false } = location.state || {};
+  const { isEdit = false, isApprover = false } = locationState || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isLoader } = useOrder(orderId);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const therapyId = orderDetails?.therapy?.materialNumber;
@@ -130,36 +130,31 @@ function Payer() {
     return Yup.object().shape(schemaShape);
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen]);
 
-  const handleOnBack = () =>
-    navigate(`/orders?${searchParams.toString()}`, {
-      state: {
-        activeTab: location?.state?.fromTab,
-        fromOrderView: location?.state?.fromOrderView
-      }
-    });
+  const handleOnBack = () => {
+    const prevSearch = locationState?.__prevSearch || '';
+    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+  };
 
-  const handleOnCancel = () => {
+  const handleOnBackButtonClick = () => {
     if (isDirty) {
       setModalSuccessCallback(isEdit ? 'summary' : 'patient');
       return;
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: true,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else {
-      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     }
@@ -167,25 +162,21 @@ function Payer() {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+      navigate(`${RoutePaths.pathOrderManagement}${locationState.__prevSearch}`);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: false,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     }
@@ -193,12 +184,11 @@ function Payer() {
 
   const handleOnSubmit = (values) => {
     OrderService.savePayerDetails(orderId, values).then((response) => {
-      navigate(`../${orderId}/additional-details?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: false,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     });
@@ -334,7 +324,7 @@ function Payer() {
               </div>
               <div className="footer-wrapper" ref={controlRef}>
                 <div className="controls footer-controls">
-                  <Button size="md" variant="secondary" onClick={handleOnCancel}>
+                  <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                     {t('captions.btnBack')}
                   </Button>
                   <Button size="md" variant="primary" type="submit">
