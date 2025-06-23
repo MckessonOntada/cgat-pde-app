@@ -3,7 +3,7 @@ import Credits from '../credits';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 
 function SelectCreditsListing(props) {
-  const { selectedCredits, setSelectedCredits, totalCreditsCount, settotalCreditsCount, settotalCreditsAmount } = props;
+  const { selectedCredits, setSelectedCredits, totalCreditsCount, settotalCreditsCount, settotalCreditsAmount, desableSelection } = props;
   const { data, actualData: allCreditData } = usePaymentCredits();
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function SelectCreditsListing(props) {
 
   return (
     <React.Fragment>
-      <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
+      <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} desableSelection={desableSelection} />
     </React.Fragment>
   );
 }
