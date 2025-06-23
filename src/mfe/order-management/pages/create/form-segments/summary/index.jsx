@@ -1102,7 +1102,7 @@ const Summary = () => {
                   </div>
                 </div>
 
-                {spOrder && (
+                {spOrder && additionalDetails?.clinicalDetails?.hasAllergies && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
