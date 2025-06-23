@@ -25,6 +25,7 @@ function InputFileFormik(props) {
   const errorMessage = getNestedValue(errors, `${field.name}`);
   const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
   const MAX_FILE_SIZE = Number(process.env.REACT_APP_MAX_FILE_SIZE_TO_UPLOAD, 10) || uploadFileSizeText;
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
@@ -88,6 +89,16 @@ function InputFileFormik(props) {
       setFile(values[field.name]);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (file && file instanceof File && file.type.startsWith('image/')) {
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+    setPreviewUrl(null);
+  }, [file]);
 
   return (
     <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>
@@ -159,12 +170,8 @@ function InputFileFormik(props) {
           <div className={styles['preview-container']}>
             <div className={styles['file-info']}>
               <div>
-                {file.type?.startsWith('image/') ? (
-                  file.type.startsWith('image/') ? (
-                    <img src={URL.createObjectURL(file)} alt="Preview" className={styles['image-preview']} />
-                  ) : (
-                    <p className={styles['error-message']}>{t('file.browsInput.error.invalidFileType')}</p>
-                  )
+                {file?.type?.startsWith('image/') && previewUrl ? (
+                  <img src={previewUrl} alt="Preview" className={styles['image-preview']} />
                 ) : (
                   <FileUploadIcon width={20} />
                 )}
