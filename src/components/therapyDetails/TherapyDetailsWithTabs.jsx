@@ -141,6 +141,7 @@ function TherapyDetailsWithTabs({
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
+      therapyDetails.ndc = therapyDetails.ndcNumber;
       onSelect(therapyDetails);
       onClose();
     }
