@@ -381,9 +381,9 @@ async function uploadDocument(payload) {
   if (res.data) return res.data;
 }
 
-async function getTherapyDetailsByTradeName(tradeName) {
+async function getTherapyDetailsByTradeName(tradeName, channelType) {
   if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
-  const url = `${ApiRoutes.USERS()}/current/therapies/details/${tradeName}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies/details/${tradeName}?channelType=${channelType}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
