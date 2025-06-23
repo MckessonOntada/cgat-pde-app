@@ -784,9 +784,11 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.state': 'State is required.',
   'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.',
   'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
+  'orderManagement.backToInvoiceDetails': 'Back to Invoice listing page',
   'providers.upload-info': 'For filling up the provider’s template, please refer to the instruction file.',
   'controls.uploadAccount': 'Upload Account',
   'label.uploadAccountListCSV': 'Upload Account List CSV',
+  'controls.uploadAccount': 'Upload Account',
   'controls.uploadAccount': 'Upload Account',
   'form.label.insuranceCompany': 'Insurance Company',
   'form.label.memberNumber': 'Member Number',
@@ -871,5 +873,13 @@ export const MessageEn = {
   'column.material.crosswalk.spProductName': 'SP Product Name',
   'column.material.crosswalk.spNDC': 'SP NDC',
   'column.material.crosswalk.action': 'Action',
-  'controls.updateDocument': 'Upload Document'
+  'controls.updateDocument': 'Upload Document',
+  'label.primarymedicalinsurance': 'Primary Medical Insurance',
+  'label.secondarymedicalinsurance': 'Secondary Medical Insurance',
+  'label.primarypharmacyinsurance': 'Primary Pharmacy Insurance',
+  'label.secondarypharmacyinsurance': 'Secondary Pharmacy Insurance',
+  'label.policyHolderName': 'Policy Holder Name',
+  'label.relationToPatient': 'Relationship to Patient',
+  'label.diagnosisCode': 'Diagnosis code',
+  'label.allergies': 'Allergies'
 };

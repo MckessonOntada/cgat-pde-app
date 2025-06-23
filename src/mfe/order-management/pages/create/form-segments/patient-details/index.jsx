@@ -357,24 +357,35 @@ const PatientDetails = () => {
                                 refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                 asyncRecordsFound={totalProviders}
                               />
-                              {provider && (
-                                <div className="details-card">
-                                  <Heading className="details-title" as="h3">
-                                    {provider.fullname}
-                                  </Heading>
-                                  <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
-                                    <Tooltip body={provider.detailedAddress}>
-                                      <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
-                                    </Tooltip>
-                                    {['dea', 'npi', 'phone'].map((key) => {
-                                      const value = provider[key];
-                                      return (
-                                        <Tooltip body={value}>
-                                          <p className="detail-segment inline-text-overflow">{value}</p>
-                                        </Tooltip>
-                                      );
-                                    })}
-                                  </div>
+                            </div>
+                            {provider && (
+                              <div className="details-card">
+                                <Heading className="details-title" as="h3">
+                                  {provider.fullname}
+                                </Heading>
+                                <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
+                                  <Tooltip body={provider.detailedAddress}>
+                                    <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
+                                  </Tooltip>
+                                  {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
+                                    const rawValue = provider[key];
+                                    const labelMap = {
+                                      dea: t('provider.deaNumber'),
+                                      npi: t('provider.npiNumber'),
+                                      phone: t('provider.phoneNumber'),
+                                      email: t('provider.emailId'),
+                                      tin: t('provider.tinNumber')
+                                    };
+                                    const value =
+                                      key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
+                                    return (
+                                      <Tooltip key={key} body={value}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          {labelMap[key]} : {value}
+                                        </p>
+                                      </Tooltip>
+                                    );
+                                  })}
                                 </div>
                               )}
                             </div>
