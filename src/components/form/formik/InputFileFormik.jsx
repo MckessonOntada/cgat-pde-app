@@ -91,13 +91,18 @@ function InputFileFormik(props) {
   }, []);
 
   React.useEffect(() => {
-    if (file && file instanceof File && file.type.startsWith('image/')) {
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
-
-      return () => URL.revokeObjectURL(objectUrl);
+    if (file && file instanceof File) {
+      if (file.type.startsWith('image/')) {
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewUrl(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
+      } else {
+        console.warn('Unsupported file type:', file.type);
+        setPreviewUrl(null);
+      }
+    } else {
+      setPreviewUrl(null);
     }
-    setPreviewUrl(null);
   }, [file]);
 
   return (
