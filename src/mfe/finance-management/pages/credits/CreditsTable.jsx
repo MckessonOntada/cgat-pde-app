@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Loader } from '@mckesson/mcp-component-library';
+import { Loader, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -39,7 +39,7 @@ export default function CreditsTable(props) {
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
-      minWidth: '120px',
+      minWidth: '220px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cell: (props) => (
@@ -61,7 +61,7 @@ export default function CreditsTable(props) {
       id: 'soldToSite',
       name: t('paymentInvoices.table.column.soldToAccount'),
       selector: () => {},
-      minWidth: '180px',
+      minWidth: '220px',
       sortable: true,
       wrap: true,
       showInMobileHeader: true,
@@ -91,20 +91,20 @@ export default function CreditsTable(props) {
         </div>
       ),
       right: true
-    }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   selector: (row) => row.totalAuthorizedPaymentAmt,
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   wrap: true,
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      selector: (row) => row.totalAuthorizedPaymentAmt,
+      minWidth: '144px',
+      sortable: true,
+      wrap: true,
 
-    //   cell: (props) => (
-    //     <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
-    //       {t('paymentInvoices.credits.table.downloadPdf')}
-    //     </Button>
-    //   )
-    // }
+      cell: (props) => (
+        <Button disabled={!props.isPdfAvailable} className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="sm">
+          {t('paymentInvoices.credits.table.downloadPdf')}
+        </Button>
+      )
+    }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });

@@ -213,7 +213,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.credit.date': 'S_Credit Date',
   'paymentInvoices.credits.table.amount': 'S_Amount',
   'paymentInvoices.credits.table.billamount': 'S_Bill Amount',
-  'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
+  'paymentInvoices.credits.table.downloadPdf': 'S_Download pdf',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
   'paymentInvoices.credits.filters.ValidFromstart': 'S_Valid From (Start)',
   'paymentInvoices.credits.filters.ValidFromend': 'S_Valid From (End)',

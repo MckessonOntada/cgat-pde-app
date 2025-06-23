@@ -211,11 +211,12 @@ export default function InvoicesTable() {
             {
               label: t('paymentInvoices.Actions.payment'),
               value: 'payment'
+            },
+            {
+              label: t('paymentInvoices.credits.table.downloadPdf'),
+              value: 'exportPDF',
+              disabled: !props.isPdfAvailable
             }
-            // {
-            //   label: t('paymentInvoices.Actions.exportPDF'),
-            //   value: 'exportPDF'
-            // }
           ]}
           aria-label="invoice options"
         />
