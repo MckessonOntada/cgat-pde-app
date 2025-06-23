@@ -22,9 +22,7 @@ const Summary = () => {
   const handleOnRemove = (id) => {
     const { selectedProducts } = state;
     if (selectedProducts) {
-      const filteredProducts = selectedProducts.filter(
-        (item) => item.id !== id
-      );
+      const filteredProducts = selectedProducts.filter((item) => item.id !== id);
       setValue('selectedProducts', filteredProducts);
       setList(filteredProducts);
     }
@@ -62,11 +60,7 @@ const Summary = () => {
             </div>
           </div>
           <div className="controls">
-            <Button
-              size="sm"
-              className={style['list-controls']}
-              variant="secondary"
-              onClick={handleOnLinkMaterials}>
+            <Button size="sm" className={style['list-controls']} variant="secondary" onClick={handleOnLinkMaterials}>
               {t('crosswalk.btnLinkMaterials')}
             </Button>
           </div>

@@ -72,7 +72,7 @@ export const CustomDataTable = (props) => {
   };
 
   const renderPagination = () => {
-    if (CommonUtils.isNonEmptyArray(data) && totalRocords > recordsPerPage) {
+    if (totalRocords > recordsPerPage) {
       return (
         <div data-testid={'table-pagination-' + id} className={isStickyPagination ? styles.paginationWrapperSticky : styles.paginationWrapper}>
           <div className={styles.d_flex}>

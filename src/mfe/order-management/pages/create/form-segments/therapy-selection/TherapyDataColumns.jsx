@@ -62,13 +62,13 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showColumnNameInHeader: true,
     cell: (row) => {
       const { tradeName, cellValue, channelType } = row;
-      const location = useLocation();
+      const { state: locationState = {} } = useLocation();
       return (
         <Link
           className="MCP-table-link"
           aria-label={t('labels.therapyDescription')}
           to={`?trade=${tradeName}&channelType=${channelType}`}
-          state={{ ...location?.state, fromTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }}>
+          state={{ ...locationState }}>
           <EclipsesTextcss str={cellValue} />
         </Link>
       );
