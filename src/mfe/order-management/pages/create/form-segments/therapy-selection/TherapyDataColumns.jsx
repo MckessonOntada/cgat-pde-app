@@ -28,7 +28,6 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
           </div>
         );
       }
-
       return (
         <div className="MCP-table-cell radio-button-wrapper">
           <RadioGroup
@@ -45,7 +44,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
               onChange(row);
             }}
             radioBtnWidth="auto"
-            value={row.tradeName === trade.tradeName && trade.ndc === row.ndc ? row.id : ''}
+            value={row.tradeName === trade.tradeName && trade.ndcNumber === row.ndc ? row.id : ''}
           />
         </div>
       );
