@@ -369,7 +369,7 @@ export const MessageEs = {
   'messages.success.release': 'S_Order Released Successfully.',
   'messages.success.assign': 'S_Order Assigned Successfully.',
   'errors.There is no Approver Group assigned to the order': 'S_There is no Approver Group assigned to the order.',
-  'errors.default': 'S_An unexpected error occurred.',
+
   'order.label.admin': 'S_Admin',
   'order.label.manageOrder': 'S_Manage Order',
   'message.errorShortComment': 'S_Comment is very short, try to add detailed comment.',

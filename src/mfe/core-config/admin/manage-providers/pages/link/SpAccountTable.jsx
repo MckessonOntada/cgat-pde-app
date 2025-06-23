@@ -80,7 +80,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
       onError: () => {
         addNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.failedToOpenSPDetails')
+          description: t('errors.default')
         });
       }
     }

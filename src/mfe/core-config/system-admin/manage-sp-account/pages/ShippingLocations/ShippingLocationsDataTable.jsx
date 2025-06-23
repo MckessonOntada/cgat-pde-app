@@ -93,7 +93,7 @@ function ShippingLocationsDataTable() {
       showAlert('success', t('manageSPAccount.message.removeshippinglocation.success'));
     },
     onError: (error) => {
-      showAlert('error', t('manageSPAccount.message.removeshippinglocation.error'));
+      showAlert('error', t('errors.default'));
     }
   });
 

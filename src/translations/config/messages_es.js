@@ -161,11 +161,11 @@ export const ConfigurationMessagesES = {
   'fileUpload.crosswalk.success': 'S_File processed successfully, No errors were found.',
   'fileUpload.crosswalk.partialSuccess':
     'S_File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
-  'fileUpload.error.timeoutOrSystemError': 'S_Error: An unexpected error occurred during the upload. Please try again later.',
+  'fileUpload.error.timeoutOrSystemError': 'S_Error: System is facing issues in getting the information. Kindly Contact your System admin.',
   'invalid.csv.file.headers.empty': 'S_Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.unstructured': 'S_Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.missing': 'S_Error: The uploaded file is invalid. Please upload a valid file.',
-  'providers.message.fileUploadFailure': 'S_Something went wrong please try again later.',
+  'providers.message.fileUploadFailure': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
   // catalog
   'SPCatalog.Configuration': 'S_Configuration',
   'SPCatalog.CatalogConfiguration': 'S_SP Catalog Configuration',

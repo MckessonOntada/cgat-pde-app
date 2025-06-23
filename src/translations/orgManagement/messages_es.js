@@ -160,7 +160,6 @@ export const OrgManagementES = {
   'errors.unique_practice_name': 'S_Organization name already exists.',
   'errors.practice_email_key': 'S_Email ID already exists in the System.',
   'errors.practice_phone_key': 'S_Phone number already exists.',
-  'errors.default': 'S_An unexpected error occurred.',
 
   'orgManagement.filters.status.label': 'S_Select by name & location',
   'button.caption.uploadFile': 'S_Upload File',

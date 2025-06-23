@@ -67,7 +67,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         errorResponse.response.data.errorCodes.forEach((error) => {
           sendNotification({
             type: 'error',
-            description: t(`SPCatalog.deLinkFailure.${error}`)
+            description: t('errors.default')
           });
         });
       }
@@ -137,7 +137,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
       onError: () => {
         sendNotification({
           type: 'error',
-          description: t('manageSPMaterial.messages.button.downloadFail')
+          description: t('errors.default')
         });
       }
     }

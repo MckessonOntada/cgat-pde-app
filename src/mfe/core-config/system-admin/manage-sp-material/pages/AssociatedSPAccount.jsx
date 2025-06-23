@@ -35,7 +35,7 @@ function AssociatedSPAccount() {
       onError: () => {
         setNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.unableToUnlinkAccount')
+          description: t('errors.default')
         });
       }
     }

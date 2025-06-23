@@ -153,7 +153,7 @@ export default function PendingPaymentTable() {
       },
       onError: (error) => {
         showAlert({
-          description: t('pendingPayments.cancel.failed'),
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });

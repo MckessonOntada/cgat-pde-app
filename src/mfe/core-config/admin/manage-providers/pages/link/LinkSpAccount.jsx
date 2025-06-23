@@ -59,7 +59,7 @@ function LinkSpAccount() {
         setSelectedProviders([]);
         setNotification({
           type: 'error',
-          description: t('provider.sp.account.unableToLink')
+          description: t('errors.default')
         });
       }
     }

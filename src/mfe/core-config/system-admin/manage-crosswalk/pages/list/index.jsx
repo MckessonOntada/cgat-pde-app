@@ -92,13 +92,13 @@ const List = () => {
           errorResponse.response.data.errorCodes.forEach((error) => {
             setNotification({
               type: 'error',
-              description: t(`SPCrosswalk.deLinkFailure.${error}`)
+              description: t('errors.default')
             });
           });
         } else {
           setNotification({
             type: 'error',
-            description: t(`SPCrosswalk.deLinkFailure.generic`)
+            description: t('errors.default')
           });
         }
       });

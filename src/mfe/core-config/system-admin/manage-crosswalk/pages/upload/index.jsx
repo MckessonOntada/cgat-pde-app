@@ -83,7 +83,7 @@ const Upload = () => {
         } else {
           setNotification({
             type: 'error',
-            description: errorResponse.data?.message || t('providers.message.fileUploadFailure'),
+            description: errorResponse.data?.message || t('errors.default'),
             isSticky: true
           });
         }

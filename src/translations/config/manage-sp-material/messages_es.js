@@ -39,7 +39,6 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.message.deactivateConfirmaiton': 'S_Are you sure, you want to deactivate this SP Material?',
   'manageSPMaterial.message.deactivate_success': 'S_SP Material(s) have been Deactivated successfully.',
   'manageSPMaterial.message.deactivate_failure': 'S_Failed to Deactivate the SP Material(s).',
-  'errors.default': 'S_An unexpected error occurred.',
 
   'manageSPMaterial.drawer.heading': 'S_SP Product Details',
   'manageSPMaterial.drawer.Details': 'S_Details',

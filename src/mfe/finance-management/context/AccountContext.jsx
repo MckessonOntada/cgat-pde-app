@@ -75,7 +75,7 @@ export const AccountProvider = ({ children }) => {
   useEffect(() => {
     if (errorFetchingAccounts) {
       showAlert({
-        description: t('paymentInvoices.getAccountsAPI.error'),
+        description: t('errors.default'),
         type: 'error',
         anchorEl: alertContainerId
       });
@@ -133,9 +133,7 @@ export const AccountProvider = ({ children }) => {
       onError: (error) => {
         if (CommonUtils.isNonEmptyObject(error) && CommonUtils.isNonEmptyObject(error.response) && CommonUtils.isNonEmptyObject(error.response.data)) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message)
-              ? error.response.data.message
-              : t('paymentInvoices.setDefaultAccountAPI.error'),
+            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

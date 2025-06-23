@@ -46,7 +46,7 @@ export default function InvoicesTable() {
         const { response } = error;
         let errorMsg = response?.data?.message || 'Error fetching order details';
         showAlert({
-          description: errorMsg,
+          description: t('errors.default'),
           type: 'error',
           anchorEl: 'summary-alert-container'
         });

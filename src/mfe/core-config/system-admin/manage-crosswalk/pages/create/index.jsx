@@ -66,13 +66,13 @@ const CreateCrosswalk = () => {
           if (errorStatusCodes.includes(error.status)) {
             addNotification({
               type: 'error',
-              description: error.response?.data?.message || error.message,
+              description: t('errors.default'),
               isSticky: true
             });
           } else {
             addNotification({
               type: 'error',
-              description: error.response?.data?.message || error.message
+              description: t('errors.default')
             });
           }
         });

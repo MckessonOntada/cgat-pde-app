@@ -138,7 +138,7 @@ export const CustomerStatementsProvider = ({ children }) => {
     retry: 1,
     onError: (error) => {
       const { response } = error;
-      let errorMsg = response?.data?.message || 'Error fetching customer statements listing';
+      let errorMsg = t('errors.default');
       showAlert({
         description: errorMsg,
         type: 'error',
@@ -254,7 +254,7 @@ export const CustomerStatementsProvider = ({ children }) => {
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('paymentInvoices.CS.export.error'),
+            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

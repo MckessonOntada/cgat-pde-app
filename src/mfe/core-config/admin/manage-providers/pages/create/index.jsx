@@ -148,7 +148,7 @@ const ProviderForm = (props) => {
     const errorFromServer = response.data?.errorCodes;
     if (errorFromServer && Array.isArray(errorFromServer) && errorFromServer.length > 0) {
       setNotification({
-        description: t(`serverResponse.${errorFromServer.sort().join('.')}`),
+        description: t('errors.default'), //t(`serverResponse.${errorFromServer.sort().join('.')}`),
         type: 'error',
         isSticky: true
       });

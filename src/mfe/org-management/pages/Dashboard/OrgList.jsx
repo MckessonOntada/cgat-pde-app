@@ -259,7 +259,7 @@ const OrgList = ({ onActionSuccess }) => {
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}
-            error={isError ? 'Something went wrong! Please try again' : null}
+            error={isError ? t('errors.default') : null}
             image={EmptyDataImage}
             heading={!fileteredData ? t('orgManagement.add.label') : t('errors.messages.noRecordsFound')}
             description={!fileteredData && t('orgManagement.empty_table.description')}

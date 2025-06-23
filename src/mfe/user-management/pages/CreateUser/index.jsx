@@ -173,7 +173,7 @@ const CreateUser = () => {
           navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: 'Failed to Reject user' });
+          setAlert({ type: 'error', message: t('errors.default') });
           setIsAlertVisible(true);
         }
       }
