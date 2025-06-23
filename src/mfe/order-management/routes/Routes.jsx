@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { routesConfig } from './constants';
 import OrderIndex from './../pages/orders';
-import OrderSummary from '../pages/orders/OrderSummary';
 import OrderStatus from '../pages/orders/status/OrderStatus';
 import TherapySelection from '../pages/create/form-segments/therapy-selection';
 import AccountSelection from '../pages/create/form-segments/account-selection/AccountSelection';
@@ -65,7 +64,14 @@ function OrderManagementRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path={`:orderId/payer`} element={<Payer />} />
+      <Route
+        path={`:orderId/payer`}
+        element={
+          <ProtectedRoute permissions={[]}>
+            <Payer />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path={`:orderId/additional-details`}
         element={
@@ -99,8 +105,6 @@ function OrderManagementRoutes() {
         }
       />
 
-      <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
-      <Route path={routesConfig.reviewOrder} element={<div></div>} />
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );

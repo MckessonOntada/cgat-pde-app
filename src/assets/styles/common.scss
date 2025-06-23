@@ -1384,28 +1384,14 @@ div[role="row"] {
   overflow: hidden;
 }
 
-.selected-provider {
-  display: flex;
-  flex-direction: column;
+.provider-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-03);
+  align-items: center;
 
-  .heading-provider {
-    display: flex;
-    margin-bottom: 16px;
-    gap: var(--spacing-01);
-    .required {
-      position: relative;
-      top: -4px;
-    }
-  }
-
-  .provider-field-wrap {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: 1fr;
-
-    @include mixins.respond(md) {
-      grid-template-columns: 1fr 2fr;
-    }
+  @include mixins.respond(md) {
+    grid-template-columns: 1fr 2fr;
   }
 
   .details-card {
@@ -1416,7 +1402,7 @@ div[role="row"] {
     border: 1px solid var(--brand-color-patient-primary-3);
     border-radius: var(--brand-border-radius--8);
     background-color: var(--brand-color-background-white);
-    margin-top: var(--spacing-03);
+
     @media only screen and (max-width: 768px) {
       margin-top: var(--spacing-02);
       padding: 12px; //spacing is not avilable.
@@ -1599,6 +1585,10 @@ div[role="row"] {
 hr.form-section-separator {
   border: none;
   border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+}
+
+div.empty-table-wrapper {
+  min-height: 336px;
 }
 .icon-button {
   letter-spacing: initial !important;

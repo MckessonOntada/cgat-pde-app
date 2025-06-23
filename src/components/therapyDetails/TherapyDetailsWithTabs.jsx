@@ -219,9 +219,9 @@ function TherapyDetailsWithTabs({
 
   const renderConfiguration = (fields, details) =>
     fields.map(({ label, value, display = true, translation = true }) => {
-      const configValue = details?.materialConfig?.[value];
+      const configValue = details?.materialConfig?.[value] || details?.[value];
       const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
-      return <ConfigItem key={label} label={translation ? t(label) : label} value={details[value] || '-'} display={display} />;
+      return <ConfigItem key={label} label={translation ? t(label) : label} value={displayValue || '-'} display={display} />;
     });
 
   const onDeleteConfig = async (actionId) => {

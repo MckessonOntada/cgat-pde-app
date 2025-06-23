@@ -1,0 +1,4 @@
+export const USER_TABS = {
+  USERS: 'USERS',
+  PENDING_REQUESTS: 'PENDING_REQUESTS'
+};

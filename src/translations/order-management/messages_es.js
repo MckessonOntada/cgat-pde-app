@@ -141,6 +141,7 @@ export const MessageEs = {
   'labels.PONumberLengthError': 'S_PO Number should not exceed 35 characters.',
   'labels.poNumberMustValid': 'S_PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
+  'labels.enterValidDateOfAdministration': 'S_Enter valid date of administration.',
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
@@ -615,5 +616,6 @@ export const MessageEs = {
   'column.material.crosswalk.spProductID': 'S_SP Product ID',
   'column.material.crosswalk.spProductName': 'S_SP Product Name',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
-  'column.material.crosswalk.action': 'S_Action'
+  'column.material.crosswalk.action': 'S_Action',
+  'controls.updateDocument': 'S_Upload Document'
 };

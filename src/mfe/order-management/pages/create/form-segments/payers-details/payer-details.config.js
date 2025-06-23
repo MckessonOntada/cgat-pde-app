@@ -222,7 +222,7 @@ export const getPharmacyInsuranceUiTemplate = (parentKey, mainSectionTitle) => [
     rows: pharmacyInsuranceTemplate(parentKey)
   },
   {
-    subTitle: 'Upload Medical Insurance Card',
+    subTitle: 'Upload Pharmacy Insurance Card',
     rows: insuranceCardTemplate(parentKey, 'pharmacyCard')
   }
 ];
