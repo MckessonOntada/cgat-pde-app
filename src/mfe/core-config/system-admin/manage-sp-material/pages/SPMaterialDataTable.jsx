@@ -45,12 +45,12 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
     },
     {
       name: t('manageSPMaterial.table.spproductId'),
-      id: 'trade_name',
+      id: 'material_number',
       selector: (row) => {},
       wrap: true,
       minWidth: '180px',
       sortable: true,
-      sortKey: 'trade_name',
+      sortKey: 'material_number',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
