@@ -5,48 +5,20 @@ import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
 import CommonUtils from '@src/util/CommonUtils';
 import { useTranslate } from '@src/translations/useTranslation';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
-function validateFile(file) {
-  const maxSize = 5 * 1024 * 1024;
-  const allowedMimeTypes = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'text/plain',
-    'text/csv'
-  ];
-
-  const forbiddenMimeTypes = [
-    'image/png',
-    'image/jpeg',
-    'image/gif',
-    'image/webp',
-    'image/svg+xml',
-    'application/x-msdownload',
-    'application/octet-stream',
-    'application/x-sh'
-  ];
-
-  if (!file) {
-    return { isValid: false, message: 'No file selected.' };
-  }
-
-  if (file.size > maxSize) {
-    return { isValid: false, message: 'File size must be 5MB or smaller.' };
-  }
-
-  if (forbiddenMimeTypes.includes(file.type)) {
-    return { isValid: false, message: 'Invalid file type. Images and executables are not allowed.' };
-  }
-
-  if (!allowedMimeTypes.includes(file.type)) {
-    return { isValid: false, message: 'Unsupported file type. Please upload a valid document.' };
-  }
-
-  return { isValid: true, message: 'File is valid.' };
-}
+const ALLOWED_FILE_TYPE = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'text/csv',
+  'image/png',
+  'image/jpeg'
+];
+const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 
 function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
   const activeLanguage = LANGUAGE.ENGLISH;
@@ -128,11 +100,12 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
             <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
               <Field
                 name={`${fieldName}.document`}
-                validateOnChange={validateFile}
+                validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
                 onFileChange={(file) => onDocumentChange(fieldName, file, setFieldValue)}
                 component={Components['inputFile']}
                 attachmentValue={attachmentValue}
                 setFieldValue={setFieldValue}
+                fileTypeText={ALLOWED_FILE_TYPE_TEXT}
               />
             </div>
           )}

@@ -29,6 +29,7 @@ import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -49,6 +50,19 @@ const INITIAL_VALUES = {
   },
   variantAcknowledgement: false
 };
+
+const ALLOWED_FILE_TYPE = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'text/csv',
+  'image/png',
+  'image/jpeg'
+];
+const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 
 function AdditionalDetails() {
   const { t } = useTranslate();
@@ -813,7 +827,9 @@ function AdditionalDetails() {
                             setFieldValue={setFieldValue}
                             disabled={Boolean(!variant)}
                             attachmentValue={values?.variant?.document || null}
+                            validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
                             onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
+                            fileTypeText={ALLOWED_FILE_TYPE_TEXT}
                           />
                         </div>
                       </div>

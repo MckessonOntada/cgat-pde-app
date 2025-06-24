@@ -78,7 +78,11 @@ export const ManageSPMaterialMessagesES = {
     'S_Issue in Uploading SP Materials. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
   'manageSPMaterial.messages.button.uploadSuccess': 'S_SP Materials have uploaded succesfully ',
   'manageSPMaterial.messages.button.downloadFail': 'S_Failed while downloading CSV',
-  'upload.file.error.unsupportedFile': 'S_Unsupported file type. Please upload one of: {{file}}',
+  'upload.file.error.unsupportedFile': 'S_Unsupported file type. Please upload valid file type.',
+  'upload.file.error.fileSizeExceeded': 'S_File size should not exceed {{maxSize}} MB.',
+  'upload.file.error.fileNameTooLong': 'S_File name exceeds the maximum length of 100 characters.',
+  'upload.file.error.fileType': 'S_File Type:',
+  'upload.file.error.maximumFileSize': 'S_Maximum file size:',
   'upload.file.success.validFile': 'S_File is valid.',
   'unlink.tooltip.disabledtext': 'S_Please refer to associated B&B material to remove the configured questionnaire for this material.'
 };

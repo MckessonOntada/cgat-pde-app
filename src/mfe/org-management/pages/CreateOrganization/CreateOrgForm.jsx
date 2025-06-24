@@ -4,6 +4,7 @@ import Components from '@src/components/form/Components';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
 const OrgDetailsFormSegment = ({ formik }) => {
   const { t } = useTranslate();
@@ -19,18 +20,6 @@ const OrgDetailsFormSegment = ({ formik }) => {
       });
     }
   }, [formik.values.logoUrl]);
-  function validateFile(file) {
-    const allowedMimeTypes = ['image/png', 'image/jpeg'];
-
-    if (!allowedMimeTypes.includes(file.type)) {
-      return {
-        isValid: false,
-        message: 'Unsupported file type. Please upload a valid image.'
-      };
-    }
-
-    return { isValid: true, message: 'File is valid.' };
-  }
   const usStates = US_STATES();
   usStates.unshift({
     isDisabled: true,
@@ -48,21 +37,15 @@ const OrgDetailsFormSegment = ({ formik }) => {
         </p>
       </div>
 
-      <Field
-        name="name"
-        label={t('orgManagement.create_org.inputLabel.org_name')}
-        placeholder=" "
-        isRequired
-        component={Components['input']}
-        maxLength={100}
-      />
+      <Field name="name" label={t('orgManagement.create_org.inputLabel.org_name')} placeholder=" " isRequired component={Components['input']} maxLength={100} />
 
       <Field
         name="file"
-        validateOnChange={validateFile}
+        validateOnChange={(file) => validateFile(t, file, ['image/png', 'image/jpeg'])}
         label={t('button.caption.uploadlogo')}
         component={Components['inputFile']}
         attachmentValue={attachmentValue}
+        fileTypeText={'PNG, JPEG, JPG'}
       />
 
       <div className="headingBox">
@@ -101,20 +84,8 @@ const OrgDetailsFormSegment = ({ formik }) => {
           component={Components['input']}
           maxLength={40}
         />
-        <Field
-          name="contact.phone"
-          label={t('orgManagement.create_org.inputLabel.phone_no')}
-          component={Components['phoneInput']}
-          placeholder=" "
-          isRequired
-        />
-        <Field
-          name="contact.fax"
-          label={t('orgManagement.create_org.inputLabel.fax')}
-          placeholder=" "
-          component={Components['input']}
-          maxLength={15}
-        />
+        <Field name="contact.phone" label={t('orgManagement.create_org.inputLabel.phone_no')} component={Components['phoneInput']} placeholder=" " isRequired />
+        <Field name="contact.fax" label={t('orgManagement.create_org.inputLabel.fax')} placeholder=" " component={Components['input']} maxLength={15} />
       </div>
 
       <div className="headingBox">
