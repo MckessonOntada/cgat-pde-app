@@ -11,7 +11,8 @@ export const getMedicalInsuranceSchema = (key, t) => ({
     insuranceCompanyName: Yup.string()
       .required(t('message.enterInsuranceCompanyName'))
       .max(100, t('messages.insuranceCompanyNameCharLimit'))
-      .matches(/^[A-Za-z\s'-]+$/, t('messages.avoidSpecialCharsNumbers')),
+      .test('no-leading-trailing-spaces', t('messages.insuranceCompanyExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
+      .matches(/^[A-Za-z\s'-]+$/, t('message.avoidSpecialCharsNumbers')),
 
     memberNumber: Yup.string().required(t('messages.memberNumberRequired')).max(50, t('messages.memberMax')).matches(NUMERIC_ONLY, t('messages.onlyNumeric')),
     groupNumber: Yup.string()
@@ -24,10 +25,12 @@ export const getMedicalInsuranceSchema = (key, t) => ({
     policyHolderFirstName: Yup.string()
       .required(t('messages.enterFirstName'))
       .max(50, t('messages.firstNameMax'))
+      .test('no-leading-trailing-spaces', t('messages.phFirstNameExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
     policyHolderLastName: Yup.string()
       .required(t('messages.enterLastName'))
       .max(50, t('messages.lastNameMax'))
+      .test('no-leading-trailing-spaces', t('messages.phLastNameExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
     dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
     relationshipToPatient: Yup.string()
@@ -46,6 +49,7 @@ export const getPharmacyInsuranceSchema = (key, t) => ({
     pharmacyBenefitManagerName: Yup.string()
       .required(t('messages.enterPBM'))
       .max(100, t('messages.pbmNameMax'))
+      .test('no-leading-trailing-spaces', t('messages.pharmacyManagerExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(RX_SYMBOLS_ALLOWED, t('messages.alphaSymbols')),
     rxGroupNumber: Yup.string()
       .notRequired()

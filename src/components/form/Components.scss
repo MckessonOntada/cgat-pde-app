@@ -48,3 +48,7 @@ div[data-testid^="date-range-component"] {
   flex-direction: column;
   gap: var(--spacing-02);
 }
+
+[class*="CustomDatepicker-module--labelParentContainer"] [class*="TextError-module--textError--"] {
+  display: none;
+}
