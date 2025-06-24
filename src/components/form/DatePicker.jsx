@@ -3,7 +3,7 @@ import { CustomDatepicker, Label, TextError } from '@mckesson/mcp-component-libr
 import { getNestedValue } from './util';
 
 export default function DatePicker(props) {
-  const { id = '', value = '', label, error, onChange, isShowLabel = false, isRequired, form, field, ...rest } = props
+  const { id = '', value = '', label, error, onChange, isShowLabel = false, isRequired, form, field, ...rest } = props;
 
   const handleInputBlur = () => {
     form.setFieldTouched(field.name, true);
@@ -14,7 +14,7 @@ export default function DatePicker(props) {
     <div id={id} className="grid">
       <Label htmlFor={id} className="label-heading">
         {label}
-        {isRequired && <span className='required'> *</span>}
+        {isRequired && <span className="required"> *</span>}
       </Label>
       <CustomDatepicker
         id={id}
@@ -26,9 +26,10 @@ export default function DatePicker(props) {
         }}
         size="lg"
         errors={isFieldTouched && errorMessage}
-        onBlur= {handleInputBlur}
+        onBlur={handleInputBlur}
         isShowLabel={isShowLabel}
         showRequiredIcon={isRequired}
+        isInvalid={!!errorMessage}
         {...rest}
       />
       {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}

@@ -71,30 +71,35 @@ function Payer() {
   });
 
   React.useEffect(() => {
-    if (flag) {
-      setFlag(false);
-      return;
-    }
-    let newValues = { ...formValues };
-
     if (isSecondaryPharmacyInsuranceOpen) {
-      newValues.secondaryPharmacyInsurance = getBasePharmacyInsuranceValues();
+      if (!orderDetails.payerDetails?.secondaryPharmacyInsurance) {
+        setFormValues((prev) => ({
+          ...prev,
+          secondaryPharmacyInsurance: getBasePharmacyInsuranceValues()
+        }));
+      }
+    } else {
+      setFormValues((prev) => ({
+        ...prev,
+        secondaryPharmacyInsurance: null
+      }));
     }
-
-    setFormValues({ ...newValues });
   }, [isSecondaryPharmacyInsuranceOpen]);
 
   React.useEffect(() => {
-    if (flag) {
-      setFlag(false);
-      return;
-    }
-    let newValues = { ...formValues };
     if (isSecondaryMedicalInsuranceOpen) {
-      newValues.secondaryMedicalInsurance = getBaseMedicalInsuranceValues();
+      if (!orderDetails.payerDetails?.secondaryMedicalInsurance) {
+        setFormValues((prev) => ({
+          ...prev,
+          secondaryMedicalInsurance: getBaseMedicalInsuranceValues()
+        }));
+      }
+    } else {
+      setFormValues((prev) => ({
+        ...prev,
+        secondaryMedicalInsurance: null
+      }));
     }
-
-    setFormValues({ ...newValues });
   }, [isSecondaryMedicalInsuranceOpen]);
 
   React.useEffect(() => {
