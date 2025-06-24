@@ -50,9 +50,9 @@ const isSystemAdmin = function () {
 const isSystemAdminView = function () {
   const impersonateId = getImpersonateId();
   if (impersonateId) {
-    return isSystemAdmin() || isCustomerCenter();
+    return isSystemAdmin() || isCustomerCenter() || isTreatmentCentreExecutive();
   }
-  return (isSystemAdmin() || isCustomerCenter()) && !getPracticeId();
+  return (isSystemAdmin() || isCustomerCenter() || isTreatmentCentreExecutive()) && !getPracticeId();
 };
 
 const setImpersonateId = async (id) => {
@@ -115,6 +115,19 @@ const isCustomerCenterView = function () {
   return isCustomerCenter() && !getPracticeId();
 };
 
+const isTreatmentCentreExecutive = function () {
+  const userRole = getUserRole();
+  return userRole === 'Treatment centre Executive';
+};
+
+const isTreatmentCentreExecutiveView = function () {
+  const impersonateId = getImpersonateId();
+  if (impersonateId) {
+    return isTreatmentCentreExecutive();
+  }
+  return isTreatmentCentreExecutive() && !getPracticeId();
+};
+
 const getImpersonatedByUser = () => {
   const impersonatedByUser = sessionStorage.getItem(SESSION_CONST.IMPERSONATED_BY_USER);
   if (impersonatedByUser) {
@@ -142,7 +155,9 @@ const AuthUtils = Object.freeze({
   isSystemAdminView,
   isCustomerCenter,
   isCustomerCenterView,
-  getImpersonatedByUser
+  getImpersonatedByUser,
+  isTreatmentCentreExecutive,
+  isTreatmentCentreExecutiveView
 });
 
 export default AuthUtils;

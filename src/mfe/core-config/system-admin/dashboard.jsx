@@ -10,8 +10,10 @@ import NotFound from '@src/pages/error-pages/NotFound';
 const Dashboard = () => {
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isTreatmentCentreExecutiveView = AuthUtils.isTreatmentCentreExecutiveView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const isTreatmentCentreExecutive = AuthUtils.isTreatmentCentreExecutive();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission, hasAnyPermission } = usePermission();
   const location = useLocation();
@@ -31,7 +33,7 @@ const Dashboard = () => {
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
 
-    if (!isSystemAdmin && !isCustomerCenter) {
+    if (!isSystemAdmin && !isCustomerCenter && !isTreatmentCentreExecutive) {
       if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
@@ -49,7 +51,8 @@ const Dashboard = () => {
   }, [isExpelled]);
 
   const cards = useMemo(() => {
-    if (isSystemAdminView) return SYSTEM_ADMIN_CARDS_DATA;
+    if (isSystemAdminView || isTreatmentCentreExecutiveView) return SYSTEM_ADMIN_CARDS_DATA;
+    isTreatmentCentreExecutiveView;
     let _cards = CARDS_DATA.filter((card) => {
       let _hasAccess = hasAnyPermission(card.permissions);
       return _hasAccess;
