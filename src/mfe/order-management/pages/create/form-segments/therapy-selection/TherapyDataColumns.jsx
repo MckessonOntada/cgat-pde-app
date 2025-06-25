@@ -4,6 +4,7 @@ import { RadioGroup, Tooltip } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import CommonUtils from '@src/util/CommonUtils';
+import { CHANNEL_TYPE } from '../Constants';
 
 export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle }) => [
   {
@@ -60,14 +61,18 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (row) => {
-      const { tradeName, cellValue, channelType } = row;
+      const { tradeName, cellValue, channelType, id, isParent } = row;
       const { state: locationState = {} } = useLocation();
+      const searchParams = new URLSearchParams({
+        trade: tradeName,
+        channelType
+      });
+      if (!isParent) {
+        const therapyParam = id ? id : tradeName;
+        searchParams.set('therapy', therapyParam);
+      }
       return (
-        <Link
-          className="MCP-table-link"
-          aria-label={t('labels.therapyDescription')}
-          to={`?trade=${tradeName}&channelType=${channelType}`}
-          state={{ ...locationState }}>
+        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?${searchParams.toString()}`} state={{ ...locationState }}>
           <EclipsesTextcss str={cellValue} />
         </Link>
       );

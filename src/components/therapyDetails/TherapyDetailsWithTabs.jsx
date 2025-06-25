@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './assets/TherapyDetails.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
-import { Loader, Heading, Button, TabList, IconButton } from '@mckesson/mcp-component-library';
+import { Loader, Heading, Button, TabList, IconButton, Tooltip } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -30,6 +30,7 @@ function TherapyDetailsWithTabs({
   trade,
   channelType: _channelType,
   therapyId,
+  therapy,
   onClose,
   onSelect,
   isDetailsByNdc = false,
@@ -83,7 +84,11 @@ function TherapyDetailsWithTabs({
     select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
     onSuccess: (data) => {
       if (data && CommonUtils.isNonEmptyArray(data)) {
-        const therapyTabs = data
+        let filteredData = data;
+        if (therapy && therapy != trade) {
+          filteredData = data.filter((item) => String(item.id) === String(therapy));
+        }
+        const therapyTabs = filteredData
           .sort((a, b) => a.id - b.id)
           .map((item, index) => ({
             id: `details-by-therapy-id-${item.id}`,
@@ -99,7 +104,7 @@ function TherapyDetailsWithTabs({
           setSelectedTab(therapyTabs[0]);
         }
 
-        const __therapyDetails = data.find((d) => d.id === (!selectedTab ? therapyTabs[0].therapyId : selectedTab.therapyId));
+        const __therapyDetails = filteredData.find((d) => d.id === (!selectedTab ? therapyTabs[0].therapyId : selectedTab.therapyId));
         setTherapyDetails({ ...__therapyDetails });
       } else {
         setAlert({
@@ -211,6 +216,7 @@ function TherapyDetailsWithTabs({
           showHeader={showHeader}
           questionnaire={details.questionnaires}
           hasDeleteConfigAccess={hasDeleteConfigAccess}
+          isCrosswalked={details.isCrosswalked}
         />
       );
       showHeader = false;
@@ -286,7 +292,9 @@ function TherapyDetailsWithTabs({
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          {((!isDetailsByNdc && channelType === CHANNEL_TYPE.BUY_AND_BILL) || (isDetailsByNdc && therapyTabs.length > 1)) && (
+          {((!isDetailsByNdc && channelType === CHANNEL_TYPE.BUY_AND_BILL) ||
+            (isDetailsByNdc && therapyTabs.length > 1) ||
+            (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && therapyTabs.length > 1)) && (
             <TabList
               options={therapyTabs}
               alignment="left"
@@ -361,7 +369,9 @@ function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            {((!isDetailsByNdc && details.channelType === CHANNEL_TYPE.BUY_AND_BILL) || (isDetailsByNdc && therapyTabs.length > 1)) && (
+            {((!isDetailsByNdc && details.channelType === CHANNEL_TYPE.BUY_AND_BILL) ||
+              (isDetailsByNdc && therapyTabs.length > 1) ||
+              (details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && therapyTabs.length > 1)) && (
               <Heading as="h3" className={styles.details}>
                 {t(section.sectionHeading)}
               </Heading>
@@ -400,7 +410,7 @@ function ConfigItem({ label, value, display = true }) {
   );
 }
 
-function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire, hasDeleteConfigAccess = true }) {
+function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire, hasDeleteConfigAccess = true, isCrosswalked }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
 
@@ -421,11 +431,18 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader, questi
 
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{templateName}</div>
-        {hasDeleteConfigAccess && (
-          <div className={styles.rightContentAction} onClick={onDelete}>
-            <IconBinRed className={styles.deleteIcon} />
-          </div>
-        )}
+        {hasDeleteConfigAccess &&
+          (!isCrosswalked ? (
+            <div className={styles.rightContentAction} onClick={onDelete}>
+              <IconBinRed className={styles.deleteIcon} />
+            </div>
+          ) : (
+            <Tooltip body={t('unlink.tooltip.disabledtext')}>
+              <div className={styles.rightContentAction} style={{ opacity: 0.5 }}>
+                <IconBinRed className={styles.deleteIcon} />
+              </div>
+            </Tooltip>
+          ))}
       </div>
     </>
   );
