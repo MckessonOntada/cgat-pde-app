@@ -58,7 +58,7 @@ export const sections = [
             maxLength: 10
           },
           {
-            label: 'provider.tinNumber',
+            label: 'provider.tin',
             type: 'input',
             name: 'tinNumber',
             isRequired: true,

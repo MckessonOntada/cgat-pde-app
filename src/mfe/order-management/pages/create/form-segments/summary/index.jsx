@@ -775,7 +775,7 @@ const Summary = () => {
                         {spOrder && (
                           <>
                             <DetailSegment label={t('labels.genericName')} value={therapy.genericName || '-'} />
-                            <DetailSegment label={t('labels.manufacturer')} value={therapy.manufacturer || '-'} />
+                            <DetailSegment label={t('labels.manufacturer')} value={therapy.manufacturerName || '-'} />
                           </>
                         )}
                         {!spOrder && (

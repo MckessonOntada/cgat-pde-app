@@ -373,7 +373,7 @@ const PatientDetails = () => {
                                         npi: t('provider.npiNumber'),
                                         phone: t('provider.phoneNumber'),
                                         email: t('provider.emailId'),
-                                        tin: t('provider.tinNumber')
+                                        tin: t('provider.tin')
                                       };
                                       const value =
                                         key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
