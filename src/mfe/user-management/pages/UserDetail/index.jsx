@@ -347,9 +347,9 @@ const UserDetail = () => {
               <span className="label-text">
                 {' '}
                 {data?.updatedAt
-                  ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY')
+                  ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM/DD/YYYY')
                   : data?.createdAt
-                  ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY')
+                  ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM/DD/YYYY')
                   : 'N/A'}
               </span>
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>

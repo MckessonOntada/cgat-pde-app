@@ -48,16 +48,14 @@ export const createColumns = (t, selectedRows, setSelectedRows, hasPermission = 
     {
       id: 'createAt',
       name: t('orgManagement.role.tableHeadingCreatedOn'),
-      selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedAt, 'MM-DD-YYYY'),
+      selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedAt, 'MM/DD/YYYY'),
       wrap: true
     },
     {
       id: 'status',
       name: t('orgManagement.table.status'),
       cell: (row) =>
-        row.isActive !== undefined && row.isActive !== null ? (
-          <Badge text={row.isActive ? 'Active' : 'Inactive'} type={getBadgeType(row.isActive)} />
-        ) : null,
+        row.isActive !== undefined && row.isActive !== null ? <Badge text={row.isActive ? 'Active' : 'Inactive'} type={getBadgeType(row.isActive)} /> : null,
       wrap: true,
       isAction: true,
       center: true

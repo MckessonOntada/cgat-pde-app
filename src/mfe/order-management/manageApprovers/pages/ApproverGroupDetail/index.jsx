@@ -223,7 +223,7 @@ function ApproverGroupDetails() {
 
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_created_on')}</span>
-              <p className="label-text">{groupData?.createdAt ? CommonUtils.convertDateStringFormat(groupData.createdAt, 'MM-DD-YYYY') : 'N/A'}</p>
+              <p className="label-text">{groupData?.createdAt ? CommonUtils.convertDateStringFormat(groupData.createdAt, 'MM/DD/YYYY') : 'N/A'}</p>
             </div>
           </div>
         </div>

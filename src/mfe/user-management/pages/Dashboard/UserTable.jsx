@@ -289,7 +289,7 @@ function UserTable({ onActionSuccess }) {
         sortable: true,
         sortKey: isSystemAdminView ? 'created_At' : 'updated_At',
         minWidth: '100px',
-        cell: (props) => CommonUtils.convertDateStringFormat(isSystemAdminView ? props.createdAt : props.updatedAt || props.createdAt, 'MM-DD-YYYY')
+        cell: (props) => CommonUtils.convertDateStringFormat(isSystemAdminView ? props.createdAt : props.updatedAt || props.createdAt, 'MM/DD/YYYY')
       },
       {
         id: 'dataUpdated',
@@ -299,7 +299,7 @@ function UserTable({ onActionSuccess }) {
         sortable: true,
         sortKey: 'updated_At',
         minWidth: '100px',
-        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY'),
+        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt, 'MM/DD/YYYY'),
         omit: !isSystemAdminView
       },
       {

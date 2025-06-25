@@ -137,7 +137,7 @@ function ApproverList({ onActionSuccess }) {
         sortKey: 'createdAt',
         wrap: true,
         minWidth: '100px',
-        cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
+        cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM/DD/YYYY')
       },
       {
         id: 'status',
