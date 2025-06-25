@@ -183,8 +183,14 @@ function Payer() {
   };
 
   const handleOnSubmit = (values) => {
-    if (values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') values.primaryMedicalInsurance.relation = '';
-    if (values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') values.secondaryMedicalInsurance.relation = '';
+    if (values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
+      const { relation, ...rest } = values.primaryMedicalInsurance;
+      values.primaryMedicalInsurance = rest;
+    }
+    if (values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
+      const { relation, ...rest } = values.secondaryMedicalInsurance;
+      values.secondaryMedicalInsurance = rest;
+    }
 
     OrderService.savePayerDetails(orderId, values).then((response) => {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
