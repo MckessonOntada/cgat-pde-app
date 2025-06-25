@@ -79,7 +79,8 @@ export const ConfigurationMessagesES = {
   'provider.npi.length': 'S_NPI Number should be exactly 10 digits.',
   'provider.npi.numeric': 'S_NPI Number should only contain numeric digits.',
 
-  'provider.tinNumber': 'S_TIN',
+  'provider.tin': 'S_TIN',
+  'provider.tinNumber': 'S_TIN Number',
   'provider.tin.required': 'S_Please Enter the TIN',
   'provider.tin.length': 'S_TIN must be exactly 9 digits',
   'provider.tin.numeric': 'S_TIN must only contain numeric values.',
