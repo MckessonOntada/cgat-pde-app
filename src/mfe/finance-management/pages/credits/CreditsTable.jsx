@@ -13,6 +13,10 @@ import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { useMutation } from 'react-query';
+import { useAccountContext } from '../../context/AccountContext';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
@@ -21,6 +25,39 @@ export default function CreditsTable(props) {
   const location = useLocation();
   const { state } = location;
   const showCardView = useResponsiveView();
+  const { selectedAccount } = useAccountContext();
+
+  const { mutate: handlePdfDownload } = useMutation(
+    async (props) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, props.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: props.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: props.referenceDocumentNumber
+      };
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
+        accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      });
+      return res;
+    },
+    {
+      onSuccess: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownload'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: (error) => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
 
   const columns = [
     {
@@ -100,7 +137,15 @@ export default function CreditsTable(props) {
       wrap: true,
 
       cell: (props) => (
-        <Button disabled={!props.isPdfAvailable} className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="sm">
+        <Button
+          disabled={!props.isPdfAvailable}
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {
+            handlePdfDownload(props);
+          }}
+          size="sm">
           {t('paymentInvoices.credits.table.downloadPdf')}
         </Button>
       )

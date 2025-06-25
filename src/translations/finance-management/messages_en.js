@@ -296,5 +296,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.filter.searchCreditNo': 'search by Credit Number',
   'paymentInvoices.table.column.CreditNo': 'Credit Number',
   'paymentInvoices.table.column.soldToAccount': 'Sold To Account Number',
-  'paymentInvoices.table.column.creditAmount': 'Credit Amount'
+  'paymentInvoices.table.column.creditAmount': 'Credit Amount',
+  'paymentInvoices.table.column.pdfDownload': 'PDF download Successfully.',
+  'paymentInvoices.table.column.pdfDownloadError': 'Something went wrong, Please ty again'
 };

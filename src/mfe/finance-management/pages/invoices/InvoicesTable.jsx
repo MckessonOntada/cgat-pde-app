@@ -57,6 +57,38 @@ export default function InvoicesTable() {
     }
   );
 
+  const { mutate: handleDownload } = useMutation(
+    async (row) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, row.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: row.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: row.referenceDocumentNumber
+      };
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
+        accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      });
+      return res;
+    },
+    {
+      onSuccess: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownload'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
+
   const columns = [
     {
       id: 'checkbox',
@@ -239,41 +271,10 @@ export default function InvoicesTable() {
         }
       });
     } else {
-      mutate({ row });
+      handleDownload(row);
     }
   };
 
-  const { mutate } = useMutation(
-    async ({ row }) => {
-      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, row.billNumber)}/details-pdf`;
-      const body = {
-        fiscalYear: row.fiscalYear,
-        companyCode: selectedAccount.companyCode,
-        documentNo: row.referenceDocumentNumber
-      };
-      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
-        accept: 'application/pdf',
-        'Content-Type': 'application/json'
-      });
-      return res;
-    },
-    {
-      onSuccess: (response) => {
-        showAlert({
-          description: t('PDF download Successfull.'),
-          type: 'success',
-          anchorEl: alertContainerId
-        });
-      },
-      onError: (error) => {
-        showAlert({
-          description: t('Something went wrong.'),
-          type: 'error',
-          anchorEl: alertContainerId
-        });
-      }
-    }
-  );
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
