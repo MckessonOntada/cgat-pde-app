@@ -65,6 +65,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           size="md"
           isSortEnable={false}
           value={selectedOrganization?.id.toString() || ''}
+          noSelectedCountMessage={t(!showAccountsSelect ? 'ManageCatalog.SelectOrganization' : 'ALL')}
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalOrgs}
           fieldDisplayValue={
@@ -90,7 +91,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
             onSearch={(event) => searchAccountList(event)}
             recordsCountToEnableSearch={5}
             size="md"
-            noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+            noSelectedCountMessage={t('ALL')}
             refineFilterMessage={[t('refineFilter.message')]}
             asyncRecordsFound={totalAccs}
           />

@@ -12,32 +12,30 @@ import ViewQuesionnairePreview from '../pages/ViewQuestionnairePreview';
 
 const SPCatalogRouter = () => {
   return (
-    <OrgAccountMultiSelectionProvider enableOrg={true}>
-      <Routes>
-        <Route index path={ROUTE_PATHS.DASHBOARD} element={<Index />} />
-        <Route path={ROUTE_PATHS.DETAILS} element={<div>Details</div>} />
-        <Route path={ROUTE_PATHS.CREATE} element={<div>Create</div>} />
-        <Route path={ROUTE_PATHS.VIEWSPCATALOG} element={<ViewSPCatalogConfig />} />
-        <Route path={ROUTE_PATHS.VIEWQUESTIONNAIREPRIVIEW} element={<ViewQuesionnairePreview />} />
-        <Route
-          path={ROUTE_PATHS.LINK}
-          element={
-            <SPMaterialProvider isLinkCatalog={true}>
-              <LinkSPMaterial />
-            </SPMaterialProvider>
-          }
-        />
-        <Route
-          path={ROUTE_PATHS.REVIEW}
-          element={
-            <SPMaterialProvider isLinkCatalog={true}>
-              <ReviewCatalogList />
-            </SPMaterialProvider>
-          }
-        />
-        <Route path={ROUTE_PATHS.UPLOAD} element={<Upload />} />
-      </Routes>
-    </OrgAccountMultiSelectionProvider>
+    <Routes>
+      <Route index path={ROUTE_PATHS.DASHBOARD} element={<Index />} />
+      <Route path={ROUTE_PATHS.DETAILS} element={<div>Details</div>} />
+      <Route path={ROUTE_PATHS.CREATE} element={<div>Create</div>} />
+      <Route path={ROUTE_PATHS.VIEWSPCATALOG} element={<ViewSPCatalogConfig />} />
+      <Route path={ROUTE_PATHS.VIEWQUESTIONNAIREPRIVIEW} element={<ViewQuesionnairePreview />} />
+      <Route
+        path={ROUTE_PATHS.LINK}
+        element={
+          <SPMaterialProvider isLinkCatalog={true}>
+            <LinkSPMaterial />
+          </SPMaterialProvider>
+        }
+      />
+      <Route
+        path={ROUTE_PATHS.REVIEW}
+        element={
+          <SPMaterialProvider isLinkCatalog={true}>
+            <ReviewCatalogList />
+          </SPMaterialProvider>
+        }
+      />
+      <Route path={ROUTE_PATHS.UPLOAD} element={<Upload />} />
+    </Routes>
   );
 };
 

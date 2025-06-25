@@ -11,6 +11,7 @@ import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/conte
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -18,7 +19,7 @@ const List = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [notification, setNotification] = useState(null);
-  const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
+  const { selectedAccount = [], selectedOrganization = [] } = useOrgAccountsMultiSelectionContext();
 
   const breadcrumbItems = React.useMemo(() => {
     return [
@@ -46,17 +47,30 @@ const List = () => {
     }
   }, [location, navigate, setNotification]);
 
-  const _accNumber = selectedAccount?.filter((i) => i.isChecked).map((i) => i.accountNumber);
+  const buildFilters = (selectedAccount = [], selectedOrganization = []) => {
+    let _practiceId;
+    let _accNumber;
 
-  const defaultFilters = React.useMemo(() => {
+    if (selectedOrganization && selectedOrganization.length > 0) {
+      _practiceId = selectedOrganization.filter((org) => org.isChecked).map((org) => org.value);
+    }
+    if (selectedAccount && selectedAccount.length > 0) {
+      _accNumber = selectedAccount?.filter((i) => i.isChecked).map((i) => i.accountNumber);
+    }
+
     return {
       search: '',
       status: '',
       sortBy: 'sap_material',
-      channelType: 'SPECIALITY_PHARMA',
-      accountNumbers: _accNumber
+      channelType: CHANNEL_TYPE.SPECIALTY_PHARMA,
+      ...(_practiceId && { practiceIdList: _practiceId }),
+      ...(_accNumber && _accNumber.length > 0 && { accountNumbers: _accNumber })
     };
-  }, [_accNumber]);
+  };
+
+  const defaultFilters = React.useMemo(() => {
+    return buildFilters(selectedAccount, selectedOrganization);
+  }, [selectedAccount, selectedOrganization?.length > 0]);
 
   const handleNotification = (notification) => {
     setNotification(notification);
@@ -71,10 +85,10 @@ const List = () => {
       <div className="MCP-CardContainer">
         <OrgAccountsMultiSelect />
         <TableProvider
-          key={_accNumber}
+          key={defaultFilters}
           defaultFilters={defaultFilters}
           allowedSort={['sap_material', 'material_description_in_language_en', 'sold_to_customer']}
-          fetchFn={_accNumber?.length > 0 ? SPCatalogService.getAllCatalog : null}>
+          fetchFn={SPCatalogService.getAllCatalog}>
           <CatalogList selectedAccount={selectedAccount} selectedOrganization={selectedOrganization} sendNotification={handleNotification} />
         </TableProvider>
       </div>

@@ -1,7 +1,10 @@
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import CommonUtils from '@src/util/CommonUtils';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 const orgAccountsMultiSelectionContext = createContext();
 
@@ -15,7 +18,7 @@ export const useOrgAccountsMultiSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, enableAcct = true }) => {
+export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, enableAcct = true, isLinkCatalog = false }) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
@@ -27,6 +30,8 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const [checkedOrganizations, setCheckedOrganizations] = useState([]);
   const [totalOrgs, setTotalOrgs] = useState();
   const [totalAccs, setTotalAccs] = useState();
+  const [prevParam, setPrevParam] = useState([]);
+
   // Organization List configuration
   const orgPayload = {
     pageNo: 0,
@@ -65,42 +70,56 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     };
   }, []);
   const searchOrgList = debounceOrgSearch();
-  // Accounts List config
-  const practiceIds = selectedOrganization ? selectedOrganization.map((item) => item.value) : [];
-  const payload = {
-    pageNo: 0,
-    pageSize: ACCOUNTS_PER_SEARCH,
-    query: searchAccountText,
-    status: 'active',
-    partnerFunction: 'SOLD_TO',
-    practiceIdList: practiceIds
-  };
+
+  const practiceIds = useMemo(() => {
+    return selectedOrganization ? selectedOrganization.map((item) => item.value) : [];
+  }, [selectedOrganization]);
+
+  const payload = useMemo(
+    () => ({
+      pageNo: 0,
+      pageSize: ACCOUNTS_PER_SEARCH,
+      query: searchAccountText,
+      status: 'active',
+      partnerFunction: 'SOLD_TO',
+      allAccounts: isLinkCatalog ? false : practiceIds.length === 0,
+      practiceIdList: practiceIds,
+      channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
+    }),
+    [searchAccountText, practiceIds]
+  );
+
+  const isCheck = !CommonUtils.deepEqual(payload, prevParam);
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
-    queryKey: [searchAccountText, selectedOrganization],
+    queryKey: ['accountsList', payload],
     queryFn: async () => {
-      const response = await SPCatalogService.getAccountList(payload);
-      if (response) {
-        const { content, totalElements } = response;
-        setTotalAccs(totalElements);
-        let _opt =
-          content.map((item, index) => ({
-            ...item,
-            label: item.accountName,
-            value: item.accountNumber,
-            isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
-          })) || [];
+      if (isCheck) {
+        const response = await SPCatalogService.getAccountList(payload);
+        setPrevParam(payload);
+        if (response) {
+          const { content, totalElements } = response;
+          setTotalAccs(totalElements);
+          let _opt =
+            content.map((item, index) => ({
+              ...item,
+              label: item.accountName,
+              value: item.accountNumber,
+              isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
+            })) || [];
 
-        const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
+          const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
 
-        setAccountOptions(mergedAcc);
-
-        setSelectedAccount(mergedAcc);
-        return content || [];
+          setAccountOptions(_opt);
+          setSelectedAccount(_opt);
+          return content || [];
+        }
       }
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled: !!selectedOrganization && selectedOrganization?.length > 0 && !!enableAcct
+    enabled:
+      !!enableAcct &&
+      (!isLinkCatalog || (Array.isArray(selectedOrganization) && selectedOrganization.length > 0 && selectedOrganization.some((org) => !!org.value)))
   });
   const debounceAccountsSearch = useCallback(() => {
     let timeoutId;
@@ -112,8 +131,10 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const searchAccountList = debounceAccountsSearch();
 
   useEffect(() => {
-    if (practiceIds.length === 0) {
-      setSelectedAccount(null);
+    if (practiceIds.length > 0) {
+      setSelectedAccount([]);
+      setCheckedAccounts([]);
+      refetchAccounts();
     }
   }, [practiceIds]);
 

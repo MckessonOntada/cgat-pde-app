@@ -799,7 +799,7 @@ export const SearchableDropdown = (props) => {
         if (CommonUtils.isNonEmptyString(defaultSelectedLabel)) {
           return defaultSelectedLabel;
         }
-        return searchPlaceholder;
+        return noSelectedCountMessage || searchPlaceholder;
       }
     } else {
       if (showSelectedLabels ? !CommonUtils.isNonEmptyString(getSelectedLabels()) : getSelectedCount() === 0) {

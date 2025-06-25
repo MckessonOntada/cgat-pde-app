@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiSelectContext';
 import './styles.scss';
-function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
+function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect = false }) {
   const { t } = useTranslate();
   const {
     searchOrgList,
@@ -23,7 +23,6 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     totalOrgs,
     totalAccs
   } = useOrgAccountsMultiSelectionContext();
-
   const onOrganizationChange = async (selectedValue) => {
     if (!Array.isArray(selectedValue)) {
       return;
@@ -117,7 +116,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           recordsCountToEnableSearch={5}
           size="md"
           isSortEnable={false}
-          noSelectedCountMessage={t('forms.labels.organization')}
+          noSelectedCountMessage={t(isSelect ? 'forms.labels.organization' : 'ALL')}
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalOrgs}
           clearAllSelectedValues={() => {
@@ -139,7 +138,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           onSearch={(event) => searchAccountList(event)}
           recordsCountToEnableSearch={5}
           size="md"
-          noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+          noSelectedCountMessage={t(isSelect ? 'ManageCatalog.SelectAccount' : 'ALL')}
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalAccs}
         />

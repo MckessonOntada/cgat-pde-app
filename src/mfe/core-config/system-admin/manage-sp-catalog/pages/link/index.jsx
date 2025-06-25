@@ -19,7 +19,7 @@ const LinkSPMaterial = () => {
   const { applyFilters, clearFilters, selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
   const isAccountSelected = Array.isArray(selectedAccount) && selectedAccount.some((acc) => acc.isChecked === true);
-
+  const isOrgSelected = Array.isArray(selectedOrganization) && selectedOrganization.some((acc) => acc.isChecked === true);
   useEffect(() => {
     if (!selectedAccount && !selectedOrganization) {
       navigate('/system-admin/config/sp-catalog');
@@ -39,7 +39,7 @@ const LinkSPMaterial = () => {
   };
 
   const handleSave = () => {
-    if (selectedSPMaterial.length === 0 || !isAccountSelected) {
+    if (selectedSPMaterial.length === 0 || !isAccountSelected || !isOrgSelected) {
       setNotification({
         type: 'error',
         description: t('SPCatalog.error.PeaseSelectRequired')
@@ -64,7 +64,7 @@ const LinkSPMaterial = () => {
         {notification && <Alert description={notification.description} onClose={() => setNotification(null)} type={notification.type} />}
         <div className="MCP-panel-container">
           <div style={{ marginBottom: '8px' }}>
-            <OrgAccountsMultiSelect />
+            <OrgAccountsMultiSelect isSelect={true} />
           </div>
           <div className="MCP-panel-container">
             <CommonFilters

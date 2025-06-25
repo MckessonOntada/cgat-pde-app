@@ -14,8 +14,6 @@ async function getOrganizations(requestParams) {
 }
 
 async function getAccountList(requestParams) {
-  if (!requestParams.practiceIdList) throw new Error('Missing practice id list');
-
   const res = await HttpResourceService.callRest(
     `${ApiRoutes.USER_SERVICE_BASE}accounts/for-organizations?${serializeParams(requestParams)}`,
     httpVerb.GET,

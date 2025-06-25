@@ -26,8 +26,8 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 const INITIAL_SORT_STATE = {
-  sortBy: '',
-  sortOrder: ''
+  sortBy: 'sap_material',
+  sortOrder: 'desc'
 };
 const INITIAL_FILTER_STATE = {
   searchQuery: ''
@@ -36,7 +36,7 @@ const INITIAL_FILTER_STATE = {
 export const CatalogProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const { selectedAccount, selectedOrganization } = useOrgAccountSelectionContext();
+  const { selectedAccount, selectedOrganization, options, accountOptions } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [fileteredData, setfileteredData] = useState(false);
   useEffect(() => {
@@ -64,25 +64,27 @@ export const CatalogProvider = ({ children }) => {
     setfileteredData(false);
   };
 
-  const requestParams = () => {
-    if (selectedAccount && selectedAccount.length > 0) {
-      let _accNumber = selectedAccount
-        ?.map((i) => {
-          if (i.isChecked) {
-            return i.accountNumber;
-          }
-        })
-        .filter((ele) => !!ele);
-      return {
-        pageNo: paginationConfig.pageNumber - 1,
-        pageSize: paginationConfig.pageSize,
-        accountNumbers: _accNumber,
-        ...(filterConfig.searchQuery && { query: filterConfig.searchQuery })
-      };
-    }
-  };
+  const requestParams = useMemo(() => {
+    const params = {
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      ...(filterConfig.searchQuery && { query: filterConfig.searchQuery })
+    };
 
-  // API call for fetching all catalogs
+    if (selectedOrganization) {
+      params.practiceIdList = selectedOrganization.id;
+    }
+
+    if (selectedAccount?.length > 0) {
+      const accNumbers = selectedAccount.filter((i) => i.isChecked).map((i) => i.accountNumber);
+      if (accNumbers.length > 0) {
+        params.accountNumbers = accNumbers;
+      }
+    }
+
+    return params;
+  }, [selectedOrganization, selectedAccount, paginationConfig.pageNumber, paginationConfig.pageSize, filterConfig.searchQuery]);
+
   const {
     isLoading,
     isError,
@@ -91,25 +93,22 @@ export const CatalogProvider = ({ children }) => {
     refetch,
     isFetching
   } = useQuery({
-    queryKey: [selectedAccount],
+    queryKey: ['catalogList', requestParams],
     queryFn: async () => {
-      if (selectedAccount && selectedAccount.length > 0 && selectedAccount.some((i) => i.isChecked)) {
-        const url = `${ApiRoutes.GET_CATALOG_DATA()}?${serializeParams(requestParams())}`;
-        const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-        if (res.data) {
-          const { content: data, totalElements, totalPages } = res.data;
-          setPaginationConfig((prevConfig) => ({
-            ...prevConfig,
-            ...(totalElements && { totalElements }),
-            ...(totalPages && { totalPages })
-          }));
-          return data;
-        }
-        return [];
+      const url = `${ApiRoutes.GET_CATALOG_DATA()}?${serializeParams(requestParams)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+      if (res.data) {
+        const { content: data, totalElements, totalPages } = res.data;
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
+        }));
+        return data;
       }
+      return [];
     },
-    refetchOnWindowFocus: false,
-    enabled: selectedAccount && selectedAccount?.length > 0 ? true : false
+    refetchOnWindowFocus: false
   });
 
   useEffect(() => {
