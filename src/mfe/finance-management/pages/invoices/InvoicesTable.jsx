@@ -21,6 +21,8 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import useAlert from '@src/hooks/useAlert';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -30,6 +32,7 @@ export default function InvoicesTable() {
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
+  const alertContainerId = 'summary-alert-container';
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -53,6 +56,7 @@ export default function InvoicesTable() {
       }
     }
   );
+
   const columns = [
     {
       id: 'checkbox',
@@ -235,9 +239,41 @@ export default function InvoicesTable() {
         }
       });
     } else {
-      // Export PDF API integration
+      mutate({ row });
     }
   };
+
+  const { mutate } = useMutation(
+    async ({ row }) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, row.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: row.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: row.referenceDocumentNumber
+      };
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
+        accept: 'application/pdf',
+        'Content-Type': 'application/json'
+      });
+      return res;
+    },
+    {
+      onSuccess: (response) => {
+        showAlert({
+          description: t('PDF download Successfull.'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: (error) => {
+        showAlert({
+          description: t('Something went wrong.'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
