@@ -21,6 +21,8 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import useAlert from '@src/hooks/useAlert';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -30,6 +32,7 @@ export default function InvoicesTable() {
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
+  const alertContainerId = 'summary-alert-container';
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -53,6 +56,39 @@ export default function InvoicesTable() {
       }
     }
   );
+
+  const { mutate: handleDownload } = useMutation(
+    async (row) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, row.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: row.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: row.referenceDocumentNumber
+      };
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
+        accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      });
+      return res;
+    },
+    {
+      onSuccess: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownload'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
+
   const columns = [
     {
       id: 'checkbox',
@@ -211,11 +247,12 @@ export default function InvoicesTable() {
             {
               label: t('paymentInvoices.Actions.payment'),
               value: 'payment'
+            },
+            {
+              label: t('paymentInvoices.credits.table.downloadPdf'),
+              value: 'exportPDF',
+              disabled: !props.isPdfAvailable
             }
-            // {
-            //   label: t('paymentInvoices.Actions.exportPDF'),
-            //   value: 'exportPDF'
-            // }
           ]}
           aria-label="invoice options"
         />
@@ -234,9 +271,10 @@ export default function InvoicesTable() {
         }
       });
     } else {
-      // Export PDF API integration
+      handleDownload(row);
     }
   };
+
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };

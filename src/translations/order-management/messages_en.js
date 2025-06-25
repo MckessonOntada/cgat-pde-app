@@ -880,5 +880,9 @@ export const MessageEn = {
   'label.policyHolderName': 'Policy Holder Name',
   'label.relationToPatient': 'Relationship to Patient',
   'label.diagnosisCode': 'Diagnosis code',
-  'label.allergies': 'Allergies'
+  'label.allergies': 'Allergies',
+  'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
+  'messages.phFirstNameExtraSpaceError': 'Policy Holder First Name must not contain leading or trailing spaces',
+  'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
+  'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces'
 };

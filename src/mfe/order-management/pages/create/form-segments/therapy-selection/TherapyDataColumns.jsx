@@ -44,7 +44,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
               onChange(row);
             }}
             radioBtnWidth="auto"
-            value={row.tradeName === trade.tradeName && trade.ndcNumber === row.ndc ? row.id : ''}
+            value={row.tradeName === trade.tradeName && trade.ndc === row.ndc ? row.id : ''}
           />
         </div>
       );
@@ -60,10 +60,14 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (row) => {
-      const { tradeName, cellValue } = row;
+      const { tradeName, cellValue, channelType } = row;
       const { state: locationState = {} } = useLocation();
       return (
-        <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`} state={{ ...locationState }}>
+        <Link
+          className="MCP-table-link"
+          aria-label={t('labels.therapyDescription')}
+          to={`?trade=${tradeName}&channelType=${channelType}`}
+          state={{ ...locationState }}>
           <EclipsesTextcss str={cellValue} />
         </Link>
       );

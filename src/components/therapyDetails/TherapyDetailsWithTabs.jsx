@@ -77,7 +77,7 @@ function TherapyDetailsWithTabs({
       } else if (isDetailsByNdc) {
         return OrderService.getTherapyDetailsByNDC(trade, channelType);
       } else {
-        return OrderService.getTherapyDetailsByTradeName(trade);
+        return OrderService.getTherapyDetailsByTradeName(trade, channelType);
       }
     },
     select: (data) => data.map(({ ndcNumber, ...rest }) => ({ ndc: ndcNumber, ndcNumber, ...rest })),
@@ -140,6 +140,7 @@ function TherapyDetailsWithTabs({
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
+      therapyDetails.ndc = therapyDetails.ndcNumber;
       onSelect(therapyDetails);
       onClose();
     }

@@ -121,10 +121,14 @@ export const getValidationSchema = (t, isProviderRequired) => {
           })
       }),
       patientIdentifier: Yup.string()
-        .trim()
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
         .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
-        .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max')),
+        .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
+        .test(
+          'no-leading-trailing-spaces',
+          t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
+          (value) => value === undefined || value.trim().length === value.length
+        ),
       medicalRecordNumber: Yup.string().trim().nullable().matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
     }),
     providerId: Yup.string().when([], {
