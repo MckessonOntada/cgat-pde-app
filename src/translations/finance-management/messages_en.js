@@ -218,7 +218,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.credits.table.credit.date': 'Credit Date',
   'paymentInvoices.credits.table.amount': ' Amount',
   'paymentInvoices.credits.table.billamount': 'Bill Amount',
-  'paymentInvoices.credits.table.downloadPdf': ' download pdf',
+  'paymentInvoices.credits.table.downloadPdf': 'Download pdf',
   'paymentInvoices.credits.table.emptyData': 'No Credits Found',
   'paymentInvoices.credits.filters.ValidFromstart': 'Valid From (Start)',
   'paymentInvoices.credits.filters.ValidFromend': 'Valid From (End)',
@@ -296,5 +296,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.filter.searchCreditNo': 'search by Credit Number',
   'paymentInvoices.table.column.CreditNo': 'Credit Number',
   'paymentInvoices.table.column.soldToAccount': 'Sold To Account Number',
-  'paymentInvoices.table.column.creditAmount': 'Credit Amount'
+  'paymentInvoices.table.column.creditAmount': 'Credit Amount',
+  'paymentInvoices.table.column.pdfDownload': 'PDF download Successfully.',
+  'paymentInvoices.table.column.pdfDownloadError': 'Something went wrong, Please ty again'
 };
