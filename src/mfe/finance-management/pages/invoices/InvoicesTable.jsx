@@ -67,12 +67,30 @@ export default function InvoicesTable() {
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
         accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        responseType: 'arraybuffer'
       });
+
+      const arrayBuffer = await res.data;
+
+      if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+        throw new Error('Received an empty file.');
+      }
+      const blob = new Blob([arrayBuffer]);
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'Invoice.pdf';
+      document.body.appendChild(a);
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
       return res;
     },
     {
-      onSuccess: () => {
+      onSuccess: (response) => {
         showAlert({
           description: t('paymentInvoices.table.column.pdfDownload'),
           type: 'success',
