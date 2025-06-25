@@ -798,6 +798,8 @@ export const MessageEn = {
   'form.label.policyHolderLastName': 'Policy Holder Last Name',
   'form.label.dob': 'DOB',
   'form.label.relationshipToPatient': 'Relationship to Patient',
+  'form.label.relation': 'Relation',
+  'labels.enterRelation': 'Enter relation',
   'form.label.front': 'Front',
   'form.label.back': 'Back',
   'form.label.pharmacyBenefitManagerName': 'Pharmacy Benefit Manager Name',

@@ -570,6 +570,8 @@ export const MessageEs = {
   'form.label.policyHolderLastName': 'S_Policy Holder Last Name',
   'form.label.dob': 'S_DOB',
   'form.label.relationshipToParent': 'S_Relationship to Parent',
+  'form.label.relation': 'S_Relation',
+  'labels.enterRelation': 'S_Enter relation',
   'form.label.front': 'S_Insurance Card Front',
   'form.label.back': 'S_Insurance Card Back',
   'form.label.pharmacyBenefitManagerName': 'S_Pharmacy Benefit Manager Name',

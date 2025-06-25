@@ -36,9 +36,17 @@ export const getMedicalInsuranceSchema = (key, t) => ({
     relationshipToPatient: Yup.string()
       .required(t('messages.selectRelation'))
       .oneOf(
-        PATIENT_RELATIONSHIP.map((t) => t.toUpperCase()),
+        PATIENT_RELATIONSHIP.map((item) => {
+          const value = item.includes('/') ? item.split('/').join('_OR_') : item;
+          return value.toUpperCase();
+        }),
         t('messages.invalidRelation')
       ),
+    relation: Yup.string().when('relationshipToPatient', {
+      is: (val) => val === 'OTHER',
+      then: (schema) => schema.required(t('labels.enterRelation')),
+      otherwise: (schema) => schema.notRequired()
+    }),
     medicalCardFront: Yup.mixed().nullable(),
     medicalCardBack: Yup.mixed().nullable()
   })
