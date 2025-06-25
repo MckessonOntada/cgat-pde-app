@@ -415,7 +415,7 @@ const jsxColumns = () => [
     sortKey: 'createdAt',
     width: '140px',
     cell: function (props) {
-      return <span>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>;
+      return <span>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM/DD/YYYY')}</span>;
     }
   },
   {
@@ -437,7 +437,7 @@ const jsxColumns = () => [
     sortKey: 'submittedOn',
     width: '155px',
     cell: function (props) {
-      return <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>;
+      return <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM/DD/YYYY') : '-'}</span>;
     }
   },
 

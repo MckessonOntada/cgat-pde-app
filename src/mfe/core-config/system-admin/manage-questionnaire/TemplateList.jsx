@@ -146,7 +146,7 @@ function TemplateList({ onAlert }) {
       sortable: true,
       sortKey: 'created_at',
       minWidth: '160px',
-      cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
+      cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM/DD/YYYY')
     },
     {
       id: 'createdByUserName',
