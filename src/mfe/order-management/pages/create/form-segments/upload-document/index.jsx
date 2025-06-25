@@ -184,9 +184,10 @@ function UploadOrderDocument() {
           therapyData={TherapyDetailsConstantsForBB(false)}
           onClose={() => setShowTherapyDetails(false)}
           showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
+          isMaterialConfiguration={false}
+          useUserService={true}
           heading={t('labels.therapyDetails')}
+          notify={({ type, message }) => setAlert({ type, description: message })}
         />
       )}
     </div>
