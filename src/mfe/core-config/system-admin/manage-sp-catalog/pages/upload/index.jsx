@@ -68,27 +68,12 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorStatusCodes.includes(errorResponse.status)) {
-          setNotification({
-            type: 'error',
-            description: t('fileUpload.error.timeoutOrSystemError'),
-            isSticky: true
-          });
-        } else if (errorResponse.data?.errorCodes) {
-          errorResponse.data?.errorCodes.forEach((element) => {
-            setNotification({
-              type: 'error',
-              description: t(element),
-              isSticky: true
-            });
-          });
-        } else {
-          setNotification({
-            type: 'error',
-            description: errorResponse.data?.message || t('errors.default'),
-            isSticky: true
-          });
-        }
+        console.log('error', error);
+        setNotification({
+          type: 'error',
+          description: t('errors.default'),
+          isSticky: true
+        });
       });
   };
 

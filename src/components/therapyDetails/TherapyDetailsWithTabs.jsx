@@ -117,10 +117,9 @@ function TherapyDetailsWithTabs({
       return data;
     },
     onError: (err) => {
-      const message = CommonUtils.getAxiosErrorMessage(err);
       setAlert({
         type: 'error',
-        description: message,
+        description: t('errors.default'),
         showTitle: false
       });
     },
@@ -179,10 +178,9 @@ function TherapyDetailsWithTabs({
               await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
               refetch();
             } catch (error) {
-              const message = CommonUtils.getAxiosErrorMessage(error);
               setAlert({
                 type: 'error',
-                description: message,
+                description: t('errors.default'),
                 showTitle: false
               });
             }
@@ -252,7 +250,7 @@ function TherapyDetailsWithTabs({
               } catch (error) {
                 setAlert({
                   type: 'error',
-                  description: t('manageMaterial.drawer.controls.apply.error'),
+                  description: t('errors.default'),
                   showTitle: false
                 });
               }

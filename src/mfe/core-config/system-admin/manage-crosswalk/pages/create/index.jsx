@@ -63,18 +63,11 @@ const CreateCrosswalk = () => {
           }
         })
         .catch((error) => {
-          if (errorStatusCodes.includes(error.status)) {
-            addNotification({
-              type: 'error',
-              description: t('errors.default'),
-              isSticky: true
-            });
-          } else {
-            addNotification({
-              type: 'error',
-              description: t('errors.default')
-            });
-          }
+          addNotification({
+            type: 'error',
+            description: t('errors.default'),
+            isSticky: true
+          });
         });
     }
   };

@@ -133,7 +133,7 @@ export const AccountProvider = ({ children }) => {
       onError: (error) => {
         if (CommonUtils.isNonEmptyObject(error) && CommonUtils.isNonEmptyObject(error.response) && CommonUtils.isNonEmptyObject(error.response.data)) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('errors.default'),
+            description: t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

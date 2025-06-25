@@ -4,10 +4,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { Button } from '@mckesson/mcp-component-library';
 import UploadFile from '@src/components/uploadFile/UploadFile';
-import {
-  handleDownload,
-  validateFile
-} from '@src/components/uploadFile/uploadUtils';
+import { handleDownload, validateFile } from '@src/components/uploadFile/uploadUtils';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { downloadFile } from '@src/util/CommonUtils';
 import { errorStatusCodes } from '@src/util/ApiUtils';
@@ -41,17 +38,11 @@ const Upload = () => {
   const downloadTemplate = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
-        handleDownload(
-          '/templates/upload_providers_template.csv',
-          'upload_providers_template.csv'
-        );
+        handleDownload('/templates/upload_providers_template.csv', 'upload_providers_template.csv');
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_INFO: {
-        handleDownload(
-          '/templates/Provider_upload_instruction.txt',
-          'Provider_upload_instruction.txt'
-        );
+        handleDownload('/templates/Provider_upload_instruction.txt', 'Provider_upload_instruction.txt');
         break;
       }
       default:
@@ -93,10 +84,7 @@ const Upload = () => {
               <div className="alert-controls">
                 <p>{t('providers.message.fileUploadPartialSuccess')}</p>
                 <div>
-                  <Button
-                    variant="secondary"
-                    color="success"
-                    onClick={downloadErrorFile}>
+                  <Button variant="secondary" color="success" onClick={downloadErrorFile}>
                     Download Report
                   </Button>
                 </div>
@@ -108,27 +96,11 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorStatusCodes.includes(errorResponse.status)) {
-          setNotification({
-            type: 'error',
-            description: t('fileUpload.error.timeoutOrSystemError'),
-            isSticky: true
-          });
-        } else if (errorResponse.data?.errorCodes) {
-          errorResponse.data?.errorCodes.forEach((element) => {
-            setNotification({
-              type: 'error',
-              description: t(element),
-              isSticky: true
-            });
-          });
-        } else {
-          setNotification({
-            type: 'error',
-            description: errorResponse.data?.message || t('errors.default'),
-            isSticky: true
-          });
-        }
+        setNotification({
+          type: 'error',
+          description: t('errors.default'),
+          isSticky: true
+        });
       });
   };
 
@@ -143,13 +115,8 @@ const Upload = () => {
         onCloseAlert={() => setNotification(null)}
         infoHeader={t('providers.upload-info')}
         customDownload={
-          <ContextMenu
-            items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)}
-            onSelect={downloadTemplate}>
-            <Button
-              size="md"
-              variant={'secondary'}
-              className="context-menu__button">
+          <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={downloadTemplate}>
+            <Button size="md" variant={'secondary'} className="context-menu__button">
               {t('controls.downloadCSVTemplate')}
             </Button>
           </ContextMenu>
