@@ -183,6 +183,9 @@ function Payer() {
   };
 
   const handleOnSubmit = (values) => {
+    if (values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') values.primaryMedicalInsurance.relation = '';
+    if (values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') values.secondaryMedicalInsurance.relation = '';
+
     OrderService.savePayerDetails(orderId, values).then((response) => {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
         state: {

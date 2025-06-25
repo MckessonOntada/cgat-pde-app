@@ -4,7 +4,6 @@ import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
-import { useParams } from 'react-router-dom';
 import { getNestedValue } from '@src/components/form/util';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
@@ -71,8 +70,16 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                 <div key={rowIndex} className="form-control-row">
                   <div key={rowIndex} className={`${row.grid}`}>
                     {row.controls.map((control, controlIndex) => {
-                      const Component = Components[control.type]; // dynamic component
+                      const Component = Components[control.type];
                       if (!Component) return null;
+
+                      if (control.when && Array.isArray(control.when) && control.when.length === 2) {
+                        const [key, fn] = control.when;
+                        if (typeof key === 'string' && typeof fn === 'function') {
+                          const refValue = getNestedValue(values, key);
+                          if (!fn(refValue)) return null;
+                        }
+                      }
 
                       const uploadControlAttributes = {};
                       if (control.type === 'inputFile') {
@@ -83,20 +90,21 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                         uploadControlAttributes.fileTypeText = 'PDF, PNG, JPEG, JPG';
                       }
 
-                      return (
-                        <Field
-                          id={`${fieldPrefix}${control.name}`}
-                          key={`${CommonUtils.generateUniqueCode(fieldPrefix + control.name + controlIndex)}`}
-                          name={`${fieldPrefix}${control.name}`}
-                          label={t(control.label)}
-                          placeholder={control.placeholder || ' '}
-                          isRequired={control.isRequired}
-                          component={Component}
-                          options={control.options}
-                          maxLength={control.maxLength}
-                          {...uploadControlAttributes}
-                        />
-                      );
+                      // Prepare all props for Field
+                      const fieldProps = {
+                        id: `${fieldPrefix}${control.name}`,
+                        key: CommonUtils.generateUniqueCode(fieldPrefix + control.name + controlIndex),
+                        name: `${fieldPrefix}${control.name}`,
+                        label: t(control.label),
+                        placeholder: control.placeholder || ' ',
+                        isRequired: control.isRequired,
+                        component: Component,
+                        options: control.options,
+                        maxLength: control.maxLength,
+                        ...uploadControlAttributes
+                      };
+
+                      return <Field {...fieldProps} />;
                     })}
                   </div>
                 </div>
