@@ -1,84 +1,104 @@
-Provider Upload Template - Instructions
-==============================================
+ Provider Upload - Instructions
+==================================================
 
-This template is used to upload Provider records in bulk.
+This file provides guidance for filling out the Healthcare Provider Upload template.
 
-Please follow the field instructions below to avoid upload errors.
+LEGEND:
+- M = Mandatory (must be filled)
+- O = Optional (can be left blank)
+- Text = Alphabets and special characters allowed
+- Number = Numeric only
+- Alphanumeric = Letters and/or numbers
+- Value Set = Use only specified values (see below)
 
-Key:
-- M = Mandatory (Must be filled)
-- O = Optional (Can be left blank)
-
--------------------------------
-FIELD DESCRIPTIONS
--------------------------------
+--------------------------------------------------
+FIELD-WISE INSTRUCTIONS:
+--------------------------------------------------
 
 1. First Name (M)
-   - Type: Text
-   - Max Length: 50 characters
+   - Type: Text | Max Length: 50
    - Example: John
 
 2. Middle Name (O)
-   - Type: Text
-   - Max Length: 50 characters
-   - Example: A.
+   - Type: Text | Max Length: 50
+   - Optional middle name
 
 3. Last Name (M)
-   - Type: Text
-   - Max Length: 50 characters
+   - Type: Text | Max Length: 50
    - Example: Smith
 
 4. DEA Number (M)
-   - Type: Text
-   - Length: Exactly 9 characters
-   - Example: AB1234567
+   - Type: Text | Max Length: 9
+   - Must be exactly 9 characters
+   - Example: FS1234567
 
 5. NPI Number (M)
-   - Type: Number
-   - Length: Exactly 10 digits
+   - Type: Number | Length: 10
+   - Numeric only, no spaces or dashes
    - Example: 1234567890
 
 6. Address1 (M)
-   - Type: Text
-   - Max Length: 100 characters
-   - Example: 123 Main St
+   - Type: Text | Max Length: 100
+   - Example: 123 Elm Street
 
 7. Address2 (O)
-   - Type: Text
-   - Max Length: 100 characters
-   - Example: Suite 101
+   - Type: Text | Max Length: 100
+   - Optional secondary address line
 
 8. City (M)
-   - Type: Alphanumeric
-   - Max Length: 50 characters
-   - Example: New York
+   - Type: Alphanumeric | Max Length: 50
+   - Example: Los Angeles
 
 9. Zip (M)
-   - Type: Number
-   - Max Length: 10 digits
-   - Example: 10001
+   - Type: Number | Max Length: 10
+   - Do not include spaces or hyphens
 
 10. State (M)
-    - Type: Alphanumeric
-    - Max Length: 20 characters
-    - Example: NY or New York
+    - Type: Alphanumeric | Max Length: 20
+    - Example: CA or California
 
 11. Phone Number (M)
-    - Type: Number
-    - Length: Exactly 10 digits (without country code)
-    - Example: 2125551234
+    - Type: Number | Length: 10
+    - Example: 2135559876 (do not include country code)
 
 12. Status (M)
-    - Type: Text (Dropdown/Value Set)
-    - Accepted Values: Active, Inactive
+    - Type: Text (Value Set)
+    - Allowed Values: Active, Inactive
 
--------------------------------
-✅ SAMPLE DATA ROW:
--------------------------------
+13. Tin (M)
+    - Type: Numeric | Length: 9
+    - Example: 123456789
 
-| First Name | Middle Name | Last Name | DEA Number | NPI Number | Address1      | Address2 | City     | Zip   | State | Phone Number | Status  |
-|------------|-------------|-----------|------------|------------|---------------|----------|----------|-------|-------|--------------|---------|
-| John       | A.          | Smith     | AB1234567  | 1234567890 | 123 Main St   | Suite 101| New York | 10001 | NY    | 2125556789   | Active  |
+14. Medicaid Number (M)
+    - Type: Numeric | Length: 6
+    - Example: 123456
+
+15. License State (O)
+    - Type: Dropdown
+    - Select from predefined U.S. state list
+
+16. Email ID (M)
+    - Type: String (Valid Email Format) | Max Length: 50
+    - Example: doctor@example.com
+
+17. Fax (O)
+    - Type: Numeric
+    - Optional field
+
+--------------------------------------------------
+✅ SAMPLE ROW:
+
+| First Name | Last Name | DEA Number | NPI Number | Address1       | City         | Zip     | State  | Phone Number  | Status | Tin       | Medicaid Number  | Email ID           |
+|------------|-----------|------------|------------|----------------|--------------|---------|------- |---------------|--------|-----------|------------------|---------------------|
+| John       | Smith     | FS1234567  | 1234567890 | 456 Oak Street | San Diego    | 92101   | Alabama| 8585551234    | Active | 123456789 | 987654           | john.smith@email.com |
+
+--------------------------------------------------
+NOTES:
+- All required (M) fields must be filled for successful upload.
+- Do not alter column headers.
+- Value Set fields must match allowed options exactly (e.g., "Active" not "active").
+- Contact your admin or support if you encounter issues.
+
 
 
 State field values :-
