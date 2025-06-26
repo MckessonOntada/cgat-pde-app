@@ -105,6 +105,8 @@ function UploadOrderDocument() {
     const prevSearch = locationState?.__prevSearch || '';
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   }
+
+  const isSpOrder = orderDetails.channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA;
   return (
     <div className="MCP-module-wrapper">
       <PageHeader heading={'Upload Documents'} />
@@ -124,26 +126,32 @@ function UploadOrderDocument() {
                 key={'therapy_name'}
                 label="Therapy"
                 value={
-                  <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
-                    {orderDetails.therapy?.materialDescription}
-                  </Link>
+                  isSpOrder ? (
+                    <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
+                      {orderDetails.therapy?.materialDescription}
+                    </Link>
+                  ) : (
+                    orderDetails.therapy?.materialDescription
+                  )
                 }
               />
-              <div className="price-wrapper">
-                <DetailSegment
-                  label={t('labels.orderCost')}
-                  value={
-                    orderDetails.orderCost ? (
-                      <span className="dollarSign ">
-                        <span>$</span>
-                        {CommonUtils.formatNumberWithoutSymbol(orderDetails.orderCost)}
-                      </span>
-                    ) : (
-                      '-'
-                    )
-                  }
-                />
-              </div>
+              {isSpOrder && (
+                <div className="price-wrapper">
+                  <DetailSegment
+                    label={t('labels.orderCost')}
+                    value={
+                      orderDetails.orderCost ? (
+                        <span className="dollarSign ">
+                          <span>$</span>
+                          {CommonUtils.formatNumberWithoutSymbol(orderDetails.orderCost)}
+                        </span>
+                      ) : (
+                        '-'
+                      )
+                    }
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
