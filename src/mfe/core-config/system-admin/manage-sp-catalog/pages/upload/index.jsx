@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
-  DOWNLOAD_TEMPLATE: 'Download CSV',
+  DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_ACCOUNT_DATA: 'Download SP Account Data',
   DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data',
   DOWNLOAD__INFO: 'Download Instruction File'
