@@ -55,7 +55,12 @@ export default function Credits(props) {
             />
           </div>
         )}
-        <CreditsTable selectedRows={props.selectedCredits} setSelectedRows={props.setSelectedCredits} selectableRows={props.selectableRows} />
+        <CreditsTable
+          selectedRows={props.selectedCredits}
+          setSelectedRows={props.setSelectedCredits}
+          selectableRows={props.selectableRows}
+          disableSelection={props.disableSelection}
+        />
       </div>
     </React.Fragment>
   );

@@ -387,43 +387,13 @@ function ReviewPayments() {
     return _data;
   }, [searchKey, mergedData]);
 
-  // const calculateCredit = (totalCreditsAmount, Credits, paymentAmount) => {
-  //   // console.log('totalCreditsAmount', totalCreditsAmount);
-  //   // console.log('appliedCredits', appliedCredits);
-  //   // console.log('paymentAmountSum', paymentAmountSum);
-  //   let remainingAmount = null;
-
-  //   if (Credits > paymentAmount) {
-  //     remainingAmount = totalCreditsAmount - Credits;
-  //     return FinanceUtils.formatCurrency(remainingAmount).slice(1);
-  //   }
-  //   if (Credits < paymentAmount) {
-  //     remainingAmount = totalCreditsAmount - paymentAmount
-  //     return FinanceUtils.formatCurrency(remainingAmount).slice(1);
-  //   }
-  // };
-
   useEffect(() => {
     const displayedAppliedCredit = Math.min(creditsSum, paymentAmountSum);
     const remaining = totalCreditsAmount - displayedAppliedCredit;
 
     setRemainingAmount(FinanceUtils.formatCurrency(remaining).slice(1));
-
-    if (creditsSum > paymentAmountSum) {
-      setDisablecreditSelection(false);
-    } else if (creditsSum < paymentAmountSum) {
-      if (totalCreditsAmount >= paymentAmountSum) {
-        if (creditsSum + 1 > paymentAmountSum) {
-          setDisablecreditSelection(false);
-        } else {
-          setDisablecreditSelection(true);
-        }
-      } else {
-        setDisablecreditSelection(false);
-      }
-    } else {
-      setDisablecreditSelection(false);
-    }
+    const shouldDisable = parseFloat(creditsSum) >= parseFloat(paymentAmountSum);
+    setDisablecreditSelection(shouldDisable);
   }, [creditsSum, paymentAmountSum, totalCreditsAmount]);
 
   if (isLoading) {
@@ -504,7 +474,7 @@ function ReviewPayments() {
                     totalCreditsCount={totalCreditsCount}
                     settotalCreditsCount={settotalCreditsCount}
                     settotalCreditsAmount={settotalCreditsAmount}
-                    desableSelection={disablecreditSelection}
+                    disableSelection={disablecreditSelection}
                   />
                 </PaymentsCreditsProvider>
               )}

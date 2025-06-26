@@ -17,7 +17,7 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 export default function CreditsTable(props) {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, fileteredData } = usePaymentCredits();
-  const { selectedRows, setSelectedRows, selectableRows } = props;
+  const { selectedRows, setSelectedRows, selectableRows, disableSelection } = props;
   const location = useLocation();
   const { state } = location;
   const showCardView = useResponsiveView();
@@ -25,9 +25,22 @@ export default function CreditsTable(props) {
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'billNumber',
+        paginationConfig,
+        selectedRows,
+        setSelectedRows,
+        true,
+        false,
+        disableSelection
+      ),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
+      cell: (row, index) => {
+        const isdisable = disableSelection && !selectedRows?.some((r) => r?.billNumber === row?.billNumber);
+        return renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows, true, false, isdisable);
+      },
       selector: (row) => row.MRN,
       width: '48px',
       omit: !selectableRows,
