@@ -65,32 +65,30 @@ export default function InvoicesTable() {
         companyCode: selectedAccount.companyCode,
         documentNo: row.referenceDocumentNumber
       };
-      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
+      const headers = {
         accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        responseType: 'arraybuffer'
-      });
+        'content-type': 'application/json;charset=UTF-8'
+      };
+      const response = await HttpResourceService.callRest(url, httpVerb.POST, body, headers, null, null, null, 'blob');
 
-      const arrayBuffer = await res.data;
-
-      if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-        throw new Error('Received an empty file.');
-      }
-      const blob = new Blob([arrayBuffer]);
+      const blob = new Blob([response.data], { type: 'application/pdf' });
       const downloadUrl = window.URL.createObjectURL(blob);
+
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = 'Invoice.pdf';
+
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename = match ? match[1] : 'invoice.pdf';
+
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
-
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      return res;
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
     },
     {
-      onSuccess: (response) => {
+      onSuccess: () => {
         showAlert({
           description: t('paymentInvoices.table.column.pdfDownload'),
           type: 'success',
