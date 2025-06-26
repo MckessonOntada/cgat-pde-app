@@ -14,7 +14,6 @@ function ManageSPAccount() {
   const { applyFilters, clearFilters, refetchSPAccountList } = useSPAccountContext();
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
-
   const translatedBreadcrumbs = [
     {
       label: 'systemAdministrator',
@@ -33,10 +32,8 @@ function ManageSPAccount() {
   }));
 
   useEffect(() => {
-    if (isSuccess) {
-      refetchSPAccountList();
-    }
-  }, [location.pathname, location.state, navigate]);
+    refetchSPAccountList();
+  }, [location.pathname, location.state]);
 
   return (
     <div className="MCP-module-wrapper">
