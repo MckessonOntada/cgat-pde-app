@@ -163,9 +163,9 @@ const OrgList = ({ onActionSuccess }) => {
       sortKey: 'updated_At',
       cell: (row) =>
         row.updatedAt
-          ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY')
+          ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM/DD/YYYY')
           : row.createdAt
-          ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY')
+          ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM/DD/YYYY')
           : 'N/A',
       minWidth: '100px',
       wrap: true

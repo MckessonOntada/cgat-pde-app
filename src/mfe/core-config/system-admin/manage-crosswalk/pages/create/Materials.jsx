@@ -124,9 +124,16 @@ const Materials = () => {
         maxWidth: '180px',
         sortable: true,
         sortKey: 'trade_name',
-        cell: ({ cellValue, tradeName }) => {
+        cell: ({ cellValue, tradeName, id, isParent }) => {
+          const searchParams = new URLSearchParams({
+            trade: tradeName
+          });
+          if (!isParent) {
+            const therapyParam = id ? id : tradeName;
+            searchParams.set('therapy', therapyParam);
+          }
           return (
-            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?trade=${tradeName}`}>
+            <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?${searchParams.toString()}`}>
               <EclipsesTextcss str={cellValue} />
             </Link>
           );

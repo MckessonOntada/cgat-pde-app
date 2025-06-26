@@ -570,6 +570,8 @@ export const MessageEs = {
   'form.label.policyHolderLastName': 'S_Policy Holder Last Name',
   'form.label.dob': 'S_DOB',
   'form.label.relationshipToParent': 'S_Relationship to Parent',
+  'form.label.relation': 'S_Relation',
+  'labels.enterRelation': 'S_Enter relation',
   'form.label.front': 'S_Insurance Card Front',
   'form.label.back': 'S_Insurance Card Back',
   'form.label.pharmacyBenefitManagerName': 'S_Pharmacy Benefit Manager Name',
@@ -617,5 +619,9 @@ export const MessageEs = {
   'column.material.crosswalk.spProductName': 'S_SP Product Name',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
   'column.material.crosswalk.action': 'S_Action',
-  'controls.updateDocument': 'S_Upload Document'
+  'controls.updateDocument': 'S_Upload Document',
+  'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
+  'messages.phFirstNameExtraSpaceError': 'Policy Holder First Name must not contain leading or trailing spaces',
+  'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
+  'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces'
 };

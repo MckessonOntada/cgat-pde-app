@@ -226,23 +226,17 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
   };
 
   const applySort = (sortBy, sortDirection) => {
-    const newSort = { ...sort };
+    let newSortOrder;
 
     if (sortBy !== sort.sortBy) {
-      newSort.sortBy = sortBy;
-      newSort.sortOrder = sortDirection;
+      newSortOrder = sortDirection;
     } else {
-      if (!sort.sortOrder) {
-        newSort.sortOrder = sortDirection;
-      } else {
-        newSort.sortOrder = sort.sortOrder === 'asc' ? 'desc' : 'asc';
-      }
-      setSort({ ...newSort });
+      newSortOrder = sort.sortOrder === 'asc' ? 'desc' : 'asc';
     }
 
     setSort({
-      sortBy: sortBy,
-      sortOrder: !sort.sortOrder ? sortDirection : sort.sortOrder === 'asc' ? 'desc' : 'asc'
+      sortBy,
+      sortOrder: newSortOrder
     });
   };
 

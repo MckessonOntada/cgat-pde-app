@@ -31,6 +31,7 @@ const CreateCrosswalk = () => {
   const searchParams = new URLSearchParams(location.search);
   const material = searchParams.get('material');
   const trade = searchParams.get('trade');
+  const therapy = searchParams.get('therapy');
   const { state, reset } = useGenericContext();
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
@@ -137,6 +138,7 @@ const CreateCrosswalk = () => {
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
@@ -215,6 +217,7 @@ const CreateCrosswalk = () => {
           <TherapyDetailsWithTabs
             isMaterialListing={true}
             trade={trade}
+            therapy={therapy || trade}
             onSelect={() => {}}
             onClose={handleOnClose}
             heading={t('manageMaterial.drawer.details.heading')}

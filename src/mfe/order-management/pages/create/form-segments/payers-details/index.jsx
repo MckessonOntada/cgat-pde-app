@@ -71,30 +71,35 @@ function Payer() {
   });
 
   React.useEffect(() => {
-    if (flag) {
-      setFlag(false);
-      return;
-    }
-    let newValues = { ...formValues };
-
     if (isSecondaryPharmacyInsuranceOpen) {
-      newValues.secondaryPharmacyInsurance = getBasePharmacyInsuranceValues();
+      if (!orderDetails.payerDetails?.secondaryPharmacyInsurance) {
+        setFormValues((prev) => ({
+          ...prev,
+          secondaryPharmacyInsurance: getBasePharmacyInsuranceValues()
+        }));
+      }
+    } else {
+      setFormValues((prev) => ({
+        ...prev,
+        secondaryPharmacyInsurance: null
+      }));
     }
-
-    setFormValues({ ...newValues });
   }, [isSecondaryPharmacyInsuranceOpen]);
 
   React.useEffect(() => {
-    if (flag) {
-      setFlag(false);
-      return;
-    }
-    let newValues = { ...formValues };
     if (isSecondaryMedicalInsuranceOpen) {
-      newValues.secondaryMedicalInsurance = getBaseMedicalInsuranceValues();
+      if (!orderDetails.payerDetails?.secondaryMedicalInsurance) {
+        setFormValues((prev) => ({
+          ...prev,
+          secondaryMedicalInsurance: getBaseMedicalInsuranceValues()
+        }));
+      }
+    } else {
+      setFormValues((prev) => ({
+        ...prev,
+        secondaryMedicalInsurance: null
+      }));
     }
-
-    setFormValues({ ...newValues });
   }, [isSecondaryMedicalInsuranceOpen]);
 
   React.useEffect(() => {
@@ -183,6 +188,15 @@ function Payer() {
   };
 
   const handleOnSubmit = (values) => {
+    if (values.primaryMedicalInsurance && values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
+      const { relation, ...rest } = values.primaryMedicalInsurance;
+      values.primaryMedicalInsurance = rest;
+    }
+    if (values.secondaryMedicalInsurance && values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
+      const { relation, ...rest } = values.secondaryMedicalInsurance;
+      values.secondaryMedicalInsurance = rest;
+    }
+
     OrderService.savePayerDetails(orderId, values).then((response) => {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
         state: {

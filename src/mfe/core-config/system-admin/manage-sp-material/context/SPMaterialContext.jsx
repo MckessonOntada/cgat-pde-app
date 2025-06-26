@@ -19,7 +19,7 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: 'trade_name',
+  sortBy: 'material_number',
   sortOrder: 'desc'
 };
 

@@ -798,6 +798,8 @@ export const MessageEn = {
   'form.label.policyHolderLastName': 'Policy Holder Last Name',
   'form.label.dob': 'DOB',
   'form.label.relationshipToPatient': 'Relationship to Patient',
+  'form.label.relation': 'Relation',
+  'labels.enterRelation': 'Enter relation',
   'form.label.front': 'Front',
   'form.label.back': 'Back',
   'form.label.pharmacyBenefitManagerName': 'Pharmacy Benefit Manager Name',
@@ -881,5 +883,9 @@ export const MessageEn = {
   'label.policyHolderName': 'Policy Holder Name',
   'label.relationToPatient': 'Relationship to Patient',
   'label.diagnosisCode': 'Diagnosis code',
-  'label.allergies': 'Allergies'
+  'label.allergies': 'Allergies',
+  'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
+  'messages.phFirstNameExtraSpaceError': 'Policy Holder First Name must not contain leading or trailing spaces',
+  'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
+  'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces'
 };

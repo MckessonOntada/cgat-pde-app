@@ -27,7 +27,9 @@ function TherapySelection() {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
-  const { state: locationState = {}, search } = useLocation();
+  const { state: locationState = {}, search, pathname } = useLocation();
+  const [prevSearchState, setPrevSearchState] = React.useState(null);
+
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
   const { data: orderDetails = {} } = useOrder(orderId);
@@ -35,11 +37,16 @@ function TherapySelection() {
   const searchParams = new URLSearchParams(search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
+  const therapy = searchParams.get('therapy');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { isEdit = false, isApprover = false, isBack = false } = locationState || {};
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
+
+  React.useEffect(() => {
+    if (locationState && locationState.__prevSearch) setPrevSearchState(locationState.__prevSearch);
+  }, [location.search]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -56,10 +63,12 @@ function TherapySelection() {
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     navigate({
-      pathname: '',
+      pathname,
       state: {
-        ...locationState
+        ...locationState,
+        ...(prevSearchState && { __prevSearch: prevSearchState })
       }
     });
   };
@@ -67,9 +76,10 @@ function TherapySelection() {
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`/orders/${id}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
         state: {
           ...locationState,
+          ...(prevSearchState && { __prevSearch: prevSearchState }),
           isEdit: false,
           isApprover: isApprover
         }
@@ -92,9 +102,10 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/accounts`, {
+        navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
           state: {
             ...locationState,
+            ...(prevSearchState && { __prevSearch: prevSearchState }),
             isEdit: false,
             isApprover: isApprover,
             isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName)
@@ -140,8 +151,8 @@ function TherapySelection() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`/orders${prevSearch}`);
+      const prevSearch = locationState?.__prevSearch || prevSearchState || '';
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 
@@ -154,23 +165,26 @@ function TherapySelection() {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
+          ...(prevSearchState && { __prevSearch: prevSearchState }),
           isEdit: true,
           isApprover: isApprover
         }
       });
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
+      const prevSearch = locationState?.__prevSearch || prevSearchState || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 
   const handleNavigate = () => {
+    const prevSearch = locationState?.__prevSearch || prevSearchState || '';
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
+          ...(prevSearchState && { __prevSearch: prevSearchState }),
           isEdit: true,
           isApprover: isApprover
         }
@@ -231,6 +245,7 @@ function TherapySelection() {
             <TherapyDetailsWithTabs
               trade={trade}
               channelType={channelType}
+              therapy={therapy || trade}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}

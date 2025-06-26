@@ -21,6 +21,8 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import useAlert from '@src/hooks/useAlert';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -30,6 +32,7 @@ export default function InvoicesTable() {
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
+  const alertContainerId = 'summary-alert-container';
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -53,6 +56,55 @@ export default function InvoicesTable() {
       }
     }
   );
+
+  const { mutate: handleDownload } = useMutation(
+    async (row) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, row.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: row.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: row.referenceDocumentNumber
+      };
+      const headers = {
+        accept: 'application/json, text/plain, */*',
+        'content-type': 'application/json;charset=UTF-8'
+      };
+      const response = await HttpResourceService.callRest(url, httpVerb.POST, body, headers, null, null, null, 'blob');
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename = match ? match[1] : 'invoice.pdf';
+
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    },
+    {
+      onSuccess: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownload'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
+
   const columns = [
     {
       id: 'checkbox',
@@ -211,11 +263,12 @@ export default function InvoicesTable() {
             {
               label: t('paymentInvoices.Actions.payment'),
               value: 'payment'
+            },
+            {
+              label: t('paymentInvoices.credits.table.downloadPdf'),
+              value: 'exportPDF',
+              disabled: !props.isPdfAvailable
             }
-            // {
-            //   label: t('paymentInvoices.Actions.exportPDF'),
-            //   value: 'exportPDF'
-            // }
           ]}
           aria-label="invoice options"
         />
@@ -234,9 +287,10 @@ export default function InvoicesTable() {
         }
       });
     } else {
-      // Export PDF API integration
+      handleDownload(row);
     }
   };
+
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };

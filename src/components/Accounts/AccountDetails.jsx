@@ -3,7 +3,7 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
-import { getFullName } from '@src/util/CommonUtils';
+import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 
 export const AccountDetailsConstants = [
   {
@@ -69,7 +69,9 @@ function AccountDetails({ openDetails, setOpenDetails, selectedDetails }) {
                   if (field.value === 'name') {
                     value = getFullName(account.name || '-');
                   }
-
+                  if (field.value === 'address.telephone' || field.value === 'address.fax') {
+                    value = CommonUtils.formatPhoneNumber(account.address[field.value.split('.')[1]] || '-');
+                  }
                   return (
                     <div key={field.label} className="details-li">
                       <div className="details-key">{t(`ManageAccount.${field.label}`)}</div>

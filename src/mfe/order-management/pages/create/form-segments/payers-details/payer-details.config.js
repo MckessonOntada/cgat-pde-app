@@ -104,11 +104,30 @@ export const medicalInsuranceTemplate = (parentKey) => {
           label: 'form.label.relationshipToPatient',
           placeholder: '',
           type: 'dropdown',
-          options: PATIENT_RELATIONSHIP.map((item) => ({
-            label: item,
-            value: item.toUpperCase()
-          })),
+          options: PATIENT_RELATIONSHIP.map((item) => {
+            const value = item.includes('/') ? item.split('/').join('_OR_') : item;
+            return {
+              label: item,
+              value: value.toUpperCase()
+            };
+          }),
           isRequired: true,
+          maxLength: 50
+        },
+        {
+          id: `${parentKey}-other-relationship-to-patient`,
+          key: `${parentKey}-other-relationship-to-patient`,
+          name: `${parentKey}.relation`,
+          label: 'form.label.relation',
+          placeholder: '',
+          type: 'input',
+          isRequired: true,
+          when: [
+            `${parentKey}.relationshipToPatient`,
+            (val) => {
+              return val === 'OTHER';
+            }
+          ],
           maxLength: 50
         }
       ]
