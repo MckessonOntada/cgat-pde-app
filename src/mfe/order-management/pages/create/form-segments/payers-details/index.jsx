@@ -188,11 +188,11 @@ function Payer() {
   };
 
   const handleOnSubmit = (values) => {
-    if (values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
+    if (values.primaryMedicalInsurance && values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
       const { relation, ...rest } = values.primaryMedicalInsurance;
       values.primaryMedicalInsurance = rest;
     }
-    if (values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
+    if (values.secondaryMedicalInsurance && values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
       const { relation, ...rest } = values.secondaryMedicalInsurance;
       values.secondaryMedicalInsurance = rest;
     }
