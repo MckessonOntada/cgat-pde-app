@@ -200,6 +200,7 @@ function TherapyDetailsWithTabs({
 
   const renderQuestionnaire = (details, section, hasDeleteConfigAccess) => {
     let showHeader = true;
+    const isCrosswalked = details.isCrosswalked && details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
     return details.questionnaires.map((questionnaire, index) => {
       const item = (
         <QuestionnaireItem
@@ -216,7 +217,7 @@ function TherapyDetailsWithTabs({
           showHeader={showHeader}
           questionnaire={details.questionnaires}
           hasDeleteConfigAccess={hasDeleteConfigAccess}
-          isCrosswalked={details.isCrosswalked}
+          isCrosswalked={isCrosswalked}
         />
       );
       showHeader = false;
