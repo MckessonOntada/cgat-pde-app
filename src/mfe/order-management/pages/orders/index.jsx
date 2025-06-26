@@ -267,7 +267,8 @@ const OrderIndex = () => {
                   name: 'dateRange',
                   startDateLabel: t('labels.startDate'),
                   endDateLabel: t('labels.endDate'),
-                  required: true
+                  required: true,
+                  maxDate: new Date()
                 }
               ]
             : []
