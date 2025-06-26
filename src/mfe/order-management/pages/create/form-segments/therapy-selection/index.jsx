@@ -37,6 +37,7 @@ function TherapySelection() {
   const searchParams = new URLSearchParams(search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
+  const therapy = searchParams.get('therapy');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { isEdit = false, isApprover = false, isBack = false } = locationState || {};
   const alertContainerId = 'alert-container';
@@ -62,6 +63,7 @@ function TherapySelection() {
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     navigate({
       pathname,
       state: {
@@ -243,6 +245,7 @@ function TherapySelection() {
             <TherapyDetailsWithTabs
               trade={trade}
               channelType={channelType}
+              therapy={therapy || trade}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}

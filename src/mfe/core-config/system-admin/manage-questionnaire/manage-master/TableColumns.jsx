@@ -75,7 +75,7 @@ export const getColumnsByEntityType = ({
           sortable: true,
           sortKey: 'trade_name',
           cell: (row) => {
-            const { tradeName, cellValue, channelType } = row;
+            const { tradeName, cellValue, channelType, id, isParent } = row;
             return (
               <span
                 className="MCP-table-link"
@@ -83,6 +83,10 @@ export const getColumnsByEntityType = ({
                 onClick={() => {
                   searchParams.set('trade', tradeName);
                   searchParams.set('channelType', channelType);
+                  if (!isParent) {
+                    const therapyParam = id ? id : tradeName;
+                    searchParams.set('therapy', therapyParam);
+                  }
                   setSearchParams(searchParams);
                 }}>
                 <EclipsesTextcss str={cellValue} maxWidth={220} />

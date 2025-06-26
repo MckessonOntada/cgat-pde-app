@@ -13,6 +13,7 @@ const TherapyDataTable = (props) => {
   const { trade, onChange } = props;
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort, fileteredData } = useTherapy();
+
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);

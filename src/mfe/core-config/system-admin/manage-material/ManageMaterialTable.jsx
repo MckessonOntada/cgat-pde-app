@@ -30,6 +30,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const searchParams = new URLSearchParams(location.search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
+  const therapy = searchParams.get('therapy');
   const navigate = useNavigate();
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -99,10 +100,17 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       sortKey: 'trade_name',
       minWidth: '220px',
       cell: (row) => {
-        const { tradeName, channelType, cellValue } = row;
-
+        const { tradeName, channelType, cellValue, id, isParent } = row;
+        const searchParams = new URLSearchParams({
+          trade: tradeName,
+          channelType
+        });
+        if (!isParent) {
+          const therapyParam = id ? id : tradeName;
+          searchParams.set('therapy', therapyParam);
+        }
         return (
-          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?trade=${tradeName}&channelType=${channelType}`}>
+          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?${searchParams.toString()}`}>
             <EclipsesTextcss str={tradeName} />
           </Link>
         );
@@ -223,6 +231,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
@@ -328,6 +337,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         <TherapyDetailsWithTabs
           trade={trade}
           channelType={channelType}
+          therapy={therapy || trade}
           isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
