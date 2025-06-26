@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
-  DOWNLOAD_TEMPLATE: 'Download Template',
+  DOWNLOAD_TEMPLATE: 'Download CSV',
   DOWNLOAD_SP_ACCOUNT_DATA: 'Download SP Account Data',
   DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data',
   DOWNLOAD__INFO: 'Download Instruction File'
@@ -95,7 +95,7 @@ const Upload = () => {
   const handleOnDownload = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
-        handleDownload('/templates/upload_sp_catalog.zip', 'Upload SP Catalog.zip');
+        handleDownload('/templates/Upload_SP_Catalog_Template.csv', 'Upload SP Catalog.csv');
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
