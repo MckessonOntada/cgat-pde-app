@@ -65,11 +65,27 @@ export default function InvoicesTable() {
         companyCode: selectedAccount.companyCode,
         documentNo: row.referenceDocumentNumber
       };
-      const res = await HttpResourceService.callRest(url, httpVerb.POST, body, {
+      const headers = {
         accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      });
-      return res;
+        'content-type': 'application/json;charset=UTF-8'
+      };
+      const response = await HttpResourceService.callRest(url, httpVerb.POST, body, headers, null, null, null, 'blob');
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename = match ? match[1] : 'invoice.pdf';
+
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
     },
     {
       onSuccess: () => {
