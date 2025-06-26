@@ -33,8 +33,7 @@ export default function CreditsTable(props) {
         selectedRows,
         setSelectedRows,
         true,
-        false,
-        disableSelection
+        false
       ),
       sortable: false,
       cell: (row, index) => {
