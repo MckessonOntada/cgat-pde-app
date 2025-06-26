@@ -95,7 +95,7 @@ const Upload = () => {
   const handleOnDownload = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
-        handleDownload('/templates/upload_sp_catalog.zip', 'Upload SP Catalog.zip');
+        handleDownload('/templates/Upload_SP_Catalog_Template.csv', 'Upload SP Catalog.csv');
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
