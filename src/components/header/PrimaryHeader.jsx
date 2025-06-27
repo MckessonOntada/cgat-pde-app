@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
+import { ReactComponent as AppLogo } from '@src/assets/svg/HeaderLogo.svg';
 import { ReactComponent as IconNotification } from '@src/assets/svg/bell.svg';
 import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
 import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
