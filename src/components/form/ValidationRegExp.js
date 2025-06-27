@@ -1,9 +1,11 @@
 export const ALPHA_NUMERIC = /^[a-zA-Z0-9-_ ]*$/;
 export const ALPHA_NUMERIC_ONLY_UPPERCASE = /^[A-Z0-9]*$/;
 export const ALPHA_NUMERIC_ONLY = /^[a-zA-Z0-9]*$/;
+export const ALPHABETIC_FOR_NAME = /^[A-Za-z\s'-]+$/;
+export const ALPHABETIC_ONLY = /^[a-zA-Z]+$/;
+export const RX_SYMBOLS_ALLOWED = /^[A-Za-z&\s-]+$/;
 export const ALPHA_NUMERIC_WITH_SPECIAL = /^[a-zA-Z0-9\u00C0-\u017F]+(?:[-_ ][a-zA-Z0-9\u00C0-\u017F]+)*$/;
 export const ALPHABETIC_WITH_SPECIAL = /^[a-zA-Z\u00C0-\u017F]+(\s[a-zA-Z\u00C0-\u017F]+)*$/;
-export const ALPHABETIC_ONLY = /^[a-zA-Z]+$/;
 export const ALPHABETIC_WITH_SPACE = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/;
 export const ADDRESS_REGEX = /^[a-zA-Z0-9\s,.\-/]*$/;
 export const ZIP_REGEX = /^\d{5}(-\d{4})?$/;

@@ -1,10 +1,6 @@
 import * as Yup from 'yup';
 import { PATIENT_RELATIONSHIP } from './payer-details.config';
-
-const ALPHABETIC_ONLY = /^[A-Za-z\s'-]+$/;
-const NUMERIC_ONLY = /^\d+$/;
-const ALPHANUMERIC_ONLY = /^[A-Za-z0-9]+$/;
-const RX_SYMBOLS_ALLOWED = /^[A-Za-z&\s-]+$/;
+import { ALPHA_NUMERIC, ALPHABETIC_FOR_NAME, NUMBER_REGEX, RX_SYMBOLS_ALLOWED } from '@src/components/form/ValidationRegExp';
 
 export const getMedicalInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
@@ -14,11 +10,11 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .test('no-leading-trailing-spaces', t('messages.insuranceCompanyExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(/^[A-Za-z\s'-]+$/, t('message.avoidSpecialCharsNumbers')),
 
-    memberNumber: Yup.string().required(t('messages.memberNumberRequired')).max(50, t('messages.memberMax')).matches(NUMERIC_ONLY, t('messages.onlyNumeric')),
+    memberNumber: Yup.string().required(t('messages.memberNumberRequired')).max(50, t('messages.memberMax')).matches(NUMBER_REGEX, t('messages.onlyNumeric')),
     groupNumber: Yup.string()
       .notRequired()
       .max(50, t('messages.groupMax'))
-      .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
+      .matches(NUMBER_REGEX, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
     insuranceCompanyPhone: Yup.string()
       .required(t('messages.enterPhone'))
       .matches(/^\d{10}$/, t('messages.phoneExact')),
@@ -26,12 +22,12 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .required(t('messages.enterFirstName'))
       .max(50, t('messages.firstNameMax'))
       .test('no-leading-trailing-spaces', t('messages.phFirstNameExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-      .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
+      .matches(ALPHABETIC_FOR_NAME, t('messages.onlyAlpha')),
     policyHolderLastName: Yup.string()
       .required(t('messages.enterLastName'))
       .max(50, t('messages.lastNameMax'))
       .test('no-leading-trailing-spaces', t('messages.phLastNameExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-      .matches(ALPHABETIC_ONLY, t('messages.onlyAlpha')),
+      .matches(ALPHABETIC_FOR_NAME, t('messages.onlyAlpha')),
     dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
     relationshipToPatient: Yup.string()
       .required(t('messages.selectRelation'))
@@ -62,10 +58,10 @@ export const getPharmacyInsuranceSchema = (key, t) => ({
     rxGroupNumber: Yup.string()
       .notRequired()
       .max(50, t('messages.rxGroupMax'))
-      .matches(NUMERIC_ONLY, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
-    rxMemberId: Yup.string().required(t('messages.enterRxID')).max(20, t('messages.rxIdMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
-    rxPcn: Yup.string().required(t('messages.enterRxPCN')).max(100, t('messages.rxPcnMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
-    rxBin: Yup.string().required(t('messages.enterRxBIN')).max(30, t('messages.rxBinMax')).matches(ALPHANUMERIC_ONLY, t('messages.alphanumericOnly')),
+      .matches(NUMBER_REGEX, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
+    rxMemberId: Yup.string().required(t('messages.enterRxID')).max(20, t('messages.rxIdMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
+    rxPcn: Yup.string().required(t('messages.enterRxPCN')).max(100, t('messages.rxPcnMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
+    rxBin: Yup.string().required(t('messages.enterRxBIN')).max(30, t('messages.rxBinMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
     pharmacyCardFront: Yup.mixed().nullable(),
     pharmacyCardBack: Yup.mixed().nullable()
   })
