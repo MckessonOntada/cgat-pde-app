@@ -50,7 +50,7 @@ function ReviewPayments() {
   const [totalCreditsAmount, settotalCreditsAmount] = useState(0);
   const [disablecreditSelection, setDisablecreditSelection] = useState(false);
   const [remainingAmount, setRemainingAmount] = useState('0.00');
-
+  
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -75,7 +75,7 @@ function ReviewPayments() {
     enabled: !!selectedAccount?.id,
     onError: (error) => {
       if (CommonUtils.isNonEmptyObject(error)) {
-        showAlert('error', t('paymentInvoices.paymentMethods.api.error'));
+        showAlert('error', t('errors.default'));
       }
     }
   });
@@ -298,7 +298,7 @@ function ReviewPayments() {
             replace: true
           });
         } else {
-          showAlert('error', 'Something went wrong while processing payment');
+          showAlert('error', t('errors.default'));
         }
       },
       onError: (error, payload) => {

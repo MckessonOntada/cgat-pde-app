@@ -152,6 +152,12 @@ const ProviderForm = (props) => {
         type: 'error',
         isSticky: true
       });
+    } else {
+      setNotification({
+        description: t('errors.default'),
+        type: 'error',
+        isSticky: true
+      });
     }
   };
 

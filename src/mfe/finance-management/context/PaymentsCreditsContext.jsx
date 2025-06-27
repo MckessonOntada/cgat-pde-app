@@ -155,7 +155,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
       onError: (error) => {
         const { response } = error;
         let errorMsg = response?.data?.message || 'Error fetching credits listing';
-        showAlert({ description: errorMsg, type: 'error', anchorEl: alertContainerId });
+        showAlert({ description: t('errors.default'), type: 'error', anchorEl: alertContainerId });
       }
     }
   );
@@ -261,7 +261,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('paymentInvoices.excel.export.error'),
+            description: t('errors.default'), // CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('paymentInvoices.excel.export.error'),
             type: 'error',
             anchorEl: alertContainerId
           });

@@ -62,7 +62,7 @@ export const useExportStatementPDF = (exportType) => {
       onError: (error) => {
         if (error && error.response && error.response.data) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : `Error While exporting excel`,
+            description: t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

@@ -34,6 +34,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const navigate = useNavigate();
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const isTreatmentCenterExecutive = AuthUtils.isTreatmentCentreExecutive();
+  const disableCheckbox = isCustomerCenter || isTreatmentCenterExecutive;
   const [expandedRows, setExpandedRows] = React.useState([]);
   const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
   const onExpandToggle = (row) => {
@@ -47,17 +49,22 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const getColumns = () => [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        processedTherapies,
-        'materialNumber',
-        {
-          ...paginationConfig,
-          totalElements: data.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
-        },
-        selectedMaterials,
-        setSelectedMaterials
-      ),
+      name:
+        isCustomerCenter || isTreatmentCenterExecutive ? (
+          <input type="checkbox" disabled checked={false} />
+        ) : (
+          renderTableCheckBox(
+            { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+            processedTherapies,
+            'materialNumber',
+            {
+              ...paginationConfig,
+              totalElements: data.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
+            },
+            selectedMaterials,
+            setSelectedMaterials
+          )
+        ),
       cell: (row, index) => {
         const processedRow = row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? { ...row, active: false } : { ...row, active: true };
         processedTherapies;
@@ -71,7 +78,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             </div>
           );
         }
-        if (row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+        if (row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA || disableCheckbox) {
           return <input type="checkbox" disabled checked={false} />;
         }
         return renderTableCheckBox(
@@ -88,8 +95,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       },
       selector: (row) => row['materialNumber'],
       width: '50px',
-      showInMobileHeader: true,
-      omit: isCustomerCenter
+      showInMobileHeader: true
+      //  omit: isCustomerCenter || isTreatmentCenterExecutive
     },
     {
       name: t('labels.therapy'),

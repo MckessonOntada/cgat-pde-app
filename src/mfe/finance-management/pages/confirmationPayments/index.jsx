@@ -48,7 +48,7 @@ function ConfirmationPayments() {
     enabled: !!selectedAccount?.id,
     onError: (error) => {
       if (CommonUtils.isNonEmptyObject(error)) {
-        showAlert({ description: t('paymentInvoices.paymentMethods.api.error'), type: 'error', anchorEl: alertContainerId });
+        showAlert({ description: t('errors.default'), type: 'error', anchorEl: alertContainerId });
       }
     }
   });

@@ -54,7 +54,7 @@ const AddLinkProvider = () => {
         setSelectedProviders([]);
         setNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.unableToAddProvider')
+          description: t('errors.default')
         });
       }
     }

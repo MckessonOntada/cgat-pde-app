@@ -76,7 +76,7 @@ export const UserManagementEN = {
   'userManagement.button.uploadingUsers': 'Uploading...',
   'userManagement.button.downloadTemplateDescription': 'Download sample template for uploading bulk users.',
   'userManagement.button.downloadTemplate': 'Bulk Upload User Template',
-  'userManagement.button.uploadError': 'Error while creating Organization users',
+  'userManagement.button.uploadError': 'Please select file to upload.',
   'userManagement.button.uploadConflict':
     'Issue in uploading users. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
   'userManagement.button.uploadSuccess': 'Organization users has been successfully created',
@@ -368,7 +368,7 @@ export const UserManagementEN = {
 
   'errors.user_email_key': 'Email ID already exists in the System.',
   'errors.user_phone_key': 'Phone number already exists.',
-  'errors.default': 'An unexpected error occurred.',
+  'errors.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
 
   'messages.user_deactivate_success': 'User has been Deactivated successfully.',
   'messages.user_deactivate_failure': 'Failed to Deactivate the User.',
@@ -412,7 +412,7 @@ export const UserManagementEN = {
   'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.noRecords': 'No records found',
   'errors.messages.noRecordsFound': 'No records found for the applied filters',
-  'errors.messages.default': 'An unexpected error occurred. Please try again.',
+  'errors.messages.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   'label.comment': 'Comment',
   'label.comments': 'Comments',
   'userManagement.header.review_user': 'Review Organization User',

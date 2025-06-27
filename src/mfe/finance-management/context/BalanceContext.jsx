@@ -37,7 +37,7 @@ export const BalanceProvider = ({ children, initialData = [] }) => {
       },
       onError: (error) => {
         if (error) {
-          showAlert({ description: t('paymentInvoices.balanceAPI.error'), type: 'error', anchorEl: alertContainerId });
+          showAlert({ description: t('errors.default'), type: 'error', anchorEl: alertContainerId });
         }
       }
     }

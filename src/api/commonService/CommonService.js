@@ -7,6 +7,7 @@ import AuthUtils from '@src/util/AuthUtils';
 export const SYSTEM_ADMIN = 'System Admin';
 export const CUSTOMER_CENTRE = 'Customer Centre';
 export const CUSTOMER_SERVICE = 'Customer Service';
+export const TREATMENT_CENTRE_EXECUTIVE = 'Treatment centre Executive';
 
 const getUserDetails = () => {
   return sessionStorage.getItem(SESSION_CONST.USERNAME);
@@ -37,7 +38,9 @@ const updateSessionStorage = async () => {
 
     const activeUserPracticeId = userDetails['practiceId'];
     const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
-    const userFullName = `${userDetails?.name.lastName}, ${userDetails?.name.firstName}${userDetails?.name.middleName ? ' ' + userDetails.name.middleName : ''}`;
+    const userFullName = `${userDetails?.name.lastName}, ${userDetails?.name.firstName}${
+      userDetails?.name.middleName ? ' ' + userDetails.name.middleName : ''
+    }`;
 
     sessionStorage.setItem(SESSION_CONST.USER_ROLE, activeUserRoleName);
     sessionStorage.setItem(SESSION_CONST.USERNAME, impersonatedByUsername || activeUserName);
@@ -56,7 +59,7 @@ const updateSessionStorage = async () => {
       sessionStorage.removeItem(SESSION_CONST.IMPERSONATED_BY_USER);
     }
 
-    if (activeUserRoleName !== SYSTEM_ADMIN && activeUserRoleName !== CUSTOMER_CENTRE) {
+    if (activeUserRoleName !== SYSTEM_ADMIN && activeUserRoleName !== CUSTOMER_CENTRE && activeUserRoleName !== TREATMENT_CENTRE_EXECUTIVE) {
       AuthUtils.setPracticeId(activeUserPracticeId);
     }
 
