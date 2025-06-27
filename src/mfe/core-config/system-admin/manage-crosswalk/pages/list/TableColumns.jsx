@@ -54,8 +54,6 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
       name: t('column.material.crosswalk.spProductID'),
       minWidth: '160px',
-      sortable: true,
-      sortKey: 'spProductId',
       cell: (props) => {
         if (props?.spProductId) {
           return (

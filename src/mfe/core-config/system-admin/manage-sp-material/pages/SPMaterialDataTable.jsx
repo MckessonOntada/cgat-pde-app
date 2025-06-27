@@ -49,8 +49,6 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       selector: (row) => {},
       wrap: true,
       minWidth: '180px',
-      sortable: true,
-      sortKey: 'material_number',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
