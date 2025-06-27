@@ -26,6 +26,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import CommonUtils from '@src/util/CommonUtils';
 
 const FormStateTracker = ({ setFormValues, setIsDirty }) => {
   const formik = useFormikContext();
@@ -197,15 +198,26 @@ function Payer() {
       values.secondaryMedicalInsurance = rest;
     }
 
-    OrderService.savePayerDetails(orderId, values).then((response) => {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
-        state: {
-          ...locationState,
-          isEdit: false,
-          isApprover: isApprover
-        }
+    OrderService.savePayerDetails(orderId, values)
+      .then((response) => {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+          state: {
+            ...locationState,
+            isEdit: false,
+            isApprover: isApprover
+          }
+        });
+      })
+      .catch((error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+        setAlert({
+          type: error,
+          description
+        });
       });
-    });
   };
 
   const handleOnUpload = (config) => (file, setFieldValue, key) => {

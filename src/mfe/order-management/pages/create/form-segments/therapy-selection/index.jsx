@@ -15,13 +15,13 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { TherapyDetailsConstantsForBB, TherapyDetailsConstantsForSP } from './assets/constants/TherapyDetailsConstants';
 import useAlert from '@src/hooks/useAlert';
-import { handleApiError } from '@src/util/ApiUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonUtils from '@src/util/CommonUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -85,10 +85,13 @@ function TherapySelection() {
         }
       });
     },
-    onError: (err) => {
-      const errorKey = handleApiError(err);
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: t(errorKey),
+        description,
         type: 'error',
         anchorEl: alertContainerId
       });
@@ -112,10 +115,13 @@ function TherapySelection() {
           }
         });
       },
-      onError: (err) => {
-        const errorKey = handleApiError(err);
+      onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         showAlert({
-          description: t(errorKey),
+          description,
           type: 'error',
           anchorEl: alertContainerId
         });

@@ -21,6 +21,7 @@ import { Loader } from '@mckesson/mcp-component-library';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -93,8 +94,12 @@ const AccountSelection = () => {
       }
     },
     onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: error.message,
+        description,
         type: 'error',
         anchorEl: alertContainerId
       });

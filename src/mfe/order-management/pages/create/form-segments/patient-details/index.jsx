@@ -162,12 +162,16 @@ const PatientDetails = () => {
         }
         setProvider(null);
       },
-      onError: ({ err, payload }) => {
-        if (err.status === 409) {
+      onError: ({ error, payload }) => {
+        const statusCode = error?.response?.status;
+        if (statusCode === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
+          let description = t('error.default');
+          if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
           addNotification({
-            description: err.message,
+            description,
             type: 'error'
           });
         }
