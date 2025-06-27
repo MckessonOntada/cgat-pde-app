@@ -7,7 +7,6 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
   const { t } = useTranslate();
   const {
     searchOrgList,
-    selectedOrganization,
     setSelectedOrganization,
     searchAccountList,
     setSelectedAccount,
@@ -17,50 +16,39 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
     setAccountOptions,
     setCheckedAccounts,
     checkedAccounts,
-    refetchAccounts,
-    checkedOrganizations,
-    setCheckedOrganizations,
     totalOrgs,
     totalAccs
   } = useOrgAccountsMultiSelectionContext();
+
   const onOrganizationChange = async (selectedValue) => {
     if (!Array.isArray(selectedValue)) {
       return;
     }
 
     const _selected = selectedValue.filter((item) => item.isChecked);
-
-    if (_selected.length > selectedOrganization?.length) {
-      const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
-
-      if (newOrg) {
-        await refetchAccounts();
-      }
-    }
-
     setSelectedOrganization((prev) => {
       if (!Array.isArray(prev)) {
         return [];
       }
       const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
-      unselectedOrgs.forEach((org) => {
-        setCheckedAccounts((prev) => {
-          if (!Array.isArray(prev)) {
-            return [];
-          }
-          return prev.filter((acc) => acc.practiceId !== org.value);
-        });
+      // unselectedOrgs.forEach((org) => {
+      //   setCheckedAccounts((prev) => {
+      //     if (!Array.isArray(prev)) {
+      //       return [];
+      //     }
+      //     return prev.filter((acc) => acc.practiceId !== org.value);
+      //   });
 
-        setAccountOptions((prev) => {
-          if (!Array.isArray(prev)) {
-            return [];
-          }
-          return prev.filter((acc) => acc.practiceId !== org.value);
-        });
-      });
+      //   setAccountOptions((prev) => {
+      //     if (!Array.isArray(prev)) {
+      //       return [];
+      //     }
+      //     return prev.filter((acc) => acc.practiceId !== org.value);
+      //   });
+      // });
       return _selected;
     });
-    setCheckedOrganizations(_selected);
+
     if (_selected.length > 0) {
       setOptions((prevOptions) => {
         const updatedOptions = prevOptions.map((opt) => {
@@ -95,8 +83,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
           if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
         }
       });
+
       setCheckedAccounts(_checkedOptions);
-      setSelectedAccount(selectedValue);
+      setSelectedAccount(_checkedOptions);
       setAccountOptions(selectedValue);
     }
   };
@@ -120,7 +109,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalOrgs}
           clearAllSelectedValues={() => {
-            setCheckedOrganizations([]);
+            setSelectedOrganization([]);
             setSelectedAccount([]);
           }}
         />

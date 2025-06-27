@@ -1,10 +1,8 @@
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
-import CommonUtils from '@src/util/CommonUtils';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
 const orgAccountsMultiSelectionContext = createContext();
 
@@ -27,10 +25,9 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const [options, setOptions] = useState([]);
   const [accountOptions, setAccountOptions] = useState();
   const [checkedAccounts, setCheckedAccounts] = useState([]);
-  const [checkedOrganizations, setCheckedOrganizations] = useState([]);
+
   const [totalOrgs, setTotalOrgs] = useState();
   const [totalAccs, setTotalAccs] = useState();
-  const [prevParam, setPrevParam] = useState([]);
 
   // Organization List configuration
   const orgPayload = {
@@ -49,11 +46,10 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
           index: index + 1,
           label: item.name,
           value: item.id,
-          isChecked: checkedOrganizations.length > 0 && checkedOrganizations.find((ele) => ele.value == item.id) ? true : false
+          isChecked: false
         }));
-        const mergedData = [...data, ...checkedOrganizations.filter((checkedOrg) => !data.some((newOrg) => newOrg.value === checkedOrg.value))];
-        setOptions(mergedData);
-        return mergedData;
+        setOptions(data);
+        return data;
       }
       setOptions([]);
       return [];
@@ -89,38 +85,31 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     [searchAccountText, practiceIds]
   );
 
-  const isCheck = !CommonUtils.deepEqual(payload, prevParam);
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
     queryKey: ['accountsList', payload],
     queryFn: async () => {
-      if (isCheck) {
-        const response = await SPCatalogService.getAccountList(payload);
-        setPrevParam(payload);
-        if (response) {
-          const { content, totalElements } = response;
-          setTotalAccs(totalElements);
-          let _opt =
-            content.map((item, index) => ({
-              ...item,
-              label: item.accountName,
-              value: item.accountNumber,
-              isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
-            })) || [];
+      const response = await SPCatalogService.getAccountList(payload);
+      if (response) {
+        const { content, totalElements } = response;
+        setTotalAccs(totalElements);
+        let _opt =
+          content.map((item, index) => ({
+            ...item,
+            label: item.accountName,
+            value: item.accountNumber,
+            isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
+          })) || [];
 
-          const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
-
-          setAccountOptions(_opt);
-          setSelectedAccount(_opt);
-          return content || [];
-        }
+        const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
+        setAccountOptions(mergedAcc);
+        return content || [];
       }
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled:
-      !!enableAcct &&
-      (!isLinkCatalog || (Array.isArray(selectedOrganization) && selectedOrganization.length > 0 && selectedOrganization.some((org) => !!org.value)))
+    enabled: !!enableAcct && !isLinkCatalog && !selectedAccount?.filter((item) => item.isChecked).length > 0
   });
+
   const debounceAccountsSearch = useCallback(() => {
     let timeoutId;
     return (text) => {
@@ -156,8 +145,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     setCheckedAccounts,
     refetchAccounts,
     refetchOrgs,
-    checkedOrganizations,
-    setCheckedOrganizations,
+
     totalOrgs,
     totalAccs
   };

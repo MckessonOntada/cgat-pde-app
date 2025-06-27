@@ -180,14 +180,6 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
     fetchData();
   }, [filters, pagination.pageNo, sort]);
 
-  useEffect(() => {
-    const isEqual = JSON.stringify(filters) === JSON.stringify(defaultFilters);
-    if (!isEqual) {
-      setFilters(defaultFilters);
-      setPagination((prev) => ({ ...prev, pageNo: 1 }));
-    }
-  }, [defaultFilters]);
-
   const toggleRowSelection = (id) => {
     setSelectedRows((prev) => {
       const newSelection = new Set(prev);

@@ -85,7 +85,7 @@ const List = () => {
       <div className="MCP-CardContainer">
         <OrgAccountsMultiSelect />
         <TableProvider
-          key={defaultFilters}
+          key={JSON.stringify(defaultFilters)}
           defaultFilters={defaultFilters}
           allowedSort={['sap_material', 'material_description_in_language_en', 'sold_to_customer']}
           fetchFn={SPCatalogService.getAllCatalog}>
