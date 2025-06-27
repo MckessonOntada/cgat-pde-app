@@ -26,9 +26,7 @@ const SecondaryHeader = ({ navLinks }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
-  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const isCustomerCenterView = AuthUtils.isCustomerCenterView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
   const dispatch = useDispatch();
 
@@ -158,7 +156,7 @@ const SecondaryHeader = ({ navLinks }) => {
     return (
       (AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView()) ||
       (AuthUtils.isCustomerCenter() && !AuthUtils.isCustomerCenterView()) ||
-      (AuthUtils.isTreatmentCentreExecutive() && !AuthUtils.isTreatmentCentreExecutiveView())
+      (AuthUtils.isTreatmentCentreExecutive() && !AuthUtils.isSystemAdminView())
     );
   };
 

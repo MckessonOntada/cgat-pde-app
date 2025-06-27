@@ -120,14 +120,6 @@ const isTreatmentCentreExecutive = function () {
   return userRole === 'Treatment centre Executive';
 };
 
-const isTreatmentCentreExecutiveView = function () {
-  const impersonateId = getImpersonateId();
-  if (impersonateId) {
-    return isTreatmentCentreExecutive();
-  }
-  return isTreatmentCentreExecutive() && !getPracticeId();
-};
-
 const getImpersonatedByUser = () => {
   const impersonatedByUser = sessionStorage.getItem(SESSION_CONST.IMPERSONATED_BY_USER);
   if (impersonatedByUser) {
@@ -156,8 +148,8 @@ const AuthUtils = Object.freeze({
   isCustomerCenter,
   isCustomerCenterView,
   getImpersonatedByUser,
-  isTreatmentCentreExecutive,
-  isTreatmentCentreExecutiveView
+  isTreatmentCentreExecutive //,
+  // isTreatmentCentreExecutiveView
 });
 
 export default AuthUtils;

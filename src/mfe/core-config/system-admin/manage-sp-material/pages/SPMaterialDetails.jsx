@@ -45,7 +45,7 @@ export const SPCatalogDetailsConstants = [
 
 function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, isSPCatalog = false, sendNotification, isCrosswalk = false }) {
   const { t } = useTranslate();
-  const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const isEnableDelete = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive();
   const navigate = useNavigate();
   const requestParams = {
     channelType: 'SPECIALITY_PHARMA'
@@ -236,7 +236,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>
                   <div className="details-value">
                     <div onClick={() => navigate('../sp-catalog/view-sp-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW</div>
-                    {!isCustomerCenter && (
+                    {isEnableDelete && (
                       <div onClick={() => OnDeleteClick(data?.catalogConfiguration.id, 'config')}>
                         <DeleteIcon />
                       </div>
@@ -271,7 +271,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                       return (
                         <div key={index} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          {!isCustomerCenter &&
+                          {isEnableDelete &&
                             (!isCrosswalked ? (
                               <div className="delete-button" onClick={() => OnDeleteClick(item.id, 'questionnaire')}>
                                 <DeleteIcon />

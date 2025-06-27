@@ -41,7 +41,8 @@ function TherapyDetailsWithTabs({
 }) {
   const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
   const { t } = useTranslate();
-  const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter();
+
+  const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive();
   const [therapyTabs, setTherapyTabs] = useState(() => {
     if (!therapyId) return [];
 

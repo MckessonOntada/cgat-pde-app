@@ -10,7 +10,6 @@ import NotFound from '@src/pages/error-pages/NotFound';
 const Dashboard = () => {
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const isTreatmentCentreExecutiveView = AuthUtils.isTreatmentCentreExecutiveView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const isTreatmentCentreExecutive = AuthUtils.isTreatmentCentreExecutive();
@@ -28,15 +27,15 @@ const Dashboard = () => {
 
   React.useEffect(() => {
     let navigateToUrl = '';
-
-    if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
+    if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.USER_MANAGEMENT))) navigateToUrl = '/admin';
+    else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/system-admin';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
 
     if (!isSystemAdmin && !isCustomerCenter && !isTreatmentCentreExecutive) {
       if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
-      else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
+      else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.USER_MANAGEMENT))) navigateToUrl = '/admin';
     }
 
     if (!isSystemAdminView && navigateToUrl) navigate(navigateToUrl, { replace: true });
@@ -51,19 +50,15 @@ const Dashboard = () => {
   }, [isExpelled]);
 
   const cards = useMemo(() => {
-    if (isSystemAdminView || isTreatmentCentreExecutiveView) return SYSTEM_ADMIN_CARDS_DATA;
-    isTreatmentCentreExecutiveView;
-    let _cards = CARDS_DATA.filter((card) => {
-      let _hasAccess = hasAnyPermission(card.permissions);
-      return _hasAccess;
-    });
-    return _cards;
+    if (isSystemAdminView) {
+      return SYSTEM_ADMIN_CARDS_DATA.filter((card) => hasAnyPermission(card.permissions));
+    }
   }, [isExpelled]);
 
   return (
     <div className={''}>
       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-        {cards.map((card, index) => {
+        {cards?.map((card, index) => {
           const Icon = card.icon;
           return (
             <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={index}>
