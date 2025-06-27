@@ -12,10 +12,7 @@ const Index = () => {
   return (
     <TableProvider
       defaultFilters={defaultFilters}
-      defaultSort={{
-        sortOrder: 'desc'
-      }}
-      allowedSort={['bnbMaterialNumber', 'spProductId', 'spProductName', 'bnbMaterialDescription']}
+      allowedSort={['bnbNDC', 'spProductId', 'spProductName', 'trade_name']}
       fetchFn={SPCrosswalkService.getAllSPCrosswalk}>
       <List />
     </TableProvider>

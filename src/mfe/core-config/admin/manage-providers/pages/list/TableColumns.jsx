@@ -62,7 +62,7 @@ export const getColumns = (setNotification) => {
       },
       onError: () => {
         setNotification({
-          description: t('provider.activationFailure'),
+          description: t('errors.default'),
           type: 'error'
         });
       }
@@ -89,7 +89,7 @@ export const getColumns = (setNotification) => {
       },
       onError: () => {
         setNotification({
-          description: t('provider.deactivationFailure'),
+          description: t('errors.default'),
           type: 'error'
         });
       }

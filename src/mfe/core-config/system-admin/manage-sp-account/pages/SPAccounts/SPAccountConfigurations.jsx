@@ -12,13 +12,14 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { PREVIEW_URL } from '../../../manage-questionnaire/constants';
 import Alert from '@src/components/cgat-alert/Alert';
+import AuthUtils from '@src/util/AuthUtils';
 
 function SPAccountConfigurations({ data, refetch, orgAdmin }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [alert, setAlert] = useState(null);
-
+  const isDeleteAccess = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive;
   const OnDeleteClick = (id) => {
     const payload = {
       questionnaireId: id,
@@ -61,7 +62,7 @@ function SPAccountConfigurations({ data, refetch, orgAdmin }) {
       onError: (error) => {
         setAlert({
           type: 'error',
-          message: t('ManageAccount.delink.error')
+          message: t('errors.default')
         });
       }
     }
@@ -105,7 +106,7 @@ function SPAccountConfigurations({ data, refetch, orgAdmin }) {
             {data?.questionnaireList?.map((item, index) => (
               <div key={index} className="labelWrap">
                 <div className="view_label">{item.templateName}</div>
-                {!orgAdmin && (
+                {!orgAdmin && isDeleteAccess && (
                   <div className="delete-buttonwithText" onClick={() => OnDeleteClick(item.id)}>
                     <DeleteIcon className="delete-button-icon" />
                     {t('paymentInvoices.reviewPayments.remove')}

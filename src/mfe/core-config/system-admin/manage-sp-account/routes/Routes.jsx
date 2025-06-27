@@ -8,6 +8,7 @@ import ViewSpAccount from '../pages/SPAccounts/SPAccountDetail';
 import { routeConstants } from './constants';
 import { SPAccountProvider } from '../context/SPAccountContext';
 import AddLinkProvider from '../pages/LinkProvider/AddLinkProvider';
+import Upload from '../pages/SPAccounts/upload';
 
 function ManageSPAccountRoute() {
   return (
@@ -18,6 +19,7 @@ function ManageSPAccountRoute() {
         <Route path={routeConstants.VIEW_SPACCOUNT} element={<ViewSpAccount />} />
         <Route path={`${routeConstants.EDIT_SPACCOUNT}/:spAccountId`} element={<EditSPAccount />} />
         <Route path={`${routeConstants.ADD_LINK_PROVIDER}/:spAccountId`} element={<AddLinkProvider />} />
+        <Route path={routeConstants.UPLOAD} element={<Upload />} />
       </Routes>
     </SPAccountProvider>
   );

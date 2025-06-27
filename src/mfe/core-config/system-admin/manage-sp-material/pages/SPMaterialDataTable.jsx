@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Loader, Badge, Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -17,13 +17,15 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function SPMaterialDataTable({ isLinkCatalog = false }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, fileteredData } =
+  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, fileteredData, clearFilters } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [tableHeight, setTableHeight] = useState('100%');
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAssociatedAccount = location.state?.isAssociatedAccount;
   const [expandedRows, setExpandedRows] = React.useState([]);
   const isRowExpanded = (trade) => {
     return expandedRows.includes(trade.tradeName);
@@ -43,12 +45,12 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
     },
     {
       name: t('manageSPMaterial.table.spproductId'),
-      id: 'trade_name',
+      id: 'material_number',
       selector: (row) => {},
       wrap: true,
       minWidth: '180px',
       sortable: true,
-      sortKey: 'trade_name',
+      sortKey: 'material_number',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -156,6 +158,14 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
       setTableHeight(eleHeight);
     }, 100);
   }, [data]);
+
+  useEffect(() => {
+    clearFilters();
+    navigate(`${location.pathname}${location.search}`, {
+      replace: true,
+      state: null
+    });
+  }, [isAssociatedAccount]);
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);

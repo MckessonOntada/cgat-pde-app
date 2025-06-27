@@ -29,6 +29,7 @@ import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -50,13 +51,22 @@ const INITIAL_VALUES = {
   variantAcknowledgement: false
 };
 
+const ALLOWED_FILE_TYPE = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'image/png',
+  'image/jpeg'
+];
+const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
+
 function AdditionalDetails() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { state: locationState = {} } = useLocation();
   const { controlRef } = useContext(FooterContext);
-  const searchParams = new URLSearchParams(location.search);
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const { isEdit = false, isApprover = false, alertState } = locationState;
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [storedValue, setStoredValue] = useState([]);
@@ -104,8 +114,16 @@ function AdditionalDetails() {
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
-      poNumber: Yup.string().required(t('labels.PONumberRequired')).max(35, t('labels.PONumberLengthError')).trim(t('labels.poNumberExtraSpaceError')),
-      dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
+      poNumber: Yup.string()
+        .required(t('labels.PONumberRequired'))
+        .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
+        .max(35, t('labels.PONumberLengthError'))
+        .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length),
+
+      dateOfAdministration: Yup.date()
+        .typeError(t('labels.enterValidDateOfAdministration'))
+        .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+        .nullable(),
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
@@ -134,10 +152,7 @@ function AdditionalDetails() {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
-          diagnosisCode: Yup.string()
-            .matches(DIAGNOSIS_CODE, t('labels.invalidDiagnosis'))
-            .required(t('labels.diagnosisCodeRequired'))
-            .max(50, t('labels.COI_IdExceedDigits')),
+          diagnosisCode: Yup.string().required(t('labels.diagnosisCodeRequired')).max(50, t('labels.COI_IdExceedDigits')),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
 
           allergyDetails: Yup.string().when('hasAllergies', {
@@ -224,21 +239,18 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder)
-      navigate(`/orders?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab }
-      });
+    const prevSearch = locationState.__prevSearch || '';
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`../${id}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     },
@@ -498,32 +510,29 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
         const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
-        navigate(`../${orderId}/${targetPage}?${searchParams.toString()}`, {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/${targetPage}`, {
           state: {
-            fromTab: location?.state?.fromTab,
+            ...locationState,
             isEdit: false,
-            isApprover: isApprover,
-            fromOrderView: location?.state?.fromOrderView
+            isApprover: isApprover
           }
         });
       } else {
-        navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
           state: {
-            fromTab: location?.state?.fromTab,
+            ...locationState,
             isEdit: false,
-            isApprover: isApprover,
-            fromOrderView: location?.state?.fromOrderView
+            isApprover: isApprover
           }
         });
       }
@@ -608,42 +617,38 @@ function AdditionalDetails() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+      const prevSearch = locationState?.__prevSearch || '';
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 
   const handleNavigate = () => {
+    const prevSearch = locationState?.__prevSearch || '';
+
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-        state: { activeTab: location?.state?.fromTab, fromOrderView: location?.state?.fromOrderView }
-      });
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...state.location,
           isEdit: isEdit,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`../${orderId}/patient?${searchParams.toString()}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: false,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts?${searchParams.toString()}`, {
+      navigate(`/${orderId}/accounts`, {
         state: {
-          fromTab: location?.state?.fromTab,
+          ...locationState,
           isEdit: false,
-          isApprover: isApprover,
-          fromOrderView: location?.state?.fromOrderView
+          isApprover: isApprover
         }
       });
     }
@@ -758,7 +763,7 @@ function AdditionalDetails() {
                         </p>
                       </div>
                       <React.Fragment>
-                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue).map(
+                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue, setFieldTouched).map(
                           ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
                             <div key={index} className={`${layout.classes}`}>
                               <Field
@@ -780,7 +785,12 @@ function AdditionalDetails() {
                     <div>
                       <div className="MCP-module-body">
                         <hr className="form-section-separator" />
-                        <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                        <div className="row-space-between-center">
+                          <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                          <p className="form-instruction">
+                            <span className="required">*</span> {t('labels.required')}
+                          </p>
+                        </div>
                         <div>
                           <VariantTable
                             variant={variant}
@@ -815,7 +825,9 @@ function AdditionalDetails() {
                             setFieldValue={setFieldValue}
                             disabled={Boolean(!variant)}
                             attachmentValue={values?.variant?.document || null}
+                            validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
                             onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
+                            fileTypeText={ALLOWED_FILE_TYPE_TEXT}
                           />
                         </div>
                       </div>

@@ -21,6 +21,8 @@ import { useGenericContext } from '../../config/GenericContext';
 import { errorStatusCodes } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import CommonUtils from '@src/util/CommonUtils';
+import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -29,6 +31,7 @@ const CreateCrosswalk = () => {
   const searchParams = new URLSearchParams(location.search);
   const material = searchParams.get('material');
   const trade = searchParams.get('trade');
+  const therapy = searchParams.get('therapy');
   const { state, reset } = useGenericContext();
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
@@ -61,18 +64,11 @@ const CreateCrosswalk = () => {
           }
         })
         .catch((error) => {
-          if (errorStatusCodes.includes(error.status)) {
-            addNotification({
-              type: 'error',
-              description: error.response?.data?.message || error.message,
-              isSticky: true
-            });
-          } else {
-            addNotification({
-              type: 'error',
-              description: error.response?.data?.message || error.message
-            });
-          }
+          addNotification({
+            type: 'error',
+            description: t('errors.default'),
+            isSticky: true
+          });
         });
     }
   };
@@ -135,6 +131,7 @@ const CreateCrosswalk = () => {
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
@@ -188,7 +185,13 @@ const CreateCrosswalk = () => {
                 sortOrder: 'ASC'
               }}
               allowedSort={['trade_name']}
-              fetchFn={MaterialService.getMaterialList}>
+              fetchFn={async (args) => {
+                const response = await MaterialService.getMaterialList(args);
+                if (response.content && CommonUtils.isNonEmptyArray(response.content)) {
+                  response.content = response.content.flatMap((item) => item.therapies);
+                }
+                return response;
+              }}>
               <Products selection={selectedItems} setSelection={setSelectedItems} />
             </TableProvider>
             <Summary />
@@ -203,32 +206,15 @@ const CreateCrosswalk = () => {
           </Button>
         </div>
 
-        {trade && (
+        {(trade || material) && (
           <TherapyDetailsWithTabs
             isMaterialListing={true}
             trade={trade}
+            therapy={therapy || trade}
             onSelect={() => {}}
             onClose={handleOnClose}
-            heading={t('manageMaterial.drawer.heading')}
+            heading={t('manageMaterial.drawer.details.heading')}
             showFooter={false}
-          />
-        )}
-
-        {material && (
-          <TherapyDetails
-            // therapyId={material}
-            // therapyData={MaterialDetailsConstants}
-            onClose={handleOnDetailsPanelClose}
-            showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
-            heading={t('manageMaterial.drawer.heading')}
-            notify={({ type, message }) =>
-              addNotification({
-                type,
-                description: message
-              })
-            }
           />
         )}
       </div>

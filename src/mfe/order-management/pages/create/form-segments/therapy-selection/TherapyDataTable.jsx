@@ -12,8 +12,8 @@ import CommonUtils from '@src/util/CommonUtils';
 const TherapyDataTable = (props) => {
   const { trade, onChange } = props;
   const { t } = useTranslate();
-  const [isInitialExpandSet, setIsInitialExpandSet] = React.useState(false);
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort, fileteredData } = useTherapy();
+
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);
@@ -25,12 +25,10 @@ const TherapyDataTable = (props) => {
   };
 
   React.useEffect(() => {
-    if (data && trade && !isInitialExpandSet) {
-      const targetTrade = data.find((__trade) => __trade.tradeName === trade.tradeName);
+    if (data && trade) {
       if (!expandedRows.includes(trade.tradeName)) {
         onExpandToggle(trade.tradeName);
       }
-      setIsInitialExpandSet(true);
     }
   }, [data, trade]);
 

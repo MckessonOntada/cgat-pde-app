@@ -78,7 +78,7 @@ export const getFormFields = (t, config, setFieldValue) => {
           placeholder: ' ',
           isRequired: true,
           component: Components['input'],
-          maxLength: 35
+          maxLength: 50
         }
       ]
     );
@@ -87,7 +87,7 @@ export const getFormFields = (t, config, setFieldValue) => {
   return fields;
 };
 
-export const getClinicalDetailFields = (t, config, setFieldValue) => {
+export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouched) => {
   const fields = [];
   const { values } = config;
 
@@ -100,6 +100,14 @@ export const getClinicalDetailFields = (t, config, setFieldValue) => {
         isRequired: true,
         placeholder: ' ',
         component: Components['radioGroup'],
+        onChangeValue: (value, form) => {
+          setFieldValue('hasAllergies', value);
+          console.log('form', form);
+          if (value !== 'yes') {
+            setFieldValue('allergyDetails', '');
+            setFieldTouched('allergyDetails', false);
+          }
+        },
         items: getBinaryOptions('allergies'),
         layout: {
           classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
@@ -108,7 +116,7 @@ export const getClinicalDetailFields = (t, config, setFieldValue) => {
       {
         name: 'allergyDetails',
         label: t('labels.specifyAllergies'),
-        isRequired: true,
+        isRequired: values?.['hasAllergies'] === 'yes',
         placeholder: ' ',
         isDisabled: values && values['hasAllergies'] === 'yes' ? false : true,
         component: Components['input'],

@@ -163,9 +163,9 @@ const OrgList = ({ onActionSuccess }) => {
       sortKey: 'updated_At',
       cell: (row) =>
         row.updatedAt
-          ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY')
+          ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM/DD/YYYY')
           : row.createdAt
-          ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY')
+          ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM/DD/YYYY')
           : 'N/A',
       minWidth: '100px',
       wrap: true
@@ -259,7 +259,7 @@ const OrgList = ({ onActionSuccess }) => {
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}
-            error={isError ? 'Something went wrong! Please try again' : null}
+            error={isError ? t('errors.default') : null}
             image={EmptyDataImage}
             heading={!fileteredData ? t('orgManagement.add.label') : t('errors.messages.noRecordsFound')}
             description={!fileteredData && t('orgManagement.empty_table.description')}

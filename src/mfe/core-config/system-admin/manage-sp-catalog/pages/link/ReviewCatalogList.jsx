@@ -185,7 +185,7 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
     } catch (error) {
       sendNotification({
         type: 'error',
-        description: t('SPCatalog.unlink.SPMaterial.error')
+        description: t('errors.default')
       });
     }
   };

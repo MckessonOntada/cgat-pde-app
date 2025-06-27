@@ -4,7 +4,7 @@ import { ReactComponent as SystemConfigurationIcon } from '@src/assets/svg/syste
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import AppRoutes from '@src/routes/AppRoutes';
 
-const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, SYSTEM_CONFIGURATION } = PERMISSIONS_ENUM;
+const { ADMIN_MANAGEMENT, USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, SYSTEM_CONFIGURATION } = PERMISSIONS_ENUM;
 
 const SYSTEM_ADMIN_CARDS_DATA = [
   {
@@ -13,7 +13,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     icon: UserIcon,
     details: 'systemAdmin_card_description',
     path: AppRoutes.pathSystemAdminManagement,
-    permissions: USER_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN
+    permissions: Object.values(ADMIN_MANAGEMENT)
   },
   {
     name: 'manageOrg',
@@ -21,7 +21,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     icon: organizationIcon,
     details: 'organization_card_description',
     path: AppRoutes.pathOrgManagement,
-    permissions: ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN
+    permissions: Object.values(ORGANIZATION_MANAGEMENT)
   },
   {
     name: 'systemConfiguration',
@@ -29,7 +29,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     icon: SystemConfigurationIcon,
     details: 'system_configuration_card_description',
     path: AppRoutes.pathSystemConfiguration,
-    permissions: SYSTEM_CONFIGURATION
+    permissions: Object.values(SYSTEM_CONFIGURATION)
   }
 ];
 

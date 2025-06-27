@@ -1,7 +1,7 @@
  Provider Upload - Instructions
 ==================================================
 
-This file provides guidance for filling out the Healthcare Provider Account Upload template.
+This file provides guidance for filling out the Healthcare Provider Upload template.
 
 LEGEND:
 - M = Mandatory (must be filled)
@@ -88,9 +88,9 @@ FIELD-WISE INSTRUCTIONS:
 --------------------------------------------------
 ✅ SAMPLE ROW:
 
-| First Name | Last Name | DEA Number | NPI Number | Address1       | City         | Zip     | State | Phone Number | Status | Tin       | Medicaid Number | Email ID           |
-|------------|-----------|------------|------------|----------------|--------------|---------|-------|---------------|--------|-----------|------------------|---------------------|
-| John       | Smith     | FS1234567  | 1234567890 | 456 Oak Street | San Diego    | 92101   | CA    | 8585551234    | Active | 123456789 | 987654           | john.smith@email.com |
+| First Name | Last Name | DEA Number | NPI Number | Address1       | City         | Zip     | State  | Phone Number  | Status | Tin       | Medicaid Number  | Email ID           |
+|------------|-----------|------------|------------|----------------|--------------|---------|------- |---------------|--------|-----------|------------------|---------------------|
+| John       | Smith     | FS1234567  | 1234567890 | 456 Oak Street | San Diego    | 92101   | Alabama| 8585551234    | Active | 123456789 | 987654           | john.smith@email.com |
 
 --------------------------------------------------
 NOTES:

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import useOrder from '../../../orders/useOrder';
-import { useOrderPrice } from '../additional-details/useOrderPrice';
 import PageHeader from '@src/components/pageHeader';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import UploadFile from '@src/components/uploadFile/UploadFile';
@@ -19,11 +18,20 @@ import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/consta
 import { ORDER_STATUS } from '../../../orders/config';
 import { CHANNEL_TYPE } from '../Constants';
 import Alert from '@src/components/cgat-alert/Alert';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
 
 const COMMENT_MAX_LENGTH = 5000;
+const ALLOWED_FILE_TYPE = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'image/png',
+  'image/jpeg'
+];
 function UploadOrderDocument() {
   const { orderId } = useParams();
-  const location = useLocation();
+  const { state: locationState = {} } = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslate();
   const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);
@@ -31,7 +39,6 @@ function UploadOrderDocument() {
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
-  const searchParams = new URLSearchParams(location.search);
   const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {
@@ -61,10 +68,9 @@ function UploadOrderDocument() {
       OrderService.uploadOrderDocument(orderId, payload)
         .then((response) => {
           setComment('');
-          navigate(`/orders?${searchParams.toString()}`, {
+          const prevSearch = locationState.__prevSearch || '';
+          navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`, {
             state: {
-              activeTab: location.state?.fromTab,
-              fromOrderView: location.state?.fromOrderView,
               alert: {
                 from: 'UPLOAD_ORDER_DOCUMENT',
                 type: 'success',
@@ -85,17 +91,19 @@ function UploadOrderDocument() {
   };
 
   const handleOnCancel = () => {
-    navigate(`${RoutePaths.pathOrderManagement}?${searchParams.toString()}`, {
-      state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView }
-    });
+    const prevSearch = locationState?.__prevSearch || '';
+    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
   if (
     orderDetails.id &&
     (orderDetails.status !== ORDER_STATUS.SUBMITTED || ![CHANNEL_TYPE.BUY_AND_BILL, CHANNEL_TYPE.SPECIALTY_PHARMA].includes(orderDetails.channelType))
   ) {
-    navigate(`/orders?${searchParams.toString()}`, { state: { activeTab: location?.state?.fromTab, fromOrderView: location.state?.fromOrderView } });
+    const prevSearch = locationState?.__prevSearch || '';
+    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   }
+
+  const isSpOrder = orderDetails.channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA;
   return (
     <div className="MCP-module-wrapper">
       <PageHeader heading={'Upload Documents'} />
@@ -115,26 +123,32 @@ function UploadOrderDocument() {
                 key={'therapy_name'}
                 label="Therapy"
                 value={
-                  <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
-                    {orderDetails.therapy?.materialDescription}
-                  </Link>
+                  isSpOrder ? (
+                    <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
+                      {orderDetails.therapy?.materialDescription}
+                    </Link>
+                  ) : (
+                    orderDetails.therapy?.materialDescription
+                  )
                 }
               />
-              <div className="price-wrapper">
-                <DetailSegment
-                  label={t('labels.orderCost')}
-                  value={
-                    orderDetails.orderCost ? (
-                      <span className="dollarSign ">
-                        <span>$</span>
-                        {CommonUtils.formatNumberWithoutSymbol(orderDetails.orderCost)}
-                      </span>
-                    ) : (
-                      '-'
-                    )
-                  }
-                />
-              </div>
+              {isSpOrder && (
+                <div className="price-wrapper">
+                  <DetailSegment
+                    label={t('labels.orderCost')}
+                    value={
+                      orderDetails.orderCost ? (
+                        <span className="dollarSign ">
+                          <span>$</span>
+                          {CommonUtils.formatNumberWithoutSymbol(orderDetails.orderCost)}
+                        </span>
+                      ) : (
+                        '-'
+                      )
+                    }
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -146,7 +160,7 @@ function UploadOrderDocument() {
             messages={[validationMessage]}
             onCloseAlert={() => setValidationMessage(null)}
             upload={{
-              caption: t('controls.updateOrder'),
+              caption: t('controls.updateDocument'),
               fn: handleOnUpload
             }}
             cancel={{
@@ -154,7 +168,9 @@ function UploadOrderDocument() {
             }}
             isRequired={true}
             uploadLabel={'labels.upload.document'}
-            suffixChildren={true}>
+            suffixChildren={true}
+            fileTypeText={'PDF, Word, PNG, JPEG, JPG, .TXT'}
+            onFileSelection={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}>
             <Textarea
               name="document-comment"
               label={t('label.comments')}
@@ -173,9 +189,10 @@ function UploadOrderDocument() {
           therapyData={TherapyDetailsConstantsForBB(false)}
           onClose={() => setShowTherapyDetails(false)}
           showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
+          isMaterialConfiguration={false}
+          useUserService={true}
           heading={t('labels.therapyDetails')}
+          notify={({ type, message }) => setAlert({ type, description: message })}
         />
       )}
     </div>

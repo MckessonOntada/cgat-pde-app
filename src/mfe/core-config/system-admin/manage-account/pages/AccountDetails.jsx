@@ -31,7 +31,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
   const navigate = useNavigate();
   const { t } = useTranslate();
   const { selectedOrganization } = useOrgAccountSelectionContext();
-  const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const isEnableDelete = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive();
 
   const handleCloseDrawer = () => {
     setOpenDetails((state) => !state);
@@ -134,7 +134,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                       return (
                         <div key={item.templateName} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          {!isCustomerCenter && !isLinkedAccount && (
+                          {isEnableDelete && !isLinkedAccount && (
                             <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
                               <DeleteIcon />
                             </div>

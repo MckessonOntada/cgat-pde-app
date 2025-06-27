@@ -72,7 +72,8 @@ export const ConfigurationMessagesEN = {
   'provider.dea.required': 'Please Enter DEA Number',
   'provider.dea.max': 'DEA Number should not exceed 9 characters.',
   'provider.dea.alphaNum': 'DEA Number should only contain alphanumeric characters.',
-  'provider.dea.format': 'DEA Number must follow the format: 2 letters, 6 digits, 1 check digit.',
+  'provider.dea.format': 'DEA Number must follow the format: 1 letter, 1 letter or digit, followed by 7 digits.',
+
   'provider.dea.noSpaces': 'DEA Number cannot contain spaces or hyphens.',
 
   'provider.npiNumber': 'NPI Number',
@@ -80,7 +81,8 @@ export const ConfigurationMessagesEN = {
   'provider.npi.length': 'NPI Number should be exactly 10 digits.',
   'provider.npi.numeric': 'NPI Number should only contain numeric digits.',
 
-  'provider.tinNumber': 'TIN',
+  'provider.tin': 'TIN',
+  'provider.tinNumber': 'TIN Number',
   'provider.tin.required': 'Please Enter the TIN',
   'provider.tin.length': 'TIN must be exactly 9 digits',
   'provider.tin.numeric': 'TIN must only contain numeric values.',
@@ -165,11 +167,11 @@ export const ConfigurationMessagesEN = {
 
   'fileUpload.crosswalk.success': 'File processed successfully, No errors were found.',
   'fileUpload.crosswalk.partialSuccess': 'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
-  'fileUpload.error.timeoutOrSystemError': 'Error: An unexpected error occurred during the upload. Please try again later.',
+  'fileUpload.error.timeoutOrSystemError': 'Error: System is facing issues in getting the information. Kindly Contact your System admin.',
   'invalid.csv.file.headers.empty': 'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.unstructured': 'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.missing': 'Error: The uploaded file is invalid. Please upload a valid file.',
-  'providers.message.fileUploadFailure': 'Something went wrong please try again later.',
+  'providers.message.fileUploadFailure': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   // catalog
   'SPCatalog.Configuration': 'Configuration',
   'SPCatalog.CatalogConfiguration': 'SP Catalog Configuration',

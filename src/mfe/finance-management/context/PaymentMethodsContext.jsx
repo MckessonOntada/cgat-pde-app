@@ -78,7 +78,7 @@ export const PaymentMethodsProvider = ({ children }) => {
         const { response } = error;
         let errorMsg = response?.data?.message || t('paymentInvoices.paymentMethods.api.error');
         showAlert({
-          description: errorMsg,
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });

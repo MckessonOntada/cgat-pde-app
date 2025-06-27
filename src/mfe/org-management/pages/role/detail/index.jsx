@@ -51,7 +51,7 @@ const roleDetail = () => {
     onError: (error, variables, context) => {
       setMessageConfig({
         type: 'error',
-        message: t('orgManagement.messages.deleteRoleFailed')
+        message: t('errors.default')
       });
     },
     onSuccess: (data, variables, context) => {
@@ -156,9 +156,7 @@ const roleDetail = () => {
               </div>
               <div className="role-status">
                 <span className="view_label">{t('userManagement.label.createdOn')}:</span>
-                <span className="label-text">
-                  {CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM-DD-YYYY')}
-                </span>
+                <span className="label-text">{CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM/DD/YYYY')}</span>
                 <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES}>
                   <Switch
                     handleToggle={handleOnUserConfirmation}

@@ -6,6 +6,7 @@ import { ReactComponent as SystemConfigurationSPCatalog } from '@src/assets/svg/
 import { ReactComponent as SystemConfigurationSPAccounts } from '@src/assets/svg/SPAccounts.svg';
 import { ReactComponent as SystemConfigurationMaterialCrosswalk } from '@src/assets/svg/Material-Crosswalk.svg';
 import { ReactComponent as SystemConfigurationSPMaterial } from '@src/assets/svg/SPMaterial.svg';
+import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 const BREADCRUMB_ITEMS = [
   {
     label: 'systemAdministrator',
@@ -42,7 +43,8 @@ const CARDS = [
     label: 'system_config_manage_catalog',
     icon: SystemConfigurationManageCatalog,
     details: 'system_config_description_manage_catalog',
-    path: CONFIG_MODULE_ROUTES.MANAGE_CATALOG
+    path: CONFIG_MODULE_ROUTES.MANAGE_CATALOG,
+    permissions: routePermissionConfig.catalog
   },
   {
     heading: 'dashboard.card.system_config_standard_settings',
@@ -50,7 +52,8 @@ const CARDS = [
     label: 'system_config_manage_questionnaire',
     icon: SystemConfigurationManageQuestionnaire,
     details: 'system_config_description_manage_questionnaire',
-    path: CONFIG_MODULE_ROUTES.MANAGE_QUESTIONNAIRE
+    path: CONFIG_MODULE_ROUTES.MANAGE_QUESTIONNAIRE,
+    permissions: routePermissionConfig.questionnaireConfiguration
   },
   {
     heading: 'dashboard.card.system_config_standard_settings',
@@ -66,7 +69,8 @@ const CARDS = [
     label: 'system_config_manage_spmaterial',
     icon: SystemConfigurationSPMaterial,
     details: 'system_config_description_manage_spmaterial',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SP_MATERIAL
+    path: CONFIG_MODULE_ROUTES.MANAGE_SP_MATERIAL,
+    permissions: routePermissionConfig.spMaterial
   },
   {
     heading: 'dashboard.card.system_config_sp_settings',

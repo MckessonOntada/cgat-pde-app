@@ -4,7 +4,7 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.breadcrumbs.systemAdministrator': 'S_System Administrator',
   'manageSPAccount.breadcrumbs.systemConfiguration': 'S_System Configuration',
   'manageSPAccount.breadcrumbs.manageSPAccount': 'S_Manage SP Account',
-  'manageSPAccount.filters.searchPlaceholder': 'S_Search by Account Number, Account Name, Address...',
+  'manageSPAccount.filters.searchPlaceholder': 'S_Search by Number, Name, Address',
   'manageSPAccount.table.spproductId': 'S_SP Product ID',
   'manageSPAccount.table.productname': 'S_Product Name',
   'manageSPAccount.table.ndc': 'S_NDC',
@@ -154,7 +154,6 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.message.deactivateConfirmaiton': 'S_Are you sure, you want to deactivate this SP Account?',
   'manageSPAccount.message.deactivate_success': 'S_SP Account(s) have been Deactivated successfully.',
   'manageSPAccount.message.deactivate_failure': 'S_Failed to Deactivate the SP Account(s).',
-  'errors.default': 'S_An unexpected error occurred. Please try again.',
 
   'manageSPAccount.labels.accountNumber': 'S_Account Number',
   'manageSPAccount.labels.accountName': 'S_Account Name',
@@ -193,5 +192,21 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.channelType.buynbill': 'S_Buy and Bill',
   'manageSPAccount.channelType.specialtyPharma': 'S_SP',
 
-  'manageLinkedAccounts.backToLinkedAccountdetails': 'S_Back to Linked account details page'
+  'manageLinkedAccounts.backToLinkedAccountdetails': 'S_Back to Linked account details page',
+  'manageLinkedAccounts.backToLinkedAccountdetails': 'S_Back to Linked account details page',
+  'manageSPAccount.message.remove.spAccount': 'S_Are you sure you want to unlink this Account?',
+  'manageSPAccount.message.removeSpAccount.success': 'S_Account has been unlinked successfully.',
+  'manageSPAccount.error.message.unableToUnlinkAccount': 'S_Unable to unlink Account.',
+  'manageSPAccount.seeAssociatedAccounts': 'S_SEE ASSOCIATED SP ACCOUNTS',
+
+  'ManageAccount.accountNumber': 'S_Account Number',
+  'ManageAccount.accountName': 'S_Account Name',
+  'ManageAccount.accountAddress': 'S_Account Address',
+  'ManageAccount.contactPerson': 'Contact Person Name',
+  'ManageAccount.emaild': 'S_Email ID',
+  'ManageAccount.phoneNumber': 'S_Phone Number',
+  'ManageAccount.fax': 'S_Fax',
+  'ManageAccount.organization': 'S_Organization',
+  'ManageCatalog.contactDetails': 'S_Contact Details',
+  'ManageCatalog.AccountDetails': 'S_Account Details'
 };

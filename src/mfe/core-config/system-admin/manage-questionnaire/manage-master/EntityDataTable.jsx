@@ -30,6 +30,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   const [searchParams, setSearchParams] = useSearchParams(location.search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
+  const therapy = searchParams.get('therapy');
   const [openDetails, setOpenDetails] = useState(Boolean(trade));
 
   const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
@@ -128,6 +129,7 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     setSearchParams(searchParams);
   };
 
@@ -189,12 +191,13 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
         <TherapyDetailsWithTabs
           trade={trade}
           channelType={channelType}
+          therapy={therapy || trade}
           isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
           spTherapyConstants={TherapyDetailsConstantsForSP}
-          heading={t('manageMaterial.drawer.heading')}
+          heading={t('manageMaterial.drawer.details.heading')}
         />
       )}
     </React.Fragment>

@@ -47,7 +47,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       name: t('column.material.crosswalk.Therapy'),
       minWidth: '80px',
       sortable: true,
-      sortKey: 'tradeName',
+      sortKey: 'trade_name',
       cell: (props) => <EclipsesTextcss str={props?.tradeName || '-'} />
     },
     {

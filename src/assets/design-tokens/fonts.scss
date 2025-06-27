@@ -12,12 +12,12 @@
 }
 
 // Include font-face declarations using mixin
-@include font-face('Nunito', '@fonts/Nunito-ExtraLight.ttf', 275);
-@include font-face('Nunito', '@fonts/Nunito-Light.ttf', 300);
-@include font-face('Nunito', '@fonts/Nunito-Regular.ttf', 400);
-@include font-face('Nunito', '@fonts/Nunito-SemiBold.ttf', 600);
-@include font-face('Nunito', '@fonts/Nunito-Bold.ttf', 700);
-@include font-face('Nunito', '@fonts/Nunito-ExtraBold.ttf', 800);
+@include font-face('Nunito', '@src/assets/fonts/Nunito-ExtraLight.ttf', 275);
+@include font-face('Nunito', '@src/assets/fonts/Nunito-Light.ttf', 300);
+@include font-face('Nunito', '@src/assets/fonts/Nunito-Regular.ttf', 400);
+@include font-face('Nunito', '@src/assets/fonts/Nunito-SemiBold.ttf', 600);
+@include font-face('Nunito', '@src/assets/fonts/Nunito-Bold.ttf', 700);
+@include font-face('Nunito', '@src/assets/fonts/Nunito-ExtraBold.ttf', 800);
 
 :root {
   --brand-font-family-body: "Nunito", sans-serif;

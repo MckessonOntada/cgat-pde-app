@@ -12,13 +12,8 @@ import { Link } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 
 function InputFileFormik(props) {
-  const {
-    field,
-    form,
-    onFileChange,
-    primaryButtonCaption,
-    fileInputRef: parentFileInputRef
-  } = props;
+  const { field, form, onFileChange, primaryButtonCaption, fileInputRef: parentFileInputRef, fileTypeText, uploadFileSizeText } = props;
+
   const { setFieldError, values } = useFormikContext();
   const [errorFile, setErrorFile] = useState(false);
   const { label, value, validateOnChange, attachmentValue } = props;
@@ -28,9 +23,9 @@ function InputFileFormik(props) {
   const [file, setFile] = React.useState(null);
   const { errors, touched, setFieldValue } = form;
   const errorMessage = getNestedValue(errors, `${field.name}`);
-  const isFieldTouched = field.name.includes('.')
-    ? getNestedValue(touched, field.name.split('.')[0])
-    : getNestedValue(touched, field.name);
+  const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
+  const MAX_FILE_SIZE = Number(process.env.REACT_APP_MAX_FILE_SIZE_TO_UPLOAD, 10) || uploadFileSizeText;
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
@@ -49,10 +44,7 @@ function InputFileFormik(props) {
   const handleOnChange = (event) => {
     const selectedFile = event.target.files[0];
     setFieldError(`${field.name}`, null);
-    if (
-      (validateOnChange && validateBeforeChange(selectedFile, event)) ||
-      !validateOnChange
-    )
+    if ((validateOnChange && validateBeforeChange(selectedFile, event)) || !validateOnChange)
       if (selectedFile) {
         if (onFileChange) onFileChange(selectedFile, event);
         else setFieldValue(field.name, selectedFile);
@@ -98,11 +90,24 @@ function InputFileFormik(props) {
     }
   }, []);
 
+  React.useEffect(() => {
+    if (file && file instanceof File) {
+      const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (allowedImageTypes.includes(file.type)) {
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewUrl(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
+      } else {
+        console.warn('Unsupported or unsafe file type:', file.type);
+        setPreviewUrl(null);
+      }
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [file]);
+
   return (
-    <div
-      className={`${styles['component-wrapper']} ${
-        errorMessage ? styles['has-error'] : null
-      }`}>
+    <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>
       <div className={styles['caption-container']}>
         <p className={styles['caption']}>
           {label}
@@ -163,29 +168,23 @@ function InputFileFormik(props) {
             {primaryButtonCaption || t('file.browsInput.selectFile')}
           </Button>
         </div>
+        <div className={styles['file-config']}>
+          <p>{`${t('upload.file.error.fileType')} ${fileTypeText}`}</p>
+          <p>{`${t('upload.file.error.maximumFileSize')} ${MAX_FILE_SIZE}MB`}</p>
+        </div>
         {file && (
           <div className={styles['preview-container']}>
             <div className={styles['file-info']}>
               <div>
-                {file.type?.startsWith('image/') ? (
-                  file.type.startsWith('image/') ? (
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt="Preview"
-                      className={styles['image-preview']}
-                    />
-                  ) : (
-                    <p className={styles['error-message']}>
-                      {t('file.browsInput.error.invalidFileType')}
-                    </p>
-                  )
+                {file?.type?.startsWith('image/') && previewUrl ? (
+                  <img src={previewUrl} alt="Preview" className={styles['image-preview']} />
                 ) : (
                   <FileUploadIcon width={20} />
                 )}
               </div>
               <div>
                 <Link className={styles['file-name']} target="_blank" to={url}>
-                  <p>{name}</p>
+                  <p title={name}>{name.length > 20 ? `${name.slice(0, 20)}...` : name}</p>
                 </Link>
                 {size > 0 && <p>{CommonUtils.getFileSize(size)}</p>}
               </div>

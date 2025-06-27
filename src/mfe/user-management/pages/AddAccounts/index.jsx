@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Stepper, Heading, Button, Loader } from '@mckesson/mcp-component-library';
+import { StepperMui, Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';

@@ -68,34 +68,19 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorStatusCodes.includes(errorResponse.status)) {
-          setNotification({
-            type: 'error',
-            description: t('fileUpload.error.timeoutOrSystemError'),
-            isSticky: true
-          });
-        } else if (errorResponse.data?.errorCodes) {
-          errorResponse.data?.errorCodes.forEach((element) => {
-            setNotification({
-              type: 'error',
-              description: t(element),
-              isSticky: true
-            });
-          });
-        } else {
-          setNotification({
-            type: 'error',
-            description: errorResponse.data?.message || t('providers.message.fileUploadFailure'),
-            isSticky: true
-          });
-        }
+        console.log('error', error);
+        setNotification({
+          type: 'error',
+          description: t('errors.default'),
+          isSticky: true
+        });
       });
   };
 
   const handleOnDownload = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
-        handleDownload('/templates/upload_sp_catalog.zip', 'Upload SP Catalog.zip');
+        handleDownload('/templates/Upload_SP_Catalog_Template.csv', 'Upload SP Catalog.csv');
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {

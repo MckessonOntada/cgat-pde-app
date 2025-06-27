@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Loader } from '@mckesson/mcp-component-library';
+import { Loader, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -13,21 +13,86 @@ import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { useMutation } from 'react-query';
+import { useAccountContext } from '../../context/AccountContext';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, fileteredData } = usePaymentCredits();
-  const { selectedRows, setSelectedRows, selectableRows } = props;
+  const { selectedRows, setSelectedRows, selectableRows, disableSelection } = props;
   const location = useLocation();
   const { state } = location;
   const showCardView = useResponsiveView();
+  const { selectedAccount } = useAccountContext();
+
+  const { mutate: handlePdfDownload } = useMutation(
+    async (props) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, props.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: props.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: props.referenceDocumentNumber
+      };
+      const headers = {
+        accept: 'application/json, text/plain, */*',
+        'content-type': 'application/json;charset=UTF-8'
+      };
+      const response = await HttpResourceService.callRest(url, httpVerb.POST, body, headers, null, null, null, 'blob');
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename = match ? match[1] : 'credit.pdf';
+
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    },
+    {
+      onSuccess: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownload'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: (error) => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
 
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'billNumber',
+        paginationConfig,
+        selectedRows,
+        setSelectedRows,
+        true,
+        false
+      ),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
+      cell: (row, index) => {
+        const isdisable = disableSelection && !selectedRows?.some((r) => r?.billNumber === row?.billNumber);
+        return renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows, true, false, isdisable);
+      },
       selector: (row) => row.MRN,
       width: '48px',
       omit: !selectableRows,
@@ -39,7 +104,7 @@ export default function CreditsTable(props) {
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
-      minWidth: '120px',
+      minWidth: '220px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cell: (props) => (
@@ -61,7 +126,7 @@ export default function CreditsTable(props) {
       id: 'soldToSite',
       name: t('paymentInvoices.table.column.soldToAccount'),
       selector: () => {},
-      minWidth: '180px',
+      minWidth: '220px',
       sortable: true,
       wrap: true,
       showInMobileHeader: true,
@@ -91,20 +156,28 @@ export default function CreditsTable(props) {
         </div>
       ),
       right: true
-    }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   selector: (row) => row.totalAuthorizedPaymentAmt,
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   wrap: true,
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      selector: (row) => row.totalAuthorizedPaymentAmt,
+      minWidth: '144px',
+      sortable: true,
+      wrap: true,
 
-    //   cell: (props) => (
-    //     <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
-    //       {t('paymentInvoices.credits.table.downloadPdf')}
-    //     </Button>
-    //   )
-    // }
+      cell: (props) => (
+        <Button
+          disabled={!props.isPdfAvailable}
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {
+            handlePdfDownload(props);
+          }}
+          size="sm">
+          {t('paymentInvoices.credits.table.downloadPdf')}
+        </Button>
+      )
+    }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });

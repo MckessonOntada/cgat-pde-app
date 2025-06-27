@@ -5,8 +5,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link, useNavigate } from 'react-router-dom';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
@@ -21,6 +19,7 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
@@ -30,30 +29,45 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const [materialNumber, setMaterialNumber] = React.useState(null);
   const searchParams = new URLSearchParams(location.search);
   const trade = searchParams.get('trade');
+  const channelType = searchParams.get('channelType');
+  const therapy = searchParams.get('therapy');
   const navigate = useNavigate();
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const isTreatmentCenterExecutive = AuthUtils.isTreatmentCentreExecutive();
+  const disableCheckbox = isCustomerCenter || isTreatmentCenterExecutive;
   const [expandedRows, setExpandedRows] = React.useState([]);
   const isRowExpanded = (row) => expandedRows.includes(row.tradeName);
   const onExpandToggle = (row) => {
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
   };
+  const processedTherapies = CommonUtils.flattenTherapies(data).map((item) => ({
+    ...item,
+    active: item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? false : true
+  }));
 
   const getColumns = () => [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        CommonUtils.flattenTherapies(data),
-        'materialNumber',
-        {
-          ...paginationConfig,
-          totalElements: data.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
-        },
-        selectedMaterials,
-        setSelectedMaterials
-      ),
+      name:
+        isCustomerCenter || isTreatmentCenterExecutive ? (
+          <input type="checkbox" disabled checked={false} />
+        ) : (
+          renderTableCheckBox(
+            { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+            processedTherapies,
+            'materialNumber',
+            {
+              ...paginationConfig,
+              totalElements: data.reduce((acc, item) => acc + (item.therapies ? item.therapies.length : 1), 0)
+            },
+            selectedMaterials,
+            setSelectedMaterials
+          )
+        ),
       cell: (row, index) => {
+        const processedRow = row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? { ...row, active: false } : { ...row, active: true };
+        processedTherapies;
         if (row.isExpandable && row.therapies.length > 1) {
           const expanded = isRowExpanded?.(row);
           return (
@@ -64,9 +78,12 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             </div>
           );
         }
+        if (row.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA || disableCheckbox) {
+          return <input type="checkbox" disabled checked={false} />;
+        }
         return renderTableCheckBox(
-          row,
-          CommonUtils.flattenTherapies(data),
+          processedRow,
+          processedTherapies,
           'materialNumber',
           {
             ...paginationConfig,
@@ -78,8 +95,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       },
       selector: (row) => row['materialNumber'],
       width: '50px',
-      showInMobileHeader: true,
-      omit: isCustomerCenter
+      showInMobileHeader: true
+      //  omit: isCustomerCenter || isTreatmentCenterExecutive
     },
     {
       name: t('labels.therapy'),
@@ -90,12 +107,44 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       sortKey: 'trade_name',
       minWidth: '220px',
       cell: (row) => {
-        const { tradeName, cellValue } = row;
-
+        const { tradeName, channelType, cellValue, id, isParent } = row;
+        const searchParams = new URLSearchParams({
+          trade: tradeName,
+          channelType
+        });
+        if (!isParent) {
+          const therapyParam = id ? id : tradeName;
+          searchParams.set('therapy', therapyParam);
+        }
         return (
-          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?trade=${tradeName}`}>
+          <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?${searchParams.toString()}`}>
             <EclipsesTextcss str={tradeName} />
           </Link>
+        );
+      }
+    },
+
+    {
+      name: t('labels.genericName'),
+      id: 'genericName',
+      selector: (row) => row.genericName,
+      wrap: true,
+      sortable: false,
+      minWidth: '214px',
+      cell: ({ isExpandable, genericName }) => {
+        let toolTip = '',
+          cellValue = '';
+        if (isExpandable) {
+          toolTip = genericName?.join('/ ');
+          cellValue = CommonUtils.getListOverflowingDisplayLabel(genericName, 2, ' / ');
+        } else {
+          toolTip = genericName;
+          cellValue = genericName;
+        }
+        return (
+          <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+            <Tooltip body={toolTip}>{cellValue}</Tooltip>
+          </span>
         );
       }
     },
@@ -124,6 +173,36 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       }
     },
     {
+      name: t('labels.manufacturer'),
+      id: 'manufacturerName',
+      selector: (row) => row.manufacturerName,
+      wrap: true,
+      sortable: false,
+      minWidth: '224px',
+      cell: (props) => {
+        const { isExpandable, manufacturer, manufacturerName, channelType } = props;
+
+        if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+          let toolTip = '',
+            cellValue = '';
+          if (isExpandable) {
+            toolTip = manufacturer?.join(' / ');
+            cellValue = CommonUtils.getListOverflowingDisplayLabel(manufacturer, 2, ' / ');
+          } else {
+            toolTip = manufacturerName;
+            cellValue = manufacturerName;
+          }
+          return (
+            <span aria-label={t('table.columns.captions.manufacturerName')}>
+              <Tooltip body={toolTip}>{cellValue}</Tooltip>
+            </span>
+          );
+        } else {
+          return <div className="cellEllipse">{manufacturerName || '-'}</div>;
+        }
+      }
+    },
+    {
       name: t('labels.formulation'),
       id: 'formulation',
       selector: (row) => row.strength,
@@ -147,6 +226,10 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   ];
 
   const columns = getColumns();
+  const isSPSelected = selectedMaterials?.every((item) => item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA);
+  const isBothSelected =
+    selectedMaterials?.some((item) => item.channelType === CHANNEL_TYPE.BUY_AND_BILL) &&
+    selectedMaterials?.some((item) => item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA);
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
@@ -155,6 +238,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
+    searchParams.delete('therapy');
     navigate({
       pathname: '',
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
@@ -204,7 +288,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             onClick={() => {
               setOpenConfiguration(!openConfiguration);
             }}
-            size="sm">
+            size="sm"
+            disabled={isBothSelected || isSPSelected}>
             {t('manageMaterial.table.header.button.configure')}
           </Button>
         }
@@ -258,42 +343,17 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       {trade && (
         <TherapyDetailsWithTabs
           trade={trade}
+          channelType={channelType}
+          therapy={therapy || trade}
           isMaterialListing={true}
           onSelect={() => {}}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
           spTherapyConstants={TherapyDetailsConstantsForSP}
-          heading={t('manageMaterial.drawer.heading')}
+          heading={t('manageMaterial.drawer.details.heading')}
           showFooter={false}
         />
       )}
-
-      {/* {openDetails && (
-        <TherapyDetails
-          therapyId={materialNumber}
-          therapyData={MaterialDetailsConstants}
-          configurationData={ConfigConstants}
-          onClose={() => setOpenDetails(!openDetails)}
-          showFooter={false}
-          isMaterialConfiguration={true}
-          useMaterialService={true}
-          hasDeleteConfigAccess={!isCustomerCenter}
-          heading={t('manageMaterial.drawer.heading')}
-          notify={({ type, message }) => {
-            if (type === 'success') {
-              onSuccess({
-                type,
-                description: message
-              });
-            } else {
-              onError({
-                type,
-                description: message
-              });
-            }
-          }}
-        />
-      )} */}
       {openConfiguration && <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
     </React.Fragment>
   );

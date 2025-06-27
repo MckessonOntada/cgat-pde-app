@@ -48,7 +48,7 @@ function TherapyDetails({
   useEffect(() => {
     if (error) {
       onClose();
-      notify({ type: 'error', message: 'Error fetching Therapy Details' });
+      notify({ type: 'error', message: t('errors.default') });
     }
   }, [error]);
 
@@ -80,7 +80,7 @@ function TherapyDetails({
                 notify({ type: 'success', message: t('manageMaterial.drawer.controls.apply.success') });
                 refetch();
               } catch (error) {
-                notify({ type: 'error', message: t('manageMaterial.drawer.controls.apply.error') });
+                notify({ type: 'error', message: t('errors.default') });
               }
             }
           }
@@ -164,7 +164,7 @@ function DetailsPanel({
               await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
               refetch();
             } catch (error) {
-              notify({ type: 'error', message: t('manageMaterial.drawer.delink.error') });
+              notify({ type: 'error', message: t('errors.default') });
             }
           }
         }

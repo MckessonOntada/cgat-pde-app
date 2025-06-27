@@ -88,19 +88,11 @@ const List = () => {
       })
       .catch((error) => {
         const { response: errorResponse } = error;
-        if (errorResponse.response.data?.errorCodes && errorResponse.response.data?.errorCodes.length > 0) {
-          errorResponse.response.data.errorCodes.forEach((error) => {
-            setNotification({
-              type: 'error',
-              description: t(`SPCrosswalk.deLinkFailure.${error}`)
-            });
-          });
-        } else {
-          setNotification({
-            type: 'error',
-            description: t(`SPCrosswalk.deLinkFailure.generic`)
-          });
-        }
+        console.log('error', error);
+        setNotification({
+          type: 'error',
+          description: t('errors.default')
+        });
       });
   };
 

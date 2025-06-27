@@ -137,9 +137,11 @@ export const MessageEs = {
   'labels.diagnosisCodes': 'S_Diagnosis codes (ICD10)',
 
   'labels.slotNumberLengthError': 'S_Slot Number length can not be greater than 20',
-  'labels.PONumberRequired': 'S_PO number is required',
-  'labels.PONumberLengthError': 'S_PO Number can not be greater than 35',
+  'labels.PONumberRequired': 'S_Please enter the PO Number',
+  'labels.PONumberLengthError': 'S_PO Number should not exceed 35 characters.',
+  'labels.poNumberMustValid': 'S_PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
+  'labels.enterValidDateOfAdministration': 'S_Enter valid date of administration.',
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
@@ -367,7 +369,7 @@ export const MessageEs = {
   'messages.success.release': 'S_Order Released Successfully.',
   'messages.success.assign': 'S_Order Assigned Successfully.',
   'errors.There is no Approver Group assigned to the order': 'S_There is no Approver Group assigned to the order.',
-  'errors.default': 'S_An unexpected error occurred.',
+
   'order.label.admin': 'S_Admin',
   'order.label.manageOrder': 'S_Manage Order',
   'message.errorShortComment': 'S_Comment is very short, try to add detailed comment.',
@@ -483,7 +485,7 @@ export const MessageEs = {
   'labels.SubmittedBy': 'S_Submitted By',
   'labels.SubmittedOn': 'S_Submitted On',
   'labels.Approver_Name': 'S_Approver Name',
-  'labels.Approval_Date_and_Time': 'S_Approval Date and Time',
+  'labels.Approval_Date_and_Time': 'S_Approval Date',
 
   'labels.soldToAccountName': 'S_Sold to Account Name',
   'labels.soldToAccountAddress': 'S_Sold to Account Address',
@@ -556,7 +558,10 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.',
   'label.uploadCatalog.info': 'S_For filling up the catalog template, please refer to the instruction file and account/material master.',
   'orderManagement.backToInvoiceDetails': 'S_Back to Invoice listing page',
-
+  'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.',
+  'controls.uploadAccount': 'S_Upload Account',
+  'label.uploadAccountListCSV': 'S_Upload Account List CSV',
+  'controls.uploadAccount': 'S_Upload Account',
   'form.label.insuranceCompany': 'S_Insurance Company',
   'form.label.memberNumber': 'S_Member Number',
   'form.label.groupNumber': 'S_Group Number',
@@ -565,6 +570,8 @@ export const MessageEs = {
   'form.label.policyHolderLastName': 'S_Policy Holder Last Name',
   'form.label.dob': 'S_DOB',
   'form.label.relationshipToParent': 'S_Relationship to Parent',
+  'form.label.relation': 'S_Relation',
+  'labels.enterRelation': 'S_Enter relation',
   'form.label.front': 'S_Insurance Card Front',
   'form.label.back': 'S_Insurance Card Back',
   'form.label.pharmacyBenefitManagerName': 'S_Pharmacy Benefit Manager Name',
@@ -611,5 +618,10 @@ export const MessageEs = {
   'column.material.crosswalk.spProductID': 'S_SP Product ID',
   'column.material.crosswalk.spProductName': 'S_SP Product Name',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
-  'column.material.crosswalk.action': 'S_Action'
+  'column.material.crosswalk.action': 'S_Action',
+  'controls.updateDocument': 'S_Upload Document',
+  'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
+  'messages.phFirstNameExtraSpaceError': 'Policy Holder First Name must not contain leading or trailing spaces',
+  'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
+  'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces'
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import styles from './assets/styles/ManageMaterial.module.scss';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
@@ -25,6 +25,22 @@ function ManageMaterial() {
       label: t('manageMaterial.breadcrumbs.manageMaterial')
     }
   ];
+
+  const AdditionalFiltersConfig = useMemo(() => {
+    return [
+      {
+        type: 'dropdown',
+        name: 'channelType',
+        label: t('Distribution Channel'),
+        options: [
+          { label: t('labels.BUY_AND_BILL'), value: t('labels.BUY_AND_BILL') },
+          { label: t('labels.SP'), value: t('labels.SP') },
+          { label: 'Both', value: 'ALL' }
+        ]
+      }
+    ];
+  }, []);
+
   const handleAlertClose = () => {
     setAlert({ type: null, message: null });
   };
@@ -42,7 +58,7 @@ function ManageMaterial() {
         <div className={`${styles.cardContainer}`}>
           <div className={`${styles.cardContainer}`}>
             <CommonFilters
-              additionalFilters={[]}
+              additionalFilters={AdditionalFiltersConfig}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               searchPlaceholder={t('manageMaterial.filters.searchPlaceholder')}
@@ -52,7 +68,7 @@ function ManageMaterial() {
           <ManageMaterialTable
             className={styles.manageMaterialTable}
             onSuccess={() => showAlert('success', t('manageMaterial.drawer.controls.apply.success'))}
-            onError={() => showAlert('error', t('manageMaterial.drawer.controls.apply.error'))}
+            onError={() => showAlert('error', t('errors.default'))}
           />
         </div>
       </div>

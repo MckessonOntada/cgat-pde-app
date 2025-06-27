@@ -86,7 +86,7 @@ jobs:
         #   SHARED_CLUSTER="\$${DEV}"
         # fi
 
-        if [ "$ENV" = "prod" ] || [ "$ENV" = "stage" ]; then
+        if [ "$ENV" = "prod" ] ; then
           PROD=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}PROD")
           SHARED_CLUSTER="\$${PROD}"
         elif [ "$ENV" = "prod-dr" ] || [ "$ENV" = "qa-dr" ]; then

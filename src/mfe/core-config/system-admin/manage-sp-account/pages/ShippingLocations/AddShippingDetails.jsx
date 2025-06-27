@@ -34,7 +34,7 @@ function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
           onClose?.();
         },
         onError: () => {
-          onFormSubmit?.('error', t('manageSPAccount.message.addshippinglocation.error'));
+          onFormSubmit?.('error', t('errors.default'));
         }
       }
     );

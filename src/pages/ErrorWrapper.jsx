@@ -27,7 +27,7 @@ class ErrorWrapper extends React.Component {
           <Alert
             type="error"
             showTitle={true}
-            title="Something went wrong."
+            title="System is facing issues in getting the information. Kindly Contact your System admin."
             showCloseIcon={false}
             description={this.state.error && this.state.error?.message}
           />

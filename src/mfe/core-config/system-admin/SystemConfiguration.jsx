@@ -51,7 +51,7 @@ export default function SystemConfiguration() {
       <Route
         path={'manage-catalog/*'}
         element={
-          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+          <ProtectedRoute permissions={routePermissionConfig.catalog}>
             <OrgAccountSelectionProvider showAccountsSelect={true}>
               <ManageCatalogRoute />
             </OrgAccountSelectionProvider>
@@ -61,7 +61,7 @@ export default function SystemConfiguration() {
       <Route
         path={`questionnaire/*`}
         element={
-          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+          <ProtectedRoute permissions={routePermissionConfig.questionnaireConfiguration}>
             <QuestionnaireProvider>
               <Questionnaire />
             </QuestionnaireProvider>
@@ -81,7 +81,7 @@ export default function SystemConfiguration() {
       <Route
         path={'manage-sp-material/*'}
         element={
-          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+          <ProtectedRoute permissions={routePermissionConfig.spMaterial}>
             <SPMaterialProvider>
               <ManageSPMaterialRoute />
             </SPMaterialProvider>

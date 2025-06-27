@@ -16,7 +16,7 @@ export default function DashboardRoutes() {
       <Route
         path={'user/*'}
         element={
-          <ProtectedRoute permissions={routePermissionConfig.users}>
+          <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
             <UsersEntryPoint />
           </ProtectedRoute>
         }
