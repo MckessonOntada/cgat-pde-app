@@ -15,7 +15,7 @@ import { renderModal } from '@src/util/ModalUtil';
 function AssociatedSPAccount() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { applyFilters, clearFilters } = useSPAccountContext();
+  const { applyFilters, clearFilters, refetchSPAccountList } = useSPAccountContext();
   const [notification, setNotification] = useState(null);
 
   const location = useLocation();
@@ -27,6 +27,7 @@ function AssociatedSPAccount() {
     },
     {
       onSuccess: () => {
+        refetchSPAccountList();
         setNotification({
           type: 'success',
           description: t('manageSPAccount.message.removeSpAccount.success')
