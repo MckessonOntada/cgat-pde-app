@@ -118,7 +118,7 @@ function UploadOrderDocument() {
         ) : (
           <div>
             <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-              <DetailSegment key={'order_id'} label="Order ID" value={orderDetails.backendOrderId} />
+              {isSpOrder && <DetailSegment key={'order_id'} label={t('labels.orderId')} value={orderDetails.backendOrderId} />}
               <DetailSegment
                 key={'therapy_name'}
                 label="Therapy"
