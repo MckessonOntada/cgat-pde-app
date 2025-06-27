@@ -3,7 +3,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
 import { Loader } from '@mckesson/mcp-component-library';
 import { useNavigate } from 'react-router-dom';
-import CommonUtils from '@src/util/CommonUtils';
 
 const useOrder = (orderId) => {
   const navigate = useNavigate();
@@ -38,7 +37,7 @@ const useOrder = (orderId) => {
           state: {
             alert: {
               type: 'error',
-              description: 'Oder details not found.'
+              description: 'Order details not found.'
             }
           }
         });

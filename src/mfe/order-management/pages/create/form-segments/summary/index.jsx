@@ -255,8 +255,12 @@ const Summary = () => {
       }
     },
     onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: error?.response?.data?.message,
+        description,
         type: 'error',
         anchorEl: ALERT_CONTAINER_ID
       });
@@ -273,9 +277,13 @@ const Summary = () => {
         });
       }
     },
-    onError: (err) => {
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: err.message,
+        description,
         type: 'error',
         anchorEl: ALERT_CONTAINER_ID
       });

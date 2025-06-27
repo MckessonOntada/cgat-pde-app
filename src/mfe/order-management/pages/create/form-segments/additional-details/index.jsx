@@ -13,12 +13,11 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ALPHA_NUMERIC_ONLY, DIAGNOSIS_CODE } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useAlert from '@src/hooks/useAlert';
-import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
@@ -205,9 +204,12 @@ function AdditionalDetails() {
     refetchOnWindowFocus: false,
     onSuccess: (result) => {},
     onError: (error) => {
-      const errorKey = handleApiError(error);
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: t(errorKey),
+        description,
         type: 'error',
         anchorEl: alertContainerId
       });
@@ -255,9 +257,12 @@ function AdditionalDetails() {
       });
     },
     onError: (error) => {
-      const errorKey = handleApiError(error);
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: t(errorKey),
+        description,
         type: 'error',
         anchorEl: alertContainerId
       });
@@ -368,8 +373,12 @@ function AdditionalDetails() {
       result && prepareQuestionnaire(result);
     },
     onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
       showAlert({
-        description: error.message,
+        description,
         type: 'error',
         anchorEl: alertContainerId
       });
@@ -393,8 +402,12 @@ function AdditionalDetails() {
         setFieldValue(`${fieldName}.document`, document);
       },
       onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         showAlert({
-          description: error.message,
+          description,
           type: 'error',
           anchorEl: alertContainerId
         });
@@ -418,8 +431,12 @@ function AdditionalDetails() {
         setFieldValue(`${fieldName}.document`, document);
       },
       onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         showAlert({
-          description: error.message,
+          description,
           type: 'error',
           anchorEl: alertContainerId
         });

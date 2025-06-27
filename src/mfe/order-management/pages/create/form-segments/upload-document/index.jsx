@@ -80,10 +80,13 @@ function UploadOrderDocument() {
           });
         })
         .catch((error) => {
-          const message = CommonUtils.getAxiosErrorMessage(error);
+          const statusCode = error?.response?.status;
+          let description = t('error.default');
+          if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
           setValidationMessage({
             type: 'error',
-            description: message,
+            description,
             onClose: () => setValidationMessage(null)
           });
         });
