@@ -50,7 +50,7 @@ function LinkProviderListing() {
       onError: () => {
         setNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.unableToUnlinkProvider')
+          description: t('errors.default')
         });
       }
     }

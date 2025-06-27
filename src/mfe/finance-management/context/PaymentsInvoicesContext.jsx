@@ -145,7 +145,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
       if (!res.data || !res.data.openInvoices) {
         showAlert({
-          description: 'Error fetching invoice listing',
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });
@@ -180,7 +180,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         setActualData([]);
         let errorMsg = response?.data?.message || 'Error fetching invoice listing';
         showAlert({
-          description: errorMsg,
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });
@@ -305,7 +305,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message) ? error.response.data.message : t('paymentInvoices.excel.export.error'),
+            description: t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

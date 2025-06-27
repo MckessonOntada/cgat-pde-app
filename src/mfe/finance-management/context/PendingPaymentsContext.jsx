@@ -151,7 +151,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     onError: (error) => {
       const { response } = error;
       let errorMsg = response?.data?.message || 'Error fetching Pending payments listing';
-      showAlert({ description: errorMsg, type: 'error', anchorEl: alertContainerId });
+      showAlert({ description: t('errors.default'), type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -254,9 +254,7 @@ export const PendingPaymentsProvider = ({ children }) => {
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message)
-              ? error.response.data.message
-              : t('paymentInvoices.pendingPayment.export.error'),
+            description: t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

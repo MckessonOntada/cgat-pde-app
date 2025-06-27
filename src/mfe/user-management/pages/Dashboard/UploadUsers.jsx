@@ -62,12 +62,12 @@ function UploadUsers() {
             showAlert('error', t('userManagement.button.downloadFail'));
           }
         } else {
-          showAlert('error', t('userManagement.button.uploadError'));
+          showAlert('error', t('errors.default'));
         }
         refreshData();
       },
       onError: () => {
-        showAlert('error', t('userManagement.button.uploadError'));
+        showAlert('error', t('errors.default'));
       }
     }
   );

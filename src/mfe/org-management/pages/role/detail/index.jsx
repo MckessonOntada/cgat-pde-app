@@ -51,7 +51,7 @@ const roleDetail = () => {
     onError: (error, variables, context) => {
       setMessageConfig({
         type: 'error',
-        message: t('orgManagement.messages.deleteRoleFailed')
+        message: t('errors.default')
       });
     },
     onSuccess: (data, variables, context) => {

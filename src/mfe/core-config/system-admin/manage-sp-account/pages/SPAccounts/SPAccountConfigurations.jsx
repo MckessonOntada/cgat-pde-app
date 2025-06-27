@@ -61,7 +61,7 @@ function SPAccountConfigurations({ data, refetch, orgAdmin }) {
       onError: (error) => {
         setAlert({
           type: 'error',
-          message: t('ManageAccount.delink.error')
+          message: t('errors.default')
         });
       }
     }

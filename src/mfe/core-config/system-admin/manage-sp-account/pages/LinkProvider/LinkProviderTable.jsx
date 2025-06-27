@@ -103,7 +103,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
       onError: () => {
         addNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.failedToOpenDetails')
+          description: t('errors.default')
         });
       }
     }

@@ -97,7 +97,7 @@ export default function ViewOrganization() {
         onError: (error) => {
           setAlertConfig({
             isVisible: true,
-            description: `Failed to add accounts: ${error.message}`,
+            description: t('errors.default'),
             type: 'error'
           });
         }

@@ -204,7 +204,7 @@ function AddQuestionnaire() {
     onError: (error) => {
       setAlertConfig({
         isVisible: true,
-        description: error.message,
+        description: t('errors.default'),
         type: 'error'
       });
     }

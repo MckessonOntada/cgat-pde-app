@@ -154,7 +154,6 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.message.deactivateConfirmaiton': 'S_Are you sure, you want to deactivate this SP Account?',
   'manageSPAccount.message.deactivate_success': 'S_SP Account(s) have been Deactivated successfully.',
   'manageSPAccount.message.deactivate_failure': 'S_Failed to Deactivate the SP Account(s).',
-  'errors.default': 'S_An unexpected error occurred. Please try again.',
 
   'manageSPAccount.labels.accountNumber': 'S_Account Number',
   'manageSPAccount.labels.accountName': 'S_Account Name',

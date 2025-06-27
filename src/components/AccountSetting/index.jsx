@@ -27,7 +27,7 @@ const AccountSetting = () => {
       },
       onError: () => {
         setNotification({
-          description: t('reset.password.error'),
+          description: t('errors.default'),
           type: 'error'
         });
       }

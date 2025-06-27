@@ -75,7 +75,6 @@ export const ApproverManagementES = {
   'approvergroup.view.subheader.manage_treatment_center': 'S_Approver User List',
 
   'errors.approverGroup_index_name_1_practiceId_1': 'S_Approver group name already exists in the System.',
-  'errors.default': 'S_An unexpected error occurred.',
 
   'approvergroup.messages.approvergroup_deactivate_success': 'S_Approver Group has been Deactivated successfully.',
   'approvergroup.messages.approvergroup_deactivate_failure': 'S_Failed to Deactivate the Approver Group.',

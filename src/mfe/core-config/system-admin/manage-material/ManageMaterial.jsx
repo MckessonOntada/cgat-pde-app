@@ -68,7 +68,7 @@ function ManageMaterial() {
           <ManageMaterialTable
             className={styles.manageMaterialTable}
             onSuccess={() => showAlert('success', t('manageMaterial.drawer.controls.apply.success'))}
-            onError={() => showAlert('error', t('manageMaterial.drawer.controls.apply.error'))}
+            onError={() => showAlert('error', t('errors.default'))}
           />
         </div>
       </div>

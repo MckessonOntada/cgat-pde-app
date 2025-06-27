@@ -54,7 +54,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     {
       onSuccess: (response) => {},
       onError: (error) => {
-        showAlert('error', 'Error while fetching Catalog Details');
+        showAlert('error', t('errors.default'));
         setOpenCatalogDetails(false);
       }
     }
@@ -77,7 +77,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       },
       onError: (error) => {
         setOpenCatalogDetails(false);
-        showAlert('error', t('manageMaterial.drawer.controls.apply.error'));
+        showAlert('error', t('errors.default'));
       }
     }
   );
@@ -126,7 +126,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
         refetch();
       },
       onError: (error) => {
-        showAlert('error', t('ManageCatalog.delink.error'));
+        showAlert('error', t('errors.default'));
       }
     }
   );

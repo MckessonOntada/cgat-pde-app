@@ -79,7 +79,7 @@ export const ManageMaterialProvider = ({ children }) => {
       const res = await HttpResourceService.callRest(`${getApiUrl()}`, httpVerb.GET, {});
 
       if (!res.data || !res.data.content) {
-        showAlert({ description: t('manageMaterial.data.fetch.error'), type: 'error', anchorEl: alertContainerId });
+        showAlert({ description: t('errprs.default'), type: 'error', anchorEl: alertContainerId });
         return;
       }
 
@@ -95,7 +95,7 @@ export const ManageMaterialProvider = ({ children }) => {
     },
     {
       onError: (error) => {
-        error && showAlert({ description: t('manageMaterial.data.fetch.error'), type: 'error', anchorEl: alertContainerId });
+        error && showAlert({ description: t('errprs.default'), type: 'error', anchorEl: alertContainerId });
       }
     }
   );

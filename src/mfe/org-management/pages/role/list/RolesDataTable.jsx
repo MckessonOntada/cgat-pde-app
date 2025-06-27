@@ -34,7 +34,7 @@ const RolesDataTable = () => {
     onError: (error, variables, context) => {
       setMessage({
         kind: 'error',
-        primaryMessage: t('orgManagement.messages.deleteRoleFailed')
+        primaryMessage: t('errors.default')
       });
     },
     onSuccess: (data, variables, context) => {

@@ -89,7 +89,7 @@ const UserPermissions = () => {
           }
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: 'Failed to create/update Permissions' });
+          setAlert({ type: 'error', message: t('errors.default') });
           setIsAlertVisible(true);
         }
       }

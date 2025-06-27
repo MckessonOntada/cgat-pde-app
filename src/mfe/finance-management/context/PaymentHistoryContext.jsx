@@ -139,7 +139,7 @@ export const PaymentHistoryProvider = ({ children }) => {
     },
     onError: (error) => {
       const { response } = error;
-      let errorMsg = response?.data?.message || 'Error fetching payment history listing';
+      let errorMsg = t('errors.default');
       showAlert({
         description: errorMsg,
         type: 'error',
@@ -211,9 +211,7 @@ export const PaymentHistoryProvider = ({ children }) => {
       onError: (error) => {
         if (error && error.response && error.response.data && error.response.data) {
           showAlert({
-            description: CommonUtils.isNonEmptyString(error.response.data.message)
-              ? error.response.data.message
-              : t('paymentInvoices.paymentHistory.export.error'),
+            description: t('errors.default'),
             type: 'error',
             anchorEl: alertContainerId
           });

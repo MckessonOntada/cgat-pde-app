@@ -343,7 +343,7 @@ export const UserManagementES = {
 
   'errors.user_email_key': 'S_Email ID already exists in the System.',
   'errors.user_phone_key': 'S_Phone number already exists.',
-  'errors.default': 'S_An unexpected error occurred.',
+  'errors.default': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
 
   'messages.user_deactivate_success': 'S_User has been Deactivated successfully.',
   'messages.user_deactivate_failure': 'S_Failed to Deactivate the User.',
@@ -374,11 +374,10 @@ export const UserManagementES = {
   'userManagement.edit_sysadmin': 'S_Edit System Administrator',
   'userManagement.edit_organization_user': 'S_Edit Organization User',
   'errors.messages.dateRange': "S_S_Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.emptyDataDescription': 'S_S_An unexpected error occurred. Please try again.',
+  'errors.messages.emptyDataDescription': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
   'label.comment': 'S_S_Comment',
   'userManagement.header.review_user': 'S_Review Organization User',
   'errors.messages.dateRange': "S_Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_Comment',
   'label.comments': 'S_Comments',
   'file.download.csv': 'S_Download CSV Template',

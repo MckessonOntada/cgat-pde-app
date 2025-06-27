@@ -76,7 +76,7 @@ const ProviderDetails = () => {
         onError: () => {
           setNotification({
             type: 'error',
-            description: t('provider.sp.account.unabletounlink')
+            description: t('errors.default')
           });
         }
       }

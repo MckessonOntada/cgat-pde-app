@@ -158,7 +158,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       onError: (error) => {
         sendNotification({
           type: 'error',
-          description: t('ManageCatalog.delink.error')
+          description: t('errors.default')
         });
       }
     }
@@ -181,7 +181,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
         setOpenSPMaterialDetails(false);
         sendNotification({
           type: 'error',
-          description: t('ManageCatalog.configure.error')
+          description: t('errors.default')
         });
       }
     }
