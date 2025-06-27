@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiSelectContext';
 import './styles.scss';
-function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
+function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect = false }) {
   const { t } = useTranslate();
   const {
     searchOrgList,
@@ -18,8 +18,6 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     setCheckedAccounts,
     checkedAccounts,
     refetchAccounts,
-    checkedOrganizations,
-    setCheckedOrganizations,
     totalOrgs,
     totalAccs
   } = useOrgAccountsMultiSelectionContext();
@@ -28,9 +26,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     if (!Array.isArray(selectedValue)) {
       return;
     }
-
     const _selected = selectedValue.filter((item) => item.isChecked);
-
     if (_selected.length > selectedOrganization?.length) {
       const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
 
@@ -38,30 +34,8 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
         await refetchAccounts();
       }
     }
+    setSelectedOrganization(_selected);
 
-    setSelectedOrganization((prev) => {
-      if (!Array.isArray(prev)) {
-        return [];
-      }
-      const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
-      unselectedOrgs.forEach((org) => {
-        setCheckedAccounts((prev) => {
-          if (!Array.isArray(prev)) {
-            return [];
-          }
-          return prev.filter((acc) => acc.practiceId !== org.value);
-        });
-
-        setAccountOptions((prev) => {
-          if (!Array.isArray(prev)) {
-            return [];
-          }
-          return prev.filter((acc) => acc.practiceId !== org.value);
-        });
-      });
-      return _selected;
-    });
-    setCheckedOrganizations(_selected);
     if (_selected.length > 0) {
       setOptions((prevOptions) => {
         const updatedOptions = prevOptions.map((opt) => {
@@ -96,8 +70,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
         }
       });
+
       setCheckedAccounts(_checkedOptions);
-      setSelectedAccount(selectedValue);
+      setSelectedAccount(_checkedOptions);
       setAccountOptions(selectedValue);
     }
   };
@@ -117,11 +92,11 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           recordsCountToEnableSearch={5}
           size="md"
           isSortEnable={false}
-          noSelectedCountMessage={t('forms.labels.organization')}
+          noSelectedCountMessage={t(isSelect ? 'forms.labels.organization' : 'ALL')}
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalOrgs}
           clearAllSelectedValues={() => {
-            setCheckedOrganizations([]);
+            setSelectedOrganization([]);
             setSelectedAccount([]);
           }}
         />
@@ -139,7 +114,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           onSearch={(event) => searchAccountList(event)}
           recordsCountToEnableSearch={5}
           size="md"
-          noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+          noSelectedCountMessage={t(isSelect ? 'ManageCatalog.SelectAccount' : 'ALL')}
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalAccs}
         />

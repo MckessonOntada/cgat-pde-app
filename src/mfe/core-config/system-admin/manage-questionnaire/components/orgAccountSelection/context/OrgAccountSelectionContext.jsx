@@ -1,6 +1,8 @@
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonDataService from '@src/api/commonService/CommonDataService';
+import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { serializeParams } from '@src/util/ApiUtils';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -87,27 +89,23 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
   }, []);
   const searchOrgList = debounceOrgSearch();
   // Accounts List config
-  const accountParams = () => {
-    return {
-      pageNo: 0,
-      pageSize: ACCOUNTS_PER_SEARCH,
-      practiceId: selectedOrganization.id,
-      partnerFunction: 'SOLD_TO',
-      status: 'active',
-      query: searchAccountText,
-      ...(enableConfigure ? { channelType: 'ALL' } : {})
-    };
+
+  const accountParams = {
+    pageNo: 0,
+    pageSize: ACCOUNTS_PER_SEARCH,
+    query: searchAccountText,
+    status: 'active',
+    partnerFunction: 'SOLD_TO',
+    practiceIdList: !!selectedOrganization ? selectedOrganization?.id : [],
+    allAccounts: !!selectedOrganization ? false : true,
+    channelType: CHANNEL_TYPE.BUY_AND_BILL
   };
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
-    queryKey: [searchAccountText, selectedOrganization],
+    queryKey: ['accounts', searchAccountText, selectedOrganization?.id],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(
-        `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts?${serializeParams(accountParams())}`,
-        httpVerb.GET,
-        {}
-      );
+      const response = await SPCatalogService.getAccountList(accountParams);
       if (response) {
-        const { content, totalElements, totalPages } = response.data;
+        const { content, totalElements, totalPages } = response;
         setTotalAccs(totalElements);
         let _opt =
           content.map((item, index) => ({
@@ -124,7 +122,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled: !!selectedOrganization && !!enableAcct
+    enabled: !!enableAcct
   });
   const debounceAccountsSearch = useCallback(() => {
     let timeoutId;

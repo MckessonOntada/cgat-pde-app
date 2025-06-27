@@ -1,5 +1,6 @@
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 
@@ -15,7 +16,7 @@ export const useOrgAccountsMultiSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, enableAcct = true }) => {
+export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, enableAcct = true, isLinkCatalog = false }) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
@@ -24,9 +25,10 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const [options, setOptions] = useState([]);
   const [accountOptions, setAccountOptions] = useState();
   const [checkedAccounts, setCheckedAccounts] = useState([]);
-  const [checkedOrganizations, setCheckedOrganizations] = useState([]);
+
   const [totalOrgs, setTotalOrgs] = useState();
   const [totalAccs, setTotalAccs] = useState();
+
   // Organization List configuration
   const orgPayload = {
     pageNo: 0,
@@ -44,11 +46,10 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
           index: index + 1,
           label: item.name,
           value: item.id,
-          isChecked: checkedOrganizations.length > 0 && checkedOrganizations.find((ele) => ele.value == item.id) ? true : false
+          isChecked: false
         }));
-        const mergedData = [...data, ...checkedOrganizations.filter((checkedOrg) => !data.some((newOrg) => newOrg.value === checkedOrg.value))];
-        setOptions(mergedData);
-        return mergedData;
+        setOptions(data);
+        return data;
       }
       setOptions([]);
       return [];
@@ -65,18 +66,27 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     };
   }, []);
   const searchOrgList = debounceOrgSearch();
-  // Accounts List config
-  const practiceIds = selectedOrganization ? selectedOrganization.map((item) => item.value) : [];
-  const payload = {
-    pageNo: 0,
-    pageSize: ACCOUNTS_PER_SEARCH,
-    query: searchAccountText,
-    status: 'active',
-    partnerFunction: 'SOLD_TO',
-    practiceIdList: practiceIds
-  };
+
+  const practiceIds = useMemo(() => {
+    return selectedOrganization ? selectedOrganization.map((item) => item.value) : [];
+  }, [selectedOrganization]);
+
+  const payload = useMemo(
+    () => ({
+      pageNo: 0,
+      pageSize: ACCOUNTS_PER_SEARCH,
+      query: searchAccountText,
+      status: 'active',
+      partnerFunction: 'SOLD_TO',
+      allAccounts: isLinkCatalog ? false : practiceIds.length === 0,
+      practiceIdList: practiceIds,
+      channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
+    }),
+    [searchAccountText, practiceIds]
+  );
+
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
-    queryKey: [searchAccountText, selectedOrganization],
+    queryKey: ['accountsList', payload],
     queryFn: async () => {
       const response = await SPCatalogService.getAccountList(payload);
       if (response) {
@@ -91,17 +101,15 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
           })) || [];
 
         const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
-
-        setAccountOptions(mergedAcc);
-
-        setSelectedAccount(mergedAcc);
+        setAccountOptions(_opt);
         return content || [];
       }
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled: !!selectedOrganization && selectedOrganization?.length > 0 && !!enableAcct
+    enabled: !!enableAcct && !isLinkCatalog
   });
+
   const debounceAccountsSearch = useCallback(() => {
     let timeoutId;
     return (text) => {
@@ -112,9 +120,11 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const searchAccountList = debounceAccountsSearch();
 
   useEffect(() => {
-    if (practiceIds.length === 0) {
-      setSelectedAccount(null);
-    }
+    // if (practiceIds.length > 0) {
+    //   setSelectedAccount([]);
+    //   setCheckedAccounts([]);
+    //   // refetchAccounts();
+    // }
   }, [practiceIds]);
 
   // Organization, Account values
@@ -135,8 +145,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     setCheckedAccounts,
     refetchAccounts,
     refetchOrgs,
-    checkedOrganizations,
-    setCheckedOrganizations,
+
     totalOrgs,
     totalAccs
   };

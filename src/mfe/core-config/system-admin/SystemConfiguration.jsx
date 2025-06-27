@@ -72,7 +72,7 @@ export default function SystemConfiguration() {
         path={'manage-account/*'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-            <OrgAccountSelectionProvider showAccountsSelect={true}>
+            <OrgAccountSelectionProvider enableAcct={false}>
               <ManageAccountRoute />
             </OrgAccountSelectionProvider>
           </ProtectedRoute>
