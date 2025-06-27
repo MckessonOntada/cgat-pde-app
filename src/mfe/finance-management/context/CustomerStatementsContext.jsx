@@ -206,13 +206,18 @@ export const CustomerStatementsProvider = ({ children }) => {
   const { mutate: exportStatementPDF } = useMutation(
     async (data) => {
       const { url, payload, type } = data;
+      const headers = {
+        accept: 'application/json, text/plain, */*',
+        'content-type': 'application/json;charset=UTF-8'
+      };
       return await HttpResourceService.callRest(
         url,
         httpVerb.POST,
         payload,
-        undefined,
-        false,
-        false,
+        headers,
+        null,
+        null,
+        null,
         'blob' // Set responseType to 'blob'
       );
     },
