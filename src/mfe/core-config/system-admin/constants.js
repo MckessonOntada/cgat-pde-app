@@ -35,7 +35,8 @@ const CARDS = [
     label: 'system_config_manage_material',
     icon: SystemConfigurationManageMaterial,
     details: 'system_config_description_manage_material',
-    path: CONFIG_MODULE_ROUTES.MANAGE_MATERIAL
+    path: CONFIG_MODULE_ROUTES.MANAGE_MATERIAL,
+    permissions: routePermissionConfig.material
   },
   {
     heading: 'dashboard.card.system_config_standard_settings',
@@ -78,7 +79,8 @@ const CARDS = [
     label: 'system_config_manage_materialcrosswalk',
     icon: SystemConfigurationMaterialCrosswalk,
     details: 'system_config_description_material_crosswalk',
-    path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
+    path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK,
+    permissions: routePermissionConfig.crosswalk
   },
   {
     heading: 'dashboard.card.system_config_sp_settings',
@@ -86,7 +88,8 @@ const CARDS = [
     label: 'system_config_manage_spcatalog',
     icon: SystemConfigurationSPCatalog,
     details: 'system_config_description_manage_spcatalog',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SP_CATALOG
+    path: CONFIG_MODULE_ROUTES.MANAGE_SP_CATALOG,
+    permissions: routePermissionConfig.spCatalog
   },
   {
     heading: 'dashboard.card.system_config_sp_settings',
@@ -94,7 +97,8 @@ const CARDS = [
     label: 'system_config_manage_spaccount',
     icon: SystemConfigurationSPAccounts,
     details: 'system_config_description_manage_spaccount',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SP_ACCOUNT
+    path: CONFIG_MODULE_ROUTES.MANAGE_SP_ACCOUNT,
+    permissions: routePermissionConfig.spAccount
   }
 ];
 
