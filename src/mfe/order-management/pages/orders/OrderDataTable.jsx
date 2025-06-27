@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import { CustomDataTable } from '../../../../components/dataTableComponent';
 import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -22,27 +21,8 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
     });
   }, [tab]);
   const { t } = useTranslate();
-  const {
-    dataState: data,
-    paginationConfig,
-    isFetching,
-    error,
-    setCurrentPage,
-    applySort,
-    refreshData,
-    orderView,
-    changeOrderView,
-    fileteredData
-  } = useOrders();
-  const [charSize, setCharSize] = useState(0);
-  const calculateMinWidth = useMemo(() => {
-    if (typeof charSize === 'number' && charSize > 0) {
-      return `${70 + charSize * 10}px`;
-    }
-    return '80px';
-  }, [charSize]);
+  const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, orderView, changeOrderView, filteredData } = useOrders();
 
-  // const columns = createColumns(t, navigate, tab, alertContainerId, calculateMinWidth, setCharSize);
   const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {
@@ -95,18 +75,13 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
             isLoading={isFetching}
             error={error && error.message}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('captions.emptyTableSubtitle')}
+            heading={!filteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+            description={!filteredData && t('captions.emptyTableSubtitle')}
           />
         }
       />
     </>
   );
-};
-
-OrderDataTable.propTypes = {
-  type: PropTypes.string,
-  pagination: PropTypes.bool
 };
 
 export default OrderDataTable;

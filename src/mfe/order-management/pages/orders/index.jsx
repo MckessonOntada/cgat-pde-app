@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
@@ -51,39 +51,10 @@ const OrderIndex = () => {
     return [];
   }, [location.search]);
 
-  const {
-    applyFilters,
-    changeTab,
-    orderView,
-    assigneeList,
-    error,
-    searchAssigneeByTest,
-    setAssigneeOnChange,
-    changeOrderView,
-    data,
-    isFetching,
-    config,
-    fileteredData
-  } = useOrders();
-
+  const { assigneeList, error, searchAssigneeByTest, data, isFetching, config } = useOrders();
   const activeTab = tabList.find((tab) => tab.id === config.tab);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
-
-  useEffect(() => {
-    try {
-      const parsedFilters = JSON.parse(filterParams);
-      if (parsedFilters.startDate) parsedFilters.startDate = DateUtils.formatDate(parsedFilters.startDate, 'mm/dd/yyyy');
-      if (parsedFilters.endDate) parsedFilters.endDate = DateUtils.formatDate(parsedFilters.endDate, 'mm/dd/yyyy');
-      parsedFilters.dateRange = [parsedFilters.startDate || '', parsedFilters.endDate || ''];
-      if (parsedFilters.assigneeIds) {
-        parsedFilters.assigneeIds = parsedFilters.assigneeIds.split(',');
-      }
-      const hasFilter = Object.values(parsedFilters).some((val) => val !== '' && val !== null && !(Array.isArray(val) && val.length === 0));
-
-      if (hasFilter) applyFilters(parsedFilters);
-    } catch (error) {}
-  }, []);
 
   const handleApplyFilters = (filters) => {
     const searchParams = {
@@ -118,12 +89,12 @@ const OrderIndex = () => {
       }
     });
     params.set('filters', JSON.stringify(cleanedParams));
-    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
   };
 
   const handleClearFilters = () => {
     params.delete('filters');
-    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
   };
 
   const handleOnTabChange = (newTab) => {
@@ -146,7 +117,6 @@ const OrderIndex = () => {
     const tabId = params.get('tab') || ORDER_TABS.SUBMITTED_BUY_AND_BILL;
     const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
     setTabList(newTabs);
-    changeTab(tabId, true);
   }, [location.search]);
 
   React.useEffect(() => {
@@ -174,9 +144,6 @@ const OrderIndex = () => {
   }, [error]);
 
   const toggleFilters = TOGGLE_FILTERS[config.tab];
-  useEffect(() => {
-    changeOrderView(() => toggleFilters && Array.isArray(toggleFilters) && toggleFilters[0]);
-  }, [config.tab]);
 
   const showCardView = useResponsiveView();
 
@@ -233,7 +200,7 @@ const OrderIndex = () => {
         options: orderTypes.map((opt) => ({ label: t(`labels.caption.${opt}`), value: opt }))
       });
 
-      if (orderView === ORDER_VIEW.ALL_ORDERS && config.tab === ORDER_TABS.PENDING_APPROVAL) {
+      if (config.view === ORDER_VIEW.ALL_ORDERS && config.tab === ORDER_TABS.PENDING_APPROVAL) {
         filters.push({
           type: 'multiSelectDropdown',
           name: 'assigneeIds',
@@ -244,11 +211,6 @@ const OrderIndex = () => {
           variant: 'async',
           onSearch: searchAssigneeByTest,
           recordsCountToEnableSearch: 2
-          // getUpdatedOptions: (e) => {
-          //   if (assigneeIdsFromURL?.length === 0 && e?.length > 0) {
-          //     setAssigneeOnChange(e);
-          //   }
-          // }
         });
       }
     }
@@ -275,7 +237,7 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [activeTab, orderView, assigneeList, location]);
+  }, [activeTab, assigneeList, location]);
 
   const initialFilterData = React.useMemo(() => {
     if (filterParams) {
@@ -385,8 +347,8 @@ const OrderIndex = () => {
                     isLoading={isFetching}
                     error={error && error.message}
                     image={EmptyDataImage}
-                    heading={!fileteredData ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-                    description={!fileteredData && t('captions.emptyTableSubtitle')}
+                    heading={!Boolean(filterParams) ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
+                    description={!Boolean(filterParams) && t('captions.emptyTableSubtitle')}
                   />
                 }
               />
