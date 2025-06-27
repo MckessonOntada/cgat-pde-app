@@ -176,7 +176,8 @@ export default function CreditsTable(props) {
           size="sm">
           {t('paymentInvoices.credits.table.downloadPdf')}
         </Button>
-      )
+      ),
+      omit: selectableRows
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
