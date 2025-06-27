@@ -101,13 +101,13 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
           })) || [];
 
         const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
-        setAccountOptions(mergedAcc);
+        setAccountOptions(_opt);
         return content || [];
       }
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled: !!enableAcct && !isLinkCatalog && !selectedAccount?.filter((item) => item.isChecked).length > 0
+    enabled: !!enableAcct && !isLinkCatalog
   });
 
   const debounceAccountsSearch = useCallback(() => {
@@ -120,11 +120,11 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const searchAccountList = debounceAccountsSearch();
 
   useEffect(() => {
-    if (practiceIds.length > 0) {
-      setSelectedAccount([]);
-      setCheckedAccounts([]);
-      refetchAccounts();
-    }
+    // if (practiceIds.length > 0) {
+    //   setSelectedAccount([]);
+    //   setCheckedAccounts([]);
+    //   // refetchAccounts();
+    // }
   }, [practiceIds]);
 
   // Organization, Account values

@@ -7,6 +7,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
   const { t } = useTranslate();
   const {
     searchOrgList,
+    selectedOrganization,
     setSelectedOrganization,
     searchAccountList,
     setSelectedAccount,
@@ -16,6 +17,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
     setAccountOptions,
     setCheckedAccounts,
     checkedAccounts,
+    refetchAccounts,
     totalOrgs,
     totalAccs
   } = useOrgAccountsMultiSelectionContext();
@@ -24,30 +26,15 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
     if (!Array.isArray(selectedValue)) {
       return;
     }
-
     const _selected = selectedValue.filter((item) => item.isChecked);
-    setSelectedOrganization((prev) => {
-      if (!Array.isArray(prev)) {
-        return [];
-      }
-      const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
-      // unselectedOrgs.forEach((org) => {
-      //   setCheckedAccounts((prev) => {
-      //     if (!Array.isArray(prev)) {
-      //       return [];
-      //     }
-      //     return prev.filter((acc) => acc.practiceId !== org.value);
-      //   });
+    if (_selected.length > selectedOrganization?.length) {
+      const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
 
-      //   setAccountOptions((prev) => {
-      //     if (!Array.isArray(prev)) {
-      //       return [];
-      //     }
-      //     return prev.filter((acc) => acc.practiceId !== org.value);
-      //   });
-      // });
-      return _selected;
-    });
+      if (newOrg) {
+        await refetchAccounts();
+      }
+    }
+    setSelectedOrganization(_selected);
 
     if (_selected.length > 0) {
       setOptions((prevOptions) => {
