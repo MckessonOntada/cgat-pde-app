@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BREADCRUMB_ITEMS, CARDS } from './constants.js';
 import { Link } from 'react-router-dom';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation.js';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
+import usePermission from '@src/hooks/usePermissions.js';
 
 export function SystemConfigDashboard(props) {
   const { t } = useTranslate();
+  const { hasPermission, hasAnyPermission } = usePermission();
   const translatedBreadcrumbs = BREADCRUMB_ITEMS.map((item) => ({
     ...item,
     label: t(`dashboard.card.${item.label}`)
   }));
-  const uniqueHeadings = [...new Set(CARDS.map((card) => card.heading))];
+
+  const accessibleCards = useMemo(() => {
+    return CARDS.filter((card) => {
+      return !card.permissions || hasAnyPermission(card.permissions);
+    });
+  }, []);
+
+  const uniqueHeadings = useMemo(() => {
+    return [...new Set(accessibleCards.map((card) => card.heading))];
+  }, [accessibleCards]);
+
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={translatedBreadcrumbs} />
@@ -21,16 +33,18 @@ export function SystemConfigDashboard(props) {
           <React.Fragment key={heading}>
             <Heading as="h2">{t(heading)}</Heading>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 dashboard-card-wrapper">
-              {CARDS.filter((card) => card.heading === heading).map((card, index) => {
-                const Icon = card.icon;
-                return (
-                  <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={card.name}>
-                    <Icon />
-                    <p className="card-heading">{t(`dashboard.card.${card.label}`)}</p>
-                    <p>{t(`dashboard.card.${card.details}`)}</p>
-                  </Link>
-                );
-              })}
+              {accessibleCards
+                .filter((card) => card.heading === heading)
+                .map((card, index) => {
+                  const Icon = card.icon;
+                  return (
+                    <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={card.name}>
+                      <Icon />
+                      <p className="card-heading">{t(`dashboard.card.${card.label}`)}</p>
+                      <p>{t(`dashboard.card.${card.details}`)}</p>
+                    </Link>
+                  );
+                })}
             </div>
           </React.Fragment>
         ))}

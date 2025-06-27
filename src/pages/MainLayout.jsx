@@ -31,11 +31,7 @@ function MainLayout() {
 
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
-      <Header
-        onNotificationClick={() =>
-          setNotificationDrawerOpen(!notificationDrawerOpen)
-        }
-      />
+      <Header onNotificationClick={() => setNotificationDrawerOpen(!notificationDrawerOpen)} />
       <NotificationDrawer />
       <ErrorWrapper>
         <div className={`${styles['app-wrapper']}`} id={debugIds(ID.APP_WRAPPER)}>
@@ -62,7 +58,12 @@ function MainLayout() {
                     <Route
                       path={'system-admin/*'}
                       element={
-                        <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
+                        <ProtectedRoute
+                          permissions={[
+                            ...routePermissionConfig.systemAdmin,
+                            ...routePermissionConfig.organization,
+                            ...routePermissionConfig.systemConfiguration
+                          ]}>
                           <Dashboard />
                         </ProtectedRoute>
                       }
