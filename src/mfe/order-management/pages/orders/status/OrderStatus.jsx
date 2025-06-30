@@ -107,11 +107,11 @@ const OrderStatus = () => {
               <DetailSegment
                 className={styles.orderCost}
                 customLabelStyles={styles.orderCostItem}
-                label={t('labels.price')}
+                label={t('labels.orderCost')}
                 customValueStyles={styles.orderCostItem}
                 value={
                   <p className="dollarSign">
-                    {orderCost ? (
+                    {orderCost !== null && orderCost !== undefined ? (
                       <>
                         <span className={`${styles.currencySymbol}`}>$</span>
                         {CommonUtils.formatNumberWithoutSymbol(orderCost)}
