@@ -20,6 +20,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import AuthUtils from '@src/util/AuthUtils';
 
 const OrgList = ({ onActionSuccess }) => {
   const { t } = useTranslate();
@@ -28,7 +29,7 @@ const OrgList = ({ onActionSuccess }) => {
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort, fileteredData } = useOrg();
   const dispatch = useDispatch();
   const { hasPermission } = usePermission();
-
+  const isDisabled = AuthUtils.isTreatmentCentreExecutive() || AuthUtils.isCustomerCenter();
   const showCardView = useResponsiveView();
 
   const handleDeActivateOrg = async (orgId) => {
@@ -112,7 +113,7 @@ const OrgList = ({ onActionSuccess }) => {
       ),
       wrap: true,
       width: '40px',
-      omit: !hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION)
+      omit: !hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN) || isDisabled
     },
     {
       id: 'name',
