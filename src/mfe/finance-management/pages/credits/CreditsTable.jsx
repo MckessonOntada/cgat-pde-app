@@ -164,19 +164,22 @@ export default function CreditsTable(props) {
       sortable: true,
       wrap: true,
 
-      cell: (props) => (
-        <Button
-          disabled={!props.isPdfAvailable}
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {
-            handlePdfDownload(props);
-          }}
-          size="sm">
-          {t('paymentInvoices.credits.table.downloadPdf')}
-        </Button>
-      ),
+      cell: (props) =>
+        props.isPdfAvailable ? (
+          <Button
+            disabled={!props.isPdfAvailable}
+            className="back-button-control"
+            variant="tertiary"
+            Icon={() => <PDFicon />}
+            onClick={() => {
+              handlePdfDownload(props);
+            }}
+            size="sm">
+            {t('paymentInvoices.credits.table.downloadPdf')}
+          </Button>
+        ) : (
+          '-'
+        ),
       omit: selectableRows
     }
   ];
