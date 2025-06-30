@@ -27,16 +27,15 @@ function TableCardView(props) {
     collapsibleCardView,
     isMultipleRowSelect = false,
     selectedData = [],
-    setSelectedData
+    setSelectedData,
+    nestedCardViewKey
   } = props;
 
   const [tableSortKey, setTableSortKey] = useState(defaultSortColumn || '');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [subCardExpandable, setSubCardExpandable] = useState(false);
 
-  const selectedAll = useMemo(
-    () => data.every((record) => selectedData.some((selected) => isEqual(selected, record))),
-    [data, selectedData]
-  );
+  const selectedAll = useMemo(() => data.every((record) => selectedData.some((selected) => isEqual(selected, record))), [data, selectedData]);
 
   const handleSelectAll = () => {
     if (selectedAll) {
@@ -118,14 +117,33 @@ function TableCardView(props) {
           {renderCardSort()}
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
             {data.map((row, index) => (
-              <CustomCard
-                columns={columns}
-                rowIndex={index}
-                row={row}
-                defaultExpandedCardView={defaultExpandedCardView}
-                collapsibleCardView={collapsibleCardView}
-                selectedData={selectedData}
-              />
+              <React.Fragment key={`main-${index}`}>
+                <CustomCard
+                  columns={columns}
+                  rowIndex={index}
+                  row={row}
+                  defaultExpandedCardView={defaultExpandedCardView}
+                  collapsibleCardView={collapsibleCardView}
+                  selectedData={selectedData}
+                  setSubCardExpandable={setSubCardExpandable}
+                  nestedRow={!!row[nestedCardViewKey]}
+                />
+                {row.isParent &&
+                  subCardExpandable &&
+                  row[nestedCardViewKey].map((nestedRow, nestedIndex) => (
+                    <div className="custom-sub-card">
+                      <CustomCard
+                        key={`nested-${index}-${nestedIndex}`}
+                        columns={columns}
+                        rowIndex={`${index}-${nestedIndex}`}
+                        row={nestedRow}
+                        defaultExpandedCardView={defaultExpandedCardView}
+                        collapsibleCardView={collapsibleCardView}
+                        selectedData={selectedData}
+                      />
+                    </div>
+                  ))}
+              </React.Fragment>
             ))}
           </div>
         </React.Fragment>

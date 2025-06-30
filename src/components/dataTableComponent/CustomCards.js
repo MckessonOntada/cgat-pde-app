@@ -25,7 +25,16 @@ collapsibleCardView -- A user input that card can be expand and  collapse
  * cardHeader - if "true" the column will be moved to first index of default Data, Beside the expand collapse Button.
  */
 
-function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleCardView = true, rowIndex, selectedData = [] }) {
+function CustomCard({
+  columns,
+  row,
+  defaultExpandedCardView = true,
+  collapsibleCardView = true,
+  rowIndex,
+  selectedData = [],
+  setSubCardExpandable,
+  nestedRow
+}) {
   const isSelectableInput = columns.filter((col) => !!col.isSelectable);
   let showDefaultData = columns
     .filter((col) => !!col.showInMobileHeader && !col.isAction && !col.omit && !col.isSelectable)
@@ -59,7 +68,12 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
     if (hiddenData.length === 0 || showDefaultData.length === 0) {
       return;
     }
-    collapsibleCardView && setExpanded(!expanded);
+    if (collapsibleCardView) {
+      setExpanded(!expanded);
+      if (nestedRow) {
+        setSubCardExpandable(!expanded);
+      }
+    }
   };
 
   const handleActionClick = (e, onClick) => {
@@ -95,7 +109,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
 
   return (
     <div className={`table-card-container ${selectedCard ? `active` : ``}`} key={row.id} onClick={handleCardClick}>
-      {!isSelectableInput[0]?.omit && isSelectableInput.length > 0 && (
+      {!isSelectableInput[0]?.omit && !nestedRow && isSelectableInput.length > 0 && (
         <div className="card-header">
           <div style={{ width: '100%' }}>
             {isSelectableInput.map((col) => (

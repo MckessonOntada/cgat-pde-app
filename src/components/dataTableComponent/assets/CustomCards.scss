@@ -177,14 +177,19 @@
     text-decoration: none;
   }
 }
-.inline-status{
+.inline-status {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  .collapsed-detail{
+  .collapsed-detail {
     align-content: center;
   }
-  .column-name{
+  .column-name {
     font-size: 14px;
+  }
+}
+.custom-sub-card {
+  .table-card-container {
+    background-color: #fbfbfa;
   }
 }
