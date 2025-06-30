@@ -90,6 +90,7 @@ const TherapyDataTable = (props) => {
       expandableRowExpanded={isRowExpanded}
       expandableRowsComponent={ExpandedComponent}
       expandableRowsHideExpander={true}
+      nestedCardViewKey={'therapies'}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}
