@@ -42,7 +42,8 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   }, [channelType, patientDetailsRequired]);
 
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const filteredStepperItems = forms.filter((form) => {
     if (!patientDetailsRequired && form.name === ORDER_STAGES.PATIENT_DETAILS) {
       return false;

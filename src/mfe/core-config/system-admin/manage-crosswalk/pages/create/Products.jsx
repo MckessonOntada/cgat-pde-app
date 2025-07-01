@@ -11,65 +11,8 @@ import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
-const getColumns = ({ t }) => {
-  const { state, setValue } = useGenericContext();
-  const { pagination } = usePagination();
-  const { data } = useTable();
-  const onSelectProduct = (products) => {
-    setValue('selectedProducts', products);
-  };
-
-  return [
-    {
-      id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + pagination.pageNumber },
-        data,
-        'materialNumber',
-        pagination,
-        state.selectedProducts || [],
-        onSelectProduct
-      ),
-      cell: (row, index) => renderTableCheckBox(row, data, 'materialNumber', pagination, state.selectedProducts || [], onSelectProduct),
-      selector: (row) => row.materialNumber,
-      width: '50px',
-      showInMobileHeader: true
-    },
-    {
-      id: 'genericName',
-      name: t('manageMaterial.table.spProductName'),
-      selector: (row) => {},
-      minWidth: '240px',
-      sortable: true,
-      sortKey: 'material_description',
-      wrap: true,
-      cell: (props) => {
-        return (
-          <Link to={`?catalog=${props.id}`} className="MCP-table-link">
-            {props?.materialDescription}
-          </Link>
-        );
-      }
-    },
-    {
-      id: 'ndcNumber',
-      name: t('manageMaterial.table.spNDC'),
-      selector: (row) => {},
-      minWidth: '140px',
-      sortable: false,
-      wrap: true,
-      cell: ({ ndc }) => (
-        <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-          <Tooltip body={ndc}>{ndc}</Tooltip>
-        </span>
-      )
-    }
-  ];
-};
-
-const Products = () => {
+const Products = ({ material, linkedItems, products, onSelect }) => {
   const { t } = useTranslate();
   const { data, isLoading, error } = useTable();
   const navigate = useNavigate();
@@ -88,9 +31,57 @@ const Products = () => {
     }, 500),
     []
   );
+
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filters);
   }, [filters]);
+
+  const getColumns = ({ t }) => {
+    const { pagination } = usePagination();
+    const { data } = useTable();
+    return [
+      {
+        id: 'checkbox',
+        name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'materialNumber', pagination, products, onSelect),
+        cell: (row, index) => {
+          const isDisabled = Boolean(material && linkedItems[material.id]?.linkedProducts.find((item) => item.id === row.id));
+          return renderTableCheckBox(row, data, 'materialNumber', pagination, products, onSelect, false, false, isDisabled);
+        },
+        selector: (row) => row.materialNumber,
+        width: '50px',
+        showInMobileHeader: true
+      },
+      {
+        id: 'genericName',
+        name: t('manageMaterial.table.spProductName'),
+        selector: (row) => {},
+        minWidth: '240px',
+        sortable: true,
+        sortKey: 'material_description',
+        wrap: true,
+        cell: (props) => {
+          return (
+            <Link to={`?catalog=${props.id}`} className="MCP-table-link">
+              {props?.materialDescription}
+            </Link>
+          );
+        }
+      },
+      {
+        id: 'ndcNumber',
+        name: t('manageMaterial.table.spNDC'),
+        selector: (row) => {},
+        minWidth: '140px',
+        sortable: false,
+        wrap: true,
+        cell: ({ ndc }) => (
+          <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+            <Tooltip body={ndc}>{ndc}</Tooltip>
+          </span>
+        )
+      }
+    ];
+  };
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {

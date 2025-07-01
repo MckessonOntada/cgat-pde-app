@@ -63,7 +63,8 @@ const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 function AdditionalDetails() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const { controlRef } = useContext(FooterContext);
   const { isEdit = false, isApprover = false, alertState } = locationState;
   const { orderId } = useParams();

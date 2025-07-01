@@ -12,17 +12,13 @@ import Products from './Products';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import Summary from './Summary';
 import { useGenericContext } from '../../config/GenericContext';
-import { errorStatusCodes } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import CommonUtils from '@src/util/CommonUtils';
-import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -32,51 +28,46 @@ const CreateCrosswalk = () => {
   const material = searchParams.get('material');
   const trade = searchParams.get('trade');
   const therapy = searchParams.get('therapy');
-  const { state, reset } = useGenericContext();
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
-  const [selectedItems, setSelectedItems] = React.useState([]);
+  const [selectedProducts, setSelectedProducts] = React.useState([]);
+  const [linkedItems, setLinkedItems] = React.useState({});
   const { items: notifications, add: addNotification, remove: removeNotification, removeAll: removeAllNotification } = useTimedArray(10000);
 
   const handleOnSubmit = () => {
-    const { material, selectedProducts } = state;
-    if (material && selectedProducts.length > 0) {
-      const payload = {
-        bnbNdc: material.ndc,
-        spProductIds: selectedProducts.map((item) => item.materialNumber)
-      };
+    const payload = Object.values(linkedItems).map((material) => ({
+      bnbNdc: material.ndc,
+      spProductIds: material.linkedProducts.map((item) => item.materialNumber)
+    }));
 
-      SPCrosswalkService.createCrosswalk(payload)
-        .then((response) => {
-          if (response.status === 200) {
-            reset();
-            navigate('/system-admin/config/crosswalk', {
-              state: {
-                items: [
-                  {
-                    description: `${response.data} new crosswalk linked`,
-                    type: 'success',
-                    isSticky: true
-                  }
-                ]
-              }
-            });
-          }
-        })
-        .catch((error) => {
-          addNotification({
-            type: 'error',
-            description: t('errors.default'),
-            isSticky: true
+    SPCrosswalkService.createCrosswalk(payload)
+      .then((response) => {
+        if (response.status === 200) {
+          navigate('/system-admin/config/crosswalk', {
+            state: {
+              items: [
+                {
+                  description: `${response.data} new crosswalk linked`,
+                  type: 'success',
+                  isSticky: true
+                }
+              ]
+            }
           });
+        }
+      })
+      .catch((error) => {
+        addNotification({
+          type: 'error',
+          description: t('errors.default'),
+          isSticky: true
         });
-    }
+      });
   };
 
   const confirmLinkMaterials = () => {
     removeAllNotification();
-    const { material, selectedProducts } = state;
-    if (!material || !selectedProducts || selectedProducts.length === 0) {
+    if (Object.keys(linkedItems).length === 0) {
       addNotification({
         type: 'error',
         description: t('crosswalk.create.noSelectionError'),
@@ -112,30 +103,67 @@ const CreateCrosswalk = () => {
     dispatch(openModal(modalState));
   };
 
-  const handleOnDetailsPanelClose = () => {
-    const params = new URLSearchParams(location.search);
-    params.delete('material');
-
-    const newSearch = params.toString();
-    navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ''}`, {
-      replace: true
-    });
-  };
-
-  React.useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, []);
-
   const handleOnClose = () => {
     searchParams.delete('trade');
     searchParams.delete('channelType');
     searchParams.delete('therapy');
     navigate({
-      pathname: '',
+      pathname: location.pathname,
       search: searchParams.toString() ? `?${searchParams.toString()}` : ''
     });
+  };
+
+  const handleOnLinkMaterial = () => {
+    let updatedLinkedItems;
+
+    if (linkedItems[selectedMaterial.id]) {
+      const updatedMaterial = {
+        ...selectedMaterial,
+        linkedProducts: [...linkedItems[selectedMaterial.id].linkedProducts, ...selectedProducts]
+      };
+      updatedLinkedItems = {
+        ...linkedItems,
+        [selectedMaterial.id]: updatedMaterial
+      };
+    } else {
+      const updatedMaterial = {
+        ...selectedMaterial,
+        linkedProducts: selectedProducts
+      };
+      updatedLinkedItems = {
+        ...linkedItems,
+        [selectedMaterial.id]: updatedMaterial
+      };
+    }
+
+    setLinkedItems(updatedLinkedItems);
+    setSelectedMaterial(null);
+    setSelectedProducts([]);
+  };
+
+  const handleOnUnLinkMaterial = (materialId, productId) => {
+    const material = linkedItems[materialId];
+
+    if (!material) return;
+
+    const updatedLinkedProducts = material.linkedProducts.filter((product) => product.id !== productId);
+
+    if (updatedLinkedProducts.length === 0) {
+      const { [materialId]: _, ...remainingItems } = linkedItems;
+      setLinkedItems(remainingItems);
+    } else {
+      const updatedMaterial = {
+        ...material,
+        linkedProducts: updatedLinkedProducts
+      };
+
+      const updatedLinkedItems = {
+        ...linkedItems,
+        [materialId]: updatedMaterial
+      };
+
+      setLinkedItems(updatedLinkedItems);
+    }
   };
 
   return (
@@ -172,7 +200,7 @@ const CreateCrosswalk = () => {
               }}
               allowedSort={['trade_name']}
               fetchFn={MaterialService.getMaterialList}>
-              <Materials material={selectedMaterial} setMaterial={setSelectedMaterial} />
+              <Materials material={selectedMaterial} onSelect={setSelectedMaterial} />
             </TableProvider>
             <TableProvider
               defaultFilters={{
@@ -188,13 +216,13 @@ const CreateCrosswalk = () => {
               fetchFn={async (args) => {
                 const response = await MaterialService.getMaterialList(args);
                 if (response.content && CommonUtils.isNonEmptyArray(response.content)) {
-                  response.content = response.content.flatMap((item) => item.therapies);
+                  response.content = response.content.map((item) => item.therapies?.[0]).filter(Boolean);
                 }
                 return response;
               }}>
-              <Products selection={selectedItems} setSelection={setSelectedItems} />
+              <Products material={selectedMaterial} linkedItems={linkedItems} products={selectedProducts} onSelect={setSelectedProducts} />
             </TableProvider>
-            <Summary />
+            <Summary linkedMaterial={linkedItems} onUnlink={handleOnUnLinkMaterial} onLink={handleOnLinkMaterial} />
           </div>
         </div>
         <div className="controls">

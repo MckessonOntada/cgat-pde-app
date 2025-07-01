@@ -62,7 +62,8 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     showColumnNameInHeader: true,
     cell: (row) => {
       const { tradeName, cellValue, channelType, id, isParent } = row;
-      const { state: locationState = {} } = useLocation();
+      const location = useLocation();
+      const locationState = location?.state ?? {};
       const searchParams = new URLSearchParams({
         trade: tradeName,
         channelType

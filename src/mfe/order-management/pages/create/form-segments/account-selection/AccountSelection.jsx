@@ -28,7 +28,8 @@ const AccountSelection = () => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { orderId } = useParams();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const [accountConfig, setAccountConfig] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = locationState;

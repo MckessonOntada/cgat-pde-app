@@ -31,7 +31,8 @@ const ALLOWED_FILE_TYPE = [
 ];
 function UploadOrderDocument() {
   const { orderId } = useParams();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const navigate = useNavigate();
   const { t } = useTranslate();
   const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);

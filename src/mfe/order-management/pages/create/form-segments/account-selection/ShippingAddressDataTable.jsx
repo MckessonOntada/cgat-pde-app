@@ -17,8 +17,8 @@ const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, 
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
   const showCardView = useResponsiveView();
   const isDataFiltered = React.useMemo(() => {
-    return checkIsDataFiltered(filterConfig);
-  }, [filterConfig]);
+    return checkIsDataFiltered(filterState);
+  }, [filterState]);
   const handleOnPageChange = (_event, pageIndex) => {
     setPageNumber(pageIndex);
   };

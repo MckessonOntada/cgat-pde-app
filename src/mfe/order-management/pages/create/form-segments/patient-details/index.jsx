@@ -51,7 +51,8 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { controlRef } = useContext(FooterContext);
   const { showAlert } = useAlert();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const { isEdit = false, isApprover = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -162,7 +163,7 @@ const PatientDetails = () => {
         }
         setProvider(null);
       },
-      onError: ({ error, payload }) => {
+      onError: ({ err: error, payload }) => {
         const statusCode = error?.response?.status;
         if (statusCode === 409) {
           openDuplicateConfirmationModal(payload);
@@ -212,6 +213,7 @@ const PatientDetails = () => {
     if (isApprover) {
       skipDuplicateCheck = true;
     }
+    setInitialValues(form);
     savePatientDetails({ payload, skipDuplicateCheck });
   };
 

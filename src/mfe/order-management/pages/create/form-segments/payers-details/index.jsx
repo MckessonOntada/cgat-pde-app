@@ -56,7 +56,8 @@ function Payer() {
   const [flag, setFlag] = React.useState(false);
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
   const { isEdit = false, isApprover = false } = locationState || {};
@@ -168,7 +169,8 @@ function Payer() {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(`${RoutePaths.pathOrderManagement}${locationState.__prevSearch}`);
+      const prevSearch = locationState.__prevSearch || '';
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {

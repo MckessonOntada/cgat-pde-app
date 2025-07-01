@@ -13,11 +13,11 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
-const Materials = () => {
+const Materials = ({ onSelect, material }) => {
   const { t } = useTranslate();
   const { data, error, isLoading } = useTable();
   const { pagination, changePage } = usePagination();
-  const { applyFilters } = useFilters();
+  const { filters, applyFilters } = useFilters();
   const { applySort } = useSort();
   let beautifiedData = ServiceUtil.transformTherapies(data);
 
@@ -72,7 +72,6 @@ const Materials = () => {
   };
 
   const getColumns = () => {
-    const { state, setValue } = useGenericContext();
     return [
       {
         id: 'id',
@@ -109,11 +108,11 @@ const Materials = () => {
                     value: row.id
                   }
                 ]}
-                onChangeValue={() => setValue('material', row)}
+                onChangeValue={() => onSelect(row)}
                 onOtherTextChange={() => {}}
                 onSubRadioFieldChange={() => {}}
                 radioBtnWidth="auto"
-                value={state.material?.id == row.id ? row.id : ''}
+                value={material?.id == row.id ? row.id : ''}
               />
             </div>
           );
