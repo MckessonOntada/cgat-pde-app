@@ -56,7 +56,8 @@ const getOrderCost = (originalOrderCost, updatedOrderCost) => {
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state ?? {};
   const { orderId } = useParams();
   const { showAlert } = useAlert();
   const { controlRef } = useContext(FooterContext);

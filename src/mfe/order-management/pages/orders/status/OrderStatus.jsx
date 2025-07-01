@@ -18,8 +18,9 @@ const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { state: locationState = {} } = useLocation();
-  const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
+  const location = useLocation();
+  const locationState = location?.state ?? {};
+  const { data: orderDetails = {}, isLoader } = useOrder(orderId);
   const contentRef = useRef(null);
   const { controlRef } = useContext(FooterContext);
 
@@ -40,7 +41,7 @@ const OrderStatus = () => {
   const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
   const backToOrders = () => {
-    const prevSearch = locationState.__prevSearch;
+    const prevSearch = locationState.__prevSearch || '';
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
