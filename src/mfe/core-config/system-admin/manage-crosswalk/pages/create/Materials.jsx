@@ -5,7 +5,6 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import style from './style.module.scss';
-import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -13,7 +12,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
-const Materials = () => {
+const Materials = ({ onSelect, material }) => {
   const { t } = useTranslate();
   const { data, error, isLoading, fileteredData } = useTable();
   const { pagination, changePage } = usePagination();
@@ -69,7 +68,6 @@ const Materials = () => {
   };
 
   const getColumns = () => {
-    const { state, setValue } = useGenericContext();
     return [
       {
         id: 'id',
@@ -106,11 +104,11 @@ const Materials = () => {
                     value: row.id
                   }
                 ]}
-                onChangeValue={() => setValue('material', row)}
+                onChangeValue={() => onSelect(row)}
                 onOtherTextChange={() => {}}
                 onSubRadioFieldChange={() => {}}
                 radioBtnWidth="auto"
-                value={state.material?.id == row.id ? row.id : ''}
+                value={material?.id == row.id ? row.id : ''}
               />
             </div>
           );
