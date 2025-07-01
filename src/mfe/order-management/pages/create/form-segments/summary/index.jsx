@@ -50,7 +50,7 @@ const getOrderCost = (originalOrderCost, updatedOrderCost) => {
   if (!updatedOrderCost || isNaN(updatedOrderCost)) orderCost = originalOrderCost;
   else if (parseFloat(orderCost) !== parseFloat(updatedOrderCost)) orderCost = updatedOrderCost;
 
-  return CommonUtils.formatNumberWithoutSymbol(orderCost);
+  return orderCost;
 };
 
 const Summary = () => {
@@ -742,7 +742,7 @@ const Summary = () => {
                           value={
                             <span className="dollarSign ">
                               <span>$</span>
-                              {getOrderCost(orderCost, simulationData.updatedCost)}
+                              {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : getOrderCost(orderCost, simulationData.updatedCost))}
                             </span>
                           }
                         />
