@@ -70,9 +70,13 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
       <DetailSegment
         key={'patient-name'}
         label={t('labels.patientDetails')}
-        value={`${patient?.patientInfo ? `${getFullName(patient.patientInfo)}, ` : ''}${patient?.patientIdentifier ? `ID: ${patient.patientIdentifier}` : ''}${
-          patient?.medicalRecordNumber ? `, MRN: ${patient.medicalRecordNumber}` : ''
-        }`}
+        value={[
+          patient?.patientInfo && CommonUtils.getUSFullName(patient.patientInfo),
+          patient?.patientIdentifier && `ID: ${patient.patientIdentifier}`,
+          patient?.medicalRecordNumber && `MRN: ${patient.medicalRecordNumber}`
+        ]
+          .filter(Boolean)
+          .join(', ')}
       />
     );
   } else {

@@ -162,7 +162,7 @@ const PatientDetails = () => {
         }
         setProvider(null);
       },
-      onError: ({ error, payload }) => {
+      onError: ({ err: error, payload }) => {
         const statusCode = error?.response?.status;
         if (statusCode === 409) {
           openDuplicateConfirmationModal(payload);
@@ -212,6 +212,7 @@ const PatientDetails = () => {
     if (isApprover) {
       skipDuplicateCheck = true;
     }
+    setInitialValues(form);
     savePatientDetails({ payload, skipDuplicateCheck });
   };
 
