@@ -1,6 +1,5 @@
 @use "@src/assets/styles/abstracts/mixins";
 
-
 .userCardContainer {
   display: grid;
   gap: var(--spacing-04);
@@ -144,9 +143,12 @@
   }
 
   .credit-heading {
-    >div:first-of-type {
+    > div:first-of-type {
       grid-template-columns: 1fr 1fr;
       gap: var(--spacing-02);
     }
   }
+}
+#data-table-my-data-table div[role="row"] div[role="cell"] {
+  flex-wrap: nowrap;
 }
