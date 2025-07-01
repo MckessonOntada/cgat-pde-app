@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import style from './style.module.scss';
 import { useGenericContext } from '../../config/GenericContext';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -15,7 +15,7 @@ import ServiceUtil from '@src/api/commonService/ServiceUtil';
 
 const Materials = () => {
   const { t } = useTranslate();
-  const { data, error, isLoading, fileteredData } = useTable();
+  const { data, error, isLoading } = useTable();
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
@@ -30,6 +30,9 @@ const Materials = () => {
     }, 1000),
     []
   );
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filters);
+  }, [filters]);
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
@@ -221,8 +224,8 @@ const Materials = () => {
               isLoading={isLoading}
               error={error}
               image={EmptyDataImage}
-              heading={!fileteredData ? t('captions.emptyTableTitle.material-crosswalk') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('captions.emptyTableSubtitle.material-crosswalk')}
+              heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('captions.emptyTableTitle.material-crosswalk')}
+              description={!isDataFiltered && t('captions.emptyTableSubtitle.material-crosswalk')}
             />
           }
         />

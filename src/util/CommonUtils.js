@@ -690,6 +690,15 @@ function flattenTherapies(data) {
   }, []);
 }
 
+export const checkIsDataFiltered = (filters) => {
+  return Object.values(filters).some((value) => {
+    if (Array.isArray(value)) {
+      return value.some((item) => Boolean(item));
+    }
+    return Boolean(value);
+  });
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -742,7 +751,8 @@ const CommonUtils = Object.freeze({
   getAxiosErrorMessage,
   getListOverflowingDisplayLabel,
   flattenTherapies,
-  isEmptyArray
+  isEmptyArray,
+  checkIsDataFiltered
 });
 
 export default CommonUtils;

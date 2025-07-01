@@ -17,7 +17,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function SPMaterialDataTable({ isLinkCatalog = false }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, fileteredData, clearFilters } =
+  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
@@ -239,8 +239,8 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={!fileteredData ? t('manageSPMaterial.messageemptyTableTitle') : t('errors.messages.noRecordsFound')}
-                description={!fileteredData && t('manageSPMaterial.messages.emptyTableSubtitle')}
+                heading={filteredData ? t('errors.messages.noRecordsFound') : t('manageSPMaterial.messageemptyTableTitle')}
+                description={!filteredData && t('manageSPMaterial.messages.emptyTableSubtitle')}
               />
             }
             progressPending={isLoading}

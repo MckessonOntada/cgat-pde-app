@@ -48,7 +48,7 @@ export const ManageMaterialProvider = ({ children }) => {
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
+
   const [selectedMaterials, setSelectedMaterials] = useState([]);
 
   const { showAlert } = useAlert();
@@ -122,14 +122,14 @@ export const ManageMaterialProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
-    setfileteredData(true);
+
     setSelectedMaterials([]);
   };
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
+
     setSelectedMaterials([]);
   };
 
@@ -149,8 +149,7 @@ export const ManageMaterialProvider = ({ children }) => {
         applyFilters,
         clearFilters,
         selectedMaterials,
-        setSelectedMaterials,
-        fileteredData
+        setSelectedMaterials
       }}>
       {children}
     </ManageMaterialContext.Provider>

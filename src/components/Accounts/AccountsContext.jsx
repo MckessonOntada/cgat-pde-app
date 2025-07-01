@@ -40,7 +40,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState(INITIAL_SORT_PARAMS);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
+
   const updateFilterState = useCallback((field, value) => {
     setFilterConfig((prevState) => ({
       ...prevState,
@@ -51,7 +51,6 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const clearFilters = () => {
     setFilterConfig(INITIAL_STATE);
     setPaginationConfig(INITIAL_PAGINATION_STATE);
-    setfileteredData(false);
   };
 
   useEffect(() => {
@@ -110,7 +109,6 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
 
   const applyFilters = useCallback((values) => {
     setFilterConfig(values);
-    setfileteredData(true);
   }, []);
 
   const setPageNumber = (pageNumber) => {
@@ -143,22 +141,9 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       clearFilters,
       setPageNumber,
       applyFilters,
-      fileteredData
+      filterConfig
     }),
-    [
-      data,
-      updateFilterState,
-      clearFilters,
-      currentPage,
-      setPageNumber,
-      isLoading,
-      isError,
-      filterConfig,
-      paginationConfig,
-      applyFilters,
-      refetch,
-      fileteredData
-    ]
+    [data, updateFilterState, clearFilters, currentPage, setPageNumber, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch, filterConfig]
   );
 
   return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;

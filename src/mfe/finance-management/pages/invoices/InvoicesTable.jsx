@@ -10,7 +10,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { DUE_STATUS } from './InvoiceConstants';
 import { PATHS } from '../../routes';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
@@ -28,11 +28,14 @@ export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, fileteredData } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig } = usePaymentInvoices();
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
   const alertContainerId = 'summary-alert-container';
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -354,8 +357,8 @@ export default function InvoicesTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('paymentInvoices.invoice.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('paymentInvoices.invoice.table.emptyData')}
+            description={!isDataFiltered && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

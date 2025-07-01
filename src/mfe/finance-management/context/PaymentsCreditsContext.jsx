@@ -51,7 +51,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
+
   const { selectedAccount } = useAccountContext();
 
   const applyFilters = (filters) => {
@@ -60,7 +60,6 @@ export const PaymentsCreditsProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
-    setfileteredData(true);
   };
 
   const filterData = async (filters) => {
@@ -169,7 +168,6 @@ export const PaymentsCreditsProvider = ({ children }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const applySort = (newSortConfig) => {
@@ -305,8 +303,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
     clearFilters,
     applySort,
     setPageNumber,
-    exportExcel,
-    fileteredData
+    exportExcel
   };
   return <PaymentsCreditsContext.Provider value={contextValue}>{children}</PaymentsCreditsContext.Provider>;
 };

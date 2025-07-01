@@ -38,7 +38,7 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const practiceId = AuthUtils.getPracticeId();
   const organizationId = selectedOrganization?.id || practiceId;
-  const [fileteredData, setfileteredData] = useState(false);
+
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -76,7 +76,6 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   useEffect(() => {
@@ -90,7 +89,6 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -114,10 +112,9 @@ export const ShippingLocationProvider = ({ children, accountId }) => {
       applyFilters,
       applySort,
       setPageNumber,
-      refreshData: refetch,
-      fileteredData
+      refreshData: refetch
     }),
-    [updateFilterState, clearFilters, isLoading, isError, error, data, refetch, accountId, filterConfig, paginationConfig, fileteredData]
+    [updateFilterState, clearFilters, isLoading, isError, error, data, refetch, accountId, filterConfig, paginationConfig]
   );
   return <ShippingLocationContext.Provider value={ctxValue}>{children}</ShippingLocationContext.Provider>;
 };

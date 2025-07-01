@@ -38,7 +38,6 @@ export const OrgProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
   const dispatch = useDispatch();
   const requestParams = useMemo(
     () => ({
@@ -86,12 +85,10 @@ export const OrgProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
-    setfileteredData(true);
   };
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const applySort = (newSortConfig) => setSortConfig(newSortConfig);
@@ -114,8 +111,7 @@ export const OrgProvider = ({ children }) => {
     applyFilters,
     clearFilters,
     applySort,
-    setPageNumber,
-    fileteredData
+    setPageNumber
   };
 
   return <OrgContext.Provider value={contextValue}>{children}</OrgContext.Provider>;
