@@ -7,7 +7,6 @@ import { InputField, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import style from './style.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
-import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';

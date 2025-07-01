@@ -5,7 +5,6 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import style from './style.module.scss';
-import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
