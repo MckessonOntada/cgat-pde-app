@@ -50,7 +50,8 @@ function TherapySelection() {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`/orders${locationState?.__prevSearch}`);
+    const prevSearch = locationState.__prevSearch || '';
+    if (isPapOrder) navigate(`/orders${prevSearch}`);
   }, [orderDetails]);
 
   React.useEffect(() => {
