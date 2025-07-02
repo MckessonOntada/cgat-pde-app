@@ -16,7 +16,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
   const [account, setAccount] = useState(null);
-  const [alertMsg, setAlertMsg] = useState(false);
+  const [alert, setAlert] = useState(null);
   const [checkboxOptions, setCheckboxOptions] = useState([
     {
       isDisabled: false,
@@ -43,17 +43,18 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
     setCheckboxOptions(updatedOptions);
   };
 
-  const {
-    isFetching: isFetchingConfig,
-    data: programChannelConfig,
-    isError,
-    error
-  } = useQuery({
+  const { isFetching: isFetchingConfig, data: programChannelConfig } = useQuery({
     queryKey: ['order', 'therapy', trade.tradName, 'program-channel-config'],
     queryFn: async () =>
       OrderService.getProgramAndChannelConfig(trade.ndc, {
         channelType: channelType
       }),
+    onError: (error) => {
+      setAlert({
+        description: t('error.default'),
+        type: 'error'
+      });
+    },
     enabled: Boolean(trade.ndc),
     refetchOnWindowFocus: false
   });
@@ -73,6 +74,12 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
           ndcChannelType: channelType
         })
       ),
+    onError: (error) => {
+      setAlert({
+        description: t('error.default'),
+        type: 'error'
+      });
+    },
     enabled: Boolean(selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA) || Boolean(selectedProgram),
     refetchOnWindowFocus: false
   });
@@ -82,7 +89,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
   }, [selectedChannel, selectedProgram]);
 
   const handleAccountChange = (selectedAccount) => {
-    setAlertMsg(false);
+    setAlert(null);
     setAccount(selectedAccount);
   };
 
@@ -92,7 +99,10 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
       (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA && !account) ||
       (selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (!account || !selectedProgram))
     ) {
-      setAlertMsg(true);
+      setAlert({
+        type: 'error',
+        description: t('messages.required_Details')
+      });
       return;
     }
 
@@ -117,23 +127,6 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
     onClose();
   };
 
-  if (!trade) {
-    return (
-      <div className={styles.wrapper}>
-        <div>Error: therapy id is not available</div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    setAlertMsg(true);
-    return (
-      <div className={styles.wrapper}>
-        <div>Error: {error.message}</div>
-      </div>
-    );
-  }
-
   if (isFetchingConfig) {
     return (
       <div className={styles.wrapper}>
@@ -142,9 +135,6 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
     );
   }
 
-  const handleAlertClose = () => {
-    setAlertMsg(false);
-  };
   const getProgramDisabled = (program, selectedChannel) =>
     !programs.includes(program) || !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) || selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
@@ -166,11 +156,13 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
     value: program,
     isDisabled: getProgramDisabled(program, selectedChannel)
   }));
+
   const handleChange = (event) => {
-    setAlertMsg(false);
+    setAlert(null);
     setProgram(event.target.value);
     handleCheckboxChange();
   };
+
   const infoModel = (item) => {
     switch (item) {
       case 'WAC':
@@ -211,6 +203,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
         return '';
     }
   };
+
   return (
     <FloatingDrawer
       open={openDrawer}
@@ -224,77 +217,74 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
           <Button label={t('captions.btnApply')} onClick={() => handleOnSubmit(account)} variant="primary" size="md" aria-label={t('captions.btnSelect')} />
         </div>
       }>
-      <div className={styles.wrapper}>
-        {alertMsg && (
-          <div className={styles.errorMessage}>
-            <Alert onClose={handleAlertClose} showTitle title={t('messages.required_Details')} type="error" />
-          </div>
-        )}
-
-        <div className={styles.drawerContent}>
-          <div className={styles.topSect}>
-            <div className="MCP-CardContainer">
-              <div className={styles.selectionBlock}>
-                <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
-                <RadioGroup
-                  direction="row"
-                  id="order-channel-options"
-                  items={channelList}
-                  onChangeValue={(value) => {
-                    setAlertMsg(false);
-                    setChannel(value);
-                    handleCheckboxChange();
-                  }}
-                  value={selectedChannel}
-                  radioBtnWidth="auto"
-                  size="lg"
-                />
-              </div>
-            </div>
-
-            {selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+      <div className="MCP-module-wrapper">
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        <div className={styles.wrapper}>
+          <div className={styles.drawerContent}>
+            <div className={styles.topSect}>
               <div className="MCP-CardContainer">
                 <div className={styles.selectionBlock}>
-                  <p>{t('labels.orderAssistance.selectProgram')}</p>
-                  <div className="radio-btn-group">
-                    {programList.map((item, index) => (
-                      <div key={`radio-option-${index}`} className="radio-info-group">
-                        <label key={item.value} className="custom-radio">
-                          <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
-                          <span class="checkmark"></span>
-                          {item.label}
-                        </label>
-                        {infoModel(item.label)}
-                      </div>
-                    ))}
-                  </div>
+                  <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
+                  <RadioGroup
+                    direction="row"
+                    id="order-channel-options"
+                    items={channelList}
+                    onChangeValue={(value) => {
+                      setAlert(null);
+                      setChannel(value);
+                      handleCheckboxChange();
+                    }}
+                    value={selectedChannel}
+                    radioBtnWidth="auto"
+                    size="lg"
+                  />
                 </div>
               </div>
-            )}
-            {selectedProgram === '340B' && selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
-              <div className="MCP-modal-body">
-                <p>{t('order.account.selection.340b.checkboxHeading')}</p>
-                <ol className="details-info">
-                  <li className="details-li">
-                    <div className="details-key">{t('order.account.selection.340b.checkboxinfo1')}</div>
-                  </li>
-                  <li className="details-li">
-                    <div className="details-key">{t('order.account.selection.340b.checkboxinfo2')}</div>
-                  </li>
-                </ol>
-                <CheckboxGroup
-                  id={'default'}
-                  items={checkboxOptions.map((item) => ({
-                    ...item,
-                    onChange: () => handleSelectChange(item.value)
-                  }))}
-                  // itemCustomStyles={captionStyle}
-                />
-              </div>
-            )}
-            {(selectedProgram !== '340B' || (selectedProgram === '340B' && checkboxOptions[0]?.isChecked)) && (
-              <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
-            )}
+
+              {selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+                <div className="MCP-CardContainer">
+                  <div className={styles.selectionBlock}>
+                    <p>{t('labels.orderAssistance.selectProgram')}</p>
+                    <div className="radio-btn-group">
+                      {programList.map((item, index) => (
+                        <div key={`radio-option-${index}`} className="radio-info-group">
+                          <label key={item.value} className="custom-radio">
+                            <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
+                            <span class="checkmark"></span>
+                            {item.label}
+                          </label>
+                          {infoModel(item.label)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {selectedProgram === '340B' && selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+                <div className="MCP-modal-body">
+                  <p>{t('order.account.selection.340b.checkboxHeading')}</p>
+                  <ol className="details-info">
+                    <li className="details-li">
+                      <div className="details-key">{t('order.account.selection.340b.checkboxinfo1')}</div>
+                    </li>
+                    <li className="details-li">
+                      <div className="details-key">{t('order.account.selection.340b.checkboxinfo2')}</div>
+                    </li>
+                  </ol>
+                  <CheckboxGroup
+                    id={'default'}
+                    items={checkboxOptions.map((item) => ({
+                      ...item,
+                      onChange: () => handleSelectChange(item.value)
+                    }))}
+                    // itemCustomStyles={captionStyle}
+                  />
+                </div>
+              )}
+              {(selectedProgram !== '340B' || (selectedProgram === '340B' && checkboxOptions[0]?.isChecked)) && (
+                <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
+              )}
+            </div>
           </div>
         </div>
       </div>

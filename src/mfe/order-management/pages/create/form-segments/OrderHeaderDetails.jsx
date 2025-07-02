@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
-import CommonUtils, { getFullName } from '@src/util/CommonUtils';
+import CommonUtils from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
@@ -102,7 +102,7 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
   }
 
   return (
-    <div key={priceDetails?.netPrice} className="MCP-CardContainer">
+    <div key={priceDetails?.netPrice} className="MCP-panel-container">
       <div
         className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-${detailsSegments.length} xl:grid-cols-${detailsSegments.length}`}>
         {detailsSegments}

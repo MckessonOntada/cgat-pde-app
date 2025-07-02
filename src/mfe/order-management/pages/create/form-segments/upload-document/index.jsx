@@ -38,14 +38,14 @@ function UploadOrderDocument() {
   const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [alert, setAlert] = React.useState(null);
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
   const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {
       setValidationMessage({
         type: 'error',
-        description: 'Please select document to upload.',
+        description: t('message.selectDocumentToUpload'),
         onClose: () => setValidationMessage(null)
       });
       return;
@@ -75,7 +75,7 @@ function UploadOrderDocument() {
               alert: {
                 from: 'UPLOAD_ORDER_DOCUMENT',
                 type: 'success',
-                description: `Document has been successfully uploaded for Order ID: ${orderDetails.backendOrderId}`
+                description: t('message.documentUploadSuccess', { orderId: orderDetails.backendOrderId })
               }
             }
           });
@@ -85,10 +85,9 @@ function UploadOrderDocument() {
           let description = t('error.default');
           if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-          setValidationMessage({
+          setAlert({
             type: 'error',
-            description,
-            onClose: () => setValidationMessage(null)
+            description
           });
         });
     });
@@ -115,7 +114,7 @@ function UploadOrderDocument() {
       <div className="MCP-CardContainer">
         <ModuleHeader className={styles['panel-header']} heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>} />
 
-        {isFetchingOrderDetails ? (
+        {isFetching ? (
           <div className="spinner-wrapper md">
             <SpinnerIcon />
           </div>
