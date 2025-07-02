@@ -210,7 +210,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.OK': 'OK',
   'paymentInvoices.reviewPayments.remove': 'REMOVE',
   'paymentInvoices.reviewPayments.pay': 'PAY',
-
+  'paymentInvoices.Details.referenceNumber': 'Reference No.',
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
   'paymentInvoices.credits.table.billDate': 'Bill Date',

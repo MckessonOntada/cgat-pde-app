@@ -103,7 +103,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.Unit': 'S_Unit',
   'paymentInvoices.Details.netPrice': 'S_Net Value',
   'paymentInvoices.Details.grossPrice': 'S_Gross Value',
-
+  'paymentInvoices.Details.referenceNumber': 'S_Reference No.',
   // Invoices
   'paymentInvoices.history.table.billNumber': 'S_Number',
   'paymentInvoices.history.table.invoiceNumber': 'S_Invoice Number',
