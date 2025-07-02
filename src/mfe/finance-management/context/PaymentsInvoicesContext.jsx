@@ -268,6 +268,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         undefined,
         false,
         false,
+        false,
         'blob' // Set responseType to 'blob'
       ),
     {
