@@ -14,12 +14,14 @@ import '../manageSPMaterial.scss';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import ConfigureSPMaterials from './ConfigureSPMaterials';
 
-function SPMaterialDataTable({ isLinkCatalog = false }) {
+function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...props }) {
   const { t } = useTranslate();
   const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, fileteredData, clearFilters } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
+  const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [tableHeight, setTableHeight] = useState('100%');
@@ -33,15 +35,33 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
   const onExpandToggle = (tradeName) => {
     setExpandedRows((prev) => (prev.includes(tradeName) ? prev.filter((id) => id !== tradeName) : [...prev, tradeName]));
   };
-
+  const updatedData = data.map((item) => ({
+    ...item,
+    active: item.itemStatus === 'A' ? true : false
+  }));
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'id', paginationConfig, selectedSPMaterial, setSelectedSPMaterial),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        updatedData,
+        'id',
+        paginationConfig,
+        selectedSPMaterial,
+        setSelectedSPMaterial
+      ),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedSPMaterial, setSelectedSPMaterial),
-      width: '50px',
-      omit: !isLinkCatalog ? true : false
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row.itemStatus === 'A' ? { ...row, active: true } : { ...row, active: false },
+          updatedData,
+          'id',
+          paginationConfig,
+          selectedSPMaterial,
+          setSelectedSPMaterial
+        ),
+      width: '50px'
+      //  omit: !isLinkCatalog ? true : false
     },
     {
       name: t('manageSPMaterial.table.spproductId'),
@@ -214,8 +234,24 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
           />
         </div>
       ) : (
-        <TableHeading heading={t('manageSPMaterial.heading.materialListing')} style={{ marginBottom: '16px' }} />
+        <TableHeading
+          heading={t('manageSPMaterial.heading.materialListing')}
+          secondaryView={selectedSPMaterial?.length}
+          secondaryViewHeading={`${selectedSPMaterial?.length} ${t('manageMaterial.table.header.text')}`}
+          secondaryViewControls={
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setOpenConfiguration(!openConfiguration);
+              }}
+              size="sm">
+              {t('manageMaterial.table.header.button.configure')}
+            </Button>
+          }
+          style={{ marginBottom: '16px' }}
+        />
       )}
+
       <div className="accountBox">
         <div className="customTableBox">
           <CustomDataTable
@@ -270,6 +306,7 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
         )}
       </div>
       <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
+      {openConfiguration && <ConfigureSPMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
     </div>
   );
 }

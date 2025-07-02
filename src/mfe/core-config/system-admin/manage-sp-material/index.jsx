@@ -90,7 +90,10 @@ function ManageSPMaterial() {
               searchPlaceholder={t('manageSPMaterial.filters.searchPlaceholder')}
             />
           </div>
-          <SPMaterialDataTable />
+          <SPMaterialDataTable
+            onSuccess={() => showAlert('success', t('manageMaterial.drawer.controls.apply.success'))}
+            onError={() => showAlert('error', t('errors.default'))}
+          />
         </div>
       </div>
     </div>
