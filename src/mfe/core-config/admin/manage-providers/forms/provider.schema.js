@@ -38,20 +38,15 @@ export const getProviderSchema = (t) =>
 
     deaNumber: yup
       .string()
-      .required(t('provider.dea.required'))
       .max(9, t('provider.dea.max'))
       .matches(/^[A-Za-z0-9]+$/, t('provider.dea.alphaNum'))
       .matches(deaRegex, t('provider.dea.format'))
-      .test('no-spaces-or-hyphens', t('provider.dea.noSpaces'), (val) => !val.includes(' ') && !val.includes('-')),
+      .test('no-spaces-or-hyphens', t('provider.dea.noSpaces'), (val) => !val || (!val.includes(' ') && !val.includes('-'))),
 
     npiNumber: yup.string().required(t('provider.npi.required')).length(10, t('provider.npi.length')).matches(npiRegex, t('provider.npi.numeric')),
     tinNumber: yup.string().required(t('provider.tin.required')).length(9, t('provider.tin.length')).matches(tinRegex, t('provider.tin.numeric')),
 
-    medicaidNumber: yup
-      .string()
-      .required(t('provider.medicaid.required'))
-      .length(6, t('provider.medicaid.length'))
-      .matches(medicaidNumberRegex, t('provider.medicaid.numeric')),
+    medicaidNumber: yup.string().length(6, t('provider.medicaid.length')).matches(medicaidNumberRegex, t('provider.medicaid.numeric')),
     address1: yup
       .string()
       .required(t('provider.address1.required'))
