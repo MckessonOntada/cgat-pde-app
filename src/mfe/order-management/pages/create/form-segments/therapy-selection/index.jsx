@@ -1,5 +1,5 @@
-import React, { useContext, useRef, useState } from 'react';
-import { Button } from '@mckesson/mcp-component-library';
+import React, { useContext, useState } from 'react';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -14,10 +14,8 @@ import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { TherapyDetailsConstantsForBB, TherapyDetailsConstantsForSP } from './assets/constants/TherapyDetailsConstants';
-import useAlert from '@src/hooks/useAlert';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import useOrder from '../../../orders/useOrder';
-import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
@@ -27,22 +25,23 @@ function TherapySelection() {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
-  const { state: locationState = {}, search, pathname } = useLocation();
+  const location = useLocation();
+  const locationState = location?.state || {};
+  const { search, pathname } = location || {};
   const [prevSearchState, setPrevSearchState] = React.useState(null);
 
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
-  const { data: orderDetails = {} } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [tradeDetails, setTradeDetails] = useState(orderDetails?.tradeDetails);
   const searchParams = new URLSearchParams(search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
   const therapy = searchParams.get('therapy');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { isEdit = false, isApprover = false, isBack = false } = locationState || {};
-  const alertContainerId = 'alert-container';
+  const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
-  const { showAlert } = useAlert();
+  const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
     if (locationState && locationState.__prevSearch) setPrevSearchState(locationState.__prevSearch);
@@ -91,10 +90,9 @@ function TherapySelection() {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: alertContainerId
+        type: 'error'
       });
     }
   });
@@ -121,17 +119,16 @@ function TherapySelection() {
         let description = t('error.default');
         if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-        showAlert({
+        setAlert({
           description,
-          type: 'error',
-          anchorEl: alertContainerId
+          type: 'error'
         });
       }
     }
   );
 
   const handleOnSubmit = () => {
-    if (!tradeDetails || isSaving) {
+    if (!tradeDetails) {
       setTherapySelectionMessage({
         description: 'Select therapy to create order',
         type: 'error'
@@ -202,11 +199,10 @@ function TherapySelection() {
   const handleOnDrawerSelect = (details) => {
     setTradeDetails(details);
   };
-  if (isSaving) {
-    return <Loader type={'screen'} />;
-  }
+
   return (
     <div className="MCP-module-wrapper">
+      {(isSaving || isFetching || isUpdating) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -221,7 +217,8 @@ function TherapySelection() {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
-        <div id={alertContainerId} />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">

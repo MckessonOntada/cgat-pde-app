@@ -887,5 +887,7 @@ export const MessageEn = {
   'messages.phFirstNameExtraSpaceError': 'Policy Holder First Name must not contain leading or trailing spaces',
   'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
   'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
-  'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.'
+  'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
+  'message.selectDocumentToUpload': 'Please select document to upload.',
+  'message.documentUploadSuccess': 'Document has been successfully uploaded for Order ID: {orderId}'
 };

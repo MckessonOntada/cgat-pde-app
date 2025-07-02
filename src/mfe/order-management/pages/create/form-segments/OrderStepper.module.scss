@@ -1,12 +1,7 @@
 .custom-order-stepper {
-
-    [class*="Stepper-module--stepsItemContent"],
-    [class*="Stepper-module--step"] {
-        cursor: pointer;
-    }
-
-    [class*="Stepper-module--stepsItemContent"] {
-        // min-width: 120px;
-        // transform: translateX(-20px);
-    }
+  margin-bottom: 16px;
+  [class*="Stepper-module--stepsItemContent"],
+  [class*="Stepper-module--step"] {
+    cursor: pointer;
+  }
 }

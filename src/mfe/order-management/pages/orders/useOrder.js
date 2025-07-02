@@ -45,10 +45,6 @@ const useOrder = (orderId) => {
     }
   });
 
-  if (result.isFetching) {
-    return { isLoader: <Loader type={'screen'} /> };
-  }
-
   return result;
 };
 

@@ -9,7 +9,6 @@ import PageHeader from '@src/components/pageHeader';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
-import useAlert from '@src/hooks/useAlert';
 import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import OrderService from '@src/api/commonService/OrderService';
@@ -37,7 +36,6 @@ import Alert from '@src/components/cgat-alert/Alert';
 import AttachmentCard from './AttachmentCard';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 
-const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
   SUBMIT: 'submit',
   APPROVE: 'approve',
@@ -59,9 +57,9 @@ const Summary = () => {
   const location = useLocation();
   const locationState = location?.state ?? {};
   const { orderId } = useParams();
-  const { showAlert } = useAlert();
+  const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { data: orderDetails = {}, isLoader, isError, error } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
   const { isApprover = false, isSimulate = false, backToInvoiceListing = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
@@ -260,10 +258,9 @@ const Summary = () => {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: ALERT_CONTAINER_ID
+        type: 'error'
       });
     }
   });
@@ -283,10 +280,9 @@ const Summary = () => {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: ALERT_CONTAINER_ID
+        type: 'error'
       });
     },
     retry: false
@@ -507,17 +503,9 @@ const Summary = () => {
     return controls;
   };
 
-  if (isLoader) {
-    return isLoader;
-  }
-
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
 
   const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected || isDeleted;
-
-  if (isSaving) {
-    return <Loader type={'screen'} />;
-  }
 
   let variantAttachment = null,
     configuredQuestionnaires = [];
@@ -563,6 +551,8 @@ const Summary = () => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
+      {(isSaving || isFetching) && <Loader type={'screen'} />}
+
       {!isError && (
         <React.Fragment>
           <div>
@@ -598,12 +588,12 @@ const Summary = () => {
             )}
           </React.Fragment>
         )}
-        <div id={ALERT_CONTAINER_ID} />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
           <div className="alert-container">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+                <Alert key={`${item.id}_${index}`} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
               ))}
             </div>
           </div>
@@ -1308,10 +1298,9 @@ const Summary = () => {
           useUserService={true}
           heading={t('labels.therapyDetails')}
           notify={({ type, message }) =>
-            showAlert({
+            setAlert({
               description: message,
-              type,
-              anchorEl: ALERT_CONTAINER_ID
+              type
             })
           }
         />

@@ -75,7 +75,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
         const newNavLink = navLinks[stepByTitle];
         if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
           navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-            state: { ...locationState }
+            state: { ...locationState, isBack: true }
           });
         else {
           navigate(`${newNavLink}`, {

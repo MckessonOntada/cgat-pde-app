@@ -1,5 +1,5 @@
 import React from 'react';
-import './ToggleButton.scss';
+import './Tab.scss';
 
 const ToggleButton = ({ selected, onChange, disabled, children, value }) => {
   return (

@@ -11,7 +11,6 @@ import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
@@ -21,7 +20,6 @@ import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getInitialValues, getValidationSchema } from './forms/validation-schema';
 import { CHANNEL_TYPE } from '../Constants';
-import useTimedArray from '../summary/useTimedArray';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
@@ -48,16 +46,15 @@ const PatientDetails = () => {
   const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const alertContainerId = 'patintDetails-alert-container';
   const { controlRef } = useContext(FooterContext);
-  const { showAlert } = useAlert();
+  const [alert, setAlert] = React.useState(null);
   const location = useLocation();
   const locationState = location?.state ?? {};
   const { isEdit = false, isApprover = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
 
   React.useEffect(() => {
     if (orderDetails.channelType) {
@@ -67,7 +64,6 @@ const PatientDetails = () => {
         });
     }
   }, [orderDetails]);
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
 
   const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
@@ -108,7 +104,7 @@ const PatientDetails = () => {
     if (!alertState) {
       return;
     }
-    showAlert({ ...alertState, anchorEl: alertContainerId });
+    setAlert({ ...alertState });
   }, []);
 
   const openDuplicateConfirmationModal = (payload) => {
@@ -171,7 +167,7 @@ const PatientDetails = () => {
           let description = t('error.default');
           if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-          addNotification({
+          setAlert({
             description,
             type: 'error'
           });
@@ -252,7 +248,11 @@ const PatientDetails = () => {
   const [provider, setProvider] = React.useState(null);
   const [providerQuery, setProviderQuery] = React.useState('');
 
-  const { providers, isFetching, totalProviders } = useProvider({
+  const {
+    providers,
+    isFetching: isFetchingProviders,
+    totalProviders
+  } = useProvider({
     orderDetails,
     query: providerQuery
   });
@@ -263,15 +263,9 @@ const PatientDetails = () => {
     setFieldValue('providerId', value);
   };
 
-  if (isLoader) {
-    return isLoader;
-  }
-  if (isSaving) {
-    return <Loader type={'screen'} />;
-  }
-
   return (
     <div className="MCP-module-wrapper">
+      {(isSaving || isFetching) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -283,36 +277,22 @@ const PatientDetails = () => {
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
 
-        {notifications?.length > 0 && (
-          <div className="alert-container">
-            <div className="MCP-module-body">
-              {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className={styles.wrapper}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
-          <div id={alertContainerId} />
-
-          {isError && <Alert showTitle title={error} type={'error'} />}
-        </div>
+        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
           validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA)}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
-          {({ values, isValid, errors, dirty, setFieldValue }) => {
+          {({ values, dirty, setFieldValue }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
             }, [values]);
             return (
               <Form>
                 <div className={styles.wrapper}>
-                  <div className="MCP-panel-container">
-                    <div className="MCP-module-body">
+                  <div className="MCP-module-body">
+                    <div className="MCP-panel-container">
                       <ModuleHeader
                         heading={
                           <div>
@@ -359,7 +339,7 @@ const PatientDetails = () => {
                                 recordsCountToEnableSearch={5}
                                 size="lg"
                                 fieldDisplayValue={CommonUtils.isNonEmptyObject(provider) ? provider : undefined}
-                                isAsyncLoading={isFetching}
+                                isAsyncLoading={isFetchingProviders}
                                 refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                 asyncRecordsFound={totalProviders}
                               />
