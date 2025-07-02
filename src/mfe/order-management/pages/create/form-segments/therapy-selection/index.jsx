@@ -27,8 +27,10 @@ function TherapySelection() {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
-  const { state: locationState = {}, search, pathname } = useLocation();
   const [prevSearchState, setPrevSearchState] = React.useState(null);
+  const location = useLocation();
+  const locationState = location?.state ?? {};
+  const { search, pathname } = location;
 
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
@@ -40,6 +42,7 @@ function TherapySelection() {
   const therapy = searchParams.get('therapy');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { isEdit = false, isApprover = false, isBack = false } = locationState || {};
+
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
