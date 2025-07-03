@@ -30,25 +30,6 @@ import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import Alert from '@src/components/cgat-alert/Alert';
 
-const FormStateTracker = ({ setFormValues, setIsDirty }) => {
-  const formik = useFormikContext();
-
-  const [hasBeenDirty, setHasBeenDirty] = React.useState(false);
-
-  React.useEffect(() => {
-    if (formik) {
-      setFormValues(formik.values);
-
-      if (formik.dirty && !hasBeenDirty) {
-        setIsDirty(true);
-
-        setHasBeenDirty(true);
-      }
-    }
-  }, [formik?.values, formik?.dirty]);
-
-  return null;
-};
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
   const [isSecondaryMedicalInsuranceOpen, setIsSecondaryMedicalInsuranceOpen] = React.useState(false);
