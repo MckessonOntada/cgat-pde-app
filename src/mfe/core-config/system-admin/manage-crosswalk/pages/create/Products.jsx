@@ -11,7 +11,7 @@ import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 
-const Products = ({ material, linkedItems, products, onSelect }) => {
+const Products = ({ linkedItems, products, onSelect }) => {
   const { t } = useTranslate();
   const { data, isLoading, error } = useTable();
   const navigate = useNavigate();
@@ -42,8 +42,12 @@ const Products = ({ material, linkedItems, products, onSelect }) => {
       {
         id: 'checkbox',
         name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'materialNumber', pagination, products, onSelect),
-        cell: (row, index) => {
-          const isDisabled = Boolean(material && linkedItems[material.id]?.linkedProducts.find((item) => item.id === row.id));
+        cell: (row) => {
+          const isDisabled = Boolean(
+            Object.values(linkedItems)
+              .flatMap((item) => item.linkedProducts || [])
+              .find((item) => item.id === row.id)
+          );
           return renderTableCheckBox(row, data, 'materialNumber', pagination, products, onSelect, false, false, isDisabled);
         },
         selector: (row) => row.materialNumber,
