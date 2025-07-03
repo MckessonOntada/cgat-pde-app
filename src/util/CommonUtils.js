@@ -690,6 +690,12 @@ function flattenTherapies(data) {
   }, []);
 }
 
+function getDOBMaxDate() {
+  const maxDOB = new Date();
+  maxDOB.setDate(maxDOB.getDate() - 1);
+  return maxDOB;
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -742,7 +748,8 @@ const CommonUtils = Object.freeze({
   getAxiosErrorMessage,
   getListOverflowingDisplayLabel,
   flattenTherapies,
-  isEmptyArray
+  isEmptyArray,
+  getDOBMaxDate
 });
 
 export default CommonUtils;

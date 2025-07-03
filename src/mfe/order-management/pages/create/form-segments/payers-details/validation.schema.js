@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { PATIENT_RELATIONSHIP } from './payer-details.config';
 import { ALPHA_NUMERIC, ALPHABETIC_FOR_NAME, NUMBER_REGEX, RX_SYMBOLS_ALLOWED } from '@src/components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
 
 export const getMedicalInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
@@ -28,7 +29,7 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .max(50, t('messages.lastNameMax'))
       .test('no-leading-trailing-spaces', t('messages.phLastNameExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(ALPHABETIC_FOR_NAME, t('messages.onlyAlpha')),
-    dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
+    dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(CommonUtils.getDOBMaxDate(), t('messages.dobFuture')),
     relationshipToPatient: Yup.string()
       .required(t('messages.selectRelation'))
       .oneOf(
