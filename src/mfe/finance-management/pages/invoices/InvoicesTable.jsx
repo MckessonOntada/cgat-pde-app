@@ -97,7 +97,7 @@ export default function InvoicesTable() {
       },
       onError: () => {
         showAlert({
-          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });

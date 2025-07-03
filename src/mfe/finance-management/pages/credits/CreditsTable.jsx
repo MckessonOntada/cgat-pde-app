@@ -67,7 +67,7 @@ export default function CreditsTable(props) {
       },
       onError: (error) => {
         showAlert({
-          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });
