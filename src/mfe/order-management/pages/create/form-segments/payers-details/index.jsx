@@ -205,7 +205,13 @@ function Payer() {
       insuranceLevel
     };
     OrderService.uploadPayerDocument(orderId, payload).then((response) => {
-      setFieldValue(key, response);
+      const value = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        url: response
+      };
+      setFieldValue(key, value);
     });
   };
 

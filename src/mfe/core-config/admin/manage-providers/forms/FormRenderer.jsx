@@ -83,8 +83,15 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
 
                       const uploadControlAttributes = {};
                       if (control.type === 'inputFile') {
-                        const url = getNestedValue(values, control.name);
-                        if (url) uploadControlAttributes.attachmentValue = getFileNameAndType(url);
+                        const attachmentValue = getNestedValue(values, control.name);
+                        if (attachmentValue) {
+                          if (typeof attachmentValue === 'string') {
+                            uploadControlAttributes.attachmentValue = getFileNameAndType(attachmentValue);
+                          } else if (typeof attachmentValue === 'object' && CommonUtils.isNonEmptyObject(attachmentValue)) {
+                            uploadControlAttributes.attachmentValue = attachmentValue;
+                          }
+                        }
+
                         uploadControlAttributes.validateOnChange = (file) => validateFile(t, file, ALLOWED_FILE_TYPE);
                         uploadControlAttributes.onFileChange = (file) => onUpload(file, setFieldValue, control.name);
                         uploadControlAttributes.fileTypeText = 'PDF, PNG, JPEG, JPG';
