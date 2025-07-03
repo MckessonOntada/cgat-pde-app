@@ -8,7 +8,7 @@ export const TherapyDetailsConstantsForBB = (isInvoice = false) => [
       { label: 'labels.therapy.strength', value: 'strength' },
       { label: 'labels.therapy.dosage', value: 'dosage' },
       { label: 'labels.therapy.sellingUnitCode', value: 'sellingUnitCode' },
-      { label: 'labels.manufacturer', value: 'vendorName' },
+      { label: 'labels.manufacturer', value: 'manufacturerName' },
       { label: 'labels.therapy.dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
