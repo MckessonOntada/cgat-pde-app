@@ -56,7 +56,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [resetFilterData, setResetFilterData] = useState(true);
   const [statusOptions, setStatusOptions] = useState([]);
   const { selectedAccount } = useAccountContext();
-  const [fileteredData, setfileteredData] = useState(false);
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -64,7 +63,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
-    setfileteredData(true);
   };
 
   const filterData = async (filters) => {
@@ -215,7 +213,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const applySort = (newSortConfig) => {
@@ -352,8 +349,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     setPageNumber,
     exportExcel,
     statusOptions,
-    setStatusOptions,
-    fileteredData
+    setStatusOptions
   };
   return <PaymentsInvoicesContext.Provider value={contextValue}>{children}</PaymentsInvoicesContext.Provider>;
 };

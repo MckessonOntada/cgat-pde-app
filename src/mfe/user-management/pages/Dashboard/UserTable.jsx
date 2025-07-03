@@ -11,7 +11,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
@@ -44,7 +44,7 @@ function UserTable({ onActionSuccess }) {
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
-  const { isLoading, isError, error, data, paginationConfig, applySort, refreshData, setPageNumber, fileteredData } = useUser();
+  const { isLoading, isError, error, data, paginationConfig, applySort, refreshData, setPageNumber, filterConfig } = useUser();
   const { isBack = false } = location.state || {};
   const userPermissions = AuthUtils.getUserPermissions();
   const currentUserId = AuthUtils.getUserId();
@@ -55,6 +55,10 @@ function UserTable({ onActionSuccess }) {
     userId: null,
     isActive: false
   });
+
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -372,14 +376,14 @@ function UserTable({ onActionSuccess }) {
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={
-              !fileteredData
-                ? isSystemAdminView
-                  ? t('userManagement.message.sysadminEmptyTableTitle')
-                  : t('userManagement.message.userEmptyTableTitle')
-                : t('errors.messages.noRecordsFound')
+              isDataFiltered
+                ? t('errors.messages.noRecordsFound')
+                : isSystemAdminView
+                ? t('userManagement.message.sysadminEmptyTableTitle')
+                : t('userManagement.message.userEmptyTableTitle')
             }
             description={
-              !fileteredData
+              !isDataFiltered
                 ? isSystemAdminView
                   ? t('userManagement.messages.sysadminEmptyTableSubtitle')
                   : t('userManagement.messages.userEmptyTableSubtitle')

@@ -23,6 +23,7 @@ import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-conf
 import Alert from '@src/components/cgat-alert/Alert';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { ChannelType } from '../../../manage-sp-account/util';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -36,7 +37,7 @@ const List = () => {
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-  const { data = [], refreshTable, fileteredData } = useTable();
+  const { data = [], refreshTable } = useTable();
   const dispatch = useDispatch();
   const { applySort } = useSort();
   const [notification, setNotification] = useState(null);
@@ -55,7 +56,9 @@ const List = () => {
       }
     ];
   }, [isSystemAdminView]);
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filters);
+  }, [filters]);
   React.useEffect(() => {
     const { state } = location;
     if (state?.items) {
@@ -176,8 +179,8 @@ const List = () => {
           noDataComponent={
             <ErrorBanner
               image={<EmptyProviderTable />}
-              heading={!fileteredData ? t('controls.addMaterialCrosswalk') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('label.emptyMaterialCrosswalkTableDescription')}
+              heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('controls.addMaterialCrosswalk')}
+              description={!isDataFiltered && t('label.emptyMaterialCrosswalkTableDescription')}
             />
           }
         />

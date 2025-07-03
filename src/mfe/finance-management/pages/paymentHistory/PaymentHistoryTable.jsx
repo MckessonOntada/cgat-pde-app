@@ -32,7 +32,7 @@ export default function PaymentHistoryTable() {
   const { t } = useTranslate();
   // const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig, fileteredData } = usePaymentHistory();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig, filteredData } = usePaymentHistory();
   const showCardView = useResponsiveView();
 
   const columns = [
@@ -152,8 +152,8 @@ export default function PaymentHistoryTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('paymentInvoices.history.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={filteredData ? t('errors.messages.noRecordsFound') : t('paymentInvoices.history.table.emptyData')}
+            description={!filteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

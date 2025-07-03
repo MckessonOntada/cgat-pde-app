@@ -51,7 +51,6 @@ export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -134,7 +133,6 @@ export const UserProvider = ({ children }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   useEffect(() => {
@@ -146,7 +144,6 @@ export const UserProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -170,8 +167,7 @@ export const UserProvider = ({ children }) => {
       applyFilters,
       applySort,
       setPageNumber,
-      refreshData: refetch,
-      fileteredData
+      refreshData: refetch
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );

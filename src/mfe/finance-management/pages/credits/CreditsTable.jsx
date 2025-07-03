@@ -9,7 +9,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import { PATHS } from '../../routes';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
@@ -20,13 +20,15 @@ import ApiRoutes from '@src/api/ApiRoutes';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, fileteredData } = usePaymentCredits();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig } = usePaymentCredits();
   const { selectedRows, setSelectedRows, selectableRows, disableSelection } = props;
   const location = useLocation();
   const { state } = location;
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const { mutate: handlePdfDownload } = useMutation(
     async (props) => {
       const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, props.billNumber)}/details-pdf`;
@@ -214,8 +216,8 @@ export default function CreditsTable(props) {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('paymentInvoices.credits.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('paymentInvoices.credits.table.emptyData')}
+            description={!isDataFiltered && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

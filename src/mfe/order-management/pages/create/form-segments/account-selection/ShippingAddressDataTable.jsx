@@ -8,14 +8,17 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount, applySort, fileteredData } = useShippingAddress();
+  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount, applySort, filterState } = useShippingAddress();
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
   const showCardView = useResponsiveView();
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterState);
+  }, [filterState]);
   const handleOnPageChange = (_event, pageIndex) => {
     setPageNumber(pageIndex);
   };
@@ -49,7 +52,7 @@ const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, 
           error={isError && error.message}
           image={EmptyDataImage}
           heading={
-            fileteredData
+            isDataFiltered
               ? t('errors.messages.noRecordsFound')
               : selectedAccount
               ? t('messages.noShippingAddressFound')

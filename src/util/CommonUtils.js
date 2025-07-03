@@ -691,7 +691,14 @@ function flattenTherapies(data) {
     return acc;
   }, []);
 }
-
+export const checkIsDataFiltered = (filters) => {
+  return Object.values(filters).some((value) => {
+    if (Array.isArray(value)) {
+      return value.some((item) => Boolean(item));
+    }
+    return Boolean(value);
+  });
+};
 function getDOBMaxDate() {
   const maxDOB = new Date();
   maxDOB.setDate(maxDOB.getDate() - 1);
@@ -751,6 +758,7 @@ const CommonUtils = Object.freeze({
   getListOverflowingDisplayLabel,
   flattenTherapies,
   isEmptyArray,
+  checkIsDataFiltered,
   getDOBMaxDate
 });
 

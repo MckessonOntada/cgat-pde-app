@@ -29,7 +29,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
-  const { data = [], refreshTable, requestParams, fileteredData } = useTable();
+  const { data = [], refreshTable, requestParams } = useTable();
   const { applySort } = useSort();
   const dispatch = useDispatch();
   const { selectedRows, deselectAll, selectedRowObjects, setSelectedRowObjects, setSelection } = useSelection();
@@ -37,7 +37,9 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);
-
+  const isDataFiltered = React.useMemo(() => {
+    return Boolean(filters.status || filters.searchQuery);
+  }, [filters]);
   const handleOnClick = (url) => () => navigate(url, { state: { selectedAccount, selectedOrganization } });
   const handleOnSort = (field, direction) => {
     const { sortKey } = field;
@@ -204,8 +206,8 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         noDataComponent={
           <ErrorBanner
             image={<EmptyProviderTable />}
-            heading={!fileteredData ? t('label.spCatalogDataGrid') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('label.spCatalogDataGridDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('label.spCatalogDataGrid')}
+            description={!isDataFiltered && t('label.spCatalogDataGridDescription')}
           />
         }
       />

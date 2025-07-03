@@ -38,7 +38,6 @@ export const LinkProviderProvider = ({ children }) => {
   const selectedOrganization = searchParams.get('orgId');
   const { spAccountId } = useParams();
   const location = useLocation();
-  const [fileteredData, setfileteredData] = useState(false);
   const isAddLinkProvider = useMemo(() => {
     return location.pathname.includes('link-provider');
   }, [location.pathname]);
@@ -91,12 +90,10 @@ export const LinkProviderProvider = ({ children }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -120,8 +117,7 @@ export const LinkProviderProvider = ({ children }) => {
       applySort,
       setPageNumber,
       refreshData: refetch,
-      isAddLinkProvider,
-      fileteredData
+      isAddLinkProvider
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );

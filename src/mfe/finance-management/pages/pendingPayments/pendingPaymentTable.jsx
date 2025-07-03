@@ -10,7 +10,7 @@ import { FormattedNumber } from 'react-intl';
 import { PATHS } from '../../routes';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { renderModal } from '@src/util/ModalUtil';
 import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -21,11 +21,15 @@ import useAlert from '@src/hooks/useAlert';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, refetch, fileteredData } = usePendingPayments();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, refetch, filterConfig } = usePendingPayments();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
+
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const columns = [
     {
       id: 'confirmationNo',
@@ -185,8 +189,8 @@ export default function PendingPaymentTable() {
           <EmptyDataTable
             isLoading={isFetching}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('pendingPayments.table.bankAccount.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('pendingPayments.table.bankAccount.emptyData')}
+            description={!isDataFiltered && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

@@ -7,7 +7,7 @@ import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useApprover } from '../../context/ApproverContext';
 import Actions from './Actions';
@@ -21,7 +21,7 @@ function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, applySort, setPageNumber, refreshData, error, isLoadingApprovers, isErrorApprovers, fileteredData } = useApprover();
+  const { data, paginationConfig, applySort, setPageNumber, refreshData, error, isLoadingApprovers, isErrorApprovers, filterConfig } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
   const showCardView = useResponsiveView();
@@ -34,7 +34,9 @@ function ApproverList({ onActionSuccess }) {
       return resDeactivate.data;
     }
   };
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const { mutate } = useMutation({
     mutationFn: handleActivateDeactivateApproverGroup,
     onSuccess: (response, variables) => {
@@ -195,8 +197,8 @@ function ApproverList({ onActionSuccess }) {
             isLoading={isLoadingApprovers}
             error={isErrorApprovers && error}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('message.emptyTableApproverGroupTitle') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('approvergroup.empty_table.description')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('message.emptyTableApproverGroupTitle')}
+            description={!isDataFiltered && t('approvergroup.empty_table.description')}
           />
         }
       />

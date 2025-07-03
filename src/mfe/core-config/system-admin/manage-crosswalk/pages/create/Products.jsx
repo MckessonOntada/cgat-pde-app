@@ -7,13 +7,13 @@ import { InputField, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import style from './style.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 
 const Products = ({ material, linkedItems, products, onSelect }) => {
   const { t } = useTranslate();
-  const { data, isLoading, error, fileteredData } = useTable();
+  const { data, isLoading, error } = useTable();
   const navigate = useNavigate();
   const { pagination, changePage } = usePagination();
   const { applySort } = useSort();
@@ -21,7 +21,7 @@ const Products = ({ material, linkedItems, products, onSelect }) => {
   const searchParams = new URLSearchParams(location.search);
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
-  const { applyFilters } = useFilters();
+  const { filters, applyFilters } = useFilters();
   const debouncedApplyFilter = React.useCallback(
     CommonUtils.debounce((value) => {
       applyFilters({
@@ -30,6 +30,10 @@ const Products = ({ material, linkedItems, products, onSelect }) => {
     }, 500),
     []
   );
+
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filters);
+  }, [filters]);
 
   const getColumns = ({ t }) => {
     const { pagination } = usePagination();
@@ -77,7 +81,6 @@ const Products = ({ material, linkedItems, products, onSelect }) => {
       }
     ];
   };
-
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
@@ -157,8 +160,8 @@ const Products = ({ material, linkedItems, products, onSelect }) => {
               isLoading={isLoading}
               error={error}
               image={EmptyDataImage}
-              heading={!fileteredData ? t('captions.emptyTableTitle.product-crosswalk') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('captions.emptyTableSubtitle.product-crosswalk')}
+              heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('captions.emptyTableTitle.product-crosswalk')}
+              description={!isDataFiltered && t('captions.emptyTableSubtitle.product-crosswalk')}
             />
           }
         />

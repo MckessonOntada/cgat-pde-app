@@ -5,7 +5,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useTranslate } from '@src/translations/useTranslation';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -26,7 +26,7 @@ const OrgList = ({ onActionSuccess }) => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort, fileteredData } = useOrg();
+  const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort, filterConfig } = useOrg();
   const dispatch = useDispatch();
   const { hasPermission } = usePermission();
   const isDisabled = AuthUtils.isTreatmentCentreExecutive() || AuthUtils.isCustomerCenter();
@@ -40,6 +40,10 @@ const OrgList = ({ onActionSuccess }) => {
     }
     return res;
   };
+
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
 
   const { mutate } = useMutation({
     mutationFn: handleDeActivateOrg,
@@ -262,8 +266,8 @@ const OrgList = ({ onActionSuccess }) => {
             isLoading={isLoading}
             error={isError ? t('errors.default') : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('orgManagement.add.label') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('orgManagement.empty_table.description')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('orgManagement.add.label')}
+            description={!isDataFiltered && t('orgManagement.empty_table.description')}
           />
         }
       />

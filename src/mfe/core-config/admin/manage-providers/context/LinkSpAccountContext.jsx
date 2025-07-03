@@ -41,7 +41,7 @@ export const LinkSpAccountProvider = ({ children }) => {
   const isAddSpAccount = useMemo(() => {
     return location.pathname.includes('link-sp-accounts');
   }, [location.pathname]);
-  const [fileteredData, setfileteredData] = useState(false);
+
   const { id: providerId } = useParams();
   const providerIds = searchParams.get('accounts')?.split(',').map(Number) || [];
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
@@ -95,13 +95,11 @@ export const LinkSpAccountProvider = ({ children }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -125,8 +123,7 @@ export const LinkSpAccountProvider = ({ children }) => {
       applySort,
       setPageNumber,
       refreshData: refetch,
-      isAddSpAccount,
-      fileteredData
+      isAddSpAccount
     }),
     [updateFilterState, clearFilters, data]
   );

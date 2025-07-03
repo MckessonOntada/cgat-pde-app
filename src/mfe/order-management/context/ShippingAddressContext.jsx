@@ -33,7 +33,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = useState([]);
   const { trade, selectedAccount } = accountDetails;
-  const [fileteredData, setfileteredData] = useState(false);
+
   const prepareDataForTable = (_data) => {
     const tableData = [];
 
@@ -98,11 +98,9 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const applyFilters = (filters) => {
     setPageConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterState({ ...filters });
-    setfileteredData(true);
   };
 
   const clearFilters = () => {
-    setfileteredData(false);
     setFilterState({ ...initialFilterState });
   };
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
@@ -137,8 +135,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         clearFilters,
         setPageNumber,
         setShippingAddressData,
-        applySort,
-        fileteredData
+        applySort
       }}>
       {children}
     </ShippingAddressContext.Provider>

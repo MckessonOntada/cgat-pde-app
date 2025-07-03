@@ -10,17 +10,21 @@ import CatalogDetails from './CatalogDetails';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
 
-  const { paginationConfig, catalogList: data, fileteredData, setPageNumber, isLoading } = useCatalogContext();
+  const { paginationConfig, catalogList: data, filterConfig, setPageNumber, isLoading } = useCatalogContext();
   const [selectedCatalogs, setSelectedCatalogs] = useState([]);
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const [openCatalogDetails, setOpenCatalogDetails] = useState(false);
   const [viewCatalog, setViewCatalog] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const { showAlert } = props;
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const columns = [
     {
       id: 'checkbox',
@@ -136,8 +140,8 @@ function CatalogDataTable(props) {
         noDataComponent={
           <EmptyDataTable
             image={EmptyDataImage}
-            heading={!fileteredData ? t('ManageCatalog.Table.nodata') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('ManageCatalog.Table.nodataMsg')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('ManageCatalog.Table.nodata')}
+            description={!isDataFiltered && t('ManageCatalog.Table.nodataMsg')}
           />
         }
         progressPending={isLoading}
