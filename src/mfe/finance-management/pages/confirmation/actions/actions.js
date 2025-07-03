@@ -17,6 +17,7 @@ export const useExportStatementPDF = (exportType) => {
         undefined,
         false,
         false,
+        false,
         'blob' // Set responseType to 'blob'
       );
     },

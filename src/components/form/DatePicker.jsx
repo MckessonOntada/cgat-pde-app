@@ -29,7 +29,7 @@ export default function DatePicker(props) {
         onBlur={handleInputBlur}
         isShowLabel={isShowLabel}
         showRequiredIcon={isRequired}
-        isInvalid={!!errorMessage}
+        isInvalid={isFieldTouched && errorMessage}
         {...rest}
       />
       {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}

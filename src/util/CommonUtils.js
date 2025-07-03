@@ -401,13 +401,15 @@ export const getDateRangeValidationError = (start, end, isRequired = false) => {
   if (start && end) {
     const startDate = new Date(start);
     const endDate = new Date(end);
-
+    const today = new Date();
     const maxAllowedDate = new Date(startDate);
     maxAllowedDate.setMonth(startDate.getMonth() + 6);
-    if (startDate >= endDate) {
+    if (startDate > endDate) {
       return 'Please select a valid date range.';
     } else if (endDate >= maxAllowedDate) {
       return 'Date range must not exceed 6 months.';
+    } else if (endDate > today) {
+      return 'End date cannot be in the future.';
     }
   }
 
@@ -689,7 +691,6 @@ function flattenTherapies(data) {
     return acc;
   }, []);
 }
-
 export const checkIsDataFiltered = (filters) => {
   return Object.values(filters).some((value) => {
     if (Array.isArray(value)) {
@@ -698,6 +699,11 @@ export const checkIsDataFiltered = (filters) => {
     return Boolean(value);
   });
 };
+function getDOBMaxDate() {
+  const maxDOB = new Date();
+  maxDOB.setDate(maxDOB.getDate() - 1);
+  return maxDOB;
+}
 
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
@@ -752,7 +758,8 @@ const CommonUtils = Object.freeze({
   getListOverflowingDisplayLabel,
   flattenTherapies,
   isEmptyArray,
-  checkIsDataFiltered
+  checkIsDataFiltered,
+  getDOBMaxDate
 });
 
 export default CommonUtils;

@@ -222,6 +222,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
         undefined,
         false,
         false,
+        false,
         'blob' // Set responseType to 'blob'
       ),
     {

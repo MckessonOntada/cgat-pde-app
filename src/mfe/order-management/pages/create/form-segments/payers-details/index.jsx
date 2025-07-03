@@ -2,7 +2,7 @@ import PageHeader from '@src/components/pageHeader';
 import React, { useContext } from 'react';
 import OrderStepper from '../OrderStepper';
 import OrderHeaderDetails from '../OrderHeaderDetails';
-import { Button, IconButton, Alert, Heading } from '@mckesson/mcp-component-library';
+import { Button, IconButton, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -27,6 +27,8 @@ import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import CommonUtils from '@src/util/CommonUtils';
+import { useMutation } from 'react-query';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const FormStateTracker = ({ setFormValues, setIsDirty }) => {
   const formik = useFormikContext();
@@ -53,7 +55,6 @@ function Payer() {
   const [isSecondaryPharmacyInsuranceOpen, setIsSecondaryPharmacyInsuranceOpen] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const [flag, setFlag] = React.useState(false);
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +62,7 @@ function Payer() {
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
   const { isEdit = false, isApprover = false } = locationState || {};
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isLoader } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -73,44 +74,11 @@ function Payer() {
   });
 
   React.useEffect(() => {
-    if (isSecondaryPharmacyInsuranceOpen) {
-      if (!orderDetails.payerDetails?.secondaryPharmacyInsurance) {
-        setFormValues((prev) => ({
-          ...prev,
-          secondaryPharmacyInsurance: getBasePharmacyInsuranceValues()
-        }));
-      }
-    } else {
-      setFormValues((prev) => ({
-        ...prev,
-        secondaryPharmacyInsurance: null
-      }));
-    }
-  }, [isSecondaryPharmacyInsuranceOpen]);
-
-  React.useEffect(() => {
-    if (isSecondaryMedicalInsuranceOpen) {
-      if (!orderDetails.payerDetails?.secondaryMedicalInsurance) {
-        setFormValues((prev) => ({
-          ...prev,
-          secondaryMedicalInsurance: getBaseMedicalInsuranceValues()
-        }));
-      }
-    } else {
-      setFormValues((prev) => ({
-        ...prev,
-        secondaryMedicalInsurance: null
-      }));
-    }
-  }, [isSecondaryMedicalInsuranceOpen]);
-
-  React.useEffect(() => {
     if (orderDetails.payerDetails) {
       const { secondaryMedicalInsurance, secondaryPharmacyInsurance } = orderDetails.payerDetails;
       if (secondaryMedicalInsurance) setIsSecondaryMedicalInsuranceOpen(true);
       if (secondaryPharmacyInsurance) setIsSecondaryPharmacyInsuranceOpen(true);
       setFormValues(orderDetails.payerDetails);
-      setFlag(true);
     }
   }, [orderDetails]);
 
@@ -190,6 +158,30 @@ function Payer() {
     }
   };
 
+  const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
+    queryKey: 'save-payer-details',
+    mutationFn: (values) => OrderService.savePayerDetails(orderId, values),
+    onSuccess: (response) => {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+        state: {
+          ...locationState,
+          isEdit: false,
+          isApprover: isApprover
+        }
+      });
+    },
+    onError: ({ err: error }) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+      setAlert({
+        type: 'error',
+        description
+      });
+    }
+  });
+
   const handleOnSubmit = (values) => {
     if (values.primaryMedicalInsurance && values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
       const { relation, ...rest } = values.primaryMedicalInsurance;
@@ -200,26 +192,7 @@ function Payer() {
       values.secondaryMedicalInsurance = rest;
     }
 
-    OrderService.savePayerDetails(orderId, values)
-      .then((response) => {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
-          state: {
-            ...locationState,
-            isEdit: false,
-            isApprover: isApprover
-          }
-        });
-      })
-      .catch((error) => {
-        const statusCode = error?.response?.status;
-        let description = t('error.default');
-        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
-        setAlert({
-          type: error,
-          description
-        });
-      });
+    savePayerDetails(values);
   };
 
   const handleOnUpload = (config) => (file, setFieldValue, key) => {
@@ -245,125 +218,159 @@ function Payer() {
     }
   };
 
-  if (isLoader) return isLoader;
-
   return (
     <div className="MCP-module-wrapper">
+      {(isSaving || isFetching) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBack} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
-      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-      <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={orderDetails?.channelType} />
-      <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
-      <Formik
-        key={`payer-details-${isSecondaryMedicalInsuranceOpen ? 'secondary-medical-insurance' : ''}-${
-          isSecondaryPharmacyInsuranceOpen ? 'secondary-pharmacy-insurance' : ''
-        }`}
-        initialValues={formValues}
-        validationSchema={validationSchema}
-        enableReinitialize={true}
-        onError={console.log}
-        onSubmit={handleOnSubmit}>
-        {({ setFieldValue }) => (
-          <Form>
-            <FormStateTracker setFormValues={setFormValues} setIsDirty={setIsDirty} />
-            <div className="MCP-module-body">
-              <div className="MCP-CardContainer">
-                <ModuleHeader
-                  heading={
-                    <div>
-                      <Heading as="h2">{t('labels.payerDetails')}</Heading>
-                    </div>
-                  }
-                  controls={
-                    <p className="form-instruction">
-                      <span className="required">*</span> {t('labels.required')}
-                    </p>
-                  }
-                />
-                <FormRenderer
-                  onUpload={handleOnUpload({
-                    insurance: 'MEDICAL',
-                    insuranceLevel: 'PRIMARY'
-                  })}
-                  sections={getMedicalInsuranceUiTemplate('primaryMedicalInsurance', 'Primary Medical Insurance')}
-                />
-                <hr className="form-section-separator" />
-                <FormRenderer
-                  onUpload={handleOnUpload({
-                    insurance: 'PHARMACY',
-                    insuranceLevel: 'PRIMARY'
-                  })}
-                  sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Pharmacy Insurance')}
-                />
-                <hr className="form-section-separator" />
-                <div>
-                  {!isSecondaryMedicalInsuranceOpen ? (
-                    <IconButton
-                      variant="tertiary"
-                      label={t('button.caption.addSecondaryMedicalInsurance')}
-                      size="lg"
-                      className="icon-button"
-                      iconButton={false}
-                      textButton={true}
-                      Icon={AddIcon}
-                      onClick={() => setIsSecondaryMedicalInsuranceOpen(true)}
+      <div className="MCP-module-body">
+        <OrderStepper
+          status={orderDetails?.currentStage}
+          patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={orderDetails?.channelType}
+        />
+        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
+          {({ setValues, setTouched, setErrors, setFieldValue }) => {
+            React.useEffect(() => {
+              setValues((prevValues) => ({
+                ...prevValues,
+                secondaryMedicalInsurance: isSecondaryMedicalInsuranceOpen ? getBaseMedicalInsuranceValues() : null
+              }));
+
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                secondaryMedicalInsurance: null
+              }));
+              setTouched((prevTouched) => ({
+                ...prevTouched,
+                secondaryMedicalInsurance: false
+              }));
+            }, [isSecondaryMedicalInsuranceOpen]);
+
+            React.useEffect(() => {
+              setValues((prevValues) => ({
+                ...prevValues,
+                secondaryPharmacyInsurance: isSecondaryPharmacyInsuranceOpen ? getBasePharmacyInsuranceValues() : null
+              }));
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                secondaryPharmacyInsurance: null
+              }));
+              setTouched((prevTouched) => ({
+                ...prevTouched,
+                secondaryPharmacyInsurance: false
+              }));
+            }, [isSecondaryPharmacyInsuranceOpen]);
+
+            React.useEffect(() => {
+              setValues({ ...formValues });
+            }, [formValues]);
+
+            return (
+              <Form>
+                <div className="MCP-module-body">
+                  <div className="MCP-panel-container">
+                    <ModuleHeader
+                      heading={
+                        <div>
+                          <Heading as="h2">{t('labels.payerDetails')}</Heading>
+                        </div>
+                      }
+                      controls={
+                        <p className="form-instruction">
+                          <span className="required">*</span> {t('labels.required')}
+                        </p>
+                      }
                     />
-                  ) : (
                     <FormRenderer
-                      onClose={() => handleOnClosePanel('secondaryMedicalInsurance', setFieldValue)}
-                      closeIcon={BinRedIcon}
                       onUpload={handleOnUpload({
                         insurance: 'MEDICAL',
-                        insuranceLevel: 'SECONDARY'
+                        insuranceLevel: 'PRIMARY'
                       })}
-                      sections={getMedicalInsuranceUiTemplate('secondaryMedicalInsurance', 'Secondary Medical Insurance')}
+                      sections={getMedicalInsuranceUiTemplate('primaryMedicalInsurance', 'Primary Medical Insurance')}
                     />
-                  )}
-                </div>
-                <hr className="form-section-separator" />
-                <div>
-                  {!isSecondaryPharmacyInsuranceOpen ? (
-                    <IconButton
-                      variant="tertiary"
-                      className="icon-button"
-                      label={t('button.caption.addSecondaryPharmacyInsurance')}
-                      size="lg"
-                      iconButton={false}
-                      textButton={true}
-                      Icon={AddIcon}
-                      onClick={() => setIsSecondaryPharmacyInsuranceOpen(true)}
-                    />
-                  ) : (
+                    <hr className="form-section-separator" />
                     <FormRenderer
-                      onClose={() => handleOnClosePanel('secondaryPharmacyInsurance', setFieldValue)}
-                      closeIcon={BinRedIcon}
                       onUpload={handleOnUpload({
                         insurance: 'PHARMACY',
-                        insuranceLevel: 'SECONDARY'
+                        insuranceLevel: 'PRIMARY'
                       })}
-                      sections={getPharmacyInsuranceUiTemplate('secondaryPharmacyInsurance', 'Secondary Pharmacy Insurance')}
+                      sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Pharmacy Insurance')}
                     />
-                  )}
+                    <hr className="form-section-separator" />
+                    <div>
+                      {!isSecondaryMedicalInsuranceOpen ? (
+                        <IconButton
+                          variant="tertiary"
+                          label={t('button.caption.addSecondaryMedicalInsurance')}
+                          size="lg"
+                          className="icon-button"
+                          iconButton={false}
+                          textButton={true}
+                          Icon={AddIcon}
+                          onClick={() => setIsSecondaryMedicalInsuranceOpen(true)}
+                        />
+                      ) : (
+                        <FormRenderer
+                          onClose={() => handleOnClosePanel('secondaryMedicalInsurance', setFieldValue)}
+                          closeIcon={BinRedIcon}
+                          onUpload={handleOnUpload({
+                            insurance: 'MEDICAL',
+                            insuranceLevel: 'SECONDARY'
+                          })}
+                          sections={getMedicalInsuranceUiTemplate('secondaryMedicalInsurance', 'Secondary Medical Insurance')}
+                        />
+                      )}
+                    </div>
+                    <hr className="form-section-separator" />
+                    <div>
+                      {!isSecondaryPharmacyInsuranceOpen ? (
+                        <IconButton
+                          variant="tertiary"
+                          className="icon-button"
+                          label={t('button.caption.addSecondaryPharmacyInsurance')}
+                          size="lg"
+                          iconButton={false}
+                          textButton={true}
+                          Icon={AddIcon}
+                          onClick={() => setIsSecondaryPharmacyInsuranceOpen(true)}
+                        />
+                      ) : (
+                        <FormRenderer
+                          onClose={() => handleOnClosePanel('secondaryPharmacyInsurance', setFieldValue)}
+                          closeIcon={BinRedIcon}
+                          onUpload={handleOnUpload({
+                            insurance: 'PHARMACY',
+                            insuranceLevel: 'SECONDARY'
+                          })}
+                          sections={getPharmacyInsuranceUiTemplate('secondaryPharmacyInsurance', 'Secondary Pharmacy Insurance')}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="footer-wrapper" ref={controlRef}>
+                    <div className="controls footer-controls">
+                      <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
+                        {t('captions.btnBack')}
+                      </Button>
+                      <Button size="md" variant="primary" type="submit">
+                        {t('captions.btnSaveAndContinue')}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="footer-wrapper" ref={controlRef}>
-                <div className="controls footer-controls">
-                  <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
-                    {t('captions.btnBack')}
-                  </Button>
-                  <Button size="md" variant="primary" type="submit">
-                    {t('captions.btnSaveAndContinue')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Form>
-        )}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
       <DiscardChangesModal
         heading={t('messages.confirmation.discardheader')}
         description={t('messages.confirmation.addition')}

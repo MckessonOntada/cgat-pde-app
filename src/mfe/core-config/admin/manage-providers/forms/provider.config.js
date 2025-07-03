@@ -47,7 +47,6 @@ export const sections = [
             label: 'provider.deaNumber',
             type: 'input',
             name: 'deaNumber',
-            isRequired: true,
             maxLength: 9
           },
           {
@@ -73,7 +72,6 @@ export const sections = [
             label: 'provider.medicaidNumber',
             type: 'input',
             name: 'medicaidNumber',
-            isRequired: true,
             maxLength: 6
           },
           {

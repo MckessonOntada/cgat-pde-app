@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError, Divider } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -17,7 +17,6 @@ import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import useAlert from '@src/hooks/useAlert';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
@@ -29,6 +28,8 @@ import { CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import Alert from '@src/components/cgat-alert/Alert';
+import ModuleHeader from '@src/components/module-header';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -82,9 +83,8 @@ function AdditionalDetails() {
   });
   const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
-  const { showAlert } = useAlert();
-  const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const [alert, setAlert] = React.useState(null);
+  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const { tradeDetails = {}, isCoiIdRequired, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
@@ -190,7 +190,7 @@ function AdditionalDetails() {
     return schema;
   };
 
-  const { isLoading, data: variantsData = {} } = useQuery({
+  const { data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
       OrderService.getVariants(
@@ -209,10 +209,9 @@ function AdditionalDetails() {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: alertContainerId
+        type: 'error'
       });
     }
   });
@@ -262,10 +261,9 @@ function AdditionalDetails() {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: alertContainerId
+        type: 'error'
       });
     }
   });
@@ -274,7 +272,7 @@ function AdditionalDetails() {
     if (!alertState) {
       return;
     }
-    showAlert({ ...alertState, anchorEl: alertContainerId });
+    setAlert({ ...alertState });
   }, []);
 
   const prepareQuestionnaire = (result) => {
@@ -378,10 +376,9 @@ function AdditionalDetails() {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: alertContainerId
+        type: 'error'
       });
     }
   });
@@ -407,10 +404,9 @@ function AdditionalDetails() {
         let description = t('error.default');
         if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-        showAlert({
+        setAlert({
           description,
-          type: 'error',
-          anchorEl: alertContainerId
+          type: 'error'
         });
       }
     }
@@ -436,10 +432,9 @@ function AdditionalDetails() {
         let description = t('error.default');
         if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-        showAlert({
+        setAlert({
           description,
-          type: 'error',
-          anchorEl: alertContainerId
+          type: 'error'
         });
       }
     }
@@ -570,19 +565,7 @@ function AdditionalDetails() {
         }
       : null;
 
-    const { accountDetails, therapy } = orderDetails;
-    const questionnaireDependencies = {
-      soldToCustomer: accountDetails.soldToAccount.accountNumber,
-      shipToCustomer: accountDetails.soldToAccount.accountNumber,
-      sapMaterial: tradeDetails.ndcNumber,
-      variant
-    };
-
-    const questionnaireResponse = {
-      response: [...questionnaireTemplateConfig],
-      dependencies: questionnaireDependencies
-    };
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, ...rest } = values;
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration } = values;
 
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.questions) return;
@@ -698,7 +681,7 @@ function AdditionalDetails() {
     }
   }, [variant, orderDetails, isSPCrossWalked]);
 
-  const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue, setFieldTouched) => {
+  const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue) => {
     const updatedOptions = {
       ...variantAcknowledgement,
       isChecked: !variantAcknowledgement.isChecked
@@ -711,13 +694,9 @@ function AdditionalDetails() {
     setVariantAcknowledgement(updatedOptions);
   };
 
-  if (isLoader) {
-    return isLoader;
-  }
-
   return (
     <div className="MCP-module-wrapper">
-      {isSaving && <Loader type={'screen'} />}
+      {(isSaving || isFetching) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -725,174 +704,180 @@ function AdditionalDetails() {
       </div>
 
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
-      <Formik
-        initialValues={initialFormValues}
-        enableReinitialize={true}
-        validationSchema={validationSchema}
-        onError={console.log}
-        validationContext={{ isCoiIdRequired }}
-        onSubmit={(values) => {
-          handleOnSubmit(values);
-        }}>
-        {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
-          useEffect(() => {
-            setIsDirty(dirty);
-            setStoredValue(values);
-          }, [dirty, values]);
+      <div className="MCP-module-body">
+        <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
+        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        <Formik
+          initialValues={initialFormValues}
+          enableReinitialize={true}
+          validationSchema={validationSchema}
+          onError={console.log}
+          validationContext={{ isCoiIdRequired }}
+          onSubmit={(values) => {
+            handleOnSubmit(values);
+          }}>
+          {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
+            useEffect(() => {
+              setIsDirty(dirty);
+              setStoredValue(values);
+            }, [dirty, values]);
 
-          return (
-            <Form>
-              <div className="MCP-module-body">
-                <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
-
-                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
-                <div id={alertContainerId} />
-
-                <div className="MCP-CardContainer">
-                  <div className="row-space-between-center">
-                    <Heading as="h3">{t('labels.additionalDetails')}</Heading>
-                    <p className="form-instruction">
-                      <span className="required">*</span> {t('labels.required')}
-                    </p>
-                  </div>
-                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-                    {getFormFields(t, { isCoiIdRequired, channelType }, setFieldValue).map(
-                      ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
-                        <Field
-                          key={index}
-                          name={name}
-                          label={label}
-                          placeholder={placeholder}
-                          isRequired={isRequired}
-                          component={component}
-                          maxLength={maxLength}
-                          {...otherProps}
-                        />
-                      )
-                    )}
-                  </div>
-                  {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
-                    <React.Fragment>
-                      <hr className="form-section-separator" />
-                      <div className="row-space-between-center">
-                        <Heading as="h3">{t('labels.clinicalDetails')}</Heading>
+            return (
+              <Form>
+                <div className="MCP-module-body">
+                  <div className="MCP-panel-container">
+                    <ModuleHeader
+                      heading={
+                        <div>
+                          <Heading as="h2">{t('labels.additionalDetails')}</Heading>
+                        </div>
+                      }
+                      controls={
                         <p className="form-instruction">
                           <span className="required">*</span> {t('labels.required')}
                         </p>
-                      </div>
+                      }
+                    />
+                    <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
+                      {getFormFields(t, { isCoiIdRequired, channelType }, setFieldValue).map(
+                        ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
+                          <Field
+                            key={index}
+                            name={name}
+                            label={label}
+                            placeholder={placeholder}
+                            isRequired={isRequired}
+                            component={component}
+                            maxLength={maxLength}
+                            {...otherProps}
+                          />
+                        )
+                      )}
+                    </div>
+                    {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                       <React.Fragment>
-                        {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue, setFieldTouched).map(
-                          ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
-                            <div key={index} className={`${layout.classes}`}>
-                              <Field
-                                name={name}
-                                label={label}
-                                placeholder={placeholder}
-                                isRequired={isRequired}
-                                component={component}
-                                maxLength={maxLength}
-                                {...otherProps}
-                              />
-                            </div>
-                          )
-                        )}
-                      </React.Fragment>
-                    </React.Fragment>
-                  )}
-                  {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
-                    <div>
-                      <div className="MCP-module-body">
                         <hr className="form-section-separator" />
                         <div className="row-space-between-center">
-                          <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                          <Heading as="h3">{t('labels.clinicalDetails')}</Heading>
                           <p className="form-instruction">
                             <span className="required">*</span> {t('labels.required')}
                           </p>
                         </div>
-                        <div>
-                          <VariantTable
-                            variant={variant}
-                            onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
-                            data={variantsData.content}
-                          />
-                          {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
-                        </div>
-                        <div className="agreement-checkbox-control">
-                          <Field name="variant-acknowledgement">
-                            {({ field, form }) => (
-                              <CheckboxGroup
-                                id={'default'}
-                                name="variant-acknowledgement"
-                                items={[
-                                  {
-                                    ...variantAcknowledgement,
-                                    onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
-                                  }
-                                ]}
-                                error={errors.variantAcknowledgement && touched?.variantAcknowledgement ? Boolean(!values.variantAcknowledgement) : false}
-                                errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
-                                size="md"
-                              />
-                            )}
-                          </Field>
-                        </div>
-                        <div>
-                          <Field
-                            name="variant.document"
-                            component={Components['inputFile']}
-                            setFieldValue={setFieldValue}
-                            disabled={Boolean(!variant)}
-                            attachmentValue={values?.variant?.document || null}
-                            validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
-                            onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
-                            fileTypeText={ALLOWED_FILE_TYPE_TEXT}
-                          />
+                        <React.Fragment>
+                          {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue, setFieldTouched).map(
+                            ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
+                              <div key={index} className={`${layout.classes}`}>
+                                <Field
+                                  name={name}
+                                  label={label}
+                                  placeholder={placeholder}
+                                  isRequired={isRequired}
+                                  component={component}
+                                  maxLength={maxLength}
+                                  {...otherProps}
+                                />
+                              </div>
+                            )
+                          )}
+                        </React.Fragment>
+                      </React.Fragment>
+                    )}
+                    {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
+                      <div>
+                        <div className="MCP-module-body">
+                          <hr className="form-section-separator" />
+                          <div className="row-space-between-center">
+                            <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                            <p className="form-instruction">
+                              <span className="required">*</span> {t('labels.required')}
+                            </p>
+                          </div>
+                          <div>
+                            <VariantTable
+                              variant={variant}
+                              onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
+                              data={variantsData.content}
+                            />
+                            {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+                          </div>
+                          <div className="agreement-checkbox-control">
+                            <Field name="variant-acknowledgement">
+                              {({ field, form }) => (
+                                <CheckboxGroup
+                                  id={'default'}
+                                  name="variant-acknowledgement"
+                                  items={[
+                                    {
+                                      ...variantAcknowledgement,
+                                      onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
+                                    }
+                                  ]}
+                                  error={errors.variantAcknowledgement && touched?.variantAcknowledgement ? Boolean(!values.variantAcknowledgement) : false}
+                                  errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
+                                  size="md"
+                                />
+                              )}
+                            </Field>
+                          </div>
+                          <div>
+                            <Field
+                              name="variant.document"
+                              component={Components['inputFile']}
+                              setFieldValue={setFieldValue}
+                              disabled={Boolean(!variant)}
+                              attachmentValue={values?.variant?.document || null}
+                              validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
+                              onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
+                              fileTypeText={ALLOWED_FILE_TYPE_TEXT}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {isFetchingConfiguredQuestions ? (
-                    <div>
-                      <Loader variant="circular" />
-                    </div>
-                  ) : (
-                    <div>
-                      {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
-                        <React.Fragment>
-                          <div className="configured-questionnaire-form">
-                            <div className="MCP-module-body">
-                              <hr className="form-section-separator" />
-                              <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
-                              <QuestionnaireTemplate
-                                onRemoveDocument={handleOnRemoveDocument}
-                                onDocumentChange={handleOnDocumentChange}
-                                config={questionnaireTemplateConfig}
-                                isPreview={false}
-                              />
+                    {isFetchingConfiguredQuestions ? (
+                      <div>
+                        <Loader variant="circular" />
+                      </div>
+                    ) : (
+                      <div>
+                        {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
+                          <React.Fragment>
+                            <div className="configured-questionnaire-form">
+                              <div className="MCP-module-body">
+                                <hr className="form-section-separator" />
+                                <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                                <QuestionnaireTemplate
+                                  onRemoveDocument={handleOnRemoveDocument}
+                                  onDocumentChange={handleOnDocumentChange}
+                                  config={questionnaireTemplateConfig}
+                                  isPreview={false}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </React.Fragment>
-                      )}
-                    </div>
-                  )}
-                </div>
+                          </React.Fragment>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                <div className="footer-wrapper" ref={controlRef}>
-                  <div className="controls footer-controls">
-                    <Button size="md" variant="secondary" onClick={handleOnBack}>
-                      {t('captions.btnBack')}
-                    </Button>
-                    <Button size="md" variant="primary" type="submit">
-                      {t('captions.btnSaveAndContinue')}
-                    </Button>
+                  <div className="footer-wrapper" ref={controlRef}>
+                    <div className="controls footer-controls">
+                      <Button size="md" variant="secondary" onClick={handleOnBack}>
+                        {t('captions.btnBack')}
+                      </Button>
+                      <Button size="md" variant="primary" type="submit">
+                        {t('captions.btnSaveAndContinue')}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Form>
-          );
-        }}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
       <DiscardChangesModal
         heading={t('messages.confirmation.discardheader')}
         description={t('messages.confirmation.addition')}
