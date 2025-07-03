@@ -150,7 +150,7 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('labels.sapId'),
+      name: t('labels.orderId'),
       id: 'mckessonOrderId',
       selector: (row) => `${row.mckessonOrderId}`,
       maxWidth: '140px',
@@ -161,17 +161,13 @@ export default function InvoicesTable() {
       )
     },
     {
-      id: 'soldToSite',
-      name: t('paymentInvoices.history.table.SoldToAccountNo'),
-      selector: (row) => row.soldToSite,
-      maxWidth: '140px',
-      minWidth: '140px',
-      sortable: true,
-      showInMobileHeader: true,
-      cardHeader: true,
-      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
+      name: t('paymentInvoices.Details.referenceNumber'),
+      id: 'referenceDocumentNumber',
+      selector: (row) => `${row.referenceDocumentNumber}`,
+      maxWidth: '180px',
+      cell: (props) => <EclipsesTextcss str={props.referenceDocumentNumber} maxWidth={170} />
     },
+
     {
       name: t('labels.soldToAccountName'),
       id: 'soldToName',
@@ -194,6 +190,19 @@ export default function InvoicesTable() {
       sortable: true,
       id: 'dueDate',
       cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+    },
+    {
+      name: t('paymentInvoices.history.table.invoiceAmount'),
+      selector: (row) => row?.billAmount,
+      minWidth: '175px',
+      sortable: true,
+      right: true,
+      id: 'billAmount',
+      cell: (props) => (
+        <div className="cellEllipse align-items-right ">
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
+        </div>
+      )
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
@@ -233,19 +242,7 @@ export default function InvoicesTable() {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.invoiceAmount'),
-      selector: (row) => row?.billAmount,
-      minWidth: '175px',
-      sortable: true,
-      right: true,
-      id: 'billAmount',
-      cell: (props) => (
-        <div className="cellEllipse align-items-right ">
-          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
-        </div>
-      )
-    },
+
     {
       name: t('paymentInvoices.history.table.Actions'),
       width: '100px',
