@@ -34,7 +34,7 @@ export const getFormFields = (t, config, setFieldValue) => {
           placeholder: ' ',
           isRequired: true,
           component: Components['input'],
-          maxLength: 50
+          maxLength: 2
         },
         {
           name: 'slotNumber',

@@ -137,6 +137,8 @@ export const MessageEn = {
   'labels.accountDetails': 'Account Details',
   'labels.COIIdRequired': 'COI ID is required',
   'labels.orderQuantityRequired': 'Order Quantity is required',
+  'labels.OrderQuantityMin': 'Order quantity cannot be less than {min}',
+  'labels.OrderQuantityMax': 'Order quantity cannot be more than {max}',
   'labels.slotNumberRequired': 'Slot Number is required',
   'labels.diagnosisCodeRequired': 'Diagnosis code is required',
   'labels.invalidDiagnosis': 'Diagnosis code is not valid',

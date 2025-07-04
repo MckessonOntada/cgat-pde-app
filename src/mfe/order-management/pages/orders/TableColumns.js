@@ -17,7 +17,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { FormattedNumber } from 'react-intl';
-import { ORDER_STAGES } from '../create/form-segments/Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../create/form-segments/Constants';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -469,9 +469,16 @@ const jsxColumns = () => [
     selector: 'orderCost',
     minWidth: '120px',
     cell: function (props) {
+      const { paporder, therapy, orderCost } = props;
+      let displayOrderCost = '';
+      if (therapy.channelType === CHANNEL_TYPE.BUY_AND_BILL && paporder === true) {
+        displayOrderCost = 0;
+      } else if (therapy.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+        displayOrderCost = orderCost;
+      }
       return (
         <div className="cellEllipse align-items-right">
-          {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
+          {displayOrderCost >= 0 ? <FormattedNumber value={displayOrderCost} style="currency" currency="USD" /> : ''}
         </div>
       );
     }

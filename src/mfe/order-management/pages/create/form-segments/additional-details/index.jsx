@@ -176,6 +176,8 @@ function AdditionalDetails() {
             }),
           orderQuantity: Yup.number()
             .typeError(t('labels.OrderQuantityShouldPositive'))
+            .min(1, t('labels.OrderQuantityMin', { min: 1 }))
+            .max(99, t('labels.OrderQuantityMax', { max: 99 }))
             .required(t('labels.orderQuantityRequired'))
             .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
             .integer(t('labels.OrderQuantityMustBeInteger')),
