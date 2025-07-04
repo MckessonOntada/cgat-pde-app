@@ -705,6 +705,21 @@ function getDOBMaxDate() {
   return maxDOB;
 }
 
+function getUploadErrorMessage(error, t) {
+  const { response: errorResponse = {} } = error;
+  const status = errorResponse.status;
+  const message = errorResponse.data?.message;
+  const errorCodes = errorResponse.data?.errorCodes;
+
+  if (status === 419 && Array.isArray(errorCodes) && errorCodes.length > 0) {
+    return t(errorCodes[0]);
+  } else if (message) {
+    return message;
+  } else {
+    return t('error.default');
+  }
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -759,7 +774,8 @@ const CommonUtils = Object.freeze({
   flattenTherapies,
   isEmptyArray,
   checkIsDataFiltered,
-  getDOBMaxDate
+  getDOBMaxDate,
+  getUploadErrorMessage
 });
 
 export default CommonUtils;

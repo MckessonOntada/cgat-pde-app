@@ -19,14 +19,14 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 
 const Upload = () => {
   const { t } = useTranslate();
-  const [notification, setNotification] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
 
   const navigate = useNavigate();
   const handleOnUpload = (values) => {
-    setNotification(null);
+    setAlert(null);
     const { file } = values;
     if (!file) {
-      setNotification({
+      setAlert({
         type: 'error',
         description: t('providers.errorMessage.fileUploadRequired')
       });
@@ -39,7 +39,7 @@ const Upload = () => {
     SPCatalogService.uploadCatalogData(formData)
       .then((response) => {
         if (response.status == 200) {
-          setNotification({
+          setAlert({
             type: 'success',
             description: t('providers.message.fileUploadSuccess')
           });
@@ -50,7 +50,7 @@ const Upload = () => {
             });
             downloadFile(blob, 'SP_Catalog_Upload_Log');
           };
-          setNotification({
+          setAlert({
             type: 'info',
             description: (
               <div className="alert-controls">
@@ -67,11 +67,10 @@ const Upload = () => {
         }
       })
       .catch((error) => {
-        const { response: errorResponse = {} } = error;
-        console.log('error', error);
-        setNotification({
+        const description = CommonUtils.getUploadErrorMessage(error, t);
+        setAlert({
           type: 'error',
-          description: t('errors.default'),
+          description,
           isSticky: true
         });
       });
@@ -121,8 +120,8 @@ const Upload = () => {
         controlHeading={t('label.uploadCatalogListCSV')}
         infoHeader={t('label.uploadCatalog.info')}
         isLoading={false}
-        messages={[notification]}
-        onCloseAlert={() => setNotification(null)}
+        messages={[alert]}
+        onCloseAlert={() => setAlert(null)}
         customDownload={
           <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={handleOnDownload}>
             <Button size="md" variant={'secondary'} className="context-menu__button">

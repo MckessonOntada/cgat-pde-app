@@ -204,15 +204,23 @@ function Payer() {
       insurance,
       insuranceLevel
     };
-    OrderService.uploadPayerDocument(orderId, payload).then((response) => {
-      const value = {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        url: response
-      };
-      setFieldValue(key, value);
-    });
+    OrderService.uploadPayerDocument(orderId, payload)
+      .then((response) => {
+        const value = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          url: response
+        };
+        setFieldValue(key, value);
+      })
+      .catch((error) => {
+        const description = CommonUtils.getUploadErrorMessage(error, t);
+        setAlert({
+          type: 'error',
+          description
+        });
+      });
   };
 
   const handleOnClosePanel = (key, setFieldValue) => {
