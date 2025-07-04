@@ -707,7 +707,13 @@ const Summary = () => {
                           <div className="overflowing">
                             <Tooltip body={therapy?.materialDescription}>
                               {!spOrder ? (
-                                <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} onClick={() => handleOpenDetails(therapy)}>
+                                <Link
+                                  className="MCP-table-link"
+                                  aria-label={t('labels.therapyDescription')}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleOpenDetails(therapy);
+                                  }}>
                                   {therapy?.materialDescription}
                                 </Link>
                               ) : (
