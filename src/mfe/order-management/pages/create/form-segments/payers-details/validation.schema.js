@@ -56,7 +56,7 @@ export const getPharmacyInsuranceSchema = (key, t) => ({
       .max(100, t('messages.pbmNameMax'))
       .test('no-leading-trailing-spaces', t('messages.pharmacyManagerExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(RX_SYMBOLS_ALLOWED, t('messages.alphaSymbols')),
-    contact: Yup.string()
+    contactNumber: Yup.string()
       .trim()
       .required(t('message.enterPhone'))
       .matches(PHONE_REGEX, t('message.invalidPhoneNumber'))
@@ -88,7 +88,7 @@ export const getBaseMedicalInsuranceValues = () => ({
 
 export const getBasePharmacyInsuranceValues = () => ({
   pharmacyBenefitManagerName: '',
-  contact: '',
+  contactNumber: '',
   rxGroupNumber: '',
   rxMemberId: '',
   rxPcn: '',

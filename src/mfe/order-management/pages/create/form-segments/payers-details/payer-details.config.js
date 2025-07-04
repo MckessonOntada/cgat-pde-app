@@ -179,7 +179,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-contact`,
-          name: `${parentKey}.contact`,
+          name: `${parentKey}.contactNumber`,
           label: 'form.label.contact',
           placeholder: '',
           type: 'phoneInput',
