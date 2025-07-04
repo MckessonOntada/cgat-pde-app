@@ -725,6 +725,11 @@ function getFileNameAndType(url) {
   };
 }
 
+function removeLeadingZeros(str) {
+  if (!str) return '';
+  return str.replace(/^0+/, '') || '';
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -780,7 +785,8 @@ const CommonUtils = Object.freeze({
   isEmptyArray,
   checkIsDataFiltered,
   getDOBMaxDate,
-  getFileNameAndType
+  getFileNameAndType,
+  removeLeadingZeros
 });
 
 export default CommonUtils;
