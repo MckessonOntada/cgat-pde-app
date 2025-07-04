@@ -940,7 +940,7 @@ const Summary = () => {
                         />
                         <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-6`}>
                           <DetailSegment
-                            label={t('form.label.insuranceCompany')}
+                            label={t('form.label.insuranceCarrier')}
                             value={
                               <Tooltip body={payerDetails?.primaryMedicalInsurance?.insuranceCompanyName || '-'}>
                                 <span className="overflowing">{payerDetails?.primaryMedicalInsurance?.insuranceCompanyName || '-'}</span>
@@ -976,7 +976,7 @@ const Summary = () => {
                         />
                         <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-6`}>
                           <DetailSegment
-                            label={t('form.label.insuranceCompany')}
+                            label={t('form.label.insuranceCarrier')}
                             value={
                               <Tooltip body={payerDetails?.secondaryMedicalInsurance?.insuranceCompanyName || '-'}>
                                 <span className="overflowing">{payerDetails?.secondaryMedicalInsurance?.insuranceCompanyName || '-'}</span>
