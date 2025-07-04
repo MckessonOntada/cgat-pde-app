@@ -46,9 +46,9 @@ function TableCardView(props) {
       setSelectedData((prev) => [...prev, ...data.filter((record) => !prev.some((selected) => isEqual(selected, record)))]);
     }
   };
+  const sortableColumns = columns.filter((col) => col.sortable).map((col) => ({ value: col.name, label: col.name }));
 
   const renderCardSort = () => {
-    const sortableColumns = columns.filter((col) => col.sortable).map((col) => ({ value: col.name, label: col.name }));
     return (
       <div className={styles.actionsBar}>
         {isMultipleRowSelect && (
@@ -114,7 +114,7 @@ function TableCardView(props) {
     <React.Fragment>
       {data && data.length > 0 ? (
         <React.Fragment>
-          {renderCardSort()}
+          {CommonUtils.isNonEmptyArray(sortableColumns) && renderCardSort()}
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
             {data.map((row, index) => (
               <React.Fragment key={`main-${index}`}>
