@@ -17,6 +17,7 @@ import { useMutation } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
 import AccountService from '@src/api/commonService/AccountService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   const [tableHeight, setTableHeight] = useState('100%');
@@ -86,8 +87,10 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
     }
   );
 
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, fileteredData, data, applySort, isAddSpAccount } = useLinkSpAccountContext();
-
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, filterConfig, data, applySort, isAddSpAccount } = useLinkSpAccountContext();
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const unLinkSpAccount = (selectedProviders) => {
     renderModal({
       title: t('messages.header.confirmation'),
@@ -181,8 +184,8 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={!fileteredData ? t('captions.questionnaire.account.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-                description={!fileteredData && t('provider.sp.account.needToAddAccount')}
+                heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('captions.questionnaire.account.emptyTableTitle')}
+                description={!isDataFiltered && t('provider.sp.account.needToAddAccount')}
               />
             }
           />

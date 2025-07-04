@@ -13,12 +13,13 @@ import { useNavigate } from 'react-router-dom';
 import { renderModal } from '@src/util/ModalUtil';
 import { PREVIEW_URL } from '../../manage-questionnaire/constants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import CommonUtils from '@src/util/CommonUtils';
 
 export const SPMaterialDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
-      { label: 'therapyNumber', value: 'materialNumber' },
+      { label: 'therapyNumber', value: 'displayMaterialNumber' },
       { label: 'therapy', value: 'materialDescription' },
       { label: 'NDC', value: 'ndcNumber' },
       { label: 'strength', value: 'strength' },
@@ -65,6 +66,16 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       return result;
     },
     enabled: !!viewSPMaterial && viewSPMaterial?.id && !isSPCatalog ? true : false,
+    select: (result) => {
+      const { therapy, ...rest } = result;
+      if (therapy.materialNumber) {
+        therapy.displayMaterialNumber = CommonUtils.removeLeadingZeros(therapy.materialNumber);
+      }
+      return {
+        ...rest,
+        therapy
+      };
+    },
     refetchOnWindowFocus: false
   });
 
@@ -89,6 +100,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       return result;
     },
     enabled: !!viewSPMaterial && viewSPMaterial?.id && isSPCatalog ? true : false,
+
     refetchOnWindowFocus: false
   });
 
@@ -194,11 +206,6 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   const renderDetails = (constants, dataSource, isCrosswalk) => {
     return constants.map((item, index) => (
       <React.Fragment key={index}>
-        {/* {!isCrosswalk && (
-          <div className="styled-heading">
-            <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
-          </div>
-        )} */}
         <div className="details-ul">
           {item.sectionData.map((subItem, subIndex) => {
             let value;
@@ -207,6 +214,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
             } else if (isCrosswalk && (subItem.value === 'dropshipIndicator' || subItem.value === 'sellingUnitCode')) {
               value = 'NA';
             } else {
+              const __value = data?.[dataSource]?.[subItem.value];
               value = data?.[dataSource]?.[subItem.value] ?? (isCrosswalk ? '-' : 'NA');
             }
             return (

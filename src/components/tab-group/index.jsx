@@ -1,5 +1,5 @@
 import React from 'react';
-import './ToggleButton.scss'; // Importing the CSS file
+import './Tab.scss';
 
 const ToggleButtonGroup = ({ value, onChange, exclusive = false, children }) => {
   const handleToggle = (newValue) => {

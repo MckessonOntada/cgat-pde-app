@@ -220,7 +220,7 @@ const CreateCrosswalk = () => {
                 }
                 return response;
               }}>
-              <Products material={selectedMaterial} linkedItems={linkedItems} products={selectedProducts} onSelect={setSelectedProducts} />
+              <Products linkedItems={linkedItems} products={selectedProducts} onSelect={setSelectedProducts} />
             </TableProvider>
             <Summary linkedMaterial={linkedItems} onUnlink={handleOnUnLinkMaterial} onLink={handleOnLinkMaterial} />
           </div>

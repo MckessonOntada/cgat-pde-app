@@ -13,7 +13,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import {
   TherapyDetailsConstantsForBB,
@@ -23,7 +23,7 @@ import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segmen
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
-  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials, fileteredData, applySort } = useManageMaterial();
+  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials, filterConfig, applySort } = useManageMaterial();
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
@@ -45,6 +45,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
     ...item,
     active: item.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? false : true
   }));
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
 
   const getColumns = () => [
     {
@@ -322,8 +325,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             isLoading={isFetching}
             error={isError ? t('manageMaterial.table.error') : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('manageMaterial.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('manageMaterial.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('manageMaterial.table.emptyData')}
+            description={!isDataFiltered && t('manageMaterial.table.emptyDataDescription')}
           />
         }
         progressComponent={

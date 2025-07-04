@@ -7,13 +7,15 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 const TherapyDataTable = (props) => {
   const { trade, onChange } = props;
   const { t } = useTranslate();
-  const { data, paginationConfig, setPageNumber, isFetching, error, applySort, fileteredData } = useTherapy();
-
+  const { data, paginationConfig, setPageNumber, isFetching, error, applySort, filterConfig } = useTherapy();
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);
@@ -96,8 +98,8 @@ const TherapyDataTable = (props) => {
           isLoading={isFetching}
           error={error?.message}
           image={EmptyDataImage}
-          heading={!fileteredData ? t('table.labels.therapySelectionNoDataAvailable') : t('errors.messages.noRecordsFound')}
-          description={!fileteredData && t('table.labels.therapySelectionNoDataAvailableDescription')}
+          heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('table.labels.therapySelectionNoDataAvailable')}
+          description={!isDataFiltered && t('table.labels.therapySelectionNoDataAvailableDescription')}
         />
       }
     />

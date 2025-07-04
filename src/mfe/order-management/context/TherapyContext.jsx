@@ -34,7 +34,6 @@ export const TherapyProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
-  const [fileteredData, setfileteredData] = React.useState(false);
   const requestParams = React.useMemo(
     () => ({
       pageNo: paginationConfig.pageNumber - 1,
@@ -85,7 +84,6 @@ export const TherapyProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -97,7 +95,6 @@ export const TherapyProvider = ({ children }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const ctxValue = React.useMemo(
@@ -111,8 +108,7 @@ export const TherapyProvider = ({ children }) => {
       applySort,
       applyFilters,
       clearFilters,
-      refreshData,
-      fileteredData
+      refreshData
     }),
     [updateFilterState, clearFilters, isFetching, error, data]
   );

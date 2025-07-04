@@ -1,6 +1,5 @@
 import { US_STATES } from '@src/components/form/util';
 import { CHANNEL_TYPE } from '../../Constants';
-import { check } from 'prettier';
 
 const getStates = () => {
   const options = US_STATES();

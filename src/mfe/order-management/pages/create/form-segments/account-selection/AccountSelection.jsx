@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { Heading, Button } from '@mckesson/mcp-component-library';
+import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
@@ -13,14 +13,13 @@ import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
-import { Loader } from '@mckesson/mcp-component-library';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 
 const AccountSelection = () => {
@@ -34,11 +33,8 @@ const AccountSelection = () => {
   const { controlRef } = useContext(FooterContext);
   const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const [accountError, setAccountError] = useState({
-    isError: false,
-    message: ''
-  });
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const [alert, setAlert] = useState(null);
+  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
@@ -59,7 +55,6 @@ const AccountSelection = () => {
   });
 
   const alertContainerId = 'accountSelection-alert-Container';
-  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -99,10 +94,9 @@ const AccountSelection = () => {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      showAlert({
+      setAlert({
         description,
-        type: 'error',
-        anchorEl: alertContainerId
+        type: 'error'
       });
     }
   });
@@ -111,7 +105,7 @@ const AccountSelection = () => {
     setOpen(false);
   };
   const handleOnClick = () => {
-    setAccountError({ isError: false, message: '' });
+    setAlert(null);
     setOpen(true);
   };
 
@@ -138,52 +132,31 @@ const AccountSelection = () => {
     }
   };
 
-  React.useEffect(() => {
-    showAlert({
-      description: accountError.message,
-      type: 'error',
-      anchorEl: alertContainerId
-    });
-  }, [accountError]);
-
   const handleOnSubmit = async () => {
-    if (!selectedShipToAccount || !selectedSoldToAccount || isSaving) {
-      if (!selectedShipToAccount && selectedSoldToAccount) {
-        setAccountError({
-          isError: true,
-          message: t('messages.selectshippingAddress')
-        });
-      } else if (!selectedSoldToAccount) {
-        setAccountError({
-          isError: true,
-          message: t('messages.selectAccount')
-        });
-      } else
-        setAccountError({
-          isError: true,
-          message: t('messages.selectAccount')
-        });
-
+    if (!selectedShipToAccount) {
+      setAlert({
+        type: 'error',
+        description: t('messages.selectshippingAddress')
+      });
       return;
     }
-    if (selectedSoldToAccount && selectedShipToAccount) {
-      const payload = {
-        program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
-        soldToAccountId: selectedSoldToAccount.id,
-        shipToAccountId: selectedShipToAccount.id
-      };
-      setAccountError({ isError: false, message: '' });
-
-      saveAccount(payload);
-    } else {
-      if (!selectedSoldToAccount) {
-        setAccountError({
-          isError: true,
-          message: 'Please select an account before proceeding.'
-        });
-        return;
-      }
+    if (!selectedSoldToAccount) {
+      setAlert({
+        type: 'error',
+        description: t('messages.selectAccount'),
+        anchorEl: alertContainerId
+      });
+      return;
     }
+    if (isSaving) return;
+
+    const payload = {
+      program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
+      soldToAccountId: selectedSoldToAccount.id,
+      shipToAccountId: selectedShipToAccount.id
+    };
+    setAlert(null);
+    saveAccount(payload);
   };
 
   const handleOnBackToOrders = () => {
@@ -221,15 +194,9 @@ const AccountSelection = () => {
     setOpen(false);
   };
 
-  if (isLoader) {
-    return isLoader;
-  }
-  if (isSaving) {
-    return <Loader type={'screen'} />;
-  }
-
   return (
     <div className="MCP-module-wrapper">
+      {(isSaving || isFetching) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -244,17 +211,17 @@ const AccountSelection = () => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+        <OrderHeaderDetails
+          orderDetails={orderDetails}
+          priceDetails={priceDetails}
+          selectedAccount={{
+            shipToAccount: selectedShipToAccount,
+            soldToAccount: selectedSoldToAccount
+          }}
+          channelType={selectedSoldToAccount?.channelType}
+        />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails
-            orderDetails={orderDetails}
-            priceDetails={priceDetails}
-            selectedAccount={{
-              shipToAccount: selectedShipToAccount,
-              soldToAccount: selectedSoldToAccount
-            }}
-            channelType={selectedSoldToAccount?.channelType}
-          />
-          {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader

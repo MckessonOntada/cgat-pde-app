@@ -27,7 +27,7 @@ FIELD-WISE INSTRUCTIONS:
    - Type: Text | Max Length: 50
    - Example: Smith
 
-4. DEA Number (M)
+4. DEA Number (O)
    - Type: Text | Max Length: 9
    - Must be exactly 9 characters
    - Example: FS1234567
@@ -69,7 +69,7 @@ FIELD-WISE INSTRUCTIONS:
     - Type: Numeric | Length: 9
     - Example: 123456789
 
-14. Medicaid Number (M)
+14. Medicaid Number (O)
     - Type: Numeric | Length: 6
     - Example: 123456
 

@@ -14,7 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from './context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { ROUTE_CONFIG } from './constants';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import usePermission from '@src/hooks/usePermissions';
@@ -43,7 +43,7 @@ function TemplateList({ onAlert }) {
     setTemplates,
     setPageNumber,
     refetchTemplates,
-    fileteredData
+    filterConfig
   } = useQuestionnaire();
   // const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
   const [selectedData, setSelectedData] = useState([]);
@@ -51,7 +51,9 @@ function TemplateList({ onAlert }) {
   const selectedEntityType = location.state?.value || false;
   const isSuccess = location.state?.isSuccess || false;
   const { hasPermission } = usePermission();
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   useEffect(() => {
     if (!selectedEntityType) {
       setTemplates(selectedData);
@@ -280,8 +282,8 @@ function TemplateList({ onAlert }) {
               isLoading={isLoading}
               isError={isError && isError.message}
               image={EmptyDataImage}
-              heading={!fileteredData ? t('captions.questionnaire.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('captions.questionnaire.emptyTableSubtitle')}
+              heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('captions.questionnaire.emptyTableTitle')}
+              description={!isDataFiltered && t('captions.questionnaire.emptyTableSubtitle')}
             />
           }
         />
