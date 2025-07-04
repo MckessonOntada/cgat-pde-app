@@ -48,9 +48,9 @@ function ReviewPayments() {
   const [SpecificDateError, setSpecificDateError] = useState('');
   const { controlRef } = useContext(FooterContext);
   const [totalCreditsAmount, settotalCreditsAmount] = useState(0);
-  const [disablecreditSelection, setDisablecreditSelection] = useState(false);
+  const [disableCreditSelection, setDisableCreditSelection] = useState(false);
   const [remainingAmount, setRemainingAmount] = useState('0.00');
-  
+
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -240,7 +240,7 @@ function ReviewPayments() {
         ]
       : [
           {
-            isDisabled: true,
+            isDisabled: !disableCreditSelection,
             label: t('paymentInvoices.reviewPayments.payToday'),
             value: t('paymentInvoices.reviewPayments.payToday'),
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
@@ -393,7 +393,7 @@ function ReviewPayments() {
 
     setRemainingAmount(FinanceUtils.formatCurrency(remaining).slice(1));
     const shouldDisable = parseFloat(creditsSum) >= parseFloat(paymentAmountSum);
-    setDisablecreditSelection(shouldDisable);
+    setDisableCreditSelection(shouldDisable);
   }, [creditsSum, paymentAmountSum, totalCreditsAmount]);
 
   if (isLoading) {
@@ -474,7 +474,7 @@ function ReviewPayments() {
                     totalCreditsCount={totalCreditsCount}
                     settotalCreditsCount={settotalCreditsCount}
                     settotalCreditsAmount={settotalCreditsAmount}
-                    disableSelection={disablecreditSelection}
+                    disableSelection={disableCreditSelection}
                   />
                 </PaymentsCreditsProvider>
               )}
@@ -523,6 +523,7 @@ function ReviewPayments() {
                     isSortEnable={false}
                     value={selectedData?.value.toString() || ''}
                     fieldDisplayValue={selectedData?.label ? selectedData : undefined}
+                    isDisabled={disableCreditSelection}
                   />
                 </div>
                 <span className="selectMethodInfo">{t('paymentInvoices.reviewPayments.selectMethodInfo')}</span>
@@ -540,7 +541,7 @@ function ReviewPayments() {
                   onOtherTextChange={() => {}}
                   onSubRadioFieldChange={() => {}}
                   radioBtnWidth="auto"
-                  value={paymentOption}
+                  value={disableCreditSelection ? t('paymentInvoices.reviewPayments.payToday') : paymentOption}
                 />
               </div>
             </div>
@@ -564,7 +565,7 @@ function ReviewPayments() {
               {`${t('paymentInvoices.reviewPayments.pay')} ${FinanceUtils.formatCurrency(totalAmount)}`}
             </Button>
           ) : (
-            <Button onClick={onPreviewPayment} size="md" disabled={disablePreview()}>
+            <Button onClick={onPreviewPayment} size="md" disabled={disableCreditSelection ? false : disablePreview()}>
               {t('paymentInvoices.reviewPayments.previewPayment')}
             </Button>
           )}
