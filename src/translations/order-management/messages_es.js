@@ -499,6 +499,7 @@ export const MessageEs = {
   'tooltip.material.status.OUT_OF_STOCK': 'S_Low Inventory',
   'tooltip.material.status.CHECKING': 'S_Checking',
   'labels.SPECIALITY_PHARMA': 'S_Specialty Pharmacy',
+  'labels.SPECIALITY_PHARMACY': 'S_Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'S_Buy & Bill',
   'labels.BuyNBill': 'S_BUY & BILL',
   'labels.SP': 'S_SP',
@@ -523,22 +524,25 @@ export const MessageEs = {
   'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
   'table.columns.captions.createdDate': 'S_Created Date',
-  'labels.select-account.coveredEntity': "S_I'm a covered Entity.",
+  'labels.select-account.coveredEntity': "S_I'm a Covered Entity.",
   'label.sPCatalogListingDownload': 'S_File downloaded successfully.',
   'labels.therapyDetails': 'S_Therapy Details',
   'order.account.selection.wac.info':
-    'S_WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks. It is used as a benchmark in pricing, reimbursement, and market analysis.',
+    'S_WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks.',
   'order.account.selection.wac.info.header': 'S_WAC Program Eligibility Requirements',
   'order.account.selection.gov.info.header': 'S_GOV Program Eligibility Requirements',
   'order.account.selection.gov.info':
-    'S_GOV refers to discounted drug prices available to government agencies  (e.g., VA, Medicaid, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
+    'S_GOV refers to discounted drug prices available to government agencies  (e.g., VA, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
   'order.account.selection.340b.info.header': 'S_340B Program Eligibility Requirements',
   'order.account.selection.340b.checkboxHeading': 'S_I hereby certify that:',
   'order.account.selection.340b.checkboxinfo1': 'S_The patient meets all 340B program eligibility requirements',
   'order.account.selection.340b.checkboxinfo2': 'S_The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
   'order.no.cost.therapy.info': 'S_No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
   'order.account.selection.eligibility.patient.title': 'S_Patient Eligibility Requirements',
-  'order.account.selection.eligibility.patient.info': 'S_An individual is a "340B eligible patient" only if ALL of the following criteria are met:',
+  'order.account.340B_covered_entity': 'S_340B covered entity',
+  'order.account.340B_covered_patient': 'S_340B covered patient',
+  'order.account.selection.eligibility.patient.info':
+    'S_A {boldText_entity} is a healthcare provider eligible to buy outpatient drugs at discounted prices under the federal 340B Drug Pricing Program. A {boldText_patient} is someone who receives outpatient care from that entity and qualifies to receive those discounted drugs based on HRSA guidelines.',
   'order.account.selection.eligibility.patient.requirement1':
     "S_The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
   'order.account.selection.eligibility.patient.requirement2':
