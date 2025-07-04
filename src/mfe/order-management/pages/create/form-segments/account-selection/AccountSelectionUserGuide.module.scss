@@ -35,7 +35,12 @@
       padding-top: var(--spacing-03);
     }
   }
+
   .errorMessage {
     margin-bottom: var(--spacing-03);
   }
+}
+
+.display340B {
+  display: inline !important;
 }
