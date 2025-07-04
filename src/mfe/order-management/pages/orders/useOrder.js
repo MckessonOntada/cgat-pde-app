@@ -42,13 +42,14 @@ const useOrder = (orderId) => {
             result[key] = undefined;
           }
         });
-        const { accountDetails, provider, payerDetails } = result;
+        const { accountDetails, provider, payerDetails, therapy } = result;
         if (accountDetails?.soldToAccount?.channelType) {
           result.channelType = accountDetails.soldToAccount.channelType;
         }
         if (provider) {
           provider.id = +provider.id;
         }
+        if (therapy?.materialNumber) therapy.displayMaterialNumber = CommonUtils.removeLeadingZeros(therapy.materialNumber);
         if (payerDetails) {
           [
             ['primaryMedicalInsurance', true],

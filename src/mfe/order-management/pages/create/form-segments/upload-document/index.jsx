@@ -135,19 +135,15 @@ function UploadOrderDocument() {
                   )
                 }
               />
-              {isSpOrder && (
+              {therapy?.channelType === CHANNEL_TYPE.BUY_AND_BILL && (
                 <div className="price-wrapper">
                   <DetailSegment
                     label={t('labels.orderCost')}
                     value={
-                      orderDetails.orderCost ? (
-                        <span className="dollarSign ">
-                          <span>$</span>
-                          {CommonUtils.formatNumberWithoutSymbol(orderDetails.orderCost)}
-                        </span>
-                      ) : (
-                        '-'
-                      )
+                      <span className="dollarSign">
+                        <span>$</span>
+                        {CommonUtils.formatNumberWithoutSymbol(paporder ? 0 : orderDetails.orderCost)}
+                      </span>
                     }
                   />
                 </div>
