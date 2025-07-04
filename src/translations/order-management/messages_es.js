@@ -124,6 +124,8 @@ export const MessageEs = {
   'labels.accountDetails': 'S_Account Details',
   'labels.COIIdRequired': 'S_COI Id is required',
   'labels.orderQuantityRequired': 'S_Order Quantity is required',
+  'labels.OrderQuantityMin': 'Order quantity cannot be less than {min}',
+  'labels.OrderQuantityMax': 'Order quantity cannot be more than {max}',
   'labels.slotNumberRequired': 'S_Slot number is required',
   'labels.diagnosisCodeRequired': 'S_Diagnosis code is required',
   'labels.invalidDiagnosis': 'S_Diagnosis code is not valid',
