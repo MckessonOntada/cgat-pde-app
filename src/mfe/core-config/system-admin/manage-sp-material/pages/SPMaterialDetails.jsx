@@ -31,6 +31,33 @@ export const SPMaterialDetailsConstants = [
   }
 ];
 
+export const SPMaterialConfigConstants = [
+  {
+    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
+    actions: [
+      {
+        label: 'manageMaterial.drawer.details.configuration.actions.delete',
+        id: 'delete-materialConfig',
+        icon: 'delete'
+      }
+    ],
+    sectionData: [
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired',
+        value: 'isPatientInformationRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
+        value: 'isCoiIdRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
+        value: 'isMRNRequired'
+      }
+    ]
+  }
+];
+
 export const SPCatalogDetailsConstants = [
   {
     sectionHeading: 'Details',
@@ -194,11 +221,6 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   const renderDetails = (constants, dataSource, isCrosswalk) => {
     return constants.map((item, index) => (
       <React.Fragment key={index}>
-        {/* {!isCrosswalk && (
-          <div className="styled-heading">
-            <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
-          </div>
-        )} */}
         <div className="details-ul">
           {item.sectionData.map((subItem, subIndex) => {
             let value;
@@ -220,6 +242,14 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       </React.Fragment>
     ));
   };
+
+  const renderConfiguration = (constants, dataSource) =>
+    constants.map(({ label, value, display = true, translation = true }) => {
+      const configValue = dataSource?.spTherapyConfig?.[value];
+      const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
+      return <ConfigItem key={label} label={t(label)} value={displayValue || '-'} display={display} />;
+    });
+
   const isCrosswalked = data && data?.therapy?.isCrosswalked;
   const questionnaires = data?.questionnaires;
   return (
@@ -231,6 +261,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               {!isSPCatalog
                 ? renderDetails(SPMaterialDetailsConstants, 'therapy', isCrosswalk)
                 : renderDetails(SPCatalogDetailsConstants, 'catalogPrice', false)}
+              {data?.spTherapyConfig && <div className="details-ul">{renderConfiguration(SPMaterialConfigConstants, data?.spTherapyConfig)}</div>}
               {data?.catalogConfiguration && (
                 <div className="configure-li">
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>

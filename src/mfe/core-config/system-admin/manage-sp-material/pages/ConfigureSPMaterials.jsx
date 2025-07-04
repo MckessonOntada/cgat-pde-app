@@ -12,9 +12,9 @@ import { useSPMaterial } from '../context/SPMaterialContext';
 function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
-    patientIdentifierRequired: '',
-    coiIdRequired: '',
-    MutationRecord: ''
+    patientIdentifierRequired: 'yes',
+    coiIdRequired: 'yes',
+    mrnRequired: 'yes'
   });
   const [error, setError] = useState(false);
 
@@ -22,7 +22,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
 
   const { mutate: applyConfiguration } = useMutation(
     async (configValues) => {
-      return await HttpResourceService.callRest(ApiRoutes.CONFIGURE_MATERIALS(), httpVerb.POST, configValues);
+      return await HttpResourceService.callRest(ApiRoutes.CONFIGURE_SP_MATERIALS(), httpVerb.POST, configValues);
     },
     {
       onSuccess: () => {
@@ -95,10 +95,10 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
       const configValues = {
-        ndcNumbers: selectedSPMaterial.map((material) => material.ndc),
-        isPatientInformationRequired: formValues.patientIdentifierRequired === 'yes',
-        isCoiIdRequired: formValues.coiIdRequired === 'yes',
-        isMrnRequired: formValues.mrnRequired === 'yes'
+        spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
+        patientIdentifierRequired: formValues.patientIdentifierRequired === 'yes',
+        coiIdRequired: formValues.coiIdRequired === 'yes',
+        mrnRequired: formValues.mrnRequired === 'yes'
       };
       applyConfiguration(configValues);
     } else {
