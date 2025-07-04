@@ -613,11 +613,12 @@ export const MessageEs = {
   'messages.enterRxBIN': 'S_Please enter the RX BIN.',
   'messages.rxBinMax': 'S_RX BIN must not exceed 30 characters.',
   'providers.upload-info': 'S_For filling up the provider’s template, please refer to the instruction file.',
-  'column.material.crosswalk.buyBillNDC': 'S_Buy & Bill NDC',
-  'column.material.crosswalk.Therapy': 'S_Therapy',
+  'column.material.crosswalk.buyBillNDC': 'S_SAP NDC',
+  'column.material.crosswalk.Therapy': 'S_SAP Therapy',
   'column.material.crosswalk.spProductID': 'S_SP Product ID',
-  'column.material.crosswalk.spProductName': 'S_SP Product Name',
+  'column.material.crosswalk.spProductName': 'S_SP Therapy',
   'column.material.crosswalk.spNDC': 'S_SP NDC',
+  'column.material.crosswalk.dosage': 'S_Dosage',
   'column.material.crosswalk.action': 'S_Action',
   'controls.updateDocument': 'S_Upload Document',
   'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
@@ -626,5 +627,6 @@ export const MessageEs = {
   'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
   'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   'message.selectDocumentToUpload': 'S_Please select document to upload.',
-  'message.documentUploadSuccess': 'S_Document has been successfully uploaded for Order ID: {orderId}'
+  'message.documentUploadSuccess': 'S_Document has been successfully uploaded for Order ID: {orderId}',
+  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and product/material master.'
 };

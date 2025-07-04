@@ -56,7 +56,7 @@ const Products = ({ linkedItems, products, onSelect }) => {
       },
       {
         id: 'genericName',
-        name: t('manageMaterial.table.spProductName'),
+        name: t('column.material.crosswalk.spProductName'),
         selector: (row) => {},
         minWidth: '240px',
         sortable: true,

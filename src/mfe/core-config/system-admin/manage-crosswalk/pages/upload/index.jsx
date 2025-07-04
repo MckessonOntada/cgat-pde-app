@@ -13,7 +13,8 @@ import { errorStatusCodes } from '@src/util/ApiUtils';
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_PRODUCT_INFO: 'Download SP Product Info',
-  DOWNLOAD_MATERIAL_INFO: 'Download Material Info'
+  DOWNLOAD_MATERIAL_INFO: 'Download Material Info',
+  DOWNLOAD_INSTRUCTION_INFO: 'Download Instruction File'
 };
 
 const Upload = () => {
@@ -93,6 +94,10 @@ const Upload = () => {
         });
         break;
       }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_INSTRUCTION_INFO: {
+        handleDownload('/templates/Material_crosswalk_instruction.txt', 'Material_crosswalk_instruction.txt');
+        break;
+      }
       default:
         return;
     }
@@ -113,6 +118,7 @@ const Upload = () => {
       <UploadFile
         primaryHeading={t('controls.uploadMaterialCrosswalk')}
         controlHeading={t('heading.uploadMaterialCrosswalkListCSV')}
+        infoHeader={t('label.uploadCrosswalk.info')}
         isLoading={false}
         messages={[notification]}
         customDownload={
