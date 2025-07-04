@@ -85,26 +85,13 @@ export default function CreditsTable(props) {
         paginationConfig,
         selectedRows,
         setSelectedRows,
-        true,
-        false,
         disableSelection,
         paymentAmountSum
       ),
       sortable: false,
       cell: (row, index) => {
         const isDisable = disableSelection && !selectedRows?.some((r) => r?.billNumber === row?.billNumber);
-        return renderTableCheckBoxCredit(
-          row,
-          actualData,
-          'billNumber',
-          paginationConfig,
-          selectedRows,
-          setSelectedRows,
-          true,
-          false,
-          isDisable,
-          paymentAmountSum
-        );
+        return renderTableCheckBoxCredit(row, actualData, 'billNumber', paginationConfig, selectedRows, setSelectedRows, isDisable, paymentAmountSum);
       },
       selector: (row) => row.MRN,
       width: '48px',

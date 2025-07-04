@@ -1,25 +1,13 @@
 import React from 'react';
 import CommonUtils from '@src/util/CommonUtils';
 
-export const renderTableCheckBoxCredit = (
-  row,
-  data,
-  dataKey,
-  paginationConfig,
-  selectedData,
-  setSelectedData,
-  disableInactive = true,
-  allowInactiveSelection = false,
-  disableSelection = false,
-  paymentAmountSum
-) => {
+export const renderTableCheckBoxCredit = (row, data, dataKey, paginationConfig, selectedData, setSelectedData, disableSelection = false, paymentAmountSum) => {
   const isCheckboxDisabled = () => {
     const isHeaderCheckbox = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber;
     if (!isHeaderCheckbox && disableSelection) {
       return true;
     }
-    const isRowInactive = row.active === false || row.active === 'Inactive' || row.isActive === false || row.isActive === 'Inactive';
-    return (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) || (disableInactive && isRowInactive && !allowInactiveSelection);
+    return isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data);
   };
 
   const handleRowSelected = () => {
@@ -31,42 +19,20 @@ export const renderTableCheckBoxCredit = (
   };
 
   const handleHeaderCheck = () => {
-    const activeRows = data.filter((item) => {
-      if (!disableInactive) return true;
-      if (item.hasOwnProperty('active') && item.active === true) {
-        return true;
-      }
-      if (item.hasOwnProperty('isActive') && item.isActive === true) {
-        return true;
-      }
-
-      if (!item.hasOwnProperty('active') && !item.hasOwnProperty('isActive')) {
-        return true;
-      }
-      return false;
-    });
-    const currentPageMaterialNumbers = activeRows.map((item) => item[dataKey]);
-
-    const cleanedSelection = selectedData.filter((item) => {
-      if (!disableInactive) return true;
-      if ('active' in item && item.active === false) return false;
-      if ('isActive' in item && item.isActive === false) return false;
-      return true;
-    });
-
+    const currentBillNo = data.map((item) => item[dataKey]);
     if (isAllChecked()) {
-      setSelectedData(cleanedSelection.filter((item) => !currentPageMaterialNumbers.includes(item[dataKey])));
+      setSelectedData(selectedData.filter((item) => !currentBillNo.includes(item[dataKey])));
     } else {
-      setSelectedData([...getRowsWithinCreditLimit(cleanedSelection, activeRows, paymentAmountSum)]);
+      setSelectedData([...getRowsWithinCreditLimit(selectedData, data, paymentAmountSum)]);
     }
   };
-  function getRowsWithinCreditLimit(cleanedSelection, activeRows, paymentAmountSum) {
+  function getRowsWithinCreditLimit(selectedData, activeRows, paymentAmountSum) {
     const selectedRows = [];
     const storedBillNo = new Set();
     let runningTotal = 0;
     let exceededOnce = false;
 
-    for (const row of cleanedSelection) {
+    for (const row of selectedData) {
       const nextTotal = runningTotal + row.openAmount;
       if (nextTotal < paymentAmountSum) {
         selectedRows.push(row);
@@ -106,13 +72,7 @@ export const renderTableCheckBoxCredit = (
 
   const isAllChecked = () => {
     if (disableSelection) return true;
-    const activeRows = data.filter((item) => {
-      if (!disableInactive) return true;
-      if ('active' in item) return item.active === true;
-      if ('isActive' in item) return item.isActive === true;
-      return true;
-    });
-    return activeRows.every((item) => selectedData.some((selected) => selected[dataKey] === item[dataKey]));
+    return data.every((item) => selectedData.some((selected) => selected[dataKey] === item[dataKey]));
   };
 
   const handleIndividualCheck = () => {
