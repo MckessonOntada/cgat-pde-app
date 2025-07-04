@@ -549,7 +549,7 @@ export const MessageEn = {
   'label.materialCrosswalk': 'Material Crosswalk',
   'controls.addCrosswalk': 'Add Crosswalk',
   'controls.uploadCrosswalk': 'Upload Crosswalk',
-  'controls.placeholder.materialCrosswalk': 'Search by Description, NDC, Product Name ID...',
+  'controls.placeholder.materialCrosswalk': 'Search by SAP Therapy, SAP NDC, SP Therapy, SP NDC',
   'label.emptyMaterialCrosswalkTableDescription': 'No records found.',
   'controls.addMaterialCrosswalk': 'Add Material Crosswalk',
   'heading.uploadMaterialCrosswalkListCSV': 'Upload Material Crosswalk List CSV',
@@ -578,6 +578,8 @@ export const MessageEn = {
   'label.unlinkRecordDescription': 'Are you sure you want to unlink this record?',
   'label.unlinkCrosswalk': 'Unlink Crosswalk?',
   'label.unlinkCrosswalkDescription': 'Are you sure you want to unlink this crosswalk?',
+  'label.crosswalk.material.placeholder': 'Search by SAP Therapy, SAP NDC',
+  'label.crosswalk.spmaterial.placeholder': 'Search by SP Therapy, SP NDC',
 
   'tooltip.material.status.PENDING': 'Pending',
   'tooltip.material.status.AVAILABLE': 'Therapy Available',
@@ -891,5 +893,5 @@ export const MessageEn = {
   'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   'message.selectDocumentToUpload': 'Please select document to upload.',
   'message.documentUploadSuccess': 'Document has been successfully uploaded for Order ID: {orderId}',
-  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and product/material master.'
+  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and SP Therapy Info and SAP Therapy Info.'
 };

@@ -175,7 +175,7 @@ const Materials = ({ onSelect, material }) => {
             <InputField
               value={materialQuery}
               errors={{}}
-              placeholder={'Search by Description, NDC'}
+              placeholder={t('label.crosswalk.material.placeholder')}
               id="material-search-field"
               name="materialQuery"
               onBlurFn={() => {}}

@@ -19,7 +19,7 @@ function SPAccountConfigurations({ data, refetch, orgAdmin }) {
   const navigate = useNavigate();
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [alert, setAlert] = useState(null);
-  const isDeleteAccess = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive;
+  const isDeleteAccess = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive();
   const OnDeleteClick = (id) => {
     const payload = {
       questionnaireId: id,

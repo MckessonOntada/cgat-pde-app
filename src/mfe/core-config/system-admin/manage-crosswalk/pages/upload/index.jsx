@@ -12,8 +12,8 @@ import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
-  DOWNLOAD_SP_PRODUCT_INFO: 'Download SP Product Info',
-  DOWNLOAD_MATERIAL_INFO: 'Download Material Info',
+  DOWNLOAD_SP_PRODUCT_INFO: 'Download SP Therapy Info',
+  DOWNLOAD_MATERIAL_INFO: 'Download SAP Therapy Info',
   DOWNLOAD_INSTRUCTION_INFO: 'Download Instruction File'
 };
 
