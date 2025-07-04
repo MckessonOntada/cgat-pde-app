@@ -475,6 +475,7 @@ function ReviewPayments() {
                     settotalCreditsCount={settotalCreditsCount}
                     settotalCreditsAmount={settotalCreditsAmount}
                     disableSelection={disableCreditSelection}
+                    paymentAmountSum={paymentAmountSum}
                   />
                 </PaymentsCreditsProvider>
               )}
