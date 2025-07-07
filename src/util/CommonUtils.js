@@ -711,7 +711,7 @@ function getUploadErrorMessage(error, t) {
   const message = errorResponse.data?.message;
   const errorCodes = errorResponse.data?.errorCodes;
 
-  if (status === 419 && Array.isArray(errorCodes) && errorCodes.length > 0) {
+  if (status === 415 && Array.isArray(errorCodes) && errorCodes.length > 0) {
     return t(errorCodes[0]);
   } else if (message) {
     return message;
