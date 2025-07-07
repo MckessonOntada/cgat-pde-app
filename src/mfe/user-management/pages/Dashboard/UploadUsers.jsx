@@ -67,7 +67,8 @@ function UploadUsers() {
         refreshData();
       },
       onError: () => {
-        showAlert('error', t('errors.default'));
+        const description = CommonUtils.getUploadErrorMessage(error, t);
+        showAlert('error', description);
       }
     }
   );

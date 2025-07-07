@@ -15,6 +15,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import { handleApiError } from '@src/util/ApiUtils';
 import ModuleHeader from '@src/components/module-header';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
@@ -68,7 +69,7 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
-    const errorKey = handleApiError(error);
+    const description = CommonUtils.getUploadErrorMessage(error);
     setAlert({
       type: 'error',
       description: t(errorKey)
@@ -119,22 +120,6 @@ const CreateOrganization = () => {
 
       {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
-      {/* {!isEdit && (
-        <div className="stepper">
-          <StepperMui
-            activeIndex={1}
-            dividerText="of"
-            stepHeaders={[
-              {
-                label: t('orgManagement.stepper.option.org_details')
-              },
-              {
-                label: t('orgManagement.stepper.option.acct_details')
-              }
-            ]}
-          />
-        </div>
-      )} */}
       <ModuleHeader heading={<Heading as="h1">{t(!isEdit ? 'orgManagement.create_org' : 'orgManagement.edit_org')}</Heading>} />
       <Formik
         enableReinitialize
@@ -148,9 +133,6 @@ const CreateOrganization = () => {
         {(formik) => (
           <Form>
             <div className="container-box">
-              {/* <div className="headingBox">
-                <Heading as="h2">{t('orgManagement.createOrg.headerMessage')}</Heading>
-              </div> */}
               <OrgDetailsFormSegment formik={formik} />
             </div>
 

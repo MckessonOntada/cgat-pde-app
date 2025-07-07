@@ -66,11 +66,11 @@ const Upload = () => {
         }
       })
       .catch((error) => {
-        const { response: errorResponse = {} } = error;
-        console.log('error', error);
+        const description = CommonUtils.getUploadErrorMessage(error, t);
+
         setNotification({
           type: 'error',
-          description: t('errors.default'),
+          description,
           isSticky: true
         });
       });
