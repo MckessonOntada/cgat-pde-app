@@ -16,7 +16,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { sections } from './forms/patient-details.config';
+import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getInitialValues, getValidationSchema } from './forms/validation-schema';
 import { CHANNEL_TYPE } from '../Constants';
@@ -25,21 +25,6 @@ import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
-
-export const getFilteredSections = (channelType) => {
-  return sections(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA).map((section) => ({
-    ...section,
-    rows: section.rows.map((row) => ({
-      ...row,
-      controls: row.controls.filter((control) => {
-        if (typeof control.if === 'function') {
-          return control.if(channelType);
-        }
-        return true;
-      })
-    }))
-  }));
-};
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -65,11 +50,23 @@ const PatientDetails = () => {
     }
   }, [orderDetails]);
 
-  const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
+
+  const spTherapyConfig = {
+    isCoiIdRequired: false,
+    isPatientIdentifierRequired: false,
+    isMRNRequired: false,
+    ...(orderDetails?.spTherapyConfig || {})
+  };
+
+  const shouldShowIdentifierSection =
+    channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
+    (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
+
+  const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { data: priceDetails } = useOrderPrice({
     therapyId,
@@ -281,7 +278,7 @@ const PatientDetails = () => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA)}
+          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig)}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
           {({ values, dirty, setFieldValue }) => {
@@ -305,7 +302,47 @@ const PatientDetails = () => {
                           </p>
                         }
                       />
-                      <FormRenderer sections={filteredSections} />
+
+                      <FormRenderer sections={PatientSections(channelType)} />
+                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                        <>
+                          <hr className="form-section-separator" />
+                          <ModuleHeader
+                            heading={
+                              <div>
+                                <Heading as="h2">{t('orderManagement.patientDetails.address_details')}</Heading>
+                              </div>
+                            }
+                            controls={
+                              <p className="form-instruction">
+                                <span className="required">*</span> {t('labels.required')}
+                              </p>
+                            }
+                          />
+                          <FormRenderer sections={AddressSections(channelType)} />
+                        </>
+                      )}
+
+                      {shouldShowIdentifierSection && (
+                        <>
+                          <hr className="form-section-separator" />
+                          <ModuleHeader
+                            heading={
+                              <div>
+                                <Heading as="h2">{t('orderManagement.patientDetails.identifier_details')}</Heading>
+                              </div>
+                            }
+                            controls={
+                              shouldShowRequiredLabel && (
+                                <p className="form-instruction">
+                                  <span className="required">*</span> {t('labels.required')}
+                                </p>
+                              )
+                            }
+                          />
+                          <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} />
+                        </>
+                      )}
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
                           <hr className="form-section-separator" />

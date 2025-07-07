@@ -14,6 +14,7 @@ import '../manageSPMaterial.scss';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 function SPMaterialDataTable({ isLinkCatalog = false }) {
   const { t } = useTranslate();
@@ -58,10 +59,10 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
               textDecoration: 'none'
             }}
             onClick={() => {
-              setViewSPMaterial(props);
+              setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.materialNumber} maxWidth={170} />
+            <EclipsesTextcss str={CommonUtils.removeLeadingZeros(props?.materialNumber)} maxWidth={170} />
           </Link>
         </div>
       )

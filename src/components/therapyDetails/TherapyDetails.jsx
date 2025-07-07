@@ -12,6 +12,7 @@ import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionna
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { renderModal } from '@src/util/ModalUtil';
 import FloatingDrawer from '@src/components/floating-drawer';
+import CommonUtils from '@src/util/CommonUtils';
 
 function TherapyDetails({
   therapyId,
@@ -42,6 +43,9 @@ function TherapyDetails({
         ? UserService.getTherapyById(therapyId)
         : OrderService.getTherapyDetailsById(therapyId),
     enabled: Boolean(therapyId),
+    select: (result) => {
+      return { ...result, displayMaterialNumber: CommonUtils.removeLeadingZeros(result.materialNumber) };
+    },
     refetchOnWindowFocus: false
   });
 

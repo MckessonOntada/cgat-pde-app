@@ -24,11 +24,11 @@ import CommonUtils from '@src/util/CommonUtils';
 function TherapySelection() {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const location = useLocation();
   const locationState = location?.state || {};
-  const { search, pathname } = location || {}; 
-  const [prevSearchState, setPrevSearchState] = React.useState(null);  
+  const { search, pathname } = location || {};
+  const [prevSearchState, setPrevSearchState] = React.useState(null);
 
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
@@ -38,8 +38,8 @@ function TherapySelection() {
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
   const therapy = searchParams.get('therapy');
-  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null); 
-  const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {}; 
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
 

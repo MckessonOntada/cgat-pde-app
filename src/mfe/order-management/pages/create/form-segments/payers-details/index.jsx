@@ -30,25 +30,6 @@ import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import Alert from '@src/components/cgat-alert/Alert';
 
-const FormStateTracker = ({ setFormValues, setIsDirty }) => {
-  const formik = useFormikContext();
-
-  const [hasBeenDirty, setHasBeenDirty] = React.useState(false);
-
-  React.useEffect(() => {
-    if (formik) {
-      setFormValues(formik.values);
-
-      if (formik.dirty && !hasBeenDirty) {
-        setIsDirty(true);
-
-        setHasBeenDirty(true);
-      }
-    }
-  }, [formik?.values, formik?.dirty]);
-
-  return null;
-};
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
   const [isSecondaryMedicalInsuranceOpen, setIsSecondaryMedicalInsuranceOpen] = React.useState(false);
@@ -182,15 +163,39 @@ function Payer() {
     }
   });
 
+  function normalizeInsurance(insurance, isMedical = true) {
+    if (!insurance) return null;
+
+    const { relation, relationshipToPatient, medicalCardFront, medicalCardBack, pharmacyCardFront, pharmacyCardBack, ...rest } = insurance;
+
+    const result = {
+      ...rest,
+      ...(relationshipToPatient === 'OTHER' && { relation }),
+      relationshipToPatient
+    };
+
+    if (isMedical) {
+      result.medicalCardFront = typeof medicalCardFront === 'object' ? medicalCardFront?.url : medicalCardFront;
+
+      result.medicalCardBack = typeof medicalCardBack === 'object' ? medicalCardBack?.url : medicalCardBack;
+    } else {
+      result.pharmacyCardFront = typeof pharmacyCardFront === 'object' ? pharmacyCardFront?.url : pharmacyCardFront;
+
+      result.pharmacyCardBack = typeof pharmacyCardBack === 'object' ? pharmacyCardBack?.url : pharmacyCardBack;
+    }
+
+    return result;
+  }
+
   const handleOnSubmit = (values) => {
-    if (values.primaryMedicalInsurance && values.primaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
-      const { relation, ...rest } = values.primaryMedicalInsurance;
-      values.primaryMedicalInsurance = rest;
-    }
-    if (values.secondaryMedicalInsurance && values.secondaryMedicalInsurance?.relationshipToPatient !== 'OTHER') {
-      const { relation, ...rest } = values.secondaryMedicalInsurance;
-      values.secondaryMedicalInsurance = rest;
-    }
+    [
+      ['primaryMedicalInsurance', true],
+      ['secondaryMedicalInsurance', true],
+      ['primaryPharmacyInsurance', false],
+      ['secondaryPharmacyInsurance', false]
+    ].forEach(([key, isMedical]) => {
+      values[key] = normalizeInsurance(values[key], isMedical);
+    });
 
     savePayerDetails(values);
   };

@@ -143,7 +143,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
   const channelList = [
     { label: t('labels.BUY_AND_BILL'), value: CHANNEL_TYPE.BUY_AND_BILL },
     {
-      label: t('labels.SPECIALITY_PHARMA'),
+      label: t('labels.SPECIALITY_PHARMACY'),
       value: CHANNEL_TYPE.SPECIALTY_PHARMA
     }
   ].map((channel) => ({
@@ -172,25 +172,17 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
           </InfoModel>
         );
       case '340B':
+        const desc = (
+          <>
+            {t('order.account.selection.eligibility.patient.info', {
+              boldText_entity: <strong>{t('order.account.340B_covered_entity')}</strong>,
+              boldText_patient: <strong>{t('order.account.340B_covered_patient')}</strong>
+            })}
+          </>
+        );
         return (
           <InfoModel title={t('order.account.selection.340b.info.header')}>
-            <div className="MCP-modal-body">
-              {INFO_340B.map((section, index) => (
-                <div key={index}>
-                  <div className="styled-heading">
-                    <Heading as="h4">{t(section.title)}</Heading>
-                  </div>
-                  {section.info && <p>{t(section.info)}</p>}
-                  <ol className="details-info">
-                    {section.requirements.map((detail, idx) => (
-                      <li className="details-li" key={idx}>
-                        <div className="details-key">{t(detail)}</div>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              ))}
-            </div>
+            <div className={`MCP-modal-body ${styles.display340B}`}>{desc}</div>
           </InfoModel>
         );
       case 'GOV':
