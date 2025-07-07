@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
-import { Loader, Heading, Tooltip } from '@mckesson/mcp-component-library';
+import { Loader, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import '../manageSPMaterial.scss';
 import { useMutation, useQuery } from 'react-query';
@@ -14,6 +14,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import { PREVIEW_URL } from '../../manage-questionnaire/constants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import CommonUtils from '@src/util/CommonUtils';
+import { SPMaterialConfigConstants } from '../../manage-material/assets/constants/MaterialConstants';
 
 export const SPMaterialDetailsConstants = [
   {
@@ -57,7 +58,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     data: MaterialData,
     refetch
   } = useQuery({
-    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
+    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber, openSPMaterialDetails],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
         viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber,
@@ -148,6 +149,8 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               delinkQuestionnaire(isSPCatalog ? catalogPayload : payload);
             } else if (actionId === 'config') {
               deleteConfiguration(requestSPCatalogParams);
+            } else if (actionId === 'materialConfig') {
+              deleteMaterialConfiguration(id);
             }
           }
         }
@@ -199,6 +202,29 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     }
   );
 
+  const { mutate: deleteMaterialConfiguration, isLoading: isDeleteMaterialConfigurationLoading } = useMutation(
+    async (id) => {
+      await MaterialService.deleteSPMaterialConfig(id);
+    },
+    {
+      onSuccess: (response) => {
+        setOpenSPMaterialDetails(false);
+        refetch();
+        sendNotification({
+          type: 'success',
+          description: t('ManageCatalog.configure.success')
+        });
+      },
+      onError: (error) => {
+        setOpenSPMaterialDetails(true);
+        sendNotification({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
+
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
@@ -228,6 +254,25 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       </React.Fragment>
     ));
   };
+
+  const renderConfiguration = (constants, dataSource) =>
+    constants.map(({ label, value, display = true }) => {
+      const configValue = dataSource?.[value];
+      const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
+      return <ConfigItem key={label} label={t(label)} value={displayValue || '-'} display={display} />;
+    });
+
+  function ConfigItem({ label, value, display = true }) {
+    const { t } = useTranslate();
+    if (!display) return null;
+    return (
+      <div className="details-li">
+        <div className="leftContentBold">{label}</div>
+        <div>{typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}</div>
+      </div>
+    );
+  }
+
   const isCrosswalked = data && data?.therapy?.isCrosswalked;
   const questionnaires = data?.questionnaires;
   return (
@@ -239,6 +284,28 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               {!isSPCatalog
                 ? renderDetails(SPMaterialDetailsConstants, 'therapy', isCrosswalk)
                 : renderDetails(SPCatalogDetailsConstants, 'catalogPrice', false)}
+              {data?.spTherapyConfig && (
+                <>
+                  <div className="configure-li">
+                    {SPMaterialConfigConstants?.map((section, index) => (
+                      <React.Fragment key={section.sectionHeading}>
+                        <div className="details-key">{t(section.sectionHeading)}</div>
+                        <div className="details-value">
+                          {section.actions?.map(
+                            (action) =>
+                              isEnableDelete && (
+                                <div onClick={() => OnDeleteClick(data?.therapy.materialNumber, 'materialConfig')}>
+                                  <DeleteIcon />
+                                </div>
+                              )
+                          )}
+                        </div>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <div className="details-ul">{renderConfiguration(SPMaterialConfigConstants[0].sectionData, data?.spTherapyConfig)}</div>
+                </>
+              )}
               {data?.catalogConfiguration && (
                 <div className="configure-li">
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>

@@ -50,15 +50,23 @@ export const SystemConfigurationEN = {
   'manageMaterial.drawer.details.configuration.actions.delete': 'Delete',
   'manageMaterial.drawer.details.configuration.body.coiIdRequired': 'COI ID Required',
   'manageMaterial.drawer.details.configuration.body.patientInfoRequired': 'Patient information required',
+  'manageMaterial.drawer.details.configuration.body.mrnRequired': 'MRN Required',
+  'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired': 'Manufacturer Patient Identifier Required',
   // Configuration Drawer
   'manageMaterial.drawer.configuration.heading': 'Material Configuration',
   // Configuration Drawer Body
   'manageMaterial.drawer.configuration.body.patientInfoRequired': 'Patient information required?',
   'manageMaterial.drawer.configuration.body.coiIdRequired': 'COI ID Required?',
+  'manageMaterial.drawer.configuration.body.mrnRequired': 'MRN Required?',
+  'manageMaterial.drawer.configuration.body.patientIdentifierRequired': 'Manufacturer Patient Identifier Required?',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.yes': 'Yes',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.no': 'No',
   'manageMaterial.drawer.configuration.body.coiIdRequired.yes': 'Yes',
   'manageMaterial.drawer.configuration.body.coiIdRequired.no': 'No',
+  'manageMaterial.drawer.configuration.body.patientIdentifierRequired.yes': 'Yes',
+  'manageMaterial.drawer.configuration.body.patientIdentifierRequired.no': 'No',
+  'manageMaterial.drawer.configuration.body.mrnRequired.yes': 'Yes',
+  'manageMaterial.drawer.configuration.body.mrnRequired.no': 'No',
   // Configuration Drawer Controls
   'manageMaterial.drawer.controls.cancel': 'Cancel',
   'manageMaterial.drawer.controls.apply': 'Apply',

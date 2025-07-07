@@ -78,3 +78,30 @@ export const ConfigConstants = [
     questionnaire: false
   }
 ];
+
+export const SPMaterialConfigConstants = [
+  {
+    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
+    actions: [
+      {
+        label: 'manageMaterial.drawer.details.configuration.actions.delete',
+        id: 'delete-materialConfig',
+        icon: 'delete'
+      }
+    ],
+    sectionData: [
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired',
+        value: 'isPatientIdentifierRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
+        value: 'isCoiIdRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
+        value: 'isMRNRequired'
+      }
+    ]
+  }
+];

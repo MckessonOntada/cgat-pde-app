@@ -31,6 +31,10 @@
           font-weight: 600;
           color: #181818;
         }
+
+        .leftContentBold {
+          font-weight: var(--brand-font-weight-600);
+        }
       }
     }
 
@@ -58,6 +62,7 @@
         gap: 10px;
       }
     }
+
     .associated-li {
       text-align: end;
       font-weight: var(--brand-font-weight-600);
