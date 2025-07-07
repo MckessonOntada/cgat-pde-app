@@ -369,6 +369,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.gender': 'Gender is required.',
   'orderManagement.patientDetails.validation.dateOfBirth': 'Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number': 'Patient Identifier must be alphanumeric.',
+  'orderManagement.patientDetails.validation.mrn_required': 'MRN is required.',
   'orderManagement.patientDetails.validation.mrn_must_alphanumeric': 'MRN must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of Birth',
