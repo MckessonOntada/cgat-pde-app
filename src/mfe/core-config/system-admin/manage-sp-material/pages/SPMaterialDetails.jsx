@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
-import { Loader, Heading, Tooltip } from '@mckesson/mcp-component-library';
+import { Loader, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import '../manageSPMaterial.scss';
 import { useMutation, useQuery } from 'react-query';
@@ -83,7 +83,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     data: MaterialData,
     refetch
   } = useQuery({
-    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
+    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber, openSPMaterialDetails],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
         viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber,
@@ -218,7 +218,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
 
   const { mutate: deleteMaterialConfiguration, isLoading: isDeleteMaterialConfigurationLoading } = useMutation(
     async (id) => {
-      await MaterialService.deleteMaterialConfig(id, CHANNEL_TYPE.SPECIALTY_PHARMA);
+      await MaterialService.deleteSPMaterialConfig(id);
     },
     {
       onSuccess: (response) => {
@@ -307,7 +307,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                           {section.actions?.map(
                             (action) =>
                               isEnableDelete && (
-                                <div onClick={() => OnDeleteClick(data?.therapy.ndcNumber, 'materialConfig')}>
+                                <div onClick={() => OnDeleteClick(data?.therapy.materialNumber, 'materialConfig')}>
                                   <DeleteIcon />
                                 </div>
                               )

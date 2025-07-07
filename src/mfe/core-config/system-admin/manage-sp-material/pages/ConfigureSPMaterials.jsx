@@ -22,7 +22,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
 
   const { mutate: applyConfiguration } = useMutation(
     async (configValues) => {
-      return await HttpResourceService.callRest(ApiRoutes.CONFIGURE_SP_MATERIALS(), httpVerb.POST, configValues);
+      return await HttpResourceService.callRest(`${ApiRoutes.CONFIGURE_SP_MATERIALS()}/update`, httpVerb.POST, configValues);
     },
     {
       onSuccess: () => {
