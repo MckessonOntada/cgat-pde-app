@@ -18,7 +18,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   });
   const [error, setError] = useState(false);
 
-  const { selectedSPMaterial, refetch } = useSPMaterial();
+  const { selectedSPMaterial, refreshData, setSelectedSPMaterial } = useSPMaterial();
 
   const { mutate: applyConfiguration } = useMutation(
     async (configValues) => {
@@ -28,7 +28,8 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
       onSuccess: () => {
         onSuccess();
         onClose();
-        refetch();
+        refreshData();
+        setSelectedSPMaterial([]);
       },
       onError: () => {
         onError();

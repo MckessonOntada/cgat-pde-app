@@ -50,6 +50,8 @@ export const SystemConfigurationEN = {
   'manageMaterial.drawer.details.configuration.actions.delete': 'Delete',
   'manageMaterial.drawer.details.configuration.body.coiIdRequired': 'COI ID Required',
   'manageMaterial.drawer.details.configuration.body.patientInfoRequired': 'Patient information required',
+  'manageMaterial.drawer.details.configuration.body.mrnRequired': 'MRN Required',
+  'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired': 'Manufacturer Patient Identifier Required',
   // Configuration Drawer
   'manageMaterial.drawer.configuration.heading': 'Material Configuration',
   // Configuration Drawer Body

@@ -209,6 +209,13 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     setSelectedSPMaterial([]);
   };
 
+  const handleNotification = (notification) => {
+    if (notification.type === 'error') {
+      onError && onError(notification);
+    } else {
+      onSuccess && onSuccess(notification);
+    }
+  };
   return (
     <div>
       {isLinkCatalog ? (
@@ -305,7 +312,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           </div>
         )}
       </div>
-      <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
+      <SPMaterialDetails
+        openSPMaterialDetails={openSPMaterialDetails}
+        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+        viewSPMaterial={viewSPMaterial}
+        sendNotification={handleNotification}
+      />
       {openConfiguration && <ConfigureSPMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
     </div>
   );
