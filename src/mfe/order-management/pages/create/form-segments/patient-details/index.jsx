@@ -16,7 +16,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { AddressSections, IdentifierSections, PatientSections, sections } from './forms/patient-details.config';
+import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getInitialValues, getValidationSchema } from './forms/validation-schema';
 import { CHANNEL_TYPE } from '../Constants';
@@ -25,21 +25,6 @@ import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
-
-// export const getFilteredSections = (channelType) => {
-//   return sections(channelType).map((section) => ({
-//     ...section,
-//     rows: section.rows.map((row) => ({
-//       ...row,
-//       controls: row.controls.filter((control) => {
-//         if (typeof control.if === 'function') {
-//           return control.if(channelType);
-//         }
-//         return true;
-//       })
-//     }))
-//   }));
-// };
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -65,7 +50,6 @@ const PatientDetails = () => {
     }
   }, [orderDetails]);
 
-  //const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
@@ -73,7 +57,7 @@ const PatientDetails = () => {
 
   const spTherapyConfig = {
     isCoiIdRequired: false,
-    isPatientIdentifierRequired: true,
+    isPatientIdentifierRequired: false,
     isMRNRequired: false,
     ...(orderDetails?.spTherapyConfig || {})
   };
@@ -81,6 +65,9 @@ const PatientDetails = () => {
   const shouldShowIdentifierSection =
     channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
     (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
+
+  const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
@@ -346,9 +333,11 @@ const PatientDetails = () => {
                               </div>
                             }
                             controls={
-                              <p className="form-instruction">
-                                <span className="required">*</span> {t('labels.required')}
-                              </p>
+                              shouldShowRequiredLabel && (
+                                <p className="form-instruction">
+                                  <span className="required">*</span> {t('labels.required')}
+                                </p>
+                              )
                             }
                           />
                           <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} />

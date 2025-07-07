@@ -213,46 +213,56 @@ export const AddressSections = (channelType) => [
   }
 ];
 
-export const IdentifierSections = (channelType, spMaterialConfig) => [
-  {
-    rows: [
-      {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
-        controls: [
-          {
-            id: 'patient-info-identifier',
-            name: 'patient.patientIdentifier',
-            label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
-            placeholder: ' ',
-            type: 'input',
-            maxLength: 20,
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spMaterialConfig?.isPatientIdentifierRequired
-          },
-          {
-            id: 'coiId',
-            name: 'patient.coiId',
-            label: 'labels.coiId',
-            placeholder: ' ',
-            type: 'input',
-            maxLength: 20,
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spMaterialConfig?.isCoiIdRequired
-          },
-          {
-            id: 'patient-info-medicalRecordNumber',
-            name: 'patient.medicalRecordNumber',
-            label: 'orderManagement.patientDetails.inputLabel.mrn',
-            placeholder: ' ',
-            type: 'input',
-            maxLength: 20,
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spMaterialConfig?.isMRNRequired
-          }
-        ]
-      }
-    ]
+export const IdentifierSections = (channelType, spTherapyConfig) => {
+  const controls = [
+    {
+      id: 'patient-info-identifier',
+      name: 'patient.patientIdentifier',
+      label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
+      placeholder: ' ',
+      type: 'input',
+      maxLength: 20,
+      isRequired: false,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isPatientIdentifierRequired
+    },
+    {
+      id: 'coiId',
+      name: 'patient.coiId',
+      label: 'labels.coiId',
+      placeholder: ' ',
+      type: 'input',
+      maxLength: 10,
+      isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isCoiIdRequired,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isCoiIdRequired
+    },
+    {
+      id: 'patient-info-medicalRecordNumber',
+      name: 'patient.medicalRecordNumber',
+      label: 'orderManagement.patientDetails.inputLabel.mrn',
+      placeholder: ' ',
+      type: 'input',
+      maxLength: 20,
+      isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isMRNRequired,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isMRNRequired
+    }
+  ];
+
+  // only include if isRequired true
+  const filteredControls = controls.filter((c) => c.show);
+
+  // if nothing is required, do not render the section
+  if (filteredControls.length === 0) {
+    return [];
   }
-];
-export const sections = (channelType) => [
-  ...PatientSections(channelType),
-  ...(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? AddressSections(channelType) : []),
-  ...(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? IdentifierSections(channelType) : [])
-];
+
+  return [
+    {
+      rows: [
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+          controls: filteredControls
+        }
+      ]
+    }
+  ];
+};

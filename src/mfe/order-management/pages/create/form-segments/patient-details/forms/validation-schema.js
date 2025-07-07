@@ -126,27 +126,32 @@ export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => 
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
         .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
         .when([], {
-          is: () => !isProviderRequired || (isProviderRequired && spMaterialConfig?.isPatientIdentifierRequired),
-          then: (schema) => schema.required(t('orderManagement.patientDetails.validation.patient_identifier_required')),
+          is: () => !isProviderRequired,
+          then: (schema) =>
+            schema
+              .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
+              .test(
+                'no-leading-trailing-spaces',
+                t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
+                (value) => value === undefined || value.trim().length === value.length
+              ),
           otherwise: (schema) => schema.notRequired()
-        })
-        .test(
-          'no-leading-trailing-spaces',
-          t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
-          (value) => value === undefined || value.trim().length === value.length
-        ),
+        }),
+
       medicalRecordNumber: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
         .when([], {
           is: () => isProviderRequired && spMaterialConfig?.isMRNRequired,
-          then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
+          then: (schema) =>
+            schema
+              .required(t('orderManagement.patientDetails.validation.mrn_required'))
+              .test(
+                'no-leading-trailing-spaces',
+                t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+                (value) => value === undefined || value.trim().length === value.length
+              ),
           otherwise: (schema) => schema.notRequired()
-        })
-        .test(
-          'no-leading-trailing-spaces',
-          t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-          (value) => value === undefined || value.trim().length === value.length
-        ),
+        }),
 
       coiId: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
