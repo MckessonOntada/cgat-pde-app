@@ -35,13 +35,26 @@ const Products = ({ linkedItems, products, onSelect }) => {
     return checkIsDataFiltered(filters);
   }, [filters]);
 
+  const onSelectMiddleware =
+    (id) =>
+    (selectedItems = []) => {
+      const linkedItemsIds = Object.values(linkedItems)
+        .flatMap((item) => item.linkedProducts || [])
+        .map((i) => i.id);
+
+      const filteredItems = selectedItems.filter((i) => !linkedItemsIds.includes(i.id)) || [];
+      if (onSelect) {
+        onSelect(filteredItems);
+      }
+    };
+
   const getColumns = ({ t }) => {
     const { pagination } = usePagination();
     const { data } = useTable();
     return [
       {
         id: 'checkbox',
-        name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'materialNumber', pagination, products, onSelect),
+        name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'materialNumber', pagination, products, onSelectMiddleware()),
         cell: (row) => {
           const isDisabled = Boolean(
             Object.values(linkedItems)

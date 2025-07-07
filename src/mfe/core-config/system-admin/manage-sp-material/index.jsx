@@ -8,12 +8,13 @@ import ModuleHeader from '@src/components/module-header';
 import { useSPMaterial } from './context/SPMaterialContext';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation } from 'react-query';
+import Alert from '@src/components/cgat-alert/Alert';
 
 function ManageSPMaterial() {
   const { t } = useTranslate();
   const { applyFilters, clearFilters } = useSPMaterial();
   const [manufacturerList, setManufacturerList] = useState([]);
-
+  const [alert, setAlert] = useState(null);
   const translatedBreadcrumbs = [
     {
       label: 'systemAdministrator',
@@ -37,7 +38,6 @@ function ManageSPMaterial() {
     },
     {
       onSuccess: (data) => {
-        console.log('Fetched manufacturers:', data);
         setManufacturerList(data);
       },
       onError: (error) => {
@@ -49,6 +49,14 @@ function ManageSPMaterial() {
   useEffect(() => {
     manufacturerFilterList();
   }, []);
+
+  const handleAlertClose = () => {
+    setAlert({ type: null, message: null });
+  };
+
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+  };
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -81,6 +89,7 @@ function ManageSPMaterial() {
       <Breadcrumbs items={translatedBreadcrumbs} />
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>} />
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
@@ -90,7 +99,10 @@ function ManageSPMaterial() {
               searchPlaceholder={t('manageSPMaterial.filters.searchPlaceholder')}
             />
           </div>
-          <SPMaterialDataTable />
+          <SPMaterialDataTable
+            onSuccess={() => showAlert('success', t('manageMaterial.drawer.controls.apply.success'))}
+            onError={() => showAlert('error', t('errors.default'))}
+          />
         </div>
       </div>
     </div>

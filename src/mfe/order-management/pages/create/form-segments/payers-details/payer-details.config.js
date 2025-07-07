@@ -26,7 +26,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         {
           id: `${parentKey}-insurance-company`,
           name: `${parentKey}.insuranceCompanyName`,
-          label: 'form.label.insuranceCompany',
+          label: 'form.label.insuranceCarrier',
           placeholder: '',
           type: 'input',
           isRequired: true,
@@ -59,7 +59,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         {
           id: `${parentKey}-insurance-company-phone-number`,
           name: `${parentKey}.insuranceCompanyPhone`,
-          label: 'form.label.phoneNumber',
+          label: 'form.label.insuranceCarrierPhoneNumber',
           placeholder: '',
           type: 'phoneInput',
           isRequired: true,
@@ -178,13 +178,13 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           maxLength: 100
         },
         {
-          id: `${parentKey}-rx-group-number`,
-          name: `${parentKey}.rxGroupNumber`,
-          label: 'form.label.rxGroupNumber',
+          id: `${parentKey}-contact`,
+          name: `${parentKey}.contactNumber`,
+          label: 'form.label.contact',
           placeholder: '',
-          type: 'input',
-          isRequired: false,
-          maxLength: 50
+          type: 'phoneInput',
+          isRequired: true,
+          maxLength: 15
         },
         {
           id: `${parentKey}-rx-member-id`,
@@ -192,7 +192,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           label: 'form.label.rxMemberId',
           placeholder: '',
           type: 'input',
-          isRequired: true,
+          isRequired: false,
           maxLength: 20
         }
       ]
@@ -202,13 +202,13 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
       grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
-          id: `${parentKey}-rx-pcn`,
-          name: `${parentKey}.rxPcn`,
-          label: 'form.label.rxPcn',
+          id: `${parentKey}-rx-group-number`,
+          name: `${parentKey}.rxGroupNumber`,
+          label: 'form.label.rxGroupNumber',
           placeholder: '',
           type: 'input',
           isRequired: true,
-          maxLength: 100
+          maxLength: 50
         },
         {
           id: `${parentKey}-rx-bin`,
@@ -218,6 +218,15 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
           type: 'input',
           isRequired: true,
           maxLength: 30
+        },
+        {
+          id: `${parentKey}-rx-pcn`,
+          name: `${parentKey}.rxPcn`,
+          label: 'form.label.rxPcn',
+          placeholder: '',
+          type: 'input',
+          isRequired: true,
+          maxLength: 100
         }
       ]
     }

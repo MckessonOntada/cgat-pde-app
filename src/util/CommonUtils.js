@@ -705,6 +705,31 @@ function getDOBMaxDate() {
   return maxDOB;
 }
 
+function getFileNameAndType(url) {
+  if (url instanceof File) {
+    return {
+      name: url.name,
+      type: url.type,
+      size: url.size,
+      lastModified: url.lastModified
+    };
+  }
+
+  const cleanUrl = url?.split('?')[0].split('#')[0] || '';
+  const name = cleanUrl.split('/').pop() || '';
+  const type = name.includes('.') ? name.split('.').pop() : '';
+
+  return {
+    name,
+    type
+  };
+}
+
+function removeLeadingZeros(str) {
+  if (!str) return '';
+  return str.replace(/^0+/, '') || '';
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -759,7 +784,9 @@ const CommonUtils = Object.freeze({
   flattenTherapies,
   isEmptyArray,
   checkIsDataFiltered,
-  getDOBMaxDate
+  getDOBMaxDate,
+  getFileNameAndType,
+  removeLeadingZeros
 });
 
 export default CommonUtils;

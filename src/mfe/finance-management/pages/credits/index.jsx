@@ -60,6 +60,7 @@ export default function Credits(props) {
           setSelectedRows={props.setSelectedCredits}
           selectableRows={props.selectableRows}
           disableSelection={props.disableSelection}
+          paymentAmountSum={props.paymentAmountSum}
         />
       </div>
     </React.Fragment>
