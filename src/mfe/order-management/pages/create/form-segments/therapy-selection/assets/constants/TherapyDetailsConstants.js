@@ -2,14 +2,14 @@ export const TherapyDetailsConstantsForBB = (isInvoice = false) => [
   {
     sectionHeading: isInvoice ? 'paymentInvoices.table.therapyInfo' : 'labels.therapy.generalDetails',
     sectionData: [
-      { label: 'labels.therapyNumber', value: 'displayMaterialNumber' },
-      { label: 'labels.therapy', value: 'materialDescription' },
+      { label: 'labels.therapyId', value: 'displayMaterialNumber' },
+      { label: 'labels.tradeName', value: 'tradeName' },
+      { label: 'labels.therapyDescription', value: 'materialDescription' },
+      { label: 'labels.genericName', value: 'genericName' },
       { label: 'labels.therapy.ndc', value: 'ndcNumber' },
-      { label: 'labels.therapy.strength', value: 'strength' },
-      { label: 'labels.therapy.dosage', value: 'dosage' },
-      { label: 'labels.therapy.sellingUnitCode', value: 'sellingUnitCode' },
       { label: 'labels.manufacturer', value: 'manufacturerName' },
-      { label: 'labels.therapy.dropshipIndicator', value: 'dropshipIndicator' },
+      { label: 'labels.therapy.Formulation', value: 'Formulation' },
+      { label: 'labels.therapy.dosage', value: 'dosage' },
       { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
   }
