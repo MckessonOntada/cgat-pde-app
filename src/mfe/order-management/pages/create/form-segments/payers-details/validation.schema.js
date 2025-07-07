@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { PATIENT_RELATIONSHIP } from './payer-details.config';
-import { ALPHA_NUMERIC, ALPHABETIC_FOR_NAME, NUMBER_REGEX, RX_SYMBOLS_ALLOWED } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC, ALPHABETIC_FOR_NAME, NUMBER_REGEX, PHONE_REGEX, RX_SYMBOLS_ALLOWED } from '@src/components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
 
 export const getMedicalInsuranceSchema = (key, t) => ({
   [key]: Yup.object().shape({
@@ -28,7 +29,7 @@ export const getMedicalInsuranceSchema = (key, t) => ({
       .max(50, t('messages.lastNameMax'))
       .test('no-leading-trailing-spaces', t('messages.phLastNameExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(ALPHABETIC_FOR_NAME, t('messages.onlyAlpha')),
-    dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(new Date(), t('messages.dobFuture')),
+    dateOfBirth: Yup.date().typeError(t('messages.invalidDate')).required(t('messages.enterDOB')).max(CommonUtils.getDOBMaxDate(), t('messages.dobFuture')),
     relationshipToPatient: Yup.string()
       .required(t('messages.selectRelation'))
       .oneOf(
@@ -55,11 +56,16 @@ export const getPharmacyInsuranceSchema = (key, t) => ({
       .max(100, t('messages.pbmNameMax'))
       .test('no-leading-trailing-spaces', t('messages.pharmacyManagerExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .matches(RX_SYMBOLS_ALLOWED, t('messages.alphaSymbols')),
+    contactNumber: Yup.string()
+      .trim()
+      .required(t('message.enterPhone'))
+      .matches(PHONE_REGEX, t('message.invalidPhoneNumber'))
+      .max(15, t('message.phoneCanNotBeLengthy')),
     rxGroupNumber: Yup.string()
-      .notRequired()
+      .required(t('message.enterRxGroupNumber'))
       .max(50, t('messages.rxGroupMax'))
       .matches(NUMBER_REGEX, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
-    rxMemberId: Yup.string().required(t('messages.enterRxID')).max(20, t('messages.rxIdMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
+    rxMemberId: Yup.string().max(20, t('messages.rxIdMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
     rxPcn: Yup.string().required(t('messages.enterRxPCN')).max(100, t('messages.rxPcnMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
     rxBin: Yup.string().required(t('messages.enterRxBIN')).max(30, t('messages.rxBinMax')).matches(ALPHA_NUMERIC, t('messages.alphanumericOnly')),
     pharmacyCardFront: Yup.mixed().nullable(),
@@ -82,6 +88,7 @@ export const getBaseMedicalInsuranceValues = () => ({
 
 export const getBasePharmacyInsuranceValues = () => ({
   pharmacyBenefitManagerName: '',
+  contactNumber: '',
   rxGroupNumber: '',
   rxMemberId: '',
   rxPcn: '',

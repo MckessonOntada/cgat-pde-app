@@ -15,10 +15,11 @@ import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import ConfigureSPMaterials from './ConfigureSPMaterials';
+import CommonUtils from '@src/util/CommonUtils';
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...props }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, fileteredData, clearFilters } =
+  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
@@ -78,10 +79,10 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
               textDecoration: 'none'
             }}
             onClick={() => {
-              setViewSPMaterial(props);
+              setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.materialNumber} maxWidth={170} />
+            <EclipsesTextcss str={CommonUtils.removeLeadingZeros(props?.materialNumber)} maxWidth={170} />
           </Link>
         </div>
       )
@@ -282,8 +283,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={!fileteredData ? t('manageSPMaterial.messageemptyTableTitle') : t('errors.messages.noRecordsFound')}
-                description={!fileteredData && t('manageSPMaterial.messages.emptyTableSubtitle')}
+                heading={filteredData ? t('errors.messages.noRecordsFound') : t('manageSPMaterial.messageemptyTableTitle')}
+                description={!filteredData && t('manageSPMaterial.messages.emptyTableSubtitle')}
               />
             }
             progressPending={isLoading}

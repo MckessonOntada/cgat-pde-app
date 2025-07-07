@@ -15,13 +15,13 @@ import { getAddress } from '@src/mfe/core-config/system-admin/manage-sp-account/
 import { renderModal } from '@src/util/ModalUtil';
 import { useMutation } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { useSearchParams } from 'react-router-dom';
 
 function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const { t } = useTranslate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, isAddLinkProvider, applySort, fileteredData } = useLinkProvider();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, isAddLinkProvider, applySort, filterConfig } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
   const [openProviderDetails, setOpenProviderDetails] = useState(false);
   const [drawerDetails, setDrawerDetails] = useState('');
@@ -36,6 +36,9 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
       setTableHeight(eleHeight);
     }, 100);
   }, [data]);
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
 
   const onRemoveSelectedAccount = useCallback(
     (item) => {
@@ -180,8 +183,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={!fileteredData ? t('manageSPAccount.providers.noData') : t('errors.messages.noRecordsFound')}
-                description={!fileteredData && t('manageSPAccount.table.error.providers.listing')}
+                heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('manageSPAccount.providers.noData')}
+                description={!isDataFiltered && t('manageSPAccount.table.error.providers.listing')}
               />
             }
           />

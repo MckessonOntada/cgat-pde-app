@@ -15,7 +15,7 @@ import CommonUtils from '@src/util/CommonUtils';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF, fileteredData } = useCustomerStatements();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF, filteredData } = useCustomerStatements();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const columns = [
@@ -133,8 +133,8 @@ export default function CustomerStatementTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('paymentInvoices.CS.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={filteredData ? t('errors.messages.noRecordsFound') : t('paymentInvoices.CS.table.emptyData')}
+            description={!filteredData && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

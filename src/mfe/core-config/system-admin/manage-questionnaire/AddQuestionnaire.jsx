@@ -248,16 +248,20 @@ function AddQuestionnaire() {
             })
           )
           .nullable()
-          .when('type', {
-            is: (type) => [QUESTION_TYPE.DROPDOWN, QUESTION_TYPE.RADIO_BUTTON, QUESTION_TYPE.CHECKBOX].includes(type),
-            then: (schema) =>
-              schema
+          .when('type', (typeArr, schema) => {
+            const type = Array.isArray(typeArr) ? typeArr[0] : typeArr;
+            if (type === QUESTION_TYPE.DROPDOWN) {
+              return schema
                 .default([
                   { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
                   { en: '', es: '', activeLanguage: LANGUAGE.SPANISH }
                 ])
-                .min(2, 'At least two options are required'),
-            otherwise: (schema) => schema.notRequired()
+                .min(2, 'At least two options are required');
+            }
+            if (type === QUESTION_TYPE.RADIO_BUTTON || type === QUESTION_TYPE.CHECKBOX) {
+              return schema.default([{ en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }]).min(1, 'At least one option is required');
+            }
+            return schema.notRequired();
           })
       })
     )
@@ -271,7 +275,7 @@ function AddQuestionnaire() {
       if (question.type !== QUESTION_TYPE.INPUT) {
         const minimumOptionsIndex = {
           [QUESTION_TYPE.DROPDOWN]: 2,
-          [QUESTION_TYPE.RADIO_BUTTON]: 2,
+          [QUESTION_TYPE.RADIO_BUTTON]: 1,
           [QUESTION_TYPE.CHECKBOX]: 1
         };
         if (!question.options || question.options.length < minimumOptionsIndex[question.type]) {
@@ -451,11 +455,13 @@ function AddQuestionnaire() {
                                               setFieldValue(`questions[${index}].type`, selectedType);
                                               if (selectedType === QUESTION_TYPE.INPUT) {
                                                 setFieldValue(`questions[${index}].options`, null);
-                                              } else {
+                                              } else if (selectedType === QUESTION_TYPE.DROPDOWN) {
                                                 setFieldValue(`questions[${index}].options`, [
                                                   { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
                                                   { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
                                                 ]);
+                                              } else if (selectedType === QUESTION_TYPE.RADIO_BUTTON || selectedType === QUESTION_TYPE.CHECKBOX) {
+                                                setFieldValue(`questions[${index}].options`, [{ en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }]);
                                               }
                                             }}
                                             options={[
@@ -548,7 +554,11 @@ function AddQuestionnaire() {
                                                                       variant="tertiary"
                                                                       color="error"
                                                                       type="button"
-                                                                      disabled={question['options'].length === 2 || readOnly}
+                                                                      disabled={
+                                                                        (question.type === QUESTION_TYPE.DROPDOWN
+                                                                          ? question['options'].length === 2
+                                                                          : question['options'].length === 1) || readOnly
+                                                                      }
                                                                       onClick={() => {
                                                                         removeOption(optionIndex);
                                                                       }}></Button>

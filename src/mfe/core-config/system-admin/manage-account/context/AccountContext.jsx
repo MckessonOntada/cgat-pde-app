@@ -35,7 +35,7 @@ export const AccountProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
+
   useEffect(() => {
     clearFilters();
   }, [selectedOrganization]);
@@ -53,12 +53,10 @@ export const AccountProvider = ({ children }) => {
       ...prevFilters,
       ...filters
     }));
-    setfileteredData(true);
   };
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const requestParams = React.useMemo(() => {
@@ -112,8 +110,7 @@ export const AccountProvider = ({ children }) => {
     applyFilters,
     isLoading,
     isError,
-    filterConfig,
-    fileteredData
+    filterConfig
   };
   return <AccountContext.Provider value={contextValue}>{children}</AccountContext.Provider>;
 };

@@ -18,11 +18,12 @@ import ShippingLocationService from '@src/api/commonService/ShippingLocationServ
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import Alert from '@src/components/cgat-alert/Alert';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 function ShippingLocationsDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, applySort, accountId, fileteredData } = useShippingLocation();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, applySort, accountId, filterConfig } = useShippingLocation();
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [openShippingDrawer, setOpenShippingDrawer] = useState(false);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -32,7 +33,9 @@ function ShippingLocationsDataTable() {
 
   const practiceId = AuthUtils.getPracticeId();
   const organizationId = selectedOrganization?.id || practiceId;
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const handleOnOptionSelection = (value, row) => {
     if (value == 'edit') {
       setSPLocation(row);
@@ -186,8 +189,8 @@ function ShippingLocationsDataTable() {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={!fileteredData ? t('manageSPAccount.table.shippinglocations.emptyData') : t('errors.messages.noRecordsFound')}
-                description={!fileteredData && t('manageSPAccount.tables.shippinglocations.emptyDataDescription')}
+                heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('manageSPAccount.table.shippinglocations.emptyData')}
+                description={!isDataFiltered && t('manageSPAccount.tables.shippinglocations.emptyDataDescription')}
               />
             }
           />

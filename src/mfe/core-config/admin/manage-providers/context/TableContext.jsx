@@ -106,7 +106,7 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectedRowObjects, setSelectedRowObjects] = useState(new Set());
   const [pagination, setPagination] = useState(INITIAL_PAGINATION_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
+
   const [sort, setSort] = React.useState(() => {
     return {
       ...INITIAL_SORT_STATE,
@@ -222,7 +222,6 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
   const applyFilters = (filters) => {
     setPagination((prev) => ({ ...prev, pageNo: 1 }));
     setFilters({ ...defaultFilters, ...filters });
-    setfileteredData(true);
   };
 
   const applySort = (sortBy, sortDirection) => {
@@ -242,7 +241,6 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
 
   const clearFilters = () => {
     setFilters(defaultFilters || { query: '' });
-    setfileteredData(false);
   };
 
   const changePage = (pageNo) => {
@@ -272,8 +270,7 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
     clearFilters,
     changePage,
     refreshTable: fetchData,
-    requestParams,
-    fileteredData
+    requestParams
   };
 
   return <TableContext.Provider value={context}>{children}</TableContext.Provider>;

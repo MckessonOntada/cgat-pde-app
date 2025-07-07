@@ -16,8 +16,8 @@ import Alert from '@src/components/cgat-alert/Alert';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { getTableColumns } from './TableColumns';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import ToggleButtonGroup from './ToggleButtonGroup';
-import ToggleButton from './ToggleButton';
+import TabGroup from '../../../../components/tab-group';
+import Tab from '../../../../components/tab-group/Tab';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -314,13 +314,13 @@ const OrderIndex = () => {
                 heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
                 controls={
                   <div>
-                    <ToggleButtonGroup value={config.view} onChange={handleOnViewChange} exclusive>
+                    <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
                       {toggleFilters.map((filter, index) => (
-                        <ToggleButton key={index} value={filter}>
+                        <Tab key={index} value={filter}>
                           {t(`labels.orderView.${filter}`)}
-                        </ToggleButton>
+                        </Tab>
                       ))}
-                    </ToggleButtonGroup>
+                    </TabGroup>
                   </div>
                 }
               />

@@ -36,7 +36,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [entityType, setEntityType] = useState(null);
-  const [fileteredData, setfileteredData] = useState(false);
+
   let _accNumber;
   if (selectedAccount && selectedAccount.length > 0) {
     _accNumber = selectedAccount
@@ -183,12 +183,10 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const clearFilters = () => {
     setFilterConfig({ ...INITIAL_FILTER_STATE });
-    setfileteredData(false);
   };
 
   const setCurrentPage = (pageNumber) => {
@@ -221,8 +219,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         entityType,
         setEntityType,
         isLoading: isLoadingAccounts,
-        isError: isErrorAccounts,
-        fileteredData
+        isError: isErrorAccounts
       }}>
       {children}
     </ManagerQuestionnaireContext.Provider>

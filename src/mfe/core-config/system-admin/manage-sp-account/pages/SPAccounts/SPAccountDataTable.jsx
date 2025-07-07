@@ -16,15 +16,19 @@ import { ChannelType } from '../../util';
 import AccountDetails from '../../../manage-account/pages/AccountDetails';
 import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccounts }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId, fileteredData } = useSPAccountContext();
+  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId, filterConfig } = useSPAccountContext();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const handleOnClick = (url, organizationId) => () => navigate(url, { state: { organizationId } });
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const columns = [
     {
       id: 'accountNumber',
@@ -174,8 +178,8 @@ function SPAccountDataTable({ isLinkedAccount, isSpMaterial, handleUnlinkSpAccou
           <EmptyDataTable
             isLoading={isLoading}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('manageSPAccount.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && !isSpMaterial && t('manageSPAccount.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('manageSPAccount.table.emptyData')}
+            description={!isDataFiltered && !isSpMaterial && t('manageSPAccount.table.emptyDataDescription')}
           />
         }
       />

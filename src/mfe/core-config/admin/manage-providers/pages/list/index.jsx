@@ -15,7 +15,7 @@ import { useFilters, usePagination, useSelection, useSort, useTable } from '../.
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import Alert from '@src/components/cgat-alert/Alert';
@@ -27,9 +27,12 @@ const List = () => {
   const location = useLocation();
   const [notification, setNotification] = useState(null);
   const { filters, applyFilters, clearFilters } = useFilters();
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filters);
+  }, [filters]);
   const { selectedRows } = useSelection();
   const { applySort } = useSort();
-  const { data = [], fileteredData } = useTable();
+  const { data = [] } = useTable();
   const { pagination, changePage } = usePagination();
   const breadcrumbItems = React.useMemo(() => {
     return [
@@ -157,8 +160,8 @@ const List = () => {
           noDataComponent={
             <ErrorBanner
               image={<EmptyProviderTable />}
-              heading={!fileteredData ? t('manageSPAccount.providers.noData') : t('errors.messages.noRecordsFound')}
-              description={!fileteredData && t('label.emptyProviderTableDescription')}
+              heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('manageSPAccount.providers.noData')}
+              description={!isDataFiltered && t('label.emptyProviderTableDescription')}
             />
           }
         />

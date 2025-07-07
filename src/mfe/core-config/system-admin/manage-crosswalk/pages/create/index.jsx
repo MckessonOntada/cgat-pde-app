@@ -57,9 +57,13 @@ const CreateCrosswalk = () => {
         }
       })
       .catch((error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (statusCode === 419) description = CommonUtils.getAxiosErrorMessage(error);
+
         addNotification({
           type: 'error',
-          description: t('errors.default'),
+          description,
           isSticky: true
         });
       });
@@ -220,7 +224,7 @@ const CreateCrosswalk = () => {
                 }
                 return response;
               }}>
-              <Products material={selectedMaterial} linkedItems={linkedItems} products={selectedProducts} onSelect={setSelectedProducts} />
+              <Products linkedItems={linkedItems} products={selectedProducts} onSelect={setSelectedProducts} />
             </TableProvider>
             <Summary linkedMaterial={linkedItems} onUnlink={handleOnUnLinkMaterial} onLink={handleOnLinkMaterial} />
           </div>

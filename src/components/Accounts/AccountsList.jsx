@@ -14,7 +14,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '../dataTableComponent';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import AccountDetails from './AccountDetails';
 
 export default function AccountsList(props) {
@@ -27,7 +27,7 @@ export default function AccountsList(props) {
     practiceId,
     userId
   } = props;
-  const { data, paginationConfig, refetch, setPageNumber, fileteredData } = useAccounts();
+  const { data, paginationConfig, refetch, setPageNumber, filterConfig } = useAccounts();
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const [tableHeight, setTableHeight] = useState('100%');
@@ -39,6 +39,9 @@ export default function AccountsList(props) {
     PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS,
     PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION
   ]);
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -202,8 +205,8 @@ export default function AccountsList(props) {
               <EmptyDataTable
                 isLoading={isLoading}
                 image={EmptyDataImage}
-                heading={!fileteredData ? t('account.add.label') : t('errors.messages.noRecordsFound')}
-                description={!fileteredData && t('account.empty_table.description')}
+                heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('account.add.label')}
+                description={!isDataFiltered && t('account.empty_table.description')}
               />
             }
           />

@@ -2,31 +2,32 @@ import React, { useState } from 'react';
 import { Loader, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import { PATHS } from '../../routes';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { useMutation } from 'react-query';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
+import { renderTableCheckBoxCredit } from './CreditTableSelectionConstants';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, fileteredData } = usePaymentCredits();
-  const { selectedRows, setSelectedRows, selectableRows, disableSelection } = props;
+  const { data, actualData, isFetching, paginationConfig, setPageNumber, applySort, filterConfig } = usePaymentCredits();
+  const { selectedRows, setSelectedRows, selectableRows, disableSelection, paymentAmountSum } = props;
   const location = useLocation();
   const { state } = location;
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const { mutate: handlePdfDownload } = useMutation(
     async (props) => {
       const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, props.billNumber)}/details-pdf`;
@@ -67,31 +68,30 @@ export default function CreditsTable(props) {
       },
       onError: (error) => {
         showAlert({
-          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });
       }
     }
   );
-
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
+      name: renderTableCheckBoxCredit(
         { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
+        actualData,
         'billNumber',
         paginationConfig,
         selectedRows,
         setSelectedRows,
-        true,
-        false
+        disableSelection,
+        paymentAmountSum
       ),
       sortable: false,
       cell: (row, index) => {
-        const isdisable = disableSelection && !selectedRows?.some((r) => r?.billNumber === row?.billNumber);
-        return renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows, true, false, isdisable);
+        const isDisable = disableSelection && !selectedRows?.some((r) => r?.billNumber === row?.billNumber);
+        return renderTableCheckBoxCredit(row, actualData, 'billNumber', paginationConfig, selectedRows, setSelectedRows, isDisable, paymentAmountSum);
       },
       selector: (row) => row.MRN,
       width: '48px',
@@ -214,8 +214,8 @@ export default function CreditsTable(props) {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('paymentInvoices.credits.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('paymentInvoices.credits.table.emptyData')}
+            description={!isDataFiltered && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

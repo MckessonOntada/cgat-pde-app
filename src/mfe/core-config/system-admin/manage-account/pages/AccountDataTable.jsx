@@ -9,13 +9,16 @@ import AccountDetails from './AccountDetails';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 function AccountDataTable(props) {
   const { t } = useTranslate();
-  const { paginationConfig, AccountList: data, setPageNumber, isLoading, fileteredData } = useAccountContext();
+  const { paginationConfig, AccountList: data, setPageNumber, isLoading, filterConfig } = useAccountContext();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const columns = [
     {
       id: 'accountNumber',
@@ -95,8 +98,8 @@ function AccountDataTable(props) {
         noDataComponent={
           <EmptyDataTable
             image={EmptyDataImage}
-            heading={!fileteredData ? t('ManageAccount.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('ManageAccount.emptyTableSubtitle')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('ManageAccount.emptyTableTitle')}
+            description={!isDataFiltered && t('ManageAccount.emptyTableSubtitle')}
           />
         }
       />

@@ -44,7 +44,6 @@ export const RoleProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [messageConfig, setMessageConfig] = useState(INITIAL_MESSAGE_STATE);
-  const [fileteredData, setfileteredData] = useState(false);
 
   const requestParams = useMemo(() => {
     const params = {
@@ -95,12 +94,10 @@ export const RoleProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPageNumber(1);
     setFilterConfig({ ...filters });
-    setfileteredData(true);
   };
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
   };
 
   const setPageNumber = (pageNumber) => {
@@ -134,8 +131,7 @@ export const RoleProvider = ({ children }) => {
     applySort,
     setPageNumber,
     setMessage,
-    clearMessage,
-    fileteredData
+    clearMessage
   };
 
   return <RoleContext.Provider value={contextValue}>{children}</RoleContext.Provider>;

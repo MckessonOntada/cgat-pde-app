@@ -10,7 +10,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { DUE_STATUS } from './InvoiceConstants';
 import { PATHS } from '../../routes';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
@@ -28,11 +28,14 @@ export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, fileteredData } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig } = usePaymentInvoices();
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
   const alertContainerId = 'summary-alert-container';
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -97,7 +100,7 @@ export default function InvoicesTable() {
       },
       onError: () => {
         showAlert({
-          description: t('paymentInvoices.table.column.pdfDownloadError'),
+          description: t('errors.default'),
           type: 'error',
           anchorEl: alertContainerId
         });
@@ -150,7 +153,7 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('labels.sapId'),
+      name: t('labels.orderId'),
       id: 'mckessonOrderId',
       selector: (row) => `${row.mckessonOrderId}`,
       maxWidth: '140px',
@@ -161,17 +164,13 @@ export default function InvoicesTable() {
       )
     },
     {
-      id: 'soldToSite',
-      name: t('paymentInvoices.history.table.SoldToAccountNo'),
-      selector: (row) => row.soldToSite,
-      maxWidth: '140px',
-      minWidth: '140px',
-      sortable: true,
-      showInMobileHeader: true,
-      cardHeader: true,
-      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
+      name: t('paymentInvoices.Details.referenceNumber'),
+      id: 'referenceDocumentNumber',
+      selector: (row) => `${row.referenceDocumentNumber}`,
+      maxWidth: '180px',
+      cell: (props) => <EclipsesTextcss str={props.referenceDocumentNumber} maxWidth={170} />
     },
+
     {
       name: t('labels.soldToAccountName'),
       id: 'soldToName',
@@ -194,6 +193,19 @@ export default function InvoicesTable() {
       sortable: true,
       id: 'dueDate',
       cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+    },
+    {
+      name: t('paymentInvoices.history.table.invoiceAmount'),
+      selector: (row) => row?.billAmount,
+      minWidth: '175px',
+      sortable: true,
+      right: true,
+      id: 'billAmount',
+      cell: (props) => (
+        <div className="cellEllipse align-items-right ">
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
+        </div>
+      )
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
@@ -233,19 +245,7 @@ export default function InvoicesTable() {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.invoiceAmount'),
-      selector: (row) => row?.billAmount,
-      minWidth: '175px',
-      sortable: true,
-      right: true,
-      id: 'billAmount',
-      cell: (props) => (
-        <div className="cellEllipse align-items-right ">
-          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
-        </div>
-      )
-    },
+
     {
       name: t('paymentInvoices.history.table.Actions'),
       width: '100px',
@@ -354,8 +354,8 @@ export default function InvoicesTable() {
             isLoading={isFetching}
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('paymentInvoices.invoice.table.emptyData') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('paymentInvoices.history.table.emptyDataDescription')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('paymentInvoices.invoice.table.emptyData')}
+            description={!isDataFiltered && t('paymentInvoices.history.table.emptyDataDescription')}
           />
         }
         progressComponent={

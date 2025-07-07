@@ -50,7 +50,7 @@ export const CustomerStatementsProvider = ({ children }) => {
   const alertContainerId = 'summary-alert-container';
   const { selectedAccount } = useAccountContext();
   const [actualData, setActualData] = useState([]);
-  const [fileteredData, setfileteredData] = useState(false);
+  const [filteredData, setFilteredData] = useState(false);
   const applyFilters = (filters) => {
     const formattedStartDate = filters.dateRange[0]
       ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
@@ -62,7 +62,7 @@ export const CustomerStatementsProvider = ({ children }) => {
       ...filters,
       dateRange: [formattedStartDate, formattedEndDate]
     }));
-    setfileteredData(true);
+    setFilteredData(true);
   };
 
   const filterData = async (filters) => {
@@ -157,7 +157,7 @@ export const CustomerStatementsProvider = ({ children }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
-    setfileteredData(false);
+    setFilteredData(false);
   };
 
   const applySort = (newSortConfig) => {
@@ -285,7 +285,7 @@ export const CustomerStatementsProvider = ({ children }) => {
     applySort,
     setPageNumber,
     exportPDF,
-    fileteredData
+    filteredData
   };
   return <CustomerStatementsContext.Provider value={contextValue}>{children}</CustomerStatementsContext.Provider>;
 };

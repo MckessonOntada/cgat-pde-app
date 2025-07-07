@@ -13,7 +13,7 @@ import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/
 import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import SPMaterialDetails from '../../manage-sp-material/pages/SPMaterialDetails';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
@@ -38,10 +38,12 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
     setExpandedRows((prev) => (prev.includes(row.tradeName) ? prev.filter((name) => name !== row.tradeName) : [...prev, row.tradeName]));
   };
 
-  const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError, fileteredData } = useManagerQuestionnaire();
+  const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError, filterConfig } = useManagerQuestionnaire();
   const [entityData, setEntityData] = React.useState([]);
   const [attributes, setAttributes] = React.useState({});
-
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
   React.useEffect(() => {
     if (!entityType) return;
 
@@ -181,8 +183,8 @@ const EntityDataTable = ({ entityType, selectedRows, setSelectedRows, showAlert 
             isLoading={isLoading}
             error={isError && isError.message}
             image={EmptyDataImage}
-            heading={!fileteredData ? t(attributes.noDataComponentHeading) : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t(attributes.noDataComponentDescription)}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t(attributes.noDataComponentHeading)}
+            description={!isDataFiltered && t(attributes.noDataComponentDescription)}
           />
         }
       />

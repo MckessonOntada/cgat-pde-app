@@ -15,6 +15,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import usePermission from '@src/hooks/usePermissions';
+import { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 const RolesDataTable = () => {
   const { t } = useTranslate();
@@ -22,9 +23,12 @@ const RolesDataTable = () => {
   const { hasPermission } = usePermission();
   const columns = createColumns(t, selectedRows, setSelectedRows, hasPermission);
   const { applySort } = useRole();
-  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage, isError, error, fileteredData } = useRole();
+  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage, isError, error, filterConfig } = useRole();
   const dispatch = useDispatch();
   const showCardView = useResponsiveView();
+  const isDataFiltered = React.useMemo(() => {
+    return checkIsDataFiltered(filterConfig);
+  }, [filterConfig]);
 
   const { mutate: deleteRole } = useMutation({
     mutationFn: async (id) => {
@@ -119,8 +123,8 @@ const RolesDataTable = () => {
             error={isError && error}
             isLoading={isLoading}
             image={EmptyDataImage}
-            heading={!fileteredData ? t('message.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-            description={!fileteredData && t('orgManagement.messages.roleEmptyTableSubtitle')}
+            heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('message.emptyTableTitle')}
+            description={!isDataFiltered && t('orgManagement.messages.roleEmptyTableSubtitle')}
           />
         }
         stickyHeader

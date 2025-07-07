@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX, ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
+import { channel } from 'process';
 
 export const getInitialValues = () => ({
   patient: {
@@ -26,7 +27,8 @@ export const getInitialValues = () => ({
       state: ''
     },
     patientIdentifier: '',
-    mrn: ''
+    medicalRecordNumber: '',
+    coiId: ''
   },
   providerId: ''
 });
@@ -34,7 +36,7 @@ export const getInitialValues = () => ({
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isProviderRequired) => {
+export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => {
   return Yup.object().shape({
     patient: Yup.object().shape({
       patientInfo: Yup.object()
@@ -122,14 +124,43 @@ export const getValidationSchema = (t, isProviderRequired) => {
       }),
       patientIdentifier: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
-        .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
         .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
-        .test(
-          'no-leading-trailing-spaces',
-          t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
-          (value) => value === undefined || value.trim().length === value.length
-        ),
-      medicalRecordNumber: Yup.string().trim().nullable().matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
+        .when([], {
+          is: () => !isProviderRequired,
+          then: (schema) =>
+            schema
+              .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
+              .test(
+                'no-leading-trailing-spaces',
+                t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
+                (value) => value === undefined || value.trim().length === value.length
+              ),
+          otherwise: (schema) => schema.notRequired()
+        }),
+
+      medicalRecordNumber: Yup.string()
+        .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
+        .when([], {
+          is: () => isProviderRequired && spMaterialConfig?.isMRNRequired,
+          then: (schema) =>
+            schema
+              .required(t('orderManagement.patientDetails.validation.mrn_required'))
+              .test(
+                'no-leading-trailing-spaces',
+                t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+                (value) => value === undefined || value.trim().length === value.length
+              ),
+          otherwise: (schema) => schema.notRequired()
+        }),
+
+      coiId: Yup.string()
+        .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
+        .max(10, t('labels.COI_IdExceedDigits'))
+        .when([], {
+          is: () => isProviderRequired && spMaterialConfig?.isCoiIdRequired,
+          then: (schema) => schema.required(t('labels.COIIdRequired')),
+          otherwise: (schema) => schema.notRequired()
+        })
     }),
     providerId: Yup.string().when([], {
       is: () => isProviderRequired,

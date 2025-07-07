@@ -93,7 +93,7 @@ const ProviderForm = (props) => {
         middleName,
         lastName
       },
-      dea: deaNumber,
+      dea: deaNumber || null,
       npi: npiNumber,
       phone: phoneNumber,
       address: {
@@ -104,7 +104,7 @@ const ProviderForm = (props) => {
         zip
       },
       tin: tinNumber,
-      medicaidNumber: medicaidNumber,
+      medicaidNumber: medicaidNumber || null,
       licenseState: licenseState,
       email: email,
       fax: fax

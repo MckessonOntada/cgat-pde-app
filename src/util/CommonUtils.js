@@ -401,13 +401,15 @@ export const getDateRangeValidationError = (start, end, isRequired = false) => {
   if (start && end) {
     const startDate = new Date(start);
     const endDate = new Date(end);
-
+    const today = new Date();
     const maxAllowedDate = new Date(startDate);
     maxAllowedDate.setMonth(startDate.getMonth() + 6);
-    if (startDate >= endDate) {
+    if (startDate > endDate) {
       return 'Please select a valid date range.';
     } else if (endDate >= maxAllowedDate) {
       return 'Date range must not exceed 6 months.';
+    } else if (endDate > today) {
+      return 'End date cannot be in the future.';
     }
   }
 
@@ -689,6 +691,44 @@ function flattenTherapies(data) {
     return acc;
   }, []);
 }
+export const checkIsDataFiltered = (filters) => {
+  return Object.values(filters).some((value) => {
+    if (Array.isArray(value)) {
+      return value.some((item) => Boolean(item));
+    }
+    return Boolean(value);
+  });
+};
+function getDOBMaxDate() {
+  const maxDOB = new Date();
+  maxDOB.setDate(maxDOB.getDate() - 1);
+  return maxDOB;
+}
+
+function getFileNameAndType(url) {
+  if (url instanceof File) {
+    return {
+      name: url.name,
+      type: url.type,
+      size: url.size,
+      lastModified: url.lastModified
+    };
+  }
+
+  const cleanUrl = url?.split('?')[0].split('#')[0] || '';
+  const name = cleanUrl.split('/').pop() || '';
+  const type = name.includes('.') ? name.split('.').pop() : '';
+
+  return {
+    name,
+    type
+  };
+}
+
+function removeLeadingZeros(str) {
+  if (!str) return '';
+  return str.replace(/^0+/, '') || '';
+}
 
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
@@ -742,7 +782,11 @@ const CommonUtils = Object.freeze({
   getAxiosErrorMessage,
   getListOverflowingDisplayLabel,
   flattenTherapies,
-  isEmptyArray
+  isEmptyArray,
+  checkIsDataFiltered,
+  getDOBMaxDate,
+  getFileNameAndType,
+  removeLeadingZeros
 });
 
 export default CommonUtils;

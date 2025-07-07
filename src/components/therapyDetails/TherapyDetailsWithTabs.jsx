@@ -106,7 +106,7 @@ function TherapyDetailsWithTabs({
         }
 
         const __therapyDetails = filteredData.find((d) => d.id === (!selectedTab ? therapyTabs[0].therapyId : selectedTab.therapyId));
-        setTherapyDetails({ ...__therapyDetails });
+        setTherapyDetails({ ...__therapyDetails, displayMaterialNumber: CommonUtils.removeLeadingZeros(__therapyDetails.materialNumber) });
       } else {
         setAlert({
           kind: 'info',
@@ -136,7 +136,7 @@ function TherapyDetailsWithTabs({
   React.useEffect(() => {
     if (selectedTab && selectedTab.therapyId) {
       const currentTherapyDetails = details?.find((item) => item.id === selectedTab.therapyId);
-      setTherapyDetails(currentTherapyDetails);
+      setTherapyDetails({ ...currentTherapyDetails, displayMaterialNumber: CommonUtils.removeLeadingZeros(currentTherapyDetails.materialNumber) });
     }
   }, [selectedTab]);
 
