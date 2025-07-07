@@ -84,7 +84,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       id: MATERIAL_CROSSWALK_COLUMNS.DOSAGE,
       name: t('column.material.crosswalk.dosage'),
       minWidth: '90px',
-      cell: (props) => <EclipsesTextcss str={props?.dosage || '-'} />
+      cell: (props) => <EclipsesTextcss str={props?.dosage?.trim() || '-'} />
     },
 
     {
