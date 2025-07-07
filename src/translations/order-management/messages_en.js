@@ -348,6 +348,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
+  'orderManagement.patientDetails.identifier_details': 'Identifiers',
   'orderManagement.patientDetails.patient_details': 'Patient Details',
   'orderManagement.patientDetails.required': 'Required',
   'orderManagement.patientDetails.validation.first_name_max': 'First name cannot exceed 50 characters.',
