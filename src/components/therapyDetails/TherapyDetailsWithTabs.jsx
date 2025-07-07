@@ -362,15 +362,19 @@ function TherapyDetailsWithTabs({
 function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
   const { t } = useTranslate();
   const renderDetails = (fields, details) =>
-    fields.map(({ label, value }) => (
-      <DetailItem
-        key={label}
-        label={t(label)}
-        value={
-          details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (value === 'dropshipIndicator' || value === 'sellingUnitCode') ? 'NA' : details[value] || '-'
-        }
-      />
-    ));
+    fields.map(({ label, value }) => {
+      let displayValue;
+      if (value === 'dosage') {
+        displayValue = `${details.strength || ''} ${details.dosage || ''}`.trim();
+      } else if (details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (value === 'dropshipIndicator' || value === 'sellingUnitCode')) {
+        displayValue = 'NA';
+      } else {
+        displayValue = details[value] || '-';
+      }
+
+      return <DetailItem key={label} label={t(label)} value={displayValue} />;
+    });
+
   return (
     <div className={styles.detailsPanel}>
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>

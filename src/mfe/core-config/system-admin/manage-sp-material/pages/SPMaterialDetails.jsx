@@ -20,15 +20,15 @@ export const SPMaterialDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
-      { label: 'therapyNumber', value: 'displayMaterialNumber' },
-      { label: 'therapy', value: 'materialDescription' },
-      { label: 'NDC', value: 'ndcNumber' },
-      { label: 'strength', value: 'strength' },
-      { label: 'dosage', value: 'dosage' },
-      { label: 'sellingUnitCode', value: 'sellingUnitCode' },
-      { label: 'manufacturer', value: 'manufacturerName' },
-      { label: 'dropshipIndicator', value: 'dropshipIndicator' },
-      { label: 'baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
+      { label: 'labels.therapyId', value: 'displayMaterialNumber' },
+      { label: 'labels.tradeName', value: 'tradeName' },
+      { label: 'labels.therapyDescription', value: 'materialDescription' },
+      { label: 'labels.genericName', value: 'genericName' },
+      { label: 'labels.therapy.ndc', value: 'ndcNumber' },
+      { label: 'labels.manufacturer', value: 'manufacturerName' },
+      { label: 'labels.therapy.Formulation', value: 'Formulation' },
+      { label: 'labels.therapy.dosage', value: 'dosage' },
+      { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
   }
 ];
@@ -37,10 +37,10 @@ export const SPCatalogDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
-      { label: 'id', value: 'sapMaterial' },
-      { label: 'productName', value: 'materialDescriptionInLanguageEn' },
-      { label: 'siteName', value: 'siteName' },
-      { label: 'NDC', value: 'ndc' }
+      { label: 'manageSPMaterial.drawer.details.body.id', value: 'sapMaterial' },
+      { label: 'manageSPMaterial.drawer.details.body.productName', value: 'materialDescriptionInLanguageEn' },
+      { label: 'manageSPMaterial.drawer.details.body.siteName', value: 'siteName' },
+      { label: 'manageSPMaterial.drawer.details.body.NDC', value: 'ndc' }
     ]
   }
 ];
@@ -239,13 +239,15 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               value = (isSPCatalog ? data?.siteName : data?.[dataSource]?.siteName) || '-';
             } else if (isCrosswalk && (subItem.value === 'dropshipIndicator' || subItem.value === 'sellingUnitCode')) {
               value = 'NA';
+            } else if (subItem.value === 'dosage') {
+              value = `${data.therapy.strength || ''} ${data.therapy.dosage || ''}`.trim();
             } else {
               const __value = data?.[dataSource]?.[subItem.value];
               value = data?.[dataSource]?.[subItem.value] ?? (isCrosswalk ? '-' : 'NA');
             }
             return (
               <div className="details-li" key={subIndex}>
-                <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${subItem.label}`)}</div>
+                <div className="details-key">{t(`${subItem.label}`)}</div>
                 <div className="details-value">{value}</div>
               </div>
             );
