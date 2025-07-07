@@ -14,6 +14,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import { PREVIEW_URL } from '../../manage-questionnaire/constants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import CommonUtils from '@src/util/CommonUtils';
+import { SPMaterialConfigConstants } from '../../manage-material/assets/constants/MaterialConstants';
 
 export const SPMaterialDetailsConstants = [
   {
@@ -28,33 +29,6 @@ export const SPMaterialDetailsConstants = [
       { label: 'manufacturer', value: 'manufacturerName' },
       { label: 'dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
-    ]
-  }
-];
-
-export const SPMaterialConfigConstants = [
-  {
-    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
-    actions: [
-      {
-        label: 'manageMaterial.drawer.details.configuration.actions.delete',
-        id: 'delete-materialConfig',
-        icon: 'delete'
-      }
-    ],
-    sectionData: [
-      {
-        label: 'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired',
-        value: 'isPatientIdentifierRequired'
-      },
-      {
-        label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
-        value: 'isCoiIdRequired'
-      },
-      {
-        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
-        value: 'isMRNRequired'
-      }
     ]
   }
 ];

@@ -12,7 +12,7 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
-import { ConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { ConfigConstants, SPMaterialConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import AuthUtils from '@src/util/AuthUtils';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { renderModal } from '@src/util/ModalUtil';
@@ -41,9 +41,10 @@ function TherapyDetailsWithTabs({
   isMaterialListing = false
 }) {
   const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
+  const isSPMaterial = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const { t } = useTranslate();
-
   const hasDeleteConfigAccess = !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive();
+
   const [therapyTabs, setTherapyTabs] = useState(() => {
     if (!therapyId) return [];
 
@@ -65,7 +66,8 @@ function TherapyDetailsWithTabs({
   const [configureDetails, setConfigureDetails] = useState(null);
   const [questionnaires, setQuestionnaires] = useState(null);
   const [alert, setAlert] = React.useState(null);
-
+  const configData = isSPMaterial ? therapyDetails?.spTherapyConfig : therapyDetails?.materialConfig;
+  const configConstants = isSPMaterial ? SPMaterialConfigConstants : ConfigConstants;
   const {
     data: details,
     isLoading,
@@ -231,7 +233,7 @@ function TherapyDetailsWithTabs({
       return <ConfigItem key={label} label={translation ? t(label) : label} value={displayValue || '-'} display={display} />;
     });
 
-  const onDeleteConfig = async (actionId) => {
+  const onDeleteConfig = async (actionId, isSPMaterial) => {
     if (actionId === 'delete-materialConfig') {
       renderModal({
         title: t('messages.header.confirmation'),
@@ -248,7 +250,11 @@ function TherapyDetailsWithTabs({
             label: t('label.yes'),
             action: async () => {
               try {
-                await MaterialService.deleteMaterialConfig(therapyDetails.materialConfig.ndcNumber);
+                if (isSPMaterial) {
+                  await MaterialService.deleteSPMaterialConfig(therapyDetails.spTherapyConfig.spProductId);
+                } else {
+                  await MaterialService.deleteMaterialConfig(therapyDetails.materialConfig.ndcNumber);
+                }
                 setAlert({
                   type: 'success',
                   description: t('manageMaterial.drawer.controls.apply.success'),
@@ -322,20 +328,21 @@ function TherapyDetailsWithTabs({
             )}
             <div className={styles.detailsPanel}>
               <div className={`${styles.drawerBodyContent} ${styles.bodyPadding} ${styles.cardToggleWrapper}`}>
-                {ConfigConstants?.map((section, index) => (
+                {configConstants?.map((section, index) => (
                   <React.Fragment key={section.sectionHeading}>
                     {!section.questionnaire ? (
-                      therapyDetails?.materialConfig ? (
+                      configData ? (
                         <div key={section.sectionHeading}>
                           <div className={styles.configurationHeader}>
                             <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
                             <div className={styles.actions}>
                               {section.actions?.map(
-                                (action) => hasDeleteConfigAccess && <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                                (action) =>
+                                  hasDeleteConfigAccess && <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id, isSPMaterial)} />
                               )}
                             </div>
                           </div>
-                          <div>{renderConfiguration(section.sectionData, therapyDetails.materialConfig)}</div>
+                          <div>{renderConfiguration(section.sectionData, configData)}</div>
                         </div>
                       ) : null
                     ) : therapyDetails?.questionnaires?.length > 0 ? (
