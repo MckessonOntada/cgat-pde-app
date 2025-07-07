@@ -402,10 +402,7 @@ function AdditionalDetails() {
         setFieldValue(`${fieldName}.document`, document);
       },
       onError: (error) => {
-        const statusCode = error?.response?.status;
-        let description = t('error.default');
-        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
+        const description = CommonUtils.getUploadErrorMessage(error, t);
         setAlert({
           description,
           type: 'error'

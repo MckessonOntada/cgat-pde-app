@@ -15,6 +15,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import { handleApiError } from '@src/util/ApiUtils';
 import ModuleHeader from '@src/components/module-header';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
@@ -68,7 +69,7 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
-    const errorKey = handleApiError(error);
+    const description = CommonUtils.getUploadErrorMessage(error);
     setAlert({
       type: 'error',
       description: t(errorKey)
