@@ -705,6 +705,21 @@ function getDOBMaxDate() {
   return maxDOB;
 }
 
+function getUploadErrorMessage(error, t) {
+  const { response: errorResponse = {} } = error;
+  const status = errorResponse.status;
+  const message = errorResponse.data?.message;
+  const errorCodes = errorResponse.data?.errorCodes;
+
+  if (status === 419 && Array.isArray(errorCodes) && errorCodes.length > 0) {
+    return t(errorCodes[0]);
+  } else if (message) {
+    return message;
+  } else {
+    return t('error.default');
+  }
+}
+
 function getFileNameAndType(url) {
   if (url instanceof File) {
     return {
@@ -785,6 +800,7 @@ const CommonUtils = Object.freeze({
   isEmptyArray,
   checkIsDataFiltered,
   getDOBMaxDate,
+  getUploadErrorMessage,
   getFileNameAndType,
   removeLeadingZeros
 });

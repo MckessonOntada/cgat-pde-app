@@ -7,7 +7,6 @@ import UploadFile from '@src/components/uploadFile/UploadFile';
 import { handleDownload, validateFile } from '@src/components/uploadFile/uploadUtils';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { downloadFile } from '@src/util/CommonUtils';
-import { errorStatusCodes } from '@src/util/ApiUtils';
 import ContextMenu from '@src/mfe/core-config/system-admin/manage-sp-catalog/pages/context-menu';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
@@ -18,7 +17,7 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 const Upload = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
-  const [notification, setNotification] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -51,10 +50,10 @@ const Upload = () => {
   };
 
   const handleOnUpload = (values) => {
-    setNotification(null);
+    setAlert(null);
     const { file } = values;
     if (!file) {
-      setNotification({
+      setAlert({
         type: 'error',
         description: t('providers.errorMessage.fileUploadRequired')
       });
@@ -67,7 +66,7 @@ const Upload = () => {
     ProviderService.uploadProvider(formData)
       .then((response) => {
         if (response.status == 200) {
-          setNotification({
+          setAlert({
             type: 'success',
             description: t('providers.message.fileUploadSuccess')
           });
@@ -78,7 +77,7 @@ const Upload = () => {
             });
             downloadFile(blob, 'SP_Providers_Log.csv');
           };
-          setNotification({
+          setAlert({
             type: 'info',
             description: (
               <div className="alert-controls">
@@ -95,10 +94,11 @@ const Upload = () => {
         }
       })
       .catch((error) => {
-        const { response: errorResponse = {} } = error;
-        setNotification({
+        const description = CommonUtils.getUploadErrorMessage(error, t);
+
+        setAlert({
           type: 'error',
-          description: t('errors.default'),
+          description,
           isSticky: true
         });
       });
@@ -111,8 +111,8 @@ const Upload = () => {
         primaryHeading={t('controls.uploadProviders')}
         controlHeading={t('heading.uploadProviderListCSV')}
         isLoading={false}
-        messages={[notification]}
-        onCloseAlert={() => setNotification(null)}
+        messages={[alert]}
+        onCloseAlert={() => setAlert(null)}
         infoHeader={t('providers.upload-info')}
         customDownload={
           <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={downloadTemplate}>

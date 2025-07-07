@@ -8,7 +8,6 @@ import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import { handleDownload, validateFile } from '@src/components/uploadFile/uploadUtils';
 import { useNavigate } from 'react-router-dom';
 import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
-import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -20,12 +19,12 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 const Upload = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const [notification, setNotification] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
   const handleOnUpload = (values) => {
-    setNotification(null);
+    setAlert(null);
     const { file } = values;
     if (!file) {
-      setNotification({
+      setAlert({
         type: 'error',
         description: t('providers.errorMessage.fileUploadRequired')
       });
@@ -38,7 +37,7 @@ const Upload = () => {
     SPCrosswalkService.uploadSPCrosswalk(formData)
       .then((response) => {
         if (response.status == 200) {
-          setNotification({
+          setAlert({
             type: 'success',
             description: t('fileUpload.crosswalk.success')
           });
@@ -49,7 +48,7 @@ const Upload = () => {
             });
             downloadFile(blob, 'SP_Crosswalk_Upload_Log');
           };
-          setNotification({
+          setAlert({
             type: 'info',
             description: (
               <div className="alert-controls">
@@ -66,11 +65,11 @@ const Upload = () => {
         }
       })
       .catch((error) => {
-        const { response: errorResponse = {} } = error;
-        console.log('error', error);
-        setNotification({
+        const description = CommonUtils.getUploadErrorMessage(error, t);
+
+        setAlert({
           type: 'error',
-          description: t('errors.default'),
+          description,
           isSticky: true
         });
       });
@@ -120,7 +119,7 @@ const Upload = () => {
         controlHeading={t('heading.uploadMaterialCrosswalkListCSV')}
         infoHeader={t('label.uploadCrosswalk.info')}
         isLoading={false}
-        messages={[notification]}
+        messages={[alert]}
         customDownload={
           <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={handleOnDownload}>
             <Button size="md" variant={'secondary'} className="context-menu__button">
@@ -128,7 +127,7 @@ const Upload = () => {
             </Button>
           </ContextMenu>
         }
-        onCloseAlert={() => setNotification(null)}
+        onCloseAlert={() => setAlert(null)}
         upload={{
           caption: t('controls.uploadMaterialCrosswalk'),
           fn: handleOnUpload
