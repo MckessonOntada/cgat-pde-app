@@ -38,6 +38,7 @@ export const getProviderSchema = (t) =>
 
     deaNumber: yup
       .string()
+      .nullable()
       .max(9, t('provider.dea.max'))
       .matches(/^[A-Za-z0-9]+$/, t('provider.dea.alphaNum'))
       .matches(deaRegex, t('provider.dea.format'))
