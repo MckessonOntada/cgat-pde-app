@@ -469,11 +469,12 @@ const jsxColumns = () => [
     selector: 'orderCost',
     minWidth: '120px',
     cell: function (props) {
-      const { paporder, therapy, orderCost } = props;
-      let displayOrderCost = '';
-      if (therapy.channelType === CHANNEL_TYPE.BUY_AND_BILL && paporder === true) {
+      const { paporder, therapy, tradeDetails, orderCost } = props;
+      let displayOrderCost = '',
+        channelType = therapy?.channelType || tradeDetails?.channelType;
+      if (channelType === CHANNEL_TYPE.BUY_AND_BILL && paporder === true) {
         displayOrderCost = 0;
-      } else if (therapy.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         displayOrderCost = orderCost;
       }
       return (
