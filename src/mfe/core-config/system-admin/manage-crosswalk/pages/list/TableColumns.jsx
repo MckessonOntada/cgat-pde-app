@@ -6,7 +6,6 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_NDC: 'BUY_AND_BILL_NDC',
