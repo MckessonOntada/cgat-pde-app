@@ -6,14 +6,13 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_NDC: 'BUY_AND_BILL_NDC',
   THERAPY: 'THERAPY',
-  SP_PRODUCT_ID: 'SP_PRODUCT_ID',
-  SP_PRODUCT_NAME: 'SP_PRODUCT_NAME',
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
+  SP_PRODUCT_NAME: 'SP_PRODUCT_NAME',
+  DOSAGE: 'DOSAGE',
   ACTION: 'ACTION'
 };
 export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial, confirmationUnlink }) => {
@@ -51,8 +50,8 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       cell: (props) => <EclipsesTextcss str={props?.tradeName || '-'} />
     },
     {
-      id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
-      name: t('column.material.crosswalk.spProductID'),
+      id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
+      name: t('column.material.crosswalk.spNDC'),
       minWidth: '160px',
       cell: (props) => {
         if (props?.spProductId) {
@@ -64,7 +63,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
                 setViewSPMaterial(props);
                 setOpenSPMaterialDetails(true);
               }}>
-              <EclipsesTextcss str={props?.spProductId} maxWidth={150} />
+              <EclipsesTextcss str={props?.spNdc || '-'} maxWidth={150} />
             </Link>
           );
         } else {
@@ -81,10 +80,10 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       cell: (props) => <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
     },
     {
-      id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
-      name: t('column.material.crosswalk.spNDC'),
+      id: MATERIAL_CROSSWALK_COLUMNS.DOSAGE,
+      name: t('column.material.crosswalk.dosage'),
       minWidth: '90px',
-      cell: (props) => <EclipsesTextcss str={props?.spNdc || '-'} />
+      cell: (props) => <EclipsesTextcss str={props?.dosage?.trim() || '-'} />
     },
 
     {

@@ -152,8 +152,8 @@ export const ConfigurationMessagesES = {
   'label.backToMaterialCrosswalk': 'S_Back to Material Crosswalk',
   'label.createCrosswalk': 'S_Create Crosswalk',
   'label.createCrosswalkSubtitle': 'S_Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
-  'label.materialListing': 'S_Material Listing',
-  'label.spProductListing': 'S_SP Product Listing',
+  'label.materialListing': 'S_SAP Therapy Listing',
+  'label.spProductListing': 'S_SP Therapy Listing',
 
   'provider.btnUnlink': 'S_Unlink',
   'label.spCatalogDataGrid': 'S_SP Catalog',

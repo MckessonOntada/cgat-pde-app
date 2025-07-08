@@ -154,10 +154,10 @@ export const ConfigurationMessagesEN = {
   'label.backToMaterialCrosswalk': 'Back to Material Crosswalk',
   'label.createCrosswalk': 'Create Crosswalk',
   'label.createCrosswalkSubtitle': 'Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
-  'label.materialListing': 'Material Listing',
-  'label.spProductListing': 'SP Product Listing',
-  'captions.emptyTableTitle.material-crosswalk': 'No Matrrial found',
-  'captions.emptyTableSubtitle.material-crosswalk': 'You need to add Matrrial to see data in this table',
+  'label.materialListing': 'SAP Therapy Listing',
+  'label.spProductListing': 'SP Therapy Listing',
+  'captions.emptyTableTitle.material-crosswalk': 'No Material found',
+  'captions.emptyTableSubtitle.material-crosswalk': 'You need to add Material to see data in this table',
   'captions.emptyTableTitle.product-crosswalk': 'No Product found',
   'captions.emptyTableSubtitle.product-crosswalk': 'You need to add Product to see data in this table',
 
@@ -201,7 +201,7 @@ export const ConfigurationMessagesEN = {
   'crosswalk.submitConfirmationMessage': 'Are you sure you want to submit?',
   'crosswalk.label.summary': 'Summary',
   'crosswalk.btnLinkMaterials': 'Link Materials',
-  'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
+  'crosswalk.product.searchPlaceholder': 'Search by SP Therapy, SP NDC',
   'crosswalk.product.searchProductTooltip': 'Search Products',
   'crosswalk.create.noSelectionError': 'Invalid selection. Please make sure you have selected material and product.',
 

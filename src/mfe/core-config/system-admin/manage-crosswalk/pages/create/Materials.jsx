@@ -118,7 +118,7 @@ const Materials = ({ onSelect, material }) => {
         }
       },
       {
-        name: t('labels.therapy'),
+        name: t('column.material.crosswalk.Therapy'),
         id: 'materialDescription',
         selector: (row) => row.materialDescription,
         wrap: true,
@@ -141,7 +141,7 @@ const Materials = ({ onSelect, material }) => {
         }
       },
       {
-        name: t('labels.ndc'),
+        name: t('column.material.crosswalk.buyBillNDC'),
         id: 'ndcNumber',
         selector: (row) => row.ndcNumber,
         wrap: true,
@@ -175,7 +175,7 @@ const Materials = ({ onSelect, material }) => {
             <InputField
               value={materialQuery}
               errors={{}}
-              placeholder={'Search by Description, NDC'}
+              placeholder={t('label.crosswalk.material.placeholder')}
               id="material-search-field"
               name="materialQuery"
               onBlurFn={() => {}}

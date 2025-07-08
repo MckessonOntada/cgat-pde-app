@@ -1,0 +1,53 @@
+SP Product Master Upload - Instructions
+=======================================
+
+This guide provides instructions for filling out the SP Product Master Upload template.
+
+All fields listed below are MANDATORY. Ensure every field is correctly filled for each row to avoid upload errors.
+
+LEGEND:
+- M = Mandatory (must be filled)
+- Numeric = Only numbers allowed
+- Alphanumeric = Letters and numbers
+- Value Set = Only specific allowed values
+
+--------------------------------------------------
+FIELD-BY-FIELD INSTRUCTIONS
+--------------------------------------------------
+
+1. SAP NDC (M)
+   - Type: Numeric | Max Length: 11
+   - National Drug Code from SAP
+   - Example: 12345678901
+
+2. SP Product ID (M)
+   - Type: Alphanumeric | Max Length: 50
+   - Unique identifier for the specialty product
+   - Example: SP-00123 or HUM40MG01
+
+3. SP NDC (M)
+   - Type: Numeric | Max Length: 11
+   - National Drug Code assigned to the SP product
+   - Example: 98765432109
+
+4. Status (M)
+   - Type: Text (Value Set) | Max Length: 6
+   - Allowed Values (case-sensitive):
+     - Active
+     - Inactive
+
+--------------------------------------------------
+✅ SAMPLE ROW:
+
+| SAP NDC     | SP Product ID | SP NDC     | Status  |
+|-------------|---------------|------------|---------|
+| 12345678901 | SP-00123      | 98765432109| Active  |
+
+--------------------------------------------------
+NOTES:
+- Do NOT rename or remove any column headers from the template.
+- All four fields are mandatory; blank or invalid values will cause row-level upload errors.
+- The "Status" field must match exactly: "Active" or "Inactive".
+- Numeric fields should not contain spaces, dashes, or non-numeric characters.
+
+For assistance, contact your system administrator or product support team.
