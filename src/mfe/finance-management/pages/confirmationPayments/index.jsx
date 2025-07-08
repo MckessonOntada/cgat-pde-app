@@ -52,15 +52,18 @@ function ConfirmationPayments() {
       }
     }
   });
-
   const confirmationData = {
     ...(!paymentFailed ? { [t('paymentInvoices.reviewPayments.mckessonId')]: location.state?.confirmationNumber } : {}),
     [t('paymentInvoices.reviewPayments.paymentInitiatedDate')]: dayjs().format('MM/DD/YYYY'),
     [t('paymentInvoices.reviewPayments.paymentType')]: location.state?.paymentOption,
     [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
     [t('paymentInvoices.Details.Account')]: `${selectedAccount?.accountNumber} - ${GeographicUtils.addressAggregator(selectedAccount)}`,
-    [t('paymentInvoices.reviewPayments.paymentMethod')]: `${location.state?.selectedPayment?.accountNumber?.slice(-4)} - ${
-      location.state?.selectedPayment?.userDefinedName || location.state?.selectedPayment?.name
+    [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
+      location.state?.selectedData
+        ? `${selectedData.number?.slice(-4) || location.state?.selectedData.accountNumber?.slice(-4)} - ${
+            location.state?.selectedData.userDefinedName || location.state?.selectedData.name
+          }`
+        : 'NA'
     }`
   };
 

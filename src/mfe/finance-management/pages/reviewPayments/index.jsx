@@ -396,6 +396,7 @@ function ReviewPayments() {
     setDisableCreditSelection(shouldDisable);
     if (shouldDisable) {
       setSelectedData(null);
+      setPaymentOption('Pay Today');
     }
   }, [creditsSum, paymentAmountSum, totalCreditsAmount]);
 
@@ -441,8 +442,10 @@ function ReviewPayments() {
               data={{
                 [t('paymentInvoices.reviewPayments.scheduleOption')]: state.paymentOption,
                 [t('paymentInvoices.reviewPayments.netAmount')]: FinanceUtils.formatCurrency(totalAmount),
-                [t('paymentInvoices.reviewPayments.paymentMethod')]: `${selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)} - ${
-                  selectedData?.userDefinedName || selectedData?.name
+                [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
+                  selectedData
+                    ? `${selectedData.number?.slice(-4) || selectedData.accountNumber?.slice(-4)} - ${selectedData.userDefinedName || selectedData.name}`
+                    : 'NA'
                 }`
               }}
             />
