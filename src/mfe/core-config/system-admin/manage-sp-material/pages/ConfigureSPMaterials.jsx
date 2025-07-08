@@ -12,9 +12,9 @@ import { useSPMaterial } from '../context/SPMaterialContext';
 function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
-    patientIdentifierRequired: 'yes',
-    coiIdRequired: 'yes',
-    mrnRequired: 'yes'
+    patientIdentifierRequired: '',
+    coiIdRequired: '',
+    mrnRequired: ''
   });
   const [error, setError] = useState(false);
 
