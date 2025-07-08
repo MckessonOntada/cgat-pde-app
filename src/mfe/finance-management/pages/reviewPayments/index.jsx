@@ -395,7 +395,6 @@ function ReviewPayments() {
     const shouldDisable = parseFloat(creditsSum) >= parseFloat(paymentAmountSum);
     setDisableCreditSelection(shouldDisable);
     if (shouldDisable) {
-      console.log(shouldDisable);
       setSelectedData(null);
     }
   }, [creditsSum, paymentAmountSum, totalCreditsAmount]);
