@@ -394,6 +394,9 @@ function ReviewPayments() {
     setRemainingAmount(FinanceUtils.formatCurrency(remaining).slice(1));
     const shouldDisable = parseFloat(creditsSum) >= parseFloat(paymentAmountSum);
     setDisableCreditSelection(shouldDisable);
+    if (shouldDisable) {
+      setSelectedData(null);
+    }
   }, [creditsSum, paymentAmountSum, totalCreditsAmount]);
 
   if (isLoading) {
@@ -511,6 +514,7 @@ function ReviewPayments() {
               <div>
                 <div className="paymentMethodContainer">
                   <MultiSelectDropdown
+                    key={disableCreditSelection}
                     id={'select-payment-search'}
                     label={t('paymentInvoices.reviewPayments.selectMethod')}
                     isMultiSelect={false}
