@@ -1,62 +1,53 @@
-Material Crosswalk Upload Template - Instructions
-================================================
-Material Crosswalk Upload template.
+SP Product Master Upload - Instructions
+=======================================
+
+This guide provides instructions for filling out the SP Product Master Upload template.
+
+All fields listed below are MANDATORY. Ensure every field is correctly filled for each row to avoid upload errors.
 
 LEGEND:
-- M = Mandatory
-- O = Optional
-- Text = Letters and symbols allowed
+- M = Mandatory (must be filled)
+- Numeric = Only numbers allowed
 - Alphanumeric = Letters and numbers
-- Numeric = Numbers only
-- Value Set = Limited to specific allowed values
+- Value Set = Only specific allowed values
 
 --------------------------------------------------
 FIELD-BY-FIELD INSTRUCTIONS
 --------------------------------------------------
 
-1. SAP Material ID (M)
-   - Type: Alphanumeric | Max Length: 50
-   - Example: MAT-456789
-
-2. SAP Material Description (O)
-   - Type: Text | Max Length: 100
-   - Description of the material
-
-3. SAP NDC (O)
+1. SAP NDC (M)
    - Type: Numeric | Max Length: 11
+   - National Drug Code from SAP
    - Example: 12345678901
 
-4. SP Product ID (M)
+2. SP Product ID (M)
    - Type: Alphanumeric | Max Length: 50
-   - Unique identifier for the SP product
-   - Example: SP-00123
+   - Unique identifier for the specialty product
+   - Example: SP-00123 or HUM40MG01
 
-5. SP Product Name (O)
-   - Type: Text | Max Length: 100
-   - Example: Humira 40mg Injection
-
-6. SP NDC (O)
+3. SP NDC (M)
    - Type: Numeric | Max Length: 11
+   - National Drug Code assigned to the SP product
    - Example: 98765432109
 
-7. Status (M)
+4. Status (M)
    - Type: Text (Value Set) | Max Length: 6
-   - Allowed Values:
+   - Allowed Values (case-sensitive):
      - Active
      - Inactive
 
 --------------------------------------------------
 ✅ SAMPLE ROW:
 
-| SAP Material ID | SAP Material Description | SAP NDC     | SP Product ID | SP Product Name | SP NDC     | Status  |
-|-----------------|---------------------------|-------------|----------------|------------------|------------|---------|
-| MAT-456789      | Auto Injector             | 12345678901 | SP-00123       | Humira           | 98765432109| Active  |
+| SAP NDC     | SP Product ID | SP NDC     | Status  |
+|-------------|---------------|------------|---------|
+| 12345678901 | SP-00123      | 98765432109| Active  |
 
 --------------------------------------------------
 NOTES:
-- All fields marked (M) must be filled in for a valid upload.
-- Status must be either **Active** or **Inactive** (case-sensitive).
-- Do not rename or delete template column headers.
-- Ensure numeric fields do not contain spaces or special characters.
+- Do NOT rename or remove any column headers from the template.
+- All four fields are mandatory; blank or invalid values will cause row-level upload errors.
+- The "Status" field must match exactly: "Active" or "Inactive".
+- Numeric fields should not contain spaces, dashes, or non-numeric characters.
 
-For support, contact your system administrator.
+For assistance, contact your system administrator or product support team.
