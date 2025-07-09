@@ -60,7 +60,7 @@ function ConfirmationPayments() {
     [t('paymentInvoices.Details.Account')]: `${selectedAccount?.accountNumber} - ${GeographicUtils.addressAggregator(selectedAccount)}`,
     [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
       location.state?.selectedData
-        ? `${selectedData.number?.slice(-4) || location.state?.selectedData.accountNumber?.slice(-4)} - ${
+        ? `${location.state?.selectedData.number?.slice(-4) || location.state?.selectedData.accountNumber?.slice(-4)} - ${
             location.state?.selectedData.userDefinedName || location.state?.selectedData.name
           }`
         : 'NA'
