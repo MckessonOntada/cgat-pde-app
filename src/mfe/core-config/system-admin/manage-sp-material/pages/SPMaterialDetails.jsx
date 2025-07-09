@@ -26,7 +26,7 @@ export const SPMaterialDetailsConstants = [
       { label: 'labels.genericName', value: 'genericName' },
       { label: 'labels.therapy.ndc', value: 'ndcNumber' },
       { label: 'labels.manufacturer', value: 'manufacturerName' },
-      { label: 'labels.therapy.Formulation', value: 'Formulation' },
+      // { label: 'labels.therapy.Formulation', value: 'Formulation' },
       { label: 'labels.therapy.dosage', value: 'dosage' },
       { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
@@ -241,6 +241,8 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               value = 'NA';
             } else if (subItem.value === 'dosage') {
               value = `${data.therapy.strength || ''} ${data.therapy.dosage || ''}`.trim();
+            } else if (subItem.value === 'genericName') {
+              value = data.therapy.genericName ? data.therapy.genericName.toUpperCase() : '-';
             } else {
               const __value = data?.[dataSource]?.[subItem.value];
               value = data?.[dataSource]?.[subItem.value] ?? (isCrosswalk ? '-' : 'NA');
