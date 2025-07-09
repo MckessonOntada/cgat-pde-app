@@ -7,6 +7,7 @@ import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
 import { CHANNEL_TYPE } from '../pages/create/form-segments/Constants';
 import { useLocation, useNavigate } from 'react-router-dom';
+import CommonUtils from '@src/util/CommonUtils';
 
 const OrderContext = React.createContext();
 
@@ -129,6 +130,12 @@ export const OrderProvider = ({ children }) => {
         totalElements,
         totalPages
       });
+    },
+    select: (result) => {
+      result.content = CommonUtils.isNonEmptyArray(result.content)
+        ? result.content.filter((i) => CommonUtils.isNonEmptyObject(i.therapy) || CommonUtils.isNonEmptyObject(i.tradeDetails))
+        : result.content;
+      return result;
     },
     onError: console.log,
     enabled: Boolean(config.pageNo) && Boolean(config.tab) && Number.isInteger(config.pageNo)

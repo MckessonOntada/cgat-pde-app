@@ -6,7 +6,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import UploadFile from '@src/components/uploadFile/UploadFile';
 import { handleDownload, validateFile } from '@src/components/uploadFile/uploadUtils';
 import ProviderService from '@src/api/commonService/ProviderService';
-import { downloadFile } from '@src/util/CommonUtils';
+import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 import ContextMenu from '@src/mfe/core-config/system-admin/manage-sp-catalog/pages/context-menu';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {

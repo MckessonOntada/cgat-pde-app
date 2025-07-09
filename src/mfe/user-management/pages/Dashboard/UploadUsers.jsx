@@ -24,7 +24,6 @@ function UploadUsers() {
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
 
-  const showAlert = createAlertHandler(setAlert);
   const downloadTemplate = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
@@ -51,31 +50,31 @@ function UploadUsers() {
     {
       onSuccess: async (response) => {
         if (response.status === 200) {
-          showAlert('success', t('userManagement.button.uploadSuccess'));
+          setAlert({ type: 'success', description: t('userManagement.button.uploadSuccess') });
         } else if (response.status === 206) {
           const csvContent = response.data;
           const blob = new Blob([csvContent], { type: 'text/csv' });
           const download = CommonUtils.downloadFile(blob, 'bulk users.csv');
           if (download.status === 'success') {
-            showAlert('error', t('userManagement.button.uploadConflict'));
+            setAlert({ type: 'error', description: t('userManagement.button.uploadConflict') });
           } else {
-            showAlert('error', t('userManagement.button.downloadFail'));
+            setAlert({ type: 'error', description: t('userManagement.button.downloadFail') });
           }
         } else {
-          showAlert('error', t('errors.default'));
+          setAlert({ type: 'error', description: t('errors.default') });
         }
         refreshData();
       },
-      onError: () => {
+      onError: (error) => {
         const description = CommonUtils.getUploadErrorMessage(error, t);
-        showAlert('error', description);
+        setAlert({ type: 'error', description });
       }
     }
   );
 
   const handleUpload = (values) => {
     if (!values.file) {
-      showAlert('error', t('userManagement.button.uploadError'));
+      setAlert({ type: 'error', description: t('userManagement.button.uploadError') });
       return;
     }
     const url = `${ApiRoutes.USERS()}/upload?userType=GENERAL`;
@@ -93,7 +92,6 @@ function UploadUsers() {
       <UploadFile
         primaryHeading={t('userManagement.uploadUsers')}
         controlHeading={t('userManagement.uploadUsersListCSV')}
-        isLoading={isLoading}
         messages={[alert]}
         onCloseAlert={handleAlertClose}
         infoHeader={t('userManagement.upload-info')}

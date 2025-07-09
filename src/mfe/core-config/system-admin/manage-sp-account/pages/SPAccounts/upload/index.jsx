@@ -4,7 +4,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import UploadFile from '@src/components/uploadFile/UploadFile';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { handleDownload, validateFile } from '@src/components/uploadFile/uploadUtils';
-import { downloadFile } from '@src/util/CommonUtils';
+import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { errorStatusCodes } from '@src/util/ApiUtils';
 import ContextMenu from '@src/mfe/core-config/system-admin/manage-sp-catalog/pages/context-menu';
