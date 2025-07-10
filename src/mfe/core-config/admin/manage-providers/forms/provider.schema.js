@@ -89,3 +89,22 @@ export const getProviderSchema = (t) =>
 
     fax: yup.string().matches(faxRegex, t('provider.fax.format'))
   });
+
+export const INITIAL_VALUES_FOR_PROVIDER = {
+  firstName: '',
+  middleName: '',
+  lastName: '',
+  deaNumber: '',
+  npiNumber: '',
+  tinNumber: '',
+  medicaidNumber: '',
+  licenseState: '',
+  address1: '',
+  address2: '',
+  city: '',
+  zip: '',
+  state: '',
+  email: '',
+  phoneNumber: '',
+  fax: ''
+};

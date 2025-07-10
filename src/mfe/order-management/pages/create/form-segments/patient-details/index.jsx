@@ -25,6 +25,10 @@ import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
+import ProviderAddUpdateForm from './ProviderForm';
+import ReactDOM from 'react-dom';
+import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
+import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -38,7 +42,6 @@ const PatientDetails = () => {
   const { isEdit = false, isApprover = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
 
   React.useEffect(() => {
@@ -54,6 +57,15 @@ const PatientDetails = () => {
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
+  const [showAddProviderForm, setShowAddProviderForm] = React.useState(false);
+  const [portalTarget, setPortalTarget] = useState(null);
+
+  useEffect(() => {
+    if (showAddProviderForm) {
+      const providerForm = document.getElementById('provider-form-portal');
+      if (providerForm) setPortalTarget(providerForm);
+    }
+  }, [showAddProviderForm]);
 
   const spTherapyConfig = {
     isCoiIdRequired: false,
@@ -241,9 +253,10 @@ const PatientDetails = () => {
       });
     }
   };
-
+  const [providerList, setProviderList] = React.useState(null);
   const [provider, setProvider] = React.useState(null);
   const [providerQuery, setProviderQuery] = React.useState('');
+  const [recentlyAddedProvider, setRecentlyAddedProvider] = React.useState(null);
 
   const {
     providers,
@@ -254,10 +267,38 @@ const PatientDetails = () => {
     query: providerQuery
   });
 
+  React.useEffect(() => {
+    setProviderList(providers);
+  }, [providers]);
+
   const handleOnSelection = (value, setFieldValue) => {
-    let provider = providers.find((item) => item.id === value);
-    setProvider(provider);
+    let provider = providerList.find((item) => item.id === value);
+
+    if (recentlyAddedProvider?.id === value) {
+      setProvider(recentlyAddedProvider);
+    } else {
+      if (provider) {
+        setProvider(provider);
+      }
+    }
     setFieldValue('providerId', value);
+    setShowAddProviderForm(false);
+  };
+
+  const handleProviderSaved = (newProvider, setFieldValue) => {
+    const { name, address } = newProvider;
+    const formattedProvider = {
+      ...newProvider,
+      fullname: CommonUtils.getFullName(name),
+      detailedAddress: CommonUtils.getDetailedAddress(address),
+      isNewlyAdded: true
+    };
+
+    setProviderList((prev) => [...prev, formattedProvider]);
+    setProvider(formattedProvider);
+    setRecentlyAddedProvider(formattedProvider);
+    setFieldValue('providerId', formattedProvider.id);
+    setShowAddProviderForm(false);
   };
 
   return (
@@ -365,7 +406,7 @@ const PatientDetails = () => {
                                 isMultiSelect={false}
                                 placeholder={'Select Provider'}
                                 onChange={(value) => handleOnSelection(value, setFieldValue)}
-                                options={providers.map((item) => ({
+                                options={(Array.isArray(providerList) ? providerList : []).map((item) => ({
                                   label: item.fullname,
                                   labelDescription: item.detailedAddress,
                                   value: item.id
@@ -382,9 +423,29 @@ const PatientDetails = () => {
                               />
                               {provider && (
                                 <div className="details-card">
-                                  <Heading className="details-title" as="h3">
-                                    {provider.fullname}
-                                  </Heading>
+                                  <ModuleHeader
+                                    heading={
+                                      <Heading className="details-title" as="h3">
+                                        {provider.fullname}
+                                      </Heading>
+                                    }
+                                    controls={
+                                      provider.isNewlyAdded && (
+                                        <span>
+                                          <Button
+                                            Icon={EditPencil}
+                                            variant="tertiary"
+                                            className="button-icon"
+                                            size="md"
+                                            type="button"
+                                            onClick={() => setShowAddProviderForm(true)}>
+                                            {t('userManagement.button.edit')}
+                                          </Button>
+                                        </span>
+                                      )
+                                    }
+                                  />
+
                                   <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
                                     <Tooltip body={provider.detailedAddress}>
                                       <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
@@ -412,6 +473,37 @@ const PatientDetails = () => {
                                 </div>
                               )}
                             </div>
+
+                            <div className="styled-icon-button">
+                              {!showAddProviderForm && (
+                                <Button
+                                  Icon={PlusIcon}
+                                  variant="tertiary"
+                                  type="button"
+                                  onClick={() => {
+                                    setShowAddProviderForm(true);
+                                    setProvider(null);
+                                    setFieldValue('providerId', null);
+                                  }}
+                                  size="md">
+                                  {t('provider.btnAddProvider')}
+                                </Button>
+                              )}
+                              {showAddProviderForm && <div id="provider-form-portal" />}
+                              {showAddProviderForm &&
+                                portalTarget &&
+                                ReactDOM.createPortal(
+                                  <div className="inline-provider-form-wrapper">
+                                    <ProviderAddUpdateForm
+                                      setShowAddProviderForm={setShowAddProviderForm}
+                                      providerData={provider}
+                                      accountId={soldToAccountId}
+                                      onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
+                                    />
+                                  </div>,
+                                  portalTarget
+                                )}
+                            </div>
                           </div>
                         </React.Fragment>
                       )}
@@ -433,6 +525,7 @@ const PatientDetails = () => {
           }}
         </Formik>
       </div>
+
       <DiscardChangesModal
         heading={t('messages.confirmation.discardheader')}
         description={t('messages.confirmation.patient')}

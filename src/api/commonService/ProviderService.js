@@ -107,12 +107,13 @@ async function getProviderDetailsById(id) {
   return {};
 }
 
-async function addProvider(payload) {
+async function addProvider(payload, accountId = null) {
   if (!payload) {
     throw new Error('Payload is required to add provider.');
   }
-
-  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers`;
+  const url = accountId
+    ? `${ApiRoutes.ORGANIZATION_BASE()}providers?accountId=${accountId}`
+    : `${ApiRoutes.ORGANIZATION_BASE()}providers`;
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
