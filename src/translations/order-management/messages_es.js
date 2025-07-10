@@ -600,6 +600,7 @@ export const MessageEs = {
   'messages.insuranceCompanyNameCharLimit': 'S_Insurance Company name must not exceed 100 characters.',
   'messages.avoidSpecialCharsNumbers': 'S_Avoid using special characters or numbers.',
   'messages.enterMemberNumber': 'S_Please enter the Member Number.',
+  'messages.memberNumberRequired': 'Member number is required.',
   'messages.memberMax': 'S_Member Number should not exceed 50 digits.',
   'messages.onlyNumeric': 'S_Only numeric values are allowed. No spaces or special characters are permitted.',
   'messages.onlyNumericStrict': 'S_Only numeric values are allowed. No letters or special characters are allowed.',

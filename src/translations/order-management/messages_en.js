@@ -858,6 +858,7 @@ export const MessageEn = {
   'messages.enterRxBIN': 'Please enter the RX BIN.',
   'messages.rxBinMax': 'RX BIN must not exceed 30 characters.',
   'messages.memberNumberRequired': 'Member number is required.',
+  'messages.groupNumberRequired': 'Group number is required.',
   'messages.memberMax': 'Member Number should not exceed 50 digits.',
   'messages.onlyNumeric': 'Only numeric values are allowed. No spaces or special characters are permitted.',
   'messages.onlyNumericStrict': 'Only numeric values are allowed. No letters or special characters are allowed.',
