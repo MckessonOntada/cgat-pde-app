@@ -10,9 +10,9 @@ const getStates = () => {
   return options;
 };
 
-export const sections = [
+export const sections = ({ fromPage = 'provider' }) => [
   {
-    title: 'provider.providerDetails',
+    title: fromPage === 'provider' ? 'provider.providerDetails' : 'provider.basicDetails',
     isRequired: true,
     rows: [
       {

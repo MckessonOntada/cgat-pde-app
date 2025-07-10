@@ -5,32 +5,13 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
-import { getProviderSchema } from '../../forms/provider.schema';
+import { getProviderSchema, INITIAL_VALUES_FOR_PROVIDER } from '../../forms/provider.schema';
 import FormRenderer from '../../forms/FormRenderer';
 import { sections } from '../../forms/provider.config';
 import { useQuery } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import Alert from '@src/components/cgat-alert/Alert';
-
-const INITIAL_VALUES = {
-  firstName: '',
-  middleName: '',
-  lastName: '',
-  deaNumber: '',
-  npiNumber: '',
-  tinNumber: '',
-  medicaidNumber: '',
-  licenseState: '',
-  address1: '',
-  address2: '',
-  city: '',
-  zip: '',
-  state: '',
-  email: '',
-  phoneNumber: '',
-  fax: ''
-};
 
 const ProviderForm = (props) => {
   const { values, isEditOperation } = props;
@@ -40,7 +21,7 @@ const ProviderForm = (props) => {
   const [notification, setNotification] = React.useState(null);
 
   const { id } = useParams();
-  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
+  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES_FOR_PROVIDER);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -183,7 +164,7 @@ const ProviderForm = (props) => {
                         <SpinnerIcon />
                       </div>
                     ) : (
-                      <FormRenderer sections={sections} />
+                      <FormRenderer sections={sections({ fromPage: 'provider' })} />
                     )}
                   </div>
                   {(!isEditOperation || !isLoading) && (

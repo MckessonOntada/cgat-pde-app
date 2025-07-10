@@ -32,10 +32,28 @@
             row-gap: var(--spacing-01);
         }
     }
-    .controls{
+
+    .controls {
         display: flex;
         align-items: center;
         justify-content: flex-end;
         gap: var(--spacing-03)
     }
+}
+
+
+.providerForm {
+    padding: var(--spacing-03) 0px 0px 0px;
+}
+
+.providerControls {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-03);
+    flex-direction: row;
+    padding: var(--spacing-05) 0px 0px 0px;
+}
+
+.cancelbtnControl {
+    color: #db3a29 !important;
 }
