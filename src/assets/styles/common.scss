@@ -863,7 +863,7 @@ div.disable-all {
 
 //temp
 .template,
-.template-question,
+.template .section .question-list .question,
 .template-form {
   display: flex;
   flex-direction: column;
@@ -872,7 +872,7 @@ div.disable-all {
   gap: var(--spacing-04);
 }
 
-.template-question {
+.section .question-list .question {
   padding-bottom: var(--spacing-04);
   margin-bottom: var(--spacing-04);
   border-bottom: 1px solid var(--brand-color-patient-primary-3);

@@ -2,6 +2,7 @@ import React from 'react';
 import { LANGUAGE, QUESTION_TYPE } from './AddQuestionnaire';
 import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
+import { Heading } from '@mckesson/mcp-component-library';
 import CheckBox from '@src/components/form/CheckBox';
 import CommonUtils from '@src/util/CommonUtils';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -67,15 +68,16 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       attributes.caption = questionLabel;
       attributes.id = `radio-button-${id}-${differentiator}`;
       attributes.htmlFor = attributes.id;
+      attributes.direction = 'column';
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400', display: 'inline-block' };
-      attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
+      attributes.labelCustomStyles = { marginBottom: '0px', fontSize: '14px' };
     }
 
     if (type === QUESTION_TYPE.CHECKBOX) {
       wrapperClass.push('stacked-checkbox');
       attributes.shouldSplitField = true;
       attributes.id = `checkbox-${id}-${differentiator}`;
-      attributes.direction = 'row';
+      attributes.direction = 'column';
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
@@ -125,7 +127,24 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       config.map((template) => {
         templateList.push(
           <div key={template.id} className="template">
-            {template.questions.map((question, questionIndex) => getControl(question, template.id, questionIndex))}
+            <div className="sections">
+              {template.sectionsDetails.map((section) => {
+                return (
+                  <div className="section MCP-module-body">
+                    <div className="styledHeading">
+                      <Heading as="h3">{section.sectionName}</Heading>
+                    </div>
+                    <div className="question-panel">
+                      <div className="question-list">
+                        {section.questions.map((question, questionIndex) => (
+                          <div className="question">{getControl(question, template.id, questionIndex)}</div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
       });

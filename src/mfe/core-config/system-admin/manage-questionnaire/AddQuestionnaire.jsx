@@ -444,339 +444,358 @@ function AddQuestionnaire() {
         <Formik disabled initialValues={initialFormState} onSubmit={handleOnSubmit} enableReinitialize validationSchema={schema}>
           {({ values, errors, touched, setFieldValue, setFieldError }) => {
             return (
-              <Form>
-                <div className="MCP-module-wrapper">
-                  <div className="MCP-CardContainer">
-                    <div className="row-space-between-center">
-                      <div className="styledHeading">
-                        <Heading as="h2">{t('heading.templateDetails')}</Heading>
-                      </div>
-                      {mode !== MODE.CREATE && (
-                        <div className="controls">
-                          {mode !== MODE.EDIT && questionnaireDetails?.active && hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
-                            <Button Icon={EditPencil} variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          )}
-                          {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE) && (
-                            <Switch
-                              handleToggle={handleOnActivateDeactivateQuestionnaire}
-                              id="id"
-                              name="Toggle"
-                              size="lg"
-                              value={questionnaireDetails?.active}
-                            />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                      <div className="styled-form-field">
-                        <Field
-                          name={`templateName`}
-                          label={t('label.templateName')}
-                          placeholder={` `}
-                          errors={{ name: 'error' }}
-                          isRequired
-                          isReadOnly={readOnly}
-                          component={Components['input']}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <FieldArray name="sections">
-                    {({ push: addSection, remove: removeSection }) => {
-                      return (
-                        <div className="sections">
-                          <div className="MCP-module-body">
-                            {values['sections']?.map((section, sectionIndex) => (
-                              <div className="MCP-CardContainer section">
-                                <div>
-                                  <div className={'row-space-between-center'}>
-                                    <div className="styledHeading">
-                                      <Heading as="h2">{t('heading.sectionDetails')}</Heading>
-                                    </div>
-                                    <div className="controls">
-                                      {sectionIndex === 0 && (
-                                        <div className="styled-icon-button error-button">
-                                          <Button
-                                            Icon={BinRedIcon}
-                                            size="md"
-                                            variant="tertiary"
-                                            color="error"
-                                            type="button"
-                                            onClick={() => removeSection(sectionIndex)}></Button>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                    <div className="styled-form-field">
-                                      <Field
-                                        name={`sections.${sectionIndex}.sectionTitle`}
-                                        label={t('form.label.sectionTitle')}
-                                        placeholder={` `}
-                                        isRequired
-                                        isReadOnly={readOnly}
-                                        component={Components['input']}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="template">
-                                  <div className="styledHeading">
-                                    <Heading as="h2">{t('heading.questions')}</Heading>
-                                  </div>
-                                  <FieldArray name={`sections.${sectionIndex}.questions`}>
-                                    {({ push: addQuestion, remove: removeQuestion }) => {
-                                      return (
-                                        <div>
-                                          <div>
-                                            {section['questions']?.map((question, index) => (
-                                              <div key={index} className="template-question">
-                                                <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                                  <div className="styled-form-field">
-                                                    <Field
-                                                      component={Components['dropdown']}
-                                                      name={`sections.${sectionIndex}.questions.${index}.type`}
-                                                      fieldlabel={t('label.type')}
-                                                      placeholder=" "
-                                                      isRequired
-                                                      isReadOnly={readOnly}
-                                                      size="lg"
-                                                      onChange={(selectedType) => {
-                                                        setFieldValue(`sections[${sectionIndex}].questions[${index}].type`, selectedType);
-                                                        if (selectedType === QUESTION_TYPE.INPUT) {
-                                                          setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, null);
-                                                        } else if (selectedType === QUESTION_TYPE.DROPDOWN) {
-                                                          setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, [
-                                                            { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
-                                                            { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
-                                                          ]);
-                                                        } else if (selectedType === QUESTION_TYPE.RADIO_BUTTON || selectedType === QUESTION_TYPE.CHECKBOX) {
-                                                          setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, [
-                                                            { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
-                                                          ]);
-                                                        }
-                                                      }}
-                                                      options={[
-                                                        { label: 'Input Field', value: QUESTION_TYPE.INPUT },
-                                                        { label: 'Radio Button', value: QUESTION_TYPE.RADIO_BUTTON },
-                                                        { label: 'Checkbox', value: QUESTION_TYPE.CHECKBOX },
-                                                        { label: 'Dropdown', value: QUESTION_TYPE.DROPDOWN }
-                                                      ]}
-                                                    />
-                                                  </div>
-                                                  <div className="void-gap"></div>
-                                                  {mode !== MODE.VIEW && (
-                                                    <div className="flex-end">
-                                                      <div className="styled-icon-button error-button">
-                                                        <Button
-                                                          Icon={BinRedIcon}
-                                                          size="md"
-                                                          variant="tertiary"
-                                                          color="error"
-                                                          type="button"
-                                                          disabled={section['questions'].length === 1}
-                                                          onClick={() => {
-                                                            removeQuestion(index);
-                                                          }}></Button>
-                                                      </div>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                                <div>
-                                                  <div className="styled-form-field">
-                                                    <Field
-                                                      name={`sections.${sectionIndex}.questions.${index}.caption['${question.caption.activeLanguage}']`}
-                                                      fieldlabel={t('label.question')}
-                                                      isReadOnly={readOnly}
-                                                      labelControls={
-                                                        <Field
-                                                          name={`sections.${sectionIndex}.questions.${index}.caption.activeLanguage`}
-                                                          options={['en', 'es']}
-                                                          size="small"
-                                                          value={question['caption']['activeLanguage']}
-                                                          component={Components['toggleButton']}
-                                                        />
-                                                      }
-                                                      placeholder={` `}
-                                                      component={Components['textarea']}
-                                                      maxCharHelperText={t('message.questionTextMaxChar')}
-                                                      maxCharLimit={1000}
-                                                      isRequired={true}
-                                                    />
-                                                  </div>
-                                                </div>
-                                                {question['type'] && question.options && (
-                                                  <div className="template-form">
-                                                    {
-                                                      <FieldArray name={`sections.${sectionIndex}.questions.${index}.options`}>
-                                                        {({ push: addOption, remove: removeOption }) => {
-                                                          return (
-                                                            <div className="options" key={`question-${index}`}>
-                                                              <div className="option-list">
-                                                                {question['options']?.map((option, optionIndex) => {
-                                                                  return (
-                                                                    <div key={`question-${index}-option-${optionIndex}`}>
-                                                                      <div className="grid grid-gap-24 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                                                        <div className="styled-form-field">
-                                                                          <Field
-                                                                            name={`sections.${sectionIndex}.questions.${index}.options.${optionIndex}.${option.activeLanguage}`}
-                                                                            label={t('placeholder.optionItr') + (optionIndex + 1)}
-                                                                            placeholder={t('placeholder.optionItr')}
-                                                                            component={Components['input']}
-                                                                            isRequired
-                                                                            isReadOnly={readOnly}
-                                                                            labelControls={
-                                                                              <Field
-                                                                                name={`sections.${sectionIndex}.questions.${index}.options.${optionIndex}.activeLanguage`}
-                                                                                options={['en', 'es']}
-                                                                                size="small"
-                                                                                value={option['activeLanguage']}
-                                                                                component={Components['toggleButton']}
-                                                                              />
-                                                                            }
-                                                                          />
-                                                                        </div>
-                                                                        <div className="void-gap"></div>
-                                                                        {mode !== MODE.VIEW && (
-                                                                          <div className="flex-end">
-                                                                            <div className="styled-icon-button error-button">
-                                                                              <Button
-                                                                                Icon={BinRedIcon}
-                                                                                size="md"
-                                                                                variant="tertiary"
-                                                                                color="error"
-                                                                                type="button"
-                                                                                disabled={
-                                                                                  (question.type === QUESTION_TYPE.DROPDOWN
-                                                                                    ? question['options'].length === 2
-                                                                                    : question['options'].length === 1) || readOnly
-                                                                                }
-                                                                                onClick={() => {
-                                                                                  removeOption(optionIndex);
-                                                                                }}></Button>
-                                                                            </div>
-                                                                          </div>
-                                                                        )}
-                                                                      </div>
-                                                                    </div>
-                                                                  );
-                                                                })}
-                                                              </div>
-                                                              <div>
-                                                                {mode !== MODE.VIEW && (
-                                                                  <div className="styled-icon-button">
-                                                                    <Button
-                                                                      Icon={PlusIcon}
-                                                                      size="md"
-                                                                      variant="tertiary"
-                                                                      type="button"
-                                                                      disabled={readOnly}
-                                                                      onClick={() => {
-                                                                        addOption({
-                                                                          en: '',
-                                                                          es: '',
-                                                                          activeLanguage: LANGUAGE.ENGLISH
-                                                                        });
-                                                                      }}>
-                                                                      {t('button.addOption')}
-                                                                    </Button>
-                                                                  </div>
-                                                                )}
-                                                              </div>
-                                                            </div>
-                                                          );
-                                                        }}
-                                                      </FieldArray>
-                                                    }
-                                                  </div>
-                                                )}
-                                                <div className="stacked-checkbox">
-                                                  <Field
-                                                    name={`sections.${sectionIndex}.questions.${index}.checks`}
-                                                    id={`Check-${index}`}
-                                                    items={[
-                                                      {
-                                                        isDisabled: readOnly,
-                                                        label: t('label.check.questionMandatory'),
-                                                        value: 'isMandatory'
-                                                      },
-                                                      {
-                                                        isDisabled: readOnly,
-                                                        label: t('label.check.requiredDocument'),
-                                                        value: 'isDocumentRequired'
-                                                      }
-                                                    ]}
-                                                    size="md"
-                                                    readonly={readOnly}
-                                                    component={CheckBox}
-                                                  />
-                                                </div>
-                                              </div>
-                                            ))}
-                                          </div>
-                                          <div>
-                                            {mode !== MODE.VIEW && (
-                                              <div className="styled-icon-button">
-                                                <Button
-                                                  onClick={() => {
-                                                    addQuestion(defaultQuestionTemplate);
-                                                  }}
-                                                  variant="tertiary"
-                                                  size="md"
-                                                  disabled={readOnly}
-                                                  Icon={PlusIcon}>
-                                                  {t('button.caption.addQuestion')}
-                                                </Button>
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                      );
-                                    }}
-                                  </FieldArray>
-                                </div>
-                              </div>
-                            ))}
-                            <div className="row-space-between-center">
-                              <div className="styled-icon-button">
-                                <Button
-                                  onClick={() => {
-                                    addSection(defaultSectionTemplate);
-                                  }}
-                                  variant="secondary"
-                                  size="md"
-                                  disabled={readOnly}
-                                  Icon={PlusIcon}>
-                                  {t('button.caption.addSection')}
+              <div className="template">
+                <Form>
+                  <div className="MCP-module-wrapper">
+                    <div className="MCP-CardContainer">
+                      <div className="MCP-module-body">
+                        <div className="row-space-between-center">
+                          <div className="styledHeading">
+                            <Heading as="h2">{t('heading.templateDetails')}</Heading>
+                          </div>
+                          {mode !== MODE.CREATE && (
+                            <div className="controls">
+                              {mode !== MODE.EDIT && questionnaireDetails?.active && hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
+                                <Button Icon={EditPencil} variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
+                                  {t('captions.btnEdit')}
                                 </Button>
-                              </div>
-                              {mode !== MODE.VIEW && (
-                                <div className="controls">
-                                  <Button onClick={handleOnCancel} size="md" variant="secondary">
-                                    {t('captions.btnCancel')}
-                                  </Button>
-                                  {mode === MODE.EDIT ? (
-                                    <Button type="submit" size="md" variant="primary">
-                                      {t('button.caption.updateQuestionnaire')}
-                                    </Button>
-                                  ) : (
-                                    <Button type="submit" size="md" variant="primary">
-                                      {t('button.caption.createQuestionnaire')}
-                                    </Button>
-                                  )}
-                                </div>
+                              )}
+                              {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE) && (
+                                <Switch
+                                  handleToggle={handleOnActivateDeactivateQuestionnaire}
+                                  id="id"
+                                  name="Toggle"
+                                  size="lg"
+                                  value={questionnaireDetails?.active}
+                                />
                               )}
                             </div>
+                          )}
+                        </div>
+                        <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                          <div className="styled-form-field">
+                            <Field
+                              name={`templateName`}
+                              label={t('label.templateName')}
+                              placeholder={` `}
+                              errors={{ name: 'error' }}
+                              isRequired
+                              isReadOnly={readOnly}
+                              component={Components['input']}
+                            />
                           </div>
                         </div>
-                      );
-                    }}
-                  </FieldArray>
-                </div>
-              </Form>
+                      </div>
+                    </div>
+                    <FieldArray name="sections">
+                      {({ push: addSection, remove: removeSection }) => {
+                        return (
+                          <div className="sections">
+                            <div className="MCP-module-body">
+                              {values['sections']?.map((section, sectionIndex) => (
+                                <div className="MCP-CardContainer section">
+                                  <div className="MCP-module-body">
+                                    <div className="MCP-module-body">
+                                      <div className={'row-space-between-center'}>
+                                        <div className="styledHeading">
+                                          <Heading as="h2">{t('heading.sectionDetails')}</Heading>
+                                        </div>
+                                        <div className="controls">
+                                          {sectionIndex === 0 && (
+                                            <div className="styled-icon-button error-button">
+                                              <Button
+                                                Icon={BinRedIcon}
+                                                size="md"
+                                                variant="tertiary"
+                                                color="error"
+                                                type="button"
+                                                onClick={() => removeSection(sectionIndex)}></Button>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                        <div className="styled-form-field">
+                                          <Field
+                                            name={`sections.${sectionIndex}.sectionTitle`}
+                                            label={t('form.label.sectionTitle')}
+                                            placeholder={` `}
+                                            isRequired
+                                            isReadOnly={readOnly}
+                                            component={Components['input']}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="question-panel">
+                                      <div className="MCP-module-body">
+                                        <div className="styledHeading">
+                                          <Heading as="h2">{t('heading.questions')}</Heading>
+                                        </div>
+                                        <div className="question-list">
+                                          <FieldArray name={`sections.${sectionIndex}.questions`}>
+                                            {({ push: addQuestion, remove: removeQuestion }) => {
+                                              return (
+                                                <div>
+                                                  <div>
+                                                    {section['questions']?.map((question, index) => {
+                                                      return (
+                                                        <div key={index} className="question">
+                                                          <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                                            <div className="styled-form-field">
+                                                              <Field
+                                                                component={Components['dropdown']}
+                                                                name={`sections.${sectionIndex}.questions.${index}.type`}
+                                                                fieldlabel={t('label.type')}
+                                                                placeholder=" "
+                                                                isRequired
+                                                                isReadOnly={readOnly}
+                                                                size="lg"
+                                                                onChange={(selectedType) => {
+                                                                  setFieldValue(`sections[${sectionIndex}].questions[${index}].type`, selectedType);
+                                                                  if (selectedType === QUESTION_TYPE.INPUT) {
+                                                                    setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, null);
+                                                                  } else if (selectedType === QUESTION_TYPE.DROPDOWN) {
+                                                                    setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, [
+                                                                      { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
+                                                                      { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
+                                                                    ]);
+                                                                  } else if (
+                                                                    selectedType === QUESTION_TYPE.RADIO_BUTTON ||
+                                                                    selectedType === QUESTION_TYPE.CHECKBOX
+                                                                  ) {
+                                                                    setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, [
+                                                                      { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
+                                                                    ]);
+                                                                  }
+                                                                }}
+                                                                options={[
+                                                                  { label: 'Input Field', value: QUESTION_TYPE.INPUT },
+                                                                  { label: 'Radio Button', value: QUESTION_TYPE.RADIO_BUTTON },
+                                                                  { label: 'Checkbox', value: QUESTION_TYPE.CHECKBOX },
+                                                                  { label: 'Dropdown', value: QUESTION_TYPE.DROPDOWN }
+                                                                ]}
+                                                              />
+                                                            </div>
+                                                            <div className="void-gap"></div>
+                                                            {mode !== MODE.VIEW && (
+                                                              <div className="flex-end">
+                                                                <div className="styled-icon-button error-button">
+                                                                  <Button
+                                                                    Icon={BinRedIcon}
+                                                                    size="md"
+                                                                    variant="tertiary"
+                                                                    color="error"
+                                                                    type="button"
+                                                                    disabled={section['questions'].length === 1}
+                                                                    onClick={() => {
+                                                                      removeQuestion(index);
+                                                                    }}></Button>
+                                                                </div>
+                                                              </div>
+                                                            )}
+                                                          </div>
+                                                          <div>
+                                                            <div className="styled-form-field">
+                                                              <Field
+                                                                name={`sections.${sectionIndex}.questions.${index}.caption['${question.caption.activeLanguage}']`}
+                                                                fieldlabel={t('label.question')}
+                                                                isReadOnly={readOnly}
+                                                                labelControls={
+                                                                  <Field
+                                                                    name={`sections.${sectionIndex}.questions.${index}.caption.activeLanguage`}
+                                                                    options={['en', 'es']}
+                                                                    size="small"
+                                                                    value={question['caption']['activeLanguage']}
+                                                                    component={Components['toggleButton']}
+                                                                  />
+                                                                }
+                                                                placeholder={` `}
+                                                                component={Components['textarea']}
+                                                                maxCharHelperText={t('message.questionTextMaxChar')}
+                                                                maxCharLimit={1000}
+                                                                isRequired={true}
+                                                              />
+                                                            </div>
+                                                          </div>
+                                                          {question['type'] && question.options && (
+                                                            <div className="template-form">
+                                                              {
+                                                                <FieldArray name={`sections.${sectionIndex}.questions.${index}.options`}>
+                                                                  {({ push: addOption, remove: removeOption }) => {
+                                                                    return (
+                                                                      <div className="options" key={`question-${index}`}>
+                                                                        <div className="option-list">
+                                                                          {question['options']?.map((option, optionIndex) => {
+                                                                            return (
+                                                                              <div key={`question-${index}-option-${optionIndex}`}>
+                                                                                <div className="grid grid-gap-24 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                                                                  <div className="styled-form-field">
+                                                                                    <Field
+                                                                                      name={`sections.${sectionIndex}.questions.${index}.options.${optionIndex}.${option.activeLanguage}`}
+                                                                                      label={t('placeholder.optionItr') + (optionIndex + 1)}
+                                                                                      placeholder={t('placeholder.optionItr')}
+                                                                                      component={Components['input']}
+                                                                                      isRequired
+                                                                                      isReadOnly={readOnly}
+                                                                                      labelControls={
+                                                                                        <Field
+                                                                                          name={`sections.${sectionIndex}.questions.${index}.options.${optionIndex}.activeLanguage`}
+                                                                                          options={['en', 'es']}
+                                                                                          size="small"
+                                                                                          value={option['activeLanguage']}
+                                                                                          component={Components['toggleButton']}
+                                                                                        />
+                                                                                      }
+                                                                                    />
+                                                                                  </div>
+                                                                                  <div className="void-gap"></div>
+                                                                                  {mode !== MODE.VIEW && (
+                                                                                    <div className="flex-end">
+                                                                                      <div className="styled-icon-button error-button">
+                                                                                        <Button
+                                                                                          Icon={BinRedIcon}
+                                                                                          size="md"
+                                                                                          variant="tertiary"
+                                                                                          color="error"
+                                                                                          type="button"
+                                                                                          disabled={
+                                                                                            (question.type === QUESTION_TYPE.DROPDOWN
+                                                                                              ? question['options'].length === 2
+                                                                                              : question['options'].length === 1) || readOnly
+                                                                                          }
+                                                                                          onClick={() => {
+                                                                                            removeOption(optionIndex);
+                                                                                          }}></Button>
+                                                                                      </div>
+                                                                                    </div>
+                                                                                  )}
+                                                                                </div>
+                                                                              </div>
+                                                                            );
+                                                                          })}
+                                                                        </div>
+                                                                        <div>
+                                                                          {mode !== MODE.VIEW && (
+                                                                            <div className="styled-icon-button">
+                                                                              <Button
+                                                                                Icon={PlusIcon}
+                                                                                size="md"
+                                                                                variant="tertiary"
+                                                                                type="button"
+                                                                                disabled={readOnly}
+                                                                                onClick={() => {
+                                                                                  addOption({
+                                                                                    en: '',
+                                                                                    es: '',
+                                                                                    activeLanguage: LANGUAGE.ENGLISH
+                                                                                  });
+                                                                                }}>
+                                                                                {t('button.addOption')}
+                                                                              </Button>
+                                                                            </div>
+                                                                          )}
+                                                                        </div>
+                                                                      </div>
+                                                                    );
+                                                                  }}
+                                                                </FieldArray>
+                                                              }
+                                                            </div>
+                                                          )}
+                                                          <div className="stacked-checkbox">
+                                                            <Field
+                                                              name={`sections.${sectionIndex}.questions.${index}.checks`}
+                                                              id={`Check-${index}`}
+                                                              items={[
+                                                                {
+                                                                  isDisabled: readOnly,
+                                                                  label: t('label.check.questionMandatory'),
+                                                                  value: 'isMandatory'
+                                                                },
+                                                                {
+                                                                  isDisabled: readOnly,
+                                                                  label: t('label.check.requiredDocument'),
+                                                                  value: 'isDocumentRequired'
+                                                                }
+                                                              ]}
+                                                              size="md"
+                                                              readonly={readOnly}
+                                                              component={CheckBox}
+                                                            />
+                                                          </div>
+                                                        </div>
+                                                      );
+                                                    })}
+                                                  </div>
+                                                  <div>
+                                                    {mode !== MODE.VIEW && (
+                                                      <div className="styled-icon-button">
+                                                        <Button
+                                                          onClick={() => {
+                                                            addQuestion(defaultQuestionTemplate);
+                                                          }}
+                                                          variant="tertiary"
+                                                          size="md"
+                                                          disabled={readOnly}
+                                                          Icon={PlusIcon}>
+                                                          {t('button.caption.addQuestion')}
+                                                        </Button>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              );
+                                            }}
+                                          </FieldArray>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                              <div className="row-space-between-center">
+                                <div>
+                                  {mode !== MODE.VIEW && (
+                                    <div className="controls">
+                                      <Button
+                                        onClick={() => {
+                                          addSection(defaultSectionTemplate);
+                                        }}
+                                        variant="secondary"
+                                        size="md"
+                                        disabled={readOnly}
+                                        Icon={PlusIcon}>
+                                        {t('button.caption.addSection')}
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
+                                {mode !== MODE.VIEW && (
+                                  <div className="controls">
+                                    <Button onClick={handleOnCancel} size="md" variant="secondary">
+                                      {t('captions.btnCancel')}
+                                    </Button>
+                                    {mode === MODE.EDIT ? (
+                                      <Button type="submit" size="md" variant="primary">
+                                        {t('button.caption.updateQuestionnaire')}
+                                      </Button>
+                                    ) : (
+                                      <Button type="submit" size="md" variant="primary">
+                                        {t('button.caption.createQuestionnaire')}
+                                      </Button>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }}
+                    </FieldArray>
+                  </div>
+                </Form>
+              </div>
             );
           }}
         </Formik>

@@ -8,7 +8,7 @@ import { ReactComponent as CatalogImage } from '@src/assets/image/alert-circle-c
 import { ReactComponent as AccountImage } from '@src/assets/image/alert-circle-a.svg';
 import { ReactComponent as MaterialImage } from '@src/assets/image/alert-circle-m.svg';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { Button, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
+import { Button, RadioGroup, Badge, IconButton } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from './context/QuestionnaireContext';
@@ -165,10 +165,15 @@ function TemplateList({ onAlert }) {
       wrap: true,
       center: true,
       cell: (props) => (
-        <div className="actionsBox">
-          <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)}>
-            {t('userManagement.table.action.view')}
-          </Button>
+        <div className="styled-icon-button">
+          <IconButton
+            label={t('userManagement.table.action.view')}
+            size="lg"
+            iconButton={false}
+            textButton={true}
+            Icon={View}
+            onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)}
+          />
         </div>
       )
     }
