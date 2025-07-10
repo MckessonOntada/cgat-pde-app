@@ -111,6 +111,7 @@ const ProviderAddUpdateForm = ({ setShowAddProviderForm, providerData, accountId
               type="button"
               variant="tertiary"
               size="md"
+              className={styles.cancelbtnControl}
               onClick={() => {
                 setShowAddProviderForm(false);
               }}>

@@ -58,7 +58,7 @@ const PatientDetails = () => {
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const [showAddProviderForm, setShowAddProviderForm] = React.useState(false);
-  const [portalTarget, setPortalTarget] = useState(null);
+  const [portalTarget, setPortalTarget] = React.useState(null);
 
   useEffect(() => {
     if (showAddProviderForm) {
