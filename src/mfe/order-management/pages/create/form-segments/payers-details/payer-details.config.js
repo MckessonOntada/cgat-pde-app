@@ -47,7 +47,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
           label: 'form.label.groupNumber',
           placeholder: '',
           type: 'input',
-          isRequired: false,
+          isRequired: true,
           maxLength: 50
         }
       ]

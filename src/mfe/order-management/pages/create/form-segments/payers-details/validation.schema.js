@@ -13,7 +13,7 @@ export const getMedicalInsuranceSchema = (key, t) => ({
 
     memberNumber: Yup.string().required(t('messages.memberNumberRequired')).max(50, t('messages.memberMax')).matches(NUMBER_REGEX, t('messages.onlyNumeric')),
     groupNumber: Yup.string()
-      .notRequired()
+      .required(t('messages.groupNumberRequired'))
       .max(50, t('messages.groupMax'))
       .matches(NUMBER_REGEX, { message: t('messages.onlyNumericStrict'), excludeEmptyString: true }),
     insuranceCompanyPhone: Yup.string()
