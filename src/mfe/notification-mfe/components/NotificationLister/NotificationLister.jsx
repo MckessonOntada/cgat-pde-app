@@ -76,7 +76,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
    */
   const formatCreatedDate = (dateString) => {
     if (!dateString) return '';
-    const dateObj = new Date(dateString);
+    // Add 'Z' if not present to ensure UTC parsing
+    const dateObj = new Date(dateString.endsWith('Z') ? dateString : dateString + 'Z');
     return dateObj.toLocaleString('en-US', {
       month: '2-digit',
       day: '2-digit',
