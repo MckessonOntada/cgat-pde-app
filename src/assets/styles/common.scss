@@ -1300,6 +1300,9 @@ div[role="row"] {
     &:last-of-type {
       border-bottom: none;
     }
+    &:last-child {
+      padding-bottom: 0;
+    }
   }
 }
 

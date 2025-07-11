@@ -522,21 +522,27 @@ const Summary = () => {
 
   if (additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0) {
     additionalDetails.configuredQuestionnaires.forEach((template) => {
-      if (template?.questions && template.questions.length > 0) {
-        template.questions.forEach((question) => {
-          if (question.value) {
-            const details = {
-              text: question.text.en,
-              value: question.value
-            };
-            if (question.document) {
-              details.attachment = {
-                name: question.document.name,
-                size: question.document.size,
-                url: question.document.url
-              };
-            }
-            configuredQuestionnaires.push(details);
+      const { sectionsDetails = [] } = template;
+      if (CommonUtils.isNonEmptyArray(sectionsDetails)) {
+        sectionsDetails.forEach((section) => {
+          const { questions = [] } = section;
+          if (CommonUtils.isNonEmptyArray(questions)) {
+            questions.forEach((question) => {
+              if (question.value) {
+                const details = {
+                  text: question.text.en,
+                  value: question.value
+                };
+                if (question.document) {
+                  details.attachment = {
+                    name: question.document.name,
+                    size: question.document.size,
+                    url: question.document.url
+                  };
+                }
+                configuredQuestionnaires.push(details);
+              }
+            });
           }
         });
       }
