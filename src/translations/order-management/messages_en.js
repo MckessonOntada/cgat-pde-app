@@ -606,6 +606,7 @@ export const MessageEn = {
   'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
+  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.',
   'labels.SPECIALITY_PHARMA': 'Specialty Pharma',
   'labels.SPECIALITY_PHARMACY': 'Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'Buy & Bill',

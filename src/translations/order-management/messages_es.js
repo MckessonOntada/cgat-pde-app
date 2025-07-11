@@ -643,5 +643,9 @@ export const MessageEs = {
   'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   'message.selectDocumentToUpload': 'S_Please select document to upload.',
   'message.documentUploadSuccess': 'S_Document has been successfully uploaded for Order ID: {orderId}',
-  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and product/material master.'
+  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and product/material master.',
+  'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
+  'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
+  'invalid.csv.file.columns.missing': 'S_The upload file is not valid. Required columns are missing.'
 };

@@ -174,6 +174,7 @@ export const ConfigurationMessagesEN = {
   'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
+  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.',
   'providers.message.fileUploadFailure': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   // catalog
   'SPCatalog.Configuration': 'Configuration',

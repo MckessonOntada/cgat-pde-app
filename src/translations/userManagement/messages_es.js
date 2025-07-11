@@ -392,5 +392,9 @@ export const UserManagementES = {
   'popup.userActivation.question': 'Are you sure you wish to Activate this User?',
   'userManagement.upload-info': 'S_For filling up the user’s template, please refer to the instruction file.',
   'errors.messages.noRecords': 'S_No records found',
-  'errors.messages.noRecordsFound': 'S_No records found for the applied filters'
+  'errors.messages.noRecordsFound': 'S_No records found for the applied filters',
+  'invalid.csv.file.type': 'S_The uploaded file is invalid. Please upload a valid file',
+  'invalid.csv.file.headers.missing': 'S_The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'S_Uploaded file is empty. Please upload a valid file.',
+  'invalid.csv.file.columns.missing': 'S_The upload file is not valid. Required columns are missing.'
 };
