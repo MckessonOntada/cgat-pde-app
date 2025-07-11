@@ -449,7 +449,7 @@ export const MessageEn = {
   'messages.error_config_material': 'Please select Material(s) to Add Questionnaire.',
   'messages.error_config_catalog': 'Please select Catalog(s) to Add Questionnaire.',
   'messages.error_config_account': 'Please select Account(s) to Add Questionnaire.',
-
+  'button.caption.remove': 'Remove',
   'button.caption.backQuestionnaireBuilder': 'Back to Questionnaire Builder',
   'heading.addQuestionnaire': 'Add Questionnaire',
   'heading.templateDetails': 'Template Details',

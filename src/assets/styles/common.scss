@@ -869,13 +869,29 @@ div.disable-all {
   flex-direction: column;
   width: 100%;
   height: auto;
-  gap: var(--spacing-04);
+  gap: var(--spacing-03);
 }
 
-.section .question-list .question {
-  padding-bottom: var(--spacing-04);
-  margin-bottom: var(--spacing-04);
-  border-bottom: 1px solid var(--brand-color-patient-primary-3);
+.section .question-list {
+  .question {
+    padding-bottom: var(--spacing-04);
+    margin-bottom: var(--spacing-04);
+    border-bottom: 1px solid var(--brand-color-patient-primary-3);
+    .grid {
+      align-items: center;
+    }
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.section-controls {
+  padding-top: var(--spacing-04);
+  margin-top: var(--spacing-04);
+  border-top: 1px solid var(--brand-color-patient-primary-3);
 }
 
 .option-list {
@@ -903,7 +919,7 @@ div.disable-all {
 .flex-end {
   display: flex;
   justify-content: flex-end;
-  align-self: flex-end;
+  align-self: center;
 }
 
 .grail-layout {

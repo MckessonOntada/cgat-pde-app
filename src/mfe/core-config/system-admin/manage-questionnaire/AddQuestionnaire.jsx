@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Loader, Switch } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Switch, IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -20,7 +20,6 @@ import usePermission from '@src/hooks/usePermissions';
 import { handleApiError } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import PageHeader from '@src/components/pageHeader';
-import FormRenderer from '../../admin/manage-providers/forms/FormRenderer';
 
 export const QUESTION_TYPE = {
   RADIO_BUTTON: 'RADIO_BUTTON',
@@ -92,10 +91,6 @@ function AddQuestionnaire() {
   const { hasPermission } = usePermission();
   const [initialFormState, setInitialFormState] = React.useState(INITIAL_FORM_STATE);
   const [alertConfig, setAlertConfig] = React.useState(INITIAL_ALERT_CONFIG);
-  const defaultSectionTemplate = {
-    sectionTitle: '',
-    questions: []
-  };
   const defaultQuestionTemplate = {
     type: '',
     caption: {
@@ -104,6 +99,10 @@ function AddQuestionnaire() {
       activeLanguage: LANGUAGE.ENGLISH
     },
     options: []
+  };
+  const defaultSectionTemplate = {
+    sectionTitle: '',
+    questions: [{ ...defaultQuestionTemplate }]
   };
   React.useEffect(() => {
     if (id) {
@@ -501,17 +500,18 @@ function AddQuestionnaire() {
                                           <Heading as="h2">{t('heading.sectionDetails')}</Heading>
                                         </div>
                                         <div className="controls">
-                                          {sectionIndex === 0 && (
-                                            <div className="styled-icon-button error-button">
-                                              <Button
-                                                Icon={BinRedIcon}
-                                                size="md"
-                                                variant="tertiary"
-                                                color="error"
-                                                type="button"
-                                                onClick={() => removeSection(sectionIndex)}></Button>
-                                            </div>
-                                          )}
+                                          <div className="styled-icon-button error-button">
+                                            <IconButton
+                                              label={t('button.caption.remove')}
+                                              color="error"
+                                              size="lg"
+                                              iconButton={false}
+                                              textButton={true}
+                                              Icon={BinRedIcon}
+                                              disabled={values['sections'].length === 1}
+                                              onClick={() => removeSection(sectionIndex)}
+                                            />
+                                          </div>
                                         </div>
                                       </div>
                                       <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
@@ -532,12 +532,12 @@ function AddQuestionnaire() {
                                         <div className="styledHeading">
                                           <Heading as="h2">{t('heading.questions')}</Heading>
                                         </div>
-                                        <div className="question-list">
+                                        <div>
                                           <FieldArray name={`sections.${sectionIndex}.questions`}>
                                             {({ push: addQuestion, remove: removeQuestion }) => {
                                               return (
-                                                <div>
-                                                  <div>
+                                                <React.Fragment>
+                                                  <div className="question-list">
                                                     {section['questions']?.map((question, index) => {
                                                       return (
                                                         <div key={index} className="question">
@@ -581,16 +581,18 @@ function AddQuestionnaire() {
                                                             {mode !== MODE.VIEW && (
                                                               <div className="flex-end">
                                                                 <div className="styled-icon-button error-button">
-                                                                  <Button
-                                                                    Icon={BinRedIcon}
-                                                                    size="md"
-                                                                    variant="tertiary"
+                                                                  <IconButton
+                                                                    label={t('button.caption.remove')}
                                                                     color="error"
-                                                                    type="button"
+                                                                    size="lg"
+                                                                    iconButton={false}
+                                                                    textButton={true}
+                                                                    Icon={BinRedIcon}
                                                                     disabled={section['questions'].length === 1}
                                                                     onClick={() => {
                                                                       removeQuestion(index);
-                                                                    }}></Button>
+                                                                    }}
+                                                                  />
                                                                 </div>
                                                               </div>
                                                             )}
@@ -675,8 +677,8 @@ function AddQuestionnaire() {
                                                                             );
                                                                           })}
                                                                         </div>
-                                                                        <div>
-                                                                          {mode !== MODE.VIEW && (
+                                                                        {mode !== MODE.VIEW && (
+                                                                          <div>
                                                                             <div className="styled-icon-button">
                                                                               <Button
                                                                                 Icon={PlusIcon}
@@ -694,8 +696,8 @@ function AddQuestionnaire() {
                                                                                 {t('button.addOption')}
                                                                               </Button>
                                                                             </div>
-                                                                          )}
-                                                                        </div>
+                                                                          </div>
+                                                                        )}
                                                                       </div>
                                                                     );
                                                                   }}
@@ -728,8 +730,8 @@ function AddQuestionnaire() {
                                                       );
                                                     })}
                                                   </div>
-                                                  <div>
-                                                    {mode !== MODE.VIEW && (
+                                                  {mode !== MODE.VIEW && (
+                                                    <div className="section-controls">
                                                       <div className="styled-icon-button">
                                                         <Button
                                                           onClick={() => {
@@ -742,9 +744,9 @@ function AddQuestionnaire() {
                                                           {t('button.caption.addQuestion')}
                                                         </Button>
                                                       </div>
-                                                    )}
-                                                  </div>
-                                                </div>
+                                                    </div>
+                                                  )}
+                                                </React.Fragment>
                                               );
                                             }}
                                           </FieldArray>
