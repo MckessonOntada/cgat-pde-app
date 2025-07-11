@@ -166,9 +166,9 @@ export const ConfigurationMessagesES = {
   'fileUpload.crosswalk.partialSuccess':
     'S_File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
   'fileUpload.error.timeoutOrSystemError': 'S_Error: System is facing issues in getting the information. Kindly Contact your System admin.',
-  'invalid.csv.file.headers.empty': 'S_Error: The uploaded file is invalid. Please upload a valid file.',
-  'invalid.csv.file.headers.unstructured': 'S_Error: The uploaded file is invalid. Please upload a valid file.',
-  'invalid.csv.file.headers.missing': 'S_Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.type': 'S_The uploaded file is invalid. Please upload a valid file',
+  'invalid.csv.file.headers.missing': 'S_The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'S_Uploaded file is empty. Please upload a valid file.',
   'providers.message.fileUploadFailure': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
   // catalog
   'SPCatalog.Configuration': 'S_Configuration',

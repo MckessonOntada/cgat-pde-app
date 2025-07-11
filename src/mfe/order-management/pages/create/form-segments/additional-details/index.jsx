@@ -287,44 +287,46 @@ function AdditionalDetails() {
     const validationSchemaFields = {};
 
     result.forEach((template) => {
-      template.questions.forEach((question) => {
-        const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
-        questionnaireFields[fieldName] = {
-          value: question.value
-        };
+      template.sectionsDetails.forEach((section) => {
+        section.questions.forEach((question) => {
+          const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+          questionnaireFields[fieldName] = {
+            value: question.value
+          };
 
-        if (question.isDocumentRequired && question.document) {
-          questionnaireFields[fieldName].document = question.document;
-        }
+          if (question.isDocumentRequired && question.document) {
+            questionnaireFields[fieldName].document = question.document;
+          }
 
-        validationSchemaFields[fieldName] = Yup.object({
-          value:
-            question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
-              ? question.isMandatory
-                ? Yup.string().required('Value is required')
-                : Yup.string().nullable()
-              : question.type === QUESTION_TYPE.RADIO_BUTTON
-              ? question.isMandatory
-                ? Yup.string().required('Select at least one option')
-                : Yup.string().nullable()
-              : question.type === QUESTION_TYPE.CHECKBOX
-              ? question.isMandatory
-                ? Yup.array()
-                    .of(Yup.string())
-                    .min(1, 'Select at least one option')
-                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
-                : Yup.array().of(Yup.string()).nullable()
-              : question.isMandatory
-              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
-              : Yup.array().of(Yup.string()).nullable(),
+          validationSchemaFields[fieldName] = Yup.object({
+            value:
+              question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
+                ? question.isMandatory
+                  ? Yup.string().required('Value is required')
+                  : Yup.string().nullable()
+                : question.type === QUESTION_TYPE.RADIO_BUTTON
+                ? question.isMandatory
+                  ? Yup.string().required('Select at least one option')
+                  : Yup.string().nullable()
+                : question.type === QUESTION_TYPE.CHECKBOX
+                ? question.isMandatory
+                  ? Yup.array()
+                      .of(Yup.string())
+                      .min(1, 'Select at least one option')
+                      .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                  : Yup.array().of(Yup.string()).nullable()
+                : question.isMandatory
+                ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+                : Yup.array().of(Yup.string()).nullable(),
 
-          document: Yup.object()
-            .shape({
-              url: Yup.string(),
-              size: Yup.number(),
-              name: Yup.string()
-            })
-            .nullable()
+            document: Yup.object()
+              .shape({
+                url: Yup.string(),
+                size: Yup.number(),
+                name: Yup.string()
+              })
+              .nullable()
+          });
         });
       });
     });
@@ -567,15 +569,17 @@ function AdditionalDetails() {
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration } = values;
 
     questionnaireTemplateConfig.forEach((template) => {
-      if (!template.questions) return;
+      if (!template.sectionsDetails) return;
 
-      template.questions.forEach((question) => {
-        const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
-        const fieldValue = values[fieldName];
-        if (!fieldName) return;
+      template.sectionsDetails.forEach((section, sectionIndex) => {
+        section.questions.forEach((question) => {
+          const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+          const fieldValue = values[fieldName];
+          if (!fieldName) return;
 
-        question.value = fieldValue.value;
-        question.document = fieldValue.document;
+          question.value = fieldValue.value;
+          question.document = fieldValue.document;
+        });
       });
     });
 
@@ -846,7 +850,7 @@ function AdditionalDetails() {
                             <div className="configured-questionnaire-form">
                               <div className="MCP-module-body">
                                 <hr className="form-section-separator" />
-                                <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                                {/* <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading> */}
                                 <QuestionnaireTemplate
                                   onRemoveDocument={handleOnRemoveDocument}
                                   onDocumentChange={handleOnDocumentChange}

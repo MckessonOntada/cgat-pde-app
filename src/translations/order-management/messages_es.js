@@ -423,7 +423,7 @@ export const MessageEs = {
   'messages.error_config_material': 'S_Please select Material(s) to Add Questionnaire.',
   'messages.error_config_catalog': 'S_Please select Catalog(s) to Add Questionnaire.',
   'messages.error_config_account': 'S_Please select Account(s) to Add Questionnaire.',
-
+  'button.caption.remove': 'S_Remove',
   'button.caption.backQuestionnaireBuilder': 'S_Back to Questionnaire Builder',
   'heading.addQuestionnaire': 'S_Add Questionnaire',
   'heading.templateDetails': 'S_Template Details',

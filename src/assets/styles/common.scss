@@ -862,19 +862,35 @@ div.disable-all {
 
 //temp
 .template,
-.template-question,
+.template .section .question-list .question,
 .template-form {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: auto;
-  gap: var(--spacing-04);
+  gap: var(--spacing-03);
 }
 
-.template-question {
-  padding-bottom: var(--spacing-04);
-  margin-bottom: var(--spacing-04);
-  border-bottom: 1px solid var(--brand-color-patient-primary-3);
+.section .question-list {
+  .question {
+    padding-bottom: var(--spacing-04);
+    margin-bottom: var(--spacing-04);
+    border-bottom: 1px solid var(--brand-color-patient-primary-3);
+    .grid {
+      align-items: center;
+    }
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.section-controls {
+  padding-top: var(--spacing-04);
+  margin-top: var(--spacing-04);
+  border-top: 1px solid var(--brand-color-patient-primary-3);
 }
 
 .option-list {
@@ -902,7 +918,7 @@ div.disable-all {
 .flex-end {
   display: flex;
   justify-content: flex-end;
-  align-self: flex-end;
+  align-self: center;
 }
 
 .grail-layout {
@@ -1285,6 +1301,9 @@ div[role="row"] {
     &:last-of-type {
       border-bottom: none;
     }
+    &:last-child {
+      padding-bottom: 0;
+    }
   }
 }
 
@@ -1612,6 +1631,7 @@ div[role="row"] {
 hr.form-section-separator {
   border: none;
   border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+  margin: var(--spacing-03) 0px;
 }
 
 div.empty-table-wrapper {
