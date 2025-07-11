@@ -128,7 +128,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
               return val === 'OTHER';
             }
           ],
-          maxLength: 50
+          maxLength: 20
         }
       ]
     }

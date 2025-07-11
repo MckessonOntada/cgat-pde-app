@@ -81,6 +81,17 @@ export const ConfigConstants = [
 
 export const SPMaterialConfigConstants = [
   {
+    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.questionnaire',
+    actions: [
+      {
+        label: 'manageMaterial.drawer.details.configuration.actions.preview',
+        id: 'preview'
+      }
+    ],
+    sectionData: [],
+    questionnaire: true
+  },
+  {
     sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
     actions: [
       {
@@ -102,6 +113,7 @@ export const SPMaterialConfigConstants = [
         label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
         value: 'isMRNRequired'
       }
-    ]
+    ],
+    questionnaire: false
   }
 ];
