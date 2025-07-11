@@ -59,9 +59,9 @@ function ConfirmationPayments() {
     [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
     [t('paymentInvoices.Details.Account')]: `${selectedAccount?.accountNumber} - ${GeographicUtils.addressAggregator(selectedAccount)}`,
     [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
-      location.state?.selectedData
-        ? `${location.state?.selectedData.number?.slice(-4) || location.state?.selectedData.accountNumber?.slice(-4)} - ${
-            location.state?.selectedData.userDefinedName || location.state?.selectedData.name
+      location.state?.selectedPayment
+        ? `${location.state?.selectedPayment.number?.slice(-4) || location.state?.selectedPayment.accountNumber?.slice(-4)} - ${
+            location.state?.selectedPayment.userDefinedName || location.state?.selectedPayment.name
           }`
         : 'NA'
     }`
