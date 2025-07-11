@@ -79,7 +79,7 @@ const createColumns = (t, type) => {
           <FormattedNumber value={props?.authAmount || 0} style="currency" currency="USD" />
         </div>
       )
-    },
+    }
   ];
 
   const creditColumns = [
@@ -118,7 +118,7 @@ const createColumns = (t, type) => {
           <FormattedNumber value={props?.authAmount || 0} style="currency" currency="USD" />
         </div>
       )
-    },
+    }
   ];
 
   return type === 'invoice' ? invoiceColumns : creditColumns;
@@ -158,35 +158,38 @@ function ConfirmationTable({ invoiceData, creditData }) {
           }
         />
       </div>
-
-      <Heading as="h2" fontWeight="600">
-        {t('paymentInvoices.table.creditHeading')}
-      </Heading>
-      <div className="details-table">
-        <CustomDataTable
-          id="credit-data-table"
-          type="normal"
-          columns={createColumns(t, 'credit')}
-          data={creditData || []}
-          onSortIconClick={() => {}}
-          handleChangePage={() => {}}
-          noDataComponent={'No credit used in this payments'}
-          showCardView={showCardView}
-          defaultExpandedCardView={false}
-          progressComponent={
-            <div
-              style={{
-                alignItems: 'center',
-                border: '1px solid #ccc',
-                display: 'flex',
-                height: '350px',
-                justifyContent: 'center'
-              }}>
-              <Loader variant="circular" />
-            </div>
-          }
-        />
-      </div>
+      {creditData.length > 0 && (
+        <>
+          <Heading as="h2" fontWeight="600">
+            {t('paymentInvoices.table.creditHeading')}
+          </Heading>
+          <div className="details-table">
+            <CustomDataTable
+              id="credit-data-table"
+              type="normal"
+              columns={createColumns(t, 'credit')}
+              data={creditData || []}
+              onSortIconClick={() => {}}
+              handleChangePage={() => {}}
+              noDataComponent={'No credit used in this payments'}
+              showCardView={showCardView}
+              defaultExpandedCardView={false}
+              progressComponent={
+                <div
+                  style={{
+                    alignItems: 'center',
+                    border: '1px solid #ccc',
+                    display: 'flex',
+                    height: '350px',
+                    justifyContent: 'center'
+                  }}>
+                  <Loader variant="circular" />
+                </div>
+              }
+            />
+          </div>
+        </>
+      )}
     </>
   );
 }
