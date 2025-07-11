@@ -850,7 +850,7 @@ function AdditionalDetails() {
                             <div className="configured-questionnaire-form">
                               <div className="MCP-module-body">
                                 <hr className="form-section-separator" />
-                                <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                                {/* <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading> */}
                                 <QuestionnaireTemplate
                                   onRemoveDocument={handleOnRemoveDocument}
                                   onDocumentChange={handleOnDocumentChange}

@@ -68,7 +68,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       attributes.caption = questionLabel;
       attributes.id = `radio-button-${id}-${differentiator}`;
       attributes.htmlFor = attributes.id;
-      attributes.direction = 'column';
+      attributes.direction = additionalAttributes?.options?.length > 2 ? 'column' : 'row';
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400', display: 'inline-block' };
       attributes.labelCustomStyles = { marginBottom: '0px', fontSize: '14px' };
     }
@@ -77,7 +77,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       wrapperClass.push('stacked-checkbox');
       attributes.shouldSplitField = true;
       attributes.id = `checkbox-${id}-${differentiator}`;
-      attributes.direction = 'column';
+      attributes.direction = additionalAttributes?.options?.length > 2 ? 'column' : 'row';
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
@@ -127,7 +127,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       config.map((template) => {
         templateList.push(
           <div key={template.id} className="template">
-            <div className="sections">
+            <div className="sections MCP-module-body">
               {template.sectionsDetails.map((section) => {
                 return (
                   <div className="section MCP-module-body">
