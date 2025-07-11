@@ -29,6 +29,7 @@ import ProviderAddUpdateForm from './ProviderForm';
 import ReactDOM from 'react-dom';
 import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
+import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -293,8 +294,15 @@ const PatientDetails = () => {
       detailedAddress: CommonUtils.getDetailedAddress(address),
       isNewlyAdded: true
     };
-
-    setProviderList((prev) => [...prev, formattedProvider]);
+    setProviderList((prev) => {
+      const existingIndex = prev.findIndex((p) => p.id === newProvider.id);
+      if (existingIndex !== -1) {
+        const updatedList = [...prev];
+        updatedList[existingIndex] = formattedProvider;
+        return updatedList;
+      }
+      return [...prev, formattedProvider];
+    });
     setProvider(formattedProvider);
     setRecentlyAddedProvider(formattedProvider);
     setFieldValue('providerId', formattedProvider.id);
@@ -426,7 +434,7 @@ const PatientDetails = () => {
                                   <ModuleHeader
                                     heading={
                                       <Heading className="details-title" as="h3">
-                                        {provider.fullname}
+                                        <EclipsesText str={provider.fullname} />
                                       </Heading>
                                     }
                                     controls={
@@ -461,10 +469,11 @@ const PatientDetails = () => {
                                       };
                                       const value =
                                         key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
+                                      console.log(labelMap[key], { value });
                                       return (
                                         <Tooltip key={key} body={value}>
                                           <p className="detail-segment inline-text-overflow">
-                                            {labelMap[key]} : {value}
+                                            {labelMap[key]} : {!!value ? <EclipsesText str={value} maxLength={35} /> : '-'}
                                           </p>
                                         </Tooltip>
                                       );
@@ -475,7 +484,7 @@ const PatientDetails = () => {
                             </div>
 
                             <div className="styled-icon-button">
-                              {!showAddProviderForm && (
+                              {!showAddProviderForm && !initialValues.providerId && !provider && (
                                 <Button
                                   Icon={PlusIcon}
                                   variant="tertiary"

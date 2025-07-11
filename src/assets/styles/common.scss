@@ -42,10 +42,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -557,8 +557,8 @@ div.disable-all {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-600);
 
-  &.inline {
-  }
+  &.inline {}
+
   &.normal {
     display: flex;
     flex-wrap: wrap;
@@ -721,11 +721,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -781,6 +779,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -807,12 +806,12 @@ div.disable-all {
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {
-  }
+  fieldset legend[class*="labelContainer"] {}
 
   div[class*="RadioGroup-module"] {
     label {
@@ -911,7 +910,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -932,6 +931,7 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -942,6 +942,7 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -1390,8 +1391,29 @@ div[role="row"] {
   gap: var(--spacing-03);
   align-items: center;
 
+  .dropdown-container {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  @include mixins.respond(sm) {
+    grid-template-columns: 1fr;
+  }
+
   @include mixins.respond(md) {
+    grid-template-columns: 1fr;
+
+    .dropdown-container {
+      max-width: 500px;
+    }
+  }
+
+  @include mixins.respond(lg) {
     grid-template-columns: 1fr 2fr;
+
+    .dropdown-container {
+      max-width: 500px;
+    }
   }
 
   .details-card {
@@ -1485,12 +1507,12 @@ div[role="row"] {
   }
 }
 
-.custom-radio input:checked ~ .checkmark {
+.custom-radio input:checked~.checkmark {
   background-color: var(--brand-color-primary);
   border: none;
 }
 
-.custom-radio input:disabled ~ .checkmark {
+.custom-radio input:disabled~.checkmark {
   background-color: var(--brand-color-dark-grey);
   border: none;
 }
@@ -1501,7 +1523,7 @@ div[role="row"] {
   display: none;
 }
 
-.custom-radio input:checked ~ .checkmark:after {
+.custom-radio input:checked~.checkmark:after {
   display: block;
 }
 
@@ -1534,10 +1556,12 @@ div[role="row"] {
   div[role="row"] {
     height: 42px;
   }
+
   div[role="cell"] {
     padding: 12px 0px 12px 16px;
   }
-  > div {
+
+  >div {
     border-left: none;
     border-top: none;
     border-right: none;
@@ -1555,6 +1579,7 @@ div[role="row"] {
     transform: rotate(90deg);
   }
 }
+
 .expand-icon-wrapper {
   cursor: pointer;
 }
@@ -1563,6 +1588,7 @@ div[role="row"] {
   div.fuwETZ {
     height: 381px;
   }
+
   &.products {
     .jzrolw {
       height: 381px;
@@ -1577,6 +1603,7 @@ div[role="row"] {
   &.row {
     flex-direction: row;
   }
+
   &.column {
     flex-direction: column;
   }
@@ -1590,6 +1617,7 @@ hr.form-section-separator {
 div.empty-table-wrapper {
   min-height: 336px;
 }
+
 .icon-button {
   letter-spacing: initial !important;
 }
