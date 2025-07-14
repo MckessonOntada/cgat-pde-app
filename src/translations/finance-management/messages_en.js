@@ -93,6 +93,7 @@ export const PaymentInvoicesEN = {
   // Invoices
   'paymentInvoices.history.table.billNumber': 'Bill Number',
   'paymentInvoices.history.table.invoiceNumber': 'Invoice Number',
+  'paymentInvoices.history.table.creditNumber': 'Credit Number',
   'paymentInvoices.history.table.SoldToSite': 'Sold To Site',
   'paymentInvoices.history.table.SoldToAccountNo': 'Sold To Account Number',
   'paymentInvoices.history.table.PostingDate': 'Bill Date',
@@ -296,6 +297,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.filter.searchCreditNo': 'search by Credit Number',
   'paymentInvoices.table.column.CreditNo': 'Credit Number',
   'paymentInvoices.table.column.soldToAccount': 'Sold To Account Number',
+  'paymentInvoices.table.column.soldToName': 'Sold To Account Name',
   'paymentInvoices.table.column.creditAmount': 'Credit Amount',
   'paymentInvoices.table.column.pdfDownload': 'PDF download Successfully.',
   'paymentInvoices.table.column.pdfDownloadError': 'Something went wrong, Please ty again'
