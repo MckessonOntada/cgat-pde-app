@@ -35,6 +35,7 @@ import InfoModel from '@src/components/InfoModel/indix';
 import Alert from '@src/components/cgat-alert/Alert';
 import AttachmentCard from './AttachmentCard';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 
 const BUTTON_ACTIONS = {
   SUBMIT: 'submit',
@@ -67,6 +68,7 @@ const Summary = () => {
   const [sapStatus, setSapStatus] = React.useState(null);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const {
+    tradeDetails = {},
     therapy = {},
     catalog = {},
     orderCost,
@@ -84,7 +86,6 @@ const Summary = () => {
     isCoiIdRequired,
     spTherapyConfig
   } = orderDetails || {};
-
   React.useEffect(() => {
     if (isError) {
       addNotification({
@@ -570,7 +571,7 @@ const Summary = () => {
               {backToInvoiceListing ? t('orderManagement.backToInvoiceDetails') : t('captions.btnBackToManageOrder')}
             </Button>
           </div>
-          {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
+          {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrderSummary')} />}
           {isApprover && (
             <div className={styles.pageHeadingReview}>
               <PageHeader heading={t('headings.reviewOrder')} />
@@ -616,7 +617,7 @@ const Summary = () => {
                 heading={
                   !isApprover && (
                     <Heading className={styles.orderSummaryHeading} as="h2">
-                      <span>{t('labels.summary')}</span>
+                      {isSubmitted && <span>{t('labels.summary')}</span>}
                       {isPapOrder && (
                         <span className={styles.pap}>
                           <Badge
@@ -699,7 +700,10 @@ const Summary = () => {
                   )}
 
                 <div className="MCP-CardContainer">
-                  <ModuleHeader className={styles.panelHeader} heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>} />
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={<Heading as="h3">{t(spOrder ? 'labels.orderDetails' : 'labels.priceDetails')}</Heading>}
+                  />
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
                       status === StatusEnum.SUBMITTED
@@ -710,25 +714,21 @@ const Summary = () => {
                     }`}>
                     {status === StatusEnum.SUBMITTED && !spOrder && <DetailSegment label={t('labels.orderId')} value={backendOrderId} />}
                     <DetailSegment
-                      label={t('labels.materialDescription')}
+                      label={t('labels.therapy')}
                       noTooltip={true}
                       value={
                         <div className={styles.materialDescription}>
                           <div className="overflowing">
                             <Tooltip body={therapy?.materialDescription}>
-                              {!spOrder ? (
-                                <Link
-                                  className="MCP-table-link"
-                                  aria-label={t('labels.therapyDescription')}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleOpenDetails(therapy);
-                                  }}>
-                                  {therapy?.materialDescription}
-                                </Link>
-                              ) : (
-                                therapy?.materialDescription
-                              )}
+                              <Link
+                                className="MCP-table-link"
+                                aria-label={t('labels.therapyDescription')}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleOpenDetails(therapy);
+                                }}>
+                                {tradeDetails?.tradeName}
+                              </Link>
                             </Tooltip>
                           </div>
                           {!spOrder && inventoryStatus && (
@@ -756,12 +756,14 @@ const Summary = () => {
                     )}
                   </div>
                 </div>
-                <div className={'equal-height-grid grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
+                <div
+                  className={`equal-height-grid grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1'
+                  }`}>
                   <div className="MCP-module-body">
                     <div className="MCP-CardContainer">
                       <ModuleHeader
                         className={styles.panelHeader}
-                        heading={<Heading as="h3">{t('labels.therapyDetails')}</Heading>}
+                        heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
                         controls={
                           !hideControls && (
                             <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
@@ -777,22 +779,12 @@ const Summary = () => {
                         }
                       />
                       <div className={` grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-                        {!spOrder && <DetailSegment label={t('labels.therapyDescription')} value={therapy.materialDescription || '-'} />}
+                        <DetailSegment label={t('labels.genericName')} value={therapy.genericName || '-'} />
+                        <DetailSegment label={t('labels.manufacturer')} value={therapy.manufacturerName || '-'} />
+                        <DetailSegment label={t('labels.formulation')} value={therapy.formulation || '-'} />
+                        <DetailSegment label={t('labels.Dosage')} value={`${therapy.strength || ''} ${therapy.dosage || ''}`.trim() || '-'} />
                         <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber || '-'} />
-                        <DetailSegment label={t('labels.Strength')} value={therapy.strength || '-'} />
-                        <DetailSegment label={t('labels.Dosage')} value={therapy.dosage || '-'} />
-                        {!spOrder && (
-                          <>
-                            <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.salesOrg || '-'} />
-                            <DetailSegment label={t('labels.distributionsChannel')} value={accountDetails?.soldToAccount?.distributionChannel} />
-                          </>
-                        )}
-                        {spOrder && (
-                          <>
-                            <DetailSegment label={t('labels.genericName')} value={therapy.genericName || '-'} />
-                            <DetailSegment label={t('labels.manufacturer')} value={therapy.manufacturerName || '-'} />
-                          </>
-                        )}
+
                         {!spOrder && (
                           <DetailSegment
                             label={t('labels.netPrice')}
@@ -835,17 +827,17 @@ const Summary = () => {
                           )
                         }
                       />
-                      <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
-                        <DetailSegment label={t('labels.soldToAccountName')} value={accountDetails?.soldToAccount?.accountName} />
+                      <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3`}>
                         <DetailSegment
                           label={t('labels.soldToAccountAddress')}
                           value={CommonUtils.getDetailedAddress(accountDetails?.soldToAccount?.address)}
                         />
-                        <DetailSegment label={t('labels.shipToAccountName')} value={accountDetails?.shipToAccount?.accountName} />
+                        <DetailSegment label={t('labels.soldToAccountName')} value={accountDetails?.soldToAccount?.accountName} />
                         <DetailSegment
                           label={t('labels.shipToAccountAddress')}
                           value={CommonUtils.getDetailedAddress(accountDetails?.shipToAccount?.address)}
                         />
+                        <DetailSegment label={t('labels.shipToAccountName')} value={accountDetails?.shipToAccount?.accountName} />
                         <DetailSegment label={t('labels.orderChannel')} value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)} />
                         {!spOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier]} />}
                       </div>
@@ -1319,21 +1311,15 @@ const Summary = () => {
         />
       )}
 
-      {!isError && openDetails && !spOrder && (
-        <TherapyDetails
-          therapyId={therapy.materialNumber}
-          therapyData={TherapyDetailsConstantsForBB(false)}
-          onClose={() => setOpenDetails(!openDetails)}
-          showFooter={false}
-          isMaterialConfiguration={false}
-          useUserService={true}
+      {!isError && openDetails && (
+        <TherapyDetailsWithTabs
+          trade={tradeDetails?.tradeName}
+          channelType={orderDetails.channelType}
+          therapy={therapy.id || tradeDetails?.tradeName}
           heading={t('labels.therapyDetails')}
-          notify={({ type, message }) =>
-            setAlert({
-              description: message,
-              type
-            })
-          }
+          showFooter={false}
+          onClose={() => setOpenDetails(!openDetails)}
+          hideTab={true}
         />
       )}
     </div>

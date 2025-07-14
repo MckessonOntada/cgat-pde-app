@@ -38,7 +38,8 @@ function TherapyDetailsWithTabs({
   spTherapyConstants = TherapyDetailsConstantsForSP,
   showFooter = true,
   heading,
-  isMaterialListing = false
+  isMaterialListing = false,
+  hideTab = false
 }) {
   const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
   const isSPMaterial = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -275,6 +276,10 @@ function TherapyDetailsWithTabs({
       });
     }
   };
+  const shouldRenderTabList =
+    (!isDetailsByNdc && channelType === CHANNEL_TYPE.BUY_AND_BILL && !hideTab) ||
+    (isDetailsByNdc && therapyTabs.length > 1) ||
+    (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && therapyTabs.length > 1);
 
   return (
     <FloatingDrawer
@@ -298,9 +303,7 @@ function TherapyDetailsWithTabs({
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          {((!isDetailsByNdc && channelType === CHANNEL_TYPE.BUY_AND_BILL) ||
-            (isDetailsByNdc && therapyTabs.length > 1) ||
-            (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && therapyTabs.length > 1)) && (
+          {shouldRenderTabList && (
             <TabList
               options={therapyTabs}
               alignment="left"
@@ -324,6 +327,7 @@ function TherapyDetailsWithTabs({
                 therapyData={buyAndBillTherapyConstants}
                 isDetailsByNdc={isDetailsByNdc}
                 therapyTabs={therapyTabs}
+                hideTab={hideTab}
               />
             )}
             <div className={styles.detailsPanel}>
@@ -359,7 +363,7 @@ function TherapyDetailsWithTabs({
   );
 }
 
-function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
+function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs, hideTab }) {
   const { t } = useTranslate();
   const renderDetails = (fields, details) =>
     fields.map(({ label, value }) => {
@@ -382,7 +386,7 @@ function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs }) {
       <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            {((!isDetailsByNdc && details.channelType === CHANNEL_TYPE.BUY_AND_BILL) ||
+            {((!isDetailsByNdc && details.channelType === CHANNEL_TYPE.BUY_AND_BILL && !hideTab) ||
               (isDetailsByNdc && therapyTabs.length > 1) ||
               (details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && therapyTabs.length > 1)) && (
               <Heading as="h3" className={styles.details}>
