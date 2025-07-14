@@ -16,6 +16,7 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.table.sitename': 'Site Name',
   'manageSPMaterial.table.status': 'Status',
   'manageSPMaterial.table.action': 'Actions',
+  'manageSPMaterial.table.dosage': 'Dosage',
   'manageSPMaterial.table.pagination.totalRecords': 'results',
   'manageSPMaterial.table.pagination.perPage': 'per page',
   'manageSPMaterial.table.error': 'Something went wrong! Please try again',
