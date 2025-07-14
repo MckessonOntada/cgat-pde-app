@@ -456,7 +456,9 @@ const PatientDetails = () => {
 
                                   <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
                                     <Tooltip body={provider.detailedAddress}>
-                                      <p className="detail-segment inline-text-overflow">{provider.detailedAddress}</p>
+                                      <p className="detail-segment inline-text-overflow">
+                                        <EclipsesText str={provider.detailedAddress} maxLength={35} />
+                                      </p>
                                     </Tooltip>
                                     {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
                                       const rawValue = provider[key];
