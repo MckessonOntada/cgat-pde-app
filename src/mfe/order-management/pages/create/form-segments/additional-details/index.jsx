@@ -851,12 +851,14 @@ function AdditionalDetails() {
                               <div className="MCP-module-body">
                                 <hr className="form-section-separator" />
                                 {/* <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading> */}
-                                <QuestionnaireTemplate
-                                  onRemoveDocument={handleOnRemoveDocument}
-                                  onDocumentChange={handleOnDocumentChange}
-                                  config={questionnaireTemplateConfig}
-                                  isPreview={false}
-                                />
+                                <div className="">
+                                  <QuestionnaireTemplate
+                                    onRemoveDocument={handleOnRemoveDocument}
+                                    onDocumentChange={handleOnDocumentChange}
+                                    config={questionnaireTemplateConfig}
+                                    isPreview={false}
+                                  />
+                                </div>
                               </div>
                             </div>
                           </React.Fragment>

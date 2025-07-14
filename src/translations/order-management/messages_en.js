@@ -461,7 +461,7 @@ export const MessageEn = {
   'label.check.questionMandatory': 'Mark this question as mandatory?',
   'label.check.requiredDocument': 'Document upload required?',
   'button.caption.addSection': 'Add Section',
-  'form.label.sectionTitle': 'Section Title',
+  'form.label.sectionTitle': 'Section Name',
   'heading.sectionDetails': 'Section Details',
   'message.questionnaire.sectionTitleRequired': 'Section name required',
   'button.caption.addQuestion': 'Add Question',
