@@ -97,39 +97,14 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
       }
       return cellValue ? (
         <span aria-label={t('labels.genericName')}>
-          <Tooltip body={toolTip}>{cellValue}</Tooltip>
+          <Tooltip body={toolTip}>{cellValue?.toUpperCase()}</Tooltip>
         </span>
       ) : (
         '-'
       );
     }
   },
-  {
-    id: 'ndc',
-    name: t('labels.ndc'),
-    selector: () => {},
-    minWidth: '120px',
-    sortable: false,
-    showInMobileHeader: true,
-    showColumnNameInHeader: true,
-    cardHeader: true,
-    cell: ({ isExpandable, ndc }) => {
-      let toolTip = '',
-        cellValue = '';
-      if (isExpandable) {
-        toolTip = ndc.join(', ');
-        cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
-      } else {
-        toolTip = ndc;
-        cellValue = ndc;
-      }
-      return (
-        <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-          <Tooltip body={toolTip}>{cellValue}</Tooltip>
-        </span>
-      );
-    }
-  },
+
   {
     id: 'manufacturer',
     name: t('labels.manufacturer'),
@@ -141,7 +116,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
         cellValue = '';
       if (isExpandable) {
         toolTip = manufacturer.join(', ');
-        cellValue = CommonUtils.getListOverflowingDisplayLabel(manufacturer, 2);
+        cellValue = manufacturer[0] || '';
       } else {
         toolTip = manufacturer;
         cellValue = manufacturer;
@@ -184,6 +159,32 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
         </span>
       ) : (
         '-'
+      );
+    }
+  },
+  {
+    id: 'ndc',
+    name: t('labels.ndc'),
+    selector: () => {},
+    minWidth: '120px',
+    sortable: false,
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
+    cardHeader: true,
+    cell: ({ isExpandable, ndc }) => {
+      let toolTip = '',
+        cellValue = '';
+      if (isExpandable) {
+        toolTip = ndc.join(', ');
+        cellValue = t('labels.multiple');
+      } else {
+        toolTip = ndc;
+        cellValue = ndc;
+      }
+      return (
+        <span aria-label={t('table.columns.captions.nationalDrugCode')}>
+          <Tooltip body={toolTip}>{cellValue}</Tooltip>
+        </span>
       );
     }
   }
