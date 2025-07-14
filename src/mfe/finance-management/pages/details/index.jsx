@@ -127,7 +127,7 @@ function Details(props) {
                 setTherapy(props?.therapyId);
               }}
               state={{ ...locationParams.state }}>
-              {props?.therapyId || '-'}
+              {CommonUtils.removeLeadingZeros(props?.therapyId) || '-'}
             </Link>
           </div>
         )
