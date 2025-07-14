@@ -150,6 +150,108 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     }
   ];
 
+  const linkSpColumns = [
+    {
+      id: 'checkbox',
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        updatedData,
+        'id',
+        paginationConfig,
+        selectedSPMaterial,
+        setSelectedSPMaterial
+      ),
+      sortable: false,
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row.itemStatus === 'A' ? { ...row, active: true } : { ...row, active: false },
+          updatedData,
+          'id',
+          paginationConfig,
+          selectedSPMaterial,
+          setSelectedSPMaterial
+        ),
+      width: '50px'
+      //  omit: !isLinkCatalog ? true : false
+    },
+    {
+      id: 'materialDescription',
+      name: t('column.material.crosswalk.spProductName'),
+      selector: (row) => {},
+      minWidth: '210px',
+      sortable: true,
+      sortKey: 'material_description',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={200} />
+    },
+    {
+      id: 'genericName',
+      name: t('manageSPMaterial.table.genericName'),
+      selector: (row) => {},
+      minWidth: '160px',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
+    },
+    {
+      id: 'manufacturerName',
+      name: t('manageSPMaterial.table.manufacturer'),
+      selector: (row) => {},
+      minWidth: '200px',
+      sortable: true,
+      sortKey: 'manufacturer_name',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.manufacturerName} maxWidth={190} />
+    },
+    {
+      id: 'dosage',
+      name: t('manageSPMaterial.table.dosage'),
+      selector: (row) => {},
+      minWidth: '120px',
+      sortable: false,
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={`${props?.strength} ${props?.dosage}`} maxWidth={100} />
+    },
+    {
+      id: 'ndcNumber',
+      name: t('column.material.crosswalk.spNDC'),
+      selector: (row) => {},
+      minWidth: '120px',
+      sortable: false,
+      wrap: true,
+      cell: (props) => {
+        if (props?.ndcNumber) {
+          return (
+            <Link
+              className="MCP-table-link"
+              onClick={() => {
+                setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
+                setOpenSPMaterialDetails(true);
+              }}>
+              <EclipsesTextcss str={props?.ndcNumber || '-'} maxWidth={150} />
+            </Link>
+          );
+        } else {
+          return <div>{'-'}</div>;
+        }
+      }
+    },
+    {
+      id: 'status',
+      name: t('manageSPMaterial.table.status'),
+      selector: (row) => {},
+      sortKey: 'status',
+      minWidth: '100px',
+      center: true,
+      cell: (props) =>
+        props.itemStatus === 'A' ? (
+          <Badge customStyle={{ minWidth: '120px' }} text="Active" type="success" />
+        ) : (
+          <Badge customStyle={{ minWidth: '120px' }} text="Inactive" type="info-default" />
+        ),
+      omit: isLinkCatalog ? true : false
+    }
+  ];
+
   const ExpandedComponent = ({ data }) => {
     if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
     const expandedData = data.therapies || [];
@@ -265,7 +367,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           <CustomDataTable
             id="sp-material-table"
             type="normal"
-            columns={columns}
+            columns={isLinkCatalog ? linkSpColumns : columns}
             data={data}
             onSortIconClick={handleOnSortIconClick}
             currentPage={paginationConfig.pageNumber}
