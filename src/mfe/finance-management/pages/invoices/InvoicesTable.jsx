@@ -66,7 +66,7 @@ export default function InvoicesTable() {
       const body = {
         fiscalYear: row.fiscalYear,
         companyCode: selectedAccount.companyCode,
-        documentNo: row.referenceDocumentNumber
+        documentNo: row.billNumber
       };
       const headers = {
         accept: 'application/json, text/plain, */*',

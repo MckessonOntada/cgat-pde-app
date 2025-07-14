@@ -423,5 +423,9 @@ export const UserManagementEN = {
   'userManagement.uploadUsers': 'Upload Users',
   'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
   'userManagement.button.addUsers': 'Add Users',
-  'userManagement.upload-info': 'For filling up the user’s template, please refer to the instruction file.'
+  'userManagement.upload-info': 'For filling up the user’s template, please refer to the instruction file.',
+  'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
+  'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
+  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.'
 };

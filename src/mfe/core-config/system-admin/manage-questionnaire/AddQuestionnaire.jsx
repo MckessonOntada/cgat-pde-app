@@ -499,20 +499,22 @@ function AddQuestionnaire() {
                                         <div className="styledHeading">
                                           <Heading as="h2">{t('heading.sectionDetails')}</Heading>
                                         </div>
-                                        <div className="controls">
-                                          <div className="styled-icon-button error-button">
-                                            <IconButton
-                                              label={t('button.caption.remove')}
-                                              color="error"
-                                              size="lg"
-                                              iconButton={false}
-                                              textButton={true}
-                                              Icon={BinRedIcon}
-                                              disabled={values['sections'].length === 1}
-                                              onClick={() => removeSection(sectionIndex)}
-                                            />
+                                        {mode !== MODE.VIEW && (
+                                          <div className="controls">
+                                            <div className="styled-icon-button error-button">
+                                              <IconButton
+                                                label={t('button.caption.remove')}
+                                                color="error"
+                                                size="lg"
+                                                iconButton={false}
+                                                textButton={true}
+                                                Icon={BinRedIcon}
+                                                disabled={values['sections'].length === 1}
+                                                onClick={() => removeSection(sectionIndex)}
+                                              />
+                                            </div>
                                           </div>
-                                        </div>
+                                        )}
                                       </div>
                                       <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                                         <div className="styled-form-field">

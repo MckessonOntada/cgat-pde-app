@@ -100,7 +100,7 @@ export default function CreditsTable(props) {
     },
     {
       id: 'billNumber',
-      name: t('paymentInvoices.history.table.invoiceNumber'),
+      name: t('paymentInvoices.history.table.creditNumber'),
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
@@ -132,7 +132,7 @@ export default function CreditsTable(props) {
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div>{props?.soldToSite || '-'}</div>
+      cell: (props) => <div>{props?.soldToName || '-'}</div>
     },
     {
       id: 'dueDate',

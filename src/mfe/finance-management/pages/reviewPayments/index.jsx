@@ -394,7 +394,7 @@ function ReviewPayments() {
     setRemainingAmount(FinanceUtils.formatCurrency(remaining).slice(1));
     const shouldDisable = parseFloat(creditsSum) >= parseFloat(paymentAmountSum);
     setDisableCreditSelection(shouldDisable);
-    if (shouldDisable) {
+    if (shouldDisable && !REVIEW_MODE) {
       setSelectedData(null);
       setPaymentOption('Pay Today');
     }
