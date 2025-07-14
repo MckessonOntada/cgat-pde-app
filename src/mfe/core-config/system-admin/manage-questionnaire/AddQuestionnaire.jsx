@@ -604,18 +604,20 @@ function AddQuestionnaire() {
                                                             fieldlabel={t('label.question')}
                                                             isReadOnly={readOnly}
                                                             labelControls={
-                                                              <Field
-                                                                name={`sections.${sectionIndex}.questions.${index}.caption.activeLanguage`}
-                                                                options={['en', 'es']}
-                                                                size="small"
-                                                                value={question['caption']['activeLanguage']}
-                                                                component={Components['toggleButton']}
-                                                              />
+                                                              mode !== MODE.VIEW ? (
+                                                                <Field
+                                                                  name={`sections.${sectionIndex}.questions.${index}.caption.activeLanguage`}
+                                                                  options={['en', 'es']}
+                                                                  size="small"
+                                                                  value={question['caption']['activeLanguage']}
+                                                                  component={Components['toggleButton']}
+                                                                />
+                                                              ) : null
                                                             }
                                                             placeholder={` `}
                                                             component={Components['textarea']}
                                                             maxCharHelperText={t('message.questionTextMaxChar')}
-                                                            maxCharLimit={1000}
+                                                            maxCharLimit={5000}
                                                             isRequired={true}
                                                           />
                                                         </div>
@@ -639,13 +641,15 @@ function AddQuestionnaire() {
                                                                                   isRequired
                                                                                   isReadOnly={readOnly}
                                                                                   labelControls={
-                                                                                    <Field
-                                                                                      name={`sections.${sectionIndex}.questions.${index}.options.${optionIndex}.activeLanguage`}
-                                                                                      options={['en', 'es']}
-                                                                                      size="small"
-                                                                                      value={option['activeLanguage']}
-                                                                                      component={Components['toggleButton']}
-                                                                                    />
+                                                                                    mode !== MODE.VIEW ? (
+                                                                                      <Field
+                                                                                        name={`sections.${sectionIndex}.questions.${index}.options.${optionIndex}.activeLanguage`}
+                                                                                        options={['en', 'es']}
+                                                                                        size="small"
+                                                                                        value={option['activeLanguage']}
+                                                                                        component={Components['toggleButton']}
+                                                                                      />
+                                                                                    ) : null
                                                                                   }
                                                                                 />
                                                                               </div>
@@ -705,7 +709,7 @@ function AddQuestionnaire() {
                                                         <div className="stacked-checkbox">
                                                           <Field
                                                             name={`sections.${sectionIndex}.questions.${index}.checks`}
-                                                            id={`Check-${index}`}
+                                                            id={`check-${sectionIndex}-${index}`}
                                                             items={[
                                                               {
                                                                 isDisabled: readOnly,

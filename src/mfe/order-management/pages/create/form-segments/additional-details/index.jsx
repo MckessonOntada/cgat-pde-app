@@ -287,9 +287,9 @@ function AdditionalDetails() {
     const validationSchemaFields = {};
 
     result.forEach((template) => {
-      template.sectionsDetails.forEach((section) => {
+      template.sectionsDetails.forEach((section, sectionIndex) => {
         section.questions.forEach((question) => {
-          const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+          const fieldName = CommonUtils.generateUniqueCode(`${template.id}-${sectionIndex}#${question.text[LANGUAGE.ENGLISH]}`);
           questionnaireFields[fieldName] = {
             value: question.value
           };
@@ -573,7 +573,7 @@ function AdditionalDetails() {
 
       template.sectionsDetails.forEach((section, sectionIndex) => {
         section.questions.forEach((question) => {
-          const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+          const fieldName = CommonUtils.generateUniqueCode(`${template.id}-${sectionIndex}#${question.text[LANGUAGE.ENGLISH]}`);
           const fieldValue = values[fieldName];
           if (!fieldName) return;
 
@@ -850,7 +850,6 @@ function AdditionalDetails() {
                             <div className="configured-questionnaire-form">
                               <div className="MCP-module-body">
                                 <hr className="form-section-separator" />
-                                {/* <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading> */}
                                 <div className="">
                                   <QuestionnaireTemplate
                                     onRemoveDocument={handleOnRemoveDocument}

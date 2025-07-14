@@ -117,38 +117,34 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
 
   let templateList = [];
   if (typeof config === 'object' && !Array.isArray(config)) {
-    templateList.push(
-      <div key={config.id} className="template">
-        {config.questions.map((question, questionIndex) => getControl(question, 1, questionIndex))}
-      </div>
-    );
+    templateList.push(<div className="section">{config.questions.map((question, questionIndex) => getControl(question, 1, questionIndex))}</div>);
   } else if (Array.isArray(config)) {
     {
       config.map((template) => {
         templateList.push(
-          <div key={template.id} className="template">
-            <div className="sections">
-              {template.sectionsDetails.map((section, sectionIndex) => {
-                return (
-                  <div className="section">
-                    <div className="styledHeading">
-                      <Heading as="h3">{section.sectionName}</Heading>
-                    </div>
-                    <div className="questions">
-                      {section.questions.map((question, questionIndex) => (
-                        <div className="question">{getControl(question, `${template.id}-${sectionIndex}`, questionIndex)}</div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          template.sectionsDetails.map((section, sectionIndex) => {
+            return (
+              <div className="section">
+                <div className="styledHeading">
+                  <Heading as="h3">{section.sectionName}</Heading>
+                </div>
+                <div className="questions">
+                  {section.questions.map((question, questionIndex) => (
+                    <div className="question">{getControl(question, `${template.id}-${sectionIndex}`, questionIndex)}</div>
+                  ))}
+                </div>
+              </div>
+            );
+          })
         );
       });
     }
   }
-  return <div className="questionnaire-form">{templateList}</div>;
+  return (
+    <div className="questionnaire-form">
+      <div className="sections">{templateList}</div>
+    </div>
+  );
 }
 
 export default QuestionnaireTemplate;
