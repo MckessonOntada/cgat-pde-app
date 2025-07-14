@@ -16,6 +16,7 @@ import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { renderTableCheckBoxCredit } from './CreditTableSelectionConstants';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
@@ -123,8 +124,8 @@ export default function CreditsTable(props) {
       )
     },
     {
-      id: 'soldToSite',
-      name: t('paymentInvoices.table.column.soldToAccount'),
+      id: 'soldToName',
+      name: t('paymentInvoices.table.column.soldToName'),
       selector: () => {},
       minWidth: '220px',
       sortable: true,
@@ -132,7 +133,7 @@ export default function CreditsTable(props) {
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div>{props?.soldToName || '-'}</div>
+      cell: (props) => <EclipsesTextcss str={props?.soldToName || '-'} maxWidth={210} />
     },
     {
       id: 'dueDate',
