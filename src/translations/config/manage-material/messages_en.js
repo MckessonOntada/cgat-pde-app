@@ -80,5 +80,6 @@ export const SystemConfigurationEN = {
 
   'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
   'manageMaterial.drawer.configuration.alert.error': 'Please select Required Field',
-  'labels.ndc': 'NDC'
+  'labels.ndc': 'NDC',
+  'labels.multiple': 'Multiple'
 };
