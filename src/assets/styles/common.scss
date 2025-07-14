@@ -42,10 +42,10 @@
 }
 
 .custom-date-range-picker {
-  >div {
-    >div {
-      >div {
-        >div {
+  > div {
+    > div {
+      > div {
+        > div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -69,16 +69,6 @@ div.disable-all {
   .logged-in-label {
     text-transform: uppercase;
   }
-}
-
-.MCP-modal-body,
-.questionnaire-template-question-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-03);
-  align-items: stretch;
-  justify-content: space-between;
-  font-size: var(--brand-font-size--default);
 }
 
 // module css
@@ -557,8 +547,6 @@ div.disable-all {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-600);
 
-  &.inline {}
-
   &.normal {
     display: flex;
     flex-wrap: wrap;
@@ -721,10 +709,6 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {}
-
-@media only screen and (min-width: 992px) {}
-
 @media only screen and (min-width: 1200px) {
   .max-container {
     max-width: 1120px;
@@ -779,7 +763,6 @@ div.disable-all {
 }
 
 .styled-heading {
-
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -806,20 +789,7 @@ div.disable-all {
 }
 
 .styled-form-field {
-
-  .label-heading,
-  label[class*="TextareaInput-module--label"],
-  label[class*="InputField-module--labelText"],
-  fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {}
-
   div[class*="RadioGroup-module"] {
-    label {
-      // font-size: var(--brand-font-size--default) !important;
-      // font-weight: var(--brand-font-weight-400) !important;
-      // line-height: var(--brand-font-size--20);
-    }
-
     margin-bottom: 1px !important;
   }
 }
@@ -828,23 +798,6 @@ div.disable-all {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
-}
-
-.styled-radio- {
-  fieldset {
-    legend {
-      // font-size: var(--brand-font-size--large) !important;
-      // font-weight: var(--brand-font-weight-600);
-      // line-height: var(--brand-line-height--x-large);
-      // margin-bottom: var(--spacing-04);
-    }
-  }
-
-  label {
-    // font-size: var(--brand-font-size--default) !important;
-    // font-weight: var(--brand-font-weight-600);
-    // line-height: var(--brand-line-height--m-large);
-  }
 }
 
 .stacked-checkbox {
@@ -860,59 +813,83 @@ div.disable-all {
   }
 }
 
-//temp
-.template,
-.template .section .question-list .question,
-.template-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: auto;
-  gap: var(--spacing-03);
+.questionnaire-preview {
+  .sections {
+    .section {
+      .question-panel {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-02);
+      }
+      .questions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-04);
+
+        .question {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-03);
+          padding-bottom: var(--spacing-04);
+          border-bottom: 1px solid var(--brand-color-patient-primary-3);
+
+          &:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+          }
+
+          .options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-02);
+            .option {
+            }
+          }
+        }
+      }
+    }
+  }
+
+  //other
+  .stacked-checkbox fieldset {
+    margin-bottom: 0;
+  }
 }
 
-.section .question-list {
-  .question {
-    padding-bottom: var(--spacing-04);
-    margin-bottom: var(--spacing-04);
-    border-bottom: 1px solid var(--brand-color-patient-primary-3);
-    .grid {
-      align-items: center;
-    }
-    &:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
+.questionnaire-form {
+  .sections {
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-03);
+
+      padding-bottom: var(--spacing-04);
+      margin-bottom: var(--spacing-04);
+      border-bottom: 1px solid var(--brand-color-patient-primary-3);
+      &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .questions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-04);
+
+        .question {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-03);
+        }
+      }
     }
   }
 }
 
 .section-controls {
   padding-top: var(--spacing-04);
-  margin-top: var(--spacing-04);
+  margin-top: var(--spacing-03);
   border-top: 1px solid var(--brand-color-patient-primary-3);
-}
-
-.option-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-04);
-  align-items: stretch;
-  margin-bottom: var(--spacing-04);
-
-  .void-gap {
-    display: none;
-
-    @include mixins.respond(md) {
-      display: initial;
-    }
-  }
-}
-
-.option-panel {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
 }
 
 .flex-end {
@@ -926,7 +903,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  >div {
+  > div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -947,24 +924,12 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
-
     button,
     a {
       font-size: var(--brand-font-size--small);
       line-height: var(--brand-line-height--large);
       text-transform: uppercase;
     }
-  }
-}
-
-.questionnaire-template-question-list {
-
-  .label-heading,
-  label[class*="TextareaInput-module--label"],
-  label[class*="InputField-module--labelText"],
-  fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {
-    // margin-bottom: var(--spacing-02);
   }
 }
 
@@ -1526,12 +1491,12 @@ div[role="row"] {
   }
 }
 
-.custom-radio input:checked~.checkmark {
+.custom-radio input:checked ~ .checkmark {
   background-color: var(--brand-color-primary);
   border: none;
 }
 
-.custom-radio input:disabled~.checkmark {
+.custom-radio input:disabled ~ .checkmark {
   background-color: var(--brand-color-dark-grey);
   border: none;
 }
@@ -1542,7 +1507,7 @@ div[role="row"] {
   display: none;
 }
 
-.custom-radio input:checked~.checkmark:after {
+.custom-radio input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -1580,7 +1545,7 @@ div[role="row"] {
     padding: 12px 0px 12px 16px;
   }
 
-  >div {
+  > div {
     border-left: none;
     border-top: none;
     border-right: none;

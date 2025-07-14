@@ -127,19 +127,17 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       config.map((template) => {
         templateList.push(
           <div key={template.id} className="template">
-            <div className="sections MCP-module-body">
-              {template.sectionsDetails.map((section) => {
+            <div className="sections">
+              {template.sectionsDetails.map((section, sectionIndex) => {
                 return (
-                  <div className="section MCP-module-body">
+                  <div className="section">
                     <div className="styledHeading">
                       <Heading as="h3">{section.sectionName}</Heading>
                     </div>
-                    <div className="question-panel">
-                      <div className="question-list">
-                        {section.questions.map((question, questionIndex) => (
-                          <div className="question">{getControl(question, template.id, questionIndex)}</div>
-                        ))}
-                      </div>
+                    <div className="questions">
+                      {section.questions.map((question, questionIndex) => (
+                        <div className="question">{getControl(question, `${template.id}-${sectionIndex}`, questionIndex)}</div>
+                      ))}
                     </div>
                   </div>
                 );
@@ -150,7 +148,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       });
     }
   }
-  return <div className="questionnaire-template-question-list">{templateList}</div>;
+  return <div className="questionnaire-form">{templateList}</div>;
 }
 
 export default QuestionnaireTemplate;
