@@ -183,7 +183,7 @@ export const ConfigurationMessagesES = {
   'SPCatalog.continue': 'S_Continue',
   'SPCatalog.SelectSPMaterial': 'S_Select SP Material',
   'SPCatalog.SelectedMaterial': 'S_Selected Material',
-  'SPCatalog.Material.Placeholder': 'S_Search By SP Product ID, Product Name, NDC',
+  'SPCatalog.Material.Placeholder': 'S_Search By SP Therapy, Generic Name, Manufacturer, SP NDC',
   'SPCatalog.Material.selectall': 'S_select all',
   'SPCatalog.Material.clearall': 'S_Clear all',
   'SPCatalog.btnBack': 'S_Back to manage SP Catalog page',

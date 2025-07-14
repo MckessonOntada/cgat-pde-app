@@ -554,7 +554,7 @@ export const MessageEn = {
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
   'controls.addProviders': 'Add Provider',
   'controls.downloadCSVTemplate': 'Download CSV Template',
-  'controls.placeholder.searchSPCatalogPlaceholder': 'Search by ID, Name, NDC, Account Number...',
+  'controls.placeholder.searchSPCatalogPlaceholder': 'Search by Therapy, Generic Name, Manufacturer, NDC, Account Number...',
   'controls.placeholder.searchProviderPlaceholder': 'Search by Provider Name, NPI, DEA, Address',
   'label.emptyProviderTableDescription': 'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',

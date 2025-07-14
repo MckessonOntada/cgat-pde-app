@@ -643,5 +643,6 @@ export const MessageEs = {
   'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   'message.selectDocumentToUpload': 'S_Please select document to upload.',
   'message.documentUploadSuccess': 'S_Document has been successfully uploaded for Order ID: {orderId}',
-  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and product/material master.'
+  'label.uploadCrosswalk.info': 'S_For filling up the crosswalk template, please refer to the instruction file and product/material master.',
+  'controls.placeholder.searchSPCatalogPlaceholder': 'S_Search by Therapy, Generic Name, Manufacturer, NDC, Account Number...'
 };

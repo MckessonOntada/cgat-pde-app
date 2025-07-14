@@ -47,7 +47,10 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
       applySort(sortKey, direction);
     }
   };
-
+  const updatedData = data.map(({ catalog_id, ...rest }) => ({
+    ...rest,
+    id: catalog_id
+  }));
   const clearTableSelection = () => {
     deselectAll(); // clears selectedRows and selectedRowObjects
   };
@@ -100,7 +103,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
 
   const handleOnOptionSelection = (action, row) => {
     if (action == 'unlink') {
-      const { sapMaterial, soldToCustomer } = row;
+      const { sapMaterial, soldToCustomer } = row.catalogPrice;
       const payload = [{ sapMaterial, soldToCustomer }];
       onDeLinkConfirmation(payload);
     } else if (action == 'configure') {
@@ -111,10 +114,10 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
 
   const handleOnDeLink = () => {
     const payload = Array.from(selectedRows).map((id) => {
-      const row = data.find((item) => item.id === id);
+      const row = updatedData.find((item) => item.catalogPrice.id === id);
       return {
-        sapMaterial: row.sapMaterial,
-        soldToCustomer: row.soldToCustomer
+        sapMaterial: row.catalogPrice.sapMaterial,
+        soldToCustomer: row.catalogPrice.soldToCustomer
       };
     });
     onDeLinkConfirmation(payload);
@@ -183,7 +186,6 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
           </div>
         }
       />
-
       <CustomDataTable
         id="provider-list-table"
         columns={getColumns({
@@ -193,7 +195,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
           handleOnOptionSelection,
           isCustomerCenter
         })}
-        data={data}
+        data={updatedData}
         handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
         onSortIconClick={handleOnSort}
         pagination={true}

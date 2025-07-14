@@ -28,46 +28,60 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
     const payload = [{ sapMaterial, soldToCustomer }];
     onDeLinkConfirmation(payload);
   };
+  const updatedData = data.map(({ catalog_id, ...rest }) => ({
+    ...rest,
+    id: catalog_id
+  }));
 
   return [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + pagination.pageNumber },
-        data,
-        'id',
-        pagination,
-        [
-          ...Array.from(selectedRows).map((val) => ({
-            id: val
-          }))
-        ],
-        setSelection
-      ),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, updatedData, 'id', pagination, [...selectedRowObjects], setSelection),
       sortable: false,
-      cell: (row, index) =>
-        renderTableCheckBox(
-          row,
-          data,
-          'id',
-          pagination,
-          [
-            ...Array.from(selectedRows).map((val) => ({
-              id: val
-            }))
-          ],
-
-          setSelection
-        ),
+      cell: (row, index) => renderTableCheckBox(row, updatedData, 'id', pagination, [...selectedRowObjects], setSelection),
       width: '50px'
     },
     {
-      id: 'SP_PRODUCT_ID',
-      name: 'SP Product Id',
-      selector: (row) => row.sapMaterial,
-      minWidth: '120px',
+      id: 'PRODUCT_NAME',
+      name: t('column.material.crosswalk.spProductName'),
+      selector: (row) => row.catalogPrice.materialDescriptionInLanguageEn,
+      minWidth: '180px',
       sortable: true,
-      sortKey: 'sap_material',
+      sortKey: 'material_description_in_language_en',
+      cell: (props) => <EclipsesTextcss str={props?.catalogPrice?.materialDescriptionInLanguageEn || '-'} maxWidth={170} />
+    },
+    {
+      id: 'genericName',
+      name: t('manageSPMaterial.table.genericName'),
+      selector: (row) => {},
+      minWidth: '160px',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
+    },
+    {
+      id: 'manufacturerName',
+      name: t('manageSPMaterial.table.manufacturer'),
+      selector: (row) => {},
+      minWidth: '200px',
+      sortable: true,
+      sortKey: 'manufacturer_name',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.manufacturer} maxWidth={190} />
+    },
+    {
+      id: 'dosage',
+      name: t('manageSPMaterial.table.dosage'),
+      selector: (row) => {},
+      minWidth: '120px',
+      sortable: false,
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.dosage} maxWidth={100} />
+    },
+    {
+      id: 'NDC',
+      name: t('column.material.crosswalk.spNDC'),
+      selector: (row) => row.ndc,
+      minWidth: '120px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -78,29 +92,13 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
             }}
             onClick={(e) => {
               e.preventDefault();
-              setViewSPMaterial(props);
+              setViewSPMaterial(props?.catalogPrice);
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.sapMaterial || '-'} maxWidth={280} />
+            <EclipsesTextcss str={props?.catalogPrice?.ndc || '-'} maxWidth={110} />
           </Link>
         </div>
       )
-    },
-    {
-      id: 'PRODUCT_NAME',
-      name: 'Product Name',
-      selector: (row) => row.materialDescriptionInLanguageEn,
-      minWidth: '160px',
-      sortable: true,
-      sortKey: 'material_description_in_language_en',
-      cell: (props) => <EclipsesTextcss str={props?.materialDescriptionInLanguageEn || '-'} maxWidth={150} />
-    },
-    {
-      id: 'NDC',
-      name: 'NDC',
-      selector: (row) => row.ndc,
-      minWidth: '120px',
-      cell: (props) => <EclipsesTextcss str={props?.ndc || '-'} maxWidth={110} />
     },
     {
       id: 'ACCOUNT_NUMBER',
@@ -109,7 +107,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
       minWidth: '120px',
       sortable: true,
       sortKey: 'sold_to_customer',
-      cell: (props) => <EclipsesTextcss str={props?.soldToCustomer || '-'} maxWidth={110} />
+      cell: (props) => <EclipsesTextcss str={props?.catalogPrice?.soldToCustomer || '-'} maxWidth={110} />
     },
     {
       id: 'action',

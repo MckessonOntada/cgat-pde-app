@@ -44,11 +44,7 @@ function ConfigureCatalog({
   const { mutate, isLoading, isError, data } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configure`;
-      const res = await HttpResourceService.callRest(
-        apiUrl,
-        httpVerb.POST,
-        payload
-      );
+      const res = await HttpResourceService.callRest(apiUrl, httpVerb.POST, payload);
       return res;
     },
     {
@@ -56,10 +52,7 @@ function ConfigureCatalog({
         setOpenConfigurationDraw(false);
         if (!isSPCatalog) {
           setSelectedCatalogs([]);
-          showAlert(
-            'success',
-            t('manageMaterial.drawer.controls.apply.success')
-          );
+          showAlert('success', t('manageMaterial.drawer.controls.apply.success'));
         } else {
           clearTableSelection();
           showAlert({
@@ -91,21 +84,18 @@ function ConfigureCatalog({
   };
 
   const onSubmitHandler = (values) => {
-    const catalogList = Array.isArray(selectedCatalogs)
-      ? selectedCatalogs
-      : Array.from(selectedCatalogs || []);
+    const catalogList = Array.isArray(selectedCatalogs) ? selectedCatalogs : Array.from(selectedCatalogs || []);
     let payload = {
-      catalogConfigurationAttributes: Array.from(catalogList).map(
-        (catalog) => ({
-          sapMaterial: catalog.sapMaterial,
-          soldToCustomer: catalog.soldToCustomer,
-          shipToCustomer: catalog.shipToCustomer,
-          variant: catalog.variant
-        })
-      ),
+      catalogConfigurationAttributes: Array.from(catalogList).map((catalog) => ({
+        sapMaterial: catalog.catalogPrice.sapMaterial,
+        soldToCustomer: catalog.catalogPrice.soldToCustomer,
+        shipToCustomer: catalog.catalogPrice.shipToCustomer,
+        variant: catalog.catalogPrice.variant
+      })),
       ...values,
-      channelType: catalogList?.[0]?.channelType || CHANNEL_TYPE.BUY_AND_BILL
+      channelType: catalogList?.[0]?.catalogPrice.channelType || CHANNEL_TYPE.BUY_AND_BILL
     };
+
     mutate(payload);
   };
 
@@ -126,11 +116,7 @@ function ConfigureCatalog({
                 heading={t('ManageCatalog.Configurations')}
                 controls={
                   <div className="controls">
-                    <Button
-                      label="secondary"
-                      variant="secondary"
-                      size="md"
-                      onClick={handleCloseDrawer}>
+                    <Button label="secondary" variant="secondary" size="md" onClick={handleCloseDrawer}>
                       {t('ManageCatalog.Button.Cancel')}
                     </Button>
                     <Button label="Primary" size="md" type="submit">
@@ -143,9 +129,7 @@ function ConfigureCatalog({
                     {({ insert, remove, push }) => (
                       <div className="step-main-container">
                         <div className="styled-heading">
-                          <Heading as="h4">
-                            {t('ManageCatalog.WhatToExpectNext')}
-                          </Heading>
+                          <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
                         </div>
                         {values.steps.length > 0 &&
                           values.steps.map((step, index) => (
@@ -183,9 +167,7 @@ function ConfigureCatalog({
                                   placeholder=" "
                                   isRequired={false}
                                   component={Components['textarea']}
-                                  maxCharHelperText={t(
-                                    'ManageCatalog.input.validation.text'
-                                  )}
+                                  maxCharHelperText={t('ManageCatalog.input.validation.text')}
                                   maxCharLimit={5000}
                                   maxCharWarningLimit={4900}
                                 />
@@ -193,12 +175,7 @@ function ConfigureCatalog({
                             </div>
                           ))}
                         <div className="add-step">
-                          <Button
-                            label="Tertiary"
-                            onClick={() =>
-                              push({ stepName: '', description: '' })
-                            }
-                            variant="tertiary">
+                          <Button label="Tertiary" onClick={() => push({ stepName: '', description: '' })} variant="tertiary">
                             {t('ManageCatalog.ADDSTEP')}
                           </Button>
                         </div>
