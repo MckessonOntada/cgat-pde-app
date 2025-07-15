@@ -291,7 +291,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               {data?.spTherapyConfig && (
                 <>
                   <div className="configure-li">
-                    {SPMaterialConfigConstants?.map((section, index) => (
+                    {SPMaterialConfigConstants?.filter((section) => !section.questionnaire).map((section, index) => (
                       <React.Fragment key={section.sectionHeading}>
                         <div className="details-key">{t(section.sectionHeading)}</div>
                         <div className="details-value">
@@ -307,7 +307,9 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                       </React.Fragment>
                     ))}
                   </div>
-                  <div className="details-ul">{renderConfiguration(SPMaterialConfigConstants[0].sectionData, data?.spTherapyConfig)}</div>
+                  <div className="details-ul">
+                    {renderConfiguration(SPMaterialConfigConstants.find((section) => section.questionnaire === false)?.sectionData, data?.spTherapyConfig)}
+                  </div>
                 </>
               )}
               {data?.catalogConfiguration && (
