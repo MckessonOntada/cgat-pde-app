@@ -1,6 +1,7 @@
 export const MessageEs = {
   'headings.orders': 'S_Orders',
   'headings.createNewOrder': 'S_Create New Order',
+  'headings.createNewOrderSummary': 'S_Create New Order - Summary',
   'headings.reviewOrder': 'S_Review Order',
   'headings.editOrder': 'S_Edit Order',
   'headings.orderListing': 'S_Order Listing',
@@ -300,7 +301,7 @@ export const MessageEs = {
   'messages.patientConcent': 'S_Please acknowledge if Patient Consent has been taken',
   'messages.selectAcknowledgementError': 'S_Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'S_The selected therapy is in stock.',
-  'messages.papOrderPlacementAcknowledgement': 'S_Submit this as No Cost therapy Order.',
+  'messages.papOrderPlacementAcknowledgement': 'S_Submit this as No Cost Therapy Order.',
   'messages.inventoryCheck.error':
     'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
   'modal.action.continue': 'S_Continue',
