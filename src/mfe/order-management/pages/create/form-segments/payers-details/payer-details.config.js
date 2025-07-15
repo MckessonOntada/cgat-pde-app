@@ -101,7 +101,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         {
           id: `${parentKey}-relationship-to-patient`,
           name: `${parentKey}.relationshipToPatient`,
-          label: 'form.label.relationshipToPatient',
+          label: 'label.policyHolderRelationshipToPatient',
           placeholder: '',
           type: 'dropdown',
           options: PATIENT_RELATIONSHIP.map((item) => {

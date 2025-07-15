@@ -51,23 +51,18 @@ export const getFormFields = (t, config, setFieldValue) => {
           component: Components['datePicker'],
           disableDateTill: new Date(),
           disablePast: true
+        },
+        {
+          name: 'poNumber',
+          label: t('labels.providePONumber'),
+          placeholder: ' ',
+          isRequired: true,
+          component: Components['input'],
+          maxLength: 35
         }
       ]
     );
   }
-
-  fields.push(
-    ...[
-      {
-        name: 'poNumber',
-        label: t('labels.providePONumber'),
-        placeholder: ' ',
-        isRequired: true,
-        component: Components['input'],
-        maxLength: 35
-      }
-    ]
-  );
 
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     fields.push(
@@ -122,29 +117,6 @@ export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouche
         component: Components['input'],
         layout: {
           classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
-        }
-      },
-      {
-        name: 'hasDiseases',
-        id: 'diseases-radio-option-group',
-        caption: t('labels.hasDiseasesCaption'),
-        isRequired: true,
-        placeholder: ' ',
-        component: Components['radioGroup'],
-        items: getBinaryOptions('diseases'),
-        layout: {
-          classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
-        }
-      },
-      {
-        name: 'dateOfAdministration',
-        label: t('labels.provideDateOfAdministration'),
-        placeholder: ' ',
-        component: Components['datePicker'],
-        disableDateTill: new Date(),
-        disablePast: true,
-        layout: {
-          classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline'
         }
       }
     ]
