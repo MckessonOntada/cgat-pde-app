@@ -127,7 +127,7 @@ export default function CreditsTable(props) {
       id: 'soldToName',
       name: t('paymentInvoices.table.column.soldToName'),
       selector: () => {},
-      minWidth: '220px',
+      minWidth: '240px',
       sortable: true,
       wrap: true,
       showInMobileHeader: true,
@@ -146,9 +146,9 @@ export default function CreditsTable(props) {
     },
     {
       id: 'openAmount',
-      name: selectableRows ? t('paymentInvoices.history.table.invoiceAmount') : t('paymentInvoices.table.column.creditAmount'),
+      name: t('paymentInvoices.table.column.creditAmount'),
       selector: (row) => row.openAmount,
-      maxWidth: '240px',
+      minWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
@@ -162,9 +162,8 @@ export default function CreditsTable(props) {
       name: t('paymentInvoices.history.table.Actions'),
       selector: (row) => row.totalAuthorizedPaymentAmt,
       minWidth: '144px',
-      sortable: true,
       wrap: true,
-
+      center: true,
       cell: (props) =>
         props.isPdfAvailable ? (
           <Button
