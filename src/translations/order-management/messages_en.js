@@ -906,6 +906,7 @@ export const MessageEn = {
   'label.secondarypharmacyinsurance': 'Secondary Pharmacy Insurance',
   'label.policyHolderName': 'Policy Holder Name',
   'label.relationToPatient': 'Relationship to Patient',
+  'label.policyHolderRelationshipToPatient': 'Policy Holder Relationship to Patient',
   'label.diagnosisCode': 'Diagnosis code',
   'label.allergies': 'Allergies',
   'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
