@@ -26,7 +26,7 @@ export const SPMaterialDetailsConstants = [
       { label: 'labels.genericName', value: 'genericName' },
       { label: 'labels.therapy.ndc', value: 'ndcNumber' },
       { label: 'labels.manufacturer', value: 'manufacturerName' },
-      // { label: 'labels.therapy.Formulation', value: 'Formulation' },
+      { label: 'labels.therapy.Formulation', value: 'Formulation' },
       { label: 'labels.therapy.dosage', value: 'dosage' },
       { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' }
     ]
