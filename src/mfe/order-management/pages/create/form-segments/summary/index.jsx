@@ -99,7 +99,6 @@ const Summary = () => {
   const [openDetails, setOpenDetails] = React.useState(false);
   const spOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
-  const isCrosswalked = tradeDetails.channelType != therapy.channelType;
   const shouldShowIdentifierSection =
     spOrder && (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
 
@@ -721,7 +720,7 @@ const Summary = () => {
                       value={
                         <div className={styles.materialDescription}>
                           <div className="overflowing">
-                            <Tooltip body={therapy?.materialDescription}>
+                            <Tooltip body={therapy?.tradeName}>
                               <Link
                                 className="MCP-table-link"
                                 aria-label={t('labels.therapyDescription')}
@@ -729,7 +728,7 @@ const Summary = () => {
                                   e.preventDefault();
                                   handleOpenDetails(therapy);
                                 }}>
-                                {tradeDetails?.tradeName}
+                                {therapy?.tradeName}
                               </Link>
                             </Tooltip>
                           </div>
@@ -1315,9 +1314,9 @@ const Summary = () => {
 
       {!isError && openDetails && (
         <TherapyDetailsWithTabs
-          trade={tradeDetails?.tradeName}
-          channelType={tradeDetails?.channelType}
-          therapy={isCrosswalked ? tradeDetails?.ndc : therapy.id || tradeDetails?.tradeName}
+          trade={therapy?.tradeName}
+          channelType={therapy?.channelType}
+          therapy={therapy.id || therapy?.tradeName}
           heading={t('labels.therapyDetails')}
           showFooter={false}
           onClose={() => setOpenDetails(!openDetails)}
