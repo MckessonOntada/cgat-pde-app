@@ -41,7 +41,6 @@ const INITIAL_VALUES = {
   diagnosisCode: '',
   hasAllergies: '',
   allergyDetails: '',
-  hasDiseases: '',
 
   variant: {
     variant: '',
@@ -114,12 +113,6 @@ function AdditionalDetails() {
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
-      poNumber: Yup.string()
-        .required(t('labels.PONumberRequired'))
-        .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
-        .max(35, t('labels.PONumberLengthError'))
-        .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length),
-
       dateOfAdministration: Yup.date()
         .typeError(t('labels.enterValidDateOfAdministration'))
         .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
@@ -159,8 +152,7 @@ function AdditionalDetails() {
             is: (val) => val === 'yes',
             then: (schema) => schema.required(t('labels.allergiesDetailsRequired')),
             otherwise: (schema) => schema.notRequired()
-          }),
-          hasDiseases: Yup.string().required(t('labels.selectHasDiseases')).oneOf(['yes', 'no'], t('labels.invalidSelection'))
+          })
         })
       );
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
@@ -184,7 +176,12 @@ function AdditionalDetails() {
           slotNumber: Yup.string()
             .required(t('labels.slotNumberRequired'))
             .max(20, t('labels.slotNumberLengthError'))
-            .trim(t('labels.slotNumberExtraSpaceError'))
+            .trim(t('labels.slotNumberExtraSpaceError')),
+          poNumber: Yup.string()
+            .required(t('labels.PONumberRequired'))
+            .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
+            .max(35, t('labels.PONumberLengthError'))
+            .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
         })
       );
     }
@@ -484,7 +481,6 @@ function AdditionalDetails() {
         initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
-        initialValues.hasDiseases = clinicalDetails.hasDiseaseIndication ? 'yes' : 'no';
         initialValues.diagnosisCode = diagnosisCode;
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         initialValues.dateOfAdministration = dateOfAdministration;
@@ -591,10 +587,9 @@ function AdditionalDetails() {
     };
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      const { hasAllergies, allergyDetails, hasDiseases, dateOfAdministration } = values;
+      const { hasAllergies, allergyDetails, dateOfAdministration } = values;
       const clinicalDetails = {
-        hasAllergies: hasAllergies === 'yes',
-        hasDiseaseIndication: hasDiseases === 'yes'
+        hasAllergies: hasAllergies === 'yes'
       };
 
       if (hasAllergies === 'yes') {
