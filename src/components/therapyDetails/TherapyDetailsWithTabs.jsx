@@ -90,7 +90,7 @@ function TherapyDetailsWithTabs({
       if (data && CommonUtils.isNonEmptyArray(data)) {
         let filteredData = data;
         if (therapy && therapy != trade) {
-          filteredData = data.filter((item) => String(item.id) === String(therapy));
+          filteredData = data.filter((item) => String(item.id) === String(therapy) || String(item.ndcNumber) === String(therapy));
         }
         const therapyTabs = filteredData
           .sort((a, b) => a.id - b.id)

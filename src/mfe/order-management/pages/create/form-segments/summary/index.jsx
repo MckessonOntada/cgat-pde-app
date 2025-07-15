@@ -67,6 +67,7 @@ const Summary = () => {
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const [sapStatus, setSapStatus] = React.useState(null);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
+
   const {
     tradeDetails = {},
     therapy = {},
@@ -98,6 +99,7 @@ const Summary = () => {
   const [openDetails, setOpenDetails] = React.useState(false);
   const spOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
+  const isCrosswalked = tradeDetails.channelType != therapy.channelType;
   const shouldShowIdentifierSection =
     spOrder && (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
 
@@ -1314,8 +1316,8 @@ const Summary = () => {
       {!isError && openDetails && (
         <TherapyDetailsWithTabs
           trade={tradeDetails?.tradeName}
-          channelType={orderDetails.channelType}
-          therapy={therapy.id || tradeDetails?.tradeName}
+          channelType={tradeDetails?.channelType}
+          therapy={isCrosswalked ? tradeDetails?.ndc : therapy.id || tradeDetails?.tradeName}
           heading={t('labels.therapyDetails')}
           showFooter={false}
           onClose={() => setOpenDetails(!openDetails)}
