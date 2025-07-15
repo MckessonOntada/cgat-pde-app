@@ -111,15 +111,16 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     selector: () => {},
     width: '180px',
     sortable: false,
-    cell: ({ isExpandable, manufacturer }) => {
+    cell: (row) => {
+      const { isExpandable, manufacturer, manufacturerName } = row;
       let toolTip = '',
         cellValue = '';
       if (isExpandable) {
         toolTip = manufacturer.join(', ');
         cellValue = manufacturer[0] || '';
       } else {
-        toolTip = manufacturer;
-        cellValue = manufacturer;
+        toolTip = manufacturerName;
+        cellValue = manufacturerName;
       }
       return cellValue ? (
         <span aria-label={t('table.columns.captions.manufacturer')}>
