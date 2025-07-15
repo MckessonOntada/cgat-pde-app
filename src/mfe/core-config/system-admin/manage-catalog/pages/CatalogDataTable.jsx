@@ -28,9 +28,16 @@ function CatalogDataTable(props) {
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'catalog_id',
+        paginationConfig,
+        selectedCatalogs,
+        setSelectedCatalogs
+      ),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
+      cell: (row, index) => renderTableCheckBox(row, data, 'catalog_id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
       // selector: (row) => row.MRN,
       width: '50px',
       omit: isCustomerCenter
@@ -50,9 +57,9 @@ function CatalogDataTable(props) {
               textDecoration: 'none'
             }}
             onClick={() => {
-              setViewCatalog(props);
+              setViewCatalog(props.catalogPrice);
               setOpenCatalogDetails(true);
-            }}>{`${props?.sapMaterial || ''}`}</Link>
+            }}>{`${props?.catalogPrice?.sapMaterial || ''}`}</Link>
         </div>
       )
     },
@@ -62,7 +69,7 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '200px',
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props?.materialDescriptionInLanguageEn || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.catalogPrice?.materialDescriptionInLanguageEn || '-'}</div>
     },
     {
       id: 'ndc',
@@ -70,7 +77,7 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
-      cell: (props) => <div>{props?.ndc || '-'}</div>
+      cell: (props) => <div>{props?.catalogPrice?.ndc || '-'}</div>
     },
     {
       id: 'distChannel',
@@ -78,7 +85,7 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
-      cell: (props) => <div>{props?.distChannel || '-'}</div>
+      cell: (props) => <div>{props?.catalogPrice?.distChannel || '-'}</div>
     },
     {
       id: 'variant',
@@ -86,7 +93,7 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
-      cell: (props) => <div>{props?.variant || '-'}</div>
+      cell: (props) => <div>{props?.catalogPrice?.variant || '-'}</div>
     },
     {
       id: 'soldToCustomer',
@@ -94,7 +101,7 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
-      cell: (props) => <div>{props?.soldToCustomer || '-'}</div>
+      cell: (props) => <div>{props?.catalogPrice?.soldToCustomer || '-'}</div>
     },
     {
       id: '',
@@ -102,7 +109,7 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
-      cell: (props) => <div>{props?.shipToCustomer || '-'}</div>
+      cell: (props) => <div>{props?.catalogPrice?.shipToCustomer || '-'}</div>
     }
   ];
 
