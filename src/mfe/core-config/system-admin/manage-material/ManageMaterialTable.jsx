@@ -121,7 +121,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         }
         return (
           <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')} to={`?${searchParams.toString()}`}>
-            <EclipsesTextcss str={tradeName} />
+            <EclipsesTextcss str={cellValue} />
           </Link>
         );
       }
