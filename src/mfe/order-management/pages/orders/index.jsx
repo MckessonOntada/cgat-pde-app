@@ -22,6 +22,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { DateUtils } from '@src/util/DateUtil';
+import CommonUtils from '@src/util/CommonUtils';
 
 const OrderIndex = () => {
   const navigate = useNavigate();
@@ -135,8 +136,9 @@ const OrderIndex = () => {
 
   useEffect(() => {
     if (error) {
+      const description = CommonUtils.getUploadErrorMessage({}, t);
       showAlert({
-        description: t(handleApiError(error)),
+        description: description,
         type: 'error',
         anchorEl: alertContainerId
       });
