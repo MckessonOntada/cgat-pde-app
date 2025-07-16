@@ -21,7 +21,7 @@ export const SPMaterialDetailsConstants = [
     sectionHeading: 'Details',
     sectionData: [
       { label: 'labels.therapyId', value: 'displayMaterialNumber' },
-      { label: 'labels.tradeName', value: 'tradeName' },
+      { label: 'labels.therapy', value: 'tradeName' },
       { label: 'labels.therapyDescription', value: 'materialDescription' },
       { label: 'labels.genericName', value: 'genericName' },
       { label: 'labels.therapy.ndc', value: 'ndcNumber' },
