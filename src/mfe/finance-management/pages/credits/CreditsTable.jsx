@@ -35,7 +35,7 @@ export default function CreditsTable(props) {
       const body = {
         fiscalYear: props.fiscalYear,
         companyCode: selectedAccount.companyCode,
-        documentNo: props.referenceDocumentNumber
+        documentNo: props.billNumber
       };
       const headers = {
         accept: 'application/json, text/plain, */*',

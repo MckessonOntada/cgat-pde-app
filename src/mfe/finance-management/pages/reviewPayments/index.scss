@@ -156,10 +156,10 @@
 .action-container {
   color: rgb(219, 58, 41);
   display: flex;
-  //   align-items: center;
   gap: 7px;
   font-weight: 600;
   font-size: 14px;
+  cursor: pointer;
 
   &.in-active {
     g {
@@ -167,7 +167,7 @@
     }
 
     color: lightgray;
-    cursor: pointer;
+    cursor: not-allowed;
   }
 }
 
@@ -208,8 +208,7 @@
   font-size: var(--typography-text-size-body-font-x-small, 12px);
   font-style: normal;
   font-weight: 400;
-  line-height: var(--typography-line-height-body-font-x-small,
-      16px);
+  line-height: var(--typography-line-height-body-font-x-small, 16px);
   /* 133.333% */
   letter-spacing: 0.012px;
   padding-bottom: 4px;
