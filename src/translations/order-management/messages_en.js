@@ -258,6 +258,7 @@ export const MessageEn = {
   'labels.therapy.baseUnitOfMeasure': 'Base Unit of Measure',
   'labels.therapyId': 'Therapy Id',
   'labels.tradeName': 'Trade Name',
+  'labels.therapy': 'Therapy',
   'labels.therapy.Formulation': 'Formulation',
   'labels.therapy.cgatIdentifier': 'CGAT Identifier',
   'labels.therapy.productLevelPricing': 'Product Level Pricing',
