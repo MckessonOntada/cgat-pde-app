@@ -64,6 +64,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
 
         return prevOptions;
       });
+    } else {
+      setCheckedAccounts([]);
+      setSelectedAccount([]);
     }
   };
 
