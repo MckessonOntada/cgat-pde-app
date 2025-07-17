@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiSelectContext';
@@ -17,9 +17,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
     setAccountOptions,
     setCheckedAccounts,
     checkedAccounts,
-    refetchAccounts,
     totalOrgs,
-    totalAccs
+    totalAccs,
+    setCheckedOrganizations
   } = useOrgAccountsMultiSelectionContext();
 
   const onOrganizationChange = async (selectedValue) => {
@@ -27,15 +27,23 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
       return;
     }
     const _selected = selectedValue.filter((item) => item.isChecked);
-    if (_selected.length > selectedOrganization?.length) {
-      const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
 
-      if (newOrg) {
-        await refetchAccounts();
+    setCheckedOrganizations(_selected);
+    setSelectedOrganization((prev) => {
+      if (!Array.isArray(prev)) {
+        return [];
       }
-    }
-    setSelectedOrganization(_selected);
-
+      const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
+      unselectedOrgs.forEach((org) => {
+        setCheckedAccounts((prev) => {
+          if (!Array.isArray(prev)) {
+            return [];
+          }
+          return prev.filter((acc) => acc.practiceId !== org.value);
+        });
+      });
+      return _selected;
+    });
     if (_selected.length > 0) {
       setOptions((prevOptions) => {
         const updatedOptions = prevOptions.map((opt) => {
@@ -56,6 +64,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange, isSelect
 
         return prevOptions;
       });
+    } else {
+      setCheckedAccounts([]);
+      setSelectedAccount([]);
     }
   };
 
