@@ -701,7 +701,16 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover
+            ? t('headings.reviewOrder')
+            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            ? t('headings.createNewPrescription')
+            : t('headings.createNewOrder')
+        }
+      />
+
       <div className="MCP-module-body">
         <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />

@@ -318,7 +318,15 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover
+            ? t('headings.reviewOrder')
+            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            ? t('headings.createNewPrescription')
+            : t('headings.createNewOrder')
+        }
+      />
 
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
