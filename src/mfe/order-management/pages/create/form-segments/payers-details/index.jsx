@@ -29,6 +29,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import Alert from '@src/components/cgat-alert/Alert';
+import { CHANNEL_TYPE } from '../Constants';
 
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -245,7 +246,17 @@ function Payer() {
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+
+      <PageHeader
+        heading={
+          isApprover
+            ? t('headings.reviewOrder')
+            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            ? t('headings.createNewPrescription')
+            : t('headings.createNewOrder')
+        }
+      />
+
       <div className="MCP-module-body">
         <OrderStepper
           status={orderDetails?.currentStage}

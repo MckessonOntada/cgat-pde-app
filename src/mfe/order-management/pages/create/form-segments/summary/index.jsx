@@ -572,7 +572,17 @@ const Summary = () => {
               {backToInvoiceListing ? t('orderManagement.backToInvoiceDetails') : t('captions.btnBackToManageOrder')}
             </Button>
           </div>
-          {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrderSummary')} />}
+          {orderDetails?.status === StatusEnum.IN_DRAFT && (
+            <PageHeader
+              heading={
+                isApprover
+                  ? t('headings.reviewOrder')
+                  : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                  ? t('headings.createNewPrescriptionSummary')
+                  : t('headings.createNewOrderSummary')
+              }
+            />
+          )}
           {isApprover && (
             <div className={styles.pageHeadingReview}>
               <PageHeader heading={t('headings.reviewOrder')} />
