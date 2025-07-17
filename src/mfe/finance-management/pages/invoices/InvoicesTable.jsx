@@ -133,7 +133,7 @@ export default function InvoicesTable() {
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
-      maxWidth: '140px',
+      minWidth: '166px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cell: (props) => (
@@ -151,6 +151,13 @@ export default function InvoicesTable() {
             }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
+    },
+    {
+      name: t('paymentInvoices.history.table.alternateInvoiceNumber'),
+      id: 'referenceDocumentNumber',
+      selector: (row) => `${row.invoiceReference}`,
+      minWidth: '220px',
+      cell: (props) => <EclipsesTextcss str={props.invoiceReference} maxWidth={170} />
     },
     {
       name: t('labels.orderId'),

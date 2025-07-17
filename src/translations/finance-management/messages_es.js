@@ -107,6 +107,7 @@ export const PaymentInvoicesES = {
   // Invoices
   'paymentInvoices.history.table.billNumber': 'S_Number',
   'paymentInvoices.history.table.invoiceNumber': 'S_Invoice Number',
+  'paymentInvoices.history.table.alternateInvoiceNumber': 'S_Alternate Invoice Number',
   'paymentInvoices.history.table.creditNumber': 'S_Credit Number',
   'paymentInvoices.history.table.SoldToSite': 'S_Sold To Site',
   'paymentInvoices.history.table.SoldToAccountNo': 'S_Sold To Account Number',
