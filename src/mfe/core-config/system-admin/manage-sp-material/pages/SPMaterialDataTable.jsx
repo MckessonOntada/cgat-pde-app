@@ -64,32 +64,10 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       width: '50px'
       //  omit: !isLinkCatalog ? true : false
     },
-    {
-      name: t('manageSPMaterial.table.spproductId'),
-      id: 'material_number',
-      selector: (row) => {},
-      wrap: true,
-      minWidth: '180px',
-      cell: (props) => (
-        <div className="cellEllipse">
-          <Link
-            style={{
-              color: '#007bff',
-              fontWeight: '600',
-              textDecoration: 'none'
-            }}
-            onClick={() => {
-              setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
-              setOpenSPMaterialDetails(true);
-            }}>
-            <EclipsesTextcss str={CommonUtils.removeLeadingZeros(props?.materialNumber)} maxWidth={170} />
-          </Link>
-        </div>
-      )
-    },
+
     {
       id: 'materialDescription',
-      name: t('manageSPMaterial.table.productname'),
+      name: t('labels.therapy'),
       selector: (row) => {},
       minWidth: '210px',
       sortable: true,
@@ -112,7 +90,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       minWidth: '120px',
       sortable: false,
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.strength} maxWidth={100} />
+      cell: (props) => <EclipsesTextcss str={`${props?.strength} ${props?.dosage}`} maxWidth={100} />
     },
     {
       id: 'ndcNumber',
@@ -121,7 +99,22 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       minWidth: '120px',
       sortable: false,
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.ndcNumber} maxWidth={100} />
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            onClick={() => {
+              setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
+              setOpenSPMaterialDetails(true);
+            }}>
+            <EclipsesTextcss str={CommonUtils.removeLeadingZeros(props?.ndcNumber)} maxWidth={100} />
+          </Link>
+        </div>
+      )
     },
     {
       id: 'manufacturerName',
@@ -172,7 +165,6 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           setSelectedSPMaterial
         ),
       width: '50px'
-      //  omit: !isLinkCatalog ? true : false
     },
     {
       id: 'materialDescription',
