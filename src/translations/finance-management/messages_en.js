@@ -302,7 +302,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.table.column.creditAmount': 'Credit Amount',
   'paymentInvoices.table.column.pdfDownload': 'PDF download Successfully.',
   'paymentInvoices.table.column.pdfDownloadError': 'Something went wrong, Please ty again',
-  'paymentInvoices.Details.invoiceNumber': 'Invoice Number.',
+  'paymentInvoices.Details.invoiceNumber': 'Invoice Number',
   'paymentInvoices.Details.orderID': 'Order ID',
   'paymentInvoices.Details.purchaseOrderNumber': 'Purchase Order Number',
   'paymentInvoices.Details.billTo': 'Bill To',

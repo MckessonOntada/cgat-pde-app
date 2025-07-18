@@ -297,7 +297,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.table.column.pdfDownload': 'S_PDF download Successfully.',
   'paymentInvoices.table.column.pdfDownloadError': 'S_Something went wrong, Please ty again',
   'paymentInvoices.table.column.pdfDownloadError': 'S_Something went wrong, Please ty again',
-  'paymentInvoices.Details.invoiceNumber': 'S_Invoice Number.',
+  'paymentInvoices.Details.invoiceNumber': 'S_Invoice Number',
   'paymentInvoices.Details.orderID': 'S_Order ID',
   'paymentInvoices.Details.purchaseOrderNumber': 'S_Purchase Order Number',
   'paymentInvoices.Details.billTo': 'S_Bill To',
