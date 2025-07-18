@@ -94,6 +94,8 @@ export const MessageEs = {
   'labels.additionalDetails': 'S_Additional Details',
   'labels.materialDescription': 'S_Material Description',
   'labels.orderCost': 'S_Order Cost',
+  'labels.netAmount': 'S_Net Amount',
+  'labels.taxAmount': 'S_Tax Amount',
   'labels.accountName': 'S_Account Name',
   'labels.accountNo': 'S_Account No',
   'labels.shippingAccountName': 'S_Shipping Account Name',
