@@ -494,7 +494,7 @@ const PatientDetails = () => {
                             </div>
 
                             <div className="styled-icon-button">
-                              {!showAddProviderForm && !initialValues.providerId && !provider?.isNewlyAdded && (
+                              {!showAddProviderForm && (
                                 <Button
                                   Icon={PlusIcon}
                                   variant="tertiary"
