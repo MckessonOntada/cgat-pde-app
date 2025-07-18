@@ -15,7 +15,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { PATHS } from '../../routes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstantsForBB } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
@@ -23,6 +23,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { FormattedNumber } from 'react-intl';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import OrderService from '@src/api/commonService/OrderService';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -50,13 +51,25 @@ function Details(props) {
     navigate(-1);
   };
 
-  const handleOnClickOrderId = (orderID) => {
-    navigate(`/orders/${orderID}/summary`, {
-      state: {
-        backToInvoiceDetails: true
+  const { mutate: handleOnClickOrderId } = useMutation(
+    async (orderId) => {
+      return OrderService.getBackendOrderId(orderId);
+    },
+    {
+      onSuccess: (data) => {
+        navigate(`/orders/${data}/summary`, {
+          state: {
+            backToInvoiceDetails: true
+          }
+        });
+      },
+      onError: (error) => {
+        const { response } = error;
+        let errorMsg = response?.data?.message || 'Error fetching order details';
+        console.log(errorMsg);
       }
-    });
-  };
+    }
+  );
 
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['invoiceDetails', selectedAccount],
