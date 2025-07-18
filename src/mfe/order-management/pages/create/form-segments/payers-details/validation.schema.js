@@ -73,6 +73,10 @@ export const getPharmacyInsuranceSchema = (key, t) => ({
   })
 });
 
+export const getInitialValidationSchema = (t) => ({
+  payerDetailsRequired: Yup.string().required(t('message.selectOption'))
+});
+
 export const getBaseMedicalInsuranceValues = () => ({
   insuranceCompanyName: '',
   memberNumber: '',
@@ -98,6 +102,5 @@ export const getBasePharmacyInsuranceValues = () => ({
 });
 
 export const baseValues = {
-  primaryMedicalInsurance: getBaseMedicalInsuranceValues(),
-  primaryPharmacyInsurance: getBasePharmacyInsuranceValues()
+  payerDetailsRequired: ''
 };
