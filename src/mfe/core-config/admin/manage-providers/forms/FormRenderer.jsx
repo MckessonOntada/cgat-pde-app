@@ -54,7 +54,7 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
 
               {(section.subTitle || section.secondaryActions) && (
                 <div className={'row-space-between-center'}>
-                  <div classname="form-section-heading">{section.subTitle && <Heading as="h3">{t(section.subTitle)}</Heading>}</div>
+                  <div className="form-section-heading">{section.subTitle && <Heading as="h3">{t(section.subTitle)}</Heading>}</div>
                   <div className="controls">
                     {onClose && sectionIndex === 0 && (
                       <div className="styled-icon-button error-button">

@@ -25,7 +25,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-company`,
-          name: `${parentKey}.insuranceCompanyName`,
+          name: `insuranceDetails.${parentKey}.insuranceCompanyName`,
           label: 'form.label.insuranceCarrier',
           placeholder: '',
           type: 'input',
@@ -34,7 +34,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-member-number`,
-          name: `${parentKey}.memberNumber`,
+          name: `insuranceDetails.${parentKey}.memberNumber`,
           label: 'form.label.memberNumber',
           placeholder: '',
           type: 'input',
@@ -43,7 +43,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-group-number`,
-          name: `${parentKey}.groupNumber`,
+          name: `insuranceDetails.${parentKey}.groupNumber`,
           label: 'form.label.groupNumber',
           placeholder: '',
           type: 'input',
@@ -58,7 +58,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-company-phone-number`,
-          name: `${parentKey}.insuranceCompanyPhone`,
+          name: `insuranceDetails.${parentKey}.insuranceCompanyPhone`,
           label: 'form.label.insuranceCarrierPhoneNumber',
           placeholder: '',
           type: 'phoneInput',
@@ -67,7 +67,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-policy-holder-first-name`,
-          name: `${parentKey}.policyHolderFirstName`,
+          name: `insuranceDetails.${parentKey}.policyHolderFirstName`,
           label: 'form.label.policyHolderFirstName',
           placeholder: '',
           type: 'input',
@@ -76,7 +76,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-policy-holder-last-name`,
-          name: `${parentKey}.policyHolderLastName`,
+          name: `insuranceDetails.${parentKey}.policyHolderLastName`,
           label: 'form.label.policyHolderLastName',
           placeholder: '',
           type: 'input',
@@ -91,7 +91,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-dob`,
-          name: `${parentKey}.dateOfBirth`,
+          name: `insuranceDetails.${parentKey}.dateOfBirth`,
           label: 'form.label.dob',
           placeholder: '',
           type: 'datePicker',
@@ -100,7 +100,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-relationship-to-patient`,
-          name: `${parentKey}.relationshipToPatient`,
+          name: `insuranceDetails.${parentKey}.relationshipToPatient`,
           label: 'label.policyHolderRelationshipToPatient',
           placeholder: '',
           type: 'dropdown',
@@ -117,7 +117,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
         {
           id: `${parentKey}-other-relationship-to-patient`,
           key: `${parentKey}-other-relationship-to-patient`,
-          name: `${parentKey}.relation`,
+          name: `insuranceDetails.${parentKey}.relation`,
           label: 'form.label.relation',
           placeholder: '',
           type: 'input',
@@ -142,7 +142,7 @@ export const insuranceCardTemplate = (parentKey, cardKey) => {
       controls: [
         {
           id: `${parentKey}-insurance-card-front`,
-          name: `${parentKey}.${cardKey}Front`,
+          name: `insuranceDetails.${parentKey}.${cardKey}Front`,
           label: 'form.label.front',
           placeholder: '',
           type: 'inputFile',
@@ -151,7 +151,7 @@ export const insuranceCardTemplate = (parentKey, cardKey) => {
         },
         {
           id: `${parentKey}-insurance-card-back`,
-          name: `${parentKey}.${cardKey}Back`,
+          name: `insuranceDetails.${parentKey}.${cardKey}Back`,
           label: 'form.label.back',
           placeholder: '',
           type: 'inputFile',
@@ -170,7 +170,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-pharmacy-benefit-manager-name`,
-          name: `${parentKey}.pharmacyBenefitManagerName`,
+          name: `insuranceDetails.${parentKey}.pharmacyBenefitManagerName`,
           label: 'form.label.pharmacyBenefitManagerName',
           placeholder: '',
           type: 'input',
@@ -179,7 +179,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-contact`,
-          name: `${parentKey}.contactNumber`,
+          name: `insuranceDetails.${parentKey}.contactNumber`,
           label: 'form.label.contact',
           placeholder: '',
           type: 'phoneInput',
@@ -188,7 +188,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-rx-member-id`,
-          name: `${parentKey}.rxMemberId`,
+          name: `insuranceDetails.${parentKey}.rxMemberId`,
           label: 'form.label.rxMemberId',
           placeholder: '',
           type: 'input',
@@ -203,7 +203,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
       controls: [
         {
           id: `${parentKey}-rx-group-number`,
-          name: `${parentKey}.rxGroupNumber`,
+          name: `insuranceDetails.${parentKey}.rxGroupNumber`,
           label: 'form.label.rxGroupNumber',
           placeholder: '',
           type: 'input',
@@ -212,7 +212,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-rx-bin`,
-          name: `${parentKey}.rxBin`,
+          name: `insuranceDetails.${parentKey}.rxBin`,
           label: 'form.label.rxBin',
           placeholder: '',
           type: 'input',
@@ -221,7 +221,7 @@ export const pharmacyInsuranceTemplate = (parentKey) => {
         },
         {
           id: `${parentKey}-rx-pcn`,
-          name: `${parentKey}.rxPcn`,
+          name: `insuranceDetails.${parentKey}.rxPcn`,
           label: 'form.label.rxPcn',
           placeholder: '',
           type: 'input',
