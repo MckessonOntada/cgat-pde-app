@@ -66,14 +66,14 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     },
 
     {
-      id: 'materialDescription',
+      id: 'tradeName',
       name: t('labels.therapy'),
       selector: (row) => {},
-      minWidth: '210px',
+      minWidth: '150px',
       sortable: true,
-      sortKey: 'material_description',
+      sortKey: 'trade_name',
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={200} />
+      cell: (props) => <EclipsesTextcss str={props?.tradeName} maxWidth={150} />
     },
     {
       id: 'genericName',
@@ -82,6 +82,16 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       minWidth: '160px',
       wrap: true,
       cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
+    },
+    {
+      id: 'materialDescription',
+      name: t('labels.therapyDescription'),
+      selector: (row) => {},
+      minWidth: '250px',
+      sortable: true,
+      sortKey: 'material_description',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={250} />
     },
     {
       id: 'strength',
