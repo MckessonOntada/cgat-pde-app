@@ -312,8 +312,6 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.backToInvoiceDetails': 'back to invoice details page',
   'paymentInvoices.table.column.creditAmount': 'Credit Amount',
   'paymentInvoices.history.table.PayOnDate': 'Pay On Date',
-  'paymentInvoices.Details.backToSchedulePayments': 'back to schedule payments details page',
-  'paymentInvoices.Details.backToPaymentsHistoryDetails': 'back to payments history details page',
   'paymentInvoices.table.schedulePayments': 'Schedule Payments',
   'pendingPayments.confirm.BackToPendingPayments': 'Back to Schedule Payments',
   'paymentInvoices.tabs.SCHEDULE PAYMENTS': 'SCHEDULE PAYMENTS',
