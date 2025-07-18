@@ -2,8 +2,8 @@ import { ZIP_REGEX } from '@src/components/form/ValidationRegExp';
 import * as yup from 'yup';
 
 const nameRegex = /^[A-Za-z\s.-]+$/;
-const middleNameRegex = /^[A-Za-z.]+$/;
-const lastNameRegex = /^[A-Za-z]+$/;
+const middleNameRegex = /^[A-Za-z\s.]+$/;
+const lastNameRegex = /^[A-Za-z\s]+$/;
 const deaRegex = /^[A-Za-z][A-Za-z0-9][0-9]{7}$/;
 const npiRegex = /^\d{10}$/;
 const tinRegex = /^\d{9}$/;
