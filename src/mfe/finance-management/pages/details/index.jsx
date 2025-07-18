@@ -295,6 +295,9 @@ function Details(props) {
           />
         </div>
       </div>
+      <div className="finance-label">
+        Finance Charges: <span>N/A</span>
+      </div>
       {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
         <React.Fragment>
           {CommonUtils.enableReviewAndPay(selectedAccount) && (

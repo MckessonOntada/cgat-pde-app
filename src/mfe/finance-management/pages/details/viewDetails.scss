@@ -109,3 +109,17 @@
 .details-table {
   overflow: auto;
 }
+.finance-label {
+  background-color: var(--brand-color-cool-blue);
+  font-size: var(--brand-font-size--small);
+  border-radius: var(--brand-border-radius--6);
+  padding: var(--spacing-02) var(--spacing-03);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-02);
+  span {
+    font-size: var(--brand-font-size--22);
+    font-weight: var(--brand-font-weight-700);
+  }
+}
