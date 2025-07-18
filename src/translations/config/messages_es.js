@@ -147,6 +147,7 @@ export const ConfigurationMessagesES = {
 
   'serverResponse.provider.dea.conflict': 'S_A provider with this DEA Number already exists. Please enter a unique DEA Number.',
   'serverResponse.provider.npi.conflict': 'S_A provider with this NPI Number already exists. Please enter a unique NPI Number.',
+  'serverResponse.provider.email.conflict': 'S_A provider with this Email Id already exists. Please enter a unique Email Id.',
   'serverResponse.provider.dea.conflict.provider.npi.conflict':
     'A provider with this DEA Number and NPI Number already exists. Please verify and enter unique details.',
   'button.caption.confirm': 'S_Confirm',

@@ -50,6 +50,14 @@ function Details(props) {
     navigate(-1);
   };
 
+  const handleOnClickOrderId = (orderID) => {
+    navigate(`/orders/${orderID}/summary`, {
+      state: {
+        backToInvoiceDetails: true
+      }
+    });
+  };
+
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['invoiceDetails', selectedAccount],
     queryFn: async () => {
@@ -68,11 +76,22 @@ function Details(props) {
         if (res.data) {
           setInvoiceDetails(() => ({
             ...{},
-            [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
-            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
-            [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
-            [t('paymentInvoices.Details.shipToPoNumber')]: res.data.shipToPONumber,
-            [t('paymentInvoices.Details.PO')]: res.data.poNumber
+            [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
+            [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
+            [t('paymentInvoices.Details.orderID')]: (
+              <Link
+                className="MCP-table-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleOnClickOrderId(res?.data?.orderId);
+                }}>
+                {res?.data?.orderId || '-'}
+              </Link>
+            ),
+            [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+            [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
+            ['']: <p></p>,
+            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
           }));
           // bill bates
           updateBillDates(res);
@@ -101,7 +120,7 @@ function Details(props) {
   const columns = useMemo(
     () => [
       {
-        name: t('paymentInvoices.Details.Item'),
+        name: t('paymentInvoices.Details.lineItem'),
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
@@ -133,23 +152,6 @@ function Details(props) {
         )
       },
       {
-        name: t(INVOICES_SCREEN ? 'labels.orderId' : 'paymentInvoices.Details.referenceDocument'),
-        id: 'referenceDocument',
-        selector: (row) => {
-          row.referenceDocument;
-        },
-        wrap: true,
-        minWidth: '185px',
-        maxWidth: '220px',
-        cardHeader: true,
-        showInMobileHeader: true,
-        cell: (props) => (
-          <div>
-            <EclipsesTextcss str={props.referenceDocument} maxWidth={210} />
-          </div>
-        )
-      },
-      {
         name: t('paymentInvoices.Details.Quantity'),
         id: 'quantity',
         selector: (row) => {
@@ -174,21 +176,6 @@ function Details(props) {
         )
       },
       {
-        name: t('paymentInvoices.Details.taxAmount'),
-        id: 'taxAmount',
-        selector: (row) => {
-          row.taxAmount;
-        },
-        wrap: true,
-        right: true,
-        minWidth: '150px',
-        cell: (props) => (
-          <div className="cellEllipse align-items-right">
-            <FormattedNumber value={JSON.stringify(props.taxAmount)} style="currency" currency="USD" />
-          </div>
-        )
-      },
-      {
         name: t('paymentInvoices.Details.netPrice'),
         id: 'netPrice',
         selector: (row) => {
@@ -204,7 +191,22 @@ function Details(props) {
         )
       },
       {
-        name: t('paymentInvoices.Details.grossPrice'),
+        name: t('paymentInvoices.Details.taxAmount'),
+        id: 'taxAmount',
+        selector: (row) => {
+          row.taxAmount;
+        },
+        wrap: true,
+        right: true,
+        minWidth: '150px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={JSON.stringify(props.taxAmount)} style="currency" currency="USD" />
+          </div>
+        )
+      },
+      {
+        name: t('paymentInvoices.Details.grossAmount'),
         id: 'grossPrice',
         selector: (row) => {
           row.grossPrice;

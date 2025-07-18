@@ -20,6 +20,8 @@ import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetail
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
+import ModuleHeader from '@src/components/module-header';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -209,7 +211,14 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <ModuleHeader
+        heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
+        controls={
+          tradeDetails?.manufacturerName || orderDetails?.therapy?.manufacturerName ? (
+            <ManufacturerLogo therapyId={tradeDetails.id || orderDetails?.therapy?.id} />
+          ) : null
+        }
+      />
 
       <div className="MCP-module-body">
         <OrderStepper

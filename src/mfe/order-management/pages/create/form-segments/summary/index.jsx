@@ -36,6 +36,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import AttachmentCard from './AttachmentCard';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 const BUTTON_ACTIONS = {
   SUBMIT: 'submit',
@@ -61,7 +62,7 @@ const Summary = () => {
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
-  const { isApprover = false, isSimulate = false, backToInvoiceListing = false } = locationState || {};
+  const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
@@ -396,8 +397,8 @@ const Summary = () => {
   };
 
   const handleOnBackToOrders = () => {
-    if (backToInvoiceListing) {
-      navigate('/record/invoices');
+    if (backToInvoiceListing || backToInvoiceDetails) {
+      navigate(-1);
     } else {
       const prevSearch = locationState?.__prevSearch || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
@@ -569,30 +570,41 @@ const Summary = () => {
         <React.Fragment>
           <div>
             <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
-              {backToInvoiceListing ? t('orderManagement.backToInvoiceDetails') : t('captions.btnBackToManageOrder')}
+              {backToInvoiceListing
+                ? t('orderManagement.backToInvoiceDetails')
+                : backToInvoiceDetails
+                ? t('paymentInvoices.Details.backToInvoiceDetails')
+                : t('captions.btnBackToManageOrder')}
             </Button>
           </div>
-          {orderDetails?.status === StatusEnum.IN_DRAFT && (
-            <PageHeader
-              heading={
-                isApprover
-                  ? t('headings.reviewOrder')
-                  : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                  ? t('headings.createNewPrescriptionSummary')
-                  : t('headings.createNewOrderSummary')
-              }
-            />
-          )}
-          {isApprover && (
-            <div className={styles.pageHeadingReview}>
-              <PageHeader heading={t('headings.reviewOrder')} />
-              {isPapOrder && (
-                <span className={styles.pap}>
-                  <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                </span>
-              )}
-            </div>
-          )}
+          <ModuleHeader
+            heading={
+              <React.Fragment>
+                {orderDetails?.status === StatusEnum.IN_DRAFT && (
+                  <PageHeader
+                    heading={
+                      isApprover
+                        ? t('headings.reviewOrder')
+                        : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                        ? t('headings.createNewPrescriptionSummary')
+                        : t('headings.createNewOrderSummary')
+                    }
+                  />
+                )}
+                {isApprover && (
+                  <div className={styles.pageHeadingReview}>
+                    <PageHeader heading={t('headings.reviewOrder')} />
+                    {isPapOrder && (
+                      <span className={styles.pap}>
+                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
+                      </span>
+                    )}
+                  </div>
+                )}
+              </React.Fragment>
+            }
+            controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          />
         </React.Fragment>
       )}
 

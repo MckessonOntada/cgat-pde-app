@@ -64,12 +64,51 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       width: '50px'
       //  omit: !isLinkCatalog ? true : false
     },
+
     {
-      name: t('manageSPMaterial.table.spproductId'),
-      id: 'material_number',
+      id: 'tradeName',
+      name: t('labels.therapy'),
       selector: (row) => {},
+      minWidth: '150px',
+      sortable: true,
+      sortKey: 'trade_name',
       wrap: true,
-      minWidth: '180px',
+      cell: (props) => <EclipsesTextcss str={props?.tradeName} maxWidth={150} />
+    },
+    {
+      id: 'genericName',
+      name: t('manageSPMaterial.table.genericName'),
+      selector: (row) => {},
+      minWidth: '160px',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
+    },
+    {
+      id: 'materialDescription',
+      name: t('labels.therapyDescription'),
+      selector: (row) => {},
+      minWidth: '250px',
+      sortable: true,
+      sortKey: 'material_description',
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={250} />
+    },
+    {
+      id: 'strength',
+      name: t('manageSPMaterial.table.strength'),
+      selector: (row) => {},
+      minWidth: '120px',
+      sortable: false,
+      wrap: true,
+      cell: (props) => <EclipsesTextcss str={`${props?.strength} ${props?.dosage}`} maxWidth={100} />
+    },
+    {
+      id: 'ndcNumber',
+      name: t('manageSPMaterial.table.ndc'),
+      selector: (row) => {},
+      minWidth: '120px',
+      sortable: false,
+      wrap: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -82,46 +121,10 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
               setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={CommonUtils.removeLeadingZeros(props?.materialNumber)} maxWidth={170} />
+            <EclipsesTextcss str={props?.ndcNumber} maxWidth={100} />
           </Link>
         </div>
       )
-    },
-    {
-      id: 'materialDescription',
-      name: t('manageSPMaterial.table.productname'),
-      selector: (row) => {},
-      minWidth: '210px',
-      sortable: true,
-      sortKey: 'material_description',
-      wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.materialDescription} maxWidth={200} />
-    },
-    {
-      id: 'genericName',
-      name: t('manageSPMaterial.table.genericName'),
-      selector: (row) => {},
-      minWidth: '160px',
-      wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={150} />
-    },
-    {
-      id: 'strength',
-      name: t('manageSPMaterial.table.strength'),
-      selector: (row) => {},
-      minWidth: '120px',
-      sortable: false,
-      wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.strength} maxWidth={100} />
-    },
-    {
-      id: 'ndcNumber',
-      name: t('manageSPMaterial.table.ndc'),
-      selector: (row) => {},
-      minWidth: '120px',
-      sortable: false,
-      wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.ndcNumber} maxWidth={100} />
     },
     {
       id: 'manufacturerName',
@@ -172,7 +175,6 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           setSelectedSPMaterial
         ),
       width: '50px'
-      //  omit: !isLinkCatalog ? true : false
     },
     {
       id: 'materialDescription',
