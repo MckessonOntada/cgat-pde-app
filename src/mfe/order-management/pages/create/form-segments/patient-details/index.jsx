@@ -60,7 +60,7 @@ const PatientDetails = () => {
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const [showAddProviderForm, setShowAddProviderForm] = React.useState(false);
   const [portalTarget, setPortalTarget] = React.useState(null);
-
+  const [isEditing, setIsEditing] = React.useState(false);
   useEffect(() => {
     if (showAddProviderForm) {
       const providerForm = document.getElementById('provider-form-portal');
@@ -454,7 +454,10 @@ const PatientDetails = () => {
                                             className="button-icon"
                                             size="md"
                                             type="button"
-                                            onClick={() => setShowAddProviderForm(true)}>
+                                            onClick={() => {
+                                              setIsEditing(true);
+                                              setShowAddProviderForm(true);
+                                            }}>
                                             {t('userManagement.button.edit')}
                                           </Button>
                                         </span>
@@ -500,9 +503,10 @@ const PatientDetails = () => {
                                   variant="tertiary"
                                   type="button"
                                   onClick={() => {
+                                    setIsEditing(false);
                                     setShowAddProviderForm(true);
-                                    setProvider(null);
-                                    setFieldValue('providerId', null);
+                                    //setProvider(null);
+                                    // setFieldValue('providerId', null);
                                   }}
                                   size="md">
                                   {t('provider.btnAddProvider')}
@@ -515,7 +519,7 @@ const PatientDetails = () => {
                                   <div className="inline-provider-form-wrapper">
                                     <ProviderAddUpdateForm
                                       setShowAddProviderForm={setShowAddProviderForm}
-                                      providerData={provider}
+                                      providerData={isEditing ? provider : []}
                                       accountId={soldToAccountId}
                                       onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
                                     />
