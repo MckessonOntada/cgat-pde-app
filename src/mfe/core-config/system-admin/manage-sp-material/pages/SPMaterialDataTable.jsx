@@ -121,7 +121,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
               setViewSPMaterial({ ...props, displayMaterialValue: CommonUtils.removeLeadingZeros(props.materialNumber) });
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={CommonUtils.removeLeadingZeros(props?.ndcNumber)} maxWidth={100} />
+            <EclipsesTextcss str={props?.ndcNumber} maxWidth={100} />
           </Link>
         </div>
       )
