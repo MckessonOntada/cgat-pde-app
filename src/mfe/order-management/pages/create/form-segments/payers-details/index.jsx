@@ -71,11 +71,13 @@ function Payer() {
         formValues.insuranceDetails = { ...orderDetails.payerDetails };
       }
       setFormValues(formValues);
+      setIsPayerDetailsRequired('yes');
     } else if (isPayerDetailsRequired === false) {
       const formValues = {
         payerDetailsRequired: 'no'
       };
       setFormValues(formValues);
+      setIsPayerDetailsRequired('no');
     }
   }, [orderDetails]);
 
@@ -84,7 +86,7 @@ function Payer() {
       ...getInitialValidationSchema(t)
     };
 
-    if (isPayerDetailsRequired) {
+    if (isPayerDetailsRequired === 'yes') {
       let insuranceSchemaShape = {
         ...getMedicalInsuranceSchema('primaryMedicalInsurance', t),
         ...getPharmacyInsuranceSchema('primaryPharmacyInsurance', t)
@@ -166,7 +168,7 @@ function Payer() {
 
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
-    mutationFn: (values) => OrderService.savePayerDetails(orderId, values),
+    mutationFn: ({ isPayerDetailsRequired, insuranceDetails }) => OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails),
     onSuccess: (response) => {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
         state: {
@@ -213,18 +215,20 @@ function Payer() {
   }
 
   const handleOnSubmit = (values) => {
-    console.log(values);
-    return;
-    [
-      ['primaryMedicalInsurance', true],
-      ['secondaryMedicalInsurance', true],
-      ['primaryPharmacyInsurance', false],
-      ['secondaryPharmacyInsurance', false]
-    ].forEach(([key, isMedical]) => {
-      values[key] = normalizeInsurance(values[key], isMedical);
-    });
+    const { payerDetailsRequired, insuranceDetails = null } = values;
+    const isPayerDetailsRequired = payerDetailsRequired === 'yes';
+    if (isPayerDetailsRequired) {
+      [
+        ['primaryMedicalInsurance', true],
+        ['secondaryMedicalInsurance', true],
+        ['primaryPharmacyInsurance', false],
+        ['secondaryPharmacyInsurance', false]
+      ].forEach(([key, isMedical]) => {
+        insuranceDetails[key] = normalizeInsurance(insuranceDetails[key], isMedical);
+      });
+    }
 
-    savePayerDetails(values);
+    savePayerDetails({ isPayerDetailsRequired, insuranceDetails });
   };
 
   const handleOnUpload = (config) => (file, setFieldValue, key) => {
@@ -264,8 +268,6 @@ function Payer() {
     }
   };
 
-  console.log(formValues, validationSchema);
-
   return (
     <div className="MCP-module-wrapper">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -298,18 +300,19 @@ function Payer() {
         <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
           {({ setValues, values, errors, setTouched, setErrors, setFieldValue }) => {
             React.useEffect(() => {
-              setIsPayerDetailsRequired(values['payerDetailsRequired'] === 'yes');
+              setIsPayerDetailsRequired(values['payerDetailsRequired']);
             }, [values]);
 
             React.useEffect(() => {
               setValues((prevValues) => ({
                 ...prevValues,
-                insuranceDetails: isPayerDetailsRequired
-                  ? {
-                      primaryMedicalInsurance: getBaseMedicalInsuranceValues(),
-                      primaryPharmacyInsurance: getBasePharmacyInsuranceValues()
-                    }
-                  : null
+                insuranceDetails:
+                  isPayerDetailsRequired === 'yes'
+                    ? {
+                        primaryMedicalInsurance: getBaseMedicalInsuranceValues(),
+                        primaryPharmacyInsurance: getBasePharmacyInsuranceValues()
+                      }
+                    : null
               }));
 
               setErrors((prevErrors) => ({

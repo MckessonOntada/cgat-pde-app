@@ -52,17 +52,19 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
   }
 }
 
-async function savePayerDetails(orderId, payload, channelType) {
+async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, channelType) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to save payer details');
 
-  const params = {};
+  const params = {
+    isPayerDetailsRequired
+  };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(params)}`;
   try {
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, insuranceDetails);
     if (res.data) {
       return res.data;
     }

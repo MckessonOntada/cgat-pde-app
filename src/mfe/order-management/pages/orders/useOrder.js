@@ -49,7 +49,6 @@ const useOrder = (orderId) => {
         if (provider) {
           provider.id = +provider.id;
         }
-        result.isPayerDetailsRequired = true;
         if (therapy?.materialNumber) therapy.displayMaterialNumber = CommonUtils.removeLeadingZeros(therapy.materialNumber);
         if (payerDetails) {
           [
