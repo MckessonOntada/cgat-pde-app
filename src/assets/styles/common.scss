@@ -1614,3 +1614,16 @@ div.empty-table-wrapper {
 .icon-button {
   letter-spacing: initial !important;
 }
+
+.manufacturer-logo-wrapper {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+  }
+}

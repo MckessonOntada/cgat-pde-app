@@ -30,6 +30,7 @@ import ReactDOM from 'react-dom';
 import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -318,14 +319,19 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader
+      <ModuleHeader
         heading={
-          isApprover
-            ? t('headings.reviewOrder')
-            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-            ? t('headings.createNewPrescription')
-            : t('headings.createNewOrder')
+          <PageHeader
+            heading={
+              isApprover
+                ? t('headings.reviewOrder')
+                : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                ? t('headings.createNewPrescription')
+                : t('headings.createNewOrder')
+            }
+          />
         }
+        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
       />
 
       <div className="MCP-module-body">

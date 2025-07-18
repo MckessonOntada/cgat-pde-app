@@ -30,6 +30,7 @@ import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-ques
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -701,14 +702,19 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader
+      <ModuleHeader
         heading={
-          isApprover
-            ? t('headings.reviewOrder')
-            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-            ? t('headings.createNewPrescription')
-            : t('headings.createNewOrder')
+          <PageHeader
+            heading={
+              isApprover
+                ? t('headings.reviewOrder')
+                : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                ? t('headings.createNewPrescription')
+                : t('headings.createNewOrder')
+            }
+          />
         }
+        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
       />
 
       <div className="MCP-module-body">
