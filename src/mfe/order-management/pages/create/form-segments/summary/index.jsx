@@ -61,7 +61,7 @@ const Summary = () => {
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
-  const { isApprover = false, isSimulate = false, backToInvoiceListing = false } = locationState || {};
+  const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
@@ -396,8 +396,8 @@ const Summary = () => {
   };
 
   const handleOnBackToOrders = () => {
-    if (backToInvoiceListing) {
-      navigate('/record/invoices');
+    if (backToInvoiceListing || backToInvoiceDetails) {
+      navigate(-1);
     } else {
       const prevSearch = locationState?.__prevSearch || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
@@ -569,7 +569,11 @@ const Summary = () => {
         <React.Fragment>
           <div>
             <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
-              {backToInvoiceListing ? t('orderManagement.backToInvoiceDetails') : t('captions.btnBackToManageOrder')}
+              {backToInvoiceListing
+                ? t('orderManagement.backToInvoiceDetails')
+                : backToInvoiceDetails
+                ? t('paymentInvoices.Details.backToInvoiceDetails')
+                : t('captions.btnBackToManageOrder')}
             </Button>
           </div>
           {orderDetails?.status === StatusEnum.IN_DRAFT && (
