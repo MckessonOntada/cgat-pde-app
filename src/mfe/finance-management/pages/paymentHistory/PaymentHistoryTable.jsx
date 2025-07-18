@@ -83,6 +83,15 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
+    // {
+    //   id: 'payOn',
+    //   name: t('paymentInvoices.history.table.PayOnDate'),
+    //   selector: (row) => row.payOn,
+    //   sortable: true,
+    //   wrap: true,
+    //   maxWidth: '145px',
+    //   cell: (props) => CommonUtils.convertDateStringFormat(props.payOn, 'MM/DD/YYYY', 'DD/MM/YYYY')
+    // },
     {
       id: 'paymentStatus',
       name: t('paymentInvoices.history.table.paymentStatus'),

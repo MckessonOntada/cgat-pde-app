@@ -304,5 +304,12 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.shipTo': 'S_Ship To',
   'paymentInvoices.Details.lineItem': 'S_Line Item',
   'paymentInvoices.Details.grossAmount': 'S_Gross Amount',
-  'paymentInvoices.Details.backToInvoiceDetails': 'S_back to invoice details page'
+  'paymentInvoices.Details.backToInvoiceDetails': 'S_back to invoice details page',
+  'paymentInvoices.table.column.creditAmount': 'S_Credit Amount',
+  'paymentInvoices.history.table.PayOnDate': 'S_Pay On Date',
+  'paymentInvoices.table.schedulePayments': 'S_Schedule Payments',
+  'pendingPayments.confirm.BackToPendingPayments': 'S_Back to Schedule Payments',
+  'paymentInvoices.tabs.SCHEDULE PAYMENTS': 'S_SCHEDULE PAYMENTS',
+  'paymentInvoices.pendingPayments.filter.payOnDateStart': 'S_Pay On Date (Start)',
+  'paymentInvoices.pendingPayments.filter.payOnDateEnd': 'S_Pay On Date (End)'
 };

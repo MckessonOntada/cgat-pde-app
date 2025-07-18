@@ -74,6 +74,15 @@ export default function PendingPaymentTable() {
       cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
+      id: 'payOn',
+      name: t('paymentInvoices.history.table.PayOnDate'),
+      selector: (row) => row.payOn,
+      sortable: true,
+      wrap: true,
+      maxWidth: '145px',
+      cell: (props) => CommonUtils.convertDateStringFormat(props.payOn, 'MM/DD/YYYY', 'DD/MM/YYYY')
+    },
+    {
       id: 'authorizedAmt',
       name: t('pendingPayments.table.totalAuthorizedPaymentAmt'),
       selector: (row) => row.authorizedAmt,

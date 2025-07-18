@@ -11,7 +11,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 const createColumns = (t, type) => {
   const commonColumns = [
     {
-      name: t('paymentInvoices.history.table.billNumber'),
+      name: t('paymentInvoices.history.table.invoiceNumber'),
       id: 'billNumber',
       selector: (row) => `${row.billNo}`,
       sortable: true,
@@ -23,7 +23,7 @@ const createColumns = (t, type) => {
     },
     {
       id: 'soldToSite',
-      name: t('paymentInvoices.history.table.SoldToSite'),
+      name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
       minWidth: '160px',
       sortable: true,
@@ -37,7 +37,7 @@ const createColumns = (t, type) => {
   const invoiceColumns = [
     ...commonColumns,
     {
-      name: t('paymentInvoices.history.table.PostingDate'),
+      name: t('paymentInvoices.history.table.invoiceDate'),
       selector: (row) => row.billDate,
       sortable: true,
       id: 'billDate',
@@ -55,7 +55,7 @@ const createColumns = (t, type) => {
       cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
-      name: t('paymentInvoices.history.table.BillAmount'),
+      name: t('paymentInvoices.history.table.invoiceAmount'),
       selector: (row) => row?.billAmount,
       minWidth: '120px',
       sortable: true,

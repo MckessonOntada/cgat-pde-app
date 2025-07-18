@@ -9,34 +9,15 @@ import ModuleHeader from '@src/components/module-header';
 
 export default function PendingPayments(params) {
   const { t } = useTranslate();
-  const { actualData, applyFilters, clearFilters, exportPDF, data } =
-    usePendingPayments();
+  const { actualData, applyFilters, clearFilters, exportPDF, data } = usePendingPayments();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
-      // {
-      //   type: 'multiSelectDropdown',
-      //   name: 'paymentStatus',
-      //   tableColumnId: 'paymentStatus',
-      //   label: t('pendingPayments.table.paymentStatus'),
-      //   options: []
-      // },
-      // {
-      //   type: 'dropdown',
-      //   name: 'billDate',
-      //   tableColumnId: 'payOn',
-      //   label: t('pendingPayments.table.billDate'),
-      //   options: []
-      // },
       {
         type: 'dateRangePicker',
-        name: 'paymentInitiationDate',
-        startDateLabel: t(
-          'paymentInvoices.pendingPayments.filter.initiationDateStart'
-        ),
-        endDateLabel: t(
-          'paymentInvoices.pendingPayments.filter.initiationDateEnd'
-        )
+        name: 'payOn',
+        startDateLabel: t('paymentInvoices.pendingPayments.filter.payOnDateStart'),
+        endDateLabel: t('paymentInvoices.pendingPayments.filter.payOnDateEnd')
       }
     ];
   }, []);
@@ -53,18 +34,10 @@ export default function PendingPayments(params) {
       </div>
       <div className="MCP-table-wrapper">
         <ModuleHeader
-          heading={
-            <Heading as="h2">
-              {t('paymentInvoices.table.paymentPending')}
-            </Heading>
-          }
+          heading={<Heading as="h2">{t('paymentInvoices.table.schedulePayments')}</Heading>}
           controls={
             <div className="table-header">
-              <Button
-                variant="secondary"
-                onClick={() => exportPDF()}
-                disabled={data.length === 0}
-                size="sm">
+              <Button variant="secondary" onClick={() => exportPDF()} disabled={data.length === 0} size="sm">
                 {t('paymentInvoices.CS.ExportExcel')}
               </Button>
             </div>
