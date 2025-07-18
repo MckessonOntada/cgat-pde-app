@@ -21,6 +21,7 @@ import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -203,7 +204,10 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <ModuleHeader
+        heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
+        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+      />
 
       <div className="MCP-module-body">
         <OrderStepper

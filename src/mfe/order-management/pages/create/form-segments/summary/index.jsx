@@ -36,6 +36,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import AttachmentCard from './AttachmentCard';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 const BUTTON_ACTIONS = {
   SUBMIT: 'submit',
@@ -576,27 +577,34 @@ const Summary = () => {
                 : t('captions.btnBackToManageOrder')}
             </Button>
           </div>
-          {orderDetails?.status === StatusEnum.IN_DRAFT && (
-            <PageHeader
-              heading={
-                isApprover
-                  ? t('headings.reviewOrder')
-                  : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                  ? t('headings.createNewPrescriptionSummary')
-                  : t('headings.createNewOrderSummary')
-              }
-            />
-          )}
-          {isApprover && (
-            <div className={styles.pageHeadingReview}>
-              <PageHeader heading={t('headings.reviewOrder')} />
-              {isPapOrder && (
-                <span className={styles.pap}>
-                  <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                </span>
-              )}
-            </div>
-          )}
+          <ModuleHeader
+            heading={
+              <React.Fragment>
+                {orderDetails?.status === StatusEnum.IN_DRAFT && (
+                  <PageHeader
+                    heading={
+                      isApprover
+                        ? t('headings.reviewOrder')
+                        : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                        ? t('headings.createNewPrescriptionSummary')
+                        : t('headings.createNewOrderSummary')
+                    }
+                  />
+                )}
+                {isApprover && (
+                  <div className={styles.pageHeadingReview}>
+                    <PageHeader heading={t('headings.reviewOrder')} />
+                    {isPapOrder && (
+                      <span className={styles.pap}>
+                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
+                      </span>
+                    )}
+                  </div>
+                )}
+              </React.Fragment>
+            }
+            controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          />
         </React.Fragment>
       )}
 
