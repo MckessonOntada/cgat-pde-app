@@ -304,5 +304,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.shipTo': 'S_Ship To',
   'paymentInvoices.Details.lineItem': 'S_Line Item',
   'paymentInvoices.Details.grossAmount': 'S_Gross Amount',
-  'paymentInvoices.Details.backToInvoiceDetails': 'S_back to invoice details page'
+  'paymentInvoices.Details.backToInvoiceDetails': 'S_back to invoice details page',
+  'paymentInvoices.Details.financeCharges': 'S_Finance Charges:'
 };
