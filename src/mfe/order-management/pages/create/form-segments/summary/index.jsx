@@ -188,7 +188,7 @@ const Summary = () => {
   };
 
   const handleRetrySAPOrderStatus = () => {
-    const sapOrderStatusAlerts = notifications.find((item) => item.kind === 'SAP_ORDER_STATUS');
+    const sapOrderStatusAlerts = notifications.filter((item) => item.kind === 'SAP_ORDER_STATUS');
     if (sapOrderStatusAlerts && sapOrderStatusAlerts.length > 0) {
       sapOrderStatusAlerts.forEach((item) => removeNotification(item.id));
     }
@@ -602,7 +602,7 @@ const Summary = () => {
                   />
                 )}
 
-                {!isApprover && (isSubmitted || isApprovalPending) && (
+                {!isApprover && (isSubmitted || isApprovalPending || isRejected) && (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t('labels.summary')}</span>
                     {isPapOrder && (
@@ -617,8 +617,6 @@ const Summary = () => {
             className={!isApprover ? styles.orderSummary : undefined}
             controls={
               <div className={styles['order-header-options']}>
-                {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
-
                 {isRejected && (
                   <div className="row-space-between-center">
                     <Badge text={t(`labels.status.${status.toLowerCase()}`)} type="error" />
@@ -668,6 +666,8 @@ const Summary = () => {
                     )}
                   </div>
                 )}
+
+                {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
               </div>
             }
           />
@@ -690,10 +690,10 @@ const Summary = () => {
         )}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
-          <div className="alert-container">
+          <div className="">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert key={`${item.id}_${index}`} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+                <Alert key={`${item.id}`} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
               ))}
             </div>
           </div>
