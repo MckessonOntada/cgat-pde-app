@@ -81,7 +81,7 @@
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-400);
   color: var(--brand-color-black);
-  padding-right: var(--spacing-03);
+  padding-right: var(--spacing-01);
 }
 
 .pap {
@@ -106,7 +106,7 @@
 }
 
 .orderSummary {
-  >div:first-of-type {
+  > div:first-of-type {
     @media only screen and (max-width: 768px) {
       width: 100%;
     }
@@ -129,7 +129,6 @@
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-01);
-
 }
 
 .info-icon {
@@ -142,7 +141,15 @@
     height: 22px;
 
     path {
-      fill: var(--brand-color-background-blue-3)
+      fill: var(--brand-color-background-blue-3);
     }
   }
+}
+
+.order-header-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-03);
+  flex-direction: row;
 }

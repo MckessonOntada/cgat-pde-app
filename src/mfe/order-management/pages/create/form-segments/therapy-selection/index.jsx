@@ -211,14 +211,7 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <ModuleHeader
-        heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
-        controls={
-          tradeDetails?.manufacturerName || orderDetails?.therapy?.manufacturerName ? (
-            <ManufacturerLogo therapyId={tradeDetails.id || orderDetails?.therapy?.id} />
-          ) : null
-        }
-      />
+      <ModuleHeader heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />} controls={null} />
 
       <div className="MCP-module-body">
         <OrderStepper

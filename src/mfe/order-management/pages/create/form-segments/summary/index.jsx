@@ -195,7 +195,7 @@ const Summary = () => {
   };
 
   const handleRetrySAPOrderStatus = () => {
-    const sapOrderStatusAlerts = notifications.find((item) => item.kind === 'SAP_ORDER_STATUS');
+    const sapOrderStatusAlerts = notifications.filter((item) => item.kind === 'SAP_ORDER_STATUS');
     if (sapOrderStatusAlerts && sapOrderStatusAlerts.length > 0) {
       sapOrderStatusAlerts.forEach((item) => removeNotification(item.id));
     }
@@ -588,17 +588,6 @@ const Summary = () => {
           <ModuleHeader
             heading={
               <React.Fragment>
-                {orderDetails?.status === StatusEnum.IN_DRAFT && (
-                  <PageHeader
-                    heading={
-                      isApprover
-                        ? t('headings.reviewOrder')
-                        : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                        ? t('headings.createNewPrescriptionSummary')
-                        : t('headings.createNewOrderSummary')
-                    }
-                  />
-                )}
                 {isApprover && (
                   <div className={styles.pageHeadingReview}>
                     <PageHeader heading={t('headings.reviewOrder')} />
@@ -609,9 +598,85 @@ const Summary = () => {
                     )}
                   </div>
                 )}
+
+                {!isApprover && orderDetails?.status === StatusEnum.IN_DRAFT && (
+                  <PageHeader
+                    heading={
+                      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                        ? t('headings.createNewPrescriptionSummary')
+                        : t('headings.createNewOrderSummary')
+                    }
+                  />
+                )}
+
+                {!isApprover && (isSubmitted || isApprovalPending || isRejected) && (
+                  <Heading className={styles.orderSummaryHeading} as="h2">
+                    <span>{t('labels.summary')}</span>
+                    {isPapOrder && (
+                      <span className={styles.pap}>
+                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
+                      </span>
+                    )}
+                  </Heading>
+                )}
               </React.Fragment>
             }
-            controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+            className={!isApprover ? styles.orderSummary : undefined}
+            controls={
+              <div className={styles['order-header-options']}>
+                {isRejected && (
+                  <div className="row-space-between-center">
+                    <Badge text={t(`labels.status.${status.toLowerCase()}`)} type="error" />
+                    <Button size="md" variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                      {t('captions.btnViewComments')}
+                    </Button>
+                  </div>
+                )}
+
+                {isSubmitted && !spOrder && (
+                  <div className="row-space-between-center">
+                    <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
+
+                    {isLoadingSapOrderStatus ? (
+                      <InventoryIndicator status="CHECKING" />
+                    ) : sapOrderDetails?.finalStatus ? (
+                      (() => {
+                        const finalStatus = sapOrderDetails.finalStatus.toLowerCase();
+                        const statusMap = {
+                          [SAPOrderStatusEnum.OPEN.toLowerCase()]: {
+                            text: t('labels.OrderProcesing.SAPOrderStatus.Open'),
+                            type: 'info'
+                          },
+                          [SAPOrderStatusEnum.CANCELLED.toLowerCase()]: {
+                            text: t('labels.OrderProcesing.SAPOrderStatus.Cancelled'),
+                            type: 'error'
+                          },
+                          [SAPOrderStatusEnum.COMPLETED.toLowerCase()]: {
+                            text: t('labels.OrderProcesing.SAPOrderStatus.Completed'),
+                            type: 'success'
+                          }
+                        };
+
+                        const badgeProps = statusMap[finalStatus];
+
+                        return badgeProps ? <Badge text={badgeProps.text} type={badgeProps.type} /> : null;
+                      })()
+                    ) : (
+                      <div className={styles.orderProcessing}>
+                        <InventoryIndicator status="OUT_OF_STOCK" />
+                        <div className="styled-icon-button">
+                          <Button variant="tertiary" size="lg" onClick={handleRetrySAPOrderStatus}>
+                            {t('captions.btnRetry')}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
+              </div>
+            }
           />
         </React.Fragment>
       )}
@@ -632,10 +697,10 @@ const Summary = () => {
         )}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
-          <div className="alert-container">
+          <div className="">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert key={`${item.id}_${index}`} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+                <Alert key={`${item.id}`} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
               ))}
             </div>
           </div>
@@ -644,64 +709,6 @@ const Summary = () => {
         {!isError && (
           <React.Fragment>
             <div className={'MCP-module-wrapper'}>
-              <ModuleHeader
-                heading={
-                  !isApprover && (
-                    <Heading className={styles.orderSummaryHeading} as="h2">
-                      {(isSubmitted || isApprovalPending) && <span>{t('labels.summary')}</span>}
-                      {isPapOrder && (
-                        <span className={styles.pap}>
-                          <Badge
-                            customStyle={{
-                              color: '#005483',
-                              backgroundColor: '#F2F6FA'
-                            }}
-                            text={t('label.noCostTherapy')}
-                          />
-                        </span>
-                      )}
-                    </Heading>
-                  )
-                }
-                className={styles.orderSummary}
-                controls={
-                  isRejected ? (
-                    <div className="row-space-between-center">
-                      <Badge text={t(`labels.status.${status.toLowerCase()}`)} type="error" />
-                      <Button size="md" variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
-                        {t('captions.btnViewComments')}
-                      </Button>
-                    </div>
-                  ) : isSubmitted && !spOrder ? (
-                    <div className="row-space-between-center">
-                      <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
-                      {isLoadingSapOrderStatus && <InventoryIndicator status={'CHECKING'} />}
-
-                      {!isLoadingSapOrderStatus &&
-                        (sapOrderDetails?.finalStatus ? (
-                          <>
-                            {sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.OPEN.toLowerCase() ? (
-                              <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Open')} type="info" />
-                            ) : sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.CANCELLED.toLowerCase() ? (
-                              <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Cancelled')} type="error" />
-                            ) : (
-                              <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Completed')} type="success" />
-                            )}
-                          </>
-                        ) : (
-                          <div className={styles.orderProcessing}>
-                            <InventoryIndicator status={'OUT_OF_STOCK'} />
-                            <div className="styled-icon-button">
-                              <Button variant="tertiary" size="lg" onClick={handleRetrySAPOrderStatus}>
-                                {t('captions.btnRetry')}
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  ) : null
-                }
-              />
               <div className={'MCP-module-body'}>
                 {(status === StatusEnum.SUBMITTED || status === StatusEnum.APPROVAL_PENDING) &&
                   ((spOrder && (submittedBy?.name || orderDetails?.submittedOn)) || (!spOrder && (orderDetails?.approver || orderDetails?.submittedOn))) && (
