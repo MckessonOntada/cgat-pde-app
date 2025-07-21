@@ -68,7 +68,7 @@ const Summary = () => {
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const [sapStatus, setSapStatus] = React.useState(null);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
-
+  const hasFetchedInventory = useRef(false);
   const {
     tradeDetails = {},
     therapy = {},
@@ -141,14 +141,21 @@ const Summary = () => {
   };
 
   React.useEffect(() => {
-    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED || status === 'DELETED') {
+    const { id, status } = orderDetails;
+    const invalidStatuses = [StatusEnum.SUBMITTED, StatusEnum.REJECTED, 'DELETED'];
+
+    if (!id || invalidStatuses.includes(status)) {
       return;
     }
+
     if (catalog.inventoryType === 'T') {
       setInventoryStatus('DROP_SHIP');
     } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'I') {
       setInventoryStatus('CHECKING');
-      getInventoryStatus();
+      if (hasFetchedInventory.current === false) {
+        getInventoryStatus();
+        hasFetchedInventory.current = true;
+      }
     } else {
       console.log('Inventory type not supported');
     }
@@ -158,7 +165,7 @@ const Summary = () => {
         isChecked: Boolean(orderDetails.paporder)
       }));
     }
-  }, [orderDetails]);
+  }, [orderDetails.id]);
 
   const handleInventoryDetailsResponse = (data = {}) => {
     const { erroredItems, warningMessages } = data.inventoryCheckResponse || {};
