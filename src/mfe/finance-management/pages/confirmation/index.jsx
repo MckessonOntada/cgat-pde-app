@@ -140,7 +140,13 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       <div>{renderBackButton()}</div>
       <Heading as="h1">{`Confirmation - ${confirmationNumber}`}</Heading>
       <div className="details-card-wrapper">{renderMetricsCard()}</div>
-      <ConfirmationTable invoiceData={state?.invoices} creditData={state?.credits} paginationConfig={paginationConfig} isFetching={isFetching} />
+      <ConfirmationTable
+        invoiceData={state?.invoices}
+        creditData={state?.credits}
+        paginationConfig={paginationConfig}
+        isFetching={isFetching}
+        pageType={type}
+      />
       {renderFooterButtons()}
     </div>
   );

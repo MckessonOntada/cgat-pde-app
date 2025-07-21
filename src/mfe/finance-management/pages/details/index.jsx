@@ -45,6 +45,7 @@ function Details(props) {
   const showCardView = useResponsiveView();
 
   const { state = {} } = locationParams;
+  const pageType = state.pageType;
   const { invoices = [], selectedCredit = [] } = state || {};
   const source = invoices[0] || selectedCredit[0];
   const onBackToPaymentsInvoices = () => {
@@ -235,16 +236,25 @@ function Details(props) {
     ],
     [data]
   );
+  const getBackLinkLabel = () => {
+    if (locationParams?.state?.reviewPay) {
+      return t('paymentInvoices.Details.backToReviewAndPay');
+    } else if (pageType) {
+      return t(`paymentInvoices.Details.${pageType}`);
+    } else if (INVOICES_SCREEN) {
+      return t('paymentInvoices.Details.backToManageInvoices');
+    } else if (CREDITS_SCREEN) {
+      return t('paymentInvoices.Details.backToManageCredits');
+    } else {
+      return 'go back';
+    }
+  };
 
   return (
     <div className="view-details-container">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={onBackToPaymentsInvoices} size="md">
-          {locationParams?.state?.reviewPay
-            ? t('paymentInvoices.Details.backToReviewAndPay')
-            : INVOICES_SCREEN
-            ? t('paymentInvoices.Details.backToManageInvoices')
-            : t('paymentInvoices.Details.backToManageCredits')}
+          {getBackLinkLabel()}
         </Button>
       </div>
       <Heading>

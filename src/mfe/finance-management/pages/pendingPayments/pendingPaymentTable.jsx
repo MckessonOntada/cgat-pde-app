@@ -115,10 +115,38 @@ export default function PendingPaymentTable() {
           if (props.invoices?.length > 1) {
             return <div>Multiple</div>;
           } else {
-            return <div>{props.invoices?.[0]?.billNo || ''}</div>;
+            return (
+              <div className="cellEllipse">
+                <Link
+                  style={{
+                    color: 'var(--brand-color-primary)',
+                    fontWeight: '600',
+                    textDecoration: 'none'
+                  }}
+                  to={`/record/invoices/${props.invoices?.[0]?.billNo}/details`}
+                  state={{
+                    pageType: 'pending-payment-listing'
+                  }}>
+                  {props.invoices?.[0]?.billNo || ''}
+                </Link>
+              </div>
+            );
           }
         } else {
-          return <div>{props.billNo}</div>;
+          return (
+            <div className="cellEllipse">
+              <Link
+                style={{
+                  color: 'var(--brand-color-primary)',
+                  fontWeight: '600',
+                  textDecoration: 'none'
+                }}
+                to={`/record/invoices/${props?.billNo}/details`}
+                state={{
+                  pageType: 'pending-payment-listing'
+                }}>{`${props?.billNo || ''}`}</Link>
+            </div>
+          );
         }
       }
     },

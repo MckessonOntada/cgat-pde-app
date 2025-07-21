@@ -312,5 +312,9 @@ export const PaymentInvoicesES = {
   'paymentInvoices.tabs.SCHEDULE PAYMENTS': 'S_SCHEDULE PAYMENTS',
   'paymentInvoices.pendingPayments.filter.payOnDateStart': 'S_Pay On Date (Start)',
   'paymentInvoices.pendingPayments.filter.payOnDateEnd': 'S_Pay On Date (End)',
-  'paymentInvoices.Details.financeCharges': 'S_Finance Charges:'
+  'paymentInvoices.Details.financeCharges': 'S_Finance Charges:',
+  'paymentInvoices.Details.payment-history': 'S_back to payments history details page',
+  'paymentInvoices.Details.payment-history-listing': 'S_back to payment history page',
+  'paymentInvoices.Details.pending-payments': 'S_back to schedule payments details page',
+  'paymentInvoices.Details.pending-payment-listing': 'S_back to schedule payments  page'
 };

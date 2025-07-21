@@ -7,8 +7,9 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { Link } from 'react-router-dom';
 
-const createColumns = (t, type) => {
+const createColumns = (t, type, pageType) => {
   const commonColumns = [
     {
       name: t('paymentInvoices.history.table.invoiceNumber'),
@@ -19,7 +20,22 @@ const createColumns = (t, type) => {
       minWidth: '112px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
-      cell: (props) => <div className="cellEllipse">{props?.billNo || ''}</div>
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: 'var(--brand-color-primary)',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            to={`/record/invoices/${props?.billNo || ''}/details`}
+            state={{
+              pageType: pageType
+            }}>
+            {props?.billNo || ''}
+          </Link>
+        </div>
+      )
     },
     {
       id: 'soldToSite',
@@ -124,7 +140,7 @@ const createColumns = (t, type) => {
   return type === 'invoice' ? invoiceColumns : creditColumns;
 };
 
-function ConfirmationTable({ invoiceData, creditData }) {
+function ConfirmationTable({ invoiceData, creditData, pageType }) {
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
 
@@ -137,7 +153,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
         <CustomDataTable
           id="invoice-data-table"
           type="normal"
-          columns={createColumns(t, 'invoice')}
+          columns={createColumns(t, 'invoice', pageType)}
           data={invoiceData || []}
           onSortIconClick={() => {}}
           handleChangePage={() => {}}
@@ -167,7 +183,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
             <CustomDataTable
               id="credit-data-table"
               type="normal"
-              columns={createColumns(t, 'credit')}
+              columns={createColumns(t, 'credit', pageType)}
               data={creditData || []}
               onSortIconClick={() => {}}
               handleChangePage={() => {}}
