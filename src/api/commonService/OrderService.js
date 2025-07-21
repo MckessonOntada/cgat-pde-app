@@ -415,6 +415,16 @@ async function getTherapyDetailsByNDC(ndcNumber, channelType) {
   if (res.data) return res.data;
 }
 
+async function getManufacturerLogo(therapyId) {
+  const url = `${ApiRoutes.THERAPIES()}/${therapyId}/manufacturer/logo`;
+
+  const response = await HttpResourceService.callRest(url, httpVerb.GET, null, { responseType: 'arraybuffer' }, null, null, null, 'blob');
+  const contentType = response.headers['content-type'] || 'image/jpeg';
+
+  const blob = new Blob([response.data], { type: contentType });
+  return URL.createObjectURL(blob);
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -450,7 +460,8 @@ const OrderService = Object.freeze({
   getTherapyDetailsByTradeName2,
   uploadPayerDocument,
   getBackendOrderId,
-  getTherapyDetailsByNDC
+  getTherapyDetailsByNDC,
+  getManufacturerLogo
 });
 
 export default OrderService;

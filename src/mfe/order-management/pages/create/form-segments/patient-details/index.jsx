@@ -30,6 +30,7 @@ import ReactDOM from 'react-dom';
 import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -60,7 +61,7 @@ const PatientDetails = () => {
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const [showAddProviderForm, setShowAddProviderForm] = React.useState(false);
   const [portalTarget, setPortalTarget] = React.useState(null);
-
+  const [isEditing, setIsEditing] = React.useState(false);
   useEffect(() => {
     if (showAddProviderForm) {
       const providerForm = document.getElementById('provider-form-portal');
@@ -318,14 +319,19 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader
+      <ModuleHeader
         heading={
-          isApprover
-            ? t('headings.reviewOrder')
-            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-            ? t('headings.createNewPrescription')
-            : t('headings.createNewOrder')
+          <PageHeader
+            heading={
+              isApprover
+                ? t('headings.reviewOrder')
+                : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                ? t('headings.createNewPrescription')
+                : t('headings.createNewOrder')
+            }
+          />
         }
+        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
       />
 
       <div className="MCP-module-body">
@@ -454,7 +460,10 @@ const PatientDetails = () => {
                                             className="button-icon"
                                             size="md"
                                             type="button"
-                                            onClick={() => setShowAddProviderForm(true)}>
+                                            onClick={() => {
+                                              setIsEditing(true);
+                                              setShowAddProviderForm(true);
+                                            }}>
                                             {t('userManagement.button.edit')}
                                           </Button>
                                         </span>
@@ -494,15 +503,16 @@ const PatientDetails = () => {
                             </div>
 
                             <div className="styled-icon-button">
-                              {!showAddProviderForm && !initialValues.providerId && !provider && (
+                              {!showAddProviderForm && (
                                 <Button
                                   Icon={PlusIcon}
                                   variant="tertiary"
                                   type="button"
                                   onClick={() => {
+                                    setIsEditing(false);
                                     setShowAddProviderForm(true);
-                                    setProvider(null);
-                                    setFieldValue('providerId', null);
+                                    //setProvider(null);
+                                    // setFieldValue('providerId', null);
                                   }}
                                   size="md">
                                   {t('provider.btnAddProvider')}
@@ -515,7 +525,7 @@ const PatientDetails = () => {
                                   <div className="inline-provider-form-wrapper">
                                     <ProviderAddUpdateForm
                                       setShowAddProviderForm={setShowAddProviderForm}
-                                      providerData={provider}
+                                      providerData={isEditing ? provider : []}
                                       accountId={soldToAccountId}
                                       onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
                                     />

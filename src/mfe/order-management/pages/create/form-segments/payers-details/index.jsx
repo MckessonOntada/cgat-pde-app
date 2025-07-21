@@ -32,6 +32,7 @@ import { useMutation } from 'react-query';
 import Alert from '@src/components/cgat-alert/Alert';
 import { CHANNEL_TYPE } from '../Constants';
 import Components from '@src/components/form/Components';
+import ManufacturerLogo from '../ManufacturerLogo';
 
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -277,14 +278,19 @@ function Payer() {
         </Button>
       </div>
 
-      <PageHeader
+      <ModuleHeader
         heading={
-          isApprover
-            ? t('headings.reviewOrder')
-            : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-            ? t('headings.createNewPrescription')
-            : t('headings.createNewOrder')
+          <PageHeader
+            heading={
+              isApprover
+                ? t('headings.reviewOrder')
+                : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                ? t('headings.createNewPrescription')
+                : t('headings.createNewOrder')
+            }
+          />
         }
+        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
       />
 
       <div className="MCP-module-body">
