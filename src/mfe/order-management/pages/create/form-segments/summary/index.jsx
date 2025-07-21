@@ -202,6 +202,7 @@ const Summary = () => {
   const isRejected = status === 'REJECTED';
   const isDeleted = status === 'DELETED';
   const isSubmitted = status === StatusEnum.SUBMITTED;
+  const isApprovalPending = status === StatusEnum.APPROVAL_PENDING;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
     contentRef,
@@ -640,7 +641,7 @@ const Summary = () => {
                 heading={
                   !isApprover && (
                     <Heading className={styles.orderSummaryHeading} as="h2">
-                      {isSubmitted && <span>{t('labels.summary')}</span>}
+                      {(isSubmitted || isApprovalPending) && <span>{t('labels.summary')}</span>}
                       {isPapOrder && (
                         <span className={styles.pap}>
                           <Badge
@@ -761,17 +762,45 @@ const Summary = () => {
                       }
                     />
                     {!spOrder && (
-                      <div className="price-wrapper">
-                        <DetailSegment
-                          label={t('labels.orderCost')}
-                          value={
-                            <span className="dollarSign ">
-                              <span>$</span>
-                              {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : getOrderCost(orderCost, simulationData.updatedCost))}
-                            </span>
-                          }
-                        />
-                      </div>
+                      <>
+                        <div className="price-wrapper">
+                          <DetailSegment
+                            label={t('labels.netAmount')}
+                            value={
+                              <span className="dollarSign ">
+                                <span>$</span>
+                                {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : getOrderCost(orderCost, simulationData.updatedCost))}
+                              </span>
+                            }
+                          />
+                        </div>
+                        <div className="price-wrapper">
+                          <DetailSegment
+                            label={t('labels.taxAmount')}
+                            value={
+                              <span className="dollarSign ">
+                                <span>$</span>
+                                {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : simulationData.updatedTaxAmount || 0)}
+                              </span>
+                            }
+                          />
+                        </div>
+                        <div className="price-wrapper">
+                          <DetailSegment
+                            label={t('labels.orderCost')}
+                            value={
+                              <span className="dollarSign ">
+                                <span>$</span>
+                                {CommonUtils.formatNumberWithoutSymbol(
+                                  papOrderOptions.isChecked
+                                    ? 0
+                                    : getOrderCost(orderCost, (simulationData.updatedCost || 0) + (simulationData.updatedTaxAmount || 0))
+                                )}
+                              </span>
+                            }
+                          />
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -797,33 +826,12 @@ const Summary = () => {
                           )
                         }
                       />
-                      <div className={` grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                      <div className={` grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5`}>
                         <DetailSegment label={t('labels.genericName')} value={therapy.genericName || '-'} />
                         <DetailSegment label={t('labels.manufacturer')} value={therapy.manufacturerName || '-'} />
                         <DetailSegment label={t('labels.formulation')} value={therapy.formulation || '-'} />
                         <DetailSegment label={t('labels.Dosage')} value={`${therapy.strength || ''} ${therapy.dosage || ''}`.trim() || '-'} />
                         <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber || '-'} />
-
-                        {!spOrder && (
-                          <DetailSegment
-                            label={t('labels.netPrice')}
-                            value={
-                              <Tooltip
-                                body={
-                                  catalog?.netPrice || simulationData?.updatedCatalogNetPrice
-                                    ? `$${CommonUtils.formatNumberWithoutSymbol(simulationData?.updatedCatalogNetPrice || catalog?.netPrice)}`
-                                    : '-'
-                                }>
-                                <span className="dollarSign">
-                                  <span>$</span>
-                                  {catalog?.netPrice || simulationData?.updatedCatalogNetPrice
-                                    ? CommonUtils.formatNumberWithoutSymbol(simulationData.updatedCatalogNetPrice || catalog.netPrice)
-                                    : '-'}
-                                </span>
-                              </Tooltip>
-                            }
-                          />
-                        )}
                       </div>
                     </div>
                   </div>

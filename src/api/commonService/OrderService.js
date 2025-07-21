@@ -368,8 +368,8 @@ async function uploadPayerDocument(orderId, data) {
   return {};
 }
 async function uploadDocument(payload) {
-  const { orderId, file } = payload;
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${orderId}`;
+  const { orderId, file, channelType } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${orderId}&channelType=${channelType}`;
 
   const res = await HttpResourceService.callRest(
     url,

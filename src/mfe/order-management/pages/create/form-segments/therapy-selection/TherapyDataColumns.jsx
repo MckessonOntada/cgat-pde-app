@@ -138,9 +138,9 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     width: '140px',
     sortable: false,
     cell: (row) => {
-      return row.formulation ? (
+      return row.productForm ? (
         <span aria-label={t('table.columns.captions.formulation')}>
-          <Tooltip body={row.formulation}>{row.formulation}</Tooltip>
+          <Tooltip body={row.productForm}>{row.productForm}</Tooltip>
         </span>
       ) : (
         '-'
@@ -154,9 +154,11 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
     width: '100px',
     sortable: false,
     cell: (row) => {
-      return row.dosage ? (
+      const hasValue = row.strength || row.dosage;
+
+      return hasValue ? (
         <span aria-label={t('table.columns.captions.dosage')}>
-          <Tooltip body={row.formulation}>{row.dosage}</Tooltip>
+          <Tooltip body={row.strength}>{`${row.strength || ''} ${row.dosage || ''}`.trim()}</Tooltip>
         </span>
       ) : (
         '-'

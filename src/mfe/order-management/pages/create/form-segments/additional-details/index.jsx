@@ -416,7 +416,8 @@ function AdditionalDetails() {
       return QuestionnaireService.uploadVariantDocument({
         orderId,
         variantId: variant.variant,
-        file
+        file,
+        channelType
       });
     },
     {
