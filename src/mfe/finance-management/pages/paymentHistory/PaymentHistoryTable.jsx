@@ -61,7 +61,7 @@ export default function PaymentHistoryTable() {
       id: 'checkbox',
       name: '',
       selector: (row) => row['materialNumber'],
-      width: '30px',
+      width: '35px',
       showInMobileHeader: true,
       cell: (row) => {
         if (row.invoices && row.invoices.length > 1) {
