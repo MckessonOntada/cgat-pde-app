@@ -1,10 +1,6 @@
-import React, { useState } from 'react';
-import DataTable from '@src/components/dataTable/DataTable';
+import React from 'react';
 import { Badge, Loader } from '@mckesson/mcp-component-library';
-import { PaymentHistoryData } from '../../mockData/PaymentHistoryData';
 import { Link } from 'react-router-dom';
-import FloatingDrawer from '../../../../components/floating-drawer';
-import PaymentDetails from './PaymentDetails';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentHistory } from '../../context/PaymentHistoryContext';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -15,6 +11,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import CommonUtils from '@src/util/CommonUtils';
+import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 
 const PAYMENT_STATUS = {
   PROCESSED: { label: 'Processed', color: 'success' },
@@ -30,12 +27,55 @@ const PAYMENT_STATUS = {
 
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
-  // const [isOpen, setIsOpen] = useState(false);
-
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig, filteredData } = usePaymentHistory();
   const showCardView = useResponsiveView();
+  const [expandedRows, setExpandedRows] = React.useState([]);
+  const isRowExpanded = (row) => {
+    return expandedRows.includes(row.confirmationNo);
+  };
+  const onExpandToggle = (row) => {
+    setExpandedRows((prev) => (prev.includes(row.confirmationNo) ? prev.filter((name) => name !== row.confirmationNo) : [...prev, row.confirmationNo]));
+  };
+  const ExpandedComponent = ({ data }) => {
+    if (!CommonUtils.isNonEmptyArray(data.invoices)) return null;
+    const expandedData = data.invoices || [];
 
+    return (
+      <div className="expanded-rows">
+        <CustomDataTable
+          data={expandedData}
+          columns={columns}
+          noTableHead
+          noHeader
+          pagination={false}
+          showHeader={false}
+          hideColumnHeader
+          type="expanded"
+          striped
+        />
+      </div>
+    );
+  };
   const columns = [
+    {
+      id: 'checkbox',
+      name: '',
+      selector: (row) => row['materialNumber'],
+      width: '35px',
+      showInMobileHeader: true,
+      cell: (row) => {
+        if (row.invoices && row.invoices.length > 1) {
+          const expanded = isRowExpanded(row);
+          return (
+            <div className="expand-icon-wrapper" onClick={() => onExpandToggle(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
+              <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
+                <ArrowAngleRight />
+              </div>
+            </div>
+          );
+        }
+      }
+    },
     {
       id: 'confirmationNo',
       name: t('paymentInvoices.history.table.confirmationNumber'),
@@ -45,23 +85,35 @@ export default function PaymentHistoryTable() {
       wrap: true,
       showInMobileHeader: true,
       showColumnNameInHeader: true,
-      cell: (props) => (
-        <div className="cellEllipse">
-          <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
-            state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
-        </div>
-      )
+      cell: (props) =>
+        props.paymentStatus && (
+          <div className="cellEllipse">
+            <Link
+              style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+              to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
+              state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
+          </div>
+        )
     },
-    // {
-    //   id: 'purchaseOrderNo',
-    //   name: t('paymentInvoices.history.table.purchaseOrderNumber'),
-    //   maxWidth: '180px',
-    //   sortable: true,
-    //   selector: (row) => `${row.purchaseOrderNo}`,
-    //   cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
-    // },
+    {
+      id: 'billNo',
+      name: t('paymentInvoices.history.table.invoiceNumber'),
+      selector: (row) => row.invoices?.[0]?.billNo || '',
+      minWidth: '160px',
+      sortable: true,
+      wrap: true,
+      cell: (props) => {
+        if (props.paymentStatus) {
+          if (props.invoices?.length > 1) {
+            return <div>Multiple</div>;
+          } else {
+            return <div>{props.invoices?.[0]?.billNo || ''}</div>;
+          }
+        } else {
+          return <div>{props.billNo}</div>;
+        }
+      }
+    },
     {
       id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
@@ -71,17 +123,16 @@ export default function PaymentHistoryTable() {
       maxWidth: '180px',
       cardHeader: true,
       showInMobileHeader: true,
-      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={170} />
+      cell: (props) => props.paymentStatus && <EclipsesTextcss str={props.paymentMethod} maxWidth={170} />
     },
 
     {
       id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
-      // width: '140px',
       maxWidth: '230px',
       sortable: true,
-      cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) => props.paymentStatus && CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     // {
     //   id: 'payOn',
@@ -100,19 +151,20 @@ export default function PaymentHistoryTable() {
       center: true,
       showInMobileHeader: true,
       cardStatus: true,
-      cell: (props) => (
-        <div className="status-container">
-          {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
-            <Badge
-              customStyle={{ minWidth: '140px' }}
-              text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
-              type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
-            />
-          ) : (
-            '-'
-          )}
-        </div>
-      )
+      cell: (props) =>
+        props.paymentStatus && (
+          <div className="status-container">
+            {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
+              <Badge
+                customStyle={{ minWidth: '140px' }}
+                text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
+                type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
+              />
+            ) : (
+              '-'
+            )}
+          </div>
+        )
     },
     {
       id: 'totalAuthorizedPaymentAmount',
@@ -120,11 +172,12 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       minWidth: '120px',
       sortable: true,
-      cell: (props) => (
-        <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.totalAuthorizedPaymentAmount || 0} style="currency" currency="USD" />
-        </div>
-      ),
+      cell: (props) =>
+        props.paymentStatus && (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={props?.totalAuthorizedPaymentAmount || 0} style="currency" currency="USD" />
+          </div>
+        ),
       right: true
     }
   ];
@@ -138,7 +191,6 @@ export default function PaymentHistoryTable() {
   };
   return (
     <React.Fragment>
-      {/* <DataTable columns={columns} rows={filteredData} responsive /> */}
       <CustomDataTable
         id="my-data-table"
         type="normal"
@@ -156,10 +208,14 @@ export default function PaymentHistoryTable() {
         progressPending={isFetching}
         showCardView={showCardView}
         defaultExpandedCardView={false}
+        expandableRows
+        expandableRowExpanded={isRowExpanded}
+        expandableRowsComponent={ExpandedComponent}
+        expandableRowsHideExpander={true}
+        nestedCardViewKey={'invoices'}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
-            // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={filteredData ? t('errors.messages.noRecordsFound') : t('paymentInvoices.history.table.emptyData')}
             description={!filteredData && t('paymentInvoices.history.table.emptyDataDescription')}
@@ -178,9 +234,6 @@ export default function PaymentHistoryTable() {
           </div>
         }
       />
-      {/* <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}> */}
-      {/* <PaymentDetails /> */}
-      {/* </FloatingDrawer> */}
     </React.Fragment>
   );
 }

@@ -106,8 +106,8 @@ async function uploadQuestionnaireDocument(payload) {
 }
 
 async function uploadVariantDocument(payload) {
-  const { orderId, variantId, file } = payload;
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/variant/documents?variant=${variantId}`;
+  const { orderId, variantId, file, channelType } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/variant/documents?variant=${variantId}&channelType=${channelType}`;
 
   const res = await HttpResourceService.callRest(
     url,

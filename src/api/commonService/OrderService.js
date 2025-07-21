@@ -52,17 +52,19 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
   }
 }
 
-async function savePayerDetails(orderId, payload, channelType) {
+async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, channelType) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to save payer details');
 
-  const params = {};
+  const params = {
+    isPayerDetailsRequired
+  };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(params)}`;
   try {
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, insuranceDetails);
     if (res.data) {
       return res.data;
     }
@@ -366,8 +368,8 @@ async function uploadPayerDocument(orderId, data) {
   return {};
 }
 async function uploadDocument(payload) {
-  const { orderId, file } = payload;
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${orderId}`;
+  const { orderId, file, channelType } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${orderId}&channelType=${channelType}`;
 
   const res = await HttpResourceService.callRest(
     url,
@@ -413,6 +415,16 @@ async function getTherapyDetailsByNDC(ndcNumber, channelType) {
   if (res.data) return res.data;
 }
 
+async function getManufacturerLogo(therapyId) {
+  const url = `${ApiRoutes.THERAPIES()}/${therapyId}/manufacturer/logo`;
+
+  const response = await HttpResourceService.callRest(url, httpVerb.GET, null, { responseType: 'arraybuffer' }, null, null, null, 'blob');
+  const contentType = response.headers['content-type'] || 'image/jpeg';
+
+  const blob = new Blob([response.data], { type: contentType });
+  return URL.createObjectURL(blob);
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -448,7 +460,8 @@ const OrderService = Object.freeze({
   getTherapyDetailsByTradeName2,
   uploadPayerDocument,
   getBackendOrderId,
-  getTherapyDetailsByNDC
+  getTherapyDetailsByNDC,
+  getManufacturerLogo
 });
 
 export default OrderService;

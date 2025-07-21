@@ -66,10 +66,11 @@ export const PendingPaymentsProvider = ({ children }) => {
         ? item?.confirmationNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item?.paymentMethod?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item?.payOn?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item?.authorizedAmt?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+          item?.authorizedAmt?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item?.paymentInitiationDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item?.authorizedAmt?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item?.invoices?.some((inv) => inv?.billNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()))
         : true;
-      // const matchesPaymentStatus =
-      //   filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus.toString()) : true;
 
       const matchesDate =
         filters?.payOn?.length === 2 && !!filters?.payOn[0] && !!filters?.payOn[1]
@@ -78,7 +79,6 @@ export const PendingPaymentsProvider = ({ children }) => {
             new Date(dayjs(item.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) <=
               new Date(CommonUtils.isNonEmptyString(filters.payOn[1]) ? dayjs(filters.payOn[1]).format('MM/DD/YYYY') : new Date())
           : true;
-
       return matchesSearchQuery && matchesDate;
     });
 

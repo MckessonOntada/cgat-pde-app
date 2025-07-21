@@ -40,6 +40,7 @@ function UploadOrderDocument() {
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
+  const channelType = orderDetails.channelType;
   const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {
@@ -54,7 +55,8 @@ function UploadOrderDocument() {
 
     const payload = {
       orderId,
-      file
+      file,
+      channelType
     };
     OrderService.uploadDocument(payload).then((response) => {
       const documentDetails = {
