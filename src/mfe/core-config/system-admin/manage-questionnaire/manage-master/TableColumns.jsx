@@ -146,9 +146,9 @@ export const getColumnsByEntityType = ({
           selector: (row) => row.formulation || '',
           maxWidth: '200px',
           sortable: false,
-          cell: (rows) => (
+          cell: (row) => (
             <span aria-label={t('labels.formulation')}>
-              <EclipsesTextcss str={rows.formulation} maxWidth={180} />
+              <EclipsesTextcss str={row.channelType === CHANNEL_TYPE.BUY_AND_BILL ? row.productForm || '-' : '-'} maxWidth={180} />
             </span>
           )
         },
