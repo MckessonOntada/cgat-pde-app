@@ -60,7 +60,7 @@ export default function PaymentHistoryTable() {
     {
       id: 'checkbox',
       name: '',
-      selector: (row) => row['materialNumber'],
+      selector: (row) => row['confirmationNumber'],
       width: '35px',
       showInMobileHeader: true,
       cell: (row) => {
@@ -73,6 +73,14 @@ export default function PaymentHistoryTable() {
               </div>
             </div>
           );
+        } else if (!('billNo' in row)) {
+          return (
+            <div className="MCP-table-cell radio-button-wrapper">
+              <input data-testid="rowCheckbox" type="checkbox" id={`checkbox${row?.confirmationNumber}`} disabled onChange={() => {}} />
+            </div>
+          );
+        } else {
+          return null;
         }
       }
     },
@@ -107,10 +115,38 @@ export default function PaymentHistoryTable() {
           if (props.invoices?.length > 1) {
             return <div>Multiple</div>;
           } else {
-            return <div>{props.invoices?.[0]?.billNo || ''}</div>;
+            return (
+              <div className="cellEllipse">
+                <Link
+                  style={{
+                    color: 'var(--brand-color-primary)',
+                    fontWeight: '600',
+                    textDecoration: 'none'
+                  }}
+                  to={`/record/invoices/${props.invoices?.[0]?.billNo}/details`}
+                  state={{
+                    pageType: 'payment-history-listing'
+                  }}>
+                  {props.invoices?.[0]?.billNo || ''}
+                </Link>
+              </div>
+            );
           }
         } else {
-          return <div>{props.billNo}</div>;
+          return (
+            <div className="cellEllipse">
+              <Link
+                style={{
+                  color: 'var(--brand-color-primary)',
+                  fontWeight: '600',
+                  textDecoration: 'none'
+                }}
+                to={`/record/invoices/${props?.billNo}/details`}
+                state={{
+                  pageType: 'payment-history-listing'
+                }}>{`${props?.billNo || ''}`}</Link>
+            </div>
+          );
         }
       }
     },
@@ -134,6 +170,15 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => props.paymentStatus && CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
+    // {
+    //   id: 'payOn',
+    //   name: t('paymentInvoices.history.table.PayOnDate'),
+    //   selector: (row) => row.payOn,
+    //   sortable: true,
+    //   wrap: true,
+    //   maxWidth: '145px',
+    //   cell: (props) => CommonUtils.convertDateStringFormat(props.payOn, 'MM/DD/YYYY', 'DD/MM/YYYY')
+    // },
     {
       id: 'paymentStatus',
       name: t('paymentInvoices.history.table.paymentStatus'),

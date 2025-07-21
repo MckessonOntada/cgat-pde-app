@@ -42,9 +42,9 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   );
 
   const invoiceDetails = {
-    'Account Number': selectedAccount?.accountNumber || '-',
+    'Bill to Account Number': selectedAccount?.accountNumber || '-',
     'Payment Method': state?.paymentMethod,
-    'Pay On': (type === PATHS.paymentHistory ? state?.paymentTypeText : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
+    'Pay On Date': (type === PATHS.paymentHistory ? state?.paymentTypeText : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
@@ -59,8 +59,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
     ...(type === PATHS.paymentHistory && { 'Amount Debited': formatCurrency(state && state.totalAuthorizedPaymentAmount) || '-' }),
     ...(type === PATHS.pendingPayments && { 'Account Debited': formatCurrency(state && state.authorizedAmt) || '-' }),
     'Credit Used': formatCurrency(state && state.totalCreditAmount) || '-',
-    'Payment Initiated Date':
-      state && state.paymentInitiationDate ? dayjs(state.paymentInitiationDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-',
+    'Payment Initiated Date': state && state.paymentInitiationDate ? dayjs(state.paymentInitiationDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-',
     ...(type === PATHS.paymentHistory && {
       'Payment Authorised Date': state && state.clearingDate ? dayjs(state.clearingDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-'
     })
@@ -72,16 +71,12 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
 
   const renderBackButton = () => (
     <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={onBackToPaymentsInvoices} size="md">
-      {type === PATHS.paymentHistory
-        ? t('paymentInvoices.history.confirm.backToPaymentHistory')
-        : t('pendingPayments.confirm.BackToPendingPayments')}
+      {type === PATHS.paymentHistory ? t('paymentInvoices.history.confirm.backToPaymentHistory') : t('pendingPayments.confirm.BackToPendingPayments')}
     </Button>
   );
 
   const renderMetricsCard = () =>
-    CommonUtils.isNonEmptyObject(selectedAccount) && (
-      <MetricsCard selectedAccount={selectedAccount} invoiceDetails={invoiceDetails} billDates={billDates} />
-    );
+    CommonUtils.isNonEmptyObject(selectedAccount) && <MetricsCard selectedAccount={selectedAccount} invoiceDetails={invoiceDetails} billDates={billDates} />;
 
   const handleExport = () => {
     const url = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}/detail/individual/export?confirmationNo=${confirmationNumber}`;
@@ -130,11 +125,11 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const renderFooterButtons = () => (
     <div className="footer-wrapper" ref={controlRef}>
       <div className="controls footer-controls">
-        <Button variant="secondary" onClick={type === PATHS.paymentHistory ? handleDownload : () => printPage()} size="md">
-          {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
+        <Button variant="secondary" onClick={type === PATHS.paymentHistory ? handleDownload : handleExport} size="md">
+          {t('paymentInvoices.CS.ExportExcel')}
         </Button>
-        <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md">
-          {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.CS.ExportExcel')}
+        <Button onClick={() => printPage()} size="md">
+          {t('paymentInvoices.Details.print')}
         </Button>
       </div>
     </div>
@@ -150,6 +145,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
         creditData={state?.credits}
         paginationConfig={paginationConfig}
         isFetching={isFetching}
+        pageType={type}
       />
       {renderFooterButtons()}
     </div>
