@@ -75,6 +75,14 @@ export default function PendingPaymentTable() {
               </div>
             </div>
           );
+        } else if (!('billNo' in row)) {
+          return (
+            <div className="MCP-table-cell radio-button-wrapper">
+              <input data-testid="rowCheckbox" type="checkbox" id={`checkbox${row?.confirmationNumber}`} disabled onChange={() => {}} />
+            </div>
+          );
+        } else {
+          return null;
         }
       }
     },

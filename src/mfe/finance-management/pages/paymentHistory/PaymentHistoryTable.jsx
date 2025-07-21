@@ -60,7 +60,7 @@ export default function PaymentHistoryTable() {
     {
       id: 'checkbox',
       name: '',
-      selector: (row) => row['materialNumber'],
+      selector: (row) => row['confirmationNumber'],
       width: '35px',
       showInMobileHeader: true,
       cell: (row) => {
@@ -73,6 +73,14 @@ export default function PaymentHistoryTable() {
               </div>
             </div>
           );
+        } else if (!('billNo' in row)) {
+          return (
+            <div className="MCP-table-cell radio-button-wrapper">
+              <input data-testid="rowCheckbox" type="checkbox" id={`checkbox${row?.confirmationNumber}`} disabled onChange={() => {}} />
+            </div>
+          );
+        } else {
+          return null;
         }
       }
     },
