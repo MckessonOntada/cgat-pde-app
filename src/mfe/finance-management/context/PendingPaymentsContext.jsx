@@ -66,10 +66,9 @@ export const PendingPaymentsProvider = ({ children }) => {
         ? item?.confirmationNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item?.paymentMethod?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item?.paymentInitiationDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item?.authorizedAmt?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+          item?.authorizedAmt?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item?.invoices?.some((inv) => inv?.billNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()))
         : true;
-      // const matchesPaymentStatus =
-      //   filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus.toString()) : true;
 
       const matchesDate =
         filters?.paymentInitiationDate?.length === 2 && !!filters?.paymentInitiationDate[0] && !!filters?.paymentInitiationDate[1]
@@ -82,7 +81,6 @@ export const PendingPaymentsProvider = ({ children }) => {
                 CommonUtils.isNonEmptyString(filters.paymentInitiationDate[1]) ? dayjs(filters.paymentInitiationDate[1]).format('MM/DD/YYYY') : new Date()
               )
           : true;
-
       return matchesSearchQuery && matchesDate;
     });
 

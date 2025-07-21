@@ -115,13 +115,13 @@ export const PaymentHistoryProvider = ({ children }) => {
               item.paymentMethod?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
               item.paymentInitiationDate?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
               item.paymentStatus?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.totalAuthorizedPaymentAmount?.toString().includes(filterConfig.searchQuery.toLowerCase())
+              item.totalAuthorizedPaymentAmount?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.invoices?.some((invoice) => invoice?.billNo?.toString().includes(filters.searchQuery.toLowerCase()))
             : true;
           const matchesPaymentStatus = filterConfig?.paymentStatus?.length > 0 ? filterConfig.paymentStatus.includes(item.paymentStatus) : true;
           const matchesPaymentMethod = filterConfig?.paymentMethod?.length > 0 ? filterConfig.paymentMethod.includes(item.paymentMethod) : true;
 
           return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
-          // return matchesSearchQuery;
         });
 
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
