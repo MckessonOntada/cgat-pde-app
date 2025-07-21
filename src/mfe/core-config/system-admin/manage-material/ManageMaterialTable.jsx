@@ -210,7 +210,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       id: 'formulation',
       selector: (row) => row.strength,
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props?.formulation || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props.channelType === CHANNEL_TYPE.BUY_AND_BILL ? props.productForm || '-' : '-'}</div>
     },
     {
       name: t('manageMaterial.table.dosage'),
