@@ -372,6 +372,8 @@ function DetailsPanel({ details, therapyData, isDetailsByNdc, therapyTabs, hideT
         displayValue = `${details.strength || ''} ${details.dosage || ''}`.trim();
       } else if (details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (value === 'dropshipIndicator' || value === 'sellingUnitCode')) {
         displayValue = 'NA';
+      } else if (details.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && value === 'productForm') {
+        displayValue = '-';
       } else if (value === 'genericName') {
         displayValue = details[value] ? details[value].toUpperCase() : '-';
       } else {

@@ -829,7 +829,7 @@ const Summary = () => {
                       <div className={` grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5`}>
                         <DetailSegment label={t('labels.genericName')} value={therapy.genericName || '-'} />
                         <DetailSegment label={t('labels.manufacturer')} value={therapy.manufacturerName || '-'} />
-                        <DetailSegment label={t('labels.formulation')} value={therapy.formulation || '-'} />
+                        <DetailSegment label={t('labels.formulation')} value={!spOrder ? therapy.productForm || '-' : '-'} />
                         <DetailSegment label={t('labels.Dosage')} value={`${therapy.strength || ''} ${therapy.dosage || ''}`.trim() || '-'} />
                         <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber || '-'} />
                       </div>
