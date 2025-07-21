@@ -723,7 +723,7 @@ const Summary = () => {
                           : 'lg:grid-cols-2 xl:grid-cols-2'
                         : 'lg:grid-cols-2 xl:grid-cols-2'
                     }`}>
-                    {status === StatusEnum.SUBMITTED && !spOrder && <DetailSegment label={t('labels.orderId')} value={backendOrderId} />}
+                    {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.orderId')} value={backendOrderId} />}
                     <DetailSegment
                       label={t('labels.therapy')}
                       noTooltip={true}
