@@ -125,7 +125,7 @@ export default function PendingPaymentTable() {
           } else {
             return (
               <div className="cellEllipse">
-                <Link
+                {/* <Link
                   style={{
                     color: 'var(--brand-color-primary)',
                     fontWeight: '600',
@@ -136,14 +136,15 @@ export default function PendingPaymentTable() {
                     pageType: 'pending-payment-listing'
                   }}>
                   {props.invoices?.[0]?.billNo || ''}
-                </Link>
+                </Link> */}
+                {props.invoices?.[0]?.billNo || ''}
               </div>
             );
           }
         } else {
           return (
             <div className="cellEllipse">
-              <Link
+              {/* <Link
                 style={{
                   color: 'var(--brand-color-primary)',
                   fontWeight: '600',
@@ -152,7 +153,8 @@ export default function PendingPaymentTable() {
                 to={`/record/invoices/${props?.billNo}/details`}
                 state={{
                   pageType: 'pending-payment-listing'
-                }}>{`${props?.billNo || ''}`}</Link>
+                }}>{`${props?.billNo || ''}`}</Link> */}
+              {`${props?.billNo || ''}`}
             </div>
           );
         }
