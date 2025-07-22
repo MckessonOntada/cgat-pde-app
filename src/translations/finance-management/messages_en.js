@@ -52,7 +52,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.paymentStatus': 'Payment Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'Payment Initiation Date',
   'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'Total Authorization Payment Amount',
-  'paymentInvoices.history.filters.autoSearch': 'Search by Confirmation No., Payment Method',
+  'paymentInvoices.history.filters.autoSearch': 'Search by Confirmation No., Payment Method, Invoice No.',
   'paymentInvoices.history.filters.filterBtn': 'Filter',
   'paymentInvoices.history.filters.status': 'Payment Status',
   'paymentInvoices.history.filters.method': 'Payment Method',
@@ -255,7 +255,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'No Credit Cards Found',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'Search by Confirmation No., Payment Method',
+  'pendingPayments.filters.autoSearch': 'Search by Confirmation No., Payment Method, Invoice No.',
   'pendingPayments.table.confirmationNumber': 'Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',
@@ -308,6 +308,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.billTo': 'Bill To',
   'paymentInvoices.Details.shipTo': 'Ship To',
   'paymentInvoices.Details.lineItem': 'Line Item',
+  'paymentInvoices.Details.lineNumber': 'Line Number',
   'paymentInvoices.Details.grossAmount': 'Gross Amount',
   'paymentInvoices.Details.backToInvoiceDetails': 'back to invoice details page',
   'paymentInvoices.table.column.creditAmount': 'Credit Amount',

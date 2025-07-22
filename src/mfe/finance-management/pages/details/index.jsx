@@ -134,7 +134,7 @@ function Details(props) {
   const columns = useMemo(
     () => [
       {
-        name: t('paymentInvoices.Details.lineItem'),
+        name: t('paymentInvoices.Details.lineNumber'),
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
@@ -308,7 +308,7 @@ function Details(props) {
       <div className="finance-label">
         {t('paymentInvoices.Details.financeCharges')} <span>N/A</span>
       </div>
-      {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
+      {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && !pageType && (
         <React.Fragment>
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
             <div className="footer-wrapper" ref={controlRef}>
