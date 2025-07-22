@@ -97,6 +97,10 @@
       gap: var(--spacing-03);
     }
   }
+
+  [class*="TabList-module--leftPadding--"] {
+    padding-left: 0 !important;
+  }
 }
 
 .bodyPadding {
