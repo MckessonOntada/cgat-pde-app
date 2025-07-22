@@ -22,7 +22,7 @@ const createColumns = (t, type, pageType) => {
       showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
-          <Link
+          {/* <Link
             style={{
               color: 'var(--brand-color-primary)',
               fontWeight: '600',
@@ -33,7 +33,8 @@ const createColumns = (t, type, pageType) => {
               pageType: pageType
             }}>
             {props?.billNo || ''}
-          </Link>
+          </Link> */}
+          {props?.billNo || ''}
         </div>
       )
     },
