@@ -49,7 +49,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.paymentStatus': 'S_Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'S_Initiation Date',
   'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'S_Total Authorization Payment Amount',
-  'paymentInvoices.history.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
+  'paymentInvoices.history.filters.autoSearch': 'S_Search by Confirmation No., Payment Method, Invoice No.',
   'paymentInvoices.history.filters.filterBtn': 'S_Filter',
   'paymentInvoices.history.filters.status': 'S_Payment Status',
   'paymentInvoices.history.filters.method': 'S_Payment Method',
@@ -250,7 +250,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.selectedAccount': 'S_Item Selected',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
+  'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method, Invoice No.',
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
@@ -303,6 +303,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.billTo': 'S_Bill To',
   'paymentInvoices.Details.shipTo': 'S_Ship To',
   'paymentInvoices.Details.lineItem': 'S_Line Item',
+  'paymentInvoices.Details.lineNumber': 'S_Line Number',
   'paymentInvoices.Details.grossAmount': 'S_Gross Amount',
   'paymentInvoices.Details.backToInvoiceDetails': 'S_back to invoice details page',
   'paymentInvoices.table.column.creditAmount': 'S_Credit Amount',
