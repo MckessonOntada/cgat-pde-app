@@ -108,7 +108,6 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.invoiceNumber'),
       selector: (row) => row.invoices?.[0]?.billNo || '',
       minWidth: '160px',
-      sortable: true,
       wrap: true,
       cell: (props) => {
         if (props.paymentStatus) {
