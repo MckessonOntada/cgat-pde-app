@@ -305,9 +305,7 @@ function Details(props) {
           />
         </div>
       </div>
-      <div className="finance-label">
-        {t('paymentInvoices.Details.financeCharges')} <span>N/A</span>
-      </div>
+      <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>
       {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && !pageType && (
         <React.Fragment>
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
