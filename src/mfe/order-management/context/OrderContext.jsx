@@ -28,10 +28,9 @@ export const OrderProvider = ({ children }) => {
     pageSize: 8,
     totalElements: 0,
     totalPages: 0,
-    view: TOGGLE_FILTERS.ALL_ORDERS,
+    view: ORDER_VIEW.ALL_ORDERS,
     tab: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
-    sortBy: 'createdAt',
-    sortDirection: 'desc'
+    sortBy: 'createdAt'
   });
   React.useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -98,9 +97,10 @@ export const OrderProvider = ({ children }) => {
     };
   };
 
-  const requestParams = React.useMemo(
-    () => ({
-      ...config,
+  const requestParams = React.useMemo(() => {
+    const { totalElements, totalPages, ...rest } = config;
+    return {
+      ...rest,
       pageNo: Math.max(0, config.pageNo - 1),
       pageSize: config.pageSize,
       sortBy: config.sortBy || 'createdAt',
@@ -111,9 +111,8 @@ export const OrderProvider = ({ children }) => {
       showPAPOrders: config.view === ORDER_VIEW.PAP_ORDERS,
       ...(getChannelType(config) && { channelType: getChannelType(config) }),
       ...getOrderDates(config)
-    }),
-    [config]
-  );
+    };
+  }, [config]);
 
   const {
     isFetching,
@@ -121,7 +120,7 @@ export const OrderProvider = ({ children }) => {
     error,
     data
   } = useQuery({
-    queryKey: ['orders', config],
+    queryKey: ['orders', requestParams],
     queryFn: async () => OrderService.getOrders({ ...requestParams }),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
