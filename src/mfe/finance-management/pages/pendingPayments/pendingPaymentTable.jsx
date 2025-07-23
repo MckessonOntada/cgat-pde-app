@@ -116,7 +116,6 @@ export default function PendingPaymentTable() {
       name: t('paymentInvoices.history.table.invoiceNumber'),
       selector: (row) => row.invoices?.[0]?.billNo || '',
       minWidth: '160px',
-      sortable: true,
       wrap: true,
       cell: (props) => {
         if (props.initiatedBy) {
@@ -205,7 +204,6 @@ export default function PendingPaymentTable() {
     {
       name: t('paymentInvoices.history.table.Actions'),
       minWidth: '200px',
-      sortable: false,
       wrap: true,
       center: true,
       isAction: true,
