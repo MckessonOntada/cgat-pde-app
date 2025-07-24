@@ -1,8 +1,11 @@
+import AuthUtils from '@src/util/AuthUtils';
+
 export const ORDER_TABS = {
   SUBMITTED_BUY_AND_BILL: 'SUBMITTED_BUY_AND_BILL',
   SUBMITTED_SP: 'SUBMITTED_SP',
   PENDING_SUBMISSION: 'PENDING_SUBMISSION',
-  PENDING_APPROVAL: 'PENDING_APPROVAL'
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  REVIEW: 'REVIEW'
 };
 
 export const ORDER_STATUS = Object.freeze({
@@ -20,7 +23,8 @@ export const TAB_FILTERS = Object.freeze({
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [ORDER_STATUS.SUBMITTED],
   [ORDER_TABS.SUBMITTED_SP]: [ORDER_STATUS.SUBMITTED],
   [ORDER_TABS.PENDING_SUBMISSION]: [ORDER_STATUS.IN_DRAFT, ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED],
-  [ORDER_TABS.PENDING_APPROVAL]: [ORDER_STATUS.APPROVAL_PENDING]
+  [ORDER_TABS.PENDING_APPROVAL]: [ORDER_STATUS.APPROVAL_PENDING],
+  [ORDER_TABS.REVIEW]: []
 });
 
 export const ORDER_VIEW = Object.freeze({
@@ -32,13 +36,10 @@ export const ORDER_VIEW = Object.freeze({
 
 export const TOGGLE_FILTERS = {
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [ORDER_VIEW.ALL_ORDERS, ORDER_VIEW.MY_ORDERS, ORDER_VIEW.PAP_ORDERS],
-  [ORDER_TABS.SUBMITTED_SP]: [
-    ORDER_VIEW.ALL_ORDERS,
-    ORDER_VIEW.MY_ORDERS
-    //ORDER_VIEW.PAP_ORDERS
-  ],
+  [ORDER_TABS.SUBMITTED_SP]: [ORDER_VIEW.ALL_ORDERS, ORDER_VIEW.MY_ORDERS],
   [ORDER_TABS.PENDING_SUBMISSION]: [ORDER_VIEW.ALL_ORDERS, ORDER_VIEW.MY_ORDERS],
-  [ORDER_TABS.PENDING_APPROVAL]: [ORDER_VIEW.ALL_ORDERS, ORDER_VIEW.ASSIGNED_TO_ME, ORDER_VIEW.PAP_ORDERS]
+  [ORDER_TABS.PENDING_APPROVAL]: [ORDER_VIEW.ALL_ORDERS, ORDER_VIEW.ASSIGNED_TO_ME, ORDER_VIEW.PAP_ORDERS],
+  [ORDER_TABS.REVIEW]: []
 };
 
 export const COLUMNS = {
@@ -77,7 +78,6 @@ export const TABLE_COLUMNS = {
     COLUMNS.SUBMITTED_BY,
     COLUMNS.SUBMITTED_ON,
     COLUMNS.STATUS,
-    // COLUMNS.PRICE,
     COLUMNS.ACTION
   ],
   [ORDER_TABS.PENDING_SUBMISSION]: [
@@ -98,7 +98,8 @@ export const TABLE_COLUMNS = {
     COLUMNS.CREATED_ON,
     COLUMNS.STATUS,
     COLUMNS.ACTION
-  ]
+  ],
+  [ORDER_TABS.REVIEW]: [COLUMNS.ORDER_ID, COLUMNS.PATIENT_NAME, COLUMNS.THERAPY, COLUMNS.AUTHOR, COLUMNS.CREATED_ON, COLUMNS.STATUS, COLUMNS.ACTION]
 };
 
 export const ORDER_ENTITY_ACTION = Object.freeze({
@@ -114,36 +115,51 @@ export const ORDER_ENTITY_ACTION = Object.freeze({
   UPLOAD_DOCUMENT: 'UPLOADED_DOCUMENT'
 });
 
-export const getTabs = () => [
-  {
-    id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
-    configName: 'labels.tabs.submittedBuyAndBill',
-    isActiveTab: false,
-    sequence: 1,
-    labelForMobile: 'labels.tabs.submittedBuyAndBill'
-  },
-  {
-    id: ORDER_TABS.SUBMITTED_SP,
-    configName: 'labels.tabs.submittedSp',
-    isActiveTab: false,
-    sequence: 2,
-    labelForMobile: 'labels.tabs.submittedSp'
-  },
-  {
-    id: ORDER_TABS.PENDING_SUBMISSION,
-    configName: 'labels.tabs.pendingSubmission',
-    isActiveTab: false,
-    sequence: 3,
-    labelForMobile: 'labels.tabs.pendingSubmission'
-  },
-  {
-    id: ORDER_TABS.PENDING_APPROVAL,
-    configName: 'labels.tabs.pendingApproval',
-    isActiveTab: false,
-    sequence: 4,
-    labelForMobile: 'labels.tabs.pendingApproval'
+export const getTabs = () => {
+  const isPhysician = AuthUtils.isPhysician();
+  if (isPhysician) {
+    return [
+      {
+        id: ORDER_TABS.REVIEW,
+        configName: 'labels.tabs.review',
+        isActiveTab: false,
+        sequence: 1,
+        labelForMobile: 'labels.tabs.review'
+      }
+    ];
+  } else {
+    return [
+      {
+        id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+        configName: 'labels.tabs.submittedBuyAndBill',
+        isActiveTab: false,
+        sequence: 1,
+        labelForMobile: 'labels.tabs.submittedBuyAndBill'
+      },
+      {
+        id: ORDER_TABS.SUBMITTED_SP,
+        configName: 'labels.tabs.submittedSp',
+        isActiveTab: false,
+        sequence: 2,
+        labelForMobile: 'labels.tabs.submittedSp'
+      },
+      {
+        id: ORDER_TABS.PENDING_SUBMISSION,
+        configName: 'labels.tabs.pendingSubmission',
+        isActiveTab: false,
+        sequence: 3,
+        labelForMobile: 'labels.tabs.pendingSubmission'
+      },
+      {
+        id: ORDER_TABS.PENDING_APPROVAL,
+        configName: 'labels.tabs.pendingApproval',
+        isActiveTab: false,
+        sequence: 4,
+        labelForMobile: 'labels.tabs.pendingApproval'
+      }
+    ];
   }
-];
+};
 
 export const ORDER_DATE_FILTER_OPTIONS = [
   { label: 'Current Month', value: 'currentMonth' },

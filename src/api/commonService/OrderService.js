@@ -22,6 +22,15 @@ async function getOrders(requestParams) {
   return [];
 }
 
+async function getPhysicianOrders(requestParams) {
+  const url = `${ApiRoutes.ORDERS()}/user/current/review?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 async function getOrderById(orderId) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
@@ -428,6 +437,7 @@ async function getManufacturerLogo(therapyId) {
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
+  getPhysicianOrders,
   getOrderById,
   getTherapies,
   getTherapyDetailsById,
