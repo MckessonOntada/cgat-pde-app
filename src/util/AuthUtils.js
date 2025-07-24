@@ -42,6 +42,10 @@ const removePracticeId = function () {
   return sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
 };
 
+const getRoleId = () => {
+  return sessionStorage.getItem(SESSION_CONST.ROLE_ID);
+};
+
 const getReservedSystemAdminIds = () => {
   const roleIds = process.env.REACT_APP_SYSTEM_ADMIN_ID;
   return roleIds ? roleIds.split(',') : [];
@@ -53,7 +57,7 @@ const getReservedPhysicianIds = () => {
 };
 
 const isPhysician = () => {
-  return getUserRole() === 'Physician' && getReservedPhysicianIds().includes(getUserId());
+  return getUserRole() === 'Physician' && getReservedPhysicianIds().includes(getRoleId());
 };
 
 const isReservedUserRole = () => {
@@ -64,7 +68,7 @@ const isReservedUserRole = () => {
 
 const isSystemAdmin = function () {
   const userRole = getUserRole();
-  return userRole === 'System Admin' && getReservedSystemAdminIds().includes(getUserId());
+  return userRole === 'System Admin' && getReservedSystemAdminIds().includes(getRoleId());
 };
 
 const isSystemAdminView = function () {
