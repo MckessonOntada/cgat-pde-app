@@ -42,9 +42,29 @@ const removePracticeId = function () {
   return sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
 };
 
+const getReservedSystemAdminIds = () => {
+  const roleIds = process.env.REACT_APP_SYSTEM_ADMIN_ID;
+  return roleIds ? roleIds.split(',') : [];
+};
+
+const getReservedPhysicianIds = () => {
+  const roleIds = process.env.REACT_APP_PHYSICIAN_ID;
+  return roleIds ? roleIds.split(',') : [];
+};
+
+const isPhysician = () => {
+  return getUserRole() === 'Physician' && getReservedPhysicianIds().includes(getUserId());
+};
+
+const isReservedUserRole = () => {
+  const reservedUserRoleIds = [process.env.REACT_APP_SYSTEM_ADMIN_ROLE_ID, process.env.REACT_APP_PHYSICIAN_ROLE_ID];
+  const currentUserId = getUserId();
+  return reservedUserRoleIds.includes(currentUserId);
+};
+
 const isSystemAdmin = function () {
   const userRole = getUserRole();
-  return userRole === 'System Admin';
+  return userRole === 'System Admin' && getReservedSystemAdminIds().includes(getUserId());
 };
 
 const isSystemAdminView = function () {
@@ -148,8 +168,9 @@ const AuthUtils = Object.freeze({
   isCustomerCenter,
   isCustomerCenterView,
   getImpersonatedByUser,
-  isTreatmentCentreExecutive //,
-  // isTreatmentCentreExecutiveView
+  isTreatmentCentreExecutive,
+  isReservedUserRole,
+  isPhysician
 });
 
 export default AuthUtils;
