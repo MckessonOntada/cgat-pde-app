@@ -173,7 +173,7 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '180px',
-        cell: (props) => <div className="cellEllipse">{props.tradeName}</div>
+        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>
       },
       {
         name: t('paymentInvoices.Details.Quantity'),
@@ -183,7 +183,7 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '80px',
-        cell: (props) => <div className="cellEllipse">{props.quantity}</div>
+        cell: (props) => <div className="cellEllipse">{props.quantity || '-'}</div>
       },
       {
         name: t('paymentInvoices.Details.Unit'),
