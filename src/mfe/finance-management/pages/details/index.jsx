@@ -166,6 +166,16 @@ function Details(props) {
         )
       },
       {
+        name: t('labels.tradeName'),
+        id: 'tradeName',
+        selector: (row) => {
+          row.tradeName;
+        },
+        wrap: true,
+        minWidth: '180px',
+        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>
+      },
+      {
         name: t('paymentInvoices.Details.Quantity'),
         id: 'quantity',
         selector: (row) => {
@@ -173,7 +183,7 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '80px',
-        cell: (props) => <div className="cellEllipse">{props.quantity}</div>
+        cell: (props) => <div className="cellEllipse">{props.quantity || '-'}</div>
       },
       {
         name: t('paymentInvoices.Details.Unit'),
