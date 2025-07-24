@@ -20,7 +20,8 @@ export const SystemConfigurationES = {
   'manageMaterial.table.emptyDataDescription': 'S_Inténtelo de nuevo o ajuste los filtros',
   'manageMaterial.table.header.text': 'S_Elemento(s) Seleccionado(s)',
   'manageMaterial.table.header.button.configure': 'S_Configurar',
-  //
+  'manageMaterial.table.header.button.prescriptionDetails': 'S_Prescription Details',
+
   'manageMaterial.data.fetch.error': 'S_Error al obtener el listado de facturas',
   // Details Drawer
   'manageMaterial.drawer.heading': 'S_Detalles del Material',
@@ -48,10 +49,19 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.details.configuration.body.patientInfoRequired': 'S_Información del Paciente Requerida',
   'manageMaterial.drawer.details.configuration.body.mrnRequired': 'S_MRN Required',
   'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired': 'S_Manufacturer Patient Identifier Required',
+  'manageMaterial.drawer.details.configuration.body.prescriptionDetailsRequired': 'S_Prescription Details required',
+  'manageMaterial.drawer.details.configuration.body.quantityRequired': 'S_Quantity Required',
+  'manageMaterial.drawer.details.configuration.body.daysSupplyRequired': 'S_Days supply Required',
+  'manageMaterial.drawer.details.configuration.body.refillsRequired': 'S_Refills Required',
+  'manageMaterial.drawer.details.configuration.body.instructionsRequired': 'S_Instructions Required',
+  'manageMaterial.drawer.details.configuration.body.numericValidation': 'S_must be a numeric value',
+  'manageMaterial.drawer.details.configuration.body.minValidation': 'S_must be greater than 0',
+  'manageMaterial.drawer.details.configuration.body.refillsMinValidation': 'S_Refills must be 0 or more',
 
   // Configuration Drawer
   'manageMaterial.drawer.configuration.heading': 'S_Configuración de Material',
   // Configuration Drawer Body
+  'manageMaterial.drawer.configuration.body.prescriptionDetailsRequired': 'S_Prescription Details required?',
 
   'manageMaterial.drawer.configuration.body.patientInfoRequired': 'S_Patient information required?',
   'manageMaterial.drawer.configuration.body.coiIdRequired': 'S_COI ID Required?',
@@ -77,5 +87,9 @@ export const SystemConfigurationES = {
   'messages.confirmation.deleteConfiguration': 'S_Are you sure you want to delete the configuration ?',
   'manageMaterial.drawer.configuration.alert.error': 'S_Please select Required Field',
   'labels.ndc': 'S_NDC',
-  'labels.multiple': 'S_Multiple'
+  'labels.multiple': 'S_Multiple',
+  'labels.quantity': 'S_Quantity',
+  'labels.daysSupply': 'S_Days supply',
+  'labels.refills': 'S_Refills',
+  'labels.instructions': 'S_Instructions'
 };
