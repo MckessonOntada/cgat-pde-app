@@ -97,9 +97,9 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
     if (isApplyDisabled) {
       const configValues = {
         spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
-        patientIdentifierRequired: formValues.patientIdentifierRequired === 'yes',
-        coiIdRequired: formValues.coiIdRequired === 'yes',
-        mrnRequired: formValues.mrnRequired === 'yes'
+        isPatientIdentifierRequired: formValues.patientIdentifierRequired === 'yes',
+        isCoiIdRequired: formValues.coiIdRequired === 'yes',
+        isMrnRequired: formValues.mrnRequired === 'yes'
       };
       applyConfiguration(configValues);
     } else {
