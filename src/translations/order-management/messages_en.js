@@ -43,6 +43,7 @@ export const MessageEn = {
   'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnApproveOrder': 'Approve and Submit',
+  'captions.btnFinalizeOrder': 'Finalize Order',
   'captions.btnRejectOrder': 'Reject Order',
   'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',
@@ -132,6 +133,7 @@ export const MessageEn = {
   'labels.tabs.submittedSp': 'Submitted (sp)',
   'labels.tabs.pendingSubmission': 'Pending Submission',
   'labels.tabs.pendingApproval': 'Pending Approval',
+  'labels.tabs.review': 'Review',
 
   'labels.tabs.switch.myOrders': 'My Orders',
   'labels.tabs.switch.allOrders': 'All Orders',
@@ -525,6 +527,7 @@ export const MessageEn = {
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
+  'labels.caption.REVIEW': 'Reviewed',
 
   'labels.caption.currentMonth': 'Current Month',
   'labels.caption.lastMonth': 'Last Month',
@@ -763,7 +766,7 @@ export const MessageEn = {
   'payer.form.rxBinNumberMaxCharacters': 'Rx BIN Number should not exceed 30 digits.',
   'payer.form.rxBinNumberDigitsOnly': 'Rx BIN Number must contain numbers only.',
   'table.columns.captions.createdBy': 'Created by',
-  'labels.orderView.No_Cost_Therapy': 'No Cost Therapy',
+  'labels.orderView.NO_COST_THERAPY': 'No Cost Therapy',
   'labels.orderView.internalOrderId': 'Internal Order Id',
   'table.columns.captions.createdDate': 'Created Date',
   'labels.select-account.coveredEntity': "I'm a Covered Entity.",

@@ -39,7 +39,8 @@ export const StatusEnum = {
   APPROVAL_PENDING: 'APPROVAL_PENDING',
   SUBMITTED: 'SUBMITTED',
   CANCELLED: 'CANCELLED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  REVIEW: 'REVIEW'
 };
 
 export const SAPOrderStatusEnum = {

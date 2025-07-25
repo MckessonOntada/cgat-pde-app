@@ -105,6 +105,15 @@ function OrderManagementRoutes() {
         }
       />
 
+      <Route
+        path={`:orderId/finalize-order`}
+        element={
+          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
+            <div>Finalize Order</div>
+          </ProtectedRoute>
+        }
+      />
+
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );

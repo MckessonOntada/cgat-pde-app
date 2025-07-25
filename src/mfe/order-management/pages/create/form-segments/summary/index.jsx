@@ -37,6 +37,7 @@ import AttachmentCard from './AttachmentCard';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import ManufacturerLogo from '../ManufacturerLogo';
+import { ORDER_STATUS } from '../../../orders/config';
 
 const BUTTON_ACTIONS = {
   SUBMIT: 'submit',
@@ -346,19 +347,23 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    if (!agreeCheckboxOptions.isChecked) {
-      setOrderAgreementCheckboxError('Please acknowledge to submit order');
-      return;
-    }
+    if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
+    } else {
+      if (!agreeCheckboxOptions.isChecked) {
+        setOrderAgreementCheckboxError('Please acknowledge to submit order');
+        return;
+      }
 
-    if (agreeCheckboxOptions.isChecked) {
-      if (!spOrder && isImpersonatedAdmin()) {
-        submitOrder({
-          action: BUTTON_ACTIONS.SUBMIT,
-          isPAPOrder: papOrderOptions.isChecked
-        });
-      } else {
-        submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+      if (agreeCheckboxOptions.isChecked) {
+        if (!spOrder && isImpersonatedAdmin()) {
+          submitOrder({
+            action: BUTTON_ACTIONS.SUBMIT,
+            isPAPOrder: papOrderOptions.isChecked
+          });
+        } else {
+          submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+        }
       }
     }
   };
@@ -466,17 +471,6 @@ const Summary = () => {
       </Button>
     );
 
-    const controlReSubmitOrder = (
-      <Button
-        size={'md'}
-        variant="primary"
-        onClick={() => {
-          alert('resubmit order');
-        }}>
-        {t('captions.btnReSubmitOrder')}
-      </Button>
-    );
-
     const controlBack = (
       <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
         {t('captions.btnBack')}
@@ -507,8 +501,18 @@ const Summary = () => {
       </PermittedComponent>
     );
 
+    const controlFinalizeOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+          {t('captions.btnFinalizeOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
     if (status === StatusEnum.REJECTED) {
-      controls.push(controlPrintSummary); //, controlCancel, controlReSubmitOrder);
+      controls.push(controlPrintSummary);
+    } else if (status === StatusEnum.REVIEW) {
+      controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (isApprover) {
@@ -520,7 +524,8 @@ const Summary = () => {
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
 
-  const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected || isDeleted;
+  const hideControls =
+    [StatusEnum.SUBMITTED, StatusEnum.REVIEW].includes(status) || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected || isDeleted;
 
   let variantAttachment = null,
     configuredQuestionnaires = [];
@@ -570,6 +575,13 @@ const Summary = () => {
     lastName: payerDetails?.secondaryMedicalInsurance?.policyHolderLastName
   });
 
+  const showPapBadge = isPapOrder && (
+    <span className={styles.pap}>
+      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
+    </span>
+  );
+  const isPhysician = AuthUtils.isPhysician();
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -588,18 +600,12 @@ const Summary = () => {
           <ModuleHeader
             heading={
               <React.Fragment>
-                {isApprover && (
+                {isApprover ? (
                   <div className={styles.pageHeadingReview}>
                     <PageHeader heading={t('headings.reviewOrder')} />
-                    {isPapOrder && (
-                      <span className={styles.pap}>
-                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                      </span>
-                    )}
+                    {showPapBadge}
                   </div>
-                )}
-
-                {!isApprover && orderDetails?.status === StatusEnum.IN_DRAFT && (
+                ) : orderDetails?.status === StatusEnum.IN_DRAFT ? (
                   <PageHeader
                     heading={
                       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
@@ -607,18 +613,12 @@ const Summary = () => {
                         : t('headings.createNewOrderSummary')
                     }
                   />
-                )}
-
-                {!isApprover && (isSubmitted || isApprovalPending || isRejected) && (
+                ) : isPhysician || isSubmitted || isApprovalPending || isRejected ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t('labels.summary')}</span>
-                    {isPapOrder && (
-                      <span className={styles.pap}>
-                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                      </span>
-                    )}
+                    {showPapBadge}
                   </Heading>
-                )}
+                ) : null}
               </React.Fragment>
             }
             className={!isApprover ? styles.orderSummary : undefined}

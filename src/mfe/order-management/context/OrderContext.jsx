@@ -8,6 +8,7 @@ import UserService from '@src/api/commonService/UserService';
 import { CHANNEL_TYPE } from '../pages/create/form-segments/Constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const OrderContext = React.createContext();
 
@@ -23,31 +24,43 @@ export const OrderProvider = ({ children }) => {
   });
 
   const location = useLocation();
+  const isPhysician = AuthUtils.isPhysician();
   const [config, setConfig] = React.useState({
     pageNo: 1,
     pageSize: 8,
     totalElements: 0,
     totalPages: 0,
-    view: TOGGLE_FILTERS.ALL_ORDERS,
-    tab: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
-    sortBy: 'createdAt',
-    sortDirection: 'desc'
+    view: ORDER_VIEW.ALL_ORDERS,
+    tab: isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+    sortBy: 'createdAt'
   });
   React.useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageNo = +params.get('page-no');
     const pageSize = +params.get('page-size');
-    const view = params.get('view');
-    const tab = params.get('tab');
+    let view = params.get('view');
+    let tab = params.get('tab');
     const sortBy = params.get('sort-by');
     const direction = params.get('direction');
     const filters = params.get('filters');
+
+    if (tab) {
+      if (isPhysician && tab !== ORDER_TABS.REVIEW) {
+        tab = null;
+      } else if (!isPhysician && !Object.values(ORDER_TABS).includes(tab)) {
+        tab = null;
+      }
+    }
+
+    if (!Object.values(ORDER_VIEW).includes(view)) {
+      view = null;
+    }
 
     if (!pageNo || !pageSize || !view || !tab || !sortBy || !direction) {
       if (!pageNo) params.set('page-no', 1);
       if (!pageSize) params.set('page-size', 8);
       if (!view) params.set('view', ORDER_VIEW.ALL_ORDERS);
-      if (!tab) params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
+      if (!tab) params.set('tab', isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL);
       if (!sortBy) params.set('sort-by', 'createdAt');
       if (!direction) params.set('direction', 'desc');
       navigate(`${location.pathname}?${params.toString()}`, { replace: true });
@@ -98,9 +111,10 @@ export const OrderProvider = ({ children }) => {
     };
   };
 
-  const requestParams = React.useMemo(
-    () => ({
-      ...config,
+  const requestParams = React.useMemo(() => {
+    const { totalElements, totalPages, ...rest } = config;
+    return {
+      ...rest,
       pageNo: Math.max(0, config.pageNo - 1),
       pageSize: config.pageSize,
       sortBy: config.sortBy || 'createdAt',
@@ -111,9 +125,8 @@ export const OrderProvider = ({ children }) => {
       showPAPOrders: config.view === ORDER_VIEW.PAP_ORDERS,
       ...(getChannelType(config) && { channelType: getChannelType(config) }),
       ...getOrderDates(config)
-    }),
-    [config]
-  );
+    };
+  }, [config]);
 
   const {
     isFetching,
@@ -121,8 +134,10 @@ export const OrderProvider = ({ children }) => {
     error,
     data
   } = useQuery({
-    queryKey: ['orders', config],
-    queryFn: async () => OrderService.getOrders({ ...requestParams }),
+    queryKey: ['orders', requestParams],
+    queryFn: async () => {
+      return isPhysician ? OrderService.getPhysicianOrders({ ...requestParams }) : OrderService.getOrders({ ...requestParams });
+    },
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
       setConfig({
@@ -143,12 +158,12 @@ export const OrderProvider = ({ children }) => {
 
   const { refetch: refreshAssignee } = useQuery({
     queryKey: ['assignee', assigneeRequestParams],
-    queryFn: async () => UserService.getAssignee(assigneeRequestParams),
+    queryFn: async () => UserService.getAssignee(assigneRequestParams),
     onSuccess: (result = []) => {
       const alreadySelected = assigneeList.filter((item) => item.isChecked) || [];
       setAssigneeList([...alreadySelected, ...result]);
     },
-    enable: Boolean(config.tab && config.tab === ORDER_TABS.PENDING_APPROVAL && config.view !== ORDER_VIEW.ASSIGNED_TO_ME)
+    enabled: Boolean(!isPhysician && config.tab && config.tab === ORDER_TABS.PENDING_APPROVAL && config.view !== ORDER_VIEW.ASSIGNED_TO_ME)
   });
 
   const { data: assignedGroupsData = {} } = useQuery({
@@ -157,7 +172,8 @@ export const OrderProvider = ({ children }) => {
       const res = await OrderService.getAssignedGroups(requestParams);
       return res;
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled: Boolean(!isPhysician)
   });
 
   const searchAssigneeByTest = (text) => {
