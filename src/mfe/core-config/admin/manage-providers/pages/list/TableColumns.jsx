@@ -1,16 +1,7 @@
 import React from 'react';
-import {
-  Badge,
-  Button,
-  MenuList,
-  Tooltip
-} from '@mckesson/mcp-component-library';
+import { Badge, Button, MenuList, Tooltip } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
-import {
-  usePagination,
-  useSelection,
-  useTable
-} from '../../context/TableContext';
+import { usePagination, useSelection, useTable } from '../../context/TableContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
@@ -42,50 +33,64 @@ export const getColumns = (setNotification) => {
   const { pagination, changePage } = usePagination();
   const { data } = useTable();
 
-  const { mutate: activateProvider } = useMutation(
-    async (id) => ProviderService.activateProvider(id),
-    {
-      onSuccess: () => {
-        setNotification({
-          description: t('provider.activationSuccess'),
-          type: 'success'
-        });
-        const { pageNo, totalElements, totalPages, pageSize } = pagination;
-        const isLastPage = pageNo === Math.ceil(totalElements / pageSize);
-        const isLastRecordFromPage = totalElements % totalPages === 1;
+  const { mutate: activateProvider } = useMutation(async (id) => ProviderService.activateProvider(id), {
+    onSuccess: () => {
+      setNotification({
+        description: t('provider.activationSuccess'),
+        type: 'success'
+      });
+      const { pageNo, totalElements, totalPages, pageSize } = pagination;
+      const isLastPage = pageNo === Math.ceil(totalElements / pageSize);
+      const isLastRecordFromPage = totalElements % totalPages === 1;
 
-        if (isLastPage && isLastRecordFromPage) {
-          changePage(pageNo - 1);
-        } else {
-          refreshTable();
-        }
-      },
-      onError: () => {
-        setNotification({
-          description: t('errors.default'),
-          type: 'error'
-        });
+      if (isLastPage && isLastRecordFromPage) {
+        changePage(pageNo - 1);
+      } else {
+        refreshTable();
       }
+    },
+    onError: () => {
+      setNotification({
+        description: t('errors.default'),
+        type: 'error'
+      });
     }
-  );
+  });
 
-  const { mutate: deactivateProvider } = useMutation(
-    async (id) => ProviderService.deactivateProvider(id),
+  const { mutate: deactivateProvider } = useMutation(async (id) => ProviderService.deactivateProvider(id), {
+    onSuccess: () => {
+      setNotification({
+        description: t('provider.deactivationSuccess'),
+        type: 'success'
+      });
+      const { pageNo, totalElements, totalPages, pageSize } = pagination;
+      const isLastPage = pageNo === Math.ceil(totalElements / pageSize);
+      const isLastRecordFromPage = totalElements % totalPages === 1;
+
+      if (isLastPage && isLastRecordFromPage) {
+        changePage(pageNo - 1);
+      } else {
+        refreshTable();
+      }
+    },
+    onError: () => {
+      setNotification({
+        description: t('errors.default'),
+        type: 'error'
+      });
+    }
+  });
+
+  const { mutate: resendVerifyLink } = useMutation(
+    async (email) => {
+      await ProviderService.resendVerifyLink(email);
+    },
     {
       onSuccess: () => {
         setNotification({
-          description: t('provider.deactivationSuccess'),
+          description: t('provider.resendVerifyLink'),
           type: 'success'
         });
-        const { pageNo, totalElements, totalPages, pageSize } = pagination;
-        const isLastPage = pageNo === Math.ceil(totalElements / pageSize);
-        const isLastRecordFromPage = totalElements % totalPages === 1;
-
-        if (isLastPage && isLastRecordFromPage) {
-          changePage(pageNo - 1);
-        } else {
-          refreshTable();
-        }
       },
       onError: () => {
         setNotification({
@@ -109,19 +114,12 @@ export const getColumns = (setNotification) => {
     state.title = `${t(t('messages.header.confirmation'))}`;
     state.body = (
       <div className="MCP-modal-body">
-        <p>
-          {provider.isActive
-            ? t('providers.label.deactivateRecordDescription')
-            : t('providers.label.activateRecordDescription')}
-        </p>
+        <p>{provider.isActive ? t('providers.label.deactivateRecordDescription') : t('providers.label.activateRecordDescription')}</p>
       </div>
     );
     state.footer = (
       <div className="controls">
-        <Button
-          size="md"
-          variant="secondary"
-          onClick={() => dispatch(closeModal())}>
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
           {t('button.caption.cancel')}
         </Button>
         <Button
@@ -145,12 +143,7 @@ export const getColumns = (setNotification) => {
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
       options.push({
         label: (
-          <Tooltip
-            body={
-              selectedRows.size > 1
-                ? t('provider.disabledEditOnMultiSelect')
-                : ''
-            }>
+          <Tooltip body={selectedRows.size > 1 ? t('provider.disabledEditOnMultiSelect') : ''}>
             <div>{t('provider.contextMenu.optionEdit')}</div>
           </Tooltip>
         ),
@@ -159,16 +152,14 @@ export const getColumns = (setNotification) => {
       });
     }
 
-    if (
-      hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN)
-    ) {
+    if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN)) {
       options.push({
-        label: t(
-          !props.isActive
-            ? 'provider.contextMenu.optionActivate'
-            : 'provider.contextMenu.optionDeactivate'
-        ),
+        label: t(!props.isActive ? 'provider.contextMenu.optionActivate' : 'provider.contextMenu.optionDeactivate'),
         value: props.isActive ? 'deactivate' : 'activate'
+      });
+      options.push({
+        label: t('provider.contextMenu.resendVerifyLink'),
+        value: 'resendVerifyLink'
       });
       options.push({
         label: t('provider.contextMenu.optionLinkSPAccount'),
@@ -186,6 +177,8 @@ export const getColumns = (setNotification) => {
       navigate(`${props.id}/edit`);
     } else if (value === 'linkSPAccount') {
       navigate(`link-sp-accounts?accounts=${props.id}&name=${name}`);
+    } else if (value === 'resendVerifyLink') {
+      resendVerifyLink(props?.email);
     } else if (value === 'activate' || value === 'deactivate') {
       confirmDeactivation(props, value);
     }
@@ -230,17 +223,11 @@ export const getColumns = (setNotification) => {
       sortable: true,
       sortKey: 'first name',
       cell: (props) => {
-        const isAllowed = hasPermission(
-          PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
-        );
-        const linkText = props?.name
-          ? CommonUtils.getFullName(props.name)
-          : '-';
+        const isAllowed = hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER);
+        const linkText = props?.name ? CommonUtils.getFullName(props.name) : '-';
         if (isAllowed) {
           return (
-            <Link
-              className="MCP-table-link"
-              to={`${props.id}/${ROUTE_PATHS.VIEW}`}>
+            <Link className="MCP-table-link" to={`${props.id}/${ROUTE_PATHS.VIEW}`}>
               <EclipsesTextcss str={linkText} maxWidth={130} />
             </Link>
           );
@@ -254,12 +241,7 @@ export const getColumns = (setNotification) => {
       name: t('providers.columnCaption.address'),
       selector: (row) => row.address,
       minWidth: '160px',
-      cell: (props) => (
-        <EclipsesTextcss
-          str={CommonUtils.getAddress(props?.address) || '-'}
-          maxWidth={160}
-        />
-      )
+      cell: (props) => <EclipsesTextcss str={CommonUtils.getAddress(props?.address) || '-'} maxWidth={160} />
     },
     {
       id: PROVIDER_COLUMNS.DEA_NUMBER,
@@ -281,12 +263,7 @@ export const getColumns = (setNotification) => {
       selector: (row) => row.status,
       minWidth: '160px',
       center: true,
-      cell: (props) => (
-        <Badge
-          text={t(`label.status.${props.isActive ? 'active' : 'inactive'}`)}
-          type={props.isActive ? 'success' : 'error'}
-        />
-      )
+      cell: (props) => <Badge text={t(`label.status.${props.isActive ? 'active' : 'inactive'}`)} type={props.isActive ? 'success' : 'error'} />
     },
     {
       id: PROVIDER_COLUMNS.ACTION,
@@ -296,13 +273,7 @@ export const getColumns = (setNotification) => {
       cell: (props) => {
         const contextMenuOptions = getMenuOption(props);
         if (!contextMenuOptions || contextMenuOptions.length === 0) return;
-        return (
-          <MenuList
-            menuIcon={<EllipsisIcon />}
-            handleSelect={handleOnMenuClick(props)}
-            options={contextMenuOptions}
-          />
-        );
+        return <MenuList menuIcon={<EllipsisIcon />} handleSelect={handleOnMenuClick(props)} options={contextMenuOptions} />;
       }
     }
   ];
