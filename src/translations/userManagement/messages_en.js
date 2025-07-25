@@ -240,6 +240,8 @@ export const UserManagementEN = {
 
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'Manage Orders',
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'Allows to Perform Delete action, Enable delete option',
+  'ORDER_MANAGEMENT.REVIEW_ORDER': 'Review Order',
+  'ORDER_MANAGEMENT.REVIEW_ORDER.DESCRIPTION': 'Allows user to review order',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'Edit Orders',
   'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION': 'Allows user to edit the order, Enable Edit order option',
   'ORDER_MANAGEMENT.VIEW_ORDERS': 'View Orders',
