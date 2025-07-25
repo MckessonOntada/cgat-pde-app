@@ -99,6 +99,8 @@ const OrderIndex = () => {
   };
 
   const handleOnTabChange = (newTab) => {
+    if (activeTab.id === newTab.id) return;
+
     params.set('tab', newTab.id);
     params.set('page-no', 1);
     params.set('sort-by', 'createdAt');
@@ -115,7 +117,7 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    const tabId = params.get('tab') || isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL;
+    const tabId = params.get('tab') || (isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
     setTabList(newTabs);
   }, [location.search]);
