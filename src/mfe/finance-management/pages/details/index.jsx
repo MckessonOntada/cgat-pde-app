@@ -88,25 +88,34 @@ function Details(props) {
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
-          setInvoiceDetails(() => ({
-            ...{},
-            [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
-            [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
-            [t('paymentInvoices.Details.orderID')]: (
-              <Link
-                className="MCP-table-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleOnClickOrderId(res?.data?.orderId);
-                }}>
-                {res?.data?.orderId || '-'}
-              </Link>
-            ),
-            [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
-            [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
-            ['']: <p></p>,
-            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
-          }));
+          INVOICES_SCREEN
+            ? setInvoiceDetails(() => ({
+                ...{},
+                [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
+                [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
+                [t('paymentInvoices.Details.orderID')]: (
+                  <Link
+                    className="MCP-table-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleOnClickOrderId(res?.data?.orderId);
+                    }}>
+                    {res?.data?.orderId || '-'}
+                  </Link>
+                ),
+                [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+                [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
+                ['']: <p></p>,
+                [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
+              }))
+            : setInvoiceDetails(() => ({
+                ...{},
+                [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
+                [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
+                [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
+                [t('paymentInvoices.Details.shipToPoNumber')]: res.data.shipToPONumber,
+                [t('paymentInvoices.Details.PO')]: res.data.poNumber
+              }));
           // bill bates
           updateBillDates(res);
           return res.data;
@@ -134,7 +143,7 @@ function Details(props) {
   const columns = useMemo(
     () => [
       {
-        name: t('paymentInvoices.Details.lineNumber'),
+        name: INVOICES_SCREEN ? t('paymentInvoices.Details.lineNumber') : t('paymentInvoices.Details.Item'),
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
@@ -173,7 +182,8 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '180px',
-        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>
+        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>,
+        omit: CREDITS_SCREEN
       },
       {
         name: t('paymentInvoices.Details.Quantity'),
@@ -315,7 +325,8 @@ function Details(props) {
           />
         </div>
       </div>
-      <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>
+      {INVOICES_SCREEN && <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>}
+
       {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && !pageType && (
         <React.Fragment>
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
