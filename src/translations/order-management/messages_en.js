@@ -43,6 +43,7 @@ export const MessageEn = {
   'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnApproveOrder': 'Approve and Submit',
+  'captions.btnFinalizeOrder': 'Finalize Order',
   'captions.btnRejectOrder': 'Reject Order',
   'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',

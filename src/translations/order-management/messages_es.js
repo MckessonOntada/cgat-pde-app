@@ -42,6 +42,7 @@ export const MessageEs = {
   'captions.btnRetry': 'S_Retry',
   'captions.btnSubmitOrder': 'S_Submit Order',
   'captions.btnApproveOrder': 'S_Approve Order',
+  'captions.btnFinalizeOrder': 'S_Finalize Order',
   'captions.btnRejectOrder': 'S_Reject Order',
   'captions.btnInventoryCheck': 'S_Inventory Check',
   'captions.emptyTableTitle': 'S_No Order found',
