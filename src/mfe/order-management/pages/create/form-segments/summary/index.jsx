@@ -347,21 +347,23 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    if (!agreeCheckboxOptions.isChecked) {
-      setOrderAgreementCheckboxError('Please acknowledge to submit order');
-      return;
-    }
+    if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
+    } else {
+      if (!agreeCheckboxOptions.isChecked) {
+        setOrderAgreementCheckboxError('Please acknowledge to submit order');
+        return;
+      }
 
-    if (agreeCheckboxOptions.isChecked) {
-      if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
-      } else if (!spOrder && isImpersonatedAdmin()) {
-        submitOrder({
-          action: BUTTON_ACTIONS.SUBMIT,
-          isPAPOrder: papOrderOptions.isChecked
-        });
-      } else {
-        submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+      if (agreeCheckboxOptions.isChecked) {
+        if (!spOrder && isImpersonatedAdmin()) {
+          submitOrder({
+            action: BUTTON_ACTIONS.SUBMIT,
+            isPAPOrder: papOrderOptions.isChecked
+          });
+        } else {
+          submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+        }
       }
     }
   };
@@ -1303,7 +1305,7 @@ const Summary = () => {
                   </div>
                 )}
               </div>
-              {(isPhysician || !hideControls) && (
+              {!hideControls && (
                 <div className="MCP-module-body agreement-checkbox-control">
                   <CheckboxGroup
                     id={'default'}
