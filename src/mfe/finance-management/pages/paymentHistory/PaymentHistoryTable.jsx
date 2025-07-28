@@ -29,61 +29,7 @@ export default function PaymentHistoryTable() {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig, filteredData } = usePaymentHistory();
   const showCardView = useResponsiveView();
-  const [expandedRows, setExpandedRows] = React.useState([]);
-  const isRowExpanded = (row) => {
-    return expandedRows.includes(row.confirmationNo);
-  };
-  const onExpandToggle = (row) => {
-    setExpandedRows((prev) => (prev.includes(row.confirmationNo) ? prev.filter((name) => name !== row.confirmationNo) : [...prev, row.confirmationNo]));
-  };
-  const ExpandedComponent = ({ data }) => {
-    if (!CommonUtils.isNonEmptyArray(data.invoices)) return null;
-    const expandedData = data.invoices || [];
-
-    return (
-      <div className="expanded-rows">
-        <CustomDataTable
-          data={expandedData}
-          columns={columns}
-          noTableHead
-          noHeader
-          pagination={false}
-          showHeader={false}
-          hideColumnHeader
-          type="expanded"
-          striped
-        />
-      </div>
-    );
-  };
   const columns = [
-    {
-      id: 'checkbox',
-      name: '',
-      selector: (row) => row['confirmationNumber'],
-      width: '35px',
-      showInMobileHeader: true,
-      cell: (row) => {
-        if (row.invoices && row.invoices.length > 1) {
-          const expanded = isRowExpanded(row);
-          return (
-            <div className="expand-icon-wrapper" onClick={() => onExpandToggle(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
-              <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
-                <ArrowAngleRight />
-              </div>
-            </div>
-          );
-        } else if (!('billNo' in row)) {
-          return (
-            <div className="MCP-table-cell radio-button-wrapper">
-              <input data-testid="rowCheckbox" type="checkbox" id={`checkbox${row?.confirmationNumber}`} disabled onChange={() => {}} />
-            </div>
-          );
-        } else {
-          return null;
-        }
-      }
-    },
     {
       id: 'confirmationNo',
       name: t('paymentInvoices.history.table.confirmationNumber'),
@@ -93,62 +39,27 @@ export default function PaymentHistoryTable() {
       wrap: true,
       showInMobileHeader: true,
       showColumnNameInHeader: true,
-      cell: (props) =>
-        props.paymentStatus && (
-          <div className="cellEllipse">
-            <Link
-              style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
-              to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
-              state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
-          </div>
-        )
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+            to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
+            state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
+        </div>
+      )
     },
     {
       id: 'billNo',
       name: t('paymentInvoices.history.table.invoiceNumber'),
       selector: (row) => row.invoices?.[0]?.billNo || '',
-      minWidth: '160px',
+      minWidth: '220px',
       wrap: true,
       cell: (props) => {
-        if (props.paymentStatus) {
-          if (props.invoices?.length > 1) {
-            return <div>Multiple</div>;
-          } else {
-            return (
-              <div className="cellEllipse">
-                {/* <Link
-                  style={{
-                    color: 'var(--brand-color-primary)',
-                    fontWeight: '600',
-                    textDecoration: 'none'
-                  }}
-                  to={`/record/invoices/${props.invoices?.[0]?.billNo}/details`}
-                  state={{
-                    pageType: 'payment-history-listing'
-                  }}>
-                  {props.invoices?.[0]?.billNo || ''}
-                </Link> */}
-                {props.invoices?.[0]?.billNo || ''}
-              </div>
-            );
-          }
-        } else {
-          return (
-            <div className="cellEllipse">
-              {/* <Link
-                style={{
-                  color: 'var(--brand-color-primary)',
-                  fontWeight: '600',
-                  textDecoration: 'none'
-                }}
-                to={`/record/invoices/${props?.billNo}/details`}
-                state={{
-                  pageType: 'payment-history-listing'
-                }}>{`${props?.billNo || ''}`}</Link> */}
-              {`${props?.billNo || ''}`}
-            </div>
-          );
-        }
+        const invoices = props.invoices || [];
+        const billNos = invoices.map((inv) => inv.billNo);
+        const displayText =
+          billNos.length === 1 ? billNos[0] : billNos.length === 2 ? billNos.join(', ') : billNos.length > 2 ? `${billNos[0]}, ${billNos[1]} & more` : '';
+        return <EclipsesTextcss str={displayText} tooltip={billNos.join(', ')} maxWidth={210} />;
       }
     },
     {
@@ -160,7 +71,7 @@ export default function PaymentHistoryTable() {
       maxWidth: '180px',
       cardHeader: true,
       showInMobileHeader: true,
-      cell: (props) => props.paymentStatus && <EclipsesTextcss str={props.paymentMethod} maxWidth={170} />
+      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={170} />
     },
 
     {
@@ -169,7 +80,7 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentInitiationDate}`,
       maxWidth: '230px',
       sortable: true,
-      cell: (props) => props.paymentStatus && CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     // {
     //   id: 'payOn',
@@ -188,20 +99,19 @@ export default function PaymentHistoryTable() {
       center: true,
       showInMobileHeader: true,
       cardStatus: true,
-      cell: (props) =>
-        props.paymentStatus && (
-          <div className="status-container">
-            {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
-              <Badge
-                customStyle={{ minWidth: '140px' }}
-                text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
-                type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
-              />
-            ) : (
-              '-'
-            )}
-          </div>
-        )
+      cell: (props) => (
+        <div className="status-container">
+          {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
+            <Badge
+              customStyle={{ minWidth: '140px' }}
+              text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
+              type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
+            />
+          ) : (
+            '-'
+          )}
+        </div>
+      )
     },
     {
       id: 'totalAuthorizedPaymentAmount',
@@ -209,12 +119,11 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       minWidth: '120px',
       sortable: true,
-      cell: (props) =>
-        props.paymentStatus && (
-          <div className="cellEllipse align-items-right">
-            <FormattedNumber value={props?.totalAuthorizedPaymentAmount || 0} style="currency" currency="USD" />
-          </div>
-        ),
+      cell: (props) => (
+        <div className="cellEllipse align-items-right">
+          <FormattedNumber value={props?.totalAuthorizedPaymentAmount || 0} style="currency" currency="USD" />
+        </div>
+      ),
       right: true
     }
   ];
@@ -245,11 +154,6 @@ export default function PaymentHistoryTable() {
         progressPending={isFetching}
         showCardView={showCardView}
         defaultExpandedCardView={false}
-        expandableRows
-        expandableRowExpanded={isRowExpanded}
-        expandableRowsComponent={ExpandedComponent}
-        expandableRowsHideExpander={true}
-        nestedCardViewKey={'invoices'}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
