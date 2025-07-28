@@ -54,6 +54,7 @@ const UserDetail = () => {
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(null);
+  const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
   const { isSuccess = false, isPending = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -91,7 +92,10 @@ const UserDetail = () => {
       return res.data;
     },
     enabled: !!userId,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      setIsPhysicianUser(AuthUtils.isPhysician(data?.role?.name, data?.role?.id));
+    }
   });
 
   const mutation = useMutation(
@@ -114,7 +118,7 @@ const UserDetail = () => {
       }
     }
   );
-  const isPhysicianUser = CommonUtils.isPhysicianUser(data?.role?.name, data?.role?.id);
+
   useEffect(() => {
     if (data?.provisionedInOktaStatus !== 'PROVISIONED' && data?.isActive) {
       setIsAlertVisible(true);

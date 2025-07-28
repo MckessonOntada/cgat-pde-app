@@ -744,9 +744,6 @@ function removeLeadingZeros(str) {
   if (!str) return '';
   return str.replace(/^0+/, '') || '';
 }
-function isPhysicianUser(role, roleId) {
-  return role === 'Physician' && roleId == (process.env.REACT_APP_PHYSICIAN_ID || 4);
-}
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -804,8 +801,7 @@ const CommonUtils = Object.freeze({
   getDOBMaxDate,
   getUploadErrorMessage,
   getFileNameAndType,
-  removeLeadingZeros,
-  isPhysicianUser
+  removeLeadingZeros
 });
 
 export default CommonUtils;
