@@ -22,6 +22,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
+import { ORDER_STATUS } from '../../../orders/config';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -46,14 +47,15 @@ function TherapySelection() {
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
-    if (locationState && locationState.__prevSearch) setPrevSearchState(locationState.__prevSearch);
-  }, [location.search]);
-
-  React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
     if (isPapOrder) navigate(`/orders${prevSearch}`);
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
   }, [orderDetails]);
+
+  React.useEffect(() => {
+    if (locationState && locationState.__prevSearch) setPrevSearchState(locationState.__prevSearch);
+  }, [location.search]);
 
   React.useEffect(() => {
     const { tradeDetails, therapyDetails = {} } = orderDetails || {};

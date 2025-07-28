@@ -11,7 +11,6 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import PermittedComponent from '@src/components/permitted-component';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import useAlert from '@src/hooks/useAlert';
-import { handleApiError } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { getTableColumns } from './TableColumns';
@@ -23,6 +22,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { DateUtils } from '@src/util/DateUtil';
 import CommonUtils from '@src/util/CommonUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const OrderIndex = () => {
   const navigate = useNavigate();
@@ -99,6 +99,8 @@ const OrderIndex = () => {
   };
 
   const handleOnTabChange = (newTab) => {
+    if (activeTab.id === newTab.id) return;
+
     params.set('tab', newTab.id);
     params.set('page-no', 1);
     params.set('sort-by', 'createdAt');
@@ -115,7 +117,7 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    const tabId = params.get('tab') || ORDER_TABS.SUBMITTED_BUY_AND_BILL;
+    const tabId = params.get('tab') || (isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
     setTabList(newTabs);
   }, [location.search]);
@@ -265,6 +267,8 @@ const OrderIndex = () => {
     return false;
   }, [location.search]);
 
+  const isPhysician = AuthUtils.isPhysician();
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -298,32 +302,36 @@ const OrderIndex = () => {
               />
             </div>
 
-            <div className="MCP-CardContainer" key={currentTab.id}>
-              <CommonFilters
-                onApplyFilters={handleApplyFilters}
-                onClearFilters={handleClearFilters}
-                additionalFilters={additionalFiltersConfig}
-                onLoadExpanded={isCardExpanded}
-                searchPlaceholder={t(
-                  config.tab === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
-                )}
-                initialData={initialFilterData}
-              />
-            </div>
+            {!isPhysician && (
+              <div className="MCP-CardContainer" key={currentTab.id}>
+                <CommonFilters
+                  onApplyFilters={handleApplyFilters}
+                  onClearFilters={handleClearFilters}
+                  additionalFilters={additionalFiltersConfig}
+                  onLoadExpanded={isCardExpanded}
+                  searchPlaceholder={t(
+                    config.tab === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
+                  )}
+                  initialData={initialFilterData}
+                />
+              </div>
+            )}
 
             <div className="MCP-table-wrapper">
               <ModuleHeader
                 heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
                 controls={
-                  <div>
-                    <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
-                      {toggleFilters.map((filter, index) => (
-                        <Tab key={index} value={filter}>
-                          {t(`labels.orderView.${filter}`)}
-                        </Tab>
-                      ))}
-                    </TabGroup>
-                  </div>
+                  CommonUtils.isNonEmptyArray(toggleFilters) && (
+                    <div>
+                      <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
+                        {toggleFilters.map((filter, index) => (
+                          <Tab key={index} value={filter}>
+                            {t(`labels.orderView.${filter}`)}
+                          </Tab>
+                        ))}
+                      </TabGroup>
+                    </div>
+                  )
                 }
               />
 
