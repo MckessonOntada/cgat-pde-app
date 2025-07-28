@@ -528,7 +528,7 @@ export const MessageEn = {
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
-  'labels.caption.REVIEW': 'Reviewed',
+  'labels.caption.REVIEW': 'Review',
 
   'labels.caption.currentMonth': 'Current Month',
   'labels.caption.lastMonth': 'Last Month',

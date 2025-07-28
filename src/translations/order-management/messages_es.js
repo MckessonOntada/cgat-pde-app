@@ -503,7 +503,7 @@ export const MessageEs = {
   'labels.caption.REJECTED': 'S_Rejected',
   'labels.caption.SUBMITTED': 'S_Submitted',
   'labels.caption.APPROVAL_PENDING': 'S_Approval Pending',
-  'labels.caption.REVIEW': 'S_Reviewed',
+  'labels.caption.REVIEW': 'S_Review',
   'labels.SubmittedBy': 'S_Submitted By',
   'labels.SubmittedOn': 'S_Submitted On',
   'labels.Approver_Name': 'S_Approver Name',
