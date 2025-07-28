@@ -56,8 +56,10 @@ const getReservedPhysicianIds = () => {
   return roleIds ? roleIds.split(',') : [];
 };
 
-const isPhysician = () => {
-  return getUserRole() === 'Physician' && getReservedPhysicianIds().includes(getRoleId());
+const isPhysician = (roleName = null, roleId = null) => {
+  const resolvedRoleName = roleName || getUserRole();
+  const resolvedRoleId = roleId || getRoleId();
+  return resolvedRoleName === 'Physician' && getReservedPhysicianIds().includes(String(resolvedRoleId));
 };
 
 const isReservedUserRole = () => {
