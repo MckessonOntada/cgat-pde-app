@@ -9,9 +9,7 @@ function sanitizeString(input) {
 }
 
 async function getAllProviders(params) {
-  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers?${serializeParams(
-    params
-  )}`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, null, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
@@ -111,9 +109,7 @@ async function addProvider(payload, accountId = null) {
   if (!payload) {
     throw new Error('Payload is required to add provider.');
   }
-  const url = accountId
-    ? `${ApiRoutes.ORGANIZATION_BASE()}providers?accountId=${accountId}`
-    : `${ApiRoutes.ORGANIZATION_BASE()}providers`;
+  const url = accountId ? `${ApiRoutes.ORGANIZATION_BASE()}providers?accountId=${accountId}` : `${ApiRoutes.ORGANIZATION_BASE()}providers`;
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
@@ -127,23 +123,16 @@ async function addProvider(payload, accountId = null) {
 async function uploadProvider(payload) {
   const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/upload`;
 
-  const response = await HttpResourceService.callRest(
-    url,
-    httpVerb.POST,
-    payload,
-    {
-      'Content-Type': 'multipart/form-data'
-    }
-  );
+  const response = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
 
   return response;
 }
 
 async function linkProvidersToAccount(providerIds, accountIds) {
-  if (!Array.isArray(providerIds))
-    throw new Error('Provider Ids must be an array.');
-  if (!Array.isArray(accountIds))
-    throw new Error('Account Ids must be an array.');
+  if (!Array.isArray(providerIds)) throw new Error('Provider Ids must be an array.');
+  if (!Array.isArray(accountIds)) throw new Error('Account Ids must be an array.');
 
   const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/link-accounts`;
   const res = await HttpResourceService.callRest(
@@ -159,9 +148,7 @@ async function linkProvidersToAccount(providerIds, accountIds) {
   return res.data || {};
 }
 async function getSpAccountListByProviderId(providerId, requestParams) {
-  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${providerId}/accounts?${serializeParams(
-    requestParams
-  )}`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${providerId}/accounts?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {
     'Content-Type': 'application/json'
   });
@@ -171,21 +158,22 @@ async function getSpAccountListByProviderId(providerId, requestParams) {
   return [];
 }
 async function getUnlinkSpAccountListByProviderId(requestParams, providerIds) {
-  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/unlinked-accounts?${serializeParams(
-    requestParams
-  )}`;
-  const res = await HttpResourceService.callRest(
-    url,
-    httpVerb.POST,
-    providerIds,
-    {
-      'Content-Type': 'application/json'
-    }
-  );
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/unlinked-accounts?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, providerIds, {
+    'Content-Type': 'application/json'
+  });
   if (res.data) {
     return res.data;
   }
   return [];
+}
+
+async function resendVerifyLink(email) {
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}users/resend-activation/${email}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, {
+    'Content-Type': 'application/json'
+  });
+  return res.data || {};
 }
 const ProviderService = Object.freeze({
   getAllProviders,
@@ -197,7 +185,8 @@ const ProviderService = Object.freeze({
   uploadProvider,
   linkProvidersToAccount,
   getSpAccountListByProviderId,
-  getUnlinkSpAccountListByProviderId
+  getUnlinkSpAccountListByProviderId,
+  resendVerifyLink
 });
 
 export default ProviderService;
