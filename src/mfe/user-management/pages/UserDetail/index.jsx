@@ -114,7 +114,7 @@ const UserDetail = () => {
       }
     }
   );
-  const isPhysicianUser = data?.role?.name === 'Physician' && data?.role?.id == (process.env.REACT_APP_PHYSICIAN_ID || 4);
+  const isPhysicianUser = CommonUtils.isPhysicianUser(data?.role?.name, data?.role?.id);
   useEffect(() => {
     if (data?.provisionedInOktaStatus !== 'PROVISIONED' && data?.isActive) {
       setIsAlertVisible(true);
