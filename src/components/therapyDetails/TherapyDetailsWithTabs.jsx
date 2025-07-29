@@ -228,7 +228,14 @@ function TherapyDetailsWithTabs({
   };
 
   const renderConfiguration = (fields, details) =>
-    fields.map(({ label, value, display = true, translation = true }) => {
+    fields.map(({ label, value, display = true, translation = true, displayCondition }) => {
+      let isVisible = display;
+      if (isVisible && typeof displayCondition === 'function') {
+        isVisible = displayCondition(details);
+      }
+      if (!isVisible) {
+        return null;
+      }
       const configValue = details?.materialConfig?.[value] || details?.[value];
       const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
       return <ConfigItem key={label} label={translation ? t(label) : label} value={displayValue || '-'} display={display} />;

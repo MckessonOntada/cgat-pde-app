@@ -71,10 +71,28 @@ export const ConfigConstants = [
         value: 'isPatientInformationRequired'
       },
       {
+        label: 'manageMaterial.drawer.details.configuration.body.pIdentifierRequired',
+        value: 'patientIdentifier',
+        displayCondition: (details) => details?.isPatientInformationRequired !== false
+      },
+      {
         label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
         value: 'isCoiIdRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.poNumberRequired',
+        value: 'poNumberRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
+        value: 'mrnRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.doaRequired',
+        value: 'doaRequired'
       }
     ],
+
     questionnaire: false
   }
 ];

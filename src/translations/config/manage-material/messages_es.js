@@ -46,7 +46,11 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.details.configuration.actions.delete': 'S_Eliminar',
   'manageMaterial.drawer.details.configuration.body.coiIdRequired': 'S_ID de COI Requerido',
   'manageMaterial.drawer.details.configuration.body.patientInfoRequired': 'S_Información del Paciente Requerida',
+  'manageMaterial.drawer.details.configuration.body.poNumberRequired': 'S_PO Number Required',
   'manageMaterial.drawer.details.configuration.body.mrnRequired': 'S_MRN Required',
+  'manageMaterial.drawer.details.configuration.body.doaRequired': 'S_DOA Required',
+  'manageMaterial.drawer.details.configuration.body.patientInfoRequired': 'S_Patient information required',
+  'manageMaterial.drawer.details.configuration.body.pIdentifierRequired': 'S_Patient Identifier Required',
   'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired': 'S_Manufacturer Patient Identifier Required',
 
   // Configuration Drawer
@@ -54,9 +58,11 @@ export const SystemConfigurationES = {
   // Configuration Drawer Body
 
   'manageMaterial.drawer.configuration.body.patientInfoRequired': 'S_Patient information required?',
-  'manageMaterial.drawer.configuration.body.coiIdRequired': 'S_COI ID Required?',
-  'manageMaterial.drawer.configuration.body.mrnRequired': 'S_MRN Required?',
-  'manageMaterial.drawer.configuration.body.patientIdentifierRequired': 'S_Manufacturer Patient Identifier Required?',
+  'manageMaterial.drawer.configuration.body.coiIdRequired': 'S_Make COI ID mandatory',
+  'manageMaterial.drawer.configuration.body.mrnRequired': 'S_Make MRN mandatory',
+  'manageMaterial.drawer.configuration.body.poNumberRequired': 'S_Make PO Number mandatory',
+  'manageMaterial.drawer.configuration.body.doaRequired': 'S_Make DOA mandatory',
+  'manageMaterial.drawer.configuration.body.patientIdentifier': 'S_Make Patient Identifier mandatory',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.yes': 'S_Yes',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.no': 'S_No',
   'manageMaterial.drawer.configuration.body.coiIdRequired.yes': 'S_Yes',

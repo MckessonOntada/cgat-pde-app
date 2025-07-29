@@ -13,7 +13,11 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
     patientInfoRequired: '',
-    coiIdRequired: ''
+    patientIdentifierRequired: '',
+    coiIdRequired: '',
+    mrnRequired: '',
+    doaRequired: '',
+    poNumberRequired: ''
   });
   const [error, setError] = useState(false);
 
@@ -36,54 +40,82 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     }
   );
 
-  const formFields = [
+  const fieldConfigs = [
     {
-      caption: t('manageMaterial.drawer.configuration.body.patientInfoRequired'),
-      id: 'patientInfoRequired',
-      items: [
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.yes'),
-          value: 'yes'
-        },
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.patientInfoRequired,
-      required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, patientInfoRequired: value }))
+      key: 'patientInfoRequired',
+      caption: 'manageMaterial.drawer.configuration.body.patientInfoRequired'
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
-      id: 'coiIdRequired',
-      items: [
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.yes'),
-          value: 'yes'
-        },
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.coiIdRequired,
-      required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
+      key: 'patientIdentifierRequired',
+      caption: 'manageMaterial.drawer.configuration.body.patientIdentifier'
+    },
+    {
+      key: 'coiIdRequired',
+      caption: 'manageMaterial.drawer.configuration.body.coiIdRequired'
+    },
+    {
+      key: 'poNumberRequired',
+      caption: 'manageMaterial.drawer.configuration.body.poNumberRequired'
+    },
+    {
+      key: 'mrnRequired',
+      caption: 'manageMaterial.drawer.configuration.body.mrnRequired'
+    },
+    {
+      key: 'doaRequired',
+      caption: 'manageMaterial.drawer.configuration.body.doaRequired'
     }
   ];
-  const isApplyDisabled = formValues.patientInfoRequired && formValues.coiIdRequired;
+
+  const formFields = fieldConfigs.map(({ key, caption }) => {
+    const isPatientInfoNo = formValues.patientInfoRequired === 'no';
+    const isPatientIdentifierField = key === 'patientIdentifierRequired';
+    const isDisabled = isPatientIdentifierField && isPatientInfoNo;
+
+    return {
+      caption: t(caption),
+      id: key,
+      items: [
+        { isDisabled, label: t('label.yes'), value: 'yes' },
+        { isDisabled, label: t('label.no'), value: 'no' }
+      ],
+      value: formValues[key],
+      required: true,
+      onChangeValue: (value) => {
+        if (key === 'patientInfoRequired') {
+          setFormValues((prev) => ({
+            ...prev,
+            [key]: value,
+            ...(value === 'no' ? { patientIdentifierRequired: '' } : {})
+          }));
+        } else {
+          setFormValues((prev) => ({
+            ...prev,
+            [key]: value
+          }));
+        }
+      }
+    };
+  });
+
+  const isApplyDisabled =
+    formValues.patientInfoRequired &&
+    formValues.coiIdRequired &&
+    formValues.mrnRequired &&
+    formValues.poNumberRequired &&
+    formValues.doaRequired &&
+    (formValues.patientInfoRequired === 'yes' ? formValues.patientIdentifierRequired : true);
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
       const configValues = {
         ndcNumbers: selectedMaterials.map((material) => material.ndc),
         isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
-        isCoiIdRequired: formValues.coiIdRequired === 'yes'
+        isCoiIdRequired: formValues.coiIdRequired === 'yes',
+        isDOARequired: formValues.doaRequired === 'yes',
+        isMRNRequired: formValues.mrnRequired === 'yes',
+        isPORequired: formValues.poNumberRequired === 'yes',
+        isPIDRequired: formValues.patientIdentifierRequired === 'yes'
       };
       applyConfiguration(configValues);
     } else {
