@@ -72,7 +72,7 @@ export const ConfigConstants = [
       },
       {
         label: 'manageMaterial.drawer.details.configuration.body.pIdentifierRequired',
-        value: 'patientIdentifier',
+        value: 'isPIDRequired',
         displayCondition: (details) => details?.isPatientInformationRequired !== false
       },
       {
@@ -81,15 +81,15 @@ export const ConfigConstants = [
       },
       {
         label: 'manageMaterial.drawer.details.configuration.body.poNumberRequired',
-        value: 'poNumberRequired'
+        value: 'isPORequired'
       },
       {
         label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
-        value: 'mrnRequired'
+        value: 'isMRNRequired'
       },
       {
         label: 'manageMaterial.drawer.details.configuration.body.doaRequired',
-        value: 'doaRequired'
+        value: 'isDOARequired'
       }
     ],
 

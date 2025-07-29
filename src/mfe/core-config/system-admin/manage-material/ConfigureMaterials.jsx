@@ -80,7 +80,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
         { isDisabled, label: t('label.no'), value: 'no' }
       ],
       value: formValues[key],
-      required: true,
+      required: !isPatientIdentifierField || !isPatientInfoNo,
       onChangeValue: (value) => {
         if (key === 'patientInfoRequired') {
           setFormValues((prev) => ({
@@ -158,7 +158,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
               <div className={styles.formField} key={index}>
                 <div className={styles.caption}>
                   <Label className={styles.label}>{field.caption}</Label>
-                  <span className="required"> *</span>
+                  {field.required && <span className="required"> *</span>}
                 </div>
                 <RadioGroup
                   direction="row"
