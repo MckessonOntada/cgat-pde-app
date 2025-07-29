@@ -123,7 +123,7 @@ export const medicalInsuranceTemplate = (parentKey) => {
           type: 'input',
           isRequired: true,
           when: [
-            `${parentKey}.relationshipToPatient`,
+            `insuranceDetails.${parentKey}.relationshipToPatient`,
             (val) => {
               return val === 'OTHER';
             }
