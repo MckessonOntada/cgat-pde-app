@@ -800,7 +800,13 @@ const Summary = () => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : simulationData.updatedTaxAmount || 0)}
+                                {CommonUtils.formatNumberWithoutSymbol(
+                                  papOrderOptions.isChecked
+                                    ? 0
+                                    : isSubmitted
+                                    ? orderDetails.taxAmount || 0
+                                    : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
+                                )}
                               </span>
                             }
                           />
@@ -814,7 +820,9 @@ const Summary = () => {
                                 {CommonUtils.formatNumberWithoutSymbol(
                                   papOrderOptions.isChecked
                                     ? 0
-                                    : getOrderCost(orderCost, (simulationData.updatedCost || 0) + (simulationData.updatedTaxAmount || 0))
+                                    : isSubmitted
+                                    ? getOrderCost(orderCost, simulationData.updatedCost)
+                                    : getOrderCost(orderCost, simulationData.updatedCost || 0) + (simulationData.updatedTaxAmount || 0)
                                 )}
                               </span>
                             }
