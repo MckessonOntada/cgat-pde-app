@@ -12,6 +12,7 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   THERAPY: 'THERAPY',
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
   SP_PRODUCT_NAME: 'SP_PRODUCT_NAME',
+  FORMULATION: 'FORMULATION',
   DOSAGE: 'DOSAGE',
   ACTION: 'ACTION'
 };
@@ -74,14 +75,21 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NAME,
       name: t('column.material.crosswalk.spProductName'),
-      minWidth: '130px',
+      minWidth: '280px',
       sortable: true,
       sortKey: 'spProductName',
       cell: (props) => <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
     },
     {
+      id: MATERIAL_CROSSWALK_COLUMNS.FORMULATION,
+      name: t('labels.formulation'),
+      minWidth: '130px',
+      cell: (props) => <EclipsesTextcss str={props?.formulation?.trim() || '-'} />
+    },
+
+    {
       id: MATERIAL_CROSSWALK_COLUMNS.DOSAGE,
-      name: t('column.material.crosswalk.dosage'),
+      name: t('labels.therapy.strength'),
       minWidth: '90px',
       cell: (props) => <EclipsesTextcss str={props?.dosage?.trim() || '-'} />
     },
