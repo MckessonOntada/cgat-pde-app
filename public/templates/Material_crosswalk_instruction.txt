@@ -33,15 +33,15 @@ FIELD-BY-FIELD INSTRUCTIONS
 4. Status (M)
    - Type: Text (Value Set) | Max Length: 6
    - Allowed Values (case-sensitive):
-     - Active
-     - Inactive
+     - Link
+     - Unlink
 
 --------------------------------------------------
 ✅ SAMPLE ROW:
 
 | SAP NDC     | SP Product ID | SP NDC     | Status  |
 |-------------|---------------|------------|---------|
-| 12345678901 | SP-00123      | 98765432109| Active  |
+| 12345678901 | SP-00123      | 98765432109| Link  |
 
 --------------------------------------------------
 NOTES:
