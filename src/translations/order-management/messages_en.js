@@ -167,6 +167,7 @@ export const MessageEn = {
   'labels.dateOfAdministrationFutureDateOnly': 'Date of Administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'Search by Order ID, Therapy, Submitted By',
+  'controls.placeholder.reviewTabSearchBox': 'Search by Order ID, Patient name, Therapy',
   'controls.placeholders.autoSearch': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'Search by Account name or Number',
   'controls.placeholder.therapySelection.search': 'Search Therapy, Generic Name, NDC, Formulation, Dosage...',
@@ -527,7 +528,7 @@ export const MessageEn = {
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
-  'labels.caption.REVIEW': 'Reviewed',
+  'labels.caption.REVIEW': 'Review',
 
   'labels.caption.currentMonth': 'Current Month',
   'labels.caption.lastMonth': 'Last Month',
