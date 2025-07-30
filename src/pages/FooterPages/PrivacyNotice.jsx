@@ -30,7 +30,7 @@ const PrivacyNotice = () => {
                     pharmaceutical or drug manufacturers place in us to use and protect personal information. This Privacy Notice informs you how we will use,
                     share and protect your personal information. When you use the InspiroLink Ordering Platform (“PDE) or provide personal information, you
                     accept the privacy practices described in this Privacy Notice. Please read this Privacy Notice in full to understand our privacy practices
-                    before you use our Portal or submit any personal information. You are also encouraged to access our supplemental privacy notice linked above
+                    before you use our Portal or submit any personal information. You are also encouraged to access our supplemental privacy notice linked above
                     titled, “view state-specific privacy rights HERE” that is applicable in specific situations.
                   </p>
                 </div>
@@ -76,10 +76,15 @@ const PrivacyNotice = () => {
                       <li>IP address</li>
                       <li>User’s browser type</li>
                       <li>User’s operating system</li>
-                      <li>Information you provide directly to us:</li>
-                      <li>When you use the Portal and Ordering Platform.</li>
-                      <li>When you use offline features related to our Ordering Platform, such as communicating with us by phone, e-mail, or in person.</li>
-                      <li>When you interact with us in the ordinary course of business.</li>
+                      <li>Information directly related to your order</li>
+                      <li>
+                        Information you provide directly to us:
+                        <ul>
+                          <li>When you use the Portal and Ordering Platform.</li>
+                          <li>When you use offline features related to our Ordering Platform, such as communicating with us by phone, e-mail, or in person.</li>
+                          <li>When you interact with us in the ordinary course of business.</li>
+                        </ul>
+                      </li>
                     </ul>
                     Personal information may be combined with information that does not identify you. If we combine information that does not identify you with
                     your personal information, it will be treated as personal information.
@@ -91,7 +96,12 @@ const PrivacyNotice = () => {
                     We and our subsidiaries, business partners, marketing partners, affiliates or other service provides may use various technologies to collect
                     personal information including:
                     <ul>
-                      <li>Google Analytics</li>
+                      <li>Third party software codes, such as SDKS, open source or other embedded API.</li>
+                      <li>
+                        Local storage such as HTML5 to store content information and preferences. Our third-party partners who provide certain features or
+                        display advertising on our site may do the same.
+                      </li>
+                      <li>Server logs, tags, and scripts to track our website traffic. </li>
                     </ul>
                     These tracking technologies are used for analytics purposes. When the tracking information we collect is considered individually
                     identifiable information, the data is treated as Protected Health Information (''PHI'') which is defined in the Health Insurance Portability
@@ -105,10 +115,11 @@ const PrivacyNotice = () => {
                     <ul>
                       <li>To facilitate order(s) via customized workflows</li>
                       <li>Scheduling orders.</li>
-                      <li>Tracking products.</li>
+                      <li>Tracking and facilitating orders</li>
+                      <li>Collecting Payments</li>
                       <li>
-                        Part of a Corporate Transaction, such as in connection with the sale of part or all our assets or business, the acquisition of part or
-                        all of another business or another corporate transaction, including bankruptcy.
+                        Part of a Corporate Transaction, such as in connection with the sale of part or all our assets or business, the acquisition of part or
+                        all of another business or another corporate transaction, including bankruptcy.
                       </li>
                     </ul>
                   </p>
@@ -141,7 +152,7 @@ const PrivacyNotice = () => {
                   <p>
                     <Heading as="h4">Access to Personal Information</Heading>
                     Our Portal allows you to directly view and edit information about you through the Portal’s user profile page. Should you need to change
-                    anything please contact us at X
+                    anything please contact us at Privacy@McKesson.com.
                   </p>
                   <p>
                     <Heading as="h4">Retention</Heading>
@@ -193,7 +204,8 @@ const PrivacyNotice = () => {
                   <Heading as="h3">Contact Information</Heading>
                   <p>
                     If you have questions or concerns about this Privacy Notice, our information handling practices, or any other aspect of privacy and security
-                    of your personal information, please contact us at: X<br />
+                    of your personal information, please contact us at Privacy@McKesson.com.
+                    <br />
                     You may also write to us at:
                     <br />
                     McKesson Corporation

@@ -24,8 +24,9 @@ import { NotificationsProvider } from './mfe/notification-mfe/context/Notificati
 import Faq from './pages/FooterPages/Faq';
 import TermsToUse from './pages/FooterPages/TermsToUse';
 import PrivacyNotice from './pages/FooterPages/PrivacyNotice';
-import ContactUs from './pages/FooterPages/ContactUs';
 import PrivacyNoticePage from './pages/FooterPages/PrivacyNoticeForStateSpecific.';
+import ContactUs from './pages/FooterPages/ContactUs';
+import Success from './pages/FooterPages/ContactUs/Success';
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -131,6 +132,7 @@ const Navigation = () => {
             <Route path={AppRoutes.pathTermsOfUse} element={<TermsToUse />} />
             <Route path={AppRoutes.pathPrivacyNotice} element={<PrivacyNotice />} />
             <Route path={AppRoutes.pathContact} element={<ContactUs />} />
+            <Route path={AppRoutes.pathContactSuccess} element={<Success />} />
             <Route path={AppRoutes.pathPrivacyNoticeForStateSpecificPrivacyLaws} element={<PrivacyNoticePage />} />
           </Route>
 
