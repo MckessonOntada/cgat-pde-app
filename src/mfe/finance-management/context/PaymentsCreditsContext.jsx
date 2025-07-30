@@ -168,6 +168,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
+    setSortConfig(INITIAL_SORT_STATE);
   };
 
   const applySort = (newSortConfig) => {

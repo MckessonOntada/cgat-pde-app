@@ -129,7 +129,7 @@ export const PaymentHistoryProvider = ({ children }) => {
         setData(_modifiedData.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.paymentHistory);
         setActualData(res.data?.paymentHistory);
-        // filterData(filterConfig, res.data?.paymentHistory);
+        filterData(filterConfig, res.data?.paymentHistory);
         setPaginationConfig((state) => ({
           ...state,
           totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
@@ -227,7 +227,7 @@ export const PaymentHistoryProvider = ({ children }) => {
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
       sortData(sortConfig);
     }
-  }, [paginationConfig.pageNumber, sortConfig]);
+  }, [paginationConfig.pageNumber, filterConfig]);
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
