@@ -227,7 +227,7 @@ export const PaymentHistoryProvider = ({ children }) => {
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
       sortData(sortConfig);
     }
-  }, [paginationConfig.pageNumber, filterConfig]);
+  }, [paginationConfig.pageNumber, sortConfig]);
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
