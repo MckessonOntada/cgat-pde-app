@@ -30,6 +30,8 @@ export const MessageEn = {
   'captions.btnPrintSummary': 'Print',
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
+  'captions.btnSaveChanges': 'Save Changes',
+  'captions.btnDiscardChanges': 'Discard Changes',
   'captions.btnBackToManageOrder': 'Back to Manage Order',
   'captions.btnBackToOrders': 'Back to Orders',
   'captions.btnBack': 'Back',
@@ -355,6 +357,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient Identifier',
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
+  'orderManagement.patientDetails.inputLabel.doa': 'DOA',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.identifier_details': 'Identifiers',
