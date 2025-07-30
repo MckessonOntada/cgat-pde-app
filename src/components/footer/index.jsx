@@ -46,6 +46,41 @@ const Footer = () => {
       }
     };
   }, []);
+  // const footerData = {
+  //   sections: [
+  //     {
+  //       links: [
+  //         {
+  //           url: '/privacy-notice/',
+  //           text: 'footer.privacy'
+  //         },
+  //         {
+  //           url: '/terms-of-use/',
+  //           text: 'footer.termsOfUse'
+  //         }
+  //       ],
+  //       heading: 'footer.terms'
+  //     },
+  //     {
+  //       links: [
+  //         {
+  //           url: '/faq/',
+  //           text: 'footer.help.faq'
+  //         }
+  //       ],
+  //       heading: 'footer.help'
+  //     },
+  //     {
+  //       links: [
+  //         {
+  //           url: '/contact/',
+  //           text: 'footer.contactUs'
+  //         }
+  //       ],
+  //       heading: 'footer.heading.contact'
+  //     }
+  //   ]
+  // };
 
   return (
     <footer className={style.footer} ref={footerRef}>

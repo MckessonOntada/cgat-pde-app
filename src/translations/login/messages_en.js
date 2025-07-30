@@ -40,5 +40,9 @@ export const LoginMessagesEN = {
   'reset.password.account.settings': 'Account Settings',
   'reset.password.login.userInformation': 'User Information',
   'reset.password.error': 'Failed to sent reset password email',
-  'footer.siteMap': 'Site Map'
+  'footer.siteMap': 'Site Map',
+  'footer.heading.contact': 'Contact',
+  'footer.contactUs': 'Contact us',
+  'footer.help.faq': 'FAQ',
+  'footer.termsOfUse': 'Terms Of Use'
 };

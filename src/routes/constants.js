@@ -13,5 +13,10 @@ export const RoutePaths = {
   pathOrganizationRoles: '/admin/organization/roles',
   pathSystemAdminManagement: '/system-admin/user',
   pathManageProviders: '/admin/providers',
-  pathManageLinkAccount: '/admin/linked-accounts'
+  pathManageLinkAccount: '/admin/linked-accounts',
+  pathFaq: '/faq',
+  pathTermsOfUse: '/terms-of-use',
+  pathPrivacyNotice: '/privacy-notice',
+  pathContact: '/contact',
+  pathPrivacyNoticeForStateSpecificPrivacyLaws: 'privacy-notice-for-state-specific-privacy-laws'
 };
