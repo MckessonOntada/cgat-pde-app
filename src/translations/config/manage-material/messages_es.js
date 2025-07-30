@@ -57,7 +57,7 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.configuration.heading': 'S_Configuración de Material',
   // Configuration Drawer Body
 
-  'manageMaterial.drawer.configuration.body.patientInfoRequired': 'S_Patient information required?',
+  'manageMaterial.drawer.configuration.body.patientInfoRequired': 'S_Patient information required',
   'manageMaterial.drawer.configuration.body.coiIdRequired': 'S_Make COI ID mandatory',
   'manageMaterial.drawer.configuration.body.mrnRequired': 'S_Make MRN mandatory',
   'manageMaterial.drawer.configuration.body.poNumberRequired': 'S_Make PO Number mandatory',
