@@ -38,7 +38,7 @@ const INITIAL_VALUES = {
   slotNumber: '',
   poNumber: '',
   dateOfAdministration: '',
-
+  medicalRecordNumber: '',
   diagnosisCode: '',
   hasAllergies: '',
   allergyDetails: '',
@@ -85,7 +85,7 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
-  const { tradeDetails = {}, isCoiIdRequired, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
+  const { tradeDetails = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -117,7 +117,11 @@ function AdditionalDetails() {
       dateOfAdministration: Yup.date()
         .typeError(t('labels.enterValidDateOfAdministration'))
         .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
-        .nullable(),
+        .when([], {
+          is: () => therapyConfig.isDOARequired,
+          then: (schema) => schema.required('Please select at least one variant'),
+          otherwise: (schema) => schema.notRequired()
+        }),
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
@@ -162,8 +166,8 @@ function AdditionalDetails() {
           coiId: Yup.string()
             .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
             .max(10, t('labels.COI_IdExceedDigits'))
-            .when('$isCoiIdRequired', {
-              is: true,
+            .when([], {
+              is: () => therapyConfig.isCoiIdRequired,
               then: (schema) => schema.required(t('labels.COIIdRequired')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -179,10 +183,22 @@ function AdditionalDetails() {
             .max(20, t('labels.slotNumberLengthError'))
             .trim(t('labels.slotNumberExtraSpaceError')),
           poNumber: Yup.string()
-            .required(t('labels.PONumberRequired'))
             .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
             .max(35, t('labels.PONumberLengthError'))
             .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
+            .when([], {
+              is: () => therapyConfig.isPORequired,
+              then: (schema) => schema.required(t('labels.PONumberRequired')),
+              otherwise: (schema) => schema.notRequired()
+            }),
+          medicalRecordNumber: Yup.string()
+            .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
+
+            .when([], {
+              is: () => therapyConfig.isMRNRequired,
+              then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
+              otherwise: (schema) => schema.notRequired()
+            })
         })
       );
     }
@@ -466,6 +482,7 @@ function AdditionalDetails() {
         variantDetails = {},
         configuredQuestionnaires,
         diagnosisCode,
+        medicalRecordNumber,
         clinicalDetails
       } = additionalDetails;
 
@@ -489,6 +506,7 @@ function AdditionalDetails() {
         initialValues.coiId = coiId;
         initialValues.orderQuantity = orderQuantity;
         initialValues.slotNumber = slotNumber;
+        initialValues.medicalRecordNumber = medicalRecordNumber;
       }
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
@@ -564,7 +582,7 @@ function AdditionalDetails() {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration } = values;
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, medicalRecordNumber } = values;
 
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.sectionsDetails) return;
@@ -609,6 +627,7 @@ function AdditionalDetails() {
       payload.orderQuantity = orderQuantity;
       payload.slotNumber = slotNumber;
       payload.dateOfAdministration = dateOfAdministration;
+      payload.medicalRecordNumber = medicalRecordNumber;
     }
 
     saveAdditionalDetails(payload);
@@ -727,7 +746,7 @@ function AdditionalDetails() {
           enableReinitialize={true}
           validationSchema={validationSchema}
           onError={console.log}
-          validationContext={{ isCoiIdRequired }}
+          validationContext={{ ...therapyConfig }}
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
@@ -754,7 +773,7 @@ function AdditionalDetails() {
                       }
                     />
                     <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-                      {getFormFields(t, { isCoiIdRequired, channelType }, setFieldValue).map(
+                      {getFormFields(t, { therapyConfig, channelType }, setFieldValue).map(
                         ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                           <Field
                             key={index}
@@ -779,7 +798,7 @@ function AdditionalDetails() {
                           </p>
                         </div>
                         <React.Fragment>
-                          {getClinicalDetailFields(t, { isCoiIdRequired, channelType, values }, setFieldValue, setFieldTouched).map(
+                          {getClinicalDetailFields(t, { therapyConfig, channelType, values }, setFieldValue, setFieldTouched).map(
                             ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
                               <div key={index} className={`${layout.classes}`}>
                                 <Field

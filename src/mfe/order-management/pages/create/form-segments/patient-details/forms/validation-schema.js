@@ -27,7 +27,7 @@ export const getInitialValues = () => ({
       state: ''
     },
     patientIdentifier: '',
-    medicalRecordNumber: '',
+    // medicalRecordNumber: '',
     coiId: ''
   },
   providerId: ''
@@ -36,7 +36,7 @@ export const getInitialValues = () => ({
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => {
+export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig) => {
   return Yup.object().shape({
     patient: Yup.object().shape({
       patientInfo: Yup.object()
@@ -44,32 +44,32 @@ export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => 
         .shape({
           firstName: CommonUtils.getNameValidation(t, {
             field: 'first_name',
-            required: isProviderRequired ? true : false
+            required: isSpOrder ? true : false
           }),
           middleName: CommonUtils.getNameValidation(t, {
             field: 'middle_name'
           }),
           lastName: CommonUtils.getNameValidation(t, {
             field: 'last_name',
-            required: isProviderRequired ? true : false
+            required: isSpOrder ? true : false
           }),
           dateOfBirth: Yup.date()
             .max(yesterday, t('labels.invalidDateOfBirth'))
             .typeError(t('labels.selectValidDate'))
             .when([], {
-              is: () => isProviderRequired,
+              is: () => isSpOrder,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.dateOfBirth')),
               otherwise: (schema) => schema.nullable()
             }),
           gender: Yup.string()
             .oneOf(['Male', 'Female', 'Other'], t('labels.invalidGenderSelection'))
             .when([], {
-              is: () => isProviderRequired,
+              is: () => isSpOrder,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.gender')),
               otherwise: (schema) => schema.nullable()
             })
         }),
-      ...(isProviderRequired && {
+      ...(isSpOrder && {
         contact: Yup.object()
           .nullable()
           .shape({
@@ -89,7 +89,7 @@ export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => 
             preferedMethodOfContact: Yup.string().nullable().oneOf(['Mobile', 'Fax'], 'Select valid method of contact.')
           })
       }),
-      ...(isProviderRequired && {
+      ...(isSpOrder && {
         patientAddress: Yup.object()
           .nullable()
           .shape({
@@ -126,7 +126,7 @@ export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => 
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
         .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
         .when([], {
-          is: () => !isProviderRequired,
+          is: () => !isSpOrder && therapyConfig.isPIDRequired,
           then: (schema) =>
             schema
               .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
@@ -138,32 +138,17 @@ export const getValidationSchema = (t, isProviderRequired, spMaterialConfig) => 
           otherwise: (schema) => schema.notRequired()
         }),
 
-      medicalRecordNumber: Yup.string()
-        .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
-        .when([], {
-          is: () => isProviderRequired && spMaterialConfig?.isMRNRequired,
-          then: (schema) =>
-            schema
-              .required(t('orderManagement.patientDetails.validation.mrn_required'))
-              .test(
-                'no-leading-trailing-spaces',
-                t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-                (value) => value === undefined || value.trim().length === value.length
-              ),
-          otherwise: (schema) => schema.notRequired()
-        }),
-
       coiId: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
         .max(10, t('labels.COI_IdExceedDigits'))
         .when([], {
-          is: () => isProviderRequired && spMaterialConfig?.isCoiIdRequired,
+          is: () => isSpOrder && spMaterialConfig?.isCoiIdRequired,
           then: (schema) => schema.required(t('labels.COIIdRequired')),
           otherwise: (schema) => schema.notRequired()
         })
     }),
     providerId: Yup.string().when([], {
-      is: () => isProviderRequired,
+      is: () => isSpOrder,
       then: (schema) => schema.required('Please select provider.'),
       otherwise: (schema) => schema.notRequired()
     })

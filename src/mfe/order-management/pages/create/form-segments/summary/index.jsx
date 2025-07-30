@@ -42,6 +42,8 @@ import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/Form
 import { Form, Formik } from 'formik';
 import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import { BUTTON_ACTIONS } from './constants';
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
 const getUpdateFormConfig = (stage, therapyConfig) => {
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
@@ -58,7 +60,7 @@ const getUpdateFormConfig = (stage, therapyConfig) => {
                 placeholder: ' ',
                 type: 'input',
                 maxLength: 20,
-                isRequired: therapyConfig.isPatientIdentifierRequired
+                isRequired: therapyConfig.isPIDRequired
               }
             ]
           }
@@ -100,7 +102,7 @@ const getUpdateFormConfig = (stage, therapyConfig) => {
         placeholder: ' ',
         type: 'input',
         maxLength: 20,
-        isRequired: therapyConfig.isPoNumberRequired
+        isRequired: therapyConfig.isPORequired
       }
     ];
     const formattedControls = [
@@ -120,6 +122,7 @@ const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const locationState = location?.state ?? {};
   const { orderId } = useParams();
   const [alert, setAlert] = React.useState(null);
@@ -135,7 +138,6 @@ const Summary = () => {
   const [drawerElement, setDrawerElement] = React.useState(null);
   const [draftChanges, setDraftChanges] = React.useState({});
   const {
-    tradeDetails = {},
     therapy = {},
     catalog = {},
     orderCost,
@@ -483,6 +485,33 @@ const Summary = () => {
     }
   };
 
+  const handleOnDiscardChanges = () => {
+    const state = {};
+    state.title = `${t(t('messages.confirmation.discardheader'))}`;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('message.discardChangesConfirmation')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          {t('button.caption.cancel')}
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            dispatch(closeModal());
+            setDraftChanges({});
+          }}>
+          {t('button.caption.confirm')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+
   const handleOnEditSection = (stage) => {
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
@@ -491,7 +520,7 @@ const Summary = () => {
           .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
           .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
           .when([], {
-            is: () => therapyConfig.isPatientIdentifierRequired,
+            is: () => therapyConfig.isPIDRequired,
             then: (schema) =>
               schema
                 .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
@@ -512,7 +541,7 @@ const Summary = () => {
         }),
 
         poNumber: Yup.string().when([], {
-          is: () => therapyConfig.isPoNumberRequired,
+          is: () => therapyConfig.isPORequired,
           then: (schema) =>
             schema
               .required(t('labels.PONumberRequired'))
@@ -652,7 +681,7 @@ const Summary = () => {
     );
 
     const controlDiscardChanges = (
-      <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="secondary" onClick={() => setDraftChanges({})}>
+      <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="secondary" onClick={handleOnDiscardChanges}>
         {t('captions.btnDiscardChanges')}
       </Button>
     );
