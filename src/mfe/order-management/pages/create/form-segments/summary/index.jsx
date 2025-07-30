@@ -148,6 +148,7 @@ const Summary = () => {
     rejectionDetails,
     paporder: isPapOrder,
     backendOrderId,
+    id,
     status,
     payerDetails,
     provider,
@@ -980,7 +981,10 @@ const Summary = () => {
                           : 'lg:grid-cols-2 xl:grid-cols-2'
                         : 'lg:grid-cols-4 xl:grid-cols-4'
                     }`}>
-                    {status === ORDER_STATUS.SUBMITTED && <DetailSegment label={t('labels.orderId')} value={backendOrderId} />}
+                    {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
+                      (status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
+                      <DetailSegment label={t('labels.orderId')} value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId} />
+                    )}
                     <DetailSegment
                       label={t('labels.therapy')}
                       noTooltip={true}
