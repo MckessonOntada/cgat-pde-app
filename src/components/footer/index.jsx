@@ -21,7 +21,7 @@ const Footer = () => {
 
   const { data: footerData } = useQuery({
     queryKey: ['globalFooterLinks'],
-    queryFn: () => QuestionnaireService.getGlobalFooterLinks()
+    queryFn: () => QuestionnaireService.getGlobalConfigLinks()
   });
   const footerRef = useRef();
   useEffect(() => {
