@@ -53,7 +53,7 @@ function Details(props) {
   };
 
   useEffect(() => {
-    if (!CommonUtils.isNonEmptyObject(selectedAccount) && !CommonUtils.enableReviewAndPay(selectedAccount)) {
+    if (!CommonUtils.enableReviewAndPay(selectedAccount)) {
       setAlert({
         description: t('paymentInvoices.instruction.5040.text', {
           contact_no: CommonUtils.formatSupportNumber(globalConfig?.supportContactNumber || '')
