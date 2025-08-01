@@ -131,8 +131,8 @@ async function deLinkConfigureQuestionnaire(entityType, payload) {
   }
   return {};
 }
-async function getGlobalFooterLinks() {
-  const url = ApiRoutes.GLOBAL_FOOTER();
+async function getGlobalConfigLinks() {
+  const url = ApiRoutes.GLOBAL_CONFIG();
   const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
   if (res.data) {
     return res.data;
@@ -153,7 +153,7 @@ const QuestionnaireService = Object.freeze({
   uploadQuestionnaireDocument,
   uploadVariantDocument,
   deLinkConfigureQuestionnaire,
-  getGlobalFooterLinks
+  getGlobalConfigLinks
 });
 
 export default QuestionnaireService;

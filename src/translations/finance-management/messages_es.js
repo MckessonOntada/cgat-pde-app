@@ -318,5 +318,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.payment-history': 'S_back to payments history details page',
   'paymentInvoices.Details.payment-history-listing': 'S_back to payment history page',
   'paymentInvoices.Details.pending-payments': 'S_back to schedule payments details page',
-  'paymentInvoices.Details.pending-payment-listing': 'S_back to schedule payments  page'
+  'paymentInvoices.Details.pending-payment-listing': 'S_back to schedule payments  page',
+  'paymentInvoices.instruction.5040.text':
+    'S_InspiroLink does not support payments for certain accounts as per contract terms. Please refer to your contract documentation or contact customer support at {contact_no} for assistance.',
+  'S_paymentInvoices.invoice.count.text': 'You can select upto 20 Invoices only'
 };
