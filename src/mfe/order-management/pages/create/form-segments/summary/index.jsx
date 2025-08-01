@@ -374,6 +374,25 @@ const Summary = () => {
     retry: false
   });
 
+  const { isLoading: isResubmitting, mutate: reSubmitOrder } = useMutation(async (draftChanges) => await OrderService.reSubmitOrder(orderId, draftChanges), {
+    onSuccess: (_result) => {
+      navigate(`${RoutePaths.pathOrderManagement}`, {
+        state: { ...locationState, isApproved: true, alert: { type: 'success', description: 'Order has been Resubmitted Successfully.' } }
+      });
+    },
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+      setAlert({
+        description,
+        type: 'error'
+      });
+    },
+    retry: false
+  });
+
   const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
     isDisabled: false,
     isChecked: false,
@@ -434,7 +453,9 @@ const Summary = () => {
     }
   };
 
-  const handleOnReSubmit = () => {};
+  const handleOnReSubmit = () => {
+    reSubmitOrder(draftChanges);
+  };
 
   const handleApprove = () => {
     submitOrder({ action: BUTTON_ACTIONS.APPROVE });
@@ -597,11 +618,19 @@ const Summary = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            const key = stage === ORDER_STAGES.ADDITIONAL_DETAILS ? 'additionalDetails' : 'patientDetails';
-            setDraftChanges((prev) => ({
-              ...prev,
-              [key]: values
-            }));
+            if (!CommonUtils.isNonEmptyObject(values)) return;
+            if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
+              setDraftChanges((prev) => ({
+                ...prev,
+                additionalDetailsRequestDTO: values
+              }));
+            } else {
+              setDraftChanges((prev) => ({
+                ...prev,
+                patientIdentifier: values.patientIdentifier
+              }));
+            }
+
             setDrawerElement(null);
           }}>
           <Form>
@@ -744,7 +773,8 @@ const Summary = () => {
     if (isRejected || isDeleted) return false;
     else if (status === ORDER_STATUS.SUBMITTED) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
-    else if (status === ORDER_STATUS.APPROVAL_PENDING && isApprover) {
+    else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
+    else if (status === ORDER_STATUS.APPROVAL_PENDING && isApprover && orderDetails.approver) {
       return true;
     }
     return true;

@@ -62,15 +62,6 @@ const useOrder = (orderId) => {
         }
       }
 
-      const { isCoiIdRequired = false, isPayerDetailsRequired = false, paporder = false, patientDetailsRequired = false } = result;
-      result.therapyConfig = {
-        isCoiIdRequired: false,
-        isDOARequired: false,
-        isMRNRequired: false,
-        isPIDRequired: false,
-        isPORequired: false
-      };
-
       return result;
     },
     onError: (error) => {
