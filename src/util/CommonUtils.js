@@ -466,6 +466,19 @@ const formatPhoneNumber = (phoneNumber) => {
   return phoneNumber;
 };
 
+function formatSupportNumber(number) {
+  const cleaned = ('' + number).replace(/\D/g, '');
+
+  // Format as XXX-XXX-XXXX
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+
+  return number;
+}
+
 const formatTIN = (value) => {
   if (!value || value.length !== 9) return value;
   return `${value.slice(0, 2)}-${value.slice(2)}`;
@@ -802,7 +815,8 @@ const CommonUtils = Object.freeze({
   getDOBMaxDate,
   getUploadErrorMessage,
   getFileNameAndType,
-  removeLeadingZeros
+  removeLeadingZeros,
+  formatSupportNumber
 });
 
 export default CommonUtils;

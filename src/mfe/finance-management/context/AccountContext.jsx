@@ -8,6 +8,7 @@ import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation } from 'react-router-dom';
 import useAlert from '@src/hooks/useAlert';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 const ACCOUNTS_PER_SEARCH = 20;
 
@@ -70,6 +71,11 @@ export const AccountProvider = ({ children }) => {
       return [];
     },
     refetchOnWindowFocus: false
+  });
+
+  const { data: globalConfig } = useQuery({
+    queryKey: ['globalConfig'],
+    queryFn: () => QuestionnaireService.getGlobalConfigLinks()
   });
 
   useEffect(() => {
@@ -159,7 +165,8 @@ export const AccountProvider = ({ children }) => {
         payToAccountsData,
         setSelectedAccountRaw,
         fetchingAccounts,
-        totalAccounts
+        totalAccounts,
+        globalConfig
       }}>
       {children}
     </AccountContext.Provider>

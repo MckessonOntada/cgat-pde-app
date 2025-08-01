@@ -89,7 +89,7 @@ const ApiRoutes = Object.freeze({
   CONFIGURE_SP_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies/sp/config`),
   DELETE_MATERIAL_CONFIG: (ndcnumber) => constructUserManagementServicePublicUrl(`therapies/config/ndc/${ndcnumber}`),
   RESET_PASSWORD: () => constructUserManagementServiceUrl(`users/current/reset-password`),
-  GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-config`),
+  GLOBAL_CONFIG: () => constructUserManagementServicePublicUrl(`global-config`),
   // Fetch all in-app notifications for the current user
   NOTIFICATIONS: () => constructNotificationServiceUrl(`in-app-notification/fetch`),
   // Get the count of unread in-app notifications for the current user
