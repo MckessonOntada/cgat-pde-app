@@ -25,6 +25,7 @@ function CatalogDataTable(props) {
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
+
   const columns = [
     {
       id: 'checkbox',
@@ -37,7 +38,13 @@ function CatalogDataTable(props) {
         setSelectedCatalogs
       ),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'catalog_id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
+      cell: (row, index) =>
+        renderTableCheckBox(row, data, 'catalog_id', paginationConfig, selectedCatalogs, (newSelection) => {
+          setSelectedCatalogs(newSelection);
+          if (newSelection.length === 1) {
+            setViewCatalog(newSelection[0]?.catalogPrice); // SET from selection
+          }
+        }),
       // selector: (row) => row.MRN,
       width: '50px',
       omit: isCustomerCenter
@@ -166,13 +173,16 @@ function CatalogDataTable(props) {
         }
       />
 
-      <ConfigureCatalog
-        openConfigurationDraw={openConfigurationDraw}
-        setOpenConfigurationDraw={setOpenConfigurationDraw}
-        selectedCatalogs={selectedCatalogs}
-        setSelectedCatalogs={setSelectedCatalogs}
-        showAlert={showAlert}
-      />
+      {!!selectedCatalogs && (
+        <ConfigureCatalog
+          openConfigurationDraw={openConfigurationDraw}
+          setOpenConfigurationDraw={setOpenConfigurationDraw}
+          selectedCatalogs={selectedCatalogs}
+          setSelectedCatalogs={setSelectedCatalogs}
+          viewCatalog={viewCatalog}
+          showAlert={showAlert}
+        />
+      )}
 
       <CatalogDetails
         openCatalogDetails={openCatalogDetails}

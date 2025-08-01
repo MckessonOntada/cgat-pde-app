@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import FloatingDrawer from '@src/components/floating-drawer';
 import Alert from '@src/components/cgat-alert/Alert';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import OrderService from '@src/api/commonService/OrderService';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
@@ -22,6 +24,42 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const [error, setError] = useState(false);
 
   const { selectedMaterials, refetch } = useManageMaterial();
+  const {
+    isLoading,
+    isError,
+    data: MaterialData
+  } = useQuery({
+    queryKey: ['therapyDetailsByTrade'],
+    queryFn: async () => {
+      const result = await OrderService.getTherapyDetailsByTradeName2(
+        selectedMaterials.map((material) => material.tradeName),
+        CHANNEL_TYPE.BUY_AND_BILL
+      );
+      return result;
+    },
+    enabled: !!selectedMaterials && selectedMaterials?.length === 1 ? true : false,
+    refetchOnWindowFocus: false
+  });
+
+  useEffect(() => {
+    if (selectedMaterials?.length === 1 && Array.isArray(MaterialData)) {
+      const selectedNDC = selectedMaterials[0].ndc;
+      const matchedMaterial = MaterialData.find((item) => item.materialConfig.ndcNumber === selectedNDC);
+
+      if (matchedMaterial) {
+        const config = matchedMaterial.materialConfig;
+
+        setFormValues({
+          patientInfoRequired: config.isPatientInformationRequired ? 'yes' : 'no',
+          patientIdentifierRequired: config.isPIDRequired ? 'yes' : 'no',
+          coiIdRequired: config.isCoiIdRequired ? 'yes' : 'no',
+          mrnRequired: config.isMRNRequired ? 'yes' : 'no',
+          doaRequired: config.isDOARequired ? 'yes' : 'no',
+          poNumberRequired: config.isPORequired ? 'yes' : 'no'
+        });
+      }
+    }
+  }, [MaterialData, selectedMaterials]);
 
   const { mutate: applyConfiguration } = useMutation(
     async (configValues) => {

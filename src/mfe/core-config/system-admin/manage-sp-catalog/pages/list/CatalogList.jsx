@@ -224,6 +224,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         openConfigurationDraw={openConfigurationDraw}
         setOpenConfigurationDraw={setOpenConfigurationDraw}
         selectedCatalogs={selectedRowObjects}
+        viewCatalog={selectedRowObjects.size === 1 ? selectedRowObjects.values().next().value?.catalogPrice : null}
         showAlert={sendNotification}
         isSPCatalog={true}
         clearTableSelection={clearTableSelection}
