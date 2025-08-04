@@ -40,7 +40,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
 
   const formFields = [
     {
-      caption: t('manageMaterial.drawer.configuration.body.patientIdentifierRequired'),
+      caption: t('manageMaterial.drawer.details.configuration.body.patientIdentifierRequired'),
       id: 'patientIdentifierRequired',
       items: [
         {
