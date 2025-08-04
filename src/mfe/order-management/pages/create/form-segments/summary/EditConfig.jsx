@@ -118,7 +118,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
       .when([], {
         is: () => therapyConfig.isDOARequired,
-        then: (schema) => schema.required('labels.enterValidDateOfAdministration'),
+        then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
         otherwise: (schema) => schema.notRequired()
       }),
 

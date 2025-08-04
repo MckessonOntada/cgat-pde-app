@@ -119,7 +119,7 @@ function AdditionalDetails() {
         .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
         .when([], {
           is: () => therapyConfig.isDOARequired,
-          then: (schema) => schema.required('Please select at least one variant'),
+          then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
           otherwise: (schema) => schema.notRequired()
         }),
       variant: Yup.object()
