@@ -650,7 +650,7 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          ...state.location,
+          locationState,
           isEdit: isEdit,
           isApprover: isApprover
         }

@@ -136,13 +136,19 @@ function getOptionsByStatus(props) {
         break;
       case ORDER_ENTITY_ACTION.CANCEL:
       case ORDER_ENTITY_ACTION.EDIT:
-        renderModal({
-          title: translate('labels.information'),
-          bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
-          footerActions: {
-            cancel: { label: translate('labels.orderActions.OK') }
-          }
-        });
+        if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
+          navigate(`${id}/summary`, {
+            state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : preservedState
+          });
+        } else {
+          renderModal({
+            title: translate('labels.information'),
+            bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
+            footerActions: {
+              cancel: { label: translate('labels.orderActions.OK') }
+            }
+          });
+        }
         break;
       case ORDER_ENTITY_ACTION.REVIEW:
         navigate(`${id}/summary`, {

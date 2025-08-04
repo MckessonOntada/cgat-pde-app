@@ -159,7 +159,7 @@ export const MessageEn = {
   'labels.diagnosisCodes': 'Diagnosis codes (ICD10)',
 
   'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
-  'labels.PONumberRequired': 'Please enter the PO Number',
+  'labels.PONumberRequired': 'PO Number is required',
   'labels.PONumberLengthError': 'PO Number should not exceed 35 characters',
   'labels.poNumberMustValid': 'PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',

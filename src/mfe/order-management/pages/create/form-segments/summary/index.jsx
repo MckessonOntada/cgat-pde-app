@@ -555,44 +555,42 @@ const Summary = () => {
           })
       });
       const additionalDetailsValidationSchema = Yup.object().shape({
-        coiId: Yup.string().when([], {
-          is: () => therapyConfig.isCoiIdRequired,
-          then: (schema) =>
-            schema.required(t('labels.COIIdRequired')).matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber')).max(10, t('labels.COI_IdExceedDigits')),
-          otherwise: (schema) => schema.notRequired()
-        }),
-
-        poNumber: Yup.string().when([], {
-          is: () => therapyConfig.isPORequired,
-          then: (schema) =>
-            schema
-              .required(t('labels.PONumberRequired'))
-              .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
-              .max(35, t('labels.PONumberLengthError'))
-              .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-        }),
-        dateOfAdministration: Yup.date().when([], {
-          is: () => therapyConfig?.isDOARequired,
-          then: (schema) =>
-            schema
-              .required('Date of administration is required')
-              .typeError(t('labels.enterValidDateOfAdministration'))
-              .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')),
-          otherwise: (schema) => schema.notRequired()
-        }),
+        coiId: Yup.string()
+          .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
+          .max(10, t('labels.COI_IdExceedDigits'))
+          .when([], {
+            is: () => therapyConfig.isCoiIdRequired,
+            then: (schema) => schema.required(t('labels.COIIdRequired')),
+            otherwise: (schema) => schema.notRequired()
+          }),
+        poNumber: Yup.string()
+          .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
+          .max(35, t('labels.PONumberLengthError'))
+          .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
+          .when([], {
+            is: () => therapyConfig.isPORequired,
+            then: (schema) => schema.required(t('labels.PONumberRequired')),
+            otherwise: (schema) => schema.notRequired()
+          }),
+        dateOfAdministration: Yup.date()
+          .typeError(t('labels.enterValidDateOfAdministration'))
+          .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+          .when([], {
+            is: () => therapyConfig.isDOARequired,
+            then: (schema) => schema.required('Please select at least one variant'),
+            otherwise: (schema) => schema.notRequired()
+          }),
 
         medicalRecordNumber: Yup.string()
           .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
+          .test(
+            'no-leading-trailing-spaces',
+            t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+            (value) => value === undefined || value.trim().length === value.length
+          )
           .when([], {
             is: () => therapyConfig?.isMRNRequired,
-            then: (schema) =>
-              schema
-                .required(t('orderManagement.patientDetails.validation.mrn_required'))
-                .test(
-                  'no-leading-trailing-spaces',
-                  t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-                  (value) => value === undefined || value.trim().length === value.length
-                ),
+            then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
             otherwise: (schema) => schema.notRequired()
           })
       });
@@ -633,27 +631,36 @@ const Summary = () => {
 
             setDrawerElement(null);
           }}>
-          <Form>
-            <FloatingDrawer
-              open={true}
-              anchor="right"
-              onClose={() => setDrawerElement(null)}
-              heading={'Additional Details'}
-              controls={
-                <div className="controls">
-                  <Button
-                    label={t('captions.btnCancel')}
-                    onClick={() => setDrawerElement(null)}
-                    variant="secondary"
-                    size="md"
-                    aria-label={t('captions.cancel')}
-                  />
-                  <Button label={t('captions.btnSaveChanges')} type="submit" variant="primary" size="md" aria-label={t('captions.selectAccount')} />
-                </div>
-              }>
-              <FormRenderer sections={formConfig} />
-            </FloatingDrawer>
-          </Form>
+          {({ dirty }) => (
+            <Form>
+              <FloatingDrawer
+                open={true}
+                anchor="right"
+                onClose={() => setDrawerElement(null)}
+                heading={'Additional Details'}
+                controls={
+                  <div className="controls">
+                    <Button
+                      label={t('captions.btnCancel')}
+                      onClick={() => setDrawerElement(null)}
+                      variant="secondary"
+                      size="md"
+                      aria-label={t('captions.cancel')}
+                    />
+                    <Button
+                      label={t('captions.btnSaveChanges')}
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      aria-label={t('captions.selectAccount')}
+                      disabled={!dirty}
+                    />
+                  </div>
+                }>
+                <FormRenderer sections={formConfig} />
+              </FloatingDrawer>
+            </Form>
+          )}
         </Formik>
       );
     } else {
@@ -1451,26 +1458,26 @@ const Summary = () => {
                       )
                     }
                   />
-                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-3' : 'xl:grid-cols-5'}`}>
-                    {!isSpOrder && additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />}
-                    {isSpOrder && <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode} />}
-                    {!isSpOrder && <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />}
-                    {!isSpOrder && additionalDetails?.dateOfAdministration && (
-                      <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                    )}
-                    {!isSpOrder && isCoiIdRequired && additionalDetails?.coiId && (
-                      <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />
-                    )}
-                    {!isSpOrder && additionalDetails?.orderQuantity && (
-                      <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails?.orderQuantity) || '-'} />
-                    )}
-                    {isSpOrder && additionalDetails?.clinicalDetails?.hasAllergies && (
+                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
+                    {!isSpOrder && (
                       <>
-                        <DetailSegment label={t('label.allergies')} value={additionalDetails?.clinicalDetails?.allergiesSpecification || '-'} />
-                        <DetailSegment
-                          label={t('labels.provideDateOfAdministration')}
-                          value={additionalDetails?.clinicalDetails?.dateOfAdministration || '-'}
-                        />
+                        <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />
+                        {additionalDetails?.orderQuantity && (
+                          <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
+                        )}
+                        {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
+                        <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber || '-'} />
+                        <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
+                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={additionalDetails?.medicalRecordNumber || '-'} />
+                      </>
+                    )}
+
+                    {isSpOrder && (
+                      <>
+                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode} />
+                        {additionalDetails?.clinicalDetails?.hasAllergies && (
+                          <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
+                        )}
                       </>
                     )}
                   </div>
