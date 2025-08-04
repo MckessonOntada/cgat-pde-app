@@ -52,14 +52,14 @@ export default function PaymentHistoryTable() {
       id: 'billNo',
       name: t('paymentInvoices.history.table.invoiceNumber'),
       selector: (row) => row.invoices?.[0]?.billNo || '',
-      minWidth: '220px',
+      minWidth: '240px',
       wrap: true,
       cell: (props) => {
         const invoices = props.invoices || [];
         const billNos = invoices.map((inv) => inv.billNo);
         const displayText =
           billNos.length === 1 ? billNos[0] : billNos.length === 2 ? billNos.join(', ') : billNos.length > 2 ? `${billNos[0]}, ${billNos[1]} & more` : '';
-        return <EclipsesTextcss str={displayText} tooltip={billNos.join(', ')} maxWidth={210} />;
+        return <EclipsesTextcss str={displayText} tooltip={billNos.join(', ')} maxWidth={230} />;
       }
     },
     {

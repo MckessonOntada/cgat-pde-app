@@ -3,7 +3,7 @@ import './index.scss';
 import RecordDetails from './components/RecordDetails';
 import BalanceDetails from './components/BalanceDetails';
 import Routes from './routes/Routes';
-import { TabList, Heading } from '@mckesson/mcp-component-library';
+import { TabList, Heading, Alert } from '@mckesson/mcp-component-library';
 import { tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
@@ -17,9 +17,10 @@ const PaymentsInvoices = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tabs, setTabs] = useState();
-  const { selectedAccount, isLoading } = useAccountContext();
+  const { selectedAccount, isLoading, globalConfig } = useAccountContext();
   const { t } = useTranslate();
   const alertContainerId = 'summary-alert-container';
+  const [alert, setAlert] = React.useState(null);
 
   useEffect(() => {
     if (!Array.isArray(tabListData) || tabListData.length === 0) {
@@ -38,6 +39,19 @@ const PaymentsInvoices = () => {
 
     setTabs(updatedTabs);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!CommonUtils.enableReviewAndPay(selectedAccount)) {
+      setAlert({
+        description: t('paymentInvoices.instruction.5040.text', {
+          contact_no: CommonUtils.formatSupportNumber(globalConfig?.supportContactNumber || '')
+        }),
+        type: 'info'
+      });
+    } else {
+      setAlert(null);
+    }
+  }, [selectedAccount]);
 
   const handleTabSwitch = (e) => {
     const updatedTabs = tabListData.map((item) => {
@@ -65,6 +79,11 @@ const PaymentsInvoices = () => {
       <BalanceProvider>
         <BalanceDetails />
       </BalanceProvider>
+      {alert && (
+        <div>
+          <Alert description={alert?.description} type={alert?.type} onClose={() => setAlert(null)} />
+        </div>
+      )}
       <div className="MCP-module-body">
         <div id="tablist-container" className="MCP-panel-container">
           <div className="customTab">

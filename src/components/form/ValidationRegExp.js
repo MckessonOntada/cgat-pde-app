@@ -21,3 +21,4 @@ export const FIRST_NAME_REGEX = /^[a-zA-Z\u00C0-\u017F.\-\s]+$/; //can only cont
 export const MIDDLE_NAME_REGEX = /^[a-zA-Z\u00C0-\u017F.\s]+$/; //can only contain alphabets ,space  ".",ancented
 export const ALPHABETIC_WITH_SPECIAL_AND_ACCENTED = /^(?!\s)[\p{L}\p{M}\p{P}\p{S}\p{Zs}0-9]*?(?<!\s)$/u;
 export const DIAGNOSIS_CODE = /^[A-Z][0-9]{2}(?:\.[A-Z0-9]{1,4})?$/;
+export const ALPHA_NUMERIC_WITH_SPACE_HYPHEN_COMMA = /^[A-Za-z0-9 ,\-]+$/;

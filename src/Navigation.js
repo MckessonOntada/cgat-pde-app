@@ -21,6 +21,12 @@ import ForgotPassword from './pages/forgot-password/forgot-password';
 import PublicRoute from './routes/PublicRoute';
 import BroadcastHandler from './BroadcastHandler';
 import { NotificationsProvider } from './mfe/notification-mfe/context/NotificationsContext';
+import Faq from './pages/FooterPages/Faq';
+import TermsToUse from './pages/FooterPages/TermsToUse';
+import PrivacyNotice from './pages/FooterPages/PrivacyNotice';
+import PrivacyNoticePage from './pages/FooterPages/PrivacyNoticeForStateSpecific.';
+import ContactUs from './pages/FooterPages/ContactUs';
+import Success from './pages/FooterPages/ContactUs/Success';
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -122,6 +128,12 @@ const Navigation = () => {
             <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />
             <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
+            <Route path={AppRoutes.pathFaq} element={<Faq />} />
+            <Route path={AppRoutes.pathTermsOfUse} element={<TermsToUse />} />
+            <Route path={AppRoutes.pathPrivacyNotice} element={<PrivacyNotice />} />
+            <Route path={AppRoutes.pathContact} element={<ContactUs />} />
+            <Route path={AppRoutes.pathContactSuccess} element={<Success />} />
+            <Route path={AppRoutes.pathPrivacyNoticeForStateSpecificPrivacyLaws} element={<PrivacyNoticePage />} />
           </Route>
 
           <Route

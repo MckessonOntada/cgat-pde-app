@@ -15,7 +15,8 @@ export const renderTableCheckBox = (
   setSelectedData,
   disableInactive = true,
   allowInactiveSelection = false,
-  disableSelection = false
+  disableSelection = false,
+  maxSelection = null
 ) => {
   const isCheckboxDisabled = () => {
     if (disableSelection) {
@@ -23,7 +24,22 @@ export const renderTableCheckBox = (
     }
     const isHeaderCheckbox = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber;
     const isRowInactive = row.active === false || row.active === 'Inactive' || row.isActive === false || row.isActive === 'Inactive';
-    return (isHeaderCheckbox && !CommonUtils.isNonEmptyArray(data)) || (disableInactive && isRowInactive && !allowInactiveSelection);
+    if (isHeaderCheckbox) {
+      if (!CommonUtils.isNonEmptyArray(data)) return true;
+
+      if (maxSelection !== null && selectedData.length >= maxSelection) {
+        const allSelected = data.every((item) => selectedData.some((selected) => selected[dataKey] === item[dataKey]));
+        return !allSelected;
+      }
+      return false;
+    }
+
+    if (maxSelection !== null) {
+      const isSelected = selectedData.some((item) => item[dataKey] === row[dataKey]);
+      return (selectedData.length >= maxSelection && !isSelected) || (disableInactive && isRowInactive && !allowInactiveSelection);
+    }
+
+    return disableInactive && isRowInactive && !allowInactiveSelection;
   };
 
   const handleRowSelected = () => {
@@ -62,7 +78,9 @@ export const renderTableCheckBox = (
       setSelectedData(cleanedSelection.filter((item) => !currentPageMaterialNumbers.includes(item[dataKey])));
     } else {
       const newSelections = activeRows.filter((ele) => !cleanedSelection.some((item) => item[dataKey] === ele[dataKey]));
-      setSelectedData([...cleanedSelection, ...newSelections]);
+      const availableSlots = maxSelection !== null ? Math.max(0, maxSelection - cleanedSelection.length) : newSelections.length;
+      const selectionsToAdd = newSelections.slice(0, availableSlots);
+      setSelectedData([...cleanedSelection, ...selectionsToAdd]);
     }
   };
 
