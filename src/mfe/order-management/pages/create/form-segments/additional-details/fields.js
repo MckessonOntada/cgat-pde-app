@@ -67,7 +67,7 @@ export const getFormFields = (t, config, setFieldValue) => {
           placeholder: ' ',
           isRequired: therapyConfig.isMRNRequired,
           component: Components['input'],
-          maxLength: 20
+          maxLength: 11
         }
       ]
     );

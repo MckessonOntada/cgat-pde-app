@@ -32,7 +32,7 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
         label: 'orderManagement.patientDetails.inputLabel.mrn',
         placeholder: ' ',
         type: 'input',
-        maxLength: 20,
+        maxLength: 11,
         isRequired: therapyConfig.isMRNRequired
       },
       {

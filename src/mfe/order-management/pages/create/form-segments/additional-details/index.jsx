@@ -193,7 +193,11 @@ function AdditionalDetails() {
             }),
           medicalRecordNumber: Yup.string()
             .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
-
+            .test(
+              'no-leading-trailing-spaces',
+              t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+              (value) => value === undefined || value.trim().length === value.length
+            )
             .when([], {
               is: () => therapyConfig.isMRNRequired,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
