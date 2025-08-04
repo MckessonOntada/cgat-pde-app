@@ -650,7 +650,7 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          locationState,
+          ...locationState, // Vishal To check
           isEdit: isEdit,
           isApprover: isApprover
         }
