@@ -10,7 +10,7 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = (channelType) => [
+export const PatientSections = (channelType, therapyConfig) => [
   {
     rows: [
       {
@@ -77,30 +77,12 @@ export const PatientSections = (channelType) => [
                   placeholder: ' ',
                   type: 'input',
                   maxLength: 20,
-                  isRequired: true
+                  isRequired: therapyConfig.isPIDRequired
                 }
               ]
             : [])
         ]
-      },
-      ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
-        ? [
-            {
-              grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
-              controls: [
-                {
-                  id: 'patient-info-medicalRecordNumber',
-                  name: 'patient.medicalRecordNumber',
-                  label: 'orderManagement.patientDetails.inputLabel.mrn',
-                  placeholder: ' ',
-                  isRequired: false,
-                  type: 'input',
-                  maxLength: 20
-                }
-              ]
-            }
-          ]
-        : [])
+      }
     ]
   }
 ];

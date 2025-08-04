@@ -1,0 +1,5 @@
+export const BUTTON_ACTIONS = {
+  SUBMIT: 'SUBMIT',
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT'
+};

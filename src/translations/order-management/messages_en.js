@@ -30,6 +30,8 @@ export const MessageEn = {
   'captions.btnPrintSummary': 'Print',
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
+  'captions.btnSaveChanges': 'Save Changes',
+  'captions.btnDiscardChanges': 'Discard Changes',
   'captions.btnBackToManageOrder': 'Back to Manage Order',
   'captions.btnBackToOrders': 'Back to Orders',
   'captions.btnBack': 'Back',
@@ -157,7 +159,7 @@ export const MessageEn = {
   'labels.diagnosisCodes': 'Diagnosis codes (ICD10)',
 
   'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
-  'labels.PONumberRequired': 'Please enter the PO Number',
+  'labels.PONumberRequired': 'PO Number is required',
   'labels.PONumberLengthError': 'PO Number should not exceed 35 characters',
   'labels.poNumberMustValid': 'PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',
@@ -355,6 +357,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient Identifier',
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
+  'orderManagement.patientDetails.inputLabel.doa': 'DOA',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.identifier_details': 'Identifiers',
@@ -397,7 +400,7 @@ export const MessageEn = {
   'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
-
+  'message.discardChangesConfirmation': "You're about to discard all unsaved changes to this order. Are you sure you want to continue?",
   'messages.header.confirmation': 'Confirmation!',
   'messages.header.warning': 'Warning!',
 

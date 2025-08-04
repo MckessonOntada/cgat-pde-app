@@ -758,6 +758,15 @@ function removeLeadingZeros(str) {
   return str.replace(/^0+/, '') || '';
 }
 
+const getOrderCost = (originalOrderCost, updatedOrderCost) => {
+  let orderCost = originalOrderCost;
+
+  if (!updatedOrderCost || isNaN(updatedOrderCost)) orderCost = originalOrderCost;
+  else if (parseFloat(orderCost) !== parseFloat(updatedOrderCost)) orderCost = updatedOrderCost;
+
+  return orderCost;
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -816,6 +825,7 @@ const CommonUtils = Object.freeze({
   getUploadErrorMessage,
   getFileNameAndType,
   removeLeadingZeros,
+  getOrderCost,
   formatSupportNumber
 });
 

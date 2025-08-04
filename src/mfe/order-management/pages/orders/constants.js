@@ -33,16 +33,7 @@ export const getTabs = (t) => [
   }
 ];
 
-export const StatusEnum = {
-  IN_DRAFT: 'IN_DRAFT',
-  PENDING: 'PENDING',
-  APPROVAL_PENDING: 'APPROVAL_PENDING',
-  SUBMITTED: 'SUBMITTED',
-  CANCELLED: 'CANCELLED',
-  REJECTED: 'REJECTED'
-};
-
-export const SAPOrderStatusEnum = {
+export const SAP_ORDER_STATUS = {
   OPEN: 'OPEN',
   CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED'

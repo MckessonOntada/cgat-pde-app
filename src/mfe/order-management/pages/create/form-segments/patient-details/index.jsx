@@ -55,6 +55,7 @@ const PatientDetails = () => {
     }
   }, [orderDetails]);
 
+  const { therapyConfig = {} } = orderDetails;
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
@@ -341,7 +342,7 @@ const PatientDetails = () => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig)}
+          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig)}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
           {({ values, dirty, setFieldValue }) => {
@@ -366,7 +367,7 @@ const PatientDetails = () => {
                         }
                       />
 
-                      <FormRenderer sections={PatientSections(channelType)} />
+                      <FormRenderer sections={PatientSections(channelType, therapyConfig)} />
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <>
                           <hr className="form-section-separator" />

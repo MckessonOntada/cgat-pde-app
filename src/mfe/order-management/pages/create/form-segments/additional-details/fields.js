@@ -12,14 +12,14 @@ const getBinaryOptions = (keyPrefix = '') => {
 
 export const getFormFields = (t, config, setFieldValue) => {
   const fields = [];
-  const { isCoiIdRequired, channelType } = config;
+  const { therapyConfig, channelType } = config;
 
-  if (isCoiIdRequired && channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+  if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     fields.push({
       name: 'coiId',
       label: t('labels.coiId'),
       placeholder: ' ',
-      isRequired: config.isCoiIdRequired,
+      isRequired: therapyConfig.isCoiIdRequired,
       component: Components['input'],
       maxLength: 10
     });
@@ -46,8 +46,9 @@ export const getFormFields = (t, config, setFieldValue) => {
         },
         {
           name: 'dateOfAdministration',
-          label: t('labels.provideDateOfAdministration'),
+          label: t('orderManagement.patientDetails.inputLabel.doa'),
           placeholder: ' ',
+          isRequired: therapyConfig.isDOARequired,
           component: Components['datePicker'],
           disableDateTill: new Date(),
           disablePast: true
@@ -56,9 +57,17 @@ export const getFormFields = (t, config, setFieldValue) => {
           name: 'poNumber',
           label: t('labels.providePONumber'),
           placeholder: ' ',
-          isRequired: true,
+          isRequired: therapyConfig.isPORequired,
           component: Components['input'],
           maxLength: 35
+        },
+        {
+          name: 'medicalRecordNumber',
+          label: t('orderManagement.patientDetails.inputLabel.mrn'),
+          placeholder: ' ',
+          isRequired: therapyConfig.isMRNRequired,
+          component: Components['input'],
+          maxLength: 11
         }
       ]
     );
