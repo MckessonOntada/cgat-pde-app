@@ -54,10 +54,18 @@ export const LoginMessagesEN = {
   'forms.placeholder.max_2000_chars': 'Maximum 2000 Characters',
   'forms.validation.textInput': 'Only alphabets, numbers, spaces, commas, and hyphens are allowed.',
   'forms.validation.required.company': 'Please enter the Company Name.',
-  'forms.validation.max.company': 'Company Name must not exceed 50 characters.',
-  'forms.validation.tellUsMoreExceedChar': 'Tell us more must not exceed 2000 characters.',
-  'forms.validation.required.title': 'Please enter the Title.',
-  'forms.validation.max.title': 'Title must not exceed 50 characters.',
+  'forms.validation.max.company': 'Company Name must not exceed 50 characters',
+  'forms.validation.tellUsMoreExceedChar': 'Tell us more must not exceed 2000 characters',
+  'forms.validation.required.title': 'Please enter the Title',
+  'forms.validation.max.title': 'Title must not exceed 50 characters',
   'messages.contactAcknowledgement':
-    'I give McKesson Corporation permission to store and process my information to send me emails. I understand I can withdraw my consent at any time by contacting Coleman.Harris@McKesson.com'
+    'I give McKesson Corporation permission to store and process my information to send me emails. I understand I can withdraw my consent at any time by contacting Coleman.Harris@McKesson.com',
+  'forms.validation.emailRequired': 'Please enter the Work Email',
+  'forms.validation.invalidEmail': 'Please enter a valid email address',
+  'forms.validation.phoneNoRequired': 'Please enter the Phone Number',
+  'forms.validation.invalidPhoneNo': 'Only numeric values are allowed',
+  'forms.validation.firstNameRequired': 'Please enter the First Name',
+  'forms.validation.invalidFirstName': 'Please enter a valid First Name',
+  'forms.validation.lastNameRequired': 'Please enter the Last Name',
+  'forms.validation.invalidLastName': 'Please enter a valid Last Name'
 };

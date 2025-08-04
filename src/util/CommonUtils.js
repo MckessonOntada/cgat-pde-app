@@ -620,8 +620,7 @@ const getNameValidation = (t, { field = '', min = 0, max = 50, required = false,
     .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t(invalidKey || `userManagement.create_user.validation.${field}`))
     .min(min, t(`orgManagement.create_org.validation.${field}_min`))
     .max(max, t(`orgManagement.create_org.validation.${field}_max`));
-
-  return required ? schema.required(t(`userManagement.create_user.validation.${field}_required`)) : schema;
+  return required ? schema.required(t(invalidKey || `userManagement.create_user.validation.${field}_required`)) : schema;
 };
 
 function flattenObject(obj, parentKey = '', result = {}) {

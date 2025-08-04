@@ -54,21 +54,21 @@ const ContactUs = () => {
   const validationSchema = Yup.object({
     firstName: CommonUtils.getNameValidation(t, {
       field: 'first_name',
-      required: true
+      required: true,
+      invalidKey: t('forms.validation.firstNameRequired')
     }),
     lastName: CommonUtils.getNameValidation(t, {
       field: 'last_name',
-      required: true
+      required: true,
+      invalidKey: t('forms.validation.lastNameRequired')
     }),
     title: Yup.string()
-      .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('forms.validation.textInput'))
+      .matches(ALPHA_NUMERIC_WITH_SPACE_HYPHEN_COMMA, t('forms.validation.textInput'))
       .max(50, t('forms.validation.max.title'))
       .required(t('forms.validation.required.title')),
 
-    workEmail: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
-    phoneNumber: Yup.string()
-      .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no'))
-      .required(t('userManagement.create_user.validation.phone_no_required')),
+    workEmail: Yup.string().email(t('forms.validation.invalidEmail')).required(t('forms.validation.emailRequired')),
+    phoneNumber: Yup.string().matches(PHONE_REGEX, t('forms.validation.invalidPhoneNo')).required(t('forms.validation.phoneNoRequired')),
 
     company: Yup.string()
       .matches(ALPHA_NUMERIC_WITH_SPACE_HYPHEN_COMMA, t('forms.validation.textInput'))
@@ -208,7 +208,7 @@ const ContactUs = () => {
                     </div>
                   </div>
                   <div className={'buttonGroup'}>
-                    <Button size="md" variant="secondary" type="button" onClick={() => navigate('/')}>
+                    <Button size="md" variant="secondary" type="button" onClick={() => window.close()}>
                       {t('forms.buttons.cancel')}
                     </Button>
                     <Button type="submit" variant="primary" size="md">
