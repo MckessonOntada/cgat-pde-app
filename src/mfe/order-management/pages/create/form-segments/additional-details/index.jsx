@@ -411,7 +411,8 @@ function AdditionalDetails() {
       return QuestionnaireService.uploadQuestionnaireDocument({
         orderId,
         templateId,
-        file
+        file,
+        channelType
       });
     },
     {

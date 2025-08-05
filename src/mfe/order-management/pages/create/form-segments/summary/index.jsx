@@ -658,7 +658,6 @@ const Summary = () => {
   }, [isRejected, isDeleted, isApprover, status, sapStatus]);
   const allowUpdateBnBAfterSubmit =
     orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && status === ORDER_STATUS.SUBMITTED && sapStatus === SAP_ORDER_STATUS.OPEN;
-  console.log(showControls, allowUpdateBnBAfterSubmit);
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
@@ -1382,54 +1381,57 @@ const Summary = () => {
                     </div>
                   </div>
                 )}
-
-                {additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0 && (
-                  <div className="MCP-CardContainer">
-                    <ModuleHeader
-                      className={styles.panelHeader}
-                      heading={<Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>}
-                      controls={
-                        showControls && (
-                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          </PermittedComponent>
-                        )
-                      }
-                    />
-                    <div className="MCP-module-body">
-                      <div className="summary-question-list">
-                        {configuredQuestionnaires.map((question) => {
-                          return (
-                            <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
-                              <DetailSegment
-                                label={question.text}
-                                value={
-                                  question.value && Array.isArray(question.value) ? (
-                                    <div>
-                                      {question.value.map((val) => (
-                                        <div>{val.replace(/_/g, ' ')}</div>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    question.value
-                                  )
-                                }
-                              />
-                              {question.attachment && (
-                                <AttachmentCard url={question.attachment?.url} fileName={question.attachment.name} fileSize={question.attachment.size} />
-                              )}
-                            </div>
-                          );
-                        })}
+                {additionalDetails.configuredQuestionnaires?.length > 0 && (
+                  <>
+                    {additionalDetails.configuredQuestionnaires[0].sectionsDetails.map((section) => (
+                      <div className="MCP-CardContainer" key={section.sectionName}>
+                        <ModuleHeader
+                          className={styles.panelHeader}
+                          heading={<Heading as="h3">{section.sectionName}</Heading>}
+                          controls={
+                            showControls && (
+                              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                                <Button
+                                  size="md"
+                                  variant="tertiary"
+                                  onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                                  Icon={() => <IconEditField />}>
+                                  {t('captions.btnEdit')}
+                                </Button>
+                              </PermittedComponent>
+                            )
+                          }
+                        />
+                        <div className="MCP-module-body">
+                          <div className="summary-question-list">
+                            {section.questions.map((question) => (
+                              <div
+                                className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2"
+                                key={`${section.sectionName}-${question.text.en}`}>
+                                <DetailSegment
+                                  label={question.text.en}
+                                  value={
+                                    question.value && Array.isArray(question.value) ? (
+                                      <div>
+                                        {question.value.map((val, i) => (
+                                          <div key={i}>{val.replace(/_/g, ' ')}</div>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      question.value
+                                    )
+                                  }
+                                />
+                                {question.document && (
+                                  <AttachmentCard url={question.document.url} fileName={question.document.name} fileSize={question.document.size} />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    ))}
+                  </>
                 )}
 
                 {additionalDetails.additionalDocuments && additionalDetails.additionalDocuments?.length > 0 && (

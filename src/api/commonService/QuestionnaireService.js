@@ -88,8 +88,8 @@ async function getConfiguredQuestionnaire(requestParams) {
 }
 
 async function uploadQuestionnaireDocument(payload) {
-  const { orderId, templateId, file } = payload;
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${templateId}`;
+  const { orderId, templateId, file, channelType } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${templateId}&channelType=${channelType}`;
 
   const res = await HttpResourceService.callRest(
     url,
