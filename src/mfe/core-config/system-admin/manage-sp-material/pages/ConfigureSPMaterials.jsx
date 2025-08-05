@@ -75,7 +75,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
 
   const formFields = [
     {
-      caption: t('manageMaterial.drawer.details.configuration.body.patientIdentifierRequired'),
+      caption: t('manageMaterial.drawer.details.configuration.body.sp.patientIdentifierRequired'),
       id: 'patientIdentifierRequired',
       items: [
         {
@@ -92,7 +92,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
       onChangeValue: (value) => setFormValues((prev) => ({ ...prev, patientIdentifierRequired: value }))
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
+      caption: t('manageMaterial.drawer.configuration.body.sp.coiIdRequired'),
       id: 'coiIdRequired',
       items: [
         {
@@ -109,7 +109,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
       onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.mrnRequired'),
+      caption: t('manageMaterial.drawer.configuration.body.sp.mrnRequired'),
       id: 'mrnRequired',
       items: [
         {

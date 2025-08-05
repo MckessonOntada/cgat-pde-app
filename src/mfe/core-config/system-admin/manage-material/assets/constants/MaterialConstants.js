@@ -124,11 +124,11 @@ export const SPMaterialConfigConstants = [
         value: 'isPatientIdentifierRequired'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.sp.coiIdRequired',
         value: 'isCoiIdRequired'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.sp.mrnRequired',
         value: 'isMRNRequired'
       }
     ],
