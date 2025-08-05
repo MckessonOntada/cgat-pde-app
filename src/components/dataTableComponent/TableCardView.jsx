@@ -1,13 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import DataTable from 'react-data-table-component';
 import styles from './assets/CustomDataTable.module.scss';
-import { Divider, Dropdown, Button, Paginate, Loader } from '@mckesson/mcp-component-library';
+import { Dropdown, Button, Loader } from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
-import { customStylesNormal, customStylesCompact, isEqual } from './assets/DataTableCutomStyle.js';
-// import { Paginate, Loader } from '@mckesson/mcp-component-library';
-// import { Loader } from '@mckesson/mcp-component-library';
-import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants';
+import { isEqual } from './assets/DataTableCutomStyle.js';
 import DataTableEmptyView from './assets/DataTableEmptyView';
 import CommonUtils from '@src/util/CommonUtils';
 import CustomCard from './CustomCards';
@@ -28,7 +23,8 @@ function TableCardView(props) {
     isMultipleRowSelect = false,
     selectedData = [],
     setSelectedData,
-    nestedCardViewKey
+    nestedCardViewKey,
+    maxSelection = null
   } = props;
 
   const [tableSortKey, setTableSortKey] = useState(defaultSortColumn || '');
@@ -37,13 +33,24 @@ function TableCardView(props) {
 
   const selectedAll = useMemo(() => data.every((record) => selectedData.some((selected) => isEqual(selected, record))), [data, selectedData]);
 
+  const isSelectAllDisabled = useMemo(() => {
+    if (maxSelection !== null) {
+      const allSelected = data.every((record) => selectedData.some((selected) => isEqual(selected, record)));
+      return selectedData.length >= maxSelection && !allSelected;
+    }
+    return false;
+  }, [data, selectedData, maxSelection]);
+
   const handleSelectAll = () => {
     if (selectedAll) {
       // Deselect all records of the current page
       setSelectedData((prev) => prev.filter((record) => !data.some((pageRecord) => isEqual(pageRecord, record))));
     } else {
       // Select all records of the current page
-      setSelectedData((prev) => [...prev, ...data.filter((record) => !prev.some((selected) => isEqual(selected, record)))]);
+      const newSelections = data.filter((record) => !selectedData.some((selected) => isEqual(selected, record)));
+      const availableSlots = maxSelection !== null ? Math.max(0, maxSelection - selectedData.length) : newSelections.length;
+      const selectionsToAdd = newSelections.slice(0, availableSlots);
+      setSelectedData((prev) => [...prev, ...selectionsToAdd]);
     }
   };
   const sortableColumns = columns.filter((col) => col.sortable).map((col) => ({ value: col.name, label: col.name }));
@@ -52,9 +59,17 @@ function TableCardView(props) {
     return (
       <div className={styles.actionsBar}>
         {isMultipleRowSelect && (
-          <div onClick={handleSelectAll} className={styles.selectAllText}>
-            {selectedAll ? 'DESELECT ALL' : 'SELECT ALL'}
-          </div>
+          <>
+            {isSelectAllDisabled ? (
+              <span className={`${styles.selectAllText} ${styles.disabled}`}>SELECT ALL</span>
+            ) : (
+              <div
+                onClick={!isSelectAllDisabled ? handleSelectAll : undefined}
+                className={isSelectAllDisabled ? styles.selectAllTextDisabled : styles.selectAllText}>
+                {selectedAll ? 'DESELECT ALL' : 'SELECT ALL'}
+              </div>
+            )}
+          </>
         )}
         <div className={styles.sortByContainer}>
           <span className={styles.sortByText}>Sort by:</span>

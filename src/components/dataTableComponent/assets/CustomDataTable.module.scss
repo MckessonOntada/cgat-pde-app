@@ -96,6 +96,7 @@
   .pagination {
     padding-inline: 0px;
   }
+
   .paginationWrapper {
     margin-top: 0px;
   }
@@ -113,7 +114,7 @@
   border-radius: 8px;
 }
 
-.noDataTable > div:first-of-type {
+.noDataTable>div:first-of-type {
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
 }
@@ -124,13 +125,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   .selectAllText {
     // flex-grow: 1;
     font-size: 14px;
     font-weight: 600;
     color: #007cc1;
     min-width: 80px;
+    cursor: pointer;
+
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.5;
+    }
   }
+
   .sortByContainer {
     display: flex;
     align-items: center;
@@ -146,18 +156,22 @@
   font-size: 12px;
   font-weight: 400;
 }
+
 .dropdownContainer {
   min-width: 50%;
 }
+
 .cardSortIconButton {
   margin-bottom: var(--spacing-01);
   margin-right: var(--spacing-01);
 }
+
 .cardSortIconButtonRotated {
   margin-bottom: var(--spacing-01);
   margin-right: var(--spacing-01);
   transform: rotate(180deg);
 }
+
 .stepperControlsWrap {
   display: flex;
   justify-content: space-between;
