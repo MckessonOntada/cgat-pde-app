@@ -38,14 +38,7 @@ function CatalogDataTable(props) {
         setSelectedCatalogs
       ),
       sortable: false,
-      cell: (row, index) =>
-        renderTableCheckBox(row, data, 'catalog_id', paginationConfig, selectedCatalogs, (newSelection) => {
-          setSelectedCatalogs(newSelection);
-          if (newSelection.length === 1) {
-            setViewCatalog(newSelection[0]?.catalogPrice); // SET from selection
-          }
-        }),
-      // selector: (row) => row.MRN,
+      cell: (row, index) => renderTableCheckBox(row, data, 'catalog_id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
       width: '50px',
       omit: isCustomerCenter
     },
@@ -179,7 +172,7 @@ function CatalogDataTable(props) {
           setOpenConfigurationDraw={setOpenConfigurationDraw}
           selectedCatalogs={selectedCatalogs}
           setSelectedCatalogs={setSelectedCatalogs}
-          viewCatalog={viewCatalog}
+          viewCatalog={selectedCatalogs.length === 1 ? selectedCatalogs[0].catalogPrice : null}
           showAlert={showAlert}
         />
       )}

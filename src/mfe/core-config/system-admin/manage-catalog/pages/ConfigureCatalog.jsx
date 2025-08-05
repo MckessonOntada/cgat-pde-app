@@ -40,7 +40,7 @@ function ConfigureCatalog({
       }
     ]
   });
-
+  const selectedItemsCount = isSPCatalog ? selectedCatalogs.size : selectedCatalogs.length;
   const { t } = useTranslate();
   const requestParams = () => {
     return {
@@ -57,29 +57,35 @@ function ConfigureCatalog({
     isConfigError,
     data: fetchCatalog
   } = useQuery({
-    queryKey: ['catalogConfiguration', viewCatalog?.sapMaterial],
+    queryKey: ['catalogConfiguration', viewCatalog?.sapMaterial, openConfigurationDraw],
     queryFn: async () => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return res.data.catalogConfiguration;
     },
-    enabled: !!viewCatalog ? true : false,
+    enabled: !!viewCatalog && openConfigurationDraw && selectedItemsCount === 1 ? true : false,
     refetchOnWindowFocus: false
   });
-  useEffect(() => {
-    if (openConfigurationDraw && viewCatalog) {
-      fetchCatalog;
-    }
-  }, [openConfigurationDraw]);
 
   useEffect(() => {
     if (fetchCatalog?.steps && Array.isArray(fetchCatalog.steps)) {
-      setInitialValues({
-        steps: fetchCatalog.steps.map((step) => ({
-          stepName: step.stepName || '',
-          description: step.description || ''
-        }))
-      });
+      if (selectedItemsCount === 1) {
+        setInitialValues({
+          steps: fetchCatalog.steps.map((step) => ({
+            stepName: step.stepName || '',
+            description: step.description || ''
+          }))
+        });
+      } else {
+        setInitialValues({
+          steps: [
+            {
+              stepName: '',
+              description: ''
+            }
+          ]
+        });
+      }
     }
   }, [fetchCatalog]);
 

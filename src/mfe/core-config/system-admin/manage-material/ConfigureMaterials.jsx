@@ -23,7 +23,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   });
   const [error, setError] = useState(false);
 
-  const { selectedMaterials, refetch } = useManageMaterial();
+  const { selectedMaterials, setSelectedMaterials, refetch } = useManageMaterial();
   const {
     isLoading,
     isError,
@@ -51,7 +51,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
 
         setFormValues({
           patientInfoRequired: config.isPatientInformationRequired ? 'yes' : 'no',
-          patientIdentifierRequired: config.isPIDRequired ? 'yes' : 'no',
+          patientIdentifierRequired: config.isPatientInformationRequired ? (config.isPIDRequired ? 'yes' : 'no') : '',
           coiIdRequired: config.isCoiIdRequired ? 'yes' : 'no',
           mrnRequired: config.isMRNRequired ? 'yes' : 'no',
           doaRequired: config.isDOARequired ? 'yes' : 'no',
@@ -67,6 +67,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     },
     {
       onSuccess: () => {
+        setSelectedMaterials([]);
         onSuccess();
         onClose();
         refetch();
