@@ -220,14 +220,18 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         isSPCatalog={true}
         sendNotification={sendNotification}
       />
-      <ConfigureCatalog
-        openConfigurationDraw={openConfigurationDraw}
-        setOpenConfigurationDraw={setOpenConfigurationDraw}
-        selectedCatalogs={selectedRowObjects}
-        showAlert={sendNotification}
-        isSPCatalog={true}
-        clearTableSelection={clearTableSelection}
-      />
+      {openConfigurationDraw && (
+        <ConfigureCatalog
+          openConfigurationDraw={openConfigurationDraw}
+          setOpenConfigurationDraw={setOpenConfigurationDraw}
+          selectedCatalogs={selectedRowObjects}
+          setSelectedCatalogs={setSelectedRowObjects}
+          viewCatalog={selectedRowObjects.size === 1 ? selectedRowObjects.values().next().value?.catalogPrice : null}
+          showAlert={sendNotification}
+          isSPCatalog={true}
+          clearTableSelection={clearTableSelection}
+        />
+      )}
     </div>
   );
 };

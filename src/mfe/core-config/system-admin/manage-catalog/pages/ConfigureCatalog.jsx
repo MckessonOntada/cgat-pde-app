@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { Field, FieldArray, Form, Formik } from 'formik';
 import Components from '@src/components/form/Components';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import '../manageCatalog.scss';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import * as Yup from 'yup';
 import { useTranslate } from '@src/translations/useTranslation';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { serializeParams } from '@src/util/ApiUtils';
 
 const validationSchema = Yup.object().shape({
   steps: Yup.array().of(
@@ -26,6 +27,7 @@ function ConfigureCatalog({
   setOpenConfigurationDraw,
   selectedCatalogs,
   setSelectedCatalogs,
+  viewCatalog,
   showAlert,
   isSPCatalog,
   clearTableSelection
@@ -38,8 +40,54 @@ function ConfigureCatalog({
       }
     ]
   });
-
+  const selectedItemsCount = isSPCatalog ? selectedCatalogs.size : selectedCatalogs.length;
   const { t } = useTranslate();
+  const requestParams = () => {
+    return {
+      materialId: viewCatalog.sapMaterial,
+      variant: viewCatalog.variant || '',
+      shipToAccount: viewCatalog.shipToCustomer,
+      soldToAccount: viewCatalog.soldToCustomer,
+      channelType: viewCatalog.channelType
+    };
+  };
+
+  const {
+    isConfigLoading,
+    isConfigError,
+    data: fetchCatalog
+  } = useQuery({
+    queryKey: ['catalogConfiguration', viewCatalog?.sapMaterial, openConfigurationDraw],
+    queryFn: async () => {
+      const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
+      const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
+      return res.data.catalogConfiguration;
+    },
+    enabled: !!viewCatalog && openConfigurationDraw && selectedItemsCount === 1 ? true : false,
+    refetchOnWindowFocus: false
+  });
+
+  useEffect(() => {
+    if (fetchCatalog?.steps && Array.isArray(fetchCatalog.steps)) {
+      if (selectedItemsCount === 1) {
+        setInitialValues({
+          steps: fetchCatalog.steps.map((step) => ({
+            stepName: step.stepName || '',
+            description: step.description || ''
+          }))
+        });
+      } else {
+        setInitialValues({
+          steps: [
+            {
+              stepName: '',
+              description: ''
+            }
+          ]
+        });
+      }
+    }
+  }, [fetchCatalog]);
 
   const { mutate, isLoading, isError, data } = useMutation(
     async (payload) => {
