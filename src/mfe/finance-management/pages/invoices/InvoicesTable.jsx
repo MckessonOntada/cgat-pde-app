@@ -417,6 +417,7 @@ export default function InvoicesTable() {
             <Loader variant="circular" />
           </div>
         }
+        maxSelection={MAX_SELECTION}
       />
     </React.Fragment>
   );
