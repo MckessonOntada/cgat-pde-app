@@ -217,7 +217,6 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         openSPMaterialDetails={openSPMaterialDetails}
         setOpenSPMaterialDetails={setOpenSPMaterialDetails}
         viewSPMaterial={viewSPMaterial}
-        isSPCatalog={true}
         sendNotification={sendNotification}
       />
       {openConfigurationDraw && (
