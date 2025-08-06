@@ -44,7 +44,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   useEffect(() => {
     if (selectedMaterials?.length === 1 && Array.isArray(MaterialData)) {
       const selectedNDC = selectedMaterials[0].ndc;
-      const matchedMaterial = MaterialData.find((item) => item.materialConfig.ndcNumber === selectedNDC);
+      const matchedMaterial = MaterialData.find((item) => item.materialConfig?.ndcNumber === selectedNDC);
 
       if (matchedMaterial) {
         const config = matchedMaterial.materialConfig;
