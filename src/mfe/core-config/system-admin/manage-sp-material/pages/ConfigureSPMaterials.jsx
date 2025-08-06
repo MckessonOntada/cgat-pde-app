@@ -41,9 +41,9 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
     if (spConfig) {
       if (selectedSPMaterial.length === 1) {
         setFormValues({
-          patientIdentifierRequired: spConfig.patientIdentifierRequired ? 'yes' : 'no',
-          coiIdRequired: spConfig.coiIdRequired ? 'yes' : 'no',
-          mrnRequired: spConfig.mrnRequired ? 'yes' : 'no'
+          patientIdentifierRequired: spConfig.isPatientIdentifierRequired ? 'yes' : 'no',
+          coiIdRequired: spConfig.isCoiIdRequired ? 'yes' : 'no',
+          mrnRequired: spConfig.isMRNRequired ? 'yes' : 'no'
         });
       } else {
         setFormValues({
