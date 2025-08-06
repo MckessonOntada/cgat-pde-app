@@ -37,7 +37,10 @@ const PrivacyNotice = () => {
                 <div>
                   <Heading as="h3">Scope</Heading>
                   <p>
-                    This Privacy Notice applies to our use of personal information we collect when your use our Portal https://www.inspirolink.inspirogene.com
+                    This Privacy Notice applies to our use of personal information we collect when your use our Portal{' '}
+                    <a href="https://www.inspirolink.inspirogene.com" target="_blank" rel="noopener noreferrer">
+                      https://www.inspirolink.inspirogene.com
+                    </a>{' '}
                     or in the ordinary course of business. The Privacy Notice does not apply to:
                     <ul>
                       <li>Individual health providers and practices who have separate privacy notices or Notice of Privacy Practices.</li>
@@ -152,7 +155,7 @@ const PrivacyNotice = () => {
                   <p>
                     <Heading as="h4">Access to Personal Information</Heading>
                     Our Portal allows you to directly view and edit information about you through the Portal’s user profile page. Should you need to change
-                    anything please contact us at Privacy@McKesson.com.
+                    anything please contact us at <a href="mailto:Privacy@McKesson.com">Privacy@McKesson.com</a>.
                   </p>
                   <p>
                     <Heading as="h4">Retention</Heading>
@@ -179,7 +182,7 @@ const PrivacyNotice = () => {
                     Any sensitive personal information (e.g., credit card information) is transmitted in an encrypted form using SSL encryption. Even though we
                     have security safeguards, it is impossible to guarantee 100% security. If you have any questions about security or believe that your
                     interactions with us are no longer secure (for example, you feel that your account with us has been compromised), you must notify us
-                    immediately by email at Privacy@McKesson.com.
+                    immediately by email at <a href="mailto:Privacy@McKesson.com">Privacy@McKesson.com</a>.
                   </p>
                   <p>
                     <Heading as="h4">International Use and Cross-Border Data Transfers</Heading>
@@ -204,7 +207,7 @@ const PrivacyNotice = () => {
                   <Heading as="h3">Contact Information</Heading>
                   <p>
                     If you have questions or concerns about this Privacy Notice, our information handling practices, or any other aspect of privacy and security
-                    of your personal information, please contact us at Privacy@McKesson.com.
+                    of your personal information, please contact us at <a href="mailto:Privacy@McKesson.com">Privacy@McKesson.com</a>.
                     <br />
                     You may also write to us at:
                     <br />

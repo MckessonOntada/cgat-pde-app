@@ -213,7 +213,7 @@ const TermsOfUse = () => {
                     <br />
                     Phone: (404) 461-5216
                     <br />
-                    Email:copyrightrequests@mckesson.com
+                    Email: <a href="mailto:copyrightrequests@mckesson.com">copyrightrequests@mckesson.com</a>
                   </p>
                   <p>
                     Please be aware that if you fail to comply with all the requirements of Section 512(c)(3) of the DMCA, your DMCA Notice may not be
