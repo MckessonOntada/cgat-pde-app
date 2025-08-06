@@ -470,14 +470,14 @@ const Summary = () => {
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
         validationSchema = additionalDetailsValidationSchema(t, therapyConfig);
         initialValues = {
-          coiId: '',
-          medicalRecordNumber: '',
-          dateOfAdministration: '',
-          poNumber: ''
+          coiId: additionalDetails.coiId || '',
+          medicalRecordNumber: additionalDetails.medicalRecordNumber || '',
+          dateOfAdministration: additionalDetails.dateOfAdministration || '',
+          poNumber: additionalDetails.poNumber || ''
         };
       } else {
         initialValues = {
-          patientIdentifier: ''
+          patientIdentifier: patient.patientIdentifier
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
