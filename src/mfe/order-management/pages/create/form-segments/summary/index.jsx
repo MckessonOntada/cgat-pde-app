@@ -1383,54 +1383,70 @@ const Summary = () => {
                 )}
                 {additionalDetails.configuredQuestionnaires?.length > 0 && (
                   <>
-                    {additionalDetails.configuredQuestionnaires[0].sectionsDetails.map((section) => (
-                      <div className="MCP-CardContainer" key={section.sectionName}>
-                        <ModuleHeader
-                          className={styles.panelHeader}
-                          heading={<Heading as="h3">{section.sectionName}</Heading>}
-                          controls={
-                            showControls && (
-                              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                <Button
-                                  size="md"
-                                  variant="tertiary"
-                                  onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                                  Icon={() => <IconEditField />}>
-                                  {t('captions.btnEdit')}
-                                </Button>
-                              </PermittedComponent>
-                            )
-                          }
-                        />
-                        <div className="MCP-module-body">
-                          <div className="summary-question-list">
-                            {section.questions.map((question) => (
-                              <div
-                                className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2"
-                                key={`${section.sectionName}-${question.text.en}`}>
-                                <DetailSegment
-                                  label={question.text.en}
-                                  value={
-                                    question.value && Array.isArray(question.value) ? (
-                                      <div>
-                                        {question.value.map((val, i) => (
-                                          <div key={i}>{val.replace(/_/g, ' ')}</div>
-                                        ))}
-                                      </div>
-                                    ) : (
-                                      question.value
-                                    )
-                                  }
-                                />
-                                {question.document && (
-                                  <AttachmentCard url={question.document.url} fileName={question.document.name} fileSize={question.document.size} />
-                                )}
+                    {additionalDetails.configuredQuestionnaires.map((template) => {
+                      const validSections = template.sectionsDetails.filter(
+                        (section) =>
+                          Array.isArray(section.questions) &&
+                          section.questions.some((questions) => questions.value && (Array.isArray(questions.value) ? questions.value.length > 0 : true))
+                      );
+
+                      return validSections.map((section) => {
+                        const validQuestions = section.questions.filter(
+                          (question) => question.value && (Array.isArray(question.value) ? question.value.length > 0 : true)
+                        );
+
+                        return (
+                          <div className="MCP-CardContainer" key={`${template.templateId}-${section.sectionName}`}>
+                            <ModuleHeader
+                              className={styles.panelHeader}
+                              heading={<Heading as="h3">{section.sectionName}</Heading>}
+                              controls={
+                                showControls && (
+                                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                                    <Button
+                                      size="md"
+                                      variant="tertiary"
+                                      onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                                      Icon={IconEditField}>
+                                      {t('captions.btnEdit')}
+                                    </Button>
+                                  </PermittedComponent>
+                                )
+                              }
+                            />
+
+                            <div className="MCP-module-body">
+                              <div className="summary-question-list">
+                                {validQuestions.map((question) => (
+                                  <div
+                                    className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2"
+                                    key={`${section.sectionName}-${question.text.en}`}>
+                                    <DetailSegment
+                                      label={question.text.en}
+                                      value={
+                                        Array.isArray(question.value) ? (
+                                          <div>
+                                            {question.value.map((val, i) => (
+                                              <div key={i}>{val.replace(/_/g, ' ')}</div>
+                                            ))}
+                                          </div>
+                                        ) : (
+                                          question.value ?? '-'
+                                        )
+                                      }
+                                    />
+
+                                    {question.document && (
+                                      <AttachmentCard url={question.document.url} fileName={question.document.name} fileSize={question.document.size} />
+                                    )}
+                                  </div>
+                                ))}
                               </div>
-                            ))}
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    ))}
+                        );
+                      });
+                    })}
                   </>
                 )}
 
