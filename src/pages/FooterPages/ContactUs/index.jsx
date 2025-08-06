@@ -160,7 +160,7 @@ const ContactUs = () => {
                             placeholder=" "
                             isRequired
                             component={Components['input']}
-                            maxLength={100}
+                            maxLength={50}
                           />
                           <Field
                             name="phoneNumber"
