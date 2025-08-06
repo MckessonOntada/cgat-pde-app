@@ -469,15 +469,21 @@ const Summary = () => {
       let validationSchema = null;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
         validationSchema = additionalDetailsValidationSchema(t, therapyConfig);
-        initialValues = {
-          coiId: additionalDetails.coiId || '',
-          medicalRecordNumber: additionalDetails.medicalRecordNumber || '',
-          dateOfAdministration: additionalDetails.dateOfAdministration || '',
-          poNumber: additionalDetails.poNumber || ''
-        };
+        if (CommonUtils.isNonEmptyObject(draftChanges?.additionalDetailsRequestDTO)) {
+          initialValues = {
+            ...draftChanges.additionalDetailsRequestDTO
+          };
+        } else {
+          initialValues = {
+            coiId: additionalDetails.coiId || '',
+            medicalRecordNumber: additionalDetails.medicalRecordNumber || '',
+            dateOfAdministration: additionalDetails.dateOfAdministration || '',
+            poNumber: additionalDetails.poNumber || ''
+          };
+        }
       } else {
         initialValues = {
-          patientIdentifier: patient.patientIdentifier
+          patientIdentifier: draftChanges?.patientIdentifier || patient?.patientIdentifier || ''
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
