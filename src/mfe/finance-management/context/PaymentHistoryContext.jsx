@@ -249,8 +249,8 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const sortData = (newSortConfig) => {
-    let _data = [...[], ...unSlicedData];
-
+    let _data = filteredData ? [...unSlicedData] : [...actualData];
+    filterData(filterConfig, _data);
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
