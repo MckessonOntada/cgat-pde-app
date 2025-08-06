@@ -56,7 +56,7 @@ export default function PaymentHistoryTable() {
       wrap: true,
       cell: (props) => {
         const invoices = props.invoices || [];
-        const billNos = invoices.map((inv) => inv.billNo);
+        const billNos = invoices.map((inv) => inv.billNo).filter((billNo) => billNo?.trim());
         const displayText =
           billNos.length === 1 ? billNos[0] : billNos.length === 2 ? billNos.join(', ') : billNos.length > 2 ? `${billNos[0]}, ${billNos[1]} & more` : '';
         return <EclipsesTextcss str={displayText} tooltip={billNos.join(', ')} maxWidth={230} />;
