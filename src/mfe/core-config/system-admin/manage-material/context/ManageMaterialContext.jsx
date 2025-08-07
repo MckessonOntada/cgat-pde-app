@@ -16,8 +16,7 @@ const RECORDS_PER_PAGE = 8;
 const THERAPIES_PER_SEARCH = 20;
 
 const INITIAL_FILTER_STATE = {
-  searchQuery: '',
-  channelType: 'ALL'
+  searchQuery: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -55,20 +54,13 @@ export const ManageMaterialProvider = ({ children }) => {
   const alertContainerId = 'summary-alert-container';
 
   const getApiUrl = (searchText) => {
-    const channelTypesParam =
-      filterConfig.channelType === 'ALL' || filterConfig.channelType === ''
-        ? `${CHANNEL_TYPE.BUY_AND_BILL},${CHANNEL_TYPE.SPECIALTY_PHARMA}`
-        : filterConfig.channelType === 'SP'
-        ? CHANNEL_TYPE.SPECIALTY_PHARMA
-        : CHANNEL_TYPE.BUY_AND_BILL;
-
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
       ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      channelTypes: channelTypesParam
+      channelTypes: CHANNEL_TYPE.BUY_AND_BILL
     };
     return `${ApiRoutes.GET_ALL_MATERIALS()}?${serializeParams(params)}`;
   };
