@@ -52,24 +52,19 @@ export const PaymentHistoryProvider = ({ children }) => {
   const { t } = useTranslate();
   const [filteredData, setFilteredData] = useState(false);
   const applyFilters = (filters) => {
+    setSortConfig(INITIAL_SORT_STATE);
     const formattedStartDate = filters.dateRange[0]
       ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
       : dayjs().subtract(179, 'day').format('MM/DD/YYYY');
     const formattedEndDate = filters.dateRange[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') : dayjs().format('MM/DD/YYYY');
-
-    const updatedFilters = {
-      ...filterConfig,
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    setFilterConfig((prevFilters) => ({
+      ...prevFilters,
       ...filters,
       dateRange: [formattedStartDate, formattedEndDate]
-    };
-
-    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    setFilterConfig(updatedFilters);
+    }));
     setFilteredData(true);
-
-    filterData(updatedFilters, actualData);
   };
-
   const filterData = async (filters, dataToFilter) => {
     let _data = [...(dataToFilter?.length ? dataToFilter : actualData)];
     let _modifiedData = _data.filter((item) => {
@@ -101,7 +96,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const { isFetching, isError, refetch } = useQuery({
-    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig],
+    queryKey: ['paymentHistorylisting', selectedAccount?.id],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
@@ -135,6 +130,7 @@ export const PaymentHistoryProvider = ({ children }) => {
         setData(_modifiedData.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.paymentHistory);
         setActualData(res.data?.paymentHistory);
+
         setPaginationConfig((state) => ({
           ...state,
           totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
@@ -232,11 +228,12 @@ export const PaymentHistoryProvider = ({ children }) => {
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
       sortData(sortConfig);
     }
-  }, [paginationConfig.pageNumber, sortConfig]);
+  }, [filterConfig, paginationConfig.pageNumber]);
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
+    setSortConfig(INITIAL_SORT_STATE);
     setFilteredData(false);
   };
 
@@ -249,8 +246,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const sortData = (newSortConfig) => {
-    let _data = filteredData ? [...unSlicedData] : [...actualData];
-    filterData(filterConfig, _data);
+    let _data = [...[], ...unSlicedData];
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
