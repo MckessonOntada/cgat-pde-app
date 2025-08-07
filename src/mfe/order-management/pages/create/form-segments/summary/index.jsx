@@ -428,12 +428,16 @@ const Summary = () => {
     if (backToInvoiceListing || backToInvoiceDetails) {
       navigate(-1);
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
-      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      if (!draftChanges || Object.keys(draftChanges).length === 0) {
+        const prevSearch = locationState?.__prevSearch || '';
+        navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      } else {
+        handleOnDiscardChanges('back');
+      }
     }
   };
 
-  const handleOnDiscardChanges = () => {
+  const handleOnDiscardChanges = (action) => {
     const state = {};
     state.title = `${t(t('messages.confirmation.discardheader'))}`;
     state.body = (
@@ -450,8 +454,14 @@ const Summary = () => {
           size="md"
           variant="primary"
           onClick={() => {
-            dispatch(closeModal());
-            setDraftChanges({});
+            if (action === 'back') {
+              dispatch(closeModal());
+              const prevSearch = locationState?.__prevSearch || '';
+              navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+            } else {
+              dispatch(closeModal());
+              setDraftChanges({});
+            }
           }}>
           {t('button.caption.confirm')}
         </Button>
@@ -826,7 +836,7 @@ const Summary = () => {
       <div className="MCP-module-body" ref={contentRef}>
         {!isError && (
           <React.Fragment>
-            {(showControls || allowUpdateBnBAfterSubmit) && (
+            {showControls && (
               <div className="order-stepper-wrapper">
                 <OrderStepper
                   status={orderDetails?.currentStage}
@@ -1069,7 +1079,10 @@ const Summary = () => {
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-4' : 'xl:grid-cols-5'}`}>
                       {!isSpOrder && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+                        <DetailSegment
+                          label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
+                          value={!!draftChanges ? draftChanges?.patientIdentifier || patient?.patientIdentifier || '-' : '-'}
+                        />
                       )}
                       <DetailSegment
                         label={t('labels.patientName')}
@@ -1336,14 +1349,23 @@ const Summary = () => {
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
                     {!isSpOrder && (
                       <>
-                        <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId || '-'} />
+                        <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || additionalDetails?.coiId || '-'} />
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}
                         {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
-                        <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber || '-'} />
-                        <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={additionalDetails?.medicalRecordNumber || '-'} />
+                        <DetailSegment
+                          label={t('labels.poNo')}
+                          value={draftChanges?.additionalDetailsRequestDTO?.poNumber || additionalDetails?.poNumber || '-'}
+                        />
+                        <DetailSegment
+                          label={t('labels.dateOfAdministration')}
+                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || additionalDetails?.dateOfAdministration || '-'}
+                        />
+                        <DetailSegment
+                          label={t('orderManagement.patientDetails.inputLabel.mrn')}
+                          value={draftChanges?.additionalDetailsRequestDTO?.medicalRecordNumber || additionalDetails?.medicalRecordNumber || '-'}
+                        />
                       </>
                     )}
 
