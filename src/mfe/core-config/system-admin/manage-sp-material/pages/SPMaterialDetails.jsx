@@ -118,7 +118,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   const OnDeleteClick = (id, actionId) => {
     const payload = {
       questionnaireId: id,
-      materialOrNdcNumber: viewSPMaterial.materialNumber,
+      materialOrNdcNumber: viewSPMaterial.materialNumber || viewSPMaterial.sapMaterial,
       channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
     };
     const catalogPayload = {

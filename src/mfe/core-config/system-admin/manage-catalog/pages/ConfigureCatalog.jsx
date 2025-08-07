@@ -32,14 +32,8 @@ function ConfigureCatalog({
   isSPCatalog,
   clearTableSelection
 }) {
-  const [initialValues, setInitialValues] = useState({
-    steps: [
-      {
-        stepName: '',
-        description: ''
-      }
-    ]
-  });
+  const DEFAULT_INITIAL_VALUES = { steps: [{ stepName: '', description: '' }] };
+  const [initialValues, setInitialValues] = useState(DEFAULT_INITIAL_VALUES);
   const selectedItemsCount = isSPCatalog ? selectedCatalogs.size : selectedCatalogs.length;
   const { t } = useTranslate();
   const requestParams = () => {
@@ -77,15 +71,10 @@ function ConfigureCatalog({
           }))
         });
       } else {
-        setInitialValues({
-          steps: [
-            {
-              stepName: '',
-              description: ''
-            }
-          ]
-        });
+        setInitialValues(DEFAULT_INITIAL_VALUES);
       }
+    } else {
+      setInitialValues(DEFAULT_INITIAL_VALUES);
     }
   }, [fetchCatalog]);
 
@@ -121,14 +110,7 @@ function ConfigureCatalog({
 
   const handleCloseDrawer = () => {
     setOpenConfigurationDraw((state) => !state);
-    setInitialValues({
-      steps: [
-        {
-          stepName: '',
-          description: ''
-        }
-      ]
-    });
+    setInitialValues(DEFAULT_INITIAL_VALUES);
   };
 
   const onSubmitHandler = (values) => {
