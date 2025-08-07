@@ -26,21 +26,6 @@ function ManageMaterial() {
     }
   ];
 
-  const AdditionalFiltersConfig = useMemo(() => {
-    return [
-      {
-        type: 'dropdown',
-        name: 'channelType',
-        label: t('Distribution Channel'),
-        options: [
-          { label: t('labels.BUY_AND_BILL'), value: t('labels.BUY_AND_BILL') },
-          { label: t('labels.SP'), value: t('labels.SP') },
-          { label: 'Both', value: 'ALL' }
-        ]
-      }
-    ];
-  }, []);
-
   const handleAlertClose = () => {
     setAlert({ type: null, message: null });
   };
@@ -58,7 +43,7 @@ function ManageMaterial() {
         <div className={`${styles.cardContainer}`}>
           <div className={`${styles.cardContainer}`}>
             <CommonFilters
-              additionalFilters={AdditionalFiltersConfig}
+              additionalFilters={[]}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               searchPlaceholder={t('manageMaterial.filters.searchPlaceholder')}
