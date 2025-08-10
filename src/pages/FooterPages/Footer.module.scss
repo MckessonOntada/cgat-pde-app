@@ -1,82 +1,138 @@
 @use "@src/assets/styles/abstracts/mixins";
+
 .contantHeading {
   text-align: center;
   position: relative;
-  padding-bottom: 50px;
+  padding-bottom: var(--spacing-07);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-04);
   align-items: center;
+
   svg {
     @media (max-width: 1400px) {
       position: unset;
     }
+
     position: absolute;
     left: 0px;
     top: 0px;
   }
+
   h1 {
-    font-size: 48px !important;
+    font-size: var(--brand-font-size--49) !important;
   }
+
   h2 {
-    font-size: 24px !important;
-    font-weight: 600;
+    font-size: var(--brand-font-size--24) !important;
+    font-weight: var(--brand-font-weight-600);
   }
+
   a {
-    color: #007cc1;
-    font-size: 20px;
-    padding-top: 8px;
-    font-weight: 700;
+    color: var(--brand-color-primary-blue);
+    font-size: var(--brand-font-size--20);
+    padding-top: var(--spacing-02);
+    font-weight: var(--brand-font-weight-700);
   }
 }
+
 .contentWrapper {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--spacing-05);
+
   div {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-03);
+
     p {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1e394e;
+      font-size: var(--brand-font-size--default);
+      font-weight: var(--brand-font-weight-600);
+      color: var(--brand-color-black);
+
       h4 {
-        font-size: 700 !important;
-        font-size: 18px !important;
+        font-size: var(--brand-font-size--700) !important;
+        font-size: var(--brand-font-size--large) !important;
       }
     }
+
     a {
-      color: #007cc1;
+      color: var(--brand-color-primary-blue);
     }
+
     ul {
-      padding-left: 16px;
+      padding-left: var(--spacing-03);
 
       li {
-        font-weight: 600;
-        font-size: 16px;
-        color: #1e394e;
+        font-weight: var(--brand-font-weight-600);
+        font-size: var(--brand-font-size--default);
+        color: var(--brand-color-black);
       }
     }
+
     h3 {
-      font-size: 22px !important;
+      font-size: var(--brand-font-size--22) !important;
     }
+
     h4 {
-      font-size: 18px !important;
-      font-size: 700 !important;
-      color: #1e394e;
+      font-size: var(--brand-font-size--default) !important;
+      font-size: var(--brand-font-weight-700) !important;
+      color: var(--brand-color-black);
     }
   }
 }
+
 .headingSuccess {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 45px;
+  gap: var(--spacing-07);
 
   p {
-    padding-top: 8px;
-    font-size: 18px;
+    padding-top: var(--spacing-02);
+    font-size: var(--brand-font-size--default);
+  }
+}
+
+.faqSection {
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-06);
+    margin-bottom: var(--spacing-03);
+
+    button {
+      color: var(--brand-color-primary-background);
+
+      svg {
+        color: var(--brand-color-primary-background);
+      }
+    }
+  }
+
+  .faqItem {
+    border-top: 1px solid #ccc;
+    padding: var(--spacing-03) 0px;
+    font-size: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+
+    .heading {
+      padding: 0px var(--spacing-04);
+      display: flex;
+      cursor: pointer;
+      gap: var(--spacing-04);
+      color: var(--brand-color-primary-blue);
+    }
+
+    .content {
+      color: var(--brand-color-black);
+      font-size: var(--brand-font-size--default);
+      font-weight: var(--brand-font-weight-400);
+      padding: 24px 0px 8px 40px;
+      border-top: 0.5px solid #dadada;
+      margin-top: var(--spacing-03);
+    }
   }
 }
