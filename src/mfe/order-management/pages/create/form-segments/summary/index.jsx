@@ -62,6 +62,7 @@ const Summary = () => {
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const hasFetchedInventory = useRef(false);
   const [drawerElement, setDrawerElement] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
   const {
     therapy = {},
@@ -83,6 +84,16 @@ const Summary = () => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+
+  React.useEffect(() => {
+    if (orderDetails?.additionalDetails) {
+      setDraftChanges({
+        additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+        patientIdentifier: orderDetails.patient?.patientIdentifier
+      });
+    }
+  }, [orderDetails]);
+
   React.useEffect(() => {
     if (isError) {
       addNotification({
@@ -428,7 +439,7 @@ const Summary = () => {
     if (backToInvoiceListing || backToInvoiceDetails) {
       navigate(-1);
     } else {
-      if (!draftChanges || Object.keys(draftChanges).length === 0) {
+      if (!isDirty) {
         const prevSearch = locationState?.__prevSearch || '';
         navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
       } else {
@@ -493,7 +504,7 @@ const Summary = () => {
         }
       } else {
         initialValues = {
-          patientIdentifier: draftChanges?.patientIdentifier || patient?.patientIdentifier || ''
+          patientIdentifier: draftChanges?.patientIdentifier || ''
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -502,7 +513,6 @@ const Summary = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            if (!CommonUtils.isNonEmptyObject(values)) return;
             if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
               setDraftChanges((prev) => ({
                 ...prev,
@@ -517,36 +527,41 @@ const Summary = () => {
 
             setDrawerElement(null);
           }}>
-          {({ dirty }) => (
-            <Form>
-              <FloatingDrawer
-                open={true}
-                anchor="right"
-                onClose={() => setDrawerElement(null)}
-                heading={'Additional Details'}
-                controls={
-                  <div className="controls">
-                    <Button
-                      label={t('captions.btnCancel')}
-                      onClick={() => setDrawerElement(null)}
-                      variant="secondary"
-                      size="md"
-                      aria-label={t('captions.cancel')}
-                    />
-                    <Button
-                      label={t('captions.btnSaveChanges')}
-                      type="submit"
-                      variant="primary"
-                      size="md"
-                      aria-label={t('captions.selectAccount')}
-                      disabled={!dirty}
-                    />
-                  </div>
-                }>
-                <FormRenderer sections={formConfig} />
-              </FloatingDrawer>
-            </Form>
-          )}
+          {({ dirty, values }) => {
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [dirty, values]);
+            return (
+              <Form>
+                <FloatingDrawer
+                  open={true}
+                  anchor="right"
+                  onClose={() => setDrawerElement(null)}
+                  heading={'Additional Details'}
+                  controls={
+                    <div className="controls">
+                      <Button
+                        label={t('captions.btnCancel')}
+                        onClick={() => setDrawerElement(null)}
+                        variant="secondary"
+                        size="md"
+                        aria-label={t('captions.cancel')}
+                      />
+                      <Button
+                        label={t('captions.btnSaveChanges')}
+                        type="submit"
+                        variant="primary"
+                        size="md"
+                        aria-label={t('captions.selectAccount')}
+                        disabled={!dirty}
+                      />
+                    </div>
+                  }>
+                  <FormRenderer sections={formConfig} />
+                </FloatingDrawer>
+              </Form>
+            );
+          }}
         </Formik>
       );
     } else {
@@ -652,7 +667,7 @@ const Summary = () => {
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (allowUpdateBnBAfterSubmit) {
-      controls.push(controlDiscardChanges, controlRejectOrder, controlPrintSummary, controlReSubmitOrder);
+      controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
     }
@@ -1081,7 +1096,7 @@ const Summary = () => {
                       {!isSpOrder && (
                         <DetailSegment
                           label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
-                          value={!!draftChanges ? draftChanges?.patientIdentifier || patient?.patientIdentifier || '-' : '-'}
+                          value={!!draftChanges ? draftChanges?.patientIdentifier || '-' : '-'}
                         />
                       )}
                       <DetailSegment
@@ -1349,22 +1364,19 @@ const Summary = () => {
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
                     {!isSpOrder && (
                       <>
-                        <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || additionalDetails?.coiId || '-'} />
+                        <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || '-'} />
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}
                         {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
-                        <DetailSegment
-                          label={t('labels.poNo')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.poNumber || additionalDetails?.poNumber || '-'}
-                        />
+                        <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
                         <DetailSegment
                           label={t('labels.dateOfAdministration')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || additionalDetails?.dateOfAdministration || '-'}
+                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
                         />
                         <DetailSegment
                           label={t('orderManagement.patientDetails.inputLabel.mrn')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.medicalRecordNumber || additionalDetails?.medicalRecordNumber || '-'}
+                          value={draftChanges?.additionalDetailsRequestDTO?.medicalRecordNumber || '-'}
                         />
                       </>
                     )}
