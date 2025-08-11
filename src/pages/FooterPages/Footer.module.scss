@@ -118,11 +118,15 @@
     font-size: var(--brand-font-size--default);
     font-weight: var(--brand-font-weight-600);
 
+    &:last-child {
+      border-bottom: 1px solid #ccc;
+    }
+
     .heading {
       padding: 0px var(--spacing-04);
       display: flex;
       cursor: pointer;
-      gap: var(--spacing-04);
+      gap: var(--spacing-02);
       color: var(--brand-color-primary-blue);
     }
 

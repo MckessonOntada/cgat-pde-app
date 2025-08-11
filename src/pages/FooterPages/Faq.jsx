@@ -4,11 +4,12 @@ import mainLayoutStyles from '@src/assets/styles/MainLayout.module.scss';
 import PrimaryHeader from '@src/components/header/PrimaryHeader';
 import style from './Footer.module.scss';
 import { ReactComponent as McKessonLogo } from '@src/assets/svg/InspiroLink.svg';
-import { ReactComponent as Down } from '@src/assets/svg/arrow-down-1.svg';
-import { ReactComponent as Right } from '@src/assets/svg/arrow-right-1.svg';
+import Down from '@src/assets/svg/arrow-down-1.svg';
+import Right from '@src/assets/svg/arrow-right-1.svg';
 import { ReactComponent as Expend } from '@src/assets/svg/expend.svg';
 import { ReactComponent as Collapse } from '@src/assets/svg/collapse.svg';
-import { IconButton } from '@mckesson/mcp-component-library';
+import { IconButton, Button } from '@mckesson/mcp-component-library';
+
 const data = [
   {
     question: 'What are the features InspiroLink portal offers?',
@@ -44,7 +45,15 @@ function Faq() {
                 <div>
                   <div className={style.buttonGroup}>
                     <IconButton label={'Expand all'} size="lg" iconButton={false} iconPosition="left" textButton={true} Icon={Expend} onClick={expandAll} />
-                    <IconButton label={'Collapse'} size="lg" iconButton={false} iconPosition="left" textButton={true} Icon={Collapse} onClick={collapseAll} />
+                    <IconButton
+                      label={'Collapse all'}
+                      size="lg"
+                      iconButton={false}
+                      iconPosition="left"
+                      textButton={true}
+                      Icon={Collapse}
+                      onClick={collapseAll}
+                    />
                   </div>
 
                   {data.map((item, index) => (
@@ -52,9 +61,13 @@ function Faq() {
                       <div className={style.heading} onClick={() => toggleItem(index)}>
                         <span>
                           {openIndexes.includes(index) ? (
-                            <Down aria-hidden="true" focusable="false" title={'down'} />
+                            <Button variant="tertiary" type="button">
+                              <img src={Down} alt="toggle-icon" />
+                            </Button>
                           ) : (
-                            <Right aria-hidden="true" focusable="false" title={'right'} />
+                            <Button variant="tertiary" type="button">
+                              <img src={Right} alt="toggle-icon" />
+                            </Button>
                           )}
                         </span>
                         <span>{item.question}</span>
