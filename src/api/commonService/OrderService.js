@@ -434,6 +434,14 @@ async function getManufacturerLogo(therapyId) {
   return URL.createObjectURL(blob);
 }
 
+async function finalizeOrder(orderId, payload) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/user/current/review/${orderId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -471,7 +479,8 @@ const OrderService = Object.freeze({
   uploadPayerDocument,
   getBackendOrderId,
   getTherapyDetailsByNDC,
-  getManufacturerLogo
+  getManufacturerLogo,
+  finalizeOrder
 });
 
 export default OrderService;

@@ -15,6 +15,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import UploadOrderDocument from '../pages/create/form-segments/upload-document';
 import Payer from '../pages/create/form-segments/payers-details';
+import FinalizeOrder from '../pages/create/form-segments/finalize-order';
 
 function OrderManagementRoutes() {
   const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
@@ -109,7 +110,7 @@ function OrderManagementRoutes() {
         path={`:orderId/finalize-order`}
         element={
           <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
-            <div>Finalize Order</div>
+            <FinalizeOrder />
           </ProtectedRoute>
         }
       />

@@ -37,10 +37,10 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
 
   const mapPrescriptionDetailsToInitialValues = (data) => ({
     prescriptionDetailsRequired: data?.isPrescriptionDetailsRequired ? 'yes' : 'no',
-    quantity: data?.quantity || '',
-    daysSupply: data?.daysSupply || '',
-    refills: data?.refills || '',
-    instructions: data?.instructions || ''
+    quantity: data?.quantity ?? '',
+    daysSupply: data?.daysSupply ?? '',
+    refills: data?.refills ?? '',
+    instructions: data?.instructions ?? ''
   });
 
   const initialValues = React.useMemo(() => {
@@ -75,12 +75,6 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
   };
 
   const formFields = [
-    {
-      label: t('manageMaterial.drawer.configuration.body.prescriptionDetailsRequired'),
-      type: 'radioGroup',
-      name: 'prescriptionDetailsRequired',
-      isRequired: true
-    },
     {
       label: t('labels.quantity'),
       type: 'input',
