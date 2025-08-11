@@ -178,7 +178,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         secondaryViewControls={
           <div className="controls">
             <Button variant="secondary" onClick={() => setOpenConfigurationDraw(true)}>
-              {t('SPCatalog.Configuration')}
+              {t('manageMaterial.table.header.button.configure')}
             </Button>
             <Button variant="secondary" onClick={handleOnDeLink}>
               {t('provider.btnUnlink')}
