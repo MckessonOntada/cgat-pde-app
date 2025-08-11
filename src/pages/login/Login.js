@@ -130,6 +130,11 @@ const Login = () => {
                     </div>
                     <div class="o-form-fieldset-container" data-se="o-form-fieldset-container"></div>
                   </div>`;
+              navigate('/signup', {
+                state: {
+                  oktaUser: true
+                }
+              });
             } else {
               logout();
             }
