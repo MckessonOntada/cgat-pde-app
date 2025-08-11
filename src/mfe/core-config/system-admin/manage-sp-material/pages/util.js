@@ -17,7 +17,6 @@ export const initialValuesforPrescription = {
 
 export const validationSchemaforPrescription = (t) =>
   Yup.object({
-    prescriptionDetailsRequired: Yup.string().required(t('manageMaterial.drawer.details.configuration.body.prescriptionDetailsRequired')),
     quantity: Yup.string().when('prescriptionDetailsRequired', {
       is: (val) => val === 'yes',
       then: (schema) =>
