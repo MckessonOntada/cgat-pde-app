@@ -46,12 +46,13 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       [QUESTION_TYPE.INPUT]: Components['input'],
       [QUESTION_TYPE.RADIO_BUTTON]: Components['radioGroup'],
       [QUESTION_TYPE.DROPDOWN]: Components['dropdown'],
-      [QUESTION_TYPE.CHECKBOX]: CheckBox
+      [QUESTION_TYPE.CHECKBOX]: CheckBox,
+      [QUESTION_TYPE.DATE_PICKER]: Components['datePicker']
     };
 
     attributes.component = _components[type.toUpperCase()];
 
-    if (type !== QUESTION_TYPE.INPUT) {
+    if (![QUESTION_TYPE.INPUT, QUESTION_TYPE.DATE_PICKER].includes(type)) {
       const options =
         additionalAttributes?.options.map((option, index) => ({
           key: `questionnaire-${id}-language-option-${index}`,

@@ -317,25 +317,28 @@ function AdditionalDetails() {
           }
 
           validationSchemaFields[fieldName] = Yup.object({
-            value:
-              question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
-                ? question.isMandatory
-                  ? Yup.string().required('Value is required')
-                  : Yup.string().nullable()
-                : question.type === QUESTION_TYPE.RADIO_BUTTON
-                ? question.isMandatory
-                  ? Yup.string().required('Select at least one option')
-                  : Yup.string().nullable()
-                : question.type === QUESTION_TYPE.CHECKBOX
-                ? question.isMandatory
-                  ? Yup.array()
-                      .of(Yup.string())
-                      .min(1, 'Select at least one option')
-                      .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
-                  : Yup.array().of(Yup.string()).nullable()
-                : question.isMandatory
-                ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
-                : Yup.array().of(Yup.string()).nullable(),
+            value: [QUESTION_TYPE.INPUT, QUESTION_TYPE.DROPDOWN].includes(question.type)
+              ? question.isMandatory
+                ? Yup.string().required('Value is required')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.RADIO_BUTTON
+              ? question.isMandatory
+                ? Yup.string().required('Select at least one option')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.DATE_PICKER
+              ? question.isMandatory
+                ? Yup.date().required('Date is required')
+                : Yup.date().nullable()
+              : question.type === QUESTION_TYPE.CHECKBOX
+              ? question.isMandatory
+                ? Yup.array()
+                    .of(Yup.string())
+                    .min(1, 'Select at least one option')
+                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                : Yup.array().of(Yup.string()).nullable()
+              : question.isMandatory
+              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+              : Yup.array().of(Yup.string()).nullable(),
 
             document: Yup.object()
               .shape({
