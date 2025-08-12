@@ -466,6 +466,19 @@ const formatPhoneNumber = (phoneNumber) => {
   return phoneNumber;
 };
 
+function formatSupportNumber(number) {
+  const cleaned = ('' + number).replace(/\D/g, '');
+
+  // Format as XXX-XXX-XXXX
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+
+  return number;
+}
+
 const formatTIN = (value) => {
   if (!value || value.length !== 9) return value;
   return `${value.slice(0, 2)}-${value.slice(2)}`;
@@ -607,8 +620,7 @@ const getNameValidation = (t, { field = '', min = 0, max = 50, required = false,
     .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t(invalidKey || `userManagement.create_user.validation.${field}`))
     .min(min, t(`orgManagement.create_org.validation.${field}_min`))
     .max(max, t(`orgManagement.create_org.validation.${field}_max`));
-
-  return required ? schema.required(t(`userManagement.create_user.validation.${field}_required`)) : schema;
+  return required ? schema.required(t(invalidKey || `userManagement.create_user.validation.${field}_required`)) : schema;
 };
 
 function flattenObject(obj, parentKey = '', result = {}) {
@@ -744,6 +756,16 @@ function removeLeadingZeros(str) {
   if (!str) return '';
   return str.replace(/^0+/, '') || '';
 }
+
+const getOrderCost = (originalOrderCost, updatedOrderCost) => {
+  let orderCost = originalOrderCost;
+
+  if (!updatedOrderCost || isNaN(updatedOrderCost)) orderCost = originalOrderCost;
+  else if (parseFloat(orderCost) !== parseFloat(updatedOrderCost)) orderCost = updatedOrderCost;
+
+  return orderCost;
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -801,7 +823,9 @@ const CommonUtils = Object.freeze({
   getDOBMaxDate,
   getUploadErrorMessage,
   getFileNameAndType,
-  removeLeadingZeros
+  removeLeadingZeros,
+  getOrderCost,
+  formatSupportNumber
 });
 
 export default CommonUtils;

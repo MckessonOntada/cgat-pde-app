@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, Loader, MenuList } from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader, MenuList, Tooltip } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
@@ -33,6 +33,7 @@ export default function InvoicesTable() {
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
   const alertContainerId = 'summary-alert-container';
+  const MAX_SELECTION = 20;
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
@@ -107,20 +108,59 @@ export default function InvoicesTable() {
       }
     }
   );
+  const isAllChecked = (data, selectedData, dataKey) => {
+    return data.every((item) => selectedData.some((selected) => selected[dataKey] === item[dataKey]));
+  };
 
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
-        'billNumber',
-        paginationConfig,
-        includeinvoiceData,
-        setIncludeinvoiceData
-      ),
+      name: (() => {
+        const headerCheckbox = renderTableCheckBox(
+          { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+          data,
+          'billNumber',
+          paginationConfig,
+          includeinvoiceData,
+          setIncludeinvoiceData,
+          false,
+          false,
+          false,
+          MAX_SELECTION
+        );
+        const isHeaderDisabled = includeinvoiceData.length >= MAX_SELECTION && !isAllChecked(data, includeinvoiceData, 'billNumber');
+        return isHeaderDisabled ? (
+          <Tooltip body={t('paymentInvoices.invoice.count.text')} placement="right">
+            <span>{headerCheckbox}</span>
+          </Tooltip>
+        ) : (
+          headerCheckbox
+        );
+      })(),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, includeinvoiceData, setIncludeinvoiceData),
+      cell: (row, index) => {
+        const isDisabled = includeinvoiceData.length >= MAX_SELECTION && !includeinvoiceData.some((item) => item.billNumber === row.billNumber);
+        const rowCheckBox = renderTableCheckBox(
+          row,
+          data,
+          'billNumber',
+          paginationConfig,
+          includeinvoiceData,
+          setIncludeinvoiceData,
+          false,
+          false,
+          isDisabled,
+          MAX_SELECTION
+        );
+        return isDisabled ? (
+          <Tooltip body={t('paymentInvoices.invoice.count.text')} placement="right">
+            <span>{rowCheckBox}</span>
+          </Tooltip>
+        ) : (
+          rowCheckBox
+        );
+      },
+
       selector: (row) => row.MRN,
       width: '50px',
       showInMobileHeader: true,
@@ -377,6 +417,7 @@ export default function InvoicesTable() {
             <Loader variant="circular" />
           </div>
         }
+        maxSelection={MAX_SELECTION}
       />
     </React.Fragment>
   );

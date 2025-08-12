@@ -26,6 +26,7 @@ export const ConfigurationMessagesEN = {
   'provider.activationFailure': 'Failed to activate provider. Please try again.',
   'provider.deactivationSuccess': 'Provider has been deactivated successfully.',
   'provider.deactivationFailure': 'Failed to deactivate provider. Please try again.',
+  'provider.resendVerifyLink': 'Verification link successfully sent to the email.',
 
   'provider.name': 'Name',
   'provider.address': 'Address',
@@ -146,6 +147,7 @@ export const ConfigurationMessagesEN = {
   'provider.contextMenu.optionActivate': 'Activate',
   'provider.contextMenu.optionDeactivate': 'Deactivate',
   'provider.contextMenu.optionLinkSPAccount': 'Link SP Accounts',
+  'provider.contextMenu.resendVerifyLink': 'Resend Verify Link',
 
   'serverResponse.provider.dea.conflict': 'A provider with this DEA Number already exists. Please enter a unique DEA Number.',
   'serverResponse.provider.npi.conflict': 'A provider with this NPI Number already exists. Please enter a unique NPI Number.',

@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './CommentPanel.module.scss';
 import { Button, Heading } from '@mckesson/mcp-component-library';
-import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
 import { Formik, Field, Form } from 'formik';
@@ -9,8 +8,8 @@ import * as Yup from 'yup';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import useAlert from '@src/hooks/useAlert';
-import { StatusEnum } from '../../../orders/constants';
 import FloatingDrawer from '@src/components/floating-drawer';
+import { ORDER_STATUS } from '../../../orders/config';
 
 const INITIAL_VALUES = {
   rejectionReason: ''
@@ -39,22 +38,19 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
     }
   }, []);
 
-  const { mutate: rejectOrder } = useMutation(
-    async ({ orderId, rejectionReason }) => await OrderService.rejectOrder(orderId, rejectionReason),
-    {
-      onSuccess: (response) => {
-        const { status } = response;
-        if (status === StatusEnum.REJECTED) {
-          onSuccess(response);
-        } else {
-          showAlert({ description: 'Could not reject order. Please try again later', type: 'error', anchorEl: serverResponseMessage });
-        }
-      },
-      onError: (error) => {
-        showAlert({ description: error.message, type: 'error', anchorEl: serverResponseMessage });
+  const { mutate: rejectOrder } = useMutation(async ({ orderId, rejectionReason }) => await OrderService.rejectOrder(orderId, rejectionReason), {
+    onSuccess: (response) => {
+      const { status } = response;
+      if (status === ORDER_STATUS.REJECTED) {
+        onSuccess(response);
+      } else {
+        showAlert({ description: 'Could not reject order. Please try again later', type: 'error', anchorEl: serverResponseMessage });
       }
+    },
+    onError: (error) => {
+      showAlert({ description: error.message, type: 'error', anchorEl: serverResponseMessage });
     }
-  );
+  });
 
   const handleOnSubmit = (values) => {
     const { rejectionReason } = values;
@@ -84,21 +80,22 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
         return (
           <Form>
             <FloatingDrawer
-              open={openDrawer} 
-              anchor="right" 
+              open={openDrawer}
+              anchor="right"
               onClose={onClose}
               heading={t('captions.lblRejectOrder')}
-              controls={ !readOnly && (
-                <div className='controls'>
-                  <Button onClick={onClose} variant="secondary" size="md">
-                    {t('captions.btnCancel')}
-                  </Button>
-                  <Button type="submit" variant="primary" size="md">
-                    {t('captions.btnRejectOrder')}
-                  </Button>
-                </div>
-              )}
-            >
+              controls={
+                !readOnly && (
+                  <div className="controls">
+                    <Button onClick={onClose} variant="secondary" size="md">
+                      {t('captions.btnCancel')}
+                    </Button>
+                    <Button type="submit" variant="primary" size="md">
+                      {t('captions.btnRejectOrder')}
+                    </Button>
+                  </div>
+                )
+              }>
               <div className={styles.wrapper}>
                 <div className={styles.drawerContent}>
                   <div className={styles.topSect}>
@@ -119,8 +116,6 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
                       </Field>
                     </div>
                   </div>
-
-                  
                 </div>
               </div>
             </FloatingDrawer>

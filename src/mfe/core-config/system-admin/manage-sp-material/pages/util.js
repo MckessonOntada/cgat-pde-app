@@ -17,49 +17,26 @@ export const initialValuesforPrescription = {
 
 export const validationSchemaforPrescription = (t) =>
   Yup.object({
-    quantity: Yup.string().when('prescriptionDetailsRequired', {
-      is: (val) => val === 'yes',
-      then: (schema) =>
-        schema
-          .required(t('manageMaterial.drawer.details.configuration.body.quantityRequired'))
-          .matches(NUMBER_REGEX, `${t('labels.quantity')} ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
-          .test(
-            'min-quantity',
-            `${t('labels.quantity')} ${t('manageMaterial.drawer.details.configuration.body.minValidation')}`,
-            (val) => parseInt(val, 10) > 0
-          ),
-      otherwise: (schema) => schema.notRequired()
-    }),
+    quantity: Yup.string()
+      .required(t('manageMaterial.drawer.details.configuration.body.quantityRequired'))
+      .matches(NUMBER_REGEX, `${t('labels.quantity')} ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
+      .test('min-quantity', `${t('labels.quantity')} ${t('manageMaterial.drawer.details.configuration.body.minValidation')}`, (val) => parseInt(val, 10) > 0),
 
-    daysSupply: Yup.string().when('prescriptionDetailsRequired', {
-      is: (val) => val === 'yes',
-      then: (schema) =>
-        schema
-          .required(t('manageMaterial.drawer.details.configuration.body.daysSupplyRequired'))
-          .matches(NUMBER_REGEX, `${t('labels.daysSupply')}  ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
-          .test(
-            'min-daysSupply',
-            `${t('labels.daysSupply')} ${t('manageMaterial.drawer.details.configuration.body.minValidation')}`,
-            (val) => parseInt(val, 10) > 0
-          ),
-      otherwise: (schema) => schema.notRequired()
-    }),
+    daysSupply: Yup.string()
+      .required(t('manageMaterial.drawer.details.configuration.body.daysSupplyRequired'))
+      .matches(NUMBER_REGEX, `${t('labels.daysSupply')}  ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
+      .test(
+        'min-daysSupply',
+        `${t('labels.daysSupply')} ${t('manageMaterial.drawer.details.configuration.body.minValidation')}`,
+        (val) => parseInt(val, 10) > 0
+      ),
 
-    refills: Yup.string().when('prescriptionDetailsRequired', {
-      is: (val) => val === 'yes',
-      then: (schema) =>
-        schema
-          .required(t('manageMaterial.drawer.details.configuration.body.refillsRequired'))
-          .matches(NUMBER_REGEX, `${t('labels.refills')}  ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
-          .test('min-refills', t('manageMaterial.drawer.details.configuration.body.refillsMinValidation'), (val) => parseInt(val, 10) >= 0),
-      otherwise: (schema) => schema.notRequired()
-    }),
+    refills: Yup.string()
+      .required(t('manageMaterial.drawer.details.configuration.body.refillsRequired'))
+      .matches(NUMBER_REGEX, `${t('labels.refills')}  ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
+      .test('min-refills', t('manageMaterial.drawer.details.configuration.body.refillsMinValidation'), (val) => parseInt(val, 10) >= 0),
 
-    instructions: Yup.string().when('prescriptionDetailsRequired', {
-      is: (val) => val === 'yes',
-      then: (schema) => schema.required(t('manageMaterial.drawer.details.configuration.body.instructionsRequired')),
-      otherwise: (schema) => schema.notRequired()
-    })
+    instructions: Yup.string().required(t('manageMaterial.drawer.details.configuration.body.instructionsRequired'))
   });
 
 export const validationSchemaforConfiguration = (t) =>

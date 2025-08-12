@@ -16,9 +16,8 @@ import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useAccountContext } from '../../context/AccountContext';
-import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
-
 import useAlert from '@src/hooks/useAlert';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
@@ -31,61 +30,7 @@ export default function PendingPaymentTable() {
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
-  const [expandedRows, setExpandedRows] = React.useState([]);
-  const isRowExpanded = (row) => {
-    return expandedRows.includes(row.confirmationNo);
-  };
-  const onExpandToggle = (row) => {
-    setExpandedRows((prev) => (prev.includes(row.confirmationNo) ? prev.filter((name) => name !== row.confirmationNo) : [...prev, row.confirmationNo]));
-  };
-  const ExpandedComponent = ({ data }) => {
-    if (!CommonUtils.isNonEmptyArray(data.invoices)) return null;
-    const expandedData = data.invoices || [];
-
-    return (
-      <div className="expanded-rows">
-        <CustomDataTable
-          data={expandedData}
-          columns={columns}
-          noTableHead
-          noHeader
-          pagination={false}
-          showHeader={false}
-          hideColumnHeader
-          type="expanded"
-          striped
-        />
-      </div>
-    );
-  };
   const columns = [
-    {
-      id: 'checkbox',
-      name: '',
-      selector: (row) => row['confirmationNo'],
-      width: '35px',
-      showInMobileHeader: true,
-      cell: (row) => {
-        if (row.invoices && row.invoices.length > 1) {
-          const expanded = isRowExpanded(row);
-          return (
-            <div className="expand-icon-wrapper" onClick={() => onExpandToggle(row)} aria-label={expanded ? 'Collapse row' : 'Expand row'}>
-              <div className={`row-expansion-icon ${expanded ? 'open' : null}`}>
-                <ArrowAngleRight />
-              </div>
-            </div>
-          );
-        } else if (!('billNo' in row)) {
-          return (
-            <div className="MCP-table-cell radio-button-wrapper">
-              <input data-testid="rowCheckbox" type="checkbox" id={`checkbox${row?.confirmationNumber}`} disabled onChange={() => {}} />
-            </div>
-          );
-        } else {
-          return null;
-        }
-      }
-    },
     {
       id: 'confirmationNo',
       name: t('pendingPayments.table.confirmationNumber'),
@@ -95,68 +40,33 @@ export default function PendingPaymentTable() {
       minWidth: '210px',
       showInMobileHeader: true,
       cardHeader: true,
-      cell: (props) =>
-        props.initiatedBy && (
-          <div className="cellEllipse">
-            <Link
-              style={{
-                color: 'var(--brand-color-primary)',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}
-              to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
-              state={{ ...props }}>
-              {props.confirmationNo}
-            </Link>
-          </div>
-        )
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: 'var(--brand-color-primary)',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
+            state={{ ...props }}>
+            {props.confirmationNo}
+          </Link>
+        </div>
+      )
     },
     {
       id: 'billNo',
       name: t('paymentInvoices.history.table.invoiceNumber'),
       selector: (row) => row.invoices?.[0]?.billNo || '',
-      minWidth: '160px',
+      minWidth: '240px',
       wrap: true,
       cell: (props) => {
-        if (props.initiatedBy) {
-          if (props.invoices?.length > 1) {
-            return <div>Multiple</div>;
-          } else {
-            return (
-              <div className="cellEllipse">
-                {/* <Link
-                  style={{
-                    color: 'var(--brand-color-primary)',
-                    fontWeight: '600',
-                    textDecoration: 'none'
-                  }}
-                  to={`/record/invoices/${props.invoices?.[0]?.billNo}/details`}
-                  state={{
-                    pageType: 'pending-payment-listing'
-                  }}>
-                  {props.invoices?.[0]?.billNo || ''}
-                </Link> */}
-                {props.invoices?.[0]?.billNo || ''}
-              </div>
-            );
-          }
-        } else {
-          return (
-            <div className="cellEllipse">
-              {/* <Link
-                style={{
-                  color: 'var(--brand-color-primary)',
-                  fontWeight: '600',
-                  textDecoration: 'none'
-                }}
-                to={`/record/invoices/${props?.billNo}/details`}
-                state={{
-                  pageType: 'pending-payment-listing'
-                }}>{`${props?.billNo || ''}`}</Link> */}
-              {`${props?.billNo || ''}`}
-            </div>
-          );
-        }
+        const invoices = props.invoices || [];
+        const billNos = invoices.map((inv) => inv.billNo);
+        const displayText =
+          billNos.length === 1 ? billNos[0] : billNos.length === 2 ? billNos.join(', ') : billNos.length > 2 ? `${billNos[0]}, ${billNos[1]} & more` : '';
+        return <EclipsesTextcss str={displayText} tooltip={billNos.join(', ')} maxWidth={230} />;
       }
     },
     {
@@ -166,7 +76,7 @@ export default function PendingPaymentTable() {
       minWidth: '180px',
       sortable: true,
       wrap: true,
-      cell: (props) => props.initiatedBy && <div>{props.paymentMethod}</div>
+      cell: (props) => <div>{props.paymentMethod}</div>
     },
     {
       id: 'paymentInitiationDate',
@@ -175,7 +85,7 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) => props.initiatedBy && CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'payOn',
@@ -193,12 +103,11 @@ export default function PendingPaymentTable() {
       minWidth: '305px',
       sortable: true,
       wrap: true,
-      cell: (props) =>
-        props.initiatedBy && (
-          <div className="cellEllipse align-items-right">
-            <FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" />
-          </div>
-        ),
+      cell: (props) => (
+        <div className="cellEllipse align-items-right">
+          <FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" />
+        </div>
+      ),
       right: true
     },
     {
@@ -209,18 +118,16 @@ export default function PendingPaymentTable() {
       isAction: true,
       cell: (props) => {
         return (
-          props.initiatedBy && (
-            <span>
-              <Button
-                className="cancel-button-control"
-                variant="tertiary"
-                Icon={() => <CrossIcon />}
-                onClick={() => onCancelPaymentClick(props.confirmationNo)}
-                size="md">
-                {t('pendingPayments.table.cancelPayment')}
-              </Button>
-            </span>
-          )
+          <span>
+            <Button
+              className="cancel-button-control"
+              variant="tertiary"
+              Icon={() => <CrossIcon />}
+              onClick={() => onCancelPaymentClick(props.confirmationNo)}
+              size="md">
+              {t('pendingPayments.table.cancelPayment')}
+            </Button>
+          </span>
         );
       }
     }
@@ -300,11 +207,6 @@ export default function PendingPaymentTable() {
         progressPending={isFetching}
         showCardView={showCardView}
         defaultExpandedCardView={false}
-        expandableRows
-        expandableRowExpanded={isRowExpanded}
-        expandableRowsComponent={ExpandedComponent}
-        expandableRowsHideExpander={true}
-        nestedCardViewKey={'invoices'}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

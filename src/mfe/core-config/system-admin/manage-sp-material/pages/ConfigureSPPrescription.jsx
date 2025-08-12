@@ -65,15 +65,6 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
     }
   );
 
-  const getOptions = (keyPrefix = '') => {
-    return ['Yes', 'No'].map((option, index) => ({
-      key: `${keyPrefix}-option-${index}`,
-      label: option,
-      value: option.toLowerCase(),
-      isDisabled: false
-    }));
-  };
-
   const formFields = [
     {
       label: t('labels.quantity'),
@@ -108,7 +99,7 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
   const handleApplyConfiguration = (values) => {
     const configValues = {
       spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
-      isPrescriptionDetailsRequired: values.prescriptionDetailsRequired === 'yes',
+      isPrescriptionDetailsRequired: true,
       quantity: values.quantity,
       daysSupply: values.daysSupply,
       refills: values.refills,
@@ -154,57 +145,27 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
               <div className={styles.wrapper}>
                 <div className={styles.body}>
                   <div className={`${styles.formControls} ${styles.removeBorder}`}>
-                    {formFields
-                      .filter((field) => field.type === 'radioGroup')
-                      .map((field, index) => (
-                        <div className={styles.formField} key={index}>
-                          <Field
-                            id={field.name}
-                            name={field.name}
-                            caption={field.label}
-                            isRequired={field.isRequired}
-                            component={Components[field.type]}
-                            items={getOptions(field.name)}
-                            size="lg"
-                            onChangeValue={(value, form) => {
-                              setFieldValue(field.name, value);
-                              if (value === 'no') {
-                                formFields
-                                  .filter((f) => f.type !== 'radioGroup')
-                                  .forEach((f) => {
-                                    setFieldValue(f.name, '');
-                                    setFieldTouched(f.name, false);
-                                  });
+                    {formFields.map((field, index) => (
+                      <div className={styles.formField} key={index}>
+                        <Field
+                          id={field.name}
+                          name={field.name}
+                          maxLength={field.maxLength}
+                          label={field.label}
+                          placeholder=" "
+                          isRequired={field.isRequired}
+                          component={Components[field.type]}
+                          {...(field.type === 'textarea'
+                            ? {
+                                fieldlabel: field.label,
+                                maxCharHelperText: t('forms.placeholder.max_5000_chars'),
+                                maxCharLimit: 5000,
+                                maxCharWarningLimit: 4900
                               }
-                            }}
-                          />
-                        </div>
-                      ))}
-
-                    {formFields
-                      .filter((field) => field.type !== 'radioGroup')
-                      .map((field, index) => (
-                        <div className={styles.formField} key={index}>
-                          <Field
-                            id={field.name}
-                            name={field.name}
-                            maxLength={field.maxLength}
-                            label={field.label}
-                            placeholder=" "
-                            isRequired={values.prescriptionDetailsRequired === 'yes' ? true : false}
-                            isReadOnly={values.prescriptionDetailsRequired === 'no'}
-                            component={Components[field.type]}
-                            {...(field.type === 'textarea'
-                              ? {
-                                  fieldlabel: field.label,
-                                  maxCharHelperText: t('forms.placeholder.max_5000_chars'),
-                                  maxCharLimit: 5000,
-                                  maxCharWarningLimit: 4900
-                                }
-                              : {})}
-                          />
-                        </div>
-                      ))}
+                            : {})}
+                        />
+                      </div>
+                    ))}
                   </div>
                   {/* )} */}
                 </div>

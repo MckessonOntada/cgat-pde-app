@@ -69,10 +69,13 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
+    const { response: errorResponse = {} } = error;
+    const errorCodes = errorResponse.data?.errorCodes;
     const description = CommonUtils.getUploadErrorMessage(error);
+    const errorKey = handleApiError(error);
     setAlert({
       type: 'error',
-      description: t(errorKey)
+      description: errorCodes ? description : t(errorKey)
     });
     setIsAlertVisible(true);
   };

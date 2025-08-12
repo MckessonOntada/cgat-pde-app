@@ -8,6 +8,8 @@ function ManufacturerLogo({ therapyId }) {
     queryFn: async () => OrderService.getManufacturerLogo(therapyId)
   });
 
+  if (!isFetching && !imageSource) return null;
+
   return (
     <div className={'manufacturer-logo-wrapper'}>
       {isFetching ? (

@@ -58,6 +58,7 @@ const OrderIndex = () => {
   const alertContainerId = 'summary-alert-container';
 
   const handleApplyFilters = (filters) => {
+    params.set('page-no', 1);
     const searchParams = {
       searchQuery: filters.searchQuery
     };

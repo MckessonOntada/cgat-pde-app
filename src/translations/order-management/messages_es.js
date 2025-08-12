@@ -145,6 +145,7 @@ export const MessageEs = {
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
+  'controls.placeholder.reviewTabSearchBox': 'S_Search by Order ID, Patient name, Therapy',
   'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'S_Search by Account name or Number',
   'controls.placeholder.therapySelection.search': 'S_Search Therapy, Number, NDC, Formulation, Dosage...',

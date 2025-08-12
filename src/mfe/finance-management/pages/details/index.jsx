@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAccountContext } from '../../context/AccountContext';
-import { Heading, Button } from '@mckesson/mcp-component-library';
+import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import CommonUtils from '@src/util/CommonUtils';
@@ -28,7 +28,7 @@ import OrderService from '@src/api/commonService/OrderService';
 function Details(props) {
   const { billNumber } = useParams();
   const { type } = props;
-  const { selectedAccount } = useAccountContext();
+  const { selectedAccount, globalConfig } = useAccountContext();
   const { t } = useTranslate();
   const INVOICES_SCREEN = type === PATHS.invoices;
   const CREDITS_SCREEN = type === PATHS.credits;
@@ -43,7 +43,7 @@ function Details(props) {
   const navigate = useNavigate();
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
-
+  const [alert, setAlert] = React.useState(null);
   const { state = {} } = locationParams;
   const pageType = state.pageType;
   const { invoices = [], selectedCredit = [] } = state || {};
@@ -51,6 +51,19 @@ function Details(props) {
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    if (!CommonUtils.enableReviewAndPay(selectedAccount)) {
+      setAlert({
+        description: t('paymentInvoices.instruction.5040.text', {
+          contact_no: CommonUtils.formatSupportNumber(globalConfig?.supportContactNumber || '')
+        }),
+        type: 'info'
+      });
+    } else {
+      setAlert(null);
+    }
+  }, [selectedAccount]);
 
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
@@ -88,25 +101,34 @@ function Details(props) {
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
-          setInvoiceDetails(() => ({
-            ...{},
-            [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
-            [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
-            [t('paymentInvoices.Details.orderID')]: (
-              <Link
-                className="MCP-table-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleOnClickOrderId(res?.data?.orderId);
-                }}>
-                {res?.data?.orderId || '-'}
-              </Link>
-            ),
-            [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
-            [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
-            ['']: <p></p>,
-            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
-          }));
+          INVOICES_SCREEN
+            ? setInvoiceDetails(() => ({
+                ...{},
+                [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
+                [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
+                [t('paymentInvoices.Details.orderID')]: (
+                  <Link
+                    className="MCP-table-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleOnClickOrderId(res?.data?.orderId);
+                    }}>
+                    {res?.data?.orderId || '-'}
+                  </Link>
+                ),
+                [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+                [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
+                ['']: <p></p>,
+                [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
+              }))
+            : setInvoiceDetails(() => ({
+                ...{},
+                [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
+                [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
+                [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
+                [t('paymentInvoices.Details.shipToPoNumber')]: res.data.shipToPONumber,
+                [t('paymentInvoices.Details.PO')]: res.data.poNumber
+              }));
           // bill bates
           updateBillDates(res);
           return res.data;
@@ -134,12 +156,12 @@ function Details(props) {
   const columns = useMemo(
     () => [
       {
-        name: t('paymentInvoices.Details.lineNumber'),
+        name: INVOICES_SCREEN ? t('paymentInvoices.Details.lineNumber') : t('paymentInvoices.Details.Item'),
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
         minWidth: '80px',
-        cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
+        cell: (props) => <div className="cellEllipse">{parseInt(props.item, 10) || '-'}</div>
       },
       {
         name: t('paymentInvoices.Details.therapyId'),
@@ -166,6 +188,17 @@ function Details(props) {
         )
       },
       {
+        name: t('labels.tradeName'),
+        id: 'tradeName',
+        selector: (row) => {
+          row.tradeName;
+        },
+        wrap: true,
+        minWidth: '180px',
+        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>,
+        omit: CREDITS_SCREEN
+      },
+      {
         name: t('paymentInvoices.Details.Quantity'),
         id: 'quantity',
         selector: (row) => {
@@ -173,7 +206,7 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '80px',
-        cell: (props) => <div className="cellEllipse">{props.quantity}</div>
+        cell: (props) => <div className="cellEllipse">{props.quantity || '-'}</div>
       },
       {
         name: t('paymentInvoices.Details.Unit'),
@@ -260,6 +293,13 @@ function Details(props) {
       <Heading>
         {INVOICES_SCREEN ? t('paymentInvoices.Details.Invoice') : t('paymentInvoices.Details.Credit')} - {`#${billNumber}` || '#'}
       </Heading>
+
+      {alert && (
+        <div>
+          <Alert description={alert?.description} type={alert?.type} onClose={() => setAlert(null)} />
+        </div>
+      )}
+
       <div className="details-card-wrapper">
         <div className="details-card-container">
           {CommonUtils.isNonEmptyObject(selectedAccount) && (
@@ -270,6 +310,7 @@ function Details(props) {
           )}
           <DetailsFlexGrid invoiceDetails={invoiceDetails} />
         </div>
+
         {CommonUtils.isNonEmptyObject(billDates) && <DetailMetrics data={billDates} />}
         <div className="datatable-container">
           <CustomDataTable
@@ -305,7 +346,8 @@ function Details(props) {
           />
         </div>
       </div>
-      <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>
+      {INVOICES_SCREEN && <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>}
+
       {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && !pageType && (
         <React.Fragment>
           {CommonUtils.enableReviewAndPay(selectedAccount) && (

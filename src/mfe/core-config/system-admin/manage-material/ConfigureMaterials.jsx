@@ -1,23 +1,65 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import FloatingDrawer from '@src/components/floating-drawer';
 import Alert from '@src/components/cgat-alert/Alert';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import OrderService from '@src/api/commonService/OrderService';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
     patientInfoRequired: '',
-    coiIdRequired: ''
+    patientIdentifierRequired: '',
+    coiIdRequired: '',
+    mrnRequired: '',
+    doaRequired: '',
+    poNumberRequired: ''
   });
   const [error, setError] = useState(false);
 
-  const { selectedMaterials, refetch } = useManageMaterial();
+  const { selectedMaterials, setSelectedMaterials, refetch } = useManageMaterial();
+  const {
+    isLoading,
+    isError,
+    data: MaterialData
+  } = useQuery({
+    queryKey: ['therapyDetailsByTrade'],
+    queryFn: async () => {
+      const result = await OrderService.getTherapyDetailsByTradeName2(
+        selectedMaterials.map((material) => material.tradeName),
+        CHANNEL_TYPE.BUY_AND_BILL
+      );
+      return result;
+    },
+    enabled: !!selectedMaterials && selectedMaterials?.length === 1 ? true : false,
+    refetchOnWindowFocus: false
+  });
+
+  useEffect(() => {
+    if (selectedMaterials?.length === 1 && Array.isArray(MaterialData)) {
+      const selectedNDC = selectedMaterials[0].ndc;
+      const matchedMaterial = MaterialData.find((item) => item.materialConfig?.ndcNumber === selectedNDC);
+
+      if (matchedMaterial) {
+        const config = matchedMaterial.materialConfig;
+
+        setFormValues({
+          patientInfoRequired: config.isPatientInformationRequired ? 'yes' : 'no',
+          patientIdentifierRequired: config.isPatientInformationRequired ? (config.isPIDRequired ? 'yes' : 'no') : '',
+          coiIdRequired: config.isCoiIdRequired ? 'yes' : 'no',
+          mrnRequired: config.isMRNRequired ? 'yes' : 'no',
+          doaRequired: config.isDOARequired ? 'yes' : 'no',
+          poNumberRequired: config.isPORequired ? 'yes' : 'no'
+        });
+      }
+    }
+  }, [MaterialData, selectedMaterials]);
 
   const { mutate: applyConfiguration } = useMutation(
     async (configValues) => {
@@ -25,6 +67,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     },
     {
       onSuccess: () => {
+        setSelectedMaterials([]);
         onSuccess();
         onClose();
         refetch();
@@ -36,54 +79,82 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     }
   );
 
-  const formFields = [
+  const fieldConfigs = [
     {
-      caption: t('manageMaterial.drawer.configuration.body.patientInfoRequired'),
-      id: 'patientInfoRequired',
-      items: [
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.yes'),
-          value: 'yes'
-        },
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.patientInfoRequired,
-      required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, patientInfoRequired: value }))
+      key: 'patientInfoRequired',
+      caption: 'manageMaterial.drawer.configuration.body.patientInfoRequired'
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
-      id: 'coiIdRequired',
-      items: [
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.yes'),
-          value: 'yes'
-        },
-        {
-          isDisabled: false,
-          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.coiIdRequired,
-      required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
+      key: 'patientIdentifierRequired',
+      caption: 'manageMaterial.drawer.configuration.body.patientIdentifier'
+    },
+    {
+      key: 'coiIdRequired',
+      caption: 'manageMaterial.drawer.configuration.body.coiIdRequired'
+    },
+    {
+      key: 'poNumberRequired',
+      caption: 'manageMaterial.drawer.configuration.body.poNumberRequired'
+    },
+    {
+      key: 'mrnRequired',
+      caption: 'manageMaterial.drawer.configuration.body.mrnRequired'
+    },
+    {
+      key: 'doaRequired',
+      caption: 'manageMaterial.drawer.configuration.body.doaRequired'
     }
   ];
-  const isApplyDisabled = formValues.patientInfoRequired && formValues.coiIdRequired;
+
+  const formFields = fieldConfigs.map(({ key, caption }) => {
+    const isPatientInfoNo = formValues.patientInfoRequired === 'no';
+    const isPatientIdentifierField = key === 'patientIdentifierRequired';
+    const isDisabled = isPatientIdentifierField && isPatientInfoNo;
+
+    return {
+      caption: t(caption),
+      id: key,
+      items: [
+        { isDisabled, label: t('label.yes'), value: 'yes' },
+        { isDisabled, label: t('label.no'), value: 'no' }
+      ],
+      value: formValues[key],
+      required: !isPatientIdentifierField || !isPatientInfoNo,
+      onChangeValue: (value) => {
+        if (key === 'patientInfoRequired') {
+          setFormValues((prev) => ({
+            ...prev,
+            [key]: value,
+            ...(value === 'no' ? { patientIdentifierRequired: '' } : {})
+          }));
+        } else {
+          setFormValues((prev) => ({
+            ...prev,
+            [key]: value
+          }));
+        }
+      }
+    };
+  });
+
+  const isApplyDisabled =
+    formValues.patientInfoRequired &&
+    formValues.coiIdRequired &&
+    formValues.mrnRequired &&
+    formValues.poNumberRequired &&
+    formValues.doaRequired &&
+    (formValues.patientInfoRequired === 'yes' ? formValues.patientIdentifierRequired : true);
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
       const configValues = {
         ndcNumbers: selectedMaterials.map((material) => material.ndc),
         isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
-        isCoiIdRequired: formValues.coiIdRequired === 'yes'
+        isCoiIdRequired: formValues.coiIdRequired === 'yes',
+        isDOARequired: formValues.doaRequired === 'yes',
+        isMRNRequired: formValues.mrnRequired === 'yes',
+        isPORequired: formValues.poNumberRequired === 'yes',
+        isPIDRequired: formValues.patientIdentifierRequired === 'yes'
       };
       applyConfiguration(configValues);
     } else {
@@ -126,7 +197,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
               <div className={styles.formField} key={index}>
                 <div className={styles.caption}>
                   <Label className={styles.label}>{field.caption}</Label>
-                  <span className="required"> *</span>
+                  {field.required && <span className="required"> *</span>}
                 </div>
                 <RadioGroup
                   direction="row"

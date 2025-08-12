@@ -67,7 +67,7 @@ async function getManufacturerListSPMaterial(status) {
 
 async function deleteSPMaterialConfig(id) {
   const url = `${ApiRoutes.CONFIGURE_SP_MATERIALS()}/${id}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, {});
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, {});
   if (res.data) {
     return res.data;
   }

@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '@src/mfe/core-config/system-admin/manage-material/assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import FloatingDrawer from '@src/components/floating-drawer';
 import Alert from '@src/components/cgat-alert/Alert';
 import { useSPMaterial } from '../context/SPMaterialContext';
+import MaterialService from '@src/api/commonService/MaterialService';
 
 function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
@@ -19,6 +20,40 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const [error, setError] = useState(false);
 
   const { selectedSPMaterial, refreshData, setSelectedSPMaterial } = useSPMaterial();
+  const requestParams = {
+    channelType: 'SPECIALITY_PHARMA'
+  };
+  const {
+    isLoading,
+    isError,
+    data: spConfig
+  } = useQuery({
+    queryKey: ['SPMaterialdetails', selectedSPMaterial?.[0]?.materialNumber],
+    queryFn: async () => {
+      const result = await MaterialService.getSPMaterialById(selectedSPMaterial?.[0]?.materialNumber, requestParams);
+      return result?.spTherapyConfig;
+    },
+    enabled: Array.isArray(selectedSPMaterial) && selectedSPMaterial.length === 1 && !!selectedSPMaterial[0]?.materialNumber ? true : false,
+    refetchOnWindowFocus: false
+  });
+
+  useEffect(() => {
+    if (spConfig) {
+      if (selectedSPMaterial.length === 1) {
+        setFormValues({
+          patientIdentifierRequired: spConfig.isPatientIdentifierRequired === true ? 'yes' : spConfig.isPatientIdentifierRequired === false ? 'no' : '',
+          coiIdRequired: spConfig.isCoiIdRequired === true ? 'yes' : spConfig.isCoiIdRequired === false ? 'no' : '',
+          mrnRequired: spConfig.isMRNRequired === true ? 'yes' : spConfig.isMRNRequired === false ? 'no' : ''
+        });
+      } else {
+        setFormValues({
+          patientIdentifierRequired: '',
+          coiIdRequired: '',
+          mrnRequired: ''
+        });
+      }
+    }
+  }, [spConfig]);
 
   const { mutate: applyConfiguration } = useMutation(
     async (configValues) => {
@@ -40,7 +75,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
 
   const formFields = [
     {
-      caption: t('manageMaterial.drawer.configuration.body.patientIdentifierRequired'),
+      caption: t('manageMaterial.drawer.details.configuration.body.sp.patientIdentifierRequired'),
       id: 'patientIdentifierRequired',
       items: [
         {
@@ -57,7 +92,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
       onChangeValue: (value) => setFormValues((prev) => ({ ...prev, patientIdentifierRequired: value }))
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
+      caption: t('manageMaterial.drawer.configuration.body.sp.coiIdRequired'),
       id: 'coiIdRequired',
       items: [
         {
@@ -74,7 +109,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
       onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.mrnRequired'),
+      caption: t('manageMaterial.drawer.configuration.body.sp.mrnRequired'),
       id: 'mrnRequired',
       items: [
         {

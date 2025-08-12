@@ -121,6 +121,19 @@ async function submitOrder(orderId, payload) {
   return {};
 }
 
+async function reSubmitOrder(orderId, payload) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/update-submitted-order`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function rejectOrder(orderId, rejectionReason) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to reject the order.');
   if (!rejectionReason) throw new Error('Reason is missing. Reason is required to reject the order.');
@@ -460,6 +473,7 @@ const OrderService = Object.freeze({
   saveAccount,
   getProgramAndChannelConfig,
   submitOrder,
+  reSubmitOrder,
   rejectOrder,
   setOrderAssignToMe,
   setOrderUnassignToMe,

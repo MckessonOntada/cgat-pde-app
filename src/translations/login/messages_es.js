@@ -40,5 +40,17 @@ export const LoginMessagesES = {
   'reset.password.account.settings': 'S_Account Settings',
   'reset.password.login.userInformation': 'S_User Information',
   'reset.password.error': 'S_Failed to sent reset password email',
-  'footer.siteMap': 'Site Map'
+  'footer.siteMap': 'S_Site Map',
+  'footer.heading.contact': 'S_Contact',
+  'footer.contactUs': 'S_Contact us',
+  'footer.help.faq': 'S_FAQ',
+  'footer.termsOfUse': 'S_Terms Of Use',
+  'forms.validation.emailRequired': 'S_Please enter the Work Email',
+  'forms.validation.invalidEmail': 'S_Please enter a valid email address',
+  'forms.validation.phoneNoRequired': 'S_Please enter the Phone Number',
+  'forms.validation.invalidPhoneNo': 'S_Only numeric values are allowed',
+  'forms.validation.firstNameRequired': 'S_Please enter the First Name',
+  'forms.validation.invalidFirstName': 'S_Please enter a valid First Name',
+  'forms.validation.lastNameRequired': 'S_Please enter the Last Name',
+  'forms.validation.invalidLastName': 'S_Please enter a valid Last Name'
 };

@@ -70,7 +70,7 @@ const isReservedUserRole = () => {
 
 const isSystemAdmin = function () {
   const userRole = getUserRole();
-  return userRole === 'System Admin' && getReservedSystemAdminIds().includes(getRoleId());
+  return userRole === 'System Admin';
 };
 
 const isSystemAdminView = function () {

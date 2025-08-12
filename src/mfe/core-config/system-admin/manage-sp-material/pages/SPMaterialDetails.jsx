@@ -118,7 +118,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   const OnDeleteClick = (id, actionId) => {
     const payload = {
       questionnaireId: id,
-      materialOrNdcNumber: viewSPMaterial.materialNumber,
+      materialOrNdcNumber: viewSPMaterial.materialNumber || viewSPMaterial.sapMaterial,
       channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
     };
     const catalogPayload = {
@@ -260,11 +260,13 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   };
 
   const renderConfiguration = (constants, dataSource) =>
-    constants.map(({ label, value, display = true }) => {
-      const configValue = dataSource?.[value];
-      const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
-      return <ConfigItem key={label} label={t(label)} value={displayValue || '-'} display={display} />;
-    });
+    constants
+      .filter(({ value }) => dataSource?.[value] != null)
+      .map(({ label, value, display = true }) => {
+        const configValue = dataSource?.[value];
+        const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
+        return <ConfigItem key={label} label={t(label)} value={displayValue || '-'} display={display} />;
+      });
 
   function ConfigItem({ label, value, display = true }) {
     const { t } = useTranslate();
@@ -288,30 +290,47 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               {!isSPCatalog
                 ? renderDetails(SPMaterialDetailsConstants, 'therapy', isCrosswalk)
                 : renderDetails(SPCatalogDetailsConstants, 'catalogPrice', false)}
-              {data?.spTherapyConfig && (
-                <>
-                  <div className="configure-li">
-                    {SPMaterialConfigConstants?.filter((section) => !section.questionnaire).map((section, index) => (
-                      <React.Fragment key={section.sectionHeading}>
-                        <div className="details-key">{t(section.sectionHeading)}</div>
-                        <div className="details-value">
-                          {section.actions?.map(
-                            (action) =>
-                              isEnableDelete && (
-                                <div onClick={() => OnDeleteClick(data?.therapy.materialNumber, 'materialConfig')}>
-                                  <DeleteIcon />
-                                </div>
-                              )
-                          )}
-                        </div>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                  <div className="details-ul">
-                    {renderConfiguration(SPMaterialConfigConstants.find((section) => section.questionnaire === false)?.sectionData, data?.spTherapyConfig)}
-                  </div>
-                </>
-              )}
+              {data?.spTherapyConfig &&
+                (() => {
+                  const nonQuestionnaireSections = SPMaterialConfigConstants?.filter((section) => !section.questionnaire);
+
+                  const hasAnyData = nonQuestionnaireSections.some((section) =>
+                    section.sectionData?.some((item) => data?.spTherapyConfig?.[item.value] != null)
+                  );
+
+                  if (!hasAnyData) return null; // nothing to render
+
+                  return (
+                    <>
+                      <div className="configure-li">
+                        {nonQuestionnaireSections.map((section) => {
+                          const hasData = section.sectionData?.some((item) => data?.spTherapyConfig?.[item.value] != null);
+                          if (!hasData) return null;
+
+                          return (
+                            <React.Fragment key={section.sectionHeading}>
+                              <div className="details-key">{t(section.sectionHeading)}</div>
+                              <div className="details-value">
+                                {section.actions?.map(
+                                  (action) =>
+                                    isEnableDelete && (
+                                      <div key={action} onClick={() => OnDeleteClick(data?.therapy.materialNumber, 'materialConfig')}>
+                                        <DeleteIcon />
+                                      </div>
+                                    )
+                                )}
+                              </div>
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
+
+                      <div className="details-ul">
+                        {renderConfiguration(SPMaterialConfigConstants.find((section) => section.questionnaire === false)?.sectionData, data?.spTherapyConfig)}
+                      </div>
+                    </>
+                  );
+                })()}
               {data?.catalogConfiguration && (
                 <div className="configure-li">
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>

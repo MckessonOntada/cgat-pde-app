@@ -178,7 +178,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         secondaryViewControls={
           <div className="controls">
             <Button variant="secondary" onClick={() => setOpenConfigurationDraw(true)}>
-              {t('SPCatalog.Configuration')}
+              {t('manageMaterial.table.header.button.configure')}
             </Button>
             <Button variant="secondary" onClick={handleOnDeLink}>
               {t('provider.btnUnlink')}
@@ -217,17 +217,20 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
         openSPMaterialDetails={openSPMaterialDetails}
         setOpenSPMaterialDetails={setOpenSPMaterialDetails}
         viewSPMaterial={viewSPMaterial}
-        isSPCatalog={true}
         sendNotification={sendNotification}
       />
-      <ConfigureCatalog
-        openConfigurationDraw={openConfigurationDraw}
-        setOpenConfigurationDraw={setOpenConfigurationDraw}
-        selectedCatalogs={selectedRowObjects}
-        showAlert={sendNotification}
-        isSPCatalog={true}
-        clearTableSelection={clearTableSelection}
-      />
+      {openConfigurationDraw && (
+        <ConfigureCatalog
+          openConfigurationDraw={openConfigurationDraw}
+          setOpenConfigurationDraw={setOpenConfigurationDraw}
+          selectedCatalogs={selectedRowObjects}
+          setSelectedCatalogs={setSelectedRowObjects}
+          viewCatalog={selectedRowObjects.size === 1 ? selectedRowObjects.values().next().value?.catalogPrice : null}
+          showAlert={sendNotification}
+          isSPCatalog={true}
+          clearTableSelection={clearTableSelection}
+        />
+      )}
     </div>
   );
 };

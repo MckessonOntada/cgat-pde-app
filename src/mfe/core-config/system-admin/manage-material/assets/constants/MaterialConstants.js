@@ -71,10 +71,28 @@ export const ConfigConstants = [
         value: 'isPatientInformationRequired'
       },
       {
+        label: 'manageMaterial.drawer.details.configuration.body.pIdentifierRequired',
+        value: 'isPIDRequired',
+        displayCondition: (details) => details?.isPatientInformationRequired !== false
+      },
+      {
         label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
         value: 'isCoiIdRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.poNumberRequired',
+        value: 'isPORequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
+        value: 'isMRNRequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.doaRequired',
+        value: 'isDOARequired'
       }
     ],
+
     questionnaire: false
   }
 ];
@@ -106,11 +124,11 @@ export const SPMaterialConfigConstants = [
         value: 'isPatientIdentifierRequired'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.sp.coiIdRequired',
         value: 'isCoiIdRequired'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.sp.mrnRequired',
         value: 'isMRNRequired'
       }
     ],
