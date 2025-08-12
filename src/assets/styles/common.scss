@@ -1634,3 +1634,8 @@ div.empty-table-wrapper {
     width: 100%;
   }
 }
+
+div[class*="CheckboxGroup-module"] {
+  font-size: var(--brand-font-size--small);
+  align-items: flex-start;
+}

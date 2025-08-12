@@ -924,5 +924,12 @@ export const MessageEn = {
   'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
   'message.selectDocumentToUpload': 'Please select document to upload.',
   'message.documentUploadSuccess': 'Document has been successfully uploaded for Order ID: {orderId}',
-  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and SP Therapy Info and SAP Therapy Info.'
+  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and SP Therapy Info and SAP Therapy Info.',
+  'label.drugName': 'Drug Name',
+  'label.drugForm': 'Drug Form',
+  'label.quantity': 'Quantity',
+  'label.daysSupply': 'Days Supply',
+  'label.refill': 'Refill',
+  'label.instructions': 'Instructions',
+  'label.acknowledgementInformationIsCorrect': 'All the above information is correct.'
 };

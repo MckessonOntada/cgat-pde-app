@@ -10,103 +10,104 @@ const getBinaryOptions = (keyPrefix = '') => {
   }));
 };
 
-export const getFormFields = (t, config, setFieldValue) => {
+export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
   const fields = [];
   const { therapyConfig, channelType } = config;
 
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    fields.push({
-      name: 'coiId',
-      label: t('labels.coiId'),
-      placeholder: ' ',
-      isRequired: therapyConfig.isCoiIdRequired,
-      component: Components['input'],
-      maxLength: 10
-    });
-  }
-
-  if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     fields.push(
-      ...[
-        {
-          name: 'orderQuantity',
-          label: t('labels.orderQuantity'),
-          placeholder: ' ',
-          isRequired: true,
-          component: Components['input'],
-          maxLength: 2
-        },
-        {
-          name: 'slotNumber',
-          label: t('labels.provideSlotNumber'),
-          placeholder: ' ',
-          isRequired: true,
-          component: Components['input'],
-          maxLength: 20
-        },
-        {
-          name: 'dateOfAdministration',
-          label: t('orderManagement.patientDetails.inputLabel.doa'),
-          placeholder: ' ',
-          isRequired: therapyConfig.isDOARequired,
-          component: Components['datePicker'],
-          disableDateTill: new Date(),
-          disablePast: true
-        },
-        {
-          name: 'poNumber',
-          label: t('labels.providePONumber'),
-          placeholder: ' ',
-          isRequired: therapyConfig.isPORequired,
-          component: Components['input'],
-          maxLength: 35
-        },
-        {
-          name: 'medicalRecordNumber',
-          label: t('orderManagement.patientDetails.inputLabel.mrn'),
-          placeholder: ' ',
-          isRequired: therapyConfig.isMRNRequired,
-          component: Components['input'],
-          maxLength: 11
-        }
-      ]
+      {
+        name: 'coiId',
+        label: t('labels.coiId'),
+        placeholder: ' ',
+        isRequired: therapyConfig.isCoiIdRequired,
+        component: Components['input'],
+        maxLength: 10
+      },
+      {
+        name: 'orderQuantity',
+        label: t('labels.orderQuantity'),
+        placeholder: ' ',
+        isRequired: true,
+        component: Components['input'],
+        maxLength: 2
+      },
+      {
+        name: 'slotNumber',
+        label: t('labels.provideSlotNumber'),
+        placeholder: ' ',
+        isRequired: true,
+        component: Components['input'],
+        maxLength: 20
+      },
+      {
+        name: 'dateOfAdministration',
+        label: t('orderManagement.patientDetails.inputLabel.doa'),
+        placeholder: ' ',
+        isRequired: therapyConfig.isDOARequired,
+        component: Components['datePicker'],
+        disableDateTill: new Date(),
+        disablePast: true
+      },
+      {
+        name: 'poNumber',
+        label: t('labels.providePONumber'),
+        placeholder: ' ',
+        isRequired: therapyConfig.isPORequired,
+        component: Components['input'],
+        maxLength: 35
+      },
+      {
+        name: 'medicalRecordNumber',
+        label: t('orderManagement.patientDetails.inputLabel.mrn'),
+        placeholder: ' ',
+        isRequired: therapyConfig.isMRNRequired,
+        component: Components['input'],
+        maxLength: 11
+      }
     );
-  }
-
-  if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-    fields.push(
-      ...[
-        {
-          name: 'diagnosisCode',
-          label: t('labels.diagnosisCodes'), //t('labels.diagnosisCode'),
-          placeholder: ' ',
-          isRequired: true,
-          component: Components['input'],
-          maxLength: 50
-        }
-      ]
-    );
+  } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
   }
 
   return fields;
 };
 
-export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouched) => {
+export const getClinicalDetailFields = ({ translationFn, therapyConfig, channelType, formValues, setFieldValue, setFieldTouched }) => {
   const fields = [];
-  const { values } = config;
+
+  fields.push(
+    ...[
+      {
+        name: 'diagnosisCode',
+        label: translationFn('labels.diagnosisCodes'),
+        placeholder: ' ',
+        isRequired: true,
+        component: Components['input'], //multiSelectDropdown
+        options: [],
+        layout: {
+          classes: 'grid grid-gap-16 grid-cols-3 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline'
+        }
+      }
+    ]
+  );
+
+  return fields;
+};
+
+export const getPrescriptionDetailsFields = ({ translationFn, therapyConfig, channelType, formValues, setFieldValue, setFieldTouched }) => {
+  const fields = [];
 
   fields.push(
     ...[
       {
         name: 'hasAllergies',
         id: 'allergies-radio-option-group',
-        caption: t('labels.hasAllergiesCaption'),
+        caption: translationFn('labels.hasAllergiesCaption'),
         isRequired: true,
         placeholder: ' ',
         component: Components['radioGroup'],
         onChangeValue: (value, form) => {
           setFieldValue('hasAllergies', value);
-          console.log('form', form);
           if (value !== 'yes') {
             setFieldValue('allergyDetails', '');
             setFieldTouched('allergyDetails', false);
@@ -119,10 +120,10 @@ export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouche
       },
       {
         name: 'allergyDetails',
-        label: t('labels.specifyAllergies'),
-        isRequired: values?.['hasAllergies'] === 'yes',
+        label: translationFn('labels.specifyAllergies'),
+        isRequired: formValues?.['hasAllergies'] === 'yes',
         placeholder: ' ',
-        isDisabled: values && values['hasAllergies'] === 'yes' ? false : true,
+        isDisabled: formValues && formValues['hasAllergies'] === 'yes' ? false : true,
         component: Components['input'],
         layout: {
           classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
@@ -132,4 +133,113 @@ export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouche
   );
 
   return fields;
+};
+export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formValues }) => {
+  return [
+    {
+      rows: [
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
+          controls: [
+            {
+              name: 'drugName',
+              label: translationFn('label.drugName'),
+              isReadOnly: true,
+              type: 'input'
+            },
+            {
+              name: 'drugForm',
+              label: translationFn('label.drugForm'),
+              isReadOnly: true,
+              type: 'input'
+            },
+            {
+              name: 'strength',
+              label: translationFn('labels.therapy.strength'),
+              isReadOnly: true,
+              type: 'input'
+            }
+          ]
+        },
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
+          controls: [
+            {
+              name: 'quantity',
+              label: translationFn('label.quantity'),
+              isReadOnly: true,
+              type: 'input'
+            },
+            {
+              name: 'daysSupply',
+              label: translationFn('label.daysSupply'),
+              isReadOnly: true,
+              type: 'input'
+            },
+            {
+              name: 'refill',
+              label: translationFn('label.refill'),
+              isReadOnly: true,
+              type: 'input'
+            }
+          ]
+        },
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
+          controls: [
+            {
+              name: 'instructions',
+              fieldLabel: translationFn('label.instructions'),
+              isReadOnly: true,
+              type: 'textarea',
+              maxCharHelperText: translationFn('forms.placeholder.max_5000_chars'),
+              maxCharLimit: 5000
+            }
+          ]
+        },
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
+          controls: [
+            {
+              name: 'acknowledgement',
+              fieldLabel: translationFn('label.acknowledgementInformationIsCorrect'),
+              isReadOnly: true,
+              type: 'checkbox',
+              items: [
+                {
+                  isDisabled: false,
+                  isChecked: false,
+                  label: translationFn('label.acknowledgementInformationIsCorrect'),
+                  value: false,
+                  onChange: () => {}
+                }
+              ],
+              size: 'md'
+            }
+          ]
+        },
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
+          controls: [
+            {
+              name: 'terms',
+              fieldLabel: translationFn('labels.terms'),
+              isReadOnly: true,
+              type: 'checkbox',
+              items: [
+                {
+                  isDisabled: false,
+                  isChecked: false,
+                  label: formValues?.['termsAndCondition'],
+                  value: false,
+                  onChange: () => {}
+                }
+              ],
+              size: 'md'
+            }
+          ]
+        }
+      ]
+    }
+  ];
 };

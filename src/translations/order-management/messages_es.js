@@ -656,5 +656,12 @@ export const MessageEs = {
   'invalid.csv.file.headers.missing': 'S_The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'S_Uploaded file is empty. Please upload a valid file.',
   'invalid.csv.file.columns.missing': 'S_The upload file is not valid. Required columns are missing.',
-  'label.policyHolderRelationshipToPatient': 'S_Policy Holder Relationship to Patient'
+  'label.policyHolderRelationshipToPatient': 'S_Policy Holder Relationship to Patient',
+  'label.drugName': 'S_Drug Name',
+  'label.drugForm': 'S_Drug Form',
+  'label.quantity': 'S_Quantity',
+  'label.daysSupply': 'S_Days Supply',
+  'label.refill': 'S_Refill',
+  'label.instructions': 'S_Instructions',
+  'label.acknowledgementInformationIsCorrect': 'S_All the above information is correct.'
 };
