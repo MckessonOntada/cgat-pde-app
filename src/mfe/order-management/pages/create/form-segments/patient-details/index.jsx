@@ -31,6 +31,7 @@ import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
+import { ORDER_STATUS } from '../../../orders/config';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -45,6 +46,13 @@ const PatientDetails = () => {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+
+  React.useEffect(() => {
+    const { paporder: isPapOrder } = orderDetails || {};
+    const prevSearch = locationState.__prevSearch || '';
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+  }, [orderDetails]);
 
   React.useEffect(() => {
     if (orderDetails.channelType) {
@@ -104,12 +112,6 @@ const PatientDetails = () => {
         providerId: orderDetails.provider?.id
       });
     }
-  }, [orderDetails]);
-
-  React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   }, [orderDetails]);
 
   useEffect(() => {
