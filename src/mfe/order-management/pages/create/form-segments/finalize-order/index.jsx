@@ -26,8 +26,8 @@ function FinalizeOrder() {
   const initialValues = {
     ...getPrescriptionAndSignatureInitialValues,
     ...orderDetails.spTherapyConfig,
-    drugName: orderDetails?.therapy?.tradeName || '', //To be changed as per the keys
-    drugForm: orderDetails?.therapy?.productForm || '', //To be changed as per the keys
+    drugName: '', //To be changed as per the keys
+    drugForm: '', //To be changed as per the keys
     strength: `${orderDetails?.therapy?.strength || ''} ${orderDetails?.therapy?.dosage || ''}`.trim()
   };
 

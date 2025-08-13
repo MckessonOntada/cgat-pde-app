@@ -936,7 +936,7 @@ export const MessageEn = {
   'labels.validationMessages.signedBy': 'Signed By is required.',
   'labels.validationMessages.signedBy_invalid': 'Please enter a valid Signed By.',
 
-  'labels.validation.consent': 'Please confirm to finalise the Order.',
+  'labels.validation.consent': 'Please acknowledge to finalise the Order.',
   'labels.validationMessages.signedBy_invalid': 'Please enter a valid Signed By.',
   'labels.drugName': 'Drug Name',
   'labels.drugForm': 'Drug Form',
