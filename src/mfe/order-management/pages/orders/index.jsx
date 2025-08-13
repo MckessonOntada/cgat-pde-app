@@ -11,7 +11,6 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import PermittedComponent from '@src/components/permitted-component';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import useAlert from '@src/hooks/useAlert';
-import { handleApiError } from '@src/util/ApiUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { getTableColumns } from './TableColumns';
@@ -23,6 +22,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { DateUtils } from '@src/util/DateUtil';
 import CommonUtils from '@src/util/CommonUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const OrderIndex = () => {
   const navigate = useNavigate();
@@ -100,6 +100,8 @@ const OrderIndex = () => {
   };
 
   const handleOnTabChange = (newTab) => {
+    if (activeTab.id === newTab.id) return;
+
     params.set('tab', newTab.id);
     params.set('page-no', 1);
     params.set('sort-by', 'createdAt');
@@ -116,7 +118,7 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    const tabId = params.get('tab') || ORDER_TABS.SUBMITTED_BUY_AND_BILL;
+    const tabId = params.get('tab') || (isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
     setTabList(newTabs);
   }, [location.search]);
@@ -182,40 +184,64 @@ const OrderIndex = () => {
   const currentTab = tabList.find((tab) => tab?.['isActiveTab']) || {};
 
   const additionalFiltersConfig = useMemo(() => {
-    let filters = [];
+    const filters = [];
+    let searchPlaceholder = 'controls.placeholder.searchOrderPlaceholder';
 
-    if (config.tab === ORDER_TABS.PENDING_SUBMISSION) {
-      const options = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
-      filters.push({
-        type: 'dropdown',
-        name: 'status',
-        label: t('userManagement.table.status'),
-        options: options.map((opt) => ({ label: t(`labels.caption.${opt}`), value: opt }))
-      });
-    }
+    switch (config.tab) {
+      case ORDER_TABS.SUBMITTED_SP:
+        searchPlaceholder = 'controls.placeholder.searchSPOrderPlaceholder';
+        break;
 
-    if ([ORDER_TABS.PENDING_APPROVAL, ORDER_TABS.PENDING_SUBMISSION].includes(config.tab)) {
-      const orderTypes = ['all', ORDER_TABS.SUBMITTED_BUY_AND_BILL, ORDER_TABS.SUBMITTED_SP];
-      filters.push({
-        type: 'dropdown',
-        name: 'orderType',
-        label: t('labels.orderType'),
-        options: orderTypes.map((opt) => ({ label: t(`labels.caption.${opt}`), value: opt }))
-      });
+      case ORDER_TABS.REVIEW:
+        searchPlaceholder = 'controls.placeholder.reviewTabSearchBox';
+        return { availableFilters: [], searchPlaceholder };
 
-      if (config.view === ORDER_VIEW.ALL_ORDERS && config.tab === ORDER_TABS.PENDING_APPROVAL) {
+      case ORDER_TABS.PENDING_SUBMISSION: {
+        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
         filters.push({
-          type: 'multiSelectDropdown',
-          name: 'assigneeIds',
-          isMultiSelect: true,
-          placeholder: t('placeholder.selectAssignee'),
-          label: t('labels.assignee'),
-          options: assigneeList.map((t) => ({ ...t, isChecked: assigneeIdsFromURL.includes(t.value) })),
-          variant: 'async',
-          onSearch: searchAssigneeByTest,
-          recordsCountToEnableSearch: 2
+          type: 'dropdown',
+          name: 'status',
+          label: t('userManagement.table.status'),
+          options: statusOptions.map((opt) => ({
+            label: t(`labels.caption.${opt}`),
+            value: opt
+          }))
         });
       }
+
+      case ORDER_TABS.PENDING_APPROVAL: {
+        const orderTypes = ['all', ORDER_TABS.SUBMITTED_BUY_AND_BILL, ORDER_TABS.SUBMITTED_SP];
+        filters.push({
+          type: 'dropdown',
+          name: 'orderType',
+          label: t('labels.orderType'),
+          options: orderTypes.map((opt) => ({
+            label: t(`labels.caption.${opt}`),
+            value: opt
+          }))
+        });
+
+        if (config.tab === ORDER_TABS.PENDING_APPROVAL && config.view === ORDER_VIEW.ALL_ORDERS) {
+          filters.push({
+            type: 'multiSelectDropdown',
+            name: 'assigneeIds',
+            isMultiSelect: true,
+            placeholder: t('placeholder.selectAssignee'),
+            label: t('labels.assignee'),
+            options: assigneeList.map((t) => ({
+              ...t,
+              isChecked: assigneeIdsFromURL.includes(t.value)
+            })),
+            variant: 'async',
+            onSearch: searchAssigneeByTest,
+            recordsCountToEnableSearch: 2
+          });
+        }
+        break;
+      }
+
+      default:
+        break;
     }
 
     if (config.tab !== ORDER_TABS.PENDING_APPROVAL) {
@@ -223,7 +249,10 @@ const OrderIndex = () => {
         type: 'dropdown',
         name: 'orderDate',
         label: 'Order Date',
-        options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({ label: t(`labels.caption.${opt.value}`), value: opt.value })),
+        options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
+          label: t(`labels.caption.${opt.value}`),
+          value: opt.value
+        })),
         linkedFilters: (value) =>
           value === 'customRange'
             ? [
@@ -239,8 +268,12 @@ const OrderIndex = () => {
             : []
       });
     }
-    return filters;
-  }, [activeTab, assigneeList, location]);
+
+    return {
+      availableFilters: filters,
+      searchPlaceholder
+    };
+  }, [location.search, assigneeList, assigneeIdsFromURL]);
 
   const initialFilterData = React.useMemo(() => {
     if (filterParams) {
@@ -265,6 +298,8 @@ const OrderIndex = () => {
 
     return false;
   }, [location.search]);
+
+  const isPhysician = AuthUtils.isPhysician();
 
   return (
     <div className="MCP-module-wrapper">
@@ -303,11 +338,9 @@ const OrderIndex = () => {
               <CommonFilters
                 onApplyFilters={handleApplyFilters}
                 onClearFilters={handleClearFilters}
-                additionalFilters={additionalFiltersConfig}
+                additionalFilters={additionalFiltersConfig.availableFilters}
                 onLoadExpanded={isCardExpanded}
-                searchPlaceholder={t(
-                  config.tab === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
-                )}
+                searchPlaceholder={t(additionalFiltersConfig.searchPlaceholder)}
                 initialData={initialFilterData}
               />
             </div>
@@ -316,15 +349,17 @@ const OrderIndex = () => {
               <ModuleHeader
                 heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
                 controls={
-                  <div>
-                    <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
-                      {toggleFilters.map((filter, index) => (
-                        <Tab key={index} value={filter}>
-                          {t(`labels.orderView.${filter}`)}
-                        </Tab>
-                      ))}
-                    </TabGroup>
-                  </div>
+                  CommonUtils.isNonEmptyArray(toggleFilters) && (
+                    <div>
+                      <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
+                        {toggleFilters.map((filter, index) => (
+                          <Tab key={index} value={filter}>
+                            {t(`labels.orderView.${filter}`)}
+                          </Tab>
+                        ))}
+                      </TabGroup>
+                    </div>
+                  )
                 }
               />
 

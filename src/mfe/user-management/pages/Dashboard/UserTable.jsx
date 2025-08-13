@@ -186,7 +186,7 @@ function UserTable({ onActionSuccess }) {
                 },
                 value: row.id,
                 isChecked: selectedRows === row.id,
-                isDisabled: !isSystemAdmin && !row?.isActive // !row.isActive
+                isDisabled: (!isSystemAdmin && !row?.isActive) || AuthUtils.isPhysician(row?.role?.name, row?.role?.id)
               }
             ]}
           />

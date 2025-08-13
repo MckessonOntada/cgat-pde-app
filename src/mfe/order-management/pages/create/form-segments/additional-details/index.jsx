@@ -31,6 +31,7 @@ import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
+import { ORDER_STATUS } from '../../../orders/config';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -112,6 +113,13 @@ function AdditionalDetails() {
     null,
     null
   );
+
+  React.useEffect(() => {
+    const { paporder: isPapOrder } = orderDetails || {};
+    const prevSearch = locationState.__prevSearch || '';
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+  }, [orderDetails]);
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
@@ -262,12 +270,6 @@ function AdditionalDetails() {
     }));
     setValidationSchema(finalValidationSchema);
   }, [variantsData, questionnaireTemplateConfig, channelType]);
-
-  React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
-  }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
@@ -779,7 +781,6 @@ function AdditionalDetails() {
           }}>
           {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
             useEffect(() => {
-              console.log(errors);
               setIsDirty(dirty);
               setStoredValue(values);
             }, [dirty, values]);

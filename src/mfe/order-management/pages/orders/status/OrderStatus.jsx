@@ -78,6 +78,8 @@ const OrderStatus = () => {
                         ? isApprover
                           ? 'messages.orderApprovalSuccess'
                           : 'messages.orderSuccess'
+                        : orderStatus === 'REVIEW'
+                        ? 'messages.orderSuccessReviewPending'
                         : 'messages.orderSuccessApprovalPending'
                     )}
                   </p>
