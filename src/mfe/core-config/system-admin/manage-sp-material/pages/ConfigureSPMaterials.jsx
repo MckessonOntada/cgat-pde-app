@@ -40,10 +40,10 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   useEffect(() => {
     if (spConfig) {
       if (selectedSPMaterial.length === 1) {
-        setFormValues({
+        setFormValues({ 
           patientIdentifierRequired: spConfig.isPatientIdentifierRequired === true ? 'yes' : spConfig.isPatientIdentifierRequired === false ? 'no' : '',
           coiIdRequired: spConfig.isCoiIdRequired === true ? 'yes' : spConfig.isCoiIdRequired === false ? 'no' : '',
-          mrnRequired: spConfig.isMRNRequired === true ? 'yes' : spConfig.isMRNRequired === false ? 'no' : ''
+          mrnRequired: spConfig.isMRNRequired === true ? 'yes' : spConfig.isMRNRequired === false ? 'no' : '' 
         });
       } else {
         setFormValues({

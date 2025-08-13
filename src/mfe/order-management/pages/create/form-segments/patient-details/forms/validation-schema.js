@@ -136,7 +136,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
                 (value) => value === undefined || value.trim().length === value.length
               ),
           otherwise: (schema) => schema.notRequired()
-        }),
+        }), 
       medicalRecordNumber: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
         .when([], {
@@ -150,7 +150,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
                 (value) => value === undefined || value.trim().length === value.length
               ),
           otherwise: (schema) => schema.notRequired()
-        }),
+        }), 
       coiId: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
         .max(10, t('labels.COI_IdExceedDigits'))

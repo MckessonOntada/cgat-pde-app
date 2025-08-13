@@ -33,6 +33,7 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.details.body.materialNumber': 'S_Material Number',
   'manageMaterial.drawer.details.body.materialDescription': 'S_Material Description',
   'manageMaterial.drawer.details.body.ndc': 'S_NDC',
+
   'manageMaterial.drawer.details.body.strength': 'S_Strength',
   'manageMaterial.drawer.details.body.dosage': 'S_Dosage',
   'manageMaterial.drawer.details.body.sellingUnitCode': 'S_Selling Unit Code',
@@ -62,12 +63,12 @@ export const SystemConfigurationES = {
 
   'manageMaterial.drawer.configuration.heading': 'S_Material Configuration',
   // Configuration Drawer Body
-
   'manageMaterial.drawer.configuration.body.patientInfoRequired': 'S_Patient Information Required',
   'manageMaterial.drawer.configuration.body.coiIdRequired': 'S_Make COI ID Mandatory',
   'manageMaterial.drawer.configuration.body.mrnRequired': 'S_Make MRN Mandatory',
   'manageMaterial.drawer.configuration.body.sp.coiIdRequired': 'S_COI ID Required?',
   'manageMaterial.drawer.configuration.body.sp.mrnRequired': 'S_MRN Required?',
+
   'manageMaterial.drawer.configuration.body.poNumberRequired': 'S_Make PO Number Mandatory',
   'manageMaterial.drawer.configuration.body.doaRequired': 'S_Make DOA Mandatory',
   'manageMaterial.drawer.configuration.body.patientIdentifier': 'S_Make Patient Identifier Mandatory',

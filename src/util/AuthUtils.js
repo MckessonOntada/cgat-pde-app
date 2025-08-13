@@ -41,7 +41,7 @@ const setPracticeId = function (practiceId) {
 const removePracticeId = function () {
   return sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
 };
-
+ 
 const getRoleId = () => {
   return sessionStorage.getItem(SESSION_CONST.ROLE_ID);
 };
@@ -67,7 +67,7 @@ const isReservedUserRole = () => {
   const currentUserId = getUserId();
   return reservedUserRoleIds.includes(currentUserId);
 };
-
+ 
 const isSystemAdmin = function () {
   const userRole = getUserRole();
   return userRole === 'System Admin';

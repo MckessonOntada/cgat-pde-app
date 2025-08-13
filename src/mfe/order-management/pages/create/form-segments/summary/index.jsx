@@ -380,7 +380,6 @@ const Summary = () => {
         setOrderAgreementCheckboxError('Please acknowledge to submit order');
         return;
       }
-
       if (agreeCheckboxOptions.isChecked) {
         if (!isSpOrder && isImpersonatedAdmin()) {
           submitOrder({
