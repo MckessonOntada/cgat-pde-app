@@ -262,6 +262,8 @@ export const UserManagementES = {
   'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP.DESCRIPTION': 'S_Allows user to edit Approver Group, Enable Edit option',
   'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS': 'S_View Pending Orders',
   'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS.DESCRIPTION': 'S_Allows User to View Pending order, Enables pending tab',
+  'ORDER_MANAGEMENT.REVIEW_ORDER': 'S_Review Order',
+  'ORDER_MANAGEMENT.REVIEW_ORDER.DESCRIPTION': 'S_Allow physician user to review the order',
 
   'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE': 'S_Add Questionnaire',
   'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE.DESCRIPTION': 'S_Allows to create questionnaire, enables Add Questionnaire button',

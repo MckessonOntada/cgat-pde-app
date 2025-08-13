@@ -41,6 +41,11 @@ function UploadOrderDocument() {
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
   const channelType = orderDetails.channelType;
+
+  React.useEffect(() => {
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+  }, [orderDetails]);
+
   const handleOnUpload = (values = {}) => {
     const { file } = values;
     if (!file) {

@@ -1,0 +1,15 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.consentWrapper {
+    font-size: var(--brand-font-size--default);
+
+    [class*="CheckboxGroup-module--checkboxWrapper-"] {
+        align-items: flex-start;
+    }
+
+    input[type='checkbox'] {
+        margin-top: var(--spacing-01);
+        ;
+    }
+
+}

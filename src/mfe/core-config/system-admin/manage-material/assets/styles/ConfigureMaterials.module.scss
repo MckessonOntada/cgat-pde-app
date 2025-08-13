@@ -30,6 +30,16 @@
           }
         }
       }
+
+      [class~="label-heading"] {
+        font-size: var(--brand-font-size--large) !important;
+        font-weight: var(--brand-font-weight-600) !important;
+        line-height: var(--brand-line-height--x-large) !important;
+      }
+
+      [class^="RadioGroup-module--radioWrapper--"] {
+        margin-bottom: 10px;
+      }
     }
 
     .controls {
@@ -38,6 +48,11 @@
       align-items: center;
       justify-content: flex-end;
       gap: var(--spacing-03);
+    }
+
+    .removeBorder {
+      border: none !important;
+      padding: 0px !important;
     }
   }
 }
