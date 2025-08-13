@@ -36,7 +36,8 @@ export const validationSchemaforPrescription = (t) =>
       .matches(NUMBER_REGEX, `${t('labels.refills')}  ${t('manageMaterial.drawer.details.configuration.body.numericValidation')}`)
       .test('min-refills', t('manageMaterial.drawer.details.configuration.body.refillsMinValidation'), (val) => parseInt(val, 10) >= 0),
 
-    instructions: Yup.string().required(t('manageMaterial.drawer.details.configuration.body.instructionsRequired'))
+    instructions: Yup.string().required(t('manageMaterial.drawer.details.configuration.body.instructionsRequired')),
+    consentPolicy: Yup.string().required(t('manageMaterial.drawer.details.configuration.body.consentPolicyRequired'))
   });
 
 export const validationSchemaforConfiguration = (t) =>

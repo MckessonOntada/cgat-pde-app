@@ -101,10 +101,12 @@ export const SystemConfigurationES = {
   'labels.daysSupply': 'S_Days supply',
   'labels.refills': 'S_Refills',
   'labels.instructions': 'S_Instructions',
+  'labels.consentPolicy': 's_Consent Policy',
   'manageMaterial.drawer.details.configuration.body.quantityRequired': 'S_Quantity Required',
   'manageMaterial.drawer.details.configuration.body.daysSupplyRequired': 'S_Days supply Required',
   'manageMaterial.drawer.details.configuration.body.refillsRequired': 'S_Refills Required',
   'manageMaterial.drawer.details.configuration.body.instructionsRequired': 'S_Instructions Required',
+  'manageMaterial.drawer.details.configuration.body.consentPolicyRequired': 'S_Consent Policy Required',
   'manageMaterial.drawer.details.configuration.body.numericValidation': 'S_must be a numeric value',
   'manageMaterial.drawer.details.configuration.body.minValidation': 'S_must be greater than 0',
   'manageMaterial.drawer.details.configuration.body.refillsMinValidation': 'S_Refills must be 0 or more'
