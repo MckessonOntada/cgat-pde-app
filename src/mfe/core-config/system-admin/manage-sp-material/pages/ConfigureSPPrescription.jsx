@@ -40,7 +40,8 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
     quantity: data?.quantity ?? '',
     daysSupply: data?.daysSupply ?? '',
     refills: data?.refills ?? '',
-    instructions: data?.instructions ?? ''
+    instructions: data?.instructions ?? '',
+    consentPolicy: data?.consentPolicy ?? ''
   });
 
   const initialValues = React.useMemo(() => {
@@ -93,6 +94,13 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
       type: 'textarea',
       isRequired: true,
       maxLength: 5000
+    },
+    {
+      label: t('labels.consentPolicy'),
+      name: 'consentPolicy',
+      type: 'textarea',
+      isRequired: true,
+      maxLength: 5000
     }
   ];
 
@@ -103,7 +111,8 @@ function ConfigureSPPrescription({ onClose, onSuccess, onError }) {
       quantity: values.quantity,
       daysSupply: values.daysSupply,
       refills: values.refills,
-      instructions: values.instructions
+      instructions: values.instructions,
+      consentPolicy: values.consentPolicy
     };
     applyConfiguration(configValues);
   };

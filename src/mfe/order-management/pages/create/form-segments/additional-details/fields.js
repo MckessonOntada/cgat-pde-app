@@ -79,7 +79,7 @@ export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeS
         {
           component: Components['multiSelectDropdown'],
           id: 'diagnosis-code',
-          name: 'diagnosis-code',
+          name: 'diagnosisCode',
           label: t('labels.diagnosisCodes'),
           isRequired: true,
           isMultiSelect: true,
