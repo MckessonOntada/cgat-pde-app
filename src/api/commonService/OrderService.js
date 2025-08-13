@@ -438,6 +438,20 @@ async function getManufacturerLogo(therapyId) {
   return URL.createObjectURL(blob);
 }
 
+async function getDiagnosisCodes(query = '') {
+  let url = `${ApiRoutes.ORGANIZATION_BASE()}diagnosis-codes`;
+  if (query) {
+    url += `?query=${query}`;
+  }
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return [];
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -475,7 +489,8 @@ const OrderService = Object.freeze({
   uploadPayerDocument,
   getBackendOrderId,
   getTherapyDetailsByNDC,
-  getManufacturerLogo
+  getManufacturerLogo,
+  getDiagnosisCodes
 });
 
 export default OrderService;

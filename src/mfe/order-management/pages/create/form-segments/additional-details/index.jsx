@@ -39,7 +39,7 @@ const INITIAL_VALUES = {
   poNumber: '',
   dateOfAdministration: '',
   medicalRecordNumber: '',
-  diagnosisCode: '',
+  diagnosisCode: [],
   hasAllergies: '',
   allergyDetails: '',
 
@@ -90,7 +90,8 @@ function AdditionalDetails() {
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
   const therapyChannelType = orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
-
+  const [diagnosisCode, setDiagnosisCode] = React.useState([]);
+  const [diagnosisSearchQuery, setDiagnosisSearchQuery] = React.useState('');
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
@@ -150,7 +151,9 @@ function AdditionalDetails() {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
-          diagnosisCode: Yup.string().required(t('labels.diagnosisCodeRequired')).max(50, t('labels.COI_IdExceedDigits')),
+          diagnosisCode: Yup.array()
+            .of(Yup.string().required(t('labels.diagnosisCodeRequired')))
+            .min(1, 'Select at least on diagnosis code'),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
 
           allergyDetails: Yup.string().when('hasAllergies', {
@@ -508,7 +511,12 @@ function AdditionalDetails() {
         initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
-        initialValues.diagnosisCode = diagnosisCode;
+        if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
+          const diagnosisCodeOptions = orderDetails.additionalDetails.diagnosisCode.split(',').map((item) => item);
+          initialValues.diagnosisCode = [...diagnosisCodeOptions];
+        } else {
+          initialValues.diagnosisCode = [];
+        }
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         initialValues.dateOfAdministration = dateOfAdministration;
         initialValues.coiId = coiId;
@@ -541,6 +549,14 @@ function AdditionalDetails() {
       }));
     }
   }, [orderDetails, variantsData]);
+
+  React.useEffect(() => {
+    OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
+      if (result.content && CommonUtils.isNonEmptyArray(result.content)) {
+        setDiagnosisCode(result.content.map((item) => item.code));
+      }
+    });
+  }, [diagnosisSearchQuery]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -590,8 +606,7 @@ function AdditionalDetails() {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, medicalRecordNumber } = values;
-
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, medicalRecordNumber, diagnosisCode } = values;
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.sectionsDetails) return;
 
@@ -629,7 +644,7 @@ function AdditionalDetails() {
       }
 
       payload.clinicalDetails = clinicalDetails;
-      payload.diagnosisCode = values['diagnosisCode'];
+      payload.diagnosisCode = diagnosisCode.join(',');
     } else {
       payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
@@ -637,7 +652,6 @@ function AdditionalDetails() {
       payload.dateOfAdministration = dateOfAdministration;
       payload.medicalRecordNumber = medicalRecordNumber;
     }
-
     saveAdditionalDetails(payload);
   };
 
@@ -721,6 +735,10 @@ function AdditionalDetails() {
     setVariantAcknowledgement(updatedOptions);
   };
 
+  const onDiagnosisCodeSearch = (search) => {
+    setDiagnosisSearchQuery(search);
+  };
+
   return (
     <div className="MCP-module-wrapper">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -781,7 +799,7 @@ function AdditionalDetails() {
                       }
                     />
                     <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-                      {getFormFields(t, { therapyConfig, channelType }, setFieldValue).map(
+                      {getFormFields(t, { therapyConfig, channelType }, setFieldValue, values, onDiagnosisCodeSearch, diagnosisCode).map(
                         ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                           <Field
                             key={index}
