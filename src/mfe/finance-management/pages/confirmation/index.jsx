@@ -44,7 +44,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const invoiceDetails = {
     'Bill to Account Number': selectedAccount?.accountNumber || '-',
     'Payment Method': state?.paymentMethod,
-    'Pay On Date': (type === PATHS.paymentHistory ? state?.paymentTypeText : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
+    'Pay On Date': (type === PATHS.paymentHistory ? state?.dateScheduled : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
