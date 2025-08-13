@@ -33,6 +33,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import { CHANNEL_TYPE } from '../Constants';
 import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
+import { ORDER_STATUS } from '../../../orders/config';
 
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -58,6 +59,10 @@ function Payer() {
     soldToAccountId,
     shipToAccountId
   });
+
+  React.useEffect(() => {
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+  }, [orderDetails]);
 
   React.useEffect(() => {
     const { isPayerDetailsRequired, payerDetails } = orderDetails;

@@ -373,19 +373,22 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    if (!agreeCheckboxOptions.isChecked) {
-      setOrderAgreementCheckboxError('Please acknowledge to submit order');
-      return;
-    }
-
-    if (agreeCheckboxOptions.isChecked) {
-      if (!isSpOrder && isImpersonatedAdmin()) {
-        submitOrder({
-          action: BUTTON_ACTIONS.SUBMIT,
-          isPAPOrder: papOrderOptions.isChecked
-        });
-      } else {
-        submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+    if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
+    } else {
+      if (!agreeCheckboxOptions.isChecked) {
+        setOrderAgreementCheckboxError('Please acknowledge to submit order');
+        return;
+      }
+      if (agreeCheckboxOptions.isChecked) {
+        if (!isSpOrder && isImpersonatedAdmin()) {
+          submitOrder({
+            action: BUTTON_ACTIONS.SUBMIT,
+            isPAPOrder: papOrderOptions.isChecked
+          });
+        } else {
+          submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+        }
       }
     }
   };
@@ -662,8 +665,18 @@ const Summary = () => {
       </PermittedComponent>
     );
 
+    const controlFinalizeOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+          {t('captions.btnFinalizeOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
+    } else if (status === ORDER_STATUS.REVIEW) {
+      controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (allowUpdateBnBAfterSubmit) {
@@ -679,7 +692,7 @@ const Summary = () => {
 
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted) return false;
-    else if (status === ORDER_STATUS.SUBMITTED) return false;
+    else if (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.REVIEW) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && isApprover && orderDetails.approver) {
@@ -737,6 +750,13 @@ const Summary = () => {
     lastName: payerDetails?.secondaryMedicalInsurance?.policyHolderLastName
   });
 
+  const showPapBadge = isPapOrder && (
+    <span className={styles.pap}>
+      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
+    </span>
+  );
+  const isPhysician = AuthUtils.isPhysician();
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -758,11 +778,7 @@ const Summary = () => {
                 {isApprover && (
                   <div className={styles.pageHeadingReview}>
                     <PageHeader heading={t('headings.reviewOrder')} />
-                    {isPapOrder && (
-                      <span className={styles.pap}>
-                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                      </span>
-                    )}
+                    {showPapBadge}
                   </div>
                 )}
 
@@ -775,17 +791,12 @@ const Summary = () => {
                     }
                   />
                 )}
-
-                {!isApprover && (isSubmitted || isApprovalPending || isRejected) && (
+                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t('labels.summary')}</span>
-                    {isPapOrder && (
-                      <span className={styles.pap}>
-                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                      </span>
-                    )}
+                    {showPapBadge}
                   </Heading>
-                )}
+                ) : null}
               </React.Fragment>
             }
             className={!isApprover ? styles.orderSummary : undefined}

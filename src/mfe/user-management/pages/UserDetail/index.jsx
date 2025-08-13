@@ -54,6 +54,7 @@ const UserDetail = () => {
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(null);
+  const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
   const { isSuccess = false, isPending = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -91,7 +92,10 @@ const UserDetail = () => {
       return res.data;
     },
     enabled: !!userId,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      setIsPhysicianUser(AuthUtils.isPhysician(data?.role?.name, data?.role?.id));
+    }
   });
 
   const mutation = useMutation(
@@ -309,21 +313,23 @@ const UserDetail = () => {
             </div>
           }
           controls={
-            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-              <Button
-                Icon={EditPencil}
-                variant="secondary"
-                className="button-icon"
-                size="md"
-                disabled={!data?.isActive || isSelf}
-                onClick={() =>
-                  navigate(`../${PATHS.editUser}/${userId}`, {
-                    state: { isEdit: true }
-                  })
-                }>
-                {t('userManagement.button.edit')}
-              </Button>
-            </PermittedComponent>
+            !isPhysicianUser && (
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                <Button
+                  Icon={EditPencil}
+                  variant="secondary"
+                  className="button-icon"
+                  size="md"
+                  disabled={!data?.isActive || isSelf}
+                  onClick={() =>
+                    navigate(`../${PATHS.editUser}/${userId}`, {
+                      state: { isEdit: true }
+                    })
+                  }>
+                  {t('userManagement.button.edit')}
+                </Button>
+              </PermittedComponent>
+            )
           }
         />
 
@@ -343,7 +349,6 @@ const UserDetail = () => {
             </div>
             <div className="user-status">
               <span className="view_label">{t('userManagement.userDetails.lastUpdatedOn')}</span>
-
               <span className="label-text">
                 {' '}
                 {data?.updatedAt
@@ -352,24 +357,26 @@ const UserDetail = () => {
                   ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM/DD/YYYY')
                   : 'N/A'}
               </span>
-              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                <Switch
-                  handleToggle={() => {
-                    setSelectedUserInfo({
-                      userId: data?.id,
-                      isActive: data?.isActive
-                    });
-                    handleActivateDeactivate();
-                  }}
-                  id="id"
-                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive) || isSelf}
-                  label={data?.isActive ? t('userManagement.status.active') : ''}
-                  labelPosition="right"
-                  name="Toggle"
-                  size="lg"
-                  value={data?.isActive}
-                />
-              </PermittedComponent>
+              {!isPhysicianUser && (
+                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                  <Switch
+                    handleToggle={() => {
+                      setSelectedUserInfo({
+                        userId: data?.id,
+                        isActive: data?.isActive
+                      });
+                      handleActivateDeactivate();
+                    }}
+                    id="id"
+                    disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive) || isSelf}
+                    label={data?.isActive ? t('userManagement.status.active') : ''}
+                    labelPosition="right"
+                    name="Toggle"
+                    size="lg"
+                    value={data?.isActive}
+                  />
+                </PermittedComponent>
+              )}
             </div>
           </div>
 
@@ -414,23 +421,25 @@ const UserDetail = () => {
           <ModuleHeader
             heading={<Heading as="h2">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
-              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                <div className="controls">
-                  <Button
-                    Icon={EditPencil}
-                    variant="secondary"
-                    className="button-icon"
-                    size="md"
-                    disabled={!data?.isActive || isSelf}
-                    onClick={() =>
-                      navigate(`../${PATHS.userPermissions}/${userId}`, {
-                        state: { isEdit: true, permissionsData: data }
-                      })
-                    }>
-                    {t('userManagement.button.edit')}
-                  </Button>
-                </div>
-              </PermittedComponent>
+              !isPhysicianUser && (
+                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                  <div className="controls">
+                    <Button
+                      Icon={EditPencil}
+                      variant="secondary"
+                      className="button-icon"
+                      size="md"
+                      disabled={!data?.isActive || isSelf}
+                      onClick={() =>
+                        navigate(`../${PATHS.userPermissions}/${userId}`, {
+                          state: { isEdit: true, permissionsData: data }
+                        })
+                      }>
+                      {t('userManagement.button.edit')}
+                    </Button>
+                  </div>
+                </PermittedComponent>
+              )
             }
           />
         </div>
@@ -476,23 +485,25 @@ const UserDetail = () => {
             <ModuleHeader
               heading={<Heading as="h2">{t('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
-                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                  <div className="controls">
-                    <Button
-                      Icon={EditPencil}
-                      variant="secondary"
-                      className="button-icon"
-                      size="md"
-                      disabled={!data?.isActive}
-                      onClick={() =>
-                        navigate(`../${PATHS.addAccounts}/${userId}`, {
-                          state: { isEdit: true }
-                        })
-                      }>
-                      {t('userManagement.button.edit')}
-                    </Button>
-                  </div>
-                </PermittedComponent>
+                !isPhysicianUser && (
+                  <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                    <div className="controls">
+                      <Button
+                        Icon={EditPencil}
+                        variant="secondary"
+                        className="button-icon"
+                        size="md"
+                        disabled={!data?.isActive}
+                        onClick={() =>
+                          navigate(`../${PATHS.addAccounts}/${userId}`, {
+                            state: { isEdit: true }
+                          })
+                        }>
+                        {t('userManagement.button.edit')}
+                      </Button>
+                    </div>
+                  </PermittedComponent>
+                )
               }
             />
             {isSuccess && isAlertVisible && !isSystemAdminView && <Alert description={alertDescription} onClose={handleAlertClose} type="success" />}
@@ -503,6 +514,7 @@ const UserDetail = () => {
                 practiceId={data?.practiceId}
                 showSelectedAccounts={false}
                 userId={userId}
+                isPhysicianUser={isPhysicianUser}
               />
             )}
           </div>

@@ -41,7 +41,33 @@ const setPracticeId = function (practiceId) {
 const removePracticeId = function () {
   return sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
 };
+ 
+const getRoleId = () => {
+  return sessionStorage.getItem(SESSION_CONST.ROLE_ID);
+};
 
+const getReservedSystemAdminIds = () => {
+  const roleIds = process.env.REACT_APP_SYSTEM_ADMIN_ID;
+  return roleIds ? roleIds.split(',') : [];
+};
+
+const getReservedPhysicianIds = () => {
+  const roleIds = process.env.REACT_APP_PHYSICIAN_ID;
+  return roleIds ? roleIds.split(',') : [];
+};
+
+const isPhysician = (roleName = null, roleId = null) => {
+  const resolvedRoleName = roleName || getUserRole();
+  const resolvedRoleId = roleId || getRoleId();
+  return resolvedRoleName === 'Physician' && getReservedPhysicianIds().includes(String(resolvedRoleId));
+};
+
+const isReservedUserRole = () => {
+  const reservedUserRoleIds = [process.env.REACT_APP_SYSTEM_ADMIN_ROLE_ID, process.env.REACT_APP_PHYSICIAN_ROLE_ID];
+  const currentUserId = getUserId();
+  return reservedUserRoleIds.includes(currentUserId);
+};
+ 
 const isSystemAdmin = function () {
   const userRole = getUserRole();
   return userRole === 'System Admin';
@@ -148,7 +174,9 @@ const AuthUtils = Object.freeze({
   isCustomerCenter,
   isCustomerCenterView,
   getImpersonatedByUser,
-  isTreatmentCentreExecutive
+  isTreatmentCentreExecutive,
+  isReservedUserRole,
+  isPhysician
 });
 
 export default AuthUtils;

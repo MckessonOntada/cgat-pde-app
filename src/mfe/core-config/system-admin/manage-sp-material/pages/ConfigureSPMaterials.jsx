@@ -40,10 +40,10 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   useEffect(() => {
     if (spConfig) {
       if (selectedSPMaterial.length === 1) {
-        setFormValues({
-          patientIdentifierRequired: spConfig.isPatientIdentifierRequired ? 'yes' : 'no',
-          coiIdRequired: spConfig.isCoiIdRequired ? 'yes' : 'no',
-          mrnRequired: spConfig.isMRNRequired ? 'yes' : 'no'
+        setFormValues({ 
+          patientIdentifierRequired: spConfig.isPatientIdentifierRequired === true ? 'yes' : spConfig.isPatientIdentifierRequired === false ? 'no' : '',
+          coiIdRequired: spConfig.isCoiIdRequired === true ? 'yes' : spConfig.isCoiIdRequired === false ? 'no' : '',
+          mrnRequired: spConfig.isMRNRequired === true ? 'yes' : spConfig.isMRNRequired === false ? 'no' : '' 
         });
       } else {
         setFormValues({
@@ -132,9 +132,9 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
     if (isApplyDisabled) {
       const configValues = {
         spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
-        patientIdentifierRequired: formValues.patientIdentifierRequired === 'yes',
-        coiIdRequired: formValues.coiIdRequired === 'yes',
-        mrnRequired: formValues.mrnRequired === 'yes'
+        isPatientIdentifierRequired: formValues.patientIdentifierRequired === 'yes',
+        isCoiIdRequired: formValues.coiIdRequired === 'yes',
+        isMrnRequired: formValues.mrnRequired === 'yes'
       };
       applyConfiguration(configValues);
     } else {
