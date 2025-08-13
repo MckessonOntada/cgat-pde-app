@@ -80,10 +80,10 @@ export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeS
           component: Components['multiSelectDropdown'],
           id: 'diagnosis-code',
           name: 'diagnosisCode',
-          label: 'Diagnosis Code(ICD10)',
+          label: t('labels.diagnosisCodes'),
           isRequired: true,
           isMultiSelect: true,
-          placeholder: 'Select Diagnosis',
+          placeholder: 'Search',
           onChange: (value) => {
             const changedValues = value.filter((item) => item.isChecked).map((item) => item.value);
             if (!areArraysEqual(changedValues, values.diagnosisCode))
@@ -97,7 +97,8 @@ export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeS
           onSearch: onDiagnosisCodeSearch,
           recordsCountToEnableSearch: 5,
           size: 'lg',
-          asyncRecordsFound: values.diagnosisCode.length
+          asyncRecordsFound: values.diagnosisCode.length,
+          noSelectedCountMessage: 'Select an option'
         }
       ]
     );

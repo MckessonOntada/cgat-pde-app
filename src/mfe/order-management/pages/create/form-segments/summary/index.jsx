@@ -791,7 +791,7 @@ const Summary = () => {
                     }
                   />
                 )}
-                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected) ? (
+                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t('labels.summary')}</span>
                     {showPapBadge}
