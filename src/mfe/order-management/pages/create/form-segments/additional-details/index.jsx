@@ -161,7 +161,8 @@ function AdditionalDetails() {
         Yup.object({
           diagnosisCode: Yup.array()
             .of(Yup.string().required(t('labels.diagnosisCodeRequired')))
-            .min(1, 'Select at least on diagnosis code'),
+            .min(1, 'Select at least on diagnosis code')
+            .required('Diagnosis code is required'),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
 
           allergyDetails: Yup.string().when('hasAllergies', {
