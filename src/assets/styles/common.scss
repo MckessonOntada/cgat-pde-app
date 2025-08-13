@@ -1606,10 +1606,25 @@ div[role="row"] {
   }
 }
 
+.form-segment-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  .form-segment {
+    margin-top: var(--spacing-03);
+    padding-top: var(--spacing-03);
+    border-top: 1px solid var(--brand-color-grey-scale-cool-1);
+    &:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+  }
+}
+
 hr.form-section-separator {
   border: none;
   border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
-  margin: var(--spacing-03) 0px;
 }
 
 div.empty-table-wrapper {

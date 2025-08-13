@@ -1,37 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Button, CheckboxGroup, Heading, Loader, RadioGroup, TextError } from '@mckesson/mcp-component-library';
+import OrderService from '@src/api/commonService/OrderService';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_filled.svg';
+import Alert from '@src/components/cgat-alert/Alert';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { FooterContext } from '@src/components/footer/FooterContext';
+import Components from '@src/components/form/Components';
+import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
+import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
-import { Field, Form, Formik } from 'formik';
-import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
-import * as Yup from 'yup';
-import OrderService from '@src/api/commonService/OrderService';
+import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
+import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
+import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import { RoutePaths } from '@src/routes/constants';
+import { useTranslate } from '@src/translations/useTranslation';
+import CommonUtils from '@src/util/CommonUtils';
+import { Field, Form, Formik, useFormikContext } from 'formik';
+import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
+import { ORDER_STATUS } from '../../../orders/config';
+import useOrder from '../../../orders/useOrder';
+import { CHANNEL_TYPE } from '../Constants';
+import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
-import CommonUtils from '@src/util/CommonUtils';
-import { RoutePaths } from '@src/routes/constants';
-import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
-import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
-import useOrder from '../../../orders/useOrder';
+import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
+import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
-import useResponsiveView from '@src/hooks/useResponsiveView';
-import { CustomDataTable } from '@src/components/dataTableComponent';
-import Components from '@src/components/form/Components';
-import { CHANNEL_TYPE } from '../Constants';
-import { FooterContext } from '@src/components/footer/FooterContext';
-import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
-import { validateFile } from '@src/components/uploadFile/uploadUtils';
-import Alert from '@src/components/cgat-alert/Alert';
-import ModuleHeader from '@src/components/module-header';
-import ManufacturerLogo from '../ManufacturerLogo';
-import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -42,7 +44,7 @@ const INITIAL_VALUES = {
   medicalRecordNumber: '',
   hasAllergies: '',
   allergyDetails: '',
-
+  diagnosisCode: [],
   variant: {
     variant: '',
     variantDescription: '',
@@ -50,16 +52,6 @@ const INITIAL_VALUES = {
   },
   variantAcknowledgement: false
 };
-
-const ALLOWED_FILE_TYPE = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/plain',
-  'image/png',
-  'image/jpeg'
-];
-const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 
 function AdditionalDetails() {
   const { t } = useTranslate();
@@ -81,7 +73,6 @@ function AdditionalDetails() {
     label: t('messages.variantAcknowledgement'),
     value: false
   });
-  const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
@@ -234,7 +225,6 @@ function AdditionalDetails() {
       ),
     enabled: !!tradeDetails.ndc && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
-    onSuccess: (result) => {},
     onError: (error) => {
       const statusCode = error?.response?.status;
       let description = t('error.default');
@@ -249,7 +239,6 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
-
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
 
     let questionnaireValidationSchema = Yup.object();
@@ -346,7 +335,6 @@ function AdditionalDetails() {
               : question.isMandatory
               ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
-
             document: Yup.object()
               .shape({
                 url: Yup.string(),
@@ -361,7 +349,7 @@ function AdditionalDetails() {
 
     return {
       validationSchema: Yup.object().shape(validationSchemaFields), // Return validation schema
-      fields: questionnaireFields // Return initial values
+      fields: questionnaireFields
     };
   };
 
@@ -676,7 +664,7 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
-          ...locationState, // Vishal To check
+          ...locationState,
           isEdit: isEdit,
           isApprover: isApprover
         }
@@ -701,7 +689,6 @@ function AdditionalDetails() {
   };
 
   const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
-    setAgreementCheckboxError(null);
     if (errors && errors.variant) {
       const { variant, ...newErrors } = errors;
       setErrors(newErrors);
@@ -775,10 +762,9 @@ function AdditionalDetails() {
           onError={console.log}
           validationContext={{ ...therapyConfig }}
           onSubmit={(values) => {
-            console.log(values);
             handleOnSubmit(values);
           }}>
-          {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
+          {({ dirty, values }) => {
             useEffect(() => {
               setIsDirty(dirty);
               setStoredValue(values);
@@ -796,64 +782,31 @@ function AdditionalDetails() {
                         </p>
                       }
                     />
-                    <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} setFieldValue={setFieldValue} />
+                    <div className="form-segment-list">
+                      <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} />
 
-                    <VariantDetails
-                      variantAcknowledgement={variantAcknowledgement}
-                      handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
-                      variantsData={variantsData}
-                      channelType={channelType}
-                      variant={variant}
-                      setErrors={setErrors}
-                      errors={errors}
-                      touched={touched}
-                      formValues={values}
-                      setFieldTouched={setFieldTouched}
-                      setFieldValue={setFieldValue}
-                      handleOnVariantChange={handleOnVariantChange}
-                    />
+                      <VariantDetails
+                        variantAcknowledgement={variantAcknowledgement}
+                        handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
+                        variantsData={variantsData}
+                        channelType={channelType}
+                        variant={variant}
+                        handleOnVariantChange={handleOnVariantChange}
+                        handleOnVariantDocumentChange={handleOnVariantDocumentChange}
+                      />
 
-                    <ClinicalDetails
-                      values={values}
-                      channelType={channelType}
-                      therapyConfig={therapyConfig}
-                      setFieldValue={setFieldValue}
-                      setFieldTouched={setFieldTouched}
-                    />
+                      <ClinicalDetails channelType={channelType} onDiagnosisCodeSearch={setDiagnosisSearchQuery} diagnosisCode={diagnosisCode} />
 
-                    <PrescriptionDetails
-                      values={values}
-                      channelType={channelType}
-                      therapyConfig={therapyConfig}
-                      setFieldValue={setFieldValue}
-                      setFieldTouched={setFieldTouched}
-                    />
+                      <PrescriptionDetails channelType={channelType} />
 
-                    {isFetchingConfiguredQuestions ? (
-                      <div>
-                        <Loader variant="circular" />
-                      </div>
-                    ) : (
-                      <div>
-                        {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
-                          <React.Fragment>
-                            <div className="configured-questionnaire-form">
-                              <div className="MCP-module-body">
-                                <hr className="form-section-separator" />
-                                <div className="">
-                                  <QuestionnaireTemplate
-                                    onRemoveDocument={handleOnRemoveDocument}
-                                    onDocumentChange={handleOnDocumentChange}
-                                    config={questionnaireTemplateConfig}
-                                    isPreview={false}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </React.Fragment>
-                        )}
-                      </div>
-                    )}
+                      <QuestionnaireDetails
+                        isLoading={isFetchingConfiguredQuestions}
+                        onRemoveDocument={handleOnRemoveDocument}
+                        onDocumentChange={handleOnDocumentChange}
+                        config={questionnaireTemplateConfig}
+                        questionnaireTemplateConfig={questionnaireTemplateConfig}
+                      />
+                    </div>
                   </div>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
@@ -881,6 +834,31 @@ function AdditionalDetails() {
     </div>
   );
 }
+
+const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOnRemoveDocument, handleOnDocumentChange }) => {
+  if (isLoading)
+    return (
+      <div>
+        <Loader variant="circular" />
+      </div>
+    );
+  if (!isLoading && questionnaireTemplateConfig && !CommonUtils.isNonEmptyArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length === 0)
+    return null;
+  return (
+    <div className="form-segment configured-questionnaire-form">
+      <div className="MCP-module-body">
+        <div className="">
+          <QuestionnaireTemplate
+            onRemoveDocument={handleOnRemoveDocument}
+            onDocumentChange={handleOnDocumentChange}
+            config={questionnaireTemplateConfig}
+            isPreview={false}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
@@ -956,34 +934,44 @@ const VariantTable = ({ variant, onChange, data }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, setFieldValue }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType }) => {
   const { t } = useTranslate();
-  const defaultFields = getDefaultAdditionalDetailsFields(t, { therapyConfig, channelType }, setFieldValue);
+  const { setFieldValue } = useFormikContext();
+  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;
 
   return (
-    <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-      {defaultFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
-        <Field
-          key={index}
-          name={name}
-          label={label}
-          placeholder={placeholder}
-          isRequired={isRequired}
-          component={component}
-          maxLength={maxLength}
-          {...otherProps}
-        />
-      ))}
+    <div className="form-segment ">
+      <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
+        {defaultFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
+          <Field
+            key={index}
+            name={name}
+            label={label}
+            placeholder={placeholder}
+            isRequired={isRequired}
+            component={component}
+            maxLength={maxLength}
+            {...otherProps}
+          />
+        ))}
+      </div>
     </div>
   );
 };
 
-const ClinicalDetails = ({ therapyConfig, channelType, values, setFieldTouched, setFieldValue }) => {
+const ClinicalDetails = ({ channelType, onDiagnosisCodeSearch, diagnosisCode }) => {
+  const { values, setFieldValue } = useFormikContext();
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) return null;
   const { t } = useTranslate();
-  const fields = getClinicalDetailFields({ translationFn: t, therapyConfig, channelType, formValues: values, setFieldTouched, setFieldValue });
+  const fields = getClinicalDetailFields({
+    translationFn: t,
+    formValues: values,
+    setFieldValue,
+    onDiagnosisCodeSearch,
+    diagnosisCode
+  });
   if (CommonUtils.isEmptyArray(fields)) return null;
   return (
     <FormSectionWrapper title={t('labels.clinicalDetails')} isRequired={true}>
@@ -996,13 +984,12 @@ const ClinicalDetails = ({ therapyConfig, channelType, values, setFieldTouched, 
   );
 };
 
-const PrescriptionDetails = ({ therapyConfig, channelType, values, setFieldTouched, setFieldValue }) => {
+const PrescriptionDetails = ({ channelType }) => {
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) return null;
+  const { values, setFieldValue, setFieldTouched } = useFormikContext();
   const { t } = useTranslate();
   const fields = getPrescriptionDetailsFields({
     translationFn: t,
-    therapyConfig,
-    channelType,
     formValues: values,
     setFieldValue,
     setFieldTouched
@@ -1032,17 +1019,13 @@ const PrescriptionDetails = ({ therapyConfig, channelType, values, setFieldTouch
 const VariantDetails = ({
   variantsData,
   variantAcknowledgement,
+  handleOnVariantDocumentChange,
   handleOnAcknowledgmentChange,
   variant,
-  setErrors,
-  errors,
-  touched,
-  formValues,
-  setFieldTouched,
-  setFieldValue,
   handleOnVariantChange
 }) => {
   const { t } = useTranslate();
+  const { setErrors, errors, touched, values, setFieldTouched, setFieldValue } = useFormikContext();
   if (!variantsData?.content || !CommonUtils.isNonEmptyObject(variantsData.content)) return null;
 
   return (
@@ -1053,11 +1036,11 @@ const VariantDetails = ({
           onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
           data={variantsData.content}
         />
-        {touched?.variant && !formValues.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+        {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
       </div>
       <div className="agreement-checkbox-control">
         <Field name="variant-acknowledgement">
-          {({ field, form }) => (
+          {() => (
             <CheckboxGroup
               id={'default'}
               name="variant-acknowledgement"
@@ -1067,7 +1050,7 @@ const VariantDetails = ({
                   onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
                 }
               ]}
-              error={errors.variantAcknowledgement && touched?.variantAcknowledgement ? Boolean(!formValues.variantAcknowledgement) : false}
+              error={errors.variantAcknowledgement && touched?.variantAcknowledgement ? Boolean(!values.variantAcknowledgement) : false}
               errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
               size="md"
             />
@@ -1080,7 +1063,7 @@ const VariantDetails = ({
           component={Components['inputFile']}
           setFieldValue={setFieldValue}
           disabled={Boolean(!variant)}
-          attachmentValue={formValues?.variant?.document || null}
+          attachmentValue={values?.variant?.document || null}
           validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
           onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
           fileTypeText={ALLOWED_FILE_TYPE_TEXT}
@@ -1093,8 +1076,7 @@ const VariantDetails = ({
 const FormSectionWrapper = ({ title, isRequired, children }) => {
   const { t } = useTranslate();
   return (
-    <div className="MCP-module-body">
-      <hr className="form-section-separator" />
+    <div className="form-segment MCP-module-body">
       <div className="row-space-between-center">
         <Heading as="h3">{title}</Heading>
         <p className="form-instruction">

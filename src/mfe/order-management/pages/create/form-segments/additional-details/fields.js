@@ -10,15 +10,14 @@ const getBinaryOptions = (keyPrefix = '') => {
   }));
 };
 
-export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
+export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType }) => {
   const fields = [];
-  const { therapyConfig, channelType } = config;
 
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     fields.push(
       {
         name: 'coiId',
-        label: t('labels.coiId'),
+        label: translationFn('labels.coiId'),
         placeholder: ' ',
         isRequired: therapyConfig.isCoiIdRequired,
         component: Components['input'],
@@ -26,7 +25,7 @@ export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
       },
       {
         name: 'orderQuantity',
-        label: t('labels.orderQuantity'),
+        label: translationFn('labels.orderQuantity'),
         placeholder: ' ',
         isRequired: true,
         component: Components['input'],
@@ -34,7 +33,7 @@ export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
       },
       {
         name: 'slotNumber',
-        label: t('labels.provideSlotNumber'),
+        label: translationFn('labels.provideSlotNumber'),
         placeholder: ' ',
         isRequired: true,
         component: Components['input'],
@@ -42,7 +41,7 @@ export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
       },
       {
         name: 'dateOfAdministration',
-        label: t('orderManagement.patientDetails.inputLabel.doa'),
+        label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
         placeholder: ' ',
         isRequired: therapyConfig.isDOARequired,
         component: Components['datePicker'],
@@ -51,7 +50,7 @@ export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
       },
       {
         name: 'poNumber',
-        label: t('labels.providePONumber'),
+        label: translationFn('labels.providePONumber'),
         placeholder: ' ',
         isRequired: therapyConfig.isPORequired,
         component: Components['input'],
@@ -59,7 +58,7 @@ export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
       },
       {
         name: 'medicalRecordNumber',
-        label: t('orderManagement.patientDetails.inputLabel.mrn'),
+        label: translationFn('orderManagement.patientDetails.inputLabel.mrn'),
         placeholder: ' ',
         isRequired: therapyConfig.isMRNRequired,
         component: Components['input'],
@@ -72,18 +71,34 @@ export const getDefaultAdditionalDetailsFields = (t, config, setFieldValue) => {
   return fields;
 };
 
-export const getClinicalDetailFields = ({ translationFn, therapyConfig, channelType, formValues, setFieldValue, setFieldTouched }) => {
+export const getClinicalDetailFields = ({ translationFn, formValues, setFieldValue, onDiagnosisCodeSearch, diagnosisCode }) => {
   const fields = [];
 
   fields.push(
     ...[
       {
-        name: 'diagnosisCode',
+        component: Components['multiSelectDropdown'],
+        id: 'diagnosis-code',
+        name: 'diagnosis-code',
         label: translationFn('labels.diagnosisCodes'),
-        placeholder: ' ',
         isRequired: true,
-        component: Components['input'], //multiSelectDropdown
-        options: [],
+        isMultiSelect: true,
+        placeholder: translationFn('dropdown.placeholder.search'),
+        onChange: (value) => {
+          const changedValues = value.filter((item) => item.isChecked).map((item) => item.value);
+          if (!areArraysEqual(changedValues, formValues.diagnosisCode))
+            setFieldValue(
+              'diagnosisCode',
+              value.filter((item) => item.isChecked).map((item) => item.value)
+            );
+        },
+        options: mergeLists(formValues.diagnosisCode, diagnosisCode),
+        variant: 'async',
+        onSearch: onDiagnosisCodeSearch,
+        recordsCountToEnableSearch: 5,
+        size: 'lg',
+        asyncRecordsFound: formValues.diagnosisCode.length,
+        noSelectedCountMessage: translationFn('dropdown.helperText'),
         layout: {
           classes: 'grid grid-gap-16 grid-cols-3 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline'
         }
@@ -110,6 +125,7 @@ function areArraysEqual(arr1 = [], arr2 = []) {
 }
 
 function mergeLists(values, list) {
+  debugger;
   const valueSet = new Set(values);
   const mergedSet = new Set([...values, ...list]);
 
@@ -120,7 +136,7 @@ function mergeLists(values, list) {
   }));
 }
 
-export const getPrescriptionDetailsFields = ({ translationFn, therapyConfig, channelType, formValues, setFieldValue, setFieldTouched }) => {
+export const getPrescriptionDetailsFields = ({ translationFn, formValues, setFieldValue, setFieldTouched }) => {
   const fields = [];
 
   fields.push(
