@@ -20,6 +20,7 @@ import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { handleApiError } from '@src/util/ApiUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import Alert from '@src/components/cgat-alert/Alert';
+import { useLocation } from 'react-router-dom';
 
 const SignUp = () => {
   const { t } = useTranslate();
@@ -27,6 +28,18 @@ const SignUp = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const location = useLocation();
+  const oktaUser = location.state?.oktaUser || false;
+
+  useEffect(() => {
+    if (oktaUser) {
+      setAlert({
+        type: 'info',
+        message: t('userManagement.create_user.alert.okta_user')
+      });
+      setIsAlertVisible(true);
+    }
+  }, [oktaUser]);
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);

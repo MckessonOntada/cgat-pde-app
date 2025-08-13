@@ -25,7 +25,8 @@ export const QUESTION_TYPE = {
   RADIO_BUTTON: 'RADIO_BUTTON',
   DROPDOWN: 'DROPDOWN',
   CHECKBOX: 'CHECKBOX',
-  INPUT: 'INPUT'
+  INPUT: 'INPUT',
+  DATE_PICKER: 'DATE_PICKER'
 };
 
 const MODE = {
@@ -318,7 +319,7 @@ function AddQuestionnaire() {
     let areQuestionValid = true;
     sections.forEach(({ questions = [] }) => {
       questions.forEach((question, questionIndex) => {
-        if (question.type !== QUESTION_TYPE.INPUT) {
+        if (![QUESTION_TYPE.INPUT, QUESTION_TYPE.DATE_PICKER].includes(question.type)) {
           const minimumOptionsIndex = {
             [QUESTION_TYPE.DROPDOWN]: 2,
             [QUESTION_TYPE.RADIO_BUTTON]: 1,
@@ -554,7 +555,7 @@ function AddQuestionnaire() {
                                                               size="lg"
                                                               onChange={(selectedType) => {
                                                                 setFieldValue(`sections[${sectionIndex}].questions[${index}].type`, selectedType);
-                                                                if (selectedType === QUESTION_TYPE.INPUT) {
+                                                                if ([QUESTION_TYPE.INPUT, QUESTION_TYPE.DATE_PICKER].includes(selectedType)) {
                                                                   setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, null);
                                                                 } else if (selectedType === QUESTION_TYPE.DROPDOWN) {
                                                                   setFieldValue(`sections[${sectionIndex}].questions[${index}].options`, [
@@ -572,6 +573,7 @@ function AddQuestionnaire() {
                                                               }}
                                                               options={[
                                                                 { label: 'Input Field', value: QUESTION_TYPE.INPUT },
+                                                                { label: 'Date Picker', value: QUESTION_TYPE.DATE_PICKER },
                                                                 { label: 'Radio Button', value: QUESTION_TYPE.RADIO_BUTTON },
                                                                 { label: 'Checkbox', value: QUESTION_TYPE.CHECKBOX },
                                                                 { label: 'Dropdown', value: QUESTION_TYPE.DROPDOWN }

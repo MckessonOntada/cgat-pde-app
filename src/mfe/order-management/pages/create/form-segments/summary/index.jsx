@@ -62,6 +62,7 @@ const Summary = () => {
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const hasFetchedInventory = useRef(false);
   const [drawerElement, setDrawerElement] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
   const {
     therapy = {},
@@ -83,6 +84,16 @@ const Summary = () => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+
+  React.useEffect(() => {
+    if (orderDetails?.additionalDetails) {
+      setDraftChanges({
+        additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+        patientIdentifier: orderDetails.patient?.patientIdentifier
+      });
+    }
+  }, [orderDetails]);
+
   React.useEffect(() => {
     if (isError) {
       addNotification({
@@ -362,19 +373,22 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    if (!agreeCheckboxOptions.isChecked) {
-      setOrderAgreementCheckboxError('Please acknowledge to submit order');
-      return;
-    }
-
-    if (agreeCheckboxOptions.isChecked) {
-      if (!isSpOrder && isImpersonatedAdmin()) {
-        submitOrder({
-          action: BUTTON_ACTIONS.SUBMIT,
-          isPAPOrder: papOrderOptions.isChecked
-        });
-      } else {
-        submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+    if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
+    } else {
+      if (!agreeCheckboxOptions.isChecked) {
+        setOrderAgreementCheckboxError('Please acknowledge to submit order');
+        return;
+      }
+      if (agreeCheckboxOptions.isChecked) {
+        if (!isSpOrder && isImpersonatedAdmin()) {
+          submitOrder({
+            action: BUTTON_ACTIONS.SUBMIT,
+            isPAPOrder: papOrderOptions.isChecked
+          });
+        } else {
+          submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+        }
       }
     }
   };
@@ -428,7 +442,7 @@ const Summary = () => {
     if (backToInvoiceListing || backToInvoiceDetails) {
       navigate(-1);
     } else {
-      if (!draftChanges || Object.keys(draftChanges).length === 0) {
+      if (!isDirty) {
         const prevSearch = locationState?.__prevSearch || '';
         navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
       } else {
@@ -493,7 +507,7 @@ const Summary = () => {
         }
       } else {
         initialValues = {
-          patientIdentifier: draftChanges?.patientIdentifier || patient?.patientIdentifier || ''
+          patientIdentifier: draftChanges?.patientIdentifier || ''
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -502,7 +516,6 @@ const Summary = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            if (!CommonUtils.isNonEmptyObject(values)) return;
             if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
               setDraftChanges((prev) => ({
                 ...prev,
@@ -517,36 +530,41 @@ const Summary = () => {
 
             setDrawerElement(null);
           }}>
-          {({ dirty }) => (
-            <Form>
-              <FloatingDrawer
-                open={true}
-                anchor="right"
-                onClose={() => setDrawerElement(null)}
-                heading={'Additional Details'}
-                controls={
-                  <div className="controls">
-                    <Button
-                      label={t('captions.btnCancel')}
-                      onClick={() => setDrawerElement(null)}
-                      variant="secondary"
-                      size="md"
-                      aria-label={t('captions.cancel')}
-                    />
-                    <Button
-                      label={t('captions.btnSaveChanges')}
-                      type="submit"
-                      variant="primary"
-                      size="md"
-                      aria-label={t('captions.selectAccount')}
-                      disabled={!dirty}
-                    />
-                  </div>
-                }>
-                <FormRenderer sections={formConfig} />
-              </FloatingDrawer>
-            </Form>
-          )}
+          {({ dirty, values }) => {
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [dirty, values]);
+            return (
+              <Form>
+                <FloatingDrawer
+                  open={true}
+                  anchor="right"
+                  onClose={() => setDrawerElement(null)}
+                  heading={'Additional Details'}
+                  controls={
+                    <div className="controls">
+                      <Button
+                        label={t('captions.btnCancel')}
+                        onClick={() => setDrawerElement(null)}
+                        variant="secondary"
+                        size="md"
+                        aria-label={t('captions.cancel')}
+                      />
+                      <Button
+                        label={t('captions.btnSaveChanges')}
+                        type="submit"
+                        variant="primary"
+                        size="md"
+                        aria-label={t('captions.selectAccount')}
+                        disabled={!dirty}
+                      />
+                    </div>
+                  }>
+                  <FormRenderer sections={formConfig} />
+                </FloatingDrawer>
+              </Form>
+            );
+          }}
         </Formik>
       );
     } else {
@@ -647,12 +665,22 @@ const Summary = () => {
       </PermittedComponent>
     );
 
+    const controlFinalizeOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+          {t('captions.btnFinalizeOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
+    } else if (status === ORDER_STATUS.REVIEW) {
+      controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (allowUpdateBnBAfterSubmit) {
-      controls.push(controlDiscardChanges, controlRejectOrder, controlPrintSummary, controlReSubmitOrder);
+      controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
     }
@@ -664,7 +692,7 @@ const Summary = () => {
 
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted) return false;
-    else if (status === ORDER_STATUS.SUBMITTED) return false;
+    else if (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.REVIEW) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && isApprover && orderDetails.approver) {
@@ -722,6 +750,13 @@ const Summary = () => {
     lastName: payerDetails?.secondaryMedicalInsurance?.policyHolderLastName
   });
 
+  const showPapBadge = isPapOrder && (
+    <span className={styles.pap}>
+      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
+    </span>
+  );
+  const isPhysician = AuthUtils.isPhysician();
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -743,11 +778,7 @@ const Summary = () => {
                 {isApprover && (
                   <div className={styles.pageHeadingReview}>
                     <PageHeader heading={t('headings.reviewOrder')} />
-                    {isPapOrder && (
-                      <span className={styles.pap}>
-                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                      </span>
-                    )}
+                    {showPapBadge}
                   </div>
                 )}
 
@@ -760,17 +791,12 @@ const Summary = () => {
                     }
                   />
                 )}
-
-                {!isApprover && (isSubmitted || isApprovalPending || isRejected) && (
+                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t('labels.summary')}</span>
-                    {isPapOrder && (
-                      <span className={styles.pap}>
-                        <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
-                      </span>
-                    )}
+                    {showPapBadge}
                   </Heading>
-                )}
+                ) : null}
               </React.Fragment>
             }
             className={!isApprover ? styles.orderSummary : undefined}
@@ -1081,7 +1107,7 @@ const Summary = () => {
                       {!isSpOrder && (
                         <DetailSegment
                           label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
-                          value={!!draftChanges ? draftChanges?.patientIdentifier || patient?.patientIdentifier || '-' : '-'}
+                          value={!!draftChanges ? draftChanges?.patientIdentifier || '-' : '-'}
                         />
                       )}
                       <DetailSegment
@@ -1349,29 +1375,26 @@ const Summary = () => {
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
                     {!isSpOrder && (
                       <>
-                        <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || additionalDetails?.coiId || '-'} />
+                        <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || '-'} />
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}
                         {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
-                        <DetailSegment
-                          label={t('labels.poNo')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.poNumber || additionalDetails?.poNumber || '-'}
-                        />
+                        <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
                         <DetailSegment
                           label={t('labels.dateOfAdministration')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || additionalDetails?.dateOfAdministration || '-'}
+                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
                         />
                         <DetailSegment
                           label={t('orderManagement.patientDetails.inputLabel.mrn')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.medicalRecordNumber || additionalDetails?.medicalRecordNumber || '-'}
+                          value={draftChanges?.additionalDetailsRequestDTO?.medicalRecordNumber || '-'}
                         />
                       </>
                     )}
 
                     {isSpOrder && (
                       <>
-                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode} />
+                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode?.split(',').join(', ')} />
                         {additionalDetails?.clinicalDetails?.hasAllergies && (
                           <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
                         )}

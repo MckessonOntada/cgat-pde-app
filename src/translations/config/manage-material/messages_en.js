@@ -20,6 +20,7 @@ export const SystemConfigurationEN = {
   'manageMaterial.table.emptyDataDescription': 'Try again or adjust filters',
   'manageMaterial.table.header.text': 'Item(s) Selected',
   'manageMaterial.table.header.button.configure': 'Configure',
+  'manageMaterial.table.header.button.prescriptionDetails': 'Prescription Details',
   'manageMaterial.table.bnbMaterialDescription': 'Buy & Bill Material Description',
   'manageMaterial.table.bnbNDC': 'Buy & Bill NDC',
   'manageMaterial.table.spProductName': 'SP Product Name',
@@ -59,8 +60,10 @@ export const SystemConfigurationEN = {
   'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired': 'Manufacturer Patient Identifier Required',
   'manageMaterial.drawer.details.configuration.body.sp.patientIdentifierRequired': 'Manufacturer Patient Identifier Required?',
   // Configuration Drawer
+
   'manageMaterial.drawer.configuration.heading': 'Material Configuration',
   // Configuration Drawer Body
+
   'manageMaterial.drawer.configuration.body.patientInfoRequired': 'Patient Information Required',
   'manageMaterial.drawer.configuration.body.coiIdRequired': 'Make COI ID Mandatory',
   'manageMaterial.drawer.configuration.body.mrnRequired': 'Make MRN Mandatory',
@@ -75,6 +78,8 @@ export const SystemConfigurationEN = {
   'manageMaterial.drawer.configuration.body.coiIdRequired.no': 'No',
   'manageMaterial.drawer.configuration.body.patientIdentifierRequired.yes': 'Yes',
   'manageMaterial.drawer.configuration.body.patientIdentifierRequired.no': 'No',
+  'manageMaterial.drawer.configuration.body.prescriptionDetailsRequired.yes': 'Yes',
+  'manageMaterial.drawer.configuration.body.prescriptionDetailsRequired.no': 'No',
   'manageMaterial.drawer.configuration.body.mrnRequired.yes': 'Yes',
   'manageMaterial.drawer.configuration.body.mrnRequired.no': 'No',
   // Configuration Drawer Controls
@@ -91,5 +96,18 @@ export const SystemConfigurationEN = {
   'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
   'manageMaterial.drawer.configuration.alert.error': 'Please select Required Field',
   'labels.ndc': 'NDC',
-  'labels.multiple': 'Multiple'
+  'labels.multiple': 'Multiple',
+  'labels.quantity': 'Quantity',
+  'labels.daysSupply': 'Days supply',
+  'labels.refills': 'Refills',
+  'labels.instructions': 'Instructions',
+  'labels.consentPolicy': 'Consent Policy',
+  'manageMaterial.drawer.details.configuration.body.quantityRequired': 'Quantity Required',
+  'manageMaterial.drawer.details.configuration.body.daysSupplyRequired': 'Days supply Required',
+  'manageMaterial.drawer.details.configuration.body.refillsRequired': 'Refills Required',
+  'manageMaterial.drawer.details.configuration.body.instructionsRequired': 'Instructions Required',
+  'manageMaterial.drawer.details.configuration.body.consentPolicyRequired': 'Consent Policy Required',
+  'manageMaterial.drawer.details.configuration.body.numericValidation': 'must be a numeric value',
+  'manageMaterial.drawer.details.configuration.body.minValidation': 'must be greater than 0',
+  'manageMaterial.drawer.details.configuration.body.refillsMinValidation': 'Refills must be 0 or more'
 };

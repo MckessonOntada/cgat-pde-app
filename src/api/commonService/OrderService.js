@@ -22,6 +22,15 @@ async function getOrders(requestParams) {
   return [];
 }
 
+async function getPhysicianOrders(requestParams) {
+  const url = `${ApiRoutes.ORDERS()}/user/current/review?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 async function getOrderById(orderId) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
@@ -438,9 +447,31 @@ async function getManufacturerLogo(therapyId) {
   return URL.createObjectURL(blob);
 }
 
+async function getDiagnosisCodes(query = '') {
+  let url = `${ApiRoutes.ORGANIZATION_BASE()}diagnosis-codes`;
+  if (query) {
+    url += `?query=${query}`;
+  }
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return [];
+}
+async function finalizeOrder(orderId, payload) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/user/current/review/${orderId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
+  getPhysicianOrders,
   getOrderById,
   getTherapies,
   getTherapyDetailsById,
@@ -475,7 +506,9 @@ const OrderService = Object.freeze({
   uploadPayerDocument,
   getBackendOrderId,
   getTherapyDetailsByNDC,
-  getManufacturerLogo
+  getManufacturerLogo,
+  getDiagnosisCodes,
+  finalizeOrder
 });
 
 export default OrderService;

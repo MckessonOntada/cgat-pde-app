@@ -27,5 +27,7 @@ export const SignupEN = {
     'Your request to create a new account has been submitted successfully. Please hold on while our admin reviews your information and approves your request. We will send your login credentials on the email address provided.',
   'loginrequest.heading': 'Request Created',
   'loginrequest.button': 'Go to Login Page',
-  'errors.user_provisioning_request_email_key': 'Email ID already exists in the System.'
+  'errors.user_provisioning_request_email_key': 'Email ID already exists in the System.',
+  'userManagement.create_user.alert.okta_user':
+    "You don't have an account yet. Please complete the sign-up form below to request access. Your account will be activated once it's reviewed and approved by the admin."
 };

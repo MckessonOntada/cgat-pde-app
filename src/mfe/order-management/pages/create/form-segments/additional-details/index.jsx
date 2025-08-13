@@ -90,7 +90,8 @@ function AdditionalDetails() {
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
   const therapyChannelType = orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
-
+  const [diagnosisCode, setDiagnosisCode] = React.useState([]);
+  const [diagnosisSearchQuery, setDiagnosisSearchQuery] = React.useState('');
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
@@ -111,6 +112,13 @@ function AdditionalDetails() {
     null,
     null
   );
+
+  React.useEffect(() => {
+    const { paporder: isPapOrder } = orderDetails || {};
+    const prevSearch = locationState.__prevSearch || '';
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+  }, [orderDetails]);
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
@@ -264,12 +272,6 @@ function AdditionalDetails() {
     setValidationSchema(finalValidationSchema);
   }, [variantsData, questionnaireTemplateConfig, channelType]);
 
-  React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
-  }, [orderDetails]);
-
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
       const { id } = result;
@@ -322,25 +324,28 @@ function AdditionalDetails() {
           }
 
           validationSchemaFields[fieldName] = Yup.object({
-            value:
-              question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
-                ? question.isMandatory
-                  ? Yup.string().required('Value is required')
-                  : Yup.string().nullable()
-                : question.type === QUESTION_TYPE.RADIO_BUTTON
-                ? question.isMandatory
-                  ? Yup.string().required('Select at least one option')
-                  : Yup.string().nullable()
-                : question.type === QUESTION_TYPE.CHECKBOX
-                ? question.isMandatory
-                  ? Yup.array()
-                      .of(Yup.string())
-                      .min(1, 'Select at least one option')
-                      .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
-                  : Yup.array().of(Yup.string()).nullable()
-                : question.isMandatory
-                ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
-                : Yup.array().of(Yup.string()).nullable(),
+            value: [QUESTION_TYPE.INPUT, QUESTION_TYPE.DROPDOWN].includes(question.type)
+              ? question.isMandatory
+                ? Yup.string().required('Value is required')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.RADIO_BUTTON
+              ? question.isMandatory
+                ? Yup.string().required('Select at least one option')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.DATE_PICKER
+              ? question.isMandatory
+                ? Yup.date().required('Date is required')
+                : Yup.date().nullable()
+              : question.type === QUESTION_TYPE.CHECKBOX
+              ? question.isMandatory
+                ? Yup.array()
+                    .of(Yup.string())
+                    .min(1, 'Select at least one option')
+                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                : Yup.array().of(Yup.string()).nullable()
+              : question.isMandatory
+              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+              : Yup.array().of(Yup.string()).nullable(),
 
             document: Yup.object()
               .shape({
@@ -510,7 +515,12 @@ function AdditionalDetails() {
         initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
-        initialValues.diagnosisCode = diagnosisCode;
+        if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
+          const diagnosisCodeOptions = orderDetails.additionalDetails.diagnosisCode.split(',').map((item) => item);
+          initialValues.diagnosisCode = [...diagnosisCodeOptions];
+        } else {
+          initialValues.diagnosisCode = [];
+        }
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         initialValues.dateOfAdministration = dateOfAdministration;
         initialValues.coiId = coiId;
@@ -543,6 +553,14 @@ function AdditionalDetails() {
       }));
     }
   }, [orderDetails, variantsData]);
+
+  React.useEffect(() => {
+    OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
+      if (result.content && CommonUtils.isNonEmptyArray(result.content)) {
+        setDiagnosisCode(result.content.map((item) => item.code));
+      }
+    });
+  }, [diagnosisSearchQuery]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -592,8 +610,7 @@ function AdditionalDetails() {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, medicalRecordNumber } = values;
-
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, medicalRecordNumber, diagnosisCode } = values;
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.sectionsDetails) return;
 
@@ -631,7 +648,7 @@ function AdditionalDetails() {
       }
 
       payload.clinicalDetails = clinicalDetails;
-      payload.diagnosisCode = values['diagnosisCode'];
+      payload.diagnosisCode = diagnosisCode.join(',');
     } else {
       payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
@@ -639,7 +656,6 @@ function AdditionalDetails() {
       payload.dateOfAdministration = dateOfAdministration;
       payload.medicalRecordNumber = medicalRecordNumber;
     }
-
     saveAdditionalDetails(payload);
   };
 

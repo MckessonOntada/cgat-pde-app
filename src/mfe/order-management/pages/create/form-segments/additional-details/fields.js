@@ -94,6 +94,32 @@ export const getClinicalDetailFields = ({ translationFn, therapyConfig, channelT
   return fields;
 };
 
+function areArraysEqual(arr1 = [], arr2 = []) {
+  if (arr1.length !== arr2.length) return false;
+
+  const set1 = new Set(arr1);
+  const set2 = new Set(arr2);
+
+  if (set1.size !== set2.size) return false;
+
+  for (let item of set1) {
+    if (!set2.has(item)) return false;
+  }
+
+  return true;
+}
+
+function mergeLists(values, list) {
+  const valueSet = new Set(values);
+  const mergedSet = new Set([...values, ...list]);
+
+  return Array.from(mergedSet).map((item) => ({
+    label: item.toUpperCase(),
+    value: item,
+    isChecked: valueSet.has(item)
+  }));
+}
+
 export const getPrescriptionDetailsFields = ({ translationFn, therapyConfig, channelType, formValues, setFieldValue, setFieldTouched }) => {
   const fields = [];
 

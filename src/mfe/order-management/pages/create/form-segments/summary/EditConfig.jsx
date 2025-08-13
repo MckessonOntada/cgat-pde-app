@@ -127,7 +127,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .test(
         'no-leading-trailing-spaces',
         t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-        (value) => value === undefined || value.trim().length === value.length
+        (value) => value === undefined || value === null || value?.trim().length === value.length
       )
       .when([], {
         is: () => therapyConfig?.isMRNRequired,

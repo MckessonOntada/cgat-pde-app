@@ -22,6 +22,7 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
+import { ORDER_STATUS } from '../../../orders/config';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -39,6 +40,13 @@ const AccountSelection = () => {
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+
+  React.useEffect(() => {
+    const { paporder: isPapOrder } = orderDetails || {};
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
+    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+  }, [orderDetails]);
+
   React.useEffect(() => {
     if (!isTherapyChanged) {
       setSelectedSoldToAccount(orderDetails.accountDetails?.soldToAccount);
@@ -56,11 +64,6 @@ const AccountSelection = () => {
   });
 
   const alertContainerId = 'accountSelection-alert-Container';
-
-  React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
-  }, [orderDetails]);
 
   React.useEffect(() => {
     if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {

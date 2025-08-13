@@ -18,7 +18,7 @@ const PrivacyNotice = () => {
                 <Heading as="h1">
                   Privacy Notice - InspiroLink
                   <br />
-                  Ordering Platform (“PDE”)
+                  Ordering Platform
                 </Heading>
                 <Heading as="h3">Effective Date: July 8, 2025</Heading>
                 <Link to={'/privacy-notice-for-state-specific-privacy-laws'}>View state-specific privacy rights HERE</Link>
@@ -28,10 +28,10 @@ const PrivacyNotice = () => {
                   <p>
                     At Pharmaceutical Solutions and Services (“PSAS”, “McKesson”, “our”, “us”, or “we”), we value the trust that employees, customers, and
                     pharmaceutical or drug manufacturers place in us to use and protect personal information. This Privacy Notice informs you how we will use,
-                    share and protect your personal information. When you use the InspiroLink Ordering Platform (“PDE) or provide personal information, you
-                    accept the privacy practices described in this Privacy Notice. Please read this Privacy Notice in full to understand our privacy practices
-                    before you use our Portal or submit any personal information. You are also encouraged to access our supplemental privacy notice linked above
-                    titled, “view state-specific privacy rights HERE” that is applicable in specific situations.
+                    share and protect your personal information. When you use the InspiroLink Ordering Platform or provide personal information, you accept the
+                    privacy practices described in this Privacy Notice. Please read this Privacy Notice in full to understand our privacy practices before you
+                    use our Portal or submit any personal information. You are also encouraged to access our supplemental privacy notice linked above titled,
+                    “view state-specific privacy rights HERE” that is applicable in specific situations.
                   </p>
                 </div>
                 <div>
