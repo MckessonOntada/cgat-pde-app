@@ -514,8 +514,8 @@ const PatientDetails = () => {
                                   onClick={() => {
                                     setIsEditing(false);
                                     setShowAddProviderForm(true);
-                                    //setProvider(null);
-                                    // setFieldValue('providerId', null);
+                                    setProvider(null);
+                                    setFieldValue('providerId', null);
                                   }}
                                   size="md">
                                   {t('provider.btnAddProvider')}
