@@ -10,7 +10,7 @@ const getBinaryOptions = (keyPrefix = '') => {
   }));
 };
 
-export const getFormFields = (t, config, setFieldValue) => {
+export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeSearch, diagnosisCode) => {
   const fields = [];
   const { therapyConfig, channelType } = config;
 
@@ -77,12 +77,27 @@ export const getFormFields = (t, config, setFieldValue) => {
     fields.push(
       ...[
         {
-          name: 'diagnosisCode',
-          label: t('labels.diagnosisCodes'), //t('labels.diagnosisCode'),
-          placeholder: ' ',
+          component: Components['multiSelectDropdown'],
+          id: 'diagnosis-code',
+          name: 'diagnosis-code',
+          label: 'Diagnosis Code(ICD10)',
           isRequired: true,
-          component: Components['input'],
-          maxLength: 50
+          isMultiSelect: true,
+          placeholder: 'Select Diagnosis',
+          onChange: (value) => {
+            const changedValues = value.filter((item) => item.isChecked).map((item) => item.value);
+            if (!areArraysEqual(changedValues, values.diagnosisCode))
+              setFieldValue(
+                'diagnosisCode',
+                value.filter((item) => item.isChecked).map((item) => item.value)
+              );
+          },
+          options: mergeLists(values.diagnosisCode, diagnosisCode),
+          variant: 'async',
+          onSearch: onDiagnosisCodeSearch,
+          recordsCountToEnableSearch: 5,
+          size: 'lg',
+          asyncRecordsFound: values.diagnosisCode.length
         }
       ]
     );
@@ -90,6 +105,32 @@ export const getFormFields = (t, config, setFieldValue) => {
 
   return fields;
 };
+
+function areArraysEqual(arr1 = [], arr2 = []) {
+  if (arr1.length !== arr2.length) return false;
+
+  const set1 = new Set(arr1);
+  const set2 = new Set(arr2);
+
+  if (set1.size !== set2.size) return false;
+
+  for (let item of set1) {
+    if (!set2.has(item)) return false;
+  }
+
+  return true;
+}
+
+function mergeLists(values, list) {
+  const valueSet = new Set(values);
+  const mergedSet = new Set([...values, ...list]);
+
+  return Array.from(mergedSet).map((item) => ({
+    label: item.toUpperCase(),
+    value: item,
+    isChecked: valueSet.has(item)
+  }));
+}
 
 export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouched) => {
   const fields = [];
@@ -106,7 +147,6 @@ export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouche
         component: Components['radioGroup'],
         onChangeValue: (value, form) => {
           setFieldValue('hasAllergies', value);
-          console.log('form', form);
           if (value !== 'yes') {
             setFieldValue('allergyDetails', '');
             setFieldTouched('allergyDetails', false);

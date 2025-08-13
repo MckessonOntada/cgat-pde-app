@@ -447,6 +447,19 @@ async function getManufacturerLogo(therapyId) {
   return URL.createObjectURL(blob);
 }
 
+async function getDiagnosisCodes(query = '') {
+  let url = `${ApiRoutes.ORGANIZATION_BASE()}diagnosis-codes`;
+  if (query) {
+    url += `?query=${query}`;
+  }
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return [];
+}
 async function finalizeOrder(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
@@ -494,6 +507,7 @@ const OrderService = Object.freeze({
   getBackendOrderId,
   getTherapyDetailsByNDC,
   getManufacturerLogo,
+  getDiagnosisCodes,
   finalizeOrder
 });
 

@@ -1394,7 +1394,7 @@ const Summary = () => {
 
                     {isSpOrder && (
                       <>
-                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode} />
+                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode?.split(',').join(', ')} />
                         {additionalDetails?.clinicalDetails?.hasAllergies && (
                           <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
                         )}
