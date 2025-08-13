@@ -146,7 +146,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         }
         return (
           <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-            <Tooltip body={toolTip}>{cellValue}</Tooltip>
+            <Tooltip body={toolTip}>
+              <span>{cellValue}</span>
+            </Tooltip>
           </span>
         );
       }
@@ -170,7 +172,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         }
         return (
           <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-            <Tooltip body={toolTip}>{cellValue}</Tooltip>
+            <Tooltip body={toolTip}>
+              <span>{cellValue}</span>
+            </Tooltip>
           </span>
         );
       }
@@ -197,7 +201,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           }
           return (
             <span aria-label={t('table.columns.captions.manufacturerName')}>
-              <Tooltip body={toolTip}>{cellValue}</Tooltip>
+              <Tooltip body={toolTip}>
+                <span>{cellValue}</span>
+              </Tooltip>
             </span>
           );
         } else {
