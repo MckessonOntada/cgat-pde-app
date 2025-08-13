@@ -23,7 +23,6 @@
       text-transform: uppercase;
       cursor: pointer;
       white-space: nowrap;
-      color: #1f2c3e;
       transition: color 0.2s ease;
 
       &.active {
@@ -48,12 +47,12 @@
     min-width: 10px;
     width: 16px;
     div {
-      color: #627386 !important;
+      color: var(--brand-color-background-light-slate) !important;
     }
 
     &.left {
       position: absolute;
-      left: -0px;
+      left: 0px;
       z-index: 1;
       background: white;
     }
