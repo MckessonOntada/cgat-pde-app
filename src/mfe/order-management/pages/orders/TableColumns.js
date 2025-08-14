@@ -135,6 +135,14 @@ function getOptionsByStatus(props) {
         });
         break;
       case ORDER_ENTITY_ACTION.CANCEL:
+        renderModal({
+          title: translate('labels.information'),
+          bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
+          footerActions: {
+            cancel: { label: translate('labels.orderActions.OK') }
+          }
+        });
+        break;
       case ORDER_ENTITY_ACTION.EDIT:
         if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
           navigate(`${id}/summary`, {
