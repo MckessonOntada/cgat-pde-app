@@ -1,5 +1,6 @@
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
+import CommonUtils from '@src/util/CommonUtils';
 
 const getBinaryOptions = (keyPrefix = '') => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -86,7 +87,7 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
         placeholder: translationFn('dropdown.placeholder.search'),
         onChange: (value) => {
           const changedValues = value.filter((item) => item.isChecked).map((item) => item.value);
-          if (!areArraysEqual(changedValues, formValues.diagnosisCode))
+          if (CommonUtils.isNonEmptyArray(changedValues) && !areArraysEqual(changedValues, formValues.diagnosisCode))
             setFieldValue(
               'diagnosisCode',
               value.filter((item) => item.isChecked).map((item) => item.value)
@@ -125,7 +126,6 @@ function areArraysEqual(arr1 = [], arr2 = []) {
 }
 
 function mergeLists(values, list) {
-  debugger;
   const valueSet = new Set(values);
   const mergedSet = new Set([...values, ...list]);
 
