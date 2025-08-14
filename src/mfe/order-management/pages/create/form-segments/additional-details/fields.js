@@ -1,5 +1,6 @@
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
+import CommonUtils from '@src/util/CommonUtils';
 
 const getBinaryOptions = (keyPrefix = '') => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -85,11 +86,15 @@ export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeS
           isMultiSelect: true,
           placeholder: 'Search',
           onChange: (value) => {
-            const changedValues = value.filter((item) => item.isChecked).map((item) => item.value);
-            if (!areArraysEqual(changedValues, values.diagnosisCode))
+            const changedValues = value.filter((item) => item.isChecked);
+            if (
+              CommonUtils.isNonEmptyArray(changedValues) &&
+              CommonUtils.isNonEmptyArray(values.diagnosisCode) &&
+              !areArraysEqual(changedValues, values.diagnosisCode)
+            )
               setFieldValue(
                 'diagnosisCode',
-                value.filter((item) => item.isChecked).map((item) => item.value)
+                value.filter((item) => item.isChecked)
               );
           },
           options: mergeLists(values.diagnosisCode, diagnosisCode),
@@ -110,27 +115,46 @@ export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeS
 function areArraysEqual(arr1 = [], arr2 = []) {
   if (arr1.length !== arr2.length) return false;
 
-  const set1 = new Set(arr1);
-  const set2 = new Set(arr2);
+  const codes1 = new Set(arr1.map((item) => item.code));
+  const codes2 = new Set(arr2.map((item) => item.code));
 
-  if (set1.size !== set2.size) return false;
+  if (codes1.size !== codes2.size) return false;
 
-  for (let item of set1) {
-    if (!set2.has(item)) return false;
+  for (let code of codes1) {
+    if (!codes2.has(code)) return false;
   }
 
   return true;
 }
 
-function mergeLists(values, list) {
-  const valueSet = new Set(values);
-  const mergedSet = new Set([...values, ...list]);
+function mergeLists(values = [], list = []) {
+  const finalMap = new Map();
 
-  return Array.from(mergedSet).map((item) => ({
-    label: item.toUpperCase(),
-    value: item,
-    isChecked: valueSet.has(item)
-  }));
+  for (const item of list) {
+    finalMap.set(item.code, {
+      label: `${item.code} ${item.description}`,
+      value: item.code,
+      code: item.code,
+      description: item.description,
+      isChecked: false
+    });
+  }
+
+  for (const item of values) {
+    if (finalMap.has(item.code)) {
+      finalMap.get(item.code).isChecked = true;
+    } else {
+      finalMap.set(item.value, {
+        label: `${item.code} ${item.description}`,
+        value: item.code,
+        code: item.code,
+        description: item.description,
+        isChecked: true
+      });
+    }
+  }
+
+  return Array.from(finalMap.values());
 }
 
 export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouched) => {

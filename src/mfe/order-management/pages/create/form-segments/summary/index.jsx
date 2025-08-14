@@ -755,6 +755,15 @@ const Summary = () => {
       <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
     </span>
   );
+
+  const getDiagnosisCodesDisplayLabel = (diagnosisCodeString) => {
+    try {
+      const diagnosisCode = JSON.parse(diagnosisCodeString);
+      return diagnosisCode.map((item) => `${item.code} ${item.description}`).join(', ');
+    } catch (error) {
+      return '-';
+    }
+  };
   const isPhysician = AuthUtils.isPhysician();
 
   return (
@@ -1394,7 +1403,7 @@ const Summary = () => {
 
                     {isSpOrder && (
                       <>
-                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode?.split(',').join(', ')} />
+                        <DetailSegment label={t('label.diagnosisCode')} value={getDiagnosisCodesDisplayLabel(additionalDetails?.diagnosisCode)} />
                         {additionalDetails?.clinicalDetails?.hasAllergies && (
                           <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
                         )}
