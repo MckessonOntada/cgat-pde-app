@@ -87,11 +87,7 @@ export const getFormFields = (t, config, setFieldValue, values, onDiagnosisCodeS
           placeholder: 'Search',
           onChange: (value) => {
             const changedValues = value.filter((item) => item.isChecked);
-            if (
-              CommonUtils.isNonEmptyArray(changedValues) &&
-              CommonUtils.isNonEmptyArray(values.diagnosisCode) &&
-              !areArraysEqual(changedValues, values.diagnosisCode)
-            )
+            if (CommonUtils.isNonEmptyArray(changedValues) && !areArraysEqual(changedValues, values.diagnosisCode))
               setFieldValue(
                 'diagnosisCode',
                 value.filter((item) => item.isChecked)
