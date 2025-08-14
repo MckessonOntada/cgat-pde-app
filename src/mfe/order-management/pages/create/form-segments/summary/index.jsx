@@ -1149,7 +1149,7 @@ const Summary = () => {
                     </div>
                   </div>
                 )}
-                {shouldShowIdentifierSection && (
+                {shouldShowIdentifierSection && CommonUtils.isNonEmptyArray([patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber]) && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
