@@ -1634,3 +1634,23 @@ div.empty-table-wrapper {
     width: 100%;
   }
 }
+.collaborator {
+  font-size: var(--brand-font-size--small);
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  .collaborator-initials {
+    display: flex;
+    gap: 4px;
+    span {
+      background-color: #007cc1;
+      color: #ffff;
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

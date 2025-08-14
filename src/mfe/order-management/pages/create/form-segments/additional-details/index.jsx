@@ -32,6 +32,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import Collaborator from '../Collaborator';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -777,7 +778,12 @@ function AdditionalDetails() {
             }
           />
         }
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">

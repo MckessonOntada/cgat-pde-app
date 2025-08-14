@@ -34,6 +34,7 @@ import { CHANNEL_TYPE } from '../Constants';
 import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import Collaborator from '../Collaborator';
 
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -295,7 +296,12 @@ function Payer() {
             }
           />
         }
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">

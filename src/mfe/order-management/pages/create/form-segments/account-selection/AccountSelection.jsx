@@ -23,6 +23,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import Collaborator from '../Collaborator';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -209,7 +210,12 @@ const AccountSelection = () => {
 
       <ModuleHeader
         heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">
