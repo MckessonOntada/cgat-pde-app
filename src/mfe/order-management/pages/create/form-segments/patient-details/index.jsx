@@ -125,15 +125,16 @@ const PatientDetails = () => {
     renderModal({
       title: t('modal.title.duplicateOrder'),
       bodyContent: (
-        <p
+        <div
           style={{
             fontSize: 'var(--brand-font-size--default)',
             fontWeight: 400,
             lineHeight: 'var(--brand-line-height--m-large)'
           }}>
-          {t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}
-          <br /> {t('modal.body.duplicateOrder.line_2')}
-        </p>
+          <p>{t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}</p>
+          <br />
+          <p>{t('modal.body.duplicateOrder.line_2')}</p>
+        </div>
       ),
       footerActions: {
         confirm: {
