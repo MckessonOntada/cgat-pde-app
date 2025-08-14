@@ -20,6 +20,7 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import Tabs from '../CustomTabList';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY_AND_BILL',
@@ -310,17 +311,7 @@ function TherapyDetailsWithTabs({
       </div>
       <div className={styles.wrapper}>
         <div className="customTab" style={{ padding: '0px 16px' }}>
-          {shouldRenderTabList && (
-            <TabList
-              options={therapyTabs}
-              alignment="left"
-              onTabClick={handleOnTabChange}
-              showShadow={false}
-              variant={'text'}
-              useAsButton={true}
-              aria-label={t('controls.ariaLabels.orderTabList')}
-            />
-          )}
+          {shouldRenderTabList && <Tabs options={therapyTabs} onTabClick={handleOnTabChange} />}
         </div>
         {isLoading ? (
           <Loader variant="circular" />
