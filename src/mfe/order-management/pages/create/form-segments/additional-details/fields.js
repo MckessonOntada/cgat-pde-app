@@ -140,7 +140,7 @@ function mergeLists(values = [], list = []) {
     if (finalMap.has(item.code)) {
       finalMap.get(item.code).isChecked = true;
     } else {
-      finalMap.set(item.value, {
+      finalMap.set(item.code, {
         label: `${item.code} ${item.description}`,
         value: item.code,
         code: item.code,
