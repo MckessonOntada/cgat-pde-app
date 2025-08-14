@@ -163,6 +163,7 @@ export const UserManagementEN = {
   'userManagement.searchFilter.addaccount_label': 'Search By Name or location',
   'userManagement.add_accounts.labelheader': 'Select accounts',
 
+  CREATE_NEW_ORDER: 'Create New Order',
   USER_MANAGEMENT: 'User and account Management',
   ORGANIZATION_MANAGEMENT: 'Organization Management',
   ORDER_MANAGEMENT: 'Order Management',
@@ -429,5 +430,16 @@ export const UserManagementEN = {
   'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
-  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.'
+  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.',
+  'CREATE_NEW_ORDER.CREATE_NEW_ORDER': 'Create New Order',
+  'CREATE_NEW_ORDER.THERAPY_SELECTION': 'Therapy Selection',
+  'CREATE_NEW_ORDER.THERAPY_SELECTION.DESCRIPTION': 'Allows user to select Therapy',
+  'CREATE_NEW_ORDER.ACCOUNT_SELECTION': 'Account Selection',
+  'CREATE_NEW_ORDER.ACCOUNT_SELECTION.DESCRIPTION': 'Allows user to select sold to and ship to account',
+  'CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS': 'Patient, Provider and Payer Information',
+  'CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS.DESCRIPTION': 'Allows user to add patient, provider and insurance details,',
+  'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS': 'Additional Details',
+  'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS.DESCRIPTION': 'Allows user to fill additional details and configured questionnaire.',
+  'CREATE_NEW_ORDER.SUBMIT_ORDER': 'Submit Order',
+  'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'Allows user to submit the order.'
 };
