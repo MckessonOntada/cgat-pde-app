@@ -459,6 +459,7 @@ export const MessageEn = {
 
   'button.caption.backQuestionnaireBuilder': 'Back to Questionnaire Builder',
   'heading.addQuestionnaire': 'Add Questionnaire',
+  'button.caption.remove': 'Remove',
   'heading.templateDetails': 'Template Details',
   'heading.questions': 'Questions',
   'message.questionTextMaxChar': 'Maximum 1,000 Characters',
