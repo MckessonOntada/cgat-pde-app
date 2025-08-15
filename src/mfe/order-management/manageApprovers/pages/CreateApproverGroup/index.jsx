@@ -260,7 +260,7 @@ const CreateApproverGroup = () => {
                         ispillsVisible={true}
                         onChange={(value) => {
                           const changedValues = value.filter((item) => item.isChecked);
-                          if (CommonUtils.isNonEmptyArray(changedValues) && !CommonUtils.areArraysEqual(changedValues, values.approverUsers))
+                          if (CommonUtils.isNonEmptyArray(changedValues) && !CommonUtils.areArraysUnique(changedValues, values.approverUsers))
                             setFieldValue(
                               `approverUsers`,
                               value.filter((item) => item.isChecked)

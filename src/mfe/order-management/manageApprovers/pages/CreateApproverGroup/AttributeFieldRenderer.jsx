@@ -77,7 +77,7 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, onSe
           component={Components['multiSelectDropdown']}
           onChange={(value) => {
             const changedValues = value.filter((item) => item.isChecked);
-            if (CommonUtils.isNonEmptyArray(changedValues) && !CommonUtils.filterObjectByKeyareArraysEqual(changedValues, controlValue))
+            if (CommonUtils.isNonEmptyArray(changedValues) && !CommonUtils.areArraysUnique(changedValues, controlValue))
               setFieldValue(
                 `rules[${index}].value`,
                 value.filter((item) => item.isChecked)

@@ -766,7 +766,7 @@ const getOrderCost = (originalOrderCost, updatedOrderCost) => {
   return orderCost;
 };
 
-function areArraysEqual(arr1 = [], arr2 = []) {
+function areArraysUnique(arr1 = [], arr2 = []) {
   if (arr1.length !== arr2.length) return false;
 
   const codes1 = new Set(arr1.map((item) => item.code));
@@ -841,7 +841,7 @@ const CommonUtils = Object.freeze({
   removeLeadingZeros,
   getOrderCost,
   formatSupportNumber,
-  areArraysEqual
+  areArraysUnique
 });
 
 export default CommonUtils;
