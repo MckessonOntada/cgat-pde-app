@@ -24,10 +24,11 @@ import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
 import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
-const AccountSelection = () => {
+const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
@@ -176,7 +177,7 @@ const AccountSelection = () => {
       });
     } else {
       setAlert(null);
-      if (isDirty) {
+      if (isDirty || isSelfAttested) {
         saveAccount(payload);
       } else {
         navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
@@ -246,6 +247,7 @@ const AccountSelection = () => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.ACCOUNT_DETAILS} />}
         <OrderHeaderDetails
           orderDetails={orderDetails}
           priceDetails={priceDetails}
@@ -256,6 +258,7 @@ const AccountSelection = () => {
           channelType={selectedSoldToAccount?.channelType}
         />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {/* <div className={`MCP-module-wrapper ${readOnly ? 'disabled-div' : ''}`}> */}
         <div className={`MCP-module-wrapper`}>
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -346,4 +349,5 @@ const AccountSelection = () => {
   );
 };
 
-export default AccountSelection;
+//export default AccountSelection;
+export default withPermissions(AccountSelection, ORDER_STAGES.ACCOUNT_DETAILS);

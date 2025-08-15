@@ -8,7 +8,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+// import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import OrderService from '@src/api/commonService/OrderService';
@@ -27,7 +27,7 @@ import { InventoryIndicator } from '../InventoryIndicator';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import { getFullName } from '@src/util/CommonUtils';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import dayjs from 'dayjs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import InfoModel from '@src/components/InfoModel/indix';
@@ -44,8 +44,10 @@ import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsValidationSchema } from './EditConfig';
 import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { showEditAlert } from '../OrderAttestationModel';
 
-const Summary = () => {
+const Summary = ({ checkEditPermission, hasPermission }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -571,23 +573,11 @@ const Summary = () => {
     } else {
       if (isPapOrder) {
         console.log('This is a No Cost Therapy Order, Hence can not be edited.');
-        renderModal({
-          title: t('prompt.title.alert'),
-          bodyContent: (
-            <div className="MCP-modal-body">
-              <p>{t('prompt.message.editRestriction')}</p>
-            </div>
-          ),
-          footerActions: {
-            cancel: {
-              label: t('label.ok')
-            }
-          }
-        });
+        showEditAlert(t('prompt.title.alert'), t('prompt.message.editRestriction'), t('label.ok'));
         return;
       }
       const basePath = RoutePaths.pathOrderManagement;
-
+      const hasPermission = checkEditPermission(stage);
       const stageRoutes = {
         [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit-order/${orderId}`,
         [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/${orderId}/accounts`,
@@ -597,9 +587,12 @@ const Summary = () => {
       };
 
       const route = stageRoutes[stage] || basePath;
-      navigate(route, {
-        state: { ...locationState, isEdit: true, isApprover }
-      });
+      hasPermission
+        ? navigate(route, {
+            state: { ...locationState, isEdit: true, isApprover }
+          })
+        : showEditAlert(t('prompt.title.alert'), t('labels.summaryEditMessage'), t('label.ok'));
+      return;
     }
   };
 
@@ -635,7 +628,7 @@ const Summary = () => {
     );
 
     const controlSubmitOrder = (
-      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
         <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
@@ -643,7 +636,7 @@ const Summary = () => {
     );
 
     const controlReSubmitOrder = (
-      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
         <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
@@ -1036,15 +1029,13 @@ const Summary = () => {
                         heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
                         controls={
                           showControls && (
-                            <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                              <Button
-                                size="md"
-                                variant="tertiary"
-                                onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
-                                Icon={() => <IconEditField />}>
-                                {t('captions.btnEdit')}
-                              </Button>
-                            </PermittedComponent>
+                            <Button
+                              size="md"
+                              variant="tertiary"
+                              onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
+                              Icon={() => <IconEditField />}>
+                              {t('captions.btnEdit')}
+                            </Button>
                           )
                         }
                       />
@@ -1064,15 +1055,13 @@ const Summary = () => {
                         heading={<Heading as="h3">{t('labels.accountDetails')}</Heading>}
                         controls={
                           showControls && (
-                            <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                              <Button
-                                size="md"
-                                variant="tertiary"
-                                onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
-                                Icon={() => <IconEditField />}>
-                                {t('captions.btnEdit')}
-                              </Button>
-                            </PermittedComponent>
+                            <Button
+                              size="md"
+                              variant="tertiary"
+                              onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
+                              Icon={() => <IconEditField />}>
+                              {t('captions.btnEdit')}
+                            </Button>
                           )
                         }
                       />
@@ -1101,15 +1090,9 @@ const Summary = () => {
                       heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
                         (showControls || allowUpdateBnBAfterSubmit) && (
-                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          </PermittedComponent>
+                          <Button size="md" variant="tertiary" onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
                         )
                       }
                     />
@@ -1157,15 +1140,9 @@ const Summary = () => {
                       heading={<Heading as="h3">{t('orderManagement.patientDetails.identifier_details')}</Heading>}
                       controls={
                         showControls && (
-                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          </PermittedComponent>
+                          <Button size="md" variant="tertiary" onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
                         )
                       }
                     />
@@ -1189,15 +1166,13 @@ const Summary = () => {
                           heading={<Heading as="h3">{t('labels.providerDetails')}</Heading>}
                           controls={
                             showControls && (
-                              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                <Button
-                                  size="md"
-                                  variant="tertiary"
-                                  onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
-                                  Icon={() => <IconEditField />}>
-                                  {t('captions.btnEdit')}
-                                </Button>
-                              </PermittedComponent>
+                              <Button
+                                size="md"
+                                variant="tertiary"
+                                onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                                Icon={() => <IconEditField />}>
+                                {t('captions.btnEdit')}
+                              </Button>
                             )
                           }
                         />
@@ -1220,15 +1195,13 @@ const Summary = () => {
                               heading={<Heading as="h3">{t('label.primarymedicalinsurance')}</Heading>}
                               controls={
                                 showControls && (
-                                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                    <Button
-                                      size="md"
-                                      variant="tertiary"
-                                      onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
-                                      Icon={() => <IconEditField />}>
-                                      {t('captions.btnEdit')}
-                                    </Button>
-                                  </PermittedComponent>
+                                  <Button
+                                    size="md"
+                                    variant="tertiary"
+                                    onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
+                                    Icon={() => <IconEditField />}>
+                                    {t('captions.btnEdit')}
+                                  </Button>
                                 )
                               }
                             />
@@ -1256,15 +1229,13 @@ const Summary = () => {
                               heading={<Heading as="h3">{t('label.secondarymedicalinsurance')}</Heading>}
                               controls={
                                 showControls && (
-                                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                    <Button
-                                      size="md"
-                                      variant="tertiary"
-                                      onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
-                                      Icon={() => <IconEditField />}>
-                                      {t('captions.btnEdit')}
-                                    </Button>
-                                  </PermittedComponent>
+                                  <Button
+                                    size="md"
+                                    variant="tertiary"
+                                    onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
+                                    Icon={() => <IconEditField />}>
+                                    {t('captions.btnEdit')}
+                                  </Button>
                                 )
                               }
                             />
@@ -1298,15 +1269,13 @@ const Summary = () => {
                               heading={<Heading as="h3">{t('label.primarypharmacyinsurance')}</Heading>}
                               controls={
                                 showControls && (
-                                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                    <Button
-                                      size="md"
-                                      variant="tertiary"
-                                      onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
-                                      Icon={() => <IconEditField />}>
-                                      {t('captions.btnEdit')}
-                                    </Button>
-                                  </PermittedComponent>
+                                  <Button
+                                    size="md"
+                                    variant="tertiary"
+                                    onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
+                                    Icon={() => <IconEditField />}>
+                                    {t('captions.btnEdit')}
+                                  </Button>
                                 )
                               }
                             />
@@ -1332,15 +1301,13 @@ const Summary = () => {
                               heading={<Heading as="h3">{t('label.secondarypharmacyinsurance')}</Heading>}
                               controls={
                                 showControls && (
-                                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                    <Button
-                                      size="md"
-                                      variant="tertiary"
-                                      onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
-                                      Icon={() => <IconEditField />}>
-                                      {t('captions.btnEdit')}
-                                    </Button>
-                                  </PermittedComponent>
+                                  <Button
+                                    size="md"
+                                    variant="tertiary"
+                                    onClick={() => handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)}
+                                    Icon={() => <IconEditField />}>
+                                    {t('captions.btnEdit')}
+                                  </Button>
                                 )
                               }
                             />
@@ -1370,15 +1337,13 @@ const Summary = () => {
                     heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                     controls={
                       (showControls || allowUpdateBnBAfterSubmit) && (
-                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                          <Button
-                            size="md"
-                            variant="tertiary"
-                            onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                            Icon={() => <IconEditField />}>
-                            {t('captions.btnEdit')}
-                          </Button>
-                        </PermittedComponent>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
                       )
                     }
                   />
@@ -1420,15 +1385,13 @@ const Summary = () => {
                       heading={<Heading as="h3">{t('labels.variant')}</Heading>}
                       controls={
                         showControls && (
-                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          </PermittedComponent>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
                         )
                       }
                     />
@@ -1463,15 +1426,13 @@ const Summary = () => {
                               heading={<Heading as="h3">{section.sectionName}</Heading>}
                               controls={
                                 showControls && (
-                                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                                    <Button
-                                      size="md"
-                                      variant="tertiary"
-                                      onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                                      Icon={IconEditField}>
-                                      {t('captions.btnEdit')}
-                                    </Button>
-                                  </PermittedComponent>
+                                  <Button
+                                    size="md"
+                                    variant="tertiary"
+                                    onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                                    Icon={IconEditField}>
+                                    {t('captions.btnEdit')}
+                                  </Button>
                                 )
                               }
                             />
@@ -1615,4 +1576,4 @@ const Summary = () => {
   );
 };
 
-export default Summary;
+export default withPermissions(Summary);

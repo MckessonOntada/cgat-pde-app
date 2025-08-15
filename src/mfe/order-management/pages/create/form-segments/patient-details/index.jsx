@@ -31,12 +31,13 @@ import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
-import { ORDER_STATUS } from '../../../orders/config'; 
+import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { showSaveAsDraftConfirm } from '../OrderAttestationModel'; 
-import Collaborator from '../Collaborator'; 
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
-const PatientDetails = () => {
+const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
   const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
@@ -372,7 +373,7 @@ const PatientDetails = () => {
 
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
-
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS} />}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
@@ -386,6 +387,7 @@ const PatientDetails = () => {
             }, [values]);
             return (
               <Form>
+                {/* <div className={`${styles.wrapper} ${readOnly ? 'disabled-div' : ''}`}>  */}
                 <div className={styles.wrapper}>
                   <div className="MCP-module-body">
                     <div className="MCP-panel-container">
@@ -601,4 +603,5 @@ const PatientDetails = () => {
     </div>
   );
 };
-export default PatientDetails;
+// export default PatientDetails;
+export default withPermissions(PatientDetails, ORDER_STAGES.PATIENT_DETAILS);

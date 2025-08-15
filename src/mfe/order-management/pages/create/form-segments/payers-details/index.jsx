@@ -35,11 +35,11 @@ import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
 import Collaborator from '../Collaborator';
- 
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
-function Payer() {
+function Payer({ readOnly, hasPermission }) {
   const [formValues, setFormValues] = React.useState(baseValues);
   const [isSecondaryMedicalInsuranceOpen, setIsSecondaryMedicalInsuranceOpen] = React.useState(false);
   const [isSecondaryPharmacyInsuranceOpen, setIsSecondaryPharmacyInsuranceOpen] = React.useState(false);
@@ -332,6 +332,7 @@ function Payer() {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.payerDetails} />}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
 
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
@@ -419,6 +420,7 @@ function Payer() {
 
             return (
               <Form>
+                {/* <div className={`MCP-module-body ${readOnly ? 'disabled-div' : ''}`}> */}
                 <div className="MCP-module-body">
                   <div className="MCP-CardContainer">
                     <div className="MCP-module-body">
@@ -568,4 +570,5 @@ function Payer() {
   );
 }
 
-export default Payer;
+// export default Payer;
+export default withPermissions(Payer, ORDER_STAGES.payerDetails);

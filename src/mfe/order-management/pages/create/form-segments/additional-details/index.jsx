@@ -31,10 +31,11 @@ import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
-import { ORDER_STATUS } from '../../../orders/config'; 
+import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { showSaveAsDraftConfirm } from '../OrderAttestationModel'; 
-import Collaborator from '../Collaborator'; 
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -65,7 +66,7 @@ const ALLOWED_FILE_TYPE = [
 ];
 const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 
-function AdditionalDetails() {
+function AdditionalDetails({ readOnly }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -813,6 +814,7 @@ function AdditionalDetails() {
 
       <div className="MCP-module-body">
         <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.ADDITIONAL_DETAILS} />}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
@@ -833,6 +835,7 @@ function AdditionalDetails() {
             return (
               <Form>
                 <div className="MCP-module-body">
+                  {/* <div className={`MCP-module-body ${readOnly ? 'disabled-div' : ''}`}> */}
                   <div className="MCP-panel-container">
                     <ModuleHeader
                       heading={
@@ -1071,4 +1074,5 @@ const VariantTable = ({ variant, onChange, data }) => {
     />
   );
 };
-export default AdditionalDetails;
+// export default AdditionalDetails;
+export default withPermissions(AdditionalDetails, ORDER_STAGES.ADDITIONAL_DETAILS);

@@ -21,14 +21,13 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
-import ManufacturerLogo from '../ManufacturerLogo';
-import { ORDER_STATUS } from '../../../orders/config'; 
+import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { ORDER_STAGES } from '../Constants';
-import ConfirmationModal from '../OrderAttestationModel'; 
-import Collaborator from '../Collaborator'; 
+import { notifyUserByStage, ORDER_STAGES } from '../Constants';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
-function TherapySelection() {
+function TherapySelection({ readOnly, currentStage, hasPermission }) {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
@@ -235,7 +234,8 @@ function TherapySelection() {
         />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
-        <div className={styles.wrapper}>
+        {/* <div className={`${styles.wrapper} ${readOnly ? 'disabled-div' : ''}`}> */}
+        <div className={`${styles.wrapper}`}>
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
               <CommonFilters
@@ -286,4 +286,5 @@ function TherapySelection() {
     </div>
   );
 }
-export default TherapySelection;
+//export default TherapySelection;
+export default withPermissions(TherapySelection, ORDER_STAGES.THERAPY_SELECTION);

@@ -1,5 +1,9 @@
+import Alert from '@src/components/cgat-alert/Alert';
 import { renderModal } from '@src/util/ModalUtil';
 import React from 'react';
+import { NOTIFY_ALERT, notifyUserByStage } from './Constants';
+import { useTranslate } from '@src/translations/useTranslation';
+import { Link } from 'react-router-dom';
 
 export function showSaveAsDraftConfirm({ t, onOk, onCancel }) {
   return renderModal({
@@ -21,3 +25,32 @@ export function showSaveAsDraftConfirm({ t, onOk, onCancel }) {
     }
   });
 }
+
+export function showEditAlert(title, message, cancelBtnLabel) {
+  renderModal({
+    title,
+    bodyContent: (
+      <div className="MCP-modal-body">
+        <p>{message}</p>
+      </div>
+    ),
+    footerActions: {
+      cancel: {
+        label: cancelBtnLabel
+      }
+    }
+  });
+}
+
+export const NotifyAlert = (stage) => {
+  const { t } = useTranslate();
+  const stageValue = Object.values(stage)[0];
+  const message = notifyUserByStage(stageValue, t);
+
+  const strMessage = (
+    <>
+      {message} <Link onClick={() => alert('Clicked!')}>Notify User</Link>
+    </>
+  );
+  return <Alert type="info" description={strMessage} showCloseIcon={false} />;
+};
