@@ -43,6 +43,7 @@ import { BUTTON_ACTIONS } from './constants';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsValidationSchema } from './EditConfig';
+import Collaborator from '../Collaborator';
 
 const Summary = () => {
   const { t } = useTranslate();
@@ -755,6 +756,15 @@ const Summary = () => {
       <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('label.noCostTherapy')} />
     </span>
   );
+
+  const getDiagnosisCodesDisplayLabel = (diagnosisCodeString) => {
+    try {
+      const diagnosisCode = JSON.parse(diagnosisCodeString);
+      return diagnosisCode.map((item) => `${item.code} ${item.description}`).join(', ');
+    } catch (error) {
+      return '-';
+    }
+  };
   const isPhysician = AuthUtils.isPhysician();
 
   return (
@@ -851,7 +861,7 @@ const Summary = () => {
                     )}
                   </div>
                 )}
-
+                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
               </div>
             }
@@ -1140,7 +1150,7 @@ const Summary = () => {
                     </div>
                   </div>
                 )}
-                {shouldShowIdentifierSection && (
+                {shouldShowIdentifierSection && CommonUtils.isNonEmptyArray([patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber]) && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
@@ -1394,7 +1404,7 @@ const Summary = () => {
 
                     {isSpOrder && (
                       <>
-                        <DetailSegment label={t('label.diagnosisCode')} value={additionalDetails?.diagnosisCode?.split(',').join(', ')} />
+                        <DetailSegment label={t('label.diagnosisCode')} value={getDiagnosisCodesDisplayLabel(additionalDetails?.diagnosisCode)} />
                         {additionalDetails?.clinicalDetails?.hasAllergies && (
                           <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
                         )}

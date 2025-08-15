@@ -31,9 +31,10 @@ import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
-import { ORDER_STATUS } from '../../../orders/config';
+import { ORDER_STATUS } from '../../../orders/config'; 
 import OrderAttestation from '../OrderAttestation';
-import { showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { showSaveAsDraftConfirm } from '../OrderAttestationModel'; 
+import Collaborator from '../Collaborator'; 
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -166,7 +167,7 @@ function AdditionalDetails() {
       schema = schema.concat(
         Yup.object({
           diagnosisCode: Yup.array()
-            .of(Yup.string().required(t('labels.diagnosisCodeRequired')))
+            .of(Yup.object().required(t('labels.diagnosisCodeRequired')))
             .min(1, 'Select at least on diagnosis code')
             .required('Diagnosis code is required'),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
@@ -525,8 +526,12 @@ function AdditionalDetails() {
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
-          const diagnosisCodeOptions = orderDetails.additionalDetails.diagnosisCode.split(',').map((item) => item);
-          initialValues.diagnosisCode = [...diagnosisCodeOptions];
+          try {
+            const diagnosisCodeOptions = JSON.parse(orderDetails.additionalDetails.diagnosisCode);
+            initialValues.diagnosisCode = [...diagnosisCodeOptions];
+          } catch (error) {
+            initialValues.diagnosisCode = [];
+          }
         } else {
           initialValues.diagnosisCode = [];
         }
@@ -566,7 +571,12 @@ function AdditionalDetails() {
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
       if (result.content && CommonUtils.isNonEmptyArray(result.content)) {
-        setDiagnosisCode(result.content.map((item) => item.code));
+        setDiagnosisCode(
+          result.content.map((item) => ({
+            code: item.code,
+            description: item.longDescription
+          }))
+        );
       }
     });
   }, [diagnosisSearchQuery]);
@@ -657,7 +667,12 @@ function AdditionalDetails() {
       }
 
       payload.clinicalDetails = clinicalDetails;
-      payload.diagnosisCode = diagnosisCode.join(',');
+      payload.diagnosisCode = JSON.stringify(
+        diagnosisCode.map((item) => ({
+          code: item.code,
+          description: item.description
+        }))
+      );
     } else {
       payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
@@ -788,7 +803,12 @@ function AdditionalDetails() {
             }
           />
         }
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">

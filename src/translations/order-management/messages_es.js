@@ -582,7 +582,6 @@ export const MessageEs = {
   'form.label.rxBin': 'S_RX BIN',
   'button.caption.addSecondaryMedicalInsurance': 'S_Add Secondary Medical Insurance',
   'button.caption.addSecondaryPharmacyInsurance': 'S_Add Secondary Pharmacy Insurance',
-
   'messages.enterInsuranceCompanyName': 'S_Please enter the Insurance Company name.',
   'messages.insuranceCompanyNameCharLimit': 'S_Insurance Company name must not exceed 100 characters.',
   'messages.avoidSpecialCharsNumbers': 'S_Avoid using special characters or numbers.',
@@ -621,9 +620,10 @@ export const MessageEs = {
   'column.material.crosswalk.spNDC': 'S_SP NDC',
   'column.material.crosswalk.action': 'S_Action',
   'controls.updateDocument': 'S_Upload Document',
-  'messages.insuranceCompanyExtraSpaceError': 'Insurance Company must not contain leading or trailing spaces',
-  'messages.phFirstNameExtraSpaceError': 'Policy Holder First Name must not contain leading or trailing spaces',
-  'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
-  'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
-  'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.'
+  'messages.insuranceCompanyExtraSpaceError': 'S_Insurance Company must not contain leading or trailing spaces',
+  'messages.phFirstNameExtraSpaceError': 'S_Policy Holder First Name must not contain leading or trailing spaces',
+  'messages.phLastNameExtraSpaceError': 'S_Policy Holder Last Name must not contain leading or trailing spaces',
+  'messages.pharmacyManagerExtraSpaceError': 'S_Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
+  'error.default': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
+  'labels.collaborators': 'S_Collaborators:'
 };

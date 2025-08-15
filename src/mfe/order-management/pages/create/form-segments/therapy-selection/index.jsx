@@ -22,10 +22,11 @@ import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
-import { ORDER_STATUS } from '../../../orders/config';
+import { ORDER_STATUS } from '../../../orders/config'; 
 import OrderAttestation from '../OrderAttestation';
 import { ORDER_STAGES } from '../Constants';
-import ConfirmationModal from '../OrderAttestationModel';
+import ConfirmationModal from '../OrderAttestationModel'; 
+import Collaborator from '../Collaborator'; 
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -221,7 +222,10 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <ModuleHeader heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />} controls={null} />
+      <ModuleHeader
+        heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
+        controls={orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+      />
 
       <div className="MCP-module-body">
         <OrderStepper

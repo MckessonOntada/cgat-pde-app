@@ -31,9 +31,10 @@ import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
-import { ORDER_STATUS } from '../../../orders/config';
+import { ORDER_STATUS } from '../../../orders/config'; 
 import OrderAttestation from '../OrderAttestation';
-import { showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { showSaveAsDraftConfirm } from '../OrderAttestationModel'; 
+import Collaborator from '../Collaborator'; 
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -132,15 +133,16 @@ const PatientDetails = () => {
     renderModal({
       title: t('modal.title.duplicateOrder'),
       bodyContent: (
-        <p
+        <div
           style={{
             fontSize: 'var(--brand-font-size--default)',
             fontWeight: 400,
             lineHeight: 'var(--brand-line-height--m-large)'
           }}>
-          {t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}
-          <br /> {t('modal.body.duplicateOrder.line_2')}
-        </p>
+          <p>{t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}</p>
+          <br />
+          <p>{t('modal.body.duplicateOrder.line_2')}</p>
+        </div>
       ),
       footerActions: {
         confirm: {
@@ -360,7 +362,12 @@ const PatientDetails = () => {
             }
           />
         }
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">

@@ -268,9 +268,9 @@ export const getColumnsByEntityType = ({
               onClick={(e) => {
                 e.preventDefault();
                 setOpenDetails(true);
-                setSelectedDetails(props);
+                setSelectedDetails(props?.catalogPrice);
               }}>
-              <EclipsesTextcss str={props.sapMaterial} maxWidth={240} />
+              <EclipsesTextcss str={props?.catalogPrice?.sapMaterial} maxWidth={240} />
             </Link>
           )
         },
@@ -282,7 +282,7 @@ export const getColumnsByEntityType = ({
           minWidth: '180px',
           cell: (props) => (
             <span aria-label={t('labels.therapy.materialDescription')}>
-              <EclipsesTextcss str={props.materialDescriptionInLanguageEn} maxWidth={170} />
+              <EclipsesTextcss str={props?.catalogPrice?.materialDescriptionInLanguageEn} maxWidth={170} />
             </span>
           )
         },
@@ -293,7 +293,7 @@ export const getColumnsByEntityType = ({
           maxWidth: '290px',
           cell: (props) => (
             <span aria-label={t('labels.therapy.ndc')}>
-              <EclipsesTextcss str={props.ndc} maxWidth={180} />
+              <EclipsesTextcss str={props?.catalogPrice?.ndc} maxWidth={180} />
             </span>
           )
         },
@@ -304,7 +304,7 @@ export const getColumnsByEntityType = ({
           maxWidth: '290px',
           cell: (props) => (
             <span aria-label={t('labels.distChannel')}>
-              <EclipsesTextcss str={props.distChannel} maxWidth={180} />
+              <EclipsesTextcss str={props?.catalogPrice?.distChannel} maxWidth={180} />
             </span>
           )
         },
@@ -316,7 +316,7 @@ export const getColumnsByEntityType = ({
           sortable: false,
           cell: (props) => (
             <span aria-label={t('labels.variant')}>
-              <EclipsesTextcss str={props.variant} maxWidth={130} />
+              <EclipsesTextcss str={props?.catalogPrice?.variant} maxWidth={130} />
             </span>
           )
         },
@@ -328,7 +328,7 @@ export const getColumnsByEntityType = ({
           sortable: false,
           cell: (props) => (
             <span aria-label={t('labels.soldTo')}>
-              <EclipsesTextcss str={props.soldToCustomer} maxWidth={130} />
+              <EclipsesTextcss str={props?.catalogPrice?.soldToCustomer} maxWidth={130} />
             </span>
           )
         },
@@ -340,7 +340,7 @@ export const getColumnsByEntityType = ({
           sortable: false,
           cell: (props) => (
             <span aria-label={t('labels.shipTo')}>
-              <EclipsesTextcss str={props.shipToCustomer} maxWidth={130} />
+              <EclipsesTextcss str={props?.catalogPrice?.shipToCustomer} maxWidth={130} />
             </span>
           )
         }
