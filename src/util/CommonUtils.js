@@ -766,6 +766,21 @@ const getOrderCost = (originalOrderCost, updatedOrderCost) => {
   return orderCost;
 };
 
+function areArraysEqual(arr1 = [], arr2 = []) {
+  if (arr1.length !== arr2.length) return false;
+
+  const codes1 = new Set(arr1.map((item) => item.code));
+  const codes2 = new Set(arr2.map((item) => item.code));
+
+  if (codes1.size !== codes2.size) return false;
+
+  for (let code of codes1) {
+    if (!codes2.has(code)) return false;
+  }
+
+  return true;
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -825,7 +840,8 @@ const CommonUtils = Object.freeze({
   getFileNameAndType,
   removeLeadingZeros,
   getOrderCost,
-  formatSupportNumber
+  formatSupportNumber,
+  areArraysEqual
 });
 
 export default CommonUtils;

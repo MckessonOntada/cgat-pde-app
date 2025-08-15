@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -14,13 +14,41 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import Components from '@src/components/form/Components';
 import Attributes from './Attribute';
-import { useApprover } from '../../context/ApproverContext';
-import { createLabelData, getValidationSchema, transformAttributesToRules } from './formUtils';
+import { getValidationSchema, transformAttributesToRules } from './formUtils';
 import './index.scss';
 import { useFormContext } from '../../context/FormContext';
-import { handleApiError } from '@src/util/ApiUtils';
+import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import CommonUtils, { getFullName } from '@src/util/CommonUtils';
+
+function mergeLists(values = [], list = []) {
+  const finalMap = new Map();
+
+  for (const item of list) {
+    finalMap.set(item.value, {
+      label: item.label,
+      value: item.value,
+      email: item.email,
+      isChecked: false
+    });
+  }
+
+  for (const item of values) {
+    if (finalMap.has(item.value)) {
+      finalMap.get(item.value).isChecked = true;
+    } else {
+      finalMap.set(item.value, {
+        label: item.label,
+        value: item.value,
+        email: item.email,
+        isChecked: true
+      });
+    }
+  }
+
+  return Array.from(finalMap.values());
+}
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
@@ -28,20 +56,47 @@ const CreateApproverGroup = () => {
   const location = useLocation();
   const { grpId } = useParams();
   const { initialValues, isEditMode, setIsEditMode, initializeFormFromLocation } = useFormContext();
-  const { usersData } = useApprover();
   const [alert, setAlert] = useState(null);
-  const [localUserData, setLocalUsersData] = useState([]);
   const practiceId = AuthUtils.getPracticeId();
+  const [approverData, setApproverData] = React.useState([]);
+  const [approverUserQuery, setApproverUserQuery] = React.useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const dataBinded = useRef(false);
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { hasPermission } = usePermission();
-  const {
-    isLoading: isLoadingapproverGroup,
-    data: groupData,
-    isError: isErrorapproverGroup
-  } = useQuery({
+
+  const { refetch } = useQuery({
+    queryKey: ['approver-group', 'user', grpId],
+    queryFn: async () => {
+      let userParams = {
+        userType: 'GENERAL',
+        status: 'active'
+      };
+      if (approverUserQuery) {
+        userParams.query = approverUserQuery;
+      }
+      return await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(userParams)}`, httpVerb.GET, {});
+    },
+    select: (response) => {
+      if (response.data.content) {
+        return response.data.content.map((item) => ({
+          label: getFullName(item.name),
+          value: item.id.toString(),
+          email: item.contact.email
+        }));
+      }
+      return [];
+    },
+    onSuccess: (result) => {
+      setApproverData(result);
+    }
+  });
+
+  React.useEffect(() => {
+    refetch();
+  }, [approverUserQuery, grpId]);
+
+  const { data: groupData } = useQuery({
     queryKey: [`approver-group/${grpId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.GET, {});
@@ -56,35 +111,12 @@ const CreateApproverGroup = () => {
     refetchOnWindowFocus: false
   });
 
-  useEffect(() => {
-    if (!dataBinded.current) {
-      if (groupData && usersData && initialValues.id) {
-        const selectedUserData = usersData.map((user) => ({
-          value: user.value,
-          label: user.label,
-          email: user.email,
-          isChecked: initialValues.approverUsers.map(String).includes(String(user.value))
-        }));
-        setLocalUsersData(selectedUserData);
-        dataBinded.current = true;
-      } else if (!location.state && usersData) {
-        setLocalUsersData(usersData);
-        setIsEditMode(false);
-        dataBinded.current = true;
-      }
-    }
-  }, [usersData, initialValues, isEditMode, location.state]);
-
   const handleGoBack = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
       navigate(RoutePaths.pathApproverManagement);
     }
-  };
-
-  const handleAlertClose = () => {
-    setIsAlertVisible(false);
   };
 
   useEffect(() => {
@@ -96,7 +128,7 @@ const CreateApproverGroup = () => {
 
   const validationSchema = getValidationSchema(t);
 
-  const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+  const { mutate: saveApproverGroup, isLoading } = useMutation(async ({ payload }) => {
     if (isEditMode) {
       const updateUser = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.PUT, payload);
       setIsEditMode(false);
@@ -110,10 +142,9 @@ const CreateApproverGroup = () => {
   });
 
   const handleSubmit = (values) => {
-    values.approverUsers_augmented = localUserData.filter((user) => values.approverUsers.includes(user.value));
     const payload = transformAttributesToRules(values, practiceId);
 
-    mutate(
+    saveApproverGroup(
       { payload },
       {
         onSuccess: (response) => {
@@ -149,24 +180,8 @@ const CreateApproverGroup = () => {
     }
   };
 
-  const onRemoveUser = (itemToRemove, approverUsers, approverUsers_augmented, setFieldValue) => {
-    const updatedUsers = approverUsers.filter((userId) => userId !== itemToRemove);
-    const updatedAugmentedUsers = approverUsers_augmented.filter((user) => user.value !== itemToRemove);
-    setFieldValue('approverUsers', updatedUsers);
-    setFieldValue('approverUsers_augmented', updatedAugmentedUsers);
+  if (isLoading) return <Loader type={'screen'} />;
 
-    const updatedOptions = localUserData.map((option) => {
-      if (option.value === itemToRemove) {
-        return { ...option, isChecked: false };
-      }
-      return option;
-    });
-
-    setLocalUsersData(() => updatedOptions);
-  };
-  {
-    isLoading && <Loader type={'screen'} />;
-  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -177,7 +192,7 @@ const CreateApproverGroup = () => {
 
       <ModuleHeader heading={<Heading as="h1">{t(isEditMode ? 'approvergroup.edit.label' : 'approvergroup.create_addapprovergroup')}</Heading>} />
 
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+      {isAlertVisible && <Alert description={alert.message} onClose={() => setIsAlertVisible(false)} type={alert.type} />}
 
       <Formik
         initialValues={initialValues}
@@ -187,12 +202,13 @@ const CreateApproverGroup = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, setFieldValue, dirty, handleChange, errors, touched }) => {
+        {({ values, setFieldValue, touched }) => {
           useEffect(() => {
             setIsDirty(Object.keys(touched).length > 0);
           }, [touched]);
-          const onRemoveUserClick = (itemToRemove) => {
-            onRemoveUser(itemToRemove, values.approverUsers, values.approverUsers_augmented, setFieldValue);
+          const onRemoveApproverUser = (itemToRemove) => {
+            const updatedUsers = values.approverUsers.filter((user) => user.value !== itemToRemove);
+            setFieldValue('approverUsers', updatedUsers);
           };
 
           return (
@@ -201,20 +217,18 @@ const CreateApproverGroup = () => {
                 <Heading as="h2">{t('approvergroup.approvergroupdetails')}</Heading>
                 <div className="MCP-module-wrapper">
                   <div className="MCP-module-body form-container">
-                    <div>
-                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                        <div>
-                          <Field
-                            id="name"
-                            name="name"
-                            label={t('approvergroup.approvergroupname')}
-                            placeholder=" "
-                            isRequired
-                            component={Components['input']}
-                            maxLength={50}
-                          />
-                          <div className="control-helper-text">Please enter a unique name to identify the approver group.</div>
-                        </div>
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                      <div>
+                        <Field
+                          id="name"
+                          name="name"
+                          label={t('approvergroup.approvergroupname')}
+                          placeholder=" "
+                          isRequired
+                          component={Components['input']}
+                          maxLength={50}
+                        />
+                        <div className="control-helper-text">Please enter a unique name to identify the approver group.</div>
                       </div>
                     </div>
 
@@ -239,17 +253,26 @@ const CreateApproverGroup = () => {
                         placeholder=" "
                         isRequired
                         component={Components['multiSelectDropdown']}
-                        options={localUserData || []}
-                        getUpdatedOptions={(values) => {
-                          if (values.length > 0) {
-                            setLocalUsersData(values);
-                          }
-                        }}
-                        onRemoveClick={onRemoveUserClick}
+                        onRemoveClick={onRemoveApproverUser}
                         noSelectedCountMessage={t('approvergroup.create.option.please_select')}
-                        pillsLabels={createLabelData(values.approverUsers_augmented)}
+                        pillsLabels={values.approverUsers.map((item) => ({ ...item, id: item.value, labelText: item.label }))}
                         pillsCount={5}
                         ispillsVisible={true}
+                        onChange={(value) => {
+                          const changedValues = value.filter((item) => item.isChecked);
+                          if (CommonUtils.isNonEmptyArray(changedValues) && !CommonUtils.areArraysEqual(changedValues, values.approverUsers))
+                            setFieldValue(
+                              `approverUsers`,
+                              value.filter((item) => item.isChecked)
+                            );
+                        }}
+                        options={mergeLists(values.approverUsers, approverData)}
+                        onSearch={setApproverUserQuery}
+                        variant="async"
+                        recordsCountToEnableSearch={5}
+                        size="lg"
+                        asyncRecordsFound={approverData.length}
+                        isMultiSelect={true}
                       />
                     </div>
                   </div>

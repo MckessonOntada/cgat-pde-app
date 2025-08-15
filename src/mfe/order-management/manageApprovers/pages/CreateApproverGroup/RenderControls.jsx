@@ -1,206 +1,114 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useFormikContext } from 'formik';
-import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
-import { useFormContext } from '../../context/FormContext';
 import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
 import CommonUtils from '@src/util/CommonUtils';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/util/ApiUtils';
 
-const fieldAttributes = {
-  Price: {
-    helperText: 'Please select a criteria to apply the approval rules on.',
-    inputControl: {
-      caption: 'Amount',
-      searchable: false,
-      helperText: 'Please enter the amount greater than for the approver group.'
-    }
-  },
-  Catalog: {
-    helperText: 'Please select a criteria to apply the approval rules on.',
-    inputControl: {
-      caption: 'Select Therapy',
-      searchable: true,
-      helperText: 'Please select the therapy(s) for the approver group.'
-    }
-  },
-  Account: {
-    helperText: 'Please select a criteria to apply the approval rules on.',
-    inputControl: {
-      caption: 'Select Account',
-      searchable: true,
-      helperText: 'Please select the account(s) for the approver group.'
-    }
-  },
-  Roles: {
-    helperText: 'Please select a criteria to apply the approval rules on.',
-    inputControl: {
-      caption: 'Select Role',
-      searchable: true,
-      helperText: 'Please select the role(s) for the approver group.'
-    }
-  },
-  Users: {
-    helperText: 'Please select a criteria to apply the approval rules on.',
-    inputControl: {
-      caption: 'Select User',
-      searchable: true,
-      helperText: 'Please select the user(s) for the approver group.'
-    }
-  }
-};
-
-function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttributeRemoved }) {
+function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
-  const { initialValues, isEditMode } = useFormContext();
   const [localData, setLocalData] = useState([]);
-  const isDataBinded = useRef(false);
-  const useInitialValues = useRef(true);
+  const [searchQuery, setSearchQuery] = React.useState('');
 
-  React.useEffect(() => {}, [attributeType]);
+  const endPointUrl = {
+    Material: `${ApiRoutes.USERS()}/current/therapies`,
+    Account: `${ApiRoutes.CURRENT_USER()}/accounts`,
+    'User Role': `${ApiRoutes.GET_ROLES()}`,
+    'User Name': `${ApiRoutes.USERS()}`
+  };
+  const params = {
+    Material: {},
+    Account: {
+      status: 'active',
+      partnerFunction: 'SOLD_TO'
+    },
+    'User Role': {
+      status: 'active'
+    },
+    'User Name': {
+      userType: 'GENERAL',
+      status: 'active'
+    }
+  };
+  const dataTransformers = {
+    Material: (item) => ({
+      label: item.tradeName,
+      value: item.tradeName,
+      channelType: item.channelType
+    }),
+    Account: (item) => ({
+      label: item.accountName,
+      value: item.accountNumber,
+      channelType: item.channelType,
+      name: item.accountName
+    }),
+    'User Role': (item) => ({
+      label: item.name,
+      value: item.id,
+      name: item.name
+    }),
+    'User Name': (item) => ({
+      label: CommonUtils.getFullName(item.name),
+      value: item.id,
+      name: CommonUtils.getFullName(item.name)
+    })
+  };
 
-  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.Material;
-  const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.Account;
-  const shouldFetchUserRole = attributeType === CONTROL_OPTIONS['User Role'];
-  const shouldFetchUserNames = attributeType === CONTROL_OPTIONS['User Name'];
-  const shouldFetchPrice = attributeType === CONTROL_OPTIONS.Price;
-
-  const catalogQuery = useCatalogData(shouldFetchCatalog);
-  const accountQuery = useAccountData(shouldFetchAccounts);
-  const userRoleQuery = useUserRoleData(shouldFetchUserRole);
-  const userDataQuery = useUserData(shouldFetchUserNames);
-
-  const [selectedData, setSelectedData] = useState({
-    price: '',
-    accounts: [],
-    users: [],
-    categories: []
+  const { refetch } = useQuery({
+    queryKey: ['dynamicQuery', attributeType, searchQuery],
+    queryFn: () => {
+      const url = endPointUrl[attributeType];
+      const param = params[attributeType];
+      if (searchQuery) {
+        param.query = searchQuery;
+      }
+      if (url) {
+        return HttpResourceService.callRest(`${url}?${serializeParams(param)}`, httpVerb.GET, {});
+      }
+    },
+    select: (res) => {
+      const transform = dataTransformers[attributeType];
+      return transform ? res?.data?.content?.map(transform) || [] : [];
+    },
+    onSuccess: (result) => {
+      setLocalData(result);
+    },
+    refetchOnWindowFocus: false,
+    enabled: false
   });
 
-  const queryResult = useMemo(() => {
-    if (shouldFetchCatalog) {
-      isDataBinded.current = false;
-      return catalogQuery;
+  React.useEffect(() => {
+    refetch();
+  }, [searchQuery, attributeType]);
+
+  const onChange = (value) => {
+    const index = values.rules.findIndex((rule) => rule.attributeType === attributeType);
+    if (attributeType === 'Price') {
+      if (index !== -1) {
+        setFieldValue(`rules[${index}].value`, value);
+      }
+    } else {
+      if (index !== -1) {
+        const filteredItems = value.filter((item) => item.isChecked);
+        setFieldValue(`rules[${index}].value`, filteredItems);
+      }
     }
-    if (shouldFetchAccounts) {
-      isDataBinded.current = false;
-      return accountQuery;
-    }
-    if (shouldFetchUserRole) {
-      isDataBinded.current = false;
-      return userRoleQuery;
-    }
-    if (shouldFetchUserNames) {
-      isDataBinded.current = false;
-      return userDataQuery;
-    }
+  };
 
-    return { isLoading: false, data: [] };
-  }, [
-    shouldFetchCatalog,
-    shouldFetchAccounts,
-    shouldFetchUserRole,
-    shouldFetchUserNames,
-    catalogQuery,
-    accountQuery,
-    userRoleQuery,
-    userDataQuery
-  ]);
-
-  useEffect(() => {
-    if (isAttributeRemoved.current) {
-      useInitialValues.current = false;
-    }
-  }, [isAttributeRemoved.current]);
-
-  useEffect(() => {
-    if (!isDataBinded.current) {
-      if (!queryResult?.data || CommonUtils.isEmptyArray(queryResult.data)) return;
-
-      let sourceData = useInitialValues.current ? initialValues : values;
-      sourceData.rules = sourceData.rules.map((item) => {
-        if (item.attributeType !== CONTROL_OPTIONS.Price && item.value === '') {
-          return {
-            ...item,
-            value: []
-          };
-        }
-        return item;
-      });
-
-      // Transform fetched data
-      const fetchData = queryResult?.data?.map((item) => ({
-        value: item.value,
-        label: item.label,
-        channelType: item.channelType,
-        isChecked:
-          sourceData?.rules
-            ?.find((rule) => rule.attributeType === attributeType)
-            ?.value?.map(String)
-            .includes(String(item.value)) || false
-      }));
-
-      // Update selectedData based on the attribute type
-      setSelectedData((prevState) => {
-        const updatedState = { ...prevState };
-        if (shouldFetchPrice) updatedState.price = '';
-        if (shouldFetchAccounts) {
-          updatedState.accounts = fetchData;
-          setFieldValue('accounts', fetchData); //Hidden value
-        }
-        if (shouldFetchUserRole) updatedState.roles = fetchData;
-        if (shouldFetchUserNames) updatedState.users = fetchData;
-        if (shouldFetchCatalog) {
-          updatedState.categories = fetchData;
-          setFieldValue('materials', fetchData); //Hidden value
-        }
-        return updatedState;
-      });
-
-      useInitialValues.current = false;
-      isDataBinded.current = true;
-    }
-  }, [
-    queryResult.data,
-    shouldFetchAccounts,
-    shouldFetchUserRole,
-    shouldFetchUserNames,
-    shouldFetchCatalog,
-    shouldFetchPrice,
-    attributeType,
-    isEditMode
-  ]);
-
-  useEffect(() => {
-    if (!isDataBinded.current) {
-      const updatedLocalData = (() => {
-        if (shouldFetchAccounts) return selectedData.accounts;
-        if (shouldFetchUserRole) return selectedData.roles;
-        if (shouldFetchUserNames) return selectedData.users;
-        if (shouldFetchCatalog) return selectedData.categories;
-        if (shouldFetchPrice) return [];
-        return [];
-      })();
-      isDataBinded.current = true;
-      setLocalData(updatedLocalData);
-    }
-  }, [selectedData, shouldFetchAccounts, shouldFetchUserRole, shouldFetchUserNames, shouldFetchCatalog, shouldFetchPrice]);
-
-  const onRemoveClick = (itemToRemove) => {
-    const updatedValues = values.rules.find((rule) => rule.attributeType === attributeType)?.value.filter((id) => id !== itemToRemove);
-
-    const updatedAugmented = values.rules
-      .find((rule) => rule.attributeType === attributeType)
-      ?.value_augmented.filter((item) => item.value !== itemToRemove);
+  const onRemoveClick = (itemId) => {
+    const updatedValues = values.rules.find((rule) => rule.attributeType === attributeType)?.value.filter((item) => item.value !== itemId);
 
     const updatedRules = values.rules.map((rule) => {
       if (rule.attributeType === attributeType) {
         return {
           ...rule,
-          value: updatedValues,
-          value_augmented: updatedAugmented
+          value: updatedValues
         };
       }
       return rule;
@@ -208,7 +116,6 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
 
     setFieldValue('rules', updatedRules);
 
-    // Update localData to uncheck the removed item
     const updatedOptions = localData.map((option) => {
       if (option.value === itemToRemove) {
         return { ...option, isChecked: false };
@@ -226,7 +133,10 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
       name={name}
       localData={localData}
       setLocalData={setLocalData}
+      onSearch={setSearchQuery}
       onRemoveClick={onRemoveClick}
+      handleOnChange={onChange}
+      setFieldValue={setFieldValue}
       t={t}
       values={values}
     />
