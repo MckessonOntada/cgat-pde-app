@@ -23,6 +23,9 @@ import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { ORDER_STAGES } from '../Constants';
+import ConfirmationModal from '../OrderAttestationModel';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -45,6 +48,11 @@ function TherapySelection() {
   const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -238,6 +246,7 @@ function TherapySelection() {
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
             <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
+            <OrderAttestation stage={ORDER_STAGES?.THERAPY_SELECTION} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">

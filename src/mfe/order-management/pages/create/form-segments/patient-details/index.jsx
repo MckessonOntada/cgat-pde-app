@@ -19,7 +19,7 @@ import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getInitialValues, getValidationSchema } from './forms/validation-schema';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
@@ -32,6 +32,8 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { showSaveAsDraftConfirm } from '../OrderAttestationModel';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -46,6 +48,11 @@ const PatientDetails = () => {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -149,28 +156,33 @@ const PatientDetails = () => {
     });
   };
 
+  const navigateToNextStage = (id) => {
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
+        state: {
+          ...locationState,
+          isEdit: false,
+          isApprover: isApprover
+        }
+      });
+    } else {
+      navigate(`${RoutePaths.pathOrderManagement}/${id}/additional-details`, {
+        state: {
+          ...locationState,
+          isEdit: false,
+          isApprover: isApprover
+        }
+      });
+    }
+  };
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType),
+    async ({ payload, skipDuplicateCheck }) => {
+      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType);
+    },
     {
       onSuccess: (result) => {
         const { id } = result;
-        if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-          navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
-            state: {
-              ...locationState,
-              isEdit: false,
-              isApprover: isApprover
-            }
-          });
-        } else {
-          navigate(`${RoutePaths.pathOrderManagement}/${id}/additional-details`, {
-            state: {
-              ...locationState,
-              isEdit: false,
-              isApprover: isApprover
-            }
-          });
-        }
+        navigateToNextStage(id);
         setProvider(null);
       },
       onError: ({ err: error, payload }) => {
@@ -224,7 +236,21 @@ const PatientDetails = () => {
       skipDuplicateCheck = true;
     }
     setInitialValues(form);
-    savePatientDetails({ payload, skipDuplicateCheck });
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          const draftPayload = { ...payload, isDraft: true };
+          savePatientDetails({ draftPayload, skipDuplicateCheck });
+        }
+      });
+    } else {
+      if (isDirty) {
+        savePatientDetails({ payload, skipDuplicateCheck });
+      } else {
+        navigateToNextStage(orderId);
+      }
+    }
   };
 
   const handleOnBackToOrders = () => {
@@ -491,7 +517,6 @@ const PatientDetails = () => {
                                       };
                                       const value =
                                         key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
-                                      console.log(labelMap[key], { value });
                                       return (
                                         <Tooltip key={key} body={value}>
                                           <p className="detail-segment inline-text-overflow">
@@ -541,6 +566,7 @@ const PatientDetails = () => {
                       )}
                     </div>
                   </div>
+                  <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>

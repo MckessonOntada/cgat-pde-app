@@ -60,3 +60,13 @@ export const INFO_340B = [
     requirements: ['order.account.selection.compliance.requirements.requirement1']
   }
 ];
+
+export const ORDER_ATTESTATION_MESSAGES = (t) => ({
+  [ORDER_STAGES.THERAPY_SELECTION]: t('attestation.therapySelection'),
+  [ORDER_STAGES.ACCOUNT_DETAILS]: t('attestation.accountDetails'),
+  [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: t('attestation.patientAndProviderDetails'),
+  [ORDER_STAGES.PAYER_DETAILS]: t('attestation.payerDetails'),
+  [ORDER_STAGES.ADDITIONAL_DETAILS]: t('attestation.additionalDetails')
+});
+
+ 

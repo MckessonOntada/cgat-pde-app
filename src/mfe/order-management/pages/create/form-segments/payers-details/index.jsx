@@ -30,10 +30,12 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import Alert from '@src/components/cgat-alert/Alert';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { showSaveAsDraftConfirm } from '../OrderAttestationModel';
 
 function Payer() {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -59,6 +61,11 @@ function Payer() {
     soldToAccountId,
     shipToAccountId
   });
+
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
 
   React.useEffect(() => {
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
@@ -131,21 +138,9 @@ function Payer() {
     }
 
     if (isEdit) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: {
-          ...locationState,
-          isEdit: true,
-          isApprover: isApprover
-        }
-      });
+      navigateToSummaryStage(orderId, true);
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
-        state: {
-          ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
-        }
-      });
+      navigateToPatientStage(orderId);
     }
   };
 
@@ -154,35 +149,48 @@ function Payer() {
       const prevSearch = locationState.__prevSearch || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: {
-          ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
-        }
-      });
+      navigateToSummaryStage(orderId, isEdit);
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
-        state: {
-          ...locationState,
-          isEdit: false,
-          isApprover: isApprover
-        }
-      });
+      navigateToPatientStage(orderId);
     }
+  };
+
+  const navigateToPatientStage = (orderId) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+      state: {
+        ...locationState,
+        isEdit: false,
+        isApprover: isApprover
+      }
+    });
+  };
+
+  const navigateToSummaryStage = (orderId, isSummaryEdit) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
+      state: {
+        ...locationState,
+        isEdit: isSummaryEdit,
+        isApprover: isApprover
+      }
+    });
+  };
+
+  const navigateToNextStage = (orderId) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+      state: {
+        ...locationState,
+        isEdit: false,
+        isApprover: isApprover
+      }
+    });
   };
 
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
-    mutationFn: ({ isPayerDetailsRequired, insuranceDetails }) => OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails),
+    mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
+      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
     onSuccess: (response) => {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
-        state: {
-          ...locationState,
-          isEdit: false,
-          isApprover: isApprover
-        }
-      });
+      navigateToNextStage(orderId);
     },
     onError: ({ err: error }) => {
       const statusCode = error?.response?.status;
@@ -234,7 +242,20 @@ function Payer() {
       });
     }
 
-    savePayerDetails({ isPayerDetailsRequired, insuranceDetails });
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isDraft: true });
+        }
+      });
+    } else {
+      if (isDirty) {
+        savePayerDetails({ isPayerDetailsRequired, insuranceDetails });
+      } else {
+        navigateToNextStage(orderId);
+      }
+    }
   };
 
   const handleOnUpload = (config) => (file, setFieldValue, key) => {
@@ -512,6 +533,7 @@ function Payer() {
                       </div>
                     </div>
                   )}
+                  <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>

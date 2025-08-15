@@ -17,12 +17,14 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import ConfirmationModal, { showSaveAsDraftConfirm } from '../OrderAttestationModel';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -40,7 +42,11 @@ const AccountSelection = () => {
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
 
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
@@ -159,8 +165,24 @@ const AccountSelection = () => {
       soldToAccountId: selectedSoldToAccount.id,
       shipToAccountId: selectedShipToAccount.id
     };
-    setAlert(null);
-    saveAccount(payload);
+
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          saveAccount({ ...payload, isDraft: true });
+        }
+      });
+    } else {
+      setAlert(null);
+      if (isDirty) {
+        saveAccount(payload);
+      } else {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+          state: { ...locationState, alertState, isEdit: false, isApprover }
+        });
+      }
+    }
   };
 
   const handleOnBackToOrders = () => {
@@ -285,6 +307,7 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
+          <OrderAttestation stage={ORDER_STAGES?.ACCOUNT_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
