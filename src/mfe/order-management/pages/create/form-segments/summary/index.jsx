@@ -43,6 +43,7 @@ import { BUTTON_ACTIONS } from './constants';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsValidationSchema } from './EditConfig';
+import Collaborator from '../Collaborator';
 
 const Summary = () => {
   const { t } = useTranslate();
@@ -860,7 +861,7 @@ const Summary = () => {
                     )}
                   </div>
                 )}
-
+                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
               </div>
             }

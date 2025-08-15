@@ -962,5 +962,6 @@ export const MessageEn = {
   'labels.drugForm': 'Drug Form',
   'labels.prescriberName': 'Signed By',
   'labels.consent':
-    'By signing below, I, as the prescribing physician, certify that the information provided on this form was completed by me or at my direction. I understand and agree that, as the Prescriber, I will comply with my state-specific prescription requirements such as e-prescribing, state-specific prescription form, fax language, etc. I verify that the patient and prescriber information contained in this enrollment form is complete and accurate to the best of my knowledge and I have intention to prescribe INSPIROLINK and/or refer my patient to an administration center, on my professional judgment of medical necessity.'
+    'By signing below, I, as the prescribing physician, certify that the information provided on this form was completed by me or at my direction. I understand and agree that, as the Prescriber, I will comply with my state-specific prescription requirements such as e-prescribing, state-specific prescription form, fax language, etc. I verify that the patient and prescriber information contained in this enrollment form is complete and accurate to the best of my knowledge and I have intention to prescribe INSPIROLINK and/or refer my patient to an administration center, on my professional judgment of medical necessity.',
+  'labels.collaborators': 'Collaborators:'
 };
