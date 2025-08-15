@@ -582,7 +582,6 @@ export const MessageEs = {
   'form.label.rxBin': 'S_RX BIN',
   'button.caption.addSecondaryMedicalInsurance': 'S_Add Secondary Medical Insurance',
   'button.caption.addSecondaryPharmacyInsurance': 'S_Add Secondary Pharmacy Insurance',
-
   'messages.enterInsuranceCompanyName': 'S_Please enter the Insurance Company name.',
   'messages.insuranceCompanyNameCharLimit': 'S_Insurance Company name must not exceed 100 characters.',
   'messages.avoidSpecialCharsNumbers': 'S_Avoid using special characters or numbers.',
