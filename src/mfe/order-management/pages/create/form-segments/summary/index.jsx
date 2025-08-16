@@ -672,7 +672,7 @@ const Summary = () => {
         </Button>
       </PermittedComponent>
     );
-
+    debugger;
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW) {
