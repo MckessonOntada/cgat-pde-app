@@ -1,7 +1,6 @@
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import CommonUtils from '@src/util/CommonUtils';
-import CommonUtils from '@src/util/CommonUtils';
 
 const getBinaryOptions = (keyPrefix = '') => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -81,17 +80,18 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
       {
         component: Components['multiSelectDropdown'],
         id: 'diagnosis-code',
-        name: 'diagnosis-code',
+        name: 'diagnosisCode',
         label: translationFn('labels.diagnosisCodes'),
         isRequired: true,
         isMultiSelect: true,
         placeholder: translationFn('dropdown.placeholder.search'),
         onChange: (value) => {
-          const changedValues = value.filter((item) => item.isChecked).map((item) => item.value);
+          const changedValues = value.filter((item) => item.isChecked);
+          debugger;
           if (CommonUtils.isNonEmptyArray(changedValues) && !areArraysEqual(changedValues, formValues.diagnosisCode))
             setFieldValue(
               'diagnosisCode',
-              value.filter((item) => item.isChecked).map((item) => item.value)
+              value.filter((item) => item.isChecked)
             );
         },
         options: mergeLists(formValues.diagnosisCode, diagnosisCode),
@@ -113,7 +113,7 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
 
 function areArraysEqual(arr1 = [], arr2 = []) {
   if (arr1.length !== arr2.length) return false;
-
+  debugger;
   const codes1 = new Set(arr1.map((item) => item.code));
   const codes2 = new Set(arr2.map((item) => item.code));
 
@@ -196,7 +196,7 @@ export const getPrescriptionDetailsFields = ({ translationFn, formValues, setFie
 
   return fields;
 };
-export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formValues }) => {
+export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formValues, setFieldValue }) => {
   return [
     {
       rows: [
@@ -239,7 +239,7 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
               type: 'input'
             },
             {
-              name: 'refill',
+              name: 'refills',
               label: translationFn('label.refill'),
               isReadOnly: true,
               type: 'input'
@@ -263,19 +263,14 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
           controls: [
             {
+              id: 'acknowledgement',
               name: 'acknowledgement',
               fieldLabel: translationFn('label.acknowledgementInformationIsCorrect'),
               isReadOnly: true,
               type: 'checkbox',
-              items: [
-                {
-                  isDisabled: false,
-                  isChecked: false,
-                  label: translationFn('label.acknowledgementInformationIsCorrect'),
-                  value: false,
-                  onChange: () => {}
-                }
-              ],
+              isDisabled: false,
+              isChecked: false,
+              caption: translationFn('label.acknowledgementInformationIsCorrect'),
               size: 'md'
             }
           ]
@@ -284,19 +279,14 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
           controls: [
             {
+              id: 'terms',
               name: 'terms',
               fieldLabel: translationFn('labels.terms'),
               isReadOnly: true,
               type: 'checkbox',
-              items: [
-                {
-                  isDisabled: false,
-                  isChecked: false,
-                  label: formValues?.['termsAndCondition'],
-                  value: false,
-                  onChange: () => {}
-                }
-              ],
+              isDisabled: false,
+              isChecked: false,
+              caption: formValues?.['termsAndCondition'],
               size: 'md'
             }
           ]

@@ -6,7 +6,7 @@ import { Heading, Button } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
 import { getNestedValue } from '@src/components/form/util';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
-import CheckBox from '@src/components/form/CheckBox';
+import CheckBox from '@src/components/form/formik/CheckBoxFormik';
 
 function getFileNameAndType(url) {
   if (url instanceof File) {

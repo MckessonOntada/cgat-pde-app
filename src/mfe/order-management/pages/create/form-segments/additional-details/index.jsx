@@ -149,6 +149,8 @@ function AdditionalDetails() {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
+          terms: Yup.boolean().oneOf([true], 'You must accept the terms and conditions'),
+          acknowledgement: Yup.boolean().oneOf([true], 'You must acknowledge'),
           diagnosisCode: Yup.array()
             .of(Yup.object().required(t('labels.diagnosisCodeRequired')))
             .min(1, 'Select at least on diagnosis code')
@@ -473,7 +475,7 @@ function AdditionalDetails() {
   };
 
   React.useEffect(() => {
-    const { additionalDetails } = orderDetails || {};
+    const { additionalDetails, spTherapyConfig } = orderDetails || {};
     if (additionalDetails) {
       const {
         dateOfAdministration,
@@ -503,6 +505,16 @@ function AdditionalDetails() {
         initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
+        initialValues.drugFrom = spTherapyConfig.drugFrom;
+        initialValues.drugName = spTherapyConfig.drugName;
+        initialValues.strength = spTherapyConfig.strength;
+        initialValues.daysSupply = spTherapyConfig.daysSupply;
+        initialValues.quantity = spTherapyConfig.quantity;
+        initialValues.refills = spTherapyConfig.refills;
+        initialValues.instructions = spTherapyConfig.instructions;
+        initialValues.terms = false;
+        initialValues.acknowledgement = false;
+
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
           try {
             const diagnosisCodeOptions = JSON.parse(orderDetails.additionalDetails.diagnosisCode);
@@ -778,7 +790,7 @@ function AdditionalDetails() {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values }) => {
+          {({ dirty, values, errors }) => {
             useEffect(() => {
               setIsDirty(dirty);
               setStoredValue(values);
@@ -1025,7 +1037,7 @@ const PrescriptionDetails = ({ channelType }) => {
           />
         ))}
       </div>
-      <FormRenderer sections={getPrescriptionDetailsSummaryFieldsConfig({ translationFn: t, formValues: values })} />
+      <FormRenderer sections={getPrescriptionDetailsSummaryFieldsConfig({ translationFn: t, formValues: values, setFieldValue })} />
     </FormSectionWrapper>
   );
 };
