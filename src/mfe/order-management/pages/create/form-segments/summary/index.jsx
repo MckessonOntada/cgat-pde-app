@@ -672,7 +672,6 @@ const Summary = () => {
         </Button>
       </PermittedComponent>
     );
-
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW) {
