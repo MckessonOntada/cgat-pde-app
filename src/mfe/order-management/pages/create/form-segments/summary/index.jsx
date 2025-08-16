@@ -672,14 +672,20 @@ const Summary = () => {
         </Button>
       </PermittedComponent>
     );
-
+    debugger;
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if ((allowUpdateBnBAfterSubmit && isPhysician) || CommonUtils.isNonEmptyObject(draftChanges)) {
+    } else if (
+      (allowUpdateBnBAfterSubmit && isPhysician) ||
+      !CommonUtils.deepEqual(draftChanges, {
+        additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+        patientIdentifier: orderDetails.patient?.patientIdentifier
+      })
+    ) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
