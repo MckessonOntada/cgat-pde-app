@@ -474,7 +474,10 @@ const Summary = () => {
               navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
             } else {
               dispatch(closeModal());
-              setDraftChanges({});
+              setDraftChanges({
+                additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+                patientIdentifier: orderDetails.patient?.patientIdentifier
+              });
             }
           }}>
           {t('button.caption.confirm')}
@@ -609,6 +612,10 @@ const Summary = () => {
 
   const getAllowedControls = () => {
     const controls = [];
+    const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
+      additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+      patientIdentifier: orderDetails.patient?.patientIdentifier
+    });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
         {t('captions.btnPrintSummary')}
@@ -616,26 +623,26 @@ const Summary = () => {
     );
 
     const controlCancel = (
-      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+      <Button size={'md'} disabled={isSaving} variant="secondary" onClick={handleOnBackButtonClick}>
         {t('captions.btnCancel')}
       </Button>
     );
 
     const controlDiscardChanges = (
-      <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="secondary" onClick={handleOnDiscardChanges}>
+      <Button size={'md'} disabled={isSaving || !isOrderChanged} variant="secondary" onClick={handleOnDiscardChanges}>
         {t('captions.btnDiscardChanges')}
       </Button>
     );
 
     const controlBack = (
-      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+      <Button size={'md'} disabled={isSaving} variant="secondary" onClick={handleOnBackButtonClick}>
         {t('captions.btnBack')}
       </Button>
     );
 
     const controlSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+        <Button size={'md'} disabled={isSaving} variant="primary" type="submit" onClick={handleOnSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -643,7 +650,7 @@ const Summary = () => {
 
     const controlReSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-        <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button size={'md'} disabled={isResubmitting || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -672,14 +679,13 @@ const Summary = () => {
         </Button>
       </PermittedComponent>
     );
-
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
-    } else if (status === ORDER_STATUS.REVIEW) {
+    } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if ((allowUpdateBnBAfterSubmit && isPhysician) || CommonUtils.isNonEmptyObject(draftChanges)) {
+    } else if (allowUpdateBnBAfterSubmit) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
