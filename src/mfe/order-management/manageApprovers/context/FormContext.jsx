@@ -37,7 +37,6 @@ export const FormProvider = ({ children }) => {
       const { name, rules = {}, approverUsers = [] } = locationData;
 
       const transformedRules = [];
-
       const { price, accounts, therapies, roles, users } = rules;
       if (price != null) {
         transformedRules.push({
@@ -48,25 +47,47 @@ export const FormProvider = ({ children }) => {
       if (accounts)
         transformedRules.push({
           attributeType: CONTROL_OPTIONS.Account,
-          value: accounts.map((item) => item.accountId)
+          value: accounts.map((item) => ({
+            label: item.accountName,
+            value: item.accountId,
+            channelType: item.channelType,
+            name: item.accountName
+          }))
         });
       if (therapies)
         transformedRules.push({
           attributeType: CONTROL_OPTIONS.Material,
-          value: therapies.map((item) => item.tradeName)
+          value: therapies.map((item) => ({
+            label: item.tradeName,
+            value: item.tradeName,
+            channelType: item.channelType
+          }))
         });
-      if (roles)
+      if (roles) {
         transformedRules.push({
           attributeType: CONTROL_OPTIONS['User Role'],
-          value: roles.map((item) => item.roleId)
+          value: roles.map((item) => ({
+            label: item.roleName,
+            value: item.roleId,
+            name: item.roleName
+          }))
         });
+      }
       if (users)
         transformedRules.push({
           attributeType: CONTROL_OPTIONS['User Name'],
-          value: users.map((item) => item.userId)
+          value: users.map((item) => ({
+            label: item.userName,
+            value: item.userId,
+            name: item.userName
+          }))
         });
 
-      const transformedApproverUsers = approverUsers.map((user) => user.userId);
+      const transformedApproverUsers = approverUsers.map((user) => ({
+        email: user.email,
+        value: user.userId,
+        label: user.userName
+      }));
 
       setInitialValues({
         id: grpId,

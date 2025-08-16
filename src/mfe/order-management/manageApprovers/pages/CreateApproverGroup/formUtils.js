@@ -3,7 +3,7 @@ import { ALPHA_NUMERIC } from '@src/components/form/ValidationRegExp';
 import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
-  const { name, approverUsers, approverUsers_augmented, rules, materials, accounts } = values;
+  const { name, approverUsers, rules } = values;
   const result = {
     name: name.trim() || 'default',
     practiceId: practiceId || 0,
@@ -11,39 +11,39 @@ export const transformAttributesToRules = (values, practiceId) => {
     approverUsers: []
   };
 
-  const getChannelType = (attributeType, value, name) => {
-    const data = attributeType.find((item) => item.value === value && item.label === name);
-    return data ? data.channelType : null;
-  };
+  rules.forEach(({ attributeType, value }) => {
+    if ((Array.isArray(value) && value.length === 0) || value === 0) {
+      result.rules[attributeType] = null;
+      return;
+    }
 
-  rules.forEach((rule) => {
-    switch (rule.attributeType) {
+    switch (attributeType) {
       case CONTROL_OPTIONS.Price:
-        result.rules.price = parseInt(rule.value, 10);
+        result.rules.price = parseInt(value, 10);
         break;
-      case CONTROL_OPTIONS.Material: // Therapies
-        result.rules.therapies = rule.value_augmented.map((therapy) => ({
-          tradeName: therapy.name,
-          channelType: getChannelType(materials, therapy.value, therapy.name)
+      case CONTROL_OPTIONS.Material:
+        result.rules.therapies = value.map((item) => ({
+          tradeName: item.label,
+          channelType: item.channelType
         }));
         break;
       case CONTROL_OPTIONS.Account:
-        result.rules.accounts = rule.value_augmented.map((account) => ({
-          accountId: account.value,
-          accountName: account.name,
-          channelType: getChannelType(accounts, account.value, account.name)
+        result.rules.accounts = value.map((item) => ({
+          accountId: item.value,
+          accountName: item.name,
+          channelType: item.channelType
         }));
         break;
       case CONTROL_OPTIONS['User Role']:
-        result.rules.roles = rule.value_augmented.map((role) => ({
-          roleId: role.value,
-          roleName: role.name
+        result.rules.roles = value.map((item) => ({
+          roleId: item.value,
+          roleName: item.name
         }));
         break;
       case CONTROL_OPTIONS['User Name']:
-        result.rules.users = rule.value_augmented.map((user) => ({
-          userId: user.value,
-          userName: user.name
+        result.rules.users = value.map((item) => ({
+          userId: item.value,
+          userName: item.name
         }));
         break;
       default:
@@ -51,21 +51,13 @@ export const transformAttributesToRules = (values, practiceId) => {
     }
   });
 
-  if (approverUsers) {
-    approverUsers.forEach((userId) => {
-      const targetUser = approverUsers_augmented.find((user) => user.value === userId);
-      const userName = targetUser?.label || `User ${userId}`;
+  result.approverUsers =
+    approverUsers?.map((item) => ({
+      userId: item.value,
+      userName: item.label,
+      email: item.email
+    })) || [];
 
-      result.approverUsers.push({
-        userId,
-        userName,
-        email: targetUser?.email
-      });
-    });
-  }
-  Object.keys(result.rules).map((item) => {
-    result.rules[item] = result.rules[item] === 0 || result.rules[item].length === 0 ? null : result.rules[item];
-  });
   return result;
 };
 

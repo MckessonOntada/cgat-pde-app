@@ -101,35 +101,25 @@ function Details(props) {
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
-          INVOICES_SCREEN
-            ? setInvoiceDetails(() => ({
-                ...{},
-                [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
-                [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
-                [t('paymentInvoices.Details.orderID')]: (
-                  <Link
-                    className="MCP-table-link"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleOnClickOrderId(res?.data?.orderId);
-                    }}>
-                    {res?.data?.orderId || '-'}
-                  </Link>
-                ),
-                [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
-                [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
-                ['']: <p></p>,
-                [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
-              }))
-            : setInvoiceDetails(() => ({
-                ...{},
-                [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
-                [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
-                [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
-                [t('paymentInvoices.Details.shipToPoNumber')]: res.data.shipToPONumber,
-                [t('paymentInvoices.Details.PO')]: res.data.poNumber
-              }));
-          // bill bates
+          setInvoiceDetails(() => ({
+            ...{},
+            [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
+            [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
+            [t('paymentInvoices.Details.orderID')]: (
+              <Link
+                className="MCP-table-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleOnClickOrderId(res?.data?.orderId);
+                }}>
+                {res?.data?.orderId || '-'}
+              </Link>
+            ),
+            [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+            [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
+            ['']: <p></p>,
+            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
+          }));
           updateBillDates(res);
           return res.data;
         }
@@ -156,7 +146,7 @@ function Details(props) {
   const columns = useMemo(
     () => [
       {
-        name: INVOICES_SCREEN ? t('paymentInvoices.Details.lineNumber') : t('paymentInvoices.Details.Item'),
+        name: t('paymentInvoices.Details.lineNumber'),
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
@@ -195,8 +185,7 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '180px',
-        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>,
-        omit: CREDITS_SCREEN
+        cell: (props) => <div className="cellEllipse">{props.tradeName || '-'}</div>
       },
       {
         name: t('paymentInvoices.Details.Quantity'),

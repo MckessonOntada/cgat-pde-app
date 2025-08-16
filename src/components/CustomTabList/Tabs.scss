@@ -1,0 +1,67 @@
+@use "@src/assets/styles/abstracts/mixins";
+.tabs-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+
+  .tabs-container {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 24px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-item {
+      padding: 8px 0px;
+      font-size: var(--brand-font-size--small);
+      line-height: var(--brand-line-height--large);
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s ease;
+
+      &.active {
+        font-weight: bold;
+        border-bottom: 3px solid #ffcc00;
+        color: var(--brand-color-font-black);
+        font-weight: var(--brand-font-weight-700);
+        text-decoration: underline;
+        text-decoration-color: var(--brand-color-secondary);
+        text-underline-offset: 12px;
+        text-decoration-thickness: 4px;
+      }
+
+      &:hover {
+        color: #000;
+      }
+    }
+  }
+
+  .scroll-btn {
+    padding: 0px;
+    min-width: 10px;
+    width: 16px;
+    div {
+      color: var(--brand-color-background-light-slate) !important;
+    }
+
+    &.left {
+      position: absolute;
+      left: 0px;
+      z-index: 1;
+      background: white;
+    }
+
+    &.right {
+      position: absolute;
+      right: -16px;
+      z-index: 1;
+      background: white;
+    }
+  }
+}

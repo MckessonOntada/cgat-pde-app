@@ -1,6 +1,7 @@
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 const getBinaryOptions = (keyPrefix = '') => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -113,27 +114,46 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
 function areArraysEqual(arr1 = [], arr2 = []) {
   if (arr1.length !== arr2.length) return false;
 
-  const set1 = new Set(arr1);
-  const set2 = new Set(arr2);
+  const codes1 = new Set(arr1.map((item) => item.code));
+  const codes2 = new Set(arr2.map((item) => item.code));
 
-  if (set1.size !== set2.size) return false;
+  if (codes1.size !== codes2.size) return false;
 
-  for (let item of set1) {
-    if (!set2.has(item)) return false;
+  for (let code of codes1) {
+    if (!codes2.has(code)) return false;
   }
 
   return true;
 }
 
-function mergeLists(values, list) {
-  const valueSet = new Set(values);
-  const mergedSet = new Set([...values, ...list]);
+function mergeLists(values = [], list = []) {
+  const finalMap = new Map();
 
-  return Array.from(mergedSet).map((item) => ({
-    label: item.toUpperCase(),
-    value: item,
-    isChecked: valueSet.has(item)
-  }));
+  for (const item of list) {
+    finalMap.set(item.code, {
+      label: `${item.code} ${item.description}`,
+      value: item.code,
+      code: item.code,
+      description: item.description,
+      isChecked: false
+    });
+  }
+
+  for (const item of values) {
+    if (finalMap.has(item.code)) {
+      finalMap.get(item.code).isChecked = true;
+    } else {
+      finalMap.set(item.code, {
+        label: `${item.code} ${item.description}`,
+        value: item.code,
+        code: item.code,
+        description: item.description,
+        isChecked: true
+      });
+    }
+  }
+
+  return Array.from(finalMap.values());
 }
 
 export const getPrescriptionDetailsFields = ({ translationFn, formValues, setFieldValue, setFieldTouched }) => {

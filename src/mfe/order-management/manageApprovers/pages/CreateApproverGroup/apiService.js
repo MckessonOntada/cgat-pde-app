@@ -86,10 +86,13 @@ let userParams = {
   status: 'active'
 };
 
-export const useUserData = (shouldFetch) => {
+export const useUserData = (shouldFetch, query = '') => {
   return useQuery(
-    ['userData'],
+    ['userData', query],
     async () => {
+      if (query) {
+        userParams.query = query;
+      }
       const apiUrl = `${ApiRoutes.USERS()}?${serializeParams(userParams)}`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (

@@ -150,9 +150,9 @@ function AdditionalDetails() {
       schema = schema.concat(
         Yup.object({
           diagnosisCode: Yup.array()
-            .of(Yup.string().required('Each item must be a string'))
-            .min(1, 'At least one item is required')
-            .required(t('labels.diagnosisCodeRequired')),
+            .of(Yup.object().required(t('labels.diagnosisCodeRequired')))
+            .min(1, 'Select at least on diagnosis code')
+            .required('Diagnosis code is required'),
           hasAllergies: Yup.string().required(t('labels.selectHaveAllergies')).oneOf(['yes', 'no'], t('labels.invalidSelection')),
 
           allergyDetails: Yup.string().when('hasAllergies', {
@@ -504,8 +504,12 @@ function AdditionalDetails() {
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
-          const diagnosisCodeOptions = orderDetails.additionalDetails.diagnosisCode.split(',').map((item) => item);
-          initialValues.diagnosisCode = [...diagnosisCodeOptions];
+          try {
+            const diagnosisCodeOptions = JSON.parse(orderDetails.additionalDetails.diagnosisCode);
+            initialValues.diagnosisCode = [...diagnosisCodeOptions];
+          } catch (error) {
+            initialValues.diagnosisCode = [];
+          }
         } else {
           initialValues.diagnosisCode = [];
         }
@@ -545,7 +549,12 @@ function AdditionalDetails() {
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
       if (result.content && CommonUtils.isNonEmptyArray(result.content)) {
-        setDiagnosisCode(result.content.map((item) => item.code));
+        setDiagnosisCode(
+          result.content.map((item) => ({
+            code: item.code,
+            description: item.longDescription
+          }))
+        );
       }
     });
   }, [diagnosisSearchQuery]);
@@ -636,7 +645,12 @@ function AdditionalDetails() {
       }
 
       payload.clinicalDetails = clinicalDetails;
-      payload.diagnosisCode = diagnosisCode.join(',');
+      payload.diagnosisCode = JSON.stringify(
+        diagnosisCode.map((item) => ({
+          code: item.code,
+          description: item.description
+        }))
+      );
     } else {
       payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
