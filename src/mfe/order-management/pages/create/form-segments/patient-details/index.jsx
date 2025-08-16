@@ -33,7 +33,7 @@ import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
@@ -185,8 +185,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigateToNextStage(id);
-        setProvider(null);
+        if (isSelfAttested) {
+          navigateToNextStage(id);
+          setProvider(null);
+        } else {
+          setAlert({
+            description: 'Order Saved In Draft Successfully',
+            type: 'success'
+          });
+        }
       },
       onError: ({ err: error, payload }) => {
         const statusCode = error?.response?.status;
@@ -240,11 +247,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
     setInitialValues(form);
     if (!isSelfAttested) {
+      payload.isDraft = true;
       showSaveAsDraftConfirm({
         t,
         onOk: () => {
-          const draftPayload = { ...payload, isDraft: true };
-          savePatientDetails({ draftPayload, skipDuplicateCheck });
+          savePatientDetails({ payload, skipDuplicateCheck });
         }
       });
     } else {

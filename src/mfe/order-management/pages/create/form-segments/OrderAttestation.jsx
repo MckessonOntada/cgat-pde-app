@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import styles from './OrderStepper.module.scss';
-import { CheckboxGroup } from '@mckesson/mcp-component-library';
+import { CheckboxGroup, TextError } from '@mckesson/mcp-component-library';
 import { ORDER_ATTESTATION_MESSAGES } from './Constants';
 import { useTranslate } from '@src/translations/useTranslation';
 
-const OrderAttestation = ({ stage, onCheck, isChecked }) => {
-  const { t } = useTranslate(); // Assuming useTranslation is imported
+const OrderAttestation = ({ stage, onCheck, isChecked, error }) => {
+  const { t } = useTranslate();
   const handleChange = useCallback(() => {
     if (onCheck) {
       onCheck(!isChecked);
@@ -22,7 +22,14 @@ const OrderAttestation = ({ stage, onCheck, isChecked }) => {
 
   return (
     <div className={styles.attestationWrapper}>
-      <CheckboxGroup id="order-attestation" name="order-agreement" items={[acknowledgeOption]} size="md" />
+      <CheckboxGroup
+        id="order-attestation"
+        name="order-agreement"
+        items={[acknowledgeOption]}
+        size="md"
+        error={error}
+        errorMessage="Please acknowledge to Save and continue"
+      />
     </div>
   );
 };

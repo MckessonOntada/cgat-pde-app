@@ -24,7 +24,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
@@ -93,12 +93,19 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: async (result) => {
       const { id } = result;
-      try {
-        navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-          state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+      if (isSelfAttested) {
+        try {
+          navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
+            state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        setAlert({
+          description: 'Order Saved In Draft Successfully',
+          type: 'success'
         });
-      } catch (err) {
-        console.error(err);
       }
     },
     onError: (error) => {

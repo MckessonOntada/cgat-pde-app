@@ -35,7 +35,7 @@ import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderAttestationModel';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
@@ -192,7 +192,14 @@ function Payer({ readOnly, hasPermission }) {
     mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
       OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
     onSuccess: (response) => {
-      navigateToNextStage(orderId);
+      if (isSelfAttested) {
+        navigateToNextStage(orderId);
+      } else {
+        setAlert({
+          description: 'Order Saved In Draft Successfully',
+          type: 'success'
+        });
+      }
     },
     onError: ({ err: error }) => {
       const statusCode = error?.response?.status;
@@ -332,7 +339,7 @@ function Payer({ readOnly, hasPermission }) {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
-        {readOnly && <NotifyAlert stage={ORDER_STAGES.payerDetails} />}
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.PAYER_DETAILS} />}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
 
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
@@ -571,4 +578,4 @@ function Payer({ readOnly, hasPermission }) {
 }
 
 // export default Payer;
-export default withPermissions(Payer, ORDER_STAGES.payerDetails);
+export default withPermissions(Payer, ORDER_STAGES.PAYER_DETAILS);

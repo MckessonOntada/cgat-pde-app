@@ -72,12 +72,7 @@ export const ORDER_ATTESTATION_MESSAGES = (t) => ({
 export const NOTIFY_ALERT = (t) => ({
   [ORDER_STAGES.ACCOUNT_DETAILS]: t('captions.notifyUserAlert.accountSelection'),
   [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: t('captions.notifyUserAlert.patientAndProviderDetails'),
-  [ORDER_STAGES.PAYER_DETAILS]: t('captions.notifyUserAlert.payerDetails'),
+  [ORDER_STAGES.PAYER_DETAILS]: t('captions.notifyUserAlert.patientAndProviderDetails'),
   [ORDER_STAGES.ADDITIONAL_DETAILS]: t('captions.notifyUserAlert.additionalDetails'),
   [ORDER_STAGES.ORDER_SUMMARY]: t('captions.notifyUserAlert.orderSummary')
 });
-
-export const notifyUserByStage = (stage, t) => {
-  const messages = NOTIFY_ALERT(t);
-  return messages[stage];
-};

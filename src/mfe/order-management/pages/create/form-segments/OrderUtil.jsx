@@ -1,7 +1,7 @@
 import Alert from '@src/components/cgat-alert/Alert';
 import { renderModal } from '@src/util/ModalUtil';
 import React from 'react';
-import { NOTIFY_ALERT, notifyUserByStage } from './Constants';
+import { NOTIFY_ALERT } from './Constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 
@@ -45,7 +45,8 @@ export function showEditAlert(title, message, cancelBtnLabel) {
 export const NotifyAlert = (stage) => {
   const { t } = useTranslate();
   const stageValue = Object.values(stage)[0];
-  const message = notifyUserByStage(stageValue, t);
+  const messages = NOTIFY_ALERT(t);
+  const message = messages[stageValue];
 
   const strMessage = (
     <>
