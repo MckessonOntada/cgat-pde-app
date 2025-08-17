@@ -332,17 +332,19 @@ function Payer({ readOnly, hasPermission }) {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
-        {readOnly && <NotifyAlert stage={ORDER_STAGES.payerDetails} />}
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.PAYER_DETAILS} />}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
 
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
-          {({ setValues, values, errors, setTouched, setErrors, setFieldValue }) => {
+          {({ setValues, values, errors, setTouched, setErrors, setFieldValue, dirty }) => {
             React.useEffect(() => {
               setIsPayerDetailsRequired(values['payerDetailsRequired']);
             }, [values]);
-
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [values]);
             React.useEffect(() => {
               setValues((prevValues) => ({
                 ...prevValues,
@@ -422,133 +424,138 @@ function Payer({ readOnly, hasPermission }) {
               <Form>
                 {/* <div className={`MCP-module-body ${readOnly ? 'disabled-div' : ''}`}> */}
                 <div className="MCP-module-body">
-                  <div className="MCP-CardContainer">
-                    <div className="MCP-module-body">
-                      <ModuleHeader
-                        heading={
-                          <div>
-                            <Heading as="h2">{t('labels.payerDetails')}</Heading>
-                          </div>
-                        }
-                        controls={
-                          <p className="form-instruction">
-                            <span className="required">*</span> {t('labels.required')}
-                          </p>
-                        }
-                      />
-                      <div className="radio-button-wrapper">
-                        <Field
-                          direction="rows"
-                          component={Components['radioGroup']}
-                          name="payerDetailsRequired"
-                          id={`insurance-details-requirement`}
-                          htmlFor={`insurance-details-requirement`}
-                          items={[
-                            {
-                              isDisabled: false,
-                              label: 'Yes',
-                              value: 'yes'
-                            },
-                            {
-                              isDisabled: false,
-                              label: 'No',
-                              value: 'no'
-                            }
-                          ]}
-                          caption={'Do you want to use Insurance details for this patient?'}
-                          radioBtnWidth="auto"
+                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                    <div className="MCP-CardContainer">
+                      <div className="MCP-module-body">
+                        <ModuleHeader
+                          heading={
+                            <div>
+                              <Heading as="h2">{t('labels.payerDetails')}</Heading>
+                            </div>
+                          }
+                          controls={
+                            <p className="form-instruction">
+                              <span className="required">*</span> {t('labels.required')}
+                            </p>
+                          }
                         />
+                        <div className="radio-button-wrapper">
+                          <Field
+                            direction="rows"
+                            component={Components['radioGroup']}
+                            name="payerDetailsRequired"
+                            id={`insurance-details-requirement`}
+                            htmlFor={`insurance-details-requirement`}
+                            items={[
+                              {
+                                isDisabled: readOnly || false,
+                                label: 'Yes',
+                                value: 'yes'
+                              },
+                              {
+                                isDisabled: readOnly || false,
+                                label: 'No',
+                                value: 'no'
+                              }
+                            ]}
+                            caption={'Do you want to use Insurance details for this patient?'}
+                            radioBtnWidth="auto"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {values['payerDetailsRequired'] === 'yes' && (
-                    <div className="MCP-panel-container">
-                      <ModuleHeader
-                        heading={
-                          <div>
-                            <Heading as="h2">{t('labels.payerDetails')}</Heading>
-                          </div>
-                        }
-                        controls={
-                          <p className="form-instruction">
-                            <span className="required">*</span> {t('labels.required')}
-                          </p>
-                        }
-                      />
-                      <FormRenderer
-                        onUpload={handleOnUpload({
-                          insurance: 'MEDICAL',
-                          insuranceLevel: 'PRIMARY'
-                        })}
-                        sections={getMedicalInsuranceUiTemplate('primaryMedicalInsurance', 'Primary Medical Insurance')}
-                      />
-                      <hr className="form-section-separator" />
-                      <FormRenderer
-                        onUpload={handleOnUpload({
-                          insurance: 'PHARMACY',
-                          insuranceLevel: 'PRIMARY'
-                        })}
-                        sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Pharmacy Insurance')}
-                      />
-                      <hr className="form-section-separator" />
-                      <div>
-                        {!isSecondaryMedicalInsuranceOpen ? (
-                          <IconButton
-                            variant="tertiary"
-                            label={t('button.caption.addSecondaryMedicalInsurance')}
-                            size="lg"
-                            className="icon-button"
-                            iconButton={false}
-                            textButton={true}
-                            Icon={AddIcon}
-                            onClick={() => setIsSecondaryMedicalInsuranceOpen(true)}
-                          />
-                        ) : (
-                          <FormRenderer
-                            onClose={() => handleOnClosePanel('secondaryMedicalInsurance', setFieldValue)}
-                            closeIcon={BinRedIcon}
-                            onUpload={handleOnUpload({
-                              insurance: 'MEDICAL',
-                              insuranceLevel: 'SECONDARY'
-                            })}
-                            sections={getMedicalInsuranceUiTemplate('secondaryMedicalInsurance', 'Secondary Medical Insurance')}
-                          />
-                        )}
+                    {values['payerDetailsRequired'] === 'yes' && (
+                      <div className="MCP-panel-container">
+                        <ModuleHeader
+                          heading={
+                            <div>
+                              <Heading as="h2">{t('labels.payerDetails')}</Heading>
+                            </div>
+                          }
+                          controls={
+                            <p className="form-instruction">
+                              <span className="required">*</span> {t('labels.required')}
+                            </p>
+                          }
+                        />
+                        <FormRenderer
+                          onUpload={handleOnUpload({
+                            insurance: 'MEDICAL',
+                            insuranceLevel: 'PRIMARY'
+                          })}
+                          readOnly={readOnly}
+                          sections={getMedicalInsuranceUiTemplate('primaryMedicalInsurance', 'Primary Medical Insurance')}
+                        />
+                        <hr className="form-section-separator" />
+                        <FormRenderer
+                          onUpload={handleOnUpload({
+                            insurance: 'PHARMACY',
+                            insuranceLevel: 'PRIMARY'
+                          })}
+                          sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Pharmacy Insurance')}
+                        />
+                        <hr className="form-section-separator" />
+                        <div>
+                          {!isSecondaryMedicalInsuranceOpen ? (
+                            <IconButton
+                              variant="tertiary"
+                              label={t('button.caption.addSecondaryMedicalInsurance')}
+                              size="lg"
+                              className="icon-button"
+                              iconButton={false}
+                              textButton={true}
+                              Icon={AddIcon}
+                              onClick={() => setIsSecondaryMedicalInsuranceOpen(true)}
+                            />
+                          ) : (
+                            <FormRenderer
+                              onClose={() => handleOnClosePanel('secondaryMedicalInsurance', setFieldValue)}
+                              closeIcon={BinRedIcon}
+                              onUpload={handleOnUpload({
+                                insurance: 'MEDICAL',
+                                insuranceLevel: 'SECONDARY'
+                              })}
+                              readOnly={readOnly}
+                              sections={getMedicalInsuranceUiTemplate('secondaryMedicalInsurance', 'Secondary Medical Insurance')}
+                            />
+                          )}
+                        </div>
+                        <hr className="form-section-separator" />
+                        <div>
+                          {!isSecondaryPharmacyInsuranceOpen ? (
+                            <IconButton
+                              variant="tertiary"
+                              className="icon-button"
+                              label={t('button.caption.addSecondaryPharmacyInsurance')}
+                              size="lg"
+                              iconButton={false}
+                              textButton={true}
+                              Icon={AddIcon}
+                              onClick={() => setIsSecondaryPharmacyInsuranceOpen(true)}
+                            />
+                          ) : (
+                            <FormRenderer
+                              onClose={() => handleOnClosePanel('secondaryPharmacyInsurance', setFieldValue)}
+                              closeIcon={BinRedIcon}
+                              onUpload={handleOnUpload({
+                                insurance: 'PHARMACY',
+                                insuranceLevel: 'SECONDARY'
+                              })}
+                              readOnly={readOnly}
+                              sections={getPharmacyInsuranceUiTemplate('secondaryPharmacyInsurance', 'Secondary Pharmacy Insurance')}
+                            />
+                          )}
+                        </div>
                       </div>
-                      <hr className="form-section-separator" />
-                      <div>
-                        {!isSecondaryPharmacyInsuranceOpen ? (
-                          <IconButton
-                            variant="tertiary"
-                            className="icon-button"
-                            label={t('button.caption.addSecondaryPharmacyInsurance')}
-                            size="lg"
-                            iconButton={false}
-                            textButton={true}
-                            Icon={AddIcon}
-                            onClick={() => setIsSecondaryPharmacyInsuranceOpen(true)}
-                          />
-                        ) : (
-                          <FormRenderer
-                            onClose={() => handleOnClosePanel('secondaryPharmacyInsurance', setFieldValue)}
-                            closeIcon={BinRedIcon}
-                            onUpload={handleOnUpload({
-                              insurance: 'PHARMACY',
-                              insuranceLevel: 'SECONDARY'
-                            })}
-                            sections={getPharmacyInsuranceUiTemplate('secondaryPharmacyInsurance', 'Secondary Pharmacy Insurance')}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                    )}
+                    <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                  </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit">
+                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>
@@ -571,4 +578,4 @@ function Payer({ readOnly, hasPermission }) {
 }
 
 // export default Payer;
-export default withPermissions(Payer, ORDER_STAGES.payerDetails);
+export default withPermissions(Payer, ORDER_STAGES.PATIENT_DETAILS);

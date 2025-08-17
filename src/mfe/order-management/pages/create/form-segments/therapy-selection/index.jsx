@@ -249,15 +249,15 @@ function TherapySelection({ readOnly, currentStage, hasPermission }) {
             {therapySelectionMessage && (
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
-            <OrderAttestation stage={ORDER_STAGES?.THERAPY_SELECTION} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} readOnly={readOnly} />
+            <OrderAttestation disabled={readOnly} stage={ORDER_STAGES?.THERAPY_SELECTION} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
+              <Button size="md" variant="primary" type="submit" disabled={readOnly} onClick={handleOnSubmit}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>

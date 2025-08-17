@@ -389,199 +389,206 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
               <Form>
                 {/* <div className={`${styles.wrapper} ${readOnly ? 'disabled-div' : ''}`}>  */}
                 <div className={styles.wrapper}>
-                  <div className="MCP-module-body">
-                    <div className="MCP-panel-container">
-                      <ModuleHeader
-                        heading={
-                          <div>
-                            <Heading as="h2">{t('orderManagement.patientDetails.patient_details')}</Heading>
-                          </div>
-                        }
-                        controls={
-                          <p className="form-instruction">
-                            <span className="required">*</span> {t('labels.required')}
-                          </p>
-                        }
-                      />
+                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                    <div className="MCP-module-body">
+                      <div className="MCP-panel-container">
+                        <ModuleHeader
+                          heading={
+                            <div>
+                              <Heading as="h2">{t('orderManagement.patientDetails.patient_details')}</Heading>
+                            </div>
+                          }
+                          controls={
+                            <p className="form-instruction">
+                              <span className="required">*</span> {t('labels.required')}
+                            </p>
+                          }
+                        />
 
-                      <FormRenderer sections={PatientSections(channelType, therapyConfig)} />
-                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
-                        <>
-                          <hr className="form-section-separator" />
-                          <ModuleHeader
-                            heading={
-                              <div>
-                                <Heading as="h2">{t('orderManagement.patientDetails.address_details')}</Heading>
-                              </div>
-                            }
-                            controls={
-                              <p className="form-instruction">
-                                <span className="required">*</span> {t('labels.required')}
-                              </p>
-                            }
-                          />
-                          <FormRenderer sections={AddressSections(channelType)} />
-                        </>
-                      )}
-
-                      {shouldShowIdentifierSection && (
-                        <>
-                          <hr className="form-section-separator" />
-                          <ModuleHeader
-                            heading={
-                              <div>
-                                <Heading as="h2">{t('orderManagement.patientDetails.identifier_details')}</Heading>
-                              </div>
-                            }
-                            controls={
-                              shouldShowRequiredLabel && (
-                                <p className="form-instruction">
-                                  <span className="required">*</span> {t('labels.required')}
-                                </p>
-                              )
-                            }
-                          />
-                          <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} />
-                        </>
-                      )}
-                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
-                        <React.Fragment>
-                          <hr className="form-section-separator" />
-                          <div className="MCP-module-body">
+                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly} />
+                        {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                          <>
+                            <hr className="form-section-separator" />
                             <ModuleHeader
-                              heading={<Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>}
+                              heading={
+                                <div>
+                                  <Heading as="h2">{t('orderManagement.patientDetails.address_details')}</Heading>
+                                </div>
+                              }
                               controls={
                                 <p className="form-instruction">
                                   <span className="required">*</span> {t('labels.required')}
                                 </p>
                               }
                             />
+                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly} />
+                          </>
+                        )}
 
-                            <div className="provider-details">
-                              <Field
-                                component={Components['multiSelectDropdown']}
-                                id={'patient-info-provider'}
-                                name={'providerId'}
-                                label={' '}
-                                isMultiSelect={false}
-                                placeholder={'Select Provider'}
-                                onChange={(value) => handleOnSelection(value, setFieldValue)}
-                                options={(Array.isArray(providerList) ? providerList : []).map((item) => ({
-                                  label: item.fullname,
-                                  labelDescription: item.detailedAddress,
-                                  value: item.id
-                                }))}
-                                value={provider?.id.toString()}
-                                variant={'async'}
-                                onSearch={setProviderQuery}
-                                recordsCountToEnableSearch={5}
-                                size="lg"
-                                fieldDisplayValue={CommonUtils.isNonEmptyObject(provider) ? provider : undefined}
-                                isAsyncLoading={isFetchingProviders}
-                                refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
-                                asyncRecordsFound={totalProviders}
-                              />
-                              {provider && (
-                                <div className="details-card">
-                                  <ModuleHeader
-                                    heading={
-                                      <Heading className="details-title" as="h3">
-                                        <EclipsesText str={provider.fullname} />
-                                      </Heading>
-                                    }
-                                    controls={
-                                      provider.isNewlyAdded && (
-                                        <span>
-                                          <Button
-                                            Icon={EditPencil}
-                                            variant="tertiary"
-                                            className="button-icon"
-                                            size="md"
-                                            type="button"
-                                            onClick={() => {
-                                              setIsEditing(true);
-                                              setShowAddProviderForm(true);
-                                            }}>
-                                            {t('userManagement.button.edit')}
-                                          </Button>
-                                        </span>
-                                      )
-                                    }
-                                  />
-
-                                  <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
-                                    <Tooltip body={provider.detailedAddress}>
-                                      <p className="detail-segment inline-text-overflow">
-                                        <EclipsesText str={provider.detailedAddress} maxLength={35} />
-                                      </p>
-                                    </Tooltip>
-                                    {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
-                                      const rawValue = provider[key];
-                                      const labelMap = {
-                                        dea: t('provider.deaNumber'),
-                                        npi: t('provider.npiNumber'),
-                                        phone: t('provider.phoneNumber'),
-                                        email: t('provider.emailId'),
-                                        tin: t('provider.tin')
-                                      };
-                                      const value =
-                                        key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
-                                      return (
-                                        <Tooltip key={key} body={value}>
-                                          <p className="detail-segment inline-text-overflow">
-                                            {labelMap[key]} : {!!value ? <EclipsesText str={value} maxLength={35} /> : '-'}
-                                          </p>
-                                        </Tooltip>
-                                      );
-                                    })}
-                                  </div>
+                        {shouldShowIdentifierSection && (
+                          <>
+                            <hr className="form-section-separator" />
+                            <ModuleHeader
+                              heading={
+                                <div>
+                                  <Heading as="h2">{t('orderManagement.patientDetails.identifier_details')}</Heading>
                                 </div>
-                              )}
-                            </div>
+                              }
+                              controls={
+                                shouldShowRequiredLabel && (
+                                  <p className="form-instruction">
+                                    <span className="required">*</span> {t('labels.required')}
+                                  </p>
+                                )
+                              }
+                            />
+                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly} />
+                          </>
+                        )}
+                        {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                          <React.Fragment>
+                            <hr className="form-section-separator" />
+                            <div className="MCP-module-body">
+                              <ModuleHeader
+                                heading={<Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>}
+                                controls={
+                                  <p className="form-instruction">
+                                    <span className="required">*</span> {t('labels.required')}
+                                  </p>
+                                }
+                              />
 
-                            <div className="styled-icon-button">
-                              {!showAddProviderForm && (
-                                <Button
-                                  Icon={PlusIcon}
-                                  variant="tertiary"
-                                  type="button"
-                                  onClick={() => {
-                                    setIsEditing(false);
-                                    setShowAddProviderForm(true);
-                                    setProvider(null);
-                                    setFieldValue('providerId', null);
-                                  }}
-                                  size="md">
-                                  {t('provider.btnAddProvider')}
-                                </Button>
-                              )}
-                              {showAddProviderForm && <div id="provider-form-portal" />}
-                              {showAddProviderForm &&
-                                portalTarget &&
-                                ReactDOM.createPortal(
-                                  <div className="inline-provider-form-wrapper">
-                                    <ProviderAddUpdateForm
-                                      setShowAddProviderForm={setShowAddProviderForm}
-                                      providerData={isEditing ? provider : []}
-                                      accountId={soldToAccountId}
-                                      onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
+                              <div className="provider-details">
+                                <Field
+                                  component={Components['multiSelectDropdown']}
+                                  id={'patient-info-provider'}
+                                  name={'providerId'}
+                                  label={' '}
+                                  isMultiSelect={false}
+                                  placeholder={'Select Provider'}
+                                  onChange={(value) => handleOnSelection(value, setFieldValue)}
+                                  options={(Array.isArray(providerList) ? providerList : []).map((item) => ({
+                                    label: item.fullname,
+                                    labelDescription: item.detailedAddress,
+                                    value: item.id
+                                  }))}
+                                  value={provider?.id.toString()}
+                                  variant={'async'}
+                                  onSearch={setProviderQuery}
+                                  recordsCountToEnableSearch={5}
+                                  size="lg"
+                                  fieldDisplayValue={CommonUtils.isNonEmptyObject(provider) ? provider : undefined}
+                                  isAsyncLoading={isFetchingProviders}
+                                  refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
+                                  asyncRecordsFound={totalProviders}
+                                  isReadOnly={readOnly}
+                                />
+                                {provider && (
+                                  <div className="details-card">
+                                    <ModuleHeader
+                                      heading={
+                                        <Heading className="details-title" as="h3">
+                                          <EclipsesText str={provider.fullname} />
+                                        </Heading>
+                                      }
+                                      controls={
+                                        provider.isNewlyAdded && (
+                                          <span>
+                                            <Button
+                                              Icon={EditPencil}
+                                              variant="tertiary"
+                                              className="button-icon"
+                                              size="md"
+                                              type="button"
+                                              onClick={() => {
+                                                setIsEditing(true);
+                                                setShowAddProviderForm(true);
+                                              }}>
+                                              {t('userManagement.button.edit')}
+                                            </Button>
+                                          </span>
+                                        )
+                                      }
                                     />
-                                  </div>,
-                                  portalTarget
+
+                                    <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
+                                      <Tooltip body={provider.detailedAddress}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          <EclipsesText str={provider.detailedAddress} maxLength={35} />
+                                        </p>
+                                      </Tooltip>
+                                      {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
+                                        const rawValue = provider[key];
+                                        const labelMap = {
+                                          dea: t('provider.deaNumber'),
+                                          npi: t('provider.npiNumber'),
+                                          phone: t('provider.phoneNumber'),
+                                          email: t('provider.emailId'),
+                                          tin: t('provider.tin')
+                                        };
+                                        const value =
+                                          key === 'phone'
+                                            ? CommonUtils.formatPhoneNumber(rawValue)
+                                            : key === 'tin'
+                                            ? CommonUtils.formatTIN(rawValue)
+                                            : rawValue;
+                                        return (
+                                          <Tooltip key={key} body={value}>
+                                            <p className="detail-segment inline-text-overflow">
+                                              {labelMap[key]} : {!!value ? <EclipsesText str={value} maxLength={35} /> : '-'}
+                                            </p>
+                                          </Tooltip>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
                                 )}
+                              </div>
+
+                              <div className="styled-icon-button">
+                                {!showAddProviderForm && (
+                                  <Button
+                                    Icon={PlusIcon}
+                                    variant="tertiary"
+                                    type="button"
+                                    onClick={() => {
+                                      setIsEditing(false);
+                                      setShowAddProviderForm(true);
+                                      setProvider(null);
+                                      setFieldValue('providerId', null);
+                                    }}
+                                    size="md">
+                                    {t('provider.btnAddProvider')}
+                                  </Button>
+                                )}
+                                {showAddProviderForm && <div id="provider-form-portal" />}
+                                {showAddProviderForm &&
+                                  portalTarget &&
+                                  ReactDOM.createPortal(
+                                    <div className="inline-provider-form-wrapper">
+                                      <ProviderAddUpdateForm
+                                        setShowAddProviderForm={setShowAddProviderForm}
+                                        providerData={isEditing ? provider : []}
+                                        accountId={soldToAccountId}
+                                        onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
+                                      />
+                                    </div>,
+                                    portalTarget
+                                  )}
+                              </div>
                             </div>
-                          </div>
-                        </React.Fragment>
-                      )}
+                          </React.Fragment>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                    <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                  </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit">
+                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

@@ -18,10 +18,11 @@ const ALLOWED_FILE_TYPE = [
 ];
 const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 
-function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
+function QuestionnaireTemplate({ onDocumentChange, config, isPreview, readOnly }) {
   const activeLanguage = LANGUAGE.ENGLISH;
   const { t } = useTranslate();
   const { values: formValues = {}, setFieldValue } = useFormikContext();
+  console.log(config);
 
   if (
     !config ||
@@ -35,7 +36,6 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
     const { text, type, additionalAttributes, isDocumentRequired, isMandatory } = controlConfig;
     const questionLabel = text[LANGUAGE.ENGLISH]?.trim();
     const fieldName = CommonUtils.generateUniqueCode(`${id}#${questionLabel}`);
-
     const attributes = {};
     if (isMandatory) {
       attributes.isRequired = true;
@@ -72,6 +72,9 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       attributes.direction = additionalAttributes?.options?.length > 2 ? 'column' : 'row';
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400', display: 'inline-block' };
       attributes.labelCustomStyles = { marginBottom: '0px', fontSize: '14px' };
+      attributes.items.forEach((item) => {
+        item.isDisabled = readOnly || false;
+      });
     }
 
     if (type === QUESTION_TYPE.CHECKBOX) {
@@ -93,7 +96,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
                 ? 'grid-cols-1'
                 : 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'
             }`}>
-            <Field name={`${fieldName}.value`} label={questionLabel} placeholder=" " {...attributes} />
+            <Field name={`${fieldName}.value`} label={questionLabel} placeholder=" " {...attributes} isReadOnly={readOnly} isDisabled={readOnly} />
           </div>
 
           {isDocumentRequired && (

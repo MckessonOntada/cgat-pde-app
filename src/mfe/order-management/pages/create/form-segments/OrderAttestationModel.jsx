@@ -48,9 +48,9 @@ export const NotifyAlert = (stage) => {
   const message = notifyUserByStage(stageValue, t);
 
   const strMessage = (
-    <>
+    <div className="info-alert-message">
       {message} <Link onClick={() => alert('Clicked!')}>Notify User</Link>
-    </>
+    </div>
   );
   return <Alert type="info" description={strMessage} showCloseIcon={false} />;
 };

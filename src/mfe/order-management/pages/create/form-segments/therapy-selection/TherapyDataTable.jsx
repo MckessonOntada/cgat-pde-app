@@ -10,7 +10,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 
 const TherapyDataTable = (props) => {
-  const { trade, onChange } = props;
+  const { trade, onChange, readOnly } = props;
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, isFetching, error, applySort, filterConfig } = useTherapy();
   const isDataFiltered = React.useMemo(() => {
@@ -37,7 +37,7 @@ const TherapyDataTable = (props) => {
   const ExpandedComponent = ({ data }) => {
     if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
     const expandedData = data.therapies || [];
-    const expandedColumns = createColumns({ t, trade, onChange });
+    const expandedColumns = createColumns({ t, trade, onChange, readOnly });
     return (
       <div className="expanded-rows">
         <CustomDataTable
@@ -68,7 +68,7 @@ const TherapyDataTable = (props) => {
     }
   };
 
-  const columns = createColumns({ t, trade, onChange, isRowExpanded, onExpandToggle });
+  const columns = createColumns({ t, trade, onChange, readOnly, isRowExpanded, onExpandToggle });
 
   return (
     <CustomDataTable

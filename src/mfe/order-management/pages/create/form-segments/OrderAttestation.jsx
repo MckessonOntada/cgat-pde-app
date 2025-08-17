@@ -4,7 +4,7 @@ import { CheckboxGroup } from '@mckesson/mcp-component-library';
 import { ORDER_ATTESTATION_MESSAGES } from './Constants';
 import { useTranslate } from '@src/translations/useTranslation';
 
-const OrderAttestation = ({ stage, onCheck, isChecked }) => {
+const OrderAttestation = ({ stage, onCheck, isChecked, disabled }) => {
   const { t } = useTranslate(); // Assuming useTranslation is imported
   const handleChange = useCallback(() => {
     if (onCheck) {
@@ -13,7 +13,7 @@ const OrderAttestation = ({ stage, onCheck, isChecked }) => {
   }, [isChecked]);
 
   const acknowledgeOption = {
-    isDisabled: false,
+    isDisabled: disabled || false,
     isChecked: isChecked || false,
     label: ORDER_ATTESTATION_MESSAGES(t)[stage],
     value: 'attest',

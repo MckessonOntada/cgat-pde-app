@@ -1654,3 +1654,24 @@ div.empty-table-wrapper {
     }
   }
 }
+.MCP-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+}
+.info-alert-message {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-700);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  a {
+    font-size: var(--brand-font-size--20);
+    color: var(--brand-color-primary);
+    text-decoration: underline;
+    text-wrap: nowrap;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}

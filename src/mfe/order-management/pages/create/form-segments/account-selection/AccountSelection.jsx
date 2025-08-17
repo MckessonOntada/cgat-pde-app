@@ -290,7 +290,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
                         <React.Fragment>
                           <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
                           <div className={styles.btnAccount}>
-                            <Button size="md" onClick={handleOnClick} variant="secondary">
+                            <Button size="md" onClick={handleOnClick} variant="secondary" disabled={readOnly}>
                               {t('captions.btnSelectYourAccount')}
                             </Button>
                           </div>
@@ -301,7 +301,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
                   {selectedSoldToAccount && (
                     <div className={`${styles.controls} left-floating-control`}>
                       <div className="styled-icon-button">
-                        <Button variant="tertiary" onClick={handleOnClick}>
+                        <Button variant="tertiary" onClick={handleOnClick} disabled={readOnly}>
                           {t('button.caption.change')}
                         </Button>
                       </div>
@@ -312,17 +312,17 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
             </div>
             {selectedSoldToAccount && (
               <ShippingAddressProvider accountDetails={{ trade: tradeDetails, selectedAccount: selectedSoldToAccount }}>
-                <ShippingAddress selectedShippingAddress={selectedShipToAccount} setSelectedShippingAddress={setSelectedShipToAccount} />
+                <ShippingAddress selectedShippingAddress={selectedShipToAccount} readOnly={readOnly} setSelectedShippingAddress={setSelectedShipToAccount} />
               </ShippingAddressProvider>
             )}
           </div>
-          <OrderAttestation stage={ORDER_STAGES?.ACCOUNT_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+          <OrderAttestation stage={ORDER_STAGES?.ACCOUNT_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} disabled={readOnly} />
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
+              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit" disabled={readOnly}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
