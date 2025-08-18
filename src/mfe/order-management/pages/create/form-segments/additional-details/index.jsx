@@ -81,7 +81,7 @@ function AdditionalDetails({ readOnly }) {
   const [isDirty, setIsDirty] = React.useState(false);
   const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
-    isDisabled: true,
+    isDisabled: false,
     isChecked: false,
     label: t('messages.variantAcknowledgement'),
     value: false

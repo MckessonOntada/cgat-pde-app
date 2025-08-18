@@ -22,7 +22,6 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview, readOnly }
   const activeLanguage = LANGUAGE.ENGLISH;
   const { t } = useTranslate();
   const { values: formValues = {}, setFieldValue } = useFormikContext();
-  console.log(config);
 
   if (
     !config ||
