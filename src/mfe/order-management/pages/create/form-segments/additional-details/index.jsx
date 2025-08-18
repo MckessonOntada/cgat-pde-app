@@ -899,7 +899,7 @@ function AdditionalDetails({ readOnly }) {
                             </p>
                           </div>
                           <React.Fragment>
-                            {getClinicalDetailFields(t, { therapyConfig, channelType, values }, setFieldValue, setFieldTouched).map(
+                            {getClinicalDetailFields(t, { therapyConfig, channelType, values }, setFieldValue, setFieldTouched, readOnly).map(
                               ({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
                                 <div key={index} className={`${layout.classes}`}>
                                   <Field
