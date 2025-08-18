@@ -89,6 +89,7 @@ export const MessageEn = {
   'labels.genericName': 'Generic Name',
   'labels.manufacturer': 'Manufacturer',
   'labels.formulation': 'Formulation',
+  'labels.productForm': 'Product Form',
   'labels.dosage': 'Dosage',
   'labels.priceDetails': 'Price Details',
   'labels.estimatedPrice': 'Estimated Price',

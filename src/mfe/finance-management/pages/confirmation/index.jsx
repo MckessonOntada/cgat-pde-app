@@ -61,7 +61,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
     'Credit Used': formatCurrency(state && state.totalCreditAmount) || '-',
     'Payment Initiated Date': state && state.paymentInitiationDate ? dayjs(state.paymentInitiationDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-',
     ...(type === PATHS.paymentHistory && {
-      'Payment Authorised Date': state && state.clearingDate ? dayjs(state.clearingDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-'
+      'Payment Authorized Date': state && state.clearingDate ? dayjs(state.clearingDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-'
     })
   };
 
