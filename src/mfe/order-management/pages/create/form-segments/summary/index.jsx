@@ -47,7 +47,7 @@ import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showEditAlert } from '../OrderUtil';
 
-const Summary = ({ checkEditPermission, hasPermission, readOnly }) => {
+const Summary = ({ readOnly }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -577,7 +577,6 @@ const Summary = ({ checkEditPermission, hasPermission, readOnly }) => {
         return;
       }
       const basePath = RoutePaths.pathOrderManagement;
-      const hasPermission = checkEditPermission(stage);
       const stageRoutes = {
         [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit-order/${orderId}`,
         [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/${orderId}/accounts`,
@@ -1575,4 +1574,4 @@ const Summary = ({ checkEditPermission, hasPermission, readOnly }) => {
   );
 };
 
-export default withPermissions(Summary);
+export default withPermissions(Summary, ORDER_STAGES.ORDER_SUMMARY);
