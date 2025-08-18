@@ -429,5 +429,6 @@ export const UserManagementEN = {
   'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
-  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.'
+  'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.',
+  'message.noLeadingTrailingSpace': 'No leading or trailing spaces are allowed'
 };

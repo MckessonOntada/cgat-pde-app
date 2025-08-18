@@ -106,7 +106,7 @@ export const OrgManagementEN = {
   'orgManagement.create_org.validation.phone_no_invalid': 'Invalid Phone',
   'orgManagement.create_org.validation.fax_invalid': 'Invalid Fax no',
   'orgManagement.create_org.validation.fax_max': 'Fax can be a maximum of 15 characters',
-
+  'message.noLeadingTrailingSpace': 'No leading or trailing spaces are allowed',
   'orgManagement.org_detail.contact': 'Contact',
   'orgManagement.org_detail.person_name': 'Contact Person Name',
   'orgManagement.org_detail.address': 'Organization Address',
