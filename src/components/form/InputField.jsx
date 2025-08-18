@@ -10,7 +10,7 @@ export default function InputField(props) {
       <div className="row-space-between-center">
         <Label htmlFor={name} className="label-heading">
           {label}
-          {isRequired && <span className='required'> *</span>}
+          {isRequired && <span className="required"> *</span>}
         </Label>
         {labelControls}
       </div>
