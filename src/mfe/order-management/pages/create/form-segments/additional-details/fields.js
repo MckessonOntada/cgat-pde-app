@@ -87,7 +87,6 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
         placeholder: translationFn('dropdown.placeholder.search'),
         onChange: (value) => {
           const changedValues = value.filter((item) => item.isChecked);
-          debugger;
           if (CommonUtils.isNonEmptyArray(changedValues) && !areArraysEqual(changedValues, formValues.diagnosisCode))
             setFieldValue(
               'diagnosisCode',
@@ -113,7 +112,7 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
 
 function areArraysEqual(arr1 = [], arr2 = []) {
   if (arr1.length !== arr2.length) return false;
-  debugger;
+
   const codes1 = new Set(arr1.map((item) => item.code));
   const codes2 = new Set(arr2.map((item) => item.code));
 
@@ -286,7 +285,7 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
               type: 'checkbox',
               isDisabled: false,
               isChecked: false,
-              caption: formValues?.['termsAndCondition'],
+              caption: formValues?.['contentPolicy'],
               size: 'md'
             }
           ]

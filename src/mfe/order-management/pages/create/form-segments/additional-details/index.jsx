@@ -255,8 +255,6 @@ function AdditionalDetails() {
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
     setInitialFormValues((pre) => ({
       ...pre,
-      termsAndCondition:
-        'This form allows Precigen., its affiliates, representatives, agents, partners, vendors and contractors to provide patient support, resources and education ("Patient Resources") to eligible patients who have been prescribed PAPZIMEOS. I have the necessary written authorization from the patient referenced above, or the patient\'s legal guardian, to release to Precigen the medical and/ or other patient information included herein for allowing participation in programs and services offered through PAPZIMEOS Support, which may include, without limitation: (1) financial assistance programs; (2) verifying insurance coverage and/or evaluating the patient\'s eligibility for alternate funding; and (3) Patient Resources. I certify that: (i) the information in this form is complete and accurate to the best of my knowledge; (ii) the patient on this form has a diagnosis for an FDA-approved indication for PAPZIMEOS; (iii) any Patient Resource provided through Precigen to my patient is not made in exchange for any express or implied agreement or understanding that I would recommend, prescribe, or use an Precigen medication or Patient Resource. I prescribed PAPZIMEOS solely on my clinical determination and medical necessity. (iv) I authorize Precigen to forward the above prescription to the applicable pharmacy as allowed under applicable law.',
       ...storedValue,
       ...questionnaireFields
     }));
@@ -513,6 +511,7 @@ function AdditionalDetails() {
         initialValues.refills = spTherapyConfig.refills;
         initialValues.instructions = spTherapyConfig.instructions;
         initialValues.terms = false;
+        initialValues.contentPolicy = spTherapyConfig.contentPolicy;
         initialValues.acknowledgement = false;
 
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
