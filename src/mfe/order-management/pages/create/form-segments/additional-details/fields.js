@@ -2,12 +2,12 @@ import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import CommonUtils from '@src/util/CommonUtils';
 
-const getBinaryOptions = (keyPrefix = '') => {
+const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
     key: `${keyPrefix}-option-${index}`,
     label: option,
     value: option.toLowerCase(),
-    isDisabled: false
+    isDisabled: readOnly
   }));
 };
 
@@ -153,7 +153,7 @@ function mergeLists(values = [], list = []) {
   return Array.from(finalMap.values());
 }
 
-export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouched) => {
+export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouched, readOnly) => {
   const fields = [];
   const { values } = config;
 
@@ -173,7 +173,7 @@ export const getClinicalDetailFields = (t, config, setFieldValue, setFieldTouche
             setFieldTouched('allergyDetails', false);
           }
         },
-        items: getBinaryOptions('allergies'),
+        items: getBinaryOptions('allergies', readOnly),
         layout: {
           classes: 'grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline'
         }
