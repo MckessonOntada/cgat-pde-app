@@ -312,7 +312,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.PayOnDate': 'S_Pay On Date',
   'paymentInvoices.table.schedulePayments': 'S_Scheduled Payments',
   'pendingPayments.confirm.BackToPendingPayments': 'S_Back to Schedule Payments',
-  'paymentInvoices.tabs.SCHEDULE PAYMENTS': 'S_SCHEDULE PAYMENTS',
+  'paymentInvoices.tabs.SCHEDULED PAYMENTS': 'S_SCHEDULED PAYMENTS',
   'paymentInvoices.pendingPayments.filter.payOnDateStart': 'S_Pay On Date (Start)',
   'paymentInvoices.pendingPayments.filter.payOnDateEnd': 'S_Pay On Date (End)',
   'paymentInvoices.Details.financeCharges':
