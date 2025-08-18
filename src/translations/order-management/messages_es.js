@@ -360,6 +360,7 @@ export const MessageEs = {
   'messages.confirmation.therapy': 'S_You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'S_You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.patient': 'S_You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.payer': 'S_You have changed Payer details. Do you still want to go back? Your changes will be discarded!',
 
   'messages.header.confirmation': 'S_Confirmation!',
   'messages.header.warning': 'S_Warning!',

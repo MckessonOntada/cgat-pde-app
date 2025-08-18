@@ -57,6 +57,17 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
 
   React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.PATIENT_DETAILS) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage]);
+
+  React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
     if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
@@ -380,7 +391,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
-        {readOnly && <NotifyAlert stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS} />}
+        {readOnly && (
+          <NotifyAlert
+            stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PATIENT_DETAILS ? true : false}
+          />
+        )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
@@ -391,6 +407,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           {({ values, dirty, setFieldValue }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
+              setIsSelfAttested(false);
             }, [values]);
             return (
               <Form>

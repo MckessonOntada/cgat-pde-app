@@ -38,6 +38,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const [accountConfig, setAccountConfig] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = locationState;
+  const updatedLocationState = { ...locationState, isTherapyChanged: false };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [alert, setAlert] = useState(null);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
@@ -49,9 +50,21 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
   };
+
+  React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.ACCOUNT_DETAILS) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage]);
+
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
   }, [orderDetails]);
 
@@ -96,7 +109,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       if (isSelfAttested) {
         try {
           navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-            state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+            state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover }
           });
         } catch (err) {
           console.error(err);
@@ -125,6 +138,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   };
   const handleOnClick = () => {
     setAlert(null);
+    setIsSelfAttested(false);
     setOpen(true);
   };
 
@@ -142,11 +156,11 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
     if (isEdit) {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...locationState, isEdit: isEdit, isApprover: isApprover }
+        state: { ...updatedLocationState, isEdit: isEdit, isApprover: isApprover }
       });
     } else {
       navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover, isBack: true }
+        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover, isBack: true }
       });
     }
   };
@@ -184,11 +198,11 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       });
     } else {
       setAlert(null);
-      if (isDirty || isSelfAttested) {
+      if (isDirty) {
         saveAccount(payload);
       } else {
         navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
-          state: { ...locationState, alertState, isEdit: false, isApprover }
+          state: { ...updatedLocationState, alertState, isEdit: false, isApprover }
         });
       }
     }
@@ -198,22 +212,22 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
+      const prevSearch = updatedLocationState?.__prevSearch || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 
   const handleNavigate = () => {
-    const prevSearch = locationState?.__prevSearch || '';
+    const prevSearch = updatedLocationState?.__prevSearch || '';
     if (modalSuccessCallback === 'list') {
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'details') {
       navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover, isBack: true }
+        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover, isBack: true }
       });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover }
+        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover }
       });
     }
   };
@@ -254,7 +268,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
-        {readOnly && <NotifyAlert stage={ORDER_STAGES.ACCOUNT_DETAILS} />}
+        {readOnly && (
+          <NotifyAlert stage={ORDER_STAGES.ACCOUNT_DETAILS} OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ACCOUNT_DETAILS ? true : false} />
+        )}
         <OrderHeaderDetails
           orderDetails={orderDetails}
           priceDetails={priceDetails}

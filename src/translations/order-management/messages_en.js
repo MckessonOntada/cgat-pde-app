@@ -406,6 +406,7 @@ export const MessageEn = {
   'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.payer': 'You have changed Payer details. Do you still want to go back? Your changes will be discarded!',
   'message.discardChangesConfirmation': "You're about to discard all unsaved changes to this order. Are you sure you want to continue?",
   'messages.header.confirmation': 'Confirmation!',
   'messages.header.warning': 'Warning!',

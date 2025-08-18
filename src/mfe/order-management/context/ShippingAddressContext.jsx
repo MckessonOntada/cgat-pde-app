@@ -74,7 +74,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     error,
     refetch: refreshData
   } = useQuery({
-    queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber, trade.tradeName],
+    queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber, trade?.tradeName],
     queryFn: async () => OrderService.getShippingAddressForTherapyByAccountId(trade.ndc, selectedAccount?.accountNumber, requestParams),
     onSuccess: (result) => {
       if (result.content) {

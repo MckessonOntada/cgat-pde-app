@@ -70,6 +70,17 @@ function Payer({ readOnly, hasPermission }) {
   };
 
   React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.PAYER_DETAILS) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage]);
+
+  React.useEffect(() => {
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
   }, [orderDetails]);
 
@@ -266,8 +277,9 @@ function Payer({ readOnly, hasPermission }) {
       }
     }
   };
-
+  console.log('isDirty', isDirty);
   const handleOnUpload = (config) => (file, setFieldValue, key) => {
+    setIsSelfAttested(false);
     const side = key.endsWith('Front') ? 'FRONT' : 'BACK';
     const { insurance, insuranceLevel } = config;
     const payload = {
@@ -339,7 +351,9 @@ function Payer({ readOnly, hasPermission }) {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
-        {readOnly && <NotifyAlert stage={ORDER_STAGES.PAYER_DETAILS} />}
+        {readOnly && (
+          <NotifyAlert stage={ORDER_STAGES.PAYER_DETAILS} OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PAYER_DETAILS ? true : false} />
+        )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
 
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
@@ -347,10 +361,17 @@ function Payer({ readOnly, hasPermission }) {
         <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
           {({ setValues, values, errors, setTouched, setErrors, setFieldValue, dirty }) => {
             React.useEffect(() => {
-              setIsPayerDetailsRequired(values['payerDetailsRequired']);
-            }, [values]);
-            React.useEffect(() => {
               setIsDirty(dirty);
+              if (dirty) {
+                setIsSelfAttested(false);
+              }
+            }, [dirty]);
+
+            React.useEffect(() => {
+              setIsPayerDetailsRequired(values['payerDetailsRequired']);
+              if (dirty) {
+                setIsSelfAttested(false);
+              }
             }, [values]);
             React.useEffect(() => {
               setValues((prevValues) => ({
@@ -575,7 +596,7 @@ function Payer({ readOnly, hasPermission }) {
       </div>
       <DiscardChangesModal
         heading={t('messages.confirmation.discardheader')}
-        description={t('messages.confirmation.addition')}
+        description={t('messages.confirmation.payer')}
         isOpen={Boolean(modalSuccessCallback)}
         onClose={() => setModalSuccessCallback(null)}
         onConfirm={handleNavigate}

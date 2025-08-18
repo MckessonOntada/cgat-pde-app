@@ -104,6 +104,17 @@ function AdditionalDetails({ readOnly }) {
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
   };
+  React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.ADDITIONAL_DETAILS) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage]);
+
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
@@ -837,6 +848,9 @@ function AdditionalDetails({ readOnly }) {
             useEffect(() => {
               setIsDirty(dirty);
               setStoredValue(values);
+              if (dirty) {
+                setIsSelfAttested(false);
+              }
             }, [dirty, values]);
 
             return (

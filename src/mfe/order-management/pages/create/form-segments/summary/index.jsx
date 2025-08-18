@@ -45,9 +45,9 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsValidationSchema } from './EditConfig';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { showEditAlert } from '../OrderUtil';
+import { NotifyAlert, showEditAlert } from '../OrderUtil';
 
-const Summary = ({ checkEditPermission, hasPermission }) => {
+const Summary = ({ checkEditPermission, hasPermission, readOnly }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -587,11 +587,9 @@ const Summary = ({ checkEditPermission, hasPermission }) => {
       };
 
       const route = stageRoutes[stage] || basePath;
-      hasPermission
-        ? navigate(route, {
-            state: { ...locationState, isEdit: true, isApprover }
-          })
-        : showEditAlert(t('prompt.title.alert'), t('labels.summaryEditMessage'), t('label.ok'));
+      navigate(route, {
+        state: { ...locationState, isEdit: true, isApprover }
+      });
       return;
     }
   };
@@ -876,6 +874,7 @@ const Summary = ({ checkEditPermission, hasPermission }) => {
             )}
           </React.Fragment>
         )}
+        {readOnly && status === ORDER_STATUS.IN_DRAFT && <NotifyAlert stage={ORDER_STAGES.ORDER_SUMMARY} OnEdit={false} />}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
           <div className="">

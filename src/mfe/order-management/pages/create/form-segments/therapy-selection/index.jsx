@@ -109,6 +109,18 @@ function TherapySelection({ readOnly }) {
       });
     }
   });
+  const isTherapyChanged = tradeDetails?.tradeName.trim() !== orderDetails?.tradeDetails?.tradeName.trim();
+  const navigateToNextStage = (id) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
+      state: {
+        ...locationState,
+        ...(prevSearchState && { __prevSearch: prevSearchState }),
+        isEdit: false,
+        isApprover: isApprover,
+        isTherapyChanged: isTherapyChanged
+      }
+    });
+  };
 
   const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
     async ({ orderId, payload }) => {
@@ -117,15 +129,7 @@ function TherapySelection({ readOnly }) {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
-          state: {
-            ...locationState,
-            ...(prevSearchState && { __prevSearch: prevSearchState }),
-            isEdit: false,
-            isApprover: isApprover,
-            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName)
-          }
-        });
+        navigateToNextStage(id);
       },
       onError: (error) => {
         const statusCode = error?.response?.status;
@@ -158,14 +162,30 @@ function TherapySelection({ readOnly }) {
         tradeName: tradeDetails.tradeName,
         channelType: tradeDetails.channelType
       };
+
       if (isEdit || isApprover || isBack) {
-        updateTherapy({ orderId, payload });
+        if (isTherapyChanged) {
+          updateTherapy({ orderId, payload });
+        } else {
+          navigateToNextStage(orderId);
+        }
       } else {
         createNewOrder(payload);
       }
     }
   };
   const isDirty = JSON.stringify(tradeDetails) !== JSON.stringify(orderDetails?.tradeDetails);
+
+  React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null || isDirty) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.THERAPY_SELECTION) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage, isDirty]);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -236,7 +256,12 @@ function TherapySelection({ readOnly }) {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
-
+        {readOnly && (
+          <NotifyAlert
+            stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.THERAPY_SELECTION ? true : false}
+          />
+        )}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <div className={`${styles.wrapper}`}>
@@ -254,7 +279,13 @@ function TherapySelection({ readOnly }) {
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
             <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
-            <OrderAttestation disabled={readOnly} stage={ORDER_STAGES?.THERAPY_SELECTION} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+            <OrderAttestation
+              disabled={readOnly}
+              stage={ORDER_STAGES?.THERAPY_SELECTION}
+              onCheck={handleConfirmChange}
+              error={attestationError}
+              isChecked={isSelfAttested}
+            />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
