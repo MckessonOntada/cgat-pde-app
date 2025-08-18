@@ -772,6 +772,10 @@ const Summary = () => {
   };
   const isPhysician = AuthUtils.isPhysician();
 
+  const isIdentifierPresent = [patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber].some(
+    (item) => item !== '' && item !== undefined && item !== null
+  );
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -1155,7 +1159,8 @@ const Summary = () => {
                     </div>
                   </div>
                 )}
-                {shouldShowIdentifierSection && CommonUtils.isNonEmptyArray([patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber]) && (
+
+                {shouldShowIdentifierSection && isIdentifierPresent && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
