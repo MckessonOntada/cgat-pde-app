@@ -23,11 +23,12 @@ import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
 import { ORDER_STATUS } from '../../../orders/config';
 import OrderAttestation from '../OrderAttestation';
-import { notifyUserByStage, ORDER_STAGES } from '../Constants';
+import { ORDER_STAGES } from '../Constants';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { NotifyAlert } from '../OrderUtil';
 
-function TherapySelection({ readOnly, currentStage, hasPermission }) {
+function TherapySelection({ readOnly }) {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ function TherapySelection({ readOnly, currentStage, hasPermission }) {
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
   const [isSelfAttested, setIsSelfAttested] = React.useState(false);
-
+  const [attestationError, setAttestationError] = useState('');
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
   };
@@ -147,7 +148,10 @@ function TherapySelection({ readOnly, currentStage, hasPermission }) {
       });
       return;
     }
-
+    if (!isSelfAttested) {
+      setAttestationError('Please acknowledge to Save and continue');
+      return false;
+    }
     if (tradeDetails) {
       const payload = {
         ndc: tradeDetails.ndc,
@@ -232,9 +236,9 @@ function TherapySelection({ readOnly, currentStage, hasPermission }) {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
-        {/* <div className={`${styles.wrapper} ${readOnly ? 'disabled-div' : ''}`}> */}
         <div className={`${styles.wrapper}`}>
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
@@ -249,7 +253,7 @@ function TherapySelection({ readOnly, currentStage, hasPermission }) {
             {therapySelectionMessage && (
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} readOnly={readOnly} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
             <OrderAttestation disabled={readOnly} stage={ORDER_STAGES?.THERAPY_SELECTION} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>

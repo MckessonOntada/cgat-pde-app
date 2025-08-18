@@ -45,7 +45,7 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsValidationSchema } from './EditConfig';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { showEditAlert } from '../OrderAttestationModel';
+import { showEditAlert } from '../OrderUtil';
 
 const Summary = ({ checkEditPermission, hasPermission }) => {
   const { t } = useTranslate();
