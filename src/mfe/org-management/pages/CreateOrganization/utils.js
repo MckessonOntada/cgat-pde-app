@@ -1,5 +1,12 @@
 import * as Yup from 'yup';
-import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHA_NUMERIC, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '../../../../components/form/ValidationRegExp';
+import {
+  ALPHA_NUMERIC_WITH_SPECIAL,
+  ALPHABETIC_WITH_SPACE,
+  ADDRESS_REGEX,
+  ZIP_REGEX,
+  PHONE_REGEX,
+  FAX_REGEX
+} from '../../../../components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 
 export const INITIAL_VALUES = {
@@ -21,7 +28,7 @@ export const INITIAL_VALUES = {
     email: '',
     phone: '',
     fax: '',
-    countryCode: '91' // Until we fetch from backend
+    countryCode: '91'
   }
 };
 
@@ -38,32 +45,45 @@ export const getValidationSchema = (t) => {
         required: true
       }),
       middleName: CommonUtils.getNameValidation(t, {
-        field: 'middle_name',
+        field: 'middle_name'
       }),
       lastName: CommonUtils.getNameValidation(t, {
         field: 'last_name',
         required: true
-      }),
+      })
     }),
     address: Yup.object({
       address1: Yup.string()
         .required(t('orgManagement.create_org.validation.address_1_required'))
+        .test('no-leading-trailing-spaces', t('message.noLeadingTrailingSpace'), (value) => value === value?.trim())
         .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
         .min(2, t('orgManagement.create_org.validation.address_1_min'))
         .max(100, t('orgManagement.create_org.validation.address_1_max')),
-      address2: Yup.string().matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid')).min(2, t('orgManagement.create_org.validation.address_2_min')).max(250, t('orgManagement.create_org.validation.address_2_max')),
+      address2: Yup.string()
+        .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
+        .test('no-leading-trailing-spaces', t('message.noLeadingTrailingSpace'), (value) => value === value?.trim())
+        .min(2, t('orgManagement.create_org.validation.address_2_min'))
+        .max(250, t('orgManagement.create_org.validation.address_2_max')),
       city: Yup.string()
         .required(t('orgManagement.create_org.validation.city_required'))
         .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
         .min(2, t('orgManagement.create_org.validation.city_min'))
         .max(50, t('orgManagement.create_org.validation.city_max')),
       state: Yup.string().required(t('orgManagement.create_org.validation.state_required')),
-      zip: Yup.string().required(t('orgManagement.create_org.validation.zip_required')).matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid')).max(10, t('orgManagement.create_account.validation.zip_max'))
+      zip: Yup.string()
+        .required(t('orgManagement.create_org.validation.zip_required'))
+        .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
+        .max(10, t('orgManagement.create_account.validation.zip_max'))
     }),
 
     contact: Yup.object({
-      email: Yup.string().email(t('orgManagement.create_org.validation.invalid_email')).required(t('orgManagement.create_org.validation.email_required')).max(100, t('orgManagement.create_org.validation.email_max')),
-      phone: Yup.string().matches(PHONE_REGEX, t('orgManagement.create_org.validation.phone_no_invalid')).required(t('orgManagement.create_org.validation.phone_no_required')),
+      email: Yup.string()
+        .email(t('orgManagement.create_org.validation.invalid_email'))
+        .required(t('orgManagement.create_org.validation.email_required'))
+        .max(100, t('orgManagement.create_org.validation.email_max')),
+      phone: Yup.string()
+        .matches(PHONE_REGEX, t('orgManagement.create_org.validation.phone_no_invalid'))
+        .required(t('orgManagement.create_org.validation.phone_no_required')),
       fax: Yup.string().matches(FAX_REGEX, t('orgManagement.create_org.validation.fax_invalid')).max(15, t('orgManagement.create_org.validation.fax_max'))
     })
   });
