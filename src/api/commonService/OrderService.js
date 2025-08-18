@@ -61,11 +61,12 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
   }
 }
 
-async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, channelType) {
+async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, channelType, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to save payer details');
 
   const params = {
-    isPayerDetailsRequired
+    isPayerDetailsRequired,
+    isDraft
   };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;

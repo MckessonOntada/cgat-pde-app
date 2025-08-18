@@ -21,11 +21,14 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
-import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { ORDER_STAGES } from '../Constants';
 import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { NotifyAlert } from '../OrderUtil';
 
-function TherapySelection() {
+function TherapySelection({ readOnly }) {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
@@ -46,6 +49,11 @@ function TherapySelection() {
   const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+  const [attestationError, setAttestationError] = useState('');
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -140,7 +148,10 @@ function TherapySelection() {
       });
       return;
     }
-
+    if (!isSelfAttested) {
+      setAttestationError('Please acknowledge to Save and continue');
+      return false;
+    }
     if (tradeDetails) {
       const payload = {
         ndc: tradeDetails.ndc,
@@ -225,9 +236,10 @@ function TherapySelection() {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
-        <div className={styles.wrapper}>
+        <div className={`${styles.wrapper}`}>
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
               <CommonFilters
@@ -242,6 +254,7 @@ function TherapySelection() {
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
             <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
+            <OrderAttestation stage={ORDER_STAGES?.THERAPY_SELECTION} onCheck={handleConfirmChange} isChecked={isSelfAttested} error={attestationError} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
@@ -277,4 +290,5 @@ function TherapySelection() {
     </div>
   );
 }
-export default TherapySelection;
+//export default TherapySelection;
+export default withPermissions(TherapySelection, ORDER_STAGES.THERAPY_SELECTION);

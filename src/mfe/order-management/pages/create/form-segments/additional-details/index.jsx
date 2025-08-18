@@ -24,7 +24,7 @@ import { useOrderPrice } from './useOrderPrice';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import Components from '@src/components/form/Components';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
@@ -32,7 +32,10 @@ import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -63,7 +66,7 @@ const ALLOWED_FILE_TYPE = [
 ];
 const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
 
-function AdditionalDetails() {
+function AdditionalDetails({ readOnly }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -96,7 +99,11 @@ function AdditionalDetails() {
   const [diagnosisSearchQuery, setDiagnosisSearchQuery] = React.useState('');
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
 
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
@@ -272,16 +279,27 @@ function AdditionalDetails() {
     setValidationSchema(finalValidationSchema);
   }, [variantsData, questionnaireTemplateConfig, channelType]);
 
+  const navigateToNextStage = (id) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
+      state: {
+        ...locationState,
+        isEdit: isEdit,
+        isApprover: isApprover
+      }
+    });
+  };
+
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
-        state: {
-          ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
-        }
-      });
+      if (isSelfAttested) {
+        navigateToNextStage(id);
+      } else {
+        setAlert({
+          description: 'Order Saved In Draft Successfully',
+          type: 'success'
+        });
+      }
     },
     onError: (error) => {
       const statusCode = error?.response?.status;
@@ -670,7 +688,22 @@ function AdditionalDetails() {
       payload.dateOfAdministration = dateOfAdministration;
       payload.medicalRecordNumber = medicalRecordNumber;
     }
-    saveAdditionalDetails(payload);
+
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          const draftPayload = { ...payload, isDraft: true };
+          saveAdditionalDetails(draftPayload);
+        }
+      });
+    } else {
+      if (isDirty) {
+        saveAdditionalDetails(payload);
+      } else {
+        navigateToNextStage(orderId);
+      }
+    }
   };
 
   const handleOnBackToOrders = () => {
@@ -788,6 +821,7 @@ function AdditionalDetails() {
 
       <div className="MCP-module-body">
         <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.ADDITIONAL_DETAILS} />}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
@@ -808,6 +842,7 @@ function AdditionalDetails() {
             return (
               <Form>
                 <div className="MCP-module-body">
+                  {/* <div className={`MCP-module-body ${readOnly ? 'disabled-div' : ''}`}> */}
                   <div className="MCP-panel-container">
                     <ModuleHeader
                       heading={
@@ -944,7 +979,7 @@ function AdditionalDetails() {
                       </div>
                     )}
                   </div>
-
+                  <OrderAttestation stage={ORDER_STAGES?.ADDITIONAL_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
@@ -1046,4 +1081,5 @@ const VariantTable = ({ variant, onChange, data }) => {
     />
   );
 };
-export default AdditionalDetails;
+// export default AdditionalDetails;
+export default withPermissions(AdditionalDetails, ORDER_STAGES.ADDITIONAL_DETAILS);

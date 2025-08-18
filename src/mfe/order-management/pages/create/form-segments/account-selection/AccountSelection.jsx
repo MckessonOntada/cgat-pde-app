@@ -17,15 +17,18 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
-const AccountSelection = () => {
+const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
@@ -41,7 +44,11 @@ const AccountSelection = () => {
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
 
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
@@ -86,12 +93,19 @@ const AccountSelection = () => {
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: async (result) => {
       const { id } = result;
-      try {
-        navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-          state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+      if (isSelfAttested) {
+        try {
+          navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
+            state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        setAlert({
+          description: 'Order Saved In Draft Successfully',
+          type: 'success'
         });
-      } catch (err) {
-        console.error(err);
       }
     },
     onError: (error) => {
@@ -160,8 +174,24 @@ const AccountSelection = () => {
       soldToAccountId: selectedSoldToAccount.id,
       shipToAccountId: selectedShipToAccount.id
     };
-    setAlert(null);
-    saveAccount(payload);
+
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          saveAccount({ ...payload, isDraft: true });
+        }
+      });
+    } else {
+      setAlert(null);
+      if (isDirty || isSelfAttested) {
+        saveAccount(payload);
+      } else {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+          state: { ...locationState, alertState, isEdit: false, isApprover }
+        });
+      }
+    }
   };
 
   const handleOnBackToOrders = () => {
@@ -224,6 +254,7 @@ const AccountSelection = () => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+        {readOnly && <NotifyAlert stage={ORDER_STAGES.ACCOUNT_DETAILS} />}
         <OrderHeaderDetails
           orderDetails={orderDetails}
           priceDetails={priceDetails}
@@ -234,6 +265,7 @@ const AccountSelection = () => {
           channelType={selectedSoldToAccount?.channelType}
         />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {/* <div className={`MCP-module-wrapper ${readOnly ? 'disabled-div' : ''}`}> */}
         <div className={`MCP-module-wrapper`}>
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -291,6 +323,7 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
+          <OrderAttestation stage={ORDER_STAGES?.ACCOUNT_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
@@ -323,4 +356,5 @@ const AccountSelection = () => {
   );
 };
 
-export default AccountSelection;
+//export default AccountSelection;
+export default withPermissions(AccountSelection, ORDER_STAGES.ACCOUNT_DETAILS);
