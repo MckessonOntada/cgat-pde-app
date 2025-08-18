@@ -983,5 +983,15 @@ export const MessageEn = {
   'captions.notifyUserAlert.additionalDetails':
     'Patient information has been submitted. The order has been forwarded to the assigned user for additional details.',
   'captions.notifyUserAlert.orderSummary':
-    'Additional details have been completed. The order has been sent to the assigned user for review and final submission.'
+    'Additional details have been completed. The order has been sent to the assigned user for review and final submission.',
+  'dropdown.placeholder.search': 'Search',
+  'dropdown.helperText': 'Select an option',
+  'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and SP Therapy Info and SAP Therapy Info.',
+  'label.drugName': 'Drug Name',
+  'label.drugForm': 'Drug Form',
+  'label.quantity': 'Quantity',
+  'label.daysSupply': 'Days Supply',
+  'label.refill': 'Refill',
+  'label.instructions': 'Instructions',
+  'label.acknowledgementInformationIsCorrect': 'All the above information is correct.'
 };

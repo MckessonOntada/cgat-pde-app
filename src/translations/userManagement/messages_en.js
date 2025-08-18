@@ -431,6 +431,7 @@ export const UserManagementEN = {
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file.',
   'invalid.csv.file.columns.missing': 'The upload file is not valid. Required columns are missing.',
+  'message.noLeadingTrailingSpace': 'No leading or trailing spaces are allowed',
   'CREATE_NEW_ORDER.CREATE_NEW_ORDER': 'Create New Order',
   'CREATE_NEW_ORDER.THERAPY_SELECTION': 'Therapy Selection',
   'CREATE_NEW_ORDER.THERAPY_SELECTION.DESCRIPTION': 'Allows user to select Therapy',

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Field, FieldArray } from 'formik';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
@@ -11,7 +11,6 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 
 const Attributes = ({ values, setFieldValue }) => {
-  const initRef = useRef(false);
   const dispatch = useDispatch();
   const { t } = useTranslate();
   const attrOptions = [
@@ -25,16 +24,13 @@ const Attributes = ({ values, setFieldValue }) => {
   const isAddDisabled = values.rules.length >= attrOptions.length - 1;
   const getAvailableOptions = (index) => {
     const selectedValues = values.rules.map((attr) => attr.attributeType);
-    return attrOptions.filter(
-      (option) => option.value === '' || !selectedValues.includes(option.value) || values.rules[index]?.attributeType === option.value
-    );
+    return attrOptions.filter((option) => option.value === '' || !selectedValues.includes(option.value) || values.rules[index]?.attributeType === option.value);
   };
 
   const confirmOnDelete = (callback) => {
     const onDelete = () => {
       callback();
       dispatch(closeModal());
-      initRef.current = true;
     };
 
     const state = {};
@@ -78,36 +74,37 @@ const Attributes = ({ values, setFieldValue }) => {
                         options={getAvailableOptions(index)}
                         onChangeHandler={(value) => {
                           setFieldValue(`rules[${index}].attributeType`, value);
+                          setFieldValue(`rules[${index}].value`, value === CONTROL_OPTIONS['Price'] ? '' : []);
                         }}
                       />
                       <div className="control-helper-text">{t('rules.field.helperText')}</div>
                     </div>
-                    <div className="rule-operator attribute-text-segment Pt-32">{getRuleOperator(attribute.attributeType, t)}</div>
-                    <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS['Price'] ? 'price' : ''}`}>
-                      <div className="dropdown-with-button">
-                        <div className="dropdown-row">
-                          <div className="dropdown-wrapper">
-                            <RenderControls
-                              attributeType={attribute.attributeType}
-                              name={`rules[${index}].value`}
-                              isAttributeRemoved={initRef}
-                            />
-                          </div>
-                          {attribute.attributeType === CONTROL_OPTIONS.Price && <div className="empty-gap"></div>}
-                          {values.rules.length > 1 && (
-                            <div className="styled-icon-button remove-button">
-                              <Button
-                                Icon={DeleteIcon}
-                                variant="tertiary"
-                                size="md"
-                                className="btnRemove"
-                                onClick={() => confirmOnDelete(() => remove(index))}
-                              />
+                    {attribute.attributeType && (
+                      <React.Fragment>
+                        <div className="rule-operator attribute-text-segment Pt-32">{getRuleOperator(attribute.attributeType, t)}</div>
+                        <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS['Price'] ? 'price' : ''}`}>
+                          <div className="dropdown-with-button">
+                            <div className="dropdown-row">
+                              <div className="dropdown-wrapper">
+                                <RenderControls attributeType={attribute.attributeType} name={`rules[${index}].value`} />
+                              </div>
+                              {attribute.attributeType === CONTROL_OPTIONS.Price && <div className="empty-gap"></div>}
+                              {values.rules.length > 1 && (
+                                <div className="styled-icon-button remove-button">
+                                  <Button
+                                    Icon={DeleteIcon}
+                                    variant="tertiary"
+                                    size="md"
+                                    className="btnRemove"
+                                    onClick={() => confirmOnDelete(() => remove(index))}
+                                  />
+                                </div>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      </React.Fragment>
+                    )}
                   </div>
                   <div className="hr-container">
                     {index < values.rules.length - 1 && <div className="hr-text">{t('rules.logicalOperator.and')}</div>}

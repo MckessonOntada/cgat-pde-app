@@ -477,7 +477,10 @@ const Summary = ({ readOnly }) => {
               navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
             } else {
               dispatch(closeModal());
-              setDraftChanges({});
+              setDraftChanges({
+                additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+                patientIdentifier: orderDetails.patient?.patientIdentifier
+              });
             }
           }}>
           {t('button.caption.confirm')}
@@ -600,6 +603,10 @@ const Summary = ({ readOnly }) => {
 
   const getAllowedControls = () => {
     const controls = [];
+    const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
+      additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+      patientIdentifier: orderDetails.patient?.patientIdentifier
+    });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
         {t('captions.btnPrintSummary')}
@@ -607,26 +614,26 @@ const Summary = ({ readOnly }) => {
     );
 
     const controlCancel = (
-      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+      <Button size={'md'} disabled={isSaving} variant="secondary" onClick={handleOnBackButtonClick}>
         {t('captions.btnCancel')}
       </Button>
     );
 
     const controlDiscardChanges = (
-      <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="secondary" onClick={handleOnDiscardChanges}>
+      <Button size={'md'} disabled={isSaving || !isOrderChanged} variant="secondary" onClick={handleOnDiscardChanges}>
         {t('captions.btnDiscardChanges')}
       </Button>
     );
 
     const controlBack = (
-      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+      <Button size={'md'} disabled={isSaving} variant="secondary" onClick={handleOnBackButtonClick}>
         {t('captions.btnBack')}
       </Button>
     );
 
     const controlSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+        <Button size={'md'} disabled={isSaving} variant="primary" type="submit" onClick={handleOnSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -634,7 +641,7 @@ const Summary = ({ readOnly }) => {
 
     const controlReSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} disabled={!CommonUtils.isNonEmptyObject(draftChanges)} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button size={'md'} disabled={isResubmitting || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -663,14 +670,13 @@ const Summary = ({ readOnly }) => {
         </Button>
       </PermittedComponent>
     );
-
     if (status === ORDER_STATUS.REJECTED) {
       controls.push(controlPrintSummary);
-    } else if (status === ORDER_STATUS.REVIEW) {
+    } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if (allowUpdateBnBAfterSubmit && isPhysician) {
+    } else if (allowUpdateBnBAfterSubmit) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
@@ -756,6 +762,10 @@ const Summary = ({ readOnly }) => {
     }
   };
   const isPhysician = AuthUtils.isPhysician();
+
+  const isIdentifierPresent = [patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber].some(
+    (item) => item !== '' && item !== undefined && item !== null
+  );
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -1131,7 +1141,8 @@ const Summary = ({ readOnly }) => {
                     </div>
                   </div>
                 )}
-                {shouldShowIdentifierSection && CommonUtils.isNonEmptyArray([patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber]) && (
+
+                {shouldShowIdentifierSection && isIdentifierPresent && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}

@@ -7,16 +7,10 @@ export default function CheckBox(props) {
   const rootFieldName = fieldNameParts ? fieldNameParts[0] : field?.name;
   const subFieldName = fieldNameParts ? fieldNameParts[1] : null;
 
-  const isTouched = subFieldName
-    ? form.touched?.[rootFieldName]?.[subFieldName] || form.touched?.[field?.name]
-    : form.touched?.[field?.name];
+  const isTouched = subFieldName ? form.touched?.[rootFieldName]?.[subFieldName] || form.touched?.[field?.name] : form.touched?.[field?.name];
 
   // Get the error only if the field is touched
-  const error = isTouched
-    ? subFieldName
-      ? form.errors?.[rootFieldName]?.[subFieldName] || form.errors?.[field.name]
-      : form.errors?.[field.name]
-    : null;
+  const error = isTouched ? (subFieldName ? form.errors?.[rootFieldName]?.[subFieldName] || form.errors?.[field.name] : form.errors?.[field.name]) : null;
 
   const handleChange = (event, index) => {
     // Get the current checked items from the form state
@@ -40,6 +34,7 @@ export default function CheckBox(props) {
     } else {
       form.setFieldValue(field.name, updatedCheckedValues);
     }
+    if (props.onChange) props.onChange(isChecked);
   };
 
   return (

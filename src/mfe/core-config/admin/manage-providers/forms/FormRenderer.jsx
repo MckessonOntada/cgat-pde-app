@@ -6,6 +6,7 @@ import { Heading, Button } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
 import { getNestedValue } from '@src/components/form/util';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import CheckBox from '@src/components/form/formik/CheckBoxFormik';
 
 function getFileNameAndType(url) {
   if (url instanceof File) {
@@ -70,7 +71,12 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                 <div key={rowIndex} className="form-control-row">
                   <div key={rowIndex} className={`${row.grid}`}>
                     {row.controls.map((control, controlIndex) => {
-                      const Component = Components[control.type];
+                      let Component;
+                      if (control.type === 'checkbox') {
+                        Component = CheckBox;
+                      } else {
+                        Component = Components[control.type];
+                      }
                       if (!Component) return null;
 
                       if (control.when && Array.isArray(control.when) && control.when.length === 2) {
@@ -108,8 +114,11 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                         component: Component,
                         options: control.options,
                         maxLength: control.maxLength,
+                        isReadOnly: control.isReadOnly,
+                        fieldlabel: control.fieldLabel,
                         readOnly: readOnly,
                         isDisabled: readOnly,
+                        ...control,
                         ...uploadControlAttributes
                       };
 
