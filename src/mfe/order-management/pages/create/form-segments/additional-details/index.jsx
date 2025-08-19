@@ -474,6 +474,27 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const { additionalDetails, spTherapyConfig } = orderDetails || {};
+    let initialValues = {};
+
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      initialValues.drugFrom = spTherapyConfig.drugFrom;
+      initialValues.drugName = spTherapyConfig.drugName;
+      initialValues.strength = spTherapyConfig.strength;
+      initialValues.daysSupply = spTherapyConfig.daysSupply;
+      initialValues.quantity = spTherapyConfig.quantity;
+      initialValues.refills = spTherapyConfig.refills;
+      initialValues.instructions = spTherapyConfig.instructions;
+      initialValues.terms = false;
+      initialValues.consentPolicy = spTherapyConfig.consentPolicy;
+      if (!initialValues.consentPolicy) {
+        setAlert({
+          type: 'error',
+          description: t('message.additionalDetails.missingTerms')
+        });
+      }
+      initialValues.acknowledgement = false;
+    }
+
     if (additionalDetails) {
       const {
         dateOfAdministration,
@@ -490,35 +511,17 @@ function AdditionalDetails() {
       } = additionalDetails;
 
       const { variantDocumentPath, ...otherDetails } = variantDetails || {};
-      const initialValues = {
-        poNumber,
-        variant: {
-          ...otherDetails,
-          document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
-        },
-        variantAcknowledgement: patientConsentTaken
+      initialValues.poNumber = poNumber;
+      initialValues.variant = {
+        ...otherDetails,
+        document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
       };
+      initialValues.variantAcknowledgement = patientConsentTaken;
 
       if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
         initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
         initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
         initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
-        initialValues.drugFrom = spTherapyConfig.drugFrom;
-        initialValues.drugName = spTherapyConfig.drugName;
-        initialValues.strength = spTherapyConfig.strength;
-        initialValues.daysSupply = spTherapyConfig.daysSupply;
-        initialValues.quantity = spTherapyConfig.quantity;
-        initialValues.refills = spTherapyConfig.refills;
-        initialValues.instructions = spTherapyConfig.instructions;
-        initialValues.terms = false;
-        initialValues.consentPolicy = spTherapyConfig.consentPolicy;
-        if (!initialValues.consentPolicy) {
-          setAlert({
-            type: 'error',
-            description: t('message.additionalDetails.missingTerms')
-          });
-        }
-        initialValues.acknowledgement = false;
 
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
           try {
@@ -540,10 +543,6 @@ function AdditionalDetails() {
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
 
-      setInitialFormValues((prevState) => ({
-        ...prevState,
-        ...initialValues
-      }));
       setStoredValue((prevState) => ({
         ...prevState,
         ...initialValues
@@ -561,7 +560,12 @@ function AdditionalDetails() {
         isChecked: patientConsentTaken
       }));
     }
+    setInitialFormValues((prevState) => ({
+      ...prevState,
+      ...initialValues
+    }));
   }, [orderDetails, variantsData]);
+  console.log(initialFormValues);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
