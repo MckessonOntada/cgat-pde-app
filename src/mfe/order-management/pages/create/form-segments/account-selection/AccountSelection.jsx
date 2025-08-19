@@ -103,7 +103,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
   }, [orderDetails]);
 
-  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async ({ isDraft, ...data }) => OrderService.saveAccount(orderId, data, isDraft), {
     onSuccess: async (result) => {
       const { id } = result;
       if (isSelfAttested) {

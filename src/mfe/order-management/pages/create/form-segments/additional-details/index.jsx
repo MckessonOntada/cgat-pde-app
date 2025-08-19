@@ -36,7 +36,7 @@ import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescrip
 import { useOrderPrice } from './useOrderPrice';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { NotifyAlert } from '../OrderUtil';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
 
 const INITIAL_VALUES = {
@@ -168,7 +168,7 @@ function AdditionalDetails({ readOnly }) {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
-          terms: Yup.boolean().oneOf([true], 'You must accept the terms and conditions'),
+          terms: Yup.boolean().oneOf([true], t('message.additionalDetails.terms')),
           acknowledgement: Yup.boolean().oneOf([true], 'You must acknowledge'),
           diagnosisCode: Yup.array()
             .of(Yup.object().required(t('labels.diagnosisCodeRequired')))
@@ -290,29 +290,32 @@ function AdditionalDetails({ readOnly }) {
     });
   };
 
-  const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
-    onSuccess: (result) => {
-      const { id } = result;
-      if (isSelfAttested) {
-        navigateToNextStage(id);
-      } else {
+  const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
+    async ({ isDraft, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
+    {
+      onSuccess: (result) => {
+        const { id } = result;
+        if (isSelfAttested) {
+          navigateToNextStage(id);
+        } else {
+          setAlert({
+            description: 'Order Saved In Draft Successfully',
+            type: 'success'
+          });
+        }
+      },
+      onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         setAlert({
-          description: 'Order Saved In Draft Successfully',
-          type: 'success'
+          description,
+          type: 'error'
         });
       }
-    },
-    onError: (error) => {
-      const statusCode = error?.response?.status;
-      let description = t('error.default');
-      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
-      setAlert({
-        description,
-        type: 'error'
-      });
     }
-  });
+  );
 
   useEffect(() => {
     if (!alertState) {
@@ -541,7 +544,13 @@ function AdditionalDetails({ readOnly }) {
         initialValues.refills = spTherapyConfig.refills;
         initialValues.instructions = spTherapyConfig.instructions;
         initialValues.terms = false;
-        initialValues.contentPolicy = spTherapyConfig.contentPolicy;
+        initialValues.consentPolicy = spTherapyConfig.consentPolicy;
+        if (!initialValues.consentPolicy) {
+          setAlert({
+            type: 'error',
+            description: t('message.additionalDetails.missingTerms')
+          });
+        }
         initialValues.acknowledgement = false;
 
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
@@ -902,7 +911,7 @@ function AdditionalDetails({ readOnly }) {
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
+                      <Button size="md" disabled={readOnly} variant="primary" type="submit">
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

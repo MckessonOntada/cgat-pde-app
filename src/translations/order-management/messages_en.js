@@ -491,6 +491,10 @@ export const MessageEn = {
   'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters',
   'message.questionnaire.selectTemplateType': 'You must select a template type',
   'message.questionnaire.provideQuestionText': 'You must provide question text',
+  'message.additionalDetails.terms':
+    'You cannot proceed to the next step. Required consent has not been acknowledged. Please review and check the consent box before continuing.',
+  'message.additionalDetails.missingTerms':
+    'You cannot proceed to the next step. Consent requirements for the selected material are not configurable in the system. Please contact your administrator to configure the necessary consent and restart the order.',
   'message.questionnaire.optionValueRequired': 'Option value is required',
   'heading.manageQuestionnaire': 'Manage Questionnaire',
   'button.caption.addQuestionnaire': 'Add Questionnaire',

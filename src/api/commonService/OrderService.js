@@ -42,7 +42,7 @@ async function getOrderById(orderId) {
   return {};
 }
 
-async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType) {
+async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const params = {
     skipDuplicateCheck
@@ -50,6 +50,7 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
+  params.isDraft = isDraft;
   const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(params)}`;
   try {
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -83,10 +84,9 @@ async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetail
   }
 }
 
-async function saveAdditionalDetails(orderId, payload) {
+async function saveAdditionalDetails(orderId, payload, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
-
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details?isDraft=${isDraft}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
@@ -96,10 +96,10 @@ async function saveAdditionalDetails(orderId, payload) {
   return {};
 }
 
-async function saveAccount(orderId, payload) {
+async function saveAccount(orderId, payload, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/account`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/account?isDraft=${isDraft}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
