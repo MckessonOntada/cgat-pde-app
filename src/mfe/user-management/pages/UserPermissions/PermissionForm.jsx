@@ -117,7 +117,8 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             'MANAGE_APPROVER_GROUP',
             'VIEW_APPROVER_GROUP',
             'ADD_APPROVER_GROUP',
-            'EDIT_APPROVER_GROUP'
+            'EDIT_APPROVER_GROUP',
+            'DISCARD_ORDER'
           ].includes(permission)
         ) {
           groupedPermissions.ORDER_MANAGEMENT[permission] = permission;

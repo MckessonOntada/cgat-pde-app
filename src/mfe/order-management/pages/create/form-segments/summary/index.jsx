@@ -87,7 +87,6 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
-
   React.useEffect(() => {
     if (orderDetails?.additionalDetails) {
       setDraftChanges({
@@ -677,11 +676,11 @@ const Summary = ({ readOnly, checkEditPermission }) => {
         </Button>
       </PermittedComponent>
     );
-    if (status === ORDER_STATUS.REJECTED) {
+    if (status === ORDER_STATUS.REJECTED || status === ORDER_STATUS.DELETED) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
-    } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING) {
+    } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING && status !== ORDER_STATUS.REVIEW) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (allowUpdateBnBAfterSubmit) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
@@ -693,12 +692,12 @@ const Summary = ({ readOnly, checkEditPermission }) => {
   };
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
-
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted) return false;
     else if (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.REVIEW) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
+    else if (status === ORDER_STATUS.APPROVAL_PENDING && orderDetails.approver && !isApprover) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && isApprover && orderDetails.approver) {
       return true;
     }
@@ -808,7 +807,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                     }
                   />
                 )}
-                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW) ? (
+                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t('labels.summary')}</span>
                     {showPapBadge}

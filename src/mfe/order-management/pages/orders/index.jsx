@@ -33,7 +33,7 @@ const OrderIndex = () => {
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
-  const hasCreatePermissions = true; //hasPermission(PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION);
+  const hasCreatePermissions = hasPermission(PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION);
 
   const [tabList, setTabList] = useState(() => {
     const allTabs = getTabs();
@@ -315,11 +315,13 @@ const OrderIndex = () => {
         <ModuleHeader
           heading={<Heading as="h1">{t('headings.orders')}</Heading>}
           controls={
-            <div className="controls">
-              <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnCreateNewOrder} size="lg" aria-label={t('controls.createNewOrder')}>
-                {t('controls.ariaLabels.createNewOrder')}
-              </Button>
-            </div>
+            !isPhysician && (
+              <div className="controls">
+                <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnCreateNewOrder} size="lg" aria-label={t('controls.createNewOrder')}>
+                  {t('controls.ariaLabels.createNewOrder')}
+                </Button>
+              </div>
+            )
           }
         />
 

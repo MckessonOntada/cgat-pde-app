@@ -243,6 +243,8 @@ export const UserManagementES = {
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'S_Allows to Perform Delete action, Enable delete option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'S_Edit Orders',
   'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION': 'S_Allows user to edit the order, Enable Edit order option',
+  'ORDER_MANAGEMENT.DISCARD_ORDERS': 'S_Discard Orders',
+  'ORDER_MANAGEMENT.DISCARD_ORDERS.DESCRIPTION': 'S_Allows user to discard the order',
   'ORDER_MANAGEMENT.VIEW_ORDERS': 'S_View Orders',
   'ORDER_MANAGEMENT.VIEW_ORDERS.DESCRIPTION': 'S_Allows User to View Submitted orders, Enables submitted tab',
   'ORDER_MANAGEMENT.APPROVE_ORDERS': 'S_Approve Orders',

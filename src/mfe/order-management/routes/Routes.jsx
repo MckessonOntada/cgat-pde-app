@@ -18,7 +18,6 @@ import Payer from '../pages/create/form-segments/payers-details';
 import FinalizeOrder from '../pages/create/form-segments/finalize-order';
 
 function OrderManagementRoutes() {
-  //const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
   const orderPermissions = [
     PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION,
     PERMISSIONS_ENUM.CREATE_NEW_ORDER.ACCOUNT_SELECTION,
