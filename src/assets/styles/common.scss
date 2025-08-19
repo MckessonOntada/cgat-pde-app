@@ -1649,6 +1649,11 @@ div.empty-table-wrapper {
     width: 100%;
   }
 }
+.checkboxGroup {
+  div[class*="CheckboxGroup-module"] {
+    font-size: var(--brand-font-size--default) !important;
+  }
+}
 
 div[class*="CheckboxGroup-module"] {
   font-size: var(--brand-font-size--small);
