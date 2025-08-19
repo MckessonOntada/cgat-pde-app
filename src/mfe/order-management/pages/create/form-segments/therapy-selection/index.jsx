@@ -278,7 +278,7 @@ function TherapySelection({ readOnly }) {
             {therapySelectionMessage && (
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} readOnly={readOnly} />
             <OrderAttestation
               disabled={readOnly}
               stage={ORDER_STAGES?.THERAPY_SELECTION}
@@ -307,6 +307,7 @@ function TherapySelection({ readOnly }) {
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
               spTherapyConstants={TherapyDetailsConstantsForSP}
               heading={t('manageMaterial.drawer.details.heading')}
+              readOnly={readOnly}
             />
           )}
         </div>
@@ -321,5 +322,4 @@ function TherapySelection({ readOnly }) {
     </div>
   );
 }
-//export default TherapySelection;
 export default withPermissions(TherapySelection, ORDER_STAGES.THERAPY_SELECTION);

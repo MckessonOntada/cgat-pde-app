@@ -27,13 +27,17 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { ORDER_STATUS } from '../../../orders/config';
 import useOrder from '../../../orders/useOrder';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { NotifyAlert } from '../OrderUtil';
+import OrderAttestation from '../OrderAttestation';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -53,7 +57,7 @@ const INITIAL_VALUES = {
   variantAcknowledgement: false
 };
 
-function AdditionalDetails() {
+function AdditionalDetails({ readOnly }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -848,41 +852,51 @@ function AdditionalDetails() {
             return (
               <Form>
                 <div className="MCP-module-body">
-                  <div className="MCP-panel-container">
-                    <ModuleHeader
-                      heading={<Heading as="h2">{t('labels.additionalDetails')}</Heading>}
-                      controls={
-                        <p className="form-instruction">
-                          <span className="required">*</span> {t('labels.required')}
-                        </p>
-                      }
-                    />
-                    <div className="form-segment-list">
-                      <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} />
-
-                      <VariantDetails
-                        variantAcknowledgement={variantAcknowledgement}
-                        handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
-                        variantsData={variantsData}
-                        channelType={channelType}
-                        variant={variant}
-                        handleOnVariantChange={handleOnVariantChange}
-                        handleOnVariantDocumentChange={handleOnVariantDocumentChange}
+                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                    <div className="MCP-panel-container">
+                      <ModuleHeader
+                        heading={<Heading as="h2">{t('labels.additionalDetails')}</Heading>}
+                        controls={
+                          <p className="form-instruction">
+                            <span className="required">*</span> {t('labels.required')}
+                          </p>
+                        }
                       />
+                      <div className="form-segment-list">
+                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly} />
 
-                      <ClinicalDetails channelType={channelType} onDiagnosisCodeSearch={setDiagnosisSearchQuery} diagnosisCode={diagnosisCode} />
+                        <VariantDetails
+                          variantAcknowledgement={variantAcknowledgement}
+                          handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
+                          variantsData={variantsData}
+                          channelType={channelType}
+                          variant={variant}
+                          handleOnVariantChange={handleOnVariantChange}
+                          handleOnVariantDocumentChange={handleOnVariantDocumentChange}
+                          readOnly={readOnly}
+                        />
 
-                      <PrescriptionDetails channelType={channelType} />
+                        <ClinicalDetails
+                          channelType={channelType}
+                          onDiagnosisCodeSearch={setDiagnosisSearchQuery}
+                          diagnosisCode={diagnosisCode}
+                          readOnly={readOnly}
+                        />
 
-                      <QuestionnaireDetails
-                        isLoading={isFetchingConfiguredQuestions}
-                        onRemoveDocument={handleOnRemoveDocument}
-                        onDocumentChange={handleOnDocumentChange}
-                        config={questionnaireTemplateConfig}
-                        questionnaireTemplateConfig={questionnaireTemplateConfig}
-                      />
+                        <PrescriptionDetails channelType={channelType} readOnly={readOnly} />
+
+                        <QuestionnaireDetails
+                          isLoading={isFetchingConfiguredQuestions}
+                          onRemoveDocument={handleOnRemoveDocument}
+                          onDocumentChange={handleOnDocumentChange}
+                          config={questionnaireTemplateConfig}
+                          questionnaireTemplateConfig={questionnaireTemplateConfig}
+                          readOnly={readOnly}
+                        />
+                      </div>
                     </div>
-                  </div>
+                    <OrderAttestation stage={ORDER_STAGES?.ADDITIONAL_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                  </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
@@ -910,7 +924,7 @@ function AdditionalDetails() {
   );
 }
 
-const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOnRemoveDocument, handleOnDocumentChange }) => {
+const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOnRemoveDocument, handleOnDocumentChange, readOnly }) => {
   if (isLoading)
     return (
       <div>
@@ -928,6 +942,7 @@ const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOn
             onDocumentChange={handleOnDocumentChange}
             config={questionnaireTemplateConfig}
             isPreview={false}
+            readOnly={readOnly}
           />
         </div>
       </div>
@@ -935,7 +950,7 @@ const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOn
   );
 };
 
-const VariantTable = ({ variant, onChange, data }) => {
+const VariantTable = ({ variant, onChange, data, readOnly }) => {
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const columns = [
@@ -1009,7 +1024,7 @@ const VariantTable = ({ variant, onChange, data }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly }) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
   const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue });
@@ -1028,6 +1043,8 @@ const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType }) => {
             isRequired={isRequired}
             component={component}
             maxLength={maxLength}
+            readOnly={readOnly}
+            isDisabled={readOnly}
             {...otherProps}
           />
         ))}
@@ -1036,7 +1053,7 @@ const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType }) => {
   );
 };
 
-const ClinicalDetails = ({ channelType, onDiagnosisCodeSearch, diagnosisCode }) => {
+const ClinicalDetails = ({ channelType, onDiagnosisCodeSearch, diagnosisCode, readOnly }) => {
   const { values, setFieldValue } = useFormikContext();
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) return null;
   const { t } = useTranslate();
@@ -1052,14 +1069,23 @@ const ClinicalDetails = ({ channelType, onDiagnosisCodeSearch, diagnosisCode }) 
     <FormSectionWrapper title={t('labels.clinicalDetails')} isRequired={true}>
       {fields.map(({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
         <div key={index} className={`${layout.classes}`}>
-          <Field name={name} label={label} placeholder={placeholder} isRequired={isRequired} component={component} maxLength={maxLength} {...otherProps} />
+          <Field
+            name={name}
+            label={label}
+            placeholder={placeholder}
+            isRequired={isRequired}
+            component={component}
+            maxLength={maxLength}
+            isDisabled={readOnly}
+            {...otherProps}
+          />
         </div>
       ))}
     </FormSectionWrapper>
   );
 };
 
-const PrescriptionDetails = ({ channelType }) => {
+const PrescriptionDetails = ({ channelType, readOnly }) => {
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) return null;
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
   const { t } = useTranslate();
@@ -1067,7 +1093,8 @@ const PrescriptionDetails = ({ channelType }) => {
     translationFn: t,
     formValues: values,
     setFieldValue,
-    setFieldTouched
+    setFieldTouched,
+    readOnly
   });
   if (CommonUtils.isEmptyArray(fields)) return null;
   return (
@@ -1097,7 +1124,8 @@ const VariantDetails = ({
   handleOnVariantDocumentChange,
   handleOnAcknowledgmentChange,
   variant,
-  handleOnVariantChange
+  handleOnVariantChange,
+  readOnly
 }) => {
   const { t } = useTranslate();
   const { setErrors, errors, touched, values, setFieldTouched, setFieldValue } = useFormikContext();
@@ -1110,6 +1138,7 @@ const VariantDetails = ({
           variant={variant}
           onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
           data={variantsData.content}
+          readOnly={readOnly}
         />
         {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
       </div>
@@ -1167,4 +1196,4 @@ const FormSectionWrapper = ({ title, isRequired, children }) => {
   );
 };
 
-export default AdditionalDetails;
+export default withPermissions(AdditionalDetails, ORDER_STAGES.ADDITIONAL_DETAILS);
