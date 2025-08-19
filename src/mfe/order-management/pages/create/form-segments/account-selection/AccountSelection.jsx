@@ -269,7 +269,12 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
           channelType={orderDetails.channelType}
         />
         {readOnly && (
-          <NotifyAlert stage={ORDER_STAGES.ACCOUNT_DETAILS} OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ACCOUNT_DETAILS ? true : false} />
+          <NotifyAlert
+            stage={ORDER_STAGES.ACCOUNT_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ACCOUNT_DETAILS ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
+          />
         )}
         <OrderHeaderDetails
           orderDetails={orderDetails}

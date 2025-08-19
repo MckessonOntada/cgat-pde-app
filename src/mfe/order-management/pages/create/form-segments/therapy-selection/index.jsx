@@ -260,6 +260,8 @@ function TherapySelection({ readOnly }) {
           <NotifyAlert
             stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.THERAPY_SELECTION ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
           />
         )}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}

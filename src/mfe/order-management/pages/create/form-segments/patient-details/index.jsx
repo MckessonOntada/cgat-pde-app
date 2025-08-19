@@ -395,6 +395,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           <NotifyAlert
             stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PATIENT_DETAILS ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
           />
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />

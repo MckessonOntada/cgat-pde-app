@@ -890,7 +890,9 @@ const Summary = ({ readOnly, checkEditPermission }) => {
             )}
           </React.Fragment>
         )}
-        {readOnly && status === ORDER_STATUS.IN_DRAFT && <NotifyAlert stage={ORDER_STAGES.ORDER_SUMMARY} OnEdit={false} />}
+        {readOnly && status === ORDER_STATUS.IN_DRAFT && (
+          <NotifyAlert stage={ORDER_STAGES.ORDER_SUMMARY} OnEdit={false} orderId={orderId} setAlert={setAlert} />
+        )}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
           <div className="">

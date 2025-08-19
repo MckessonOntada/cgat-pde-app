@@ -1,9 +1,13 @@
 import Alert from '@src/components/cgat-alert/Alert';
 import { renderModal } from '@src/util/ModalUtil';
-import React from 'react';
-import { NOTIFY_ALERT } from './Constants';
+import React, { useState } from 'react';
+import { NOTIFY_ALERT, NOTIFY_USER_EVENT_TYPE } from './Constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import CommonUtils from '@src/util/CommonUtils';
+import OrderService from '@src/api/commonService/OrderService';
+import { Tooltip } from '@mckesson/mcp-component-library';
 
 export function showSaveAsDraftConfirm({ t, onOk, onCancel }) {
   return renderModal({
@@ -42,16 +46,42 @@ export function showEditAlert(title, message, cancelBtnLabel) {
   });
 }
 
-export const NotifyAlert = ({ stage, OnEdit = false }) => {
+export const NotifyAlert = ({ stage, OnEdit = false, orderId, setAlert }) => {
+  const [userNotified, setUserNotified] = useState(false);
   const { t } = useTranslate();
   const messages = NOTIFY_ALERT(t);
   const message = OnEdit ? t('labels.summaryEditMessage') : messages[stage];
+  const eventType = NOTIFY_USER_EVENT_TYPE(t)[stage];
+
+  const { mutate: notifyUser } = useMutation(async ({ orderId, eventType }) => await OrderService.notifyUser(orderId, eventType), {
+    onSuccess: () => {
+      setUserNotified(true);
+    },
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) {
+        description = CommonUtils.getAxiosErrorMessage(error);
+      }
+      setAlert({
+        description,
+        type: 'error'
+      });
+    }
+  });
 
   const strMessage = OnEdit ? (
     message
   ) : (
     <div className="info-alert-message">
-      {message} <Link onClick={() => alert('Clicked!')}>Notify User</Link>
+      {message}{' '}
+      {userNotified ? (
+        <span>
+          <Tooltip body={t('messages.notifyUser')}>{t('control.notifyUser')}</Tooltip>
+        </span>
+      ) : (
+        <Link onClick={() => notifyUser({ orderId, eventType })}>{t('control.notifyUser')}</Link>
+      )}
     </div>
   );
 

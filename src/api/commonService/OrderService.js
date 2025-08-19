@@ -469,6 +469,16 @@ async function finalizeOrder(orderId, payload) {
   if (res.data) return res.data;
 }
 
+async function notifyUser(orderId, eventType) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to Notify User.');
+  if (!eventType) throw new Error('Event type is missing. Event type is required to Notify User.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/notify/${eventType}`;
+  console.log(url);
+  const res = await HttpResourceService.callRest(url, httpVerb.POST);
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -509,7 +519,8 @@ const OrderService = Object.freeze({
   getTherapyDetailsByNDC,
   getManufacturerLogo,
   getDiagnosisCodes,
-  finalizeOrder
+  finalizeOrder,
+  notifyUser
 });
 
 export default OrderService;
