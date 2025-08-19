@@ -517,9 +517,14 @@ function AdditionalDetails() {
         const { variantDocumentPath, ...otherDetails } = variantDetails;
 
         initialValues.variant = {
-          ...otherDetails,
-          document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
+          ...otherDetails
         };
+        try {
+          const parsedVariantDocumentDetails = JSON.parse(variantDocumentPath);
+          initialValues.document = parsedVariantDocumentDetails;
+        } catch (error) {
+          initialValues.document = undefined;
+        }
       }
 
       initialValues.poNumber = poNumber;
