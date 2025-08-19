@@ -105,6 +105,8 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
 
                       // Prepare all props for Field
                       const fieldProps = {
+                        ...control,
+                        ...uploadControlAttributes,
                         id: `${fieldPrefix}${control.name}`,
                         key: CommonUtils.generateUniqueCode(fieldPrefix + control.name + controlIndex),
                         name: `${fieldPrefix}${control.name}`,
@@ -115,9 +117,7 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                         options: control.options,
                         maxLength: control.maxLength,
                         isReadOnly: control.isReadOnly,
-                        fieldlabel: control.fieldLabel,
-                        ...control,
-                        ...uploadControlAttributes
+                        fieldlabel: control.fieldLabel
                       };
 
                       return <Field {...fieldProps} />;

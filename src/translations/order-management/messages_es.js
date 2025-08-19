@@ -438,6 +438,10 @@ export const MessageEs = {
   'message.questionnaire.templateNameMinWidth': 'S_Template name must be at least 2 characters',
   'message.questionnaire.templateNameMaxWidth': 'S_Template name must be at most 24 characters',
   'message.questionnaire.selectTemplateType': 'S_You must select a template type',
+  'message.additionalDetails.terms':
+    'S_You cannot proceed to the next step. Required consent has not been acknowledged. Please review and check the consent box before continuing.',
+  'message.additionalDetails.missingTerms':
+    'S_You cannot proceed to the next step. Consent requirements for the selected material are not configurable in the system. Please contact your administrator to configure the necessary consent and restart the order.',
   'message.questionnaire.provideQuestionText': 'S_You must provide question text',
   'message.questionnaire.optionValueRequired': 'S_Option value is required',
   'heading.manageQuestionnaire': 'S_Manage Questionnaire',

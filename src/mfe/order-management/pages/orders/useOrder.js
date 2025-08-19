@@ -42,7 +42,7 @@ const useOrder = (orderId) => {
             result[key] = undefined;
           }
         });
-        const { accountDetails, provider, payerDetails, therapy } = result;
+        const { accountDetails, provider, payerDetails, therapy, spTherapyConfig } = result;
         if (accountDetails?.soldToAccount?.channelType) {
           result.channelType = accountDetails.soldToAccount.channelType;
         }
@@ -59,6 +59,9 @@ const useOrder = (orderId) => {
           ].forEach(([key, isMedical]) => {
             result.payerDetails[key] = denormalizeInsurance(result.payerDetails[key], isMedical);
           });
+        }
+        if (therapy.strength && therapy.dosage) {
+          spTherapyConfig.strength = `${therapy.strength} ${therapy.dosage}`;
         }
       }
 

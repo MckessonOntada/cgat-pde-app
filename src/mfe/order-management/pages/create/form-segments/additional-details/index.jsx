@@ -149,7 +149,7 @@ function AdditionalDetails() {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       schema = schema.concat(
         Yup.object({
-          terms: Yup.boolean().oneOf([true], 'You must accept the terms and conditions'),
+          terms: Yup.boolean().oneOf([true], t('message.additionalDetails.terms')),
           acknowledgement: Yup.boolean().oneOf([true], 'You must acknowledge'),
           diagnosisCode: Yup.array()
             .of(Yup.object().required(t('labels.diagnosisCodeRequired')))
@@ -511,7 +511,13 @@ function AdditionalDetails() {
         initialValues.refills = spTherapyConfig.refills;
         initialValues.instructions = spTherapyConfig.instructions;
         initialValues.terms = false;
-        initialValues.contentPolicy = spTherapyConfig.contentPolicy;
+        initialValues.consentPolicy = spTherapyConfig.consentPolicy;
+        if (!initialValues.consentPolicy) {
+          setAlert({
+            type: 'error',
+            description: t('message.additionalDetails.missingTerms')
+          });
+        }
         initialValues.acknowledgement = false;
 
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
@@ -838,7 +844,7 @@ function AdditionalDetails() {
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit">
+                      <Button size="md" disabled={!initialFormValues.consentPolicy} variant="primary" type="submit">
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>
