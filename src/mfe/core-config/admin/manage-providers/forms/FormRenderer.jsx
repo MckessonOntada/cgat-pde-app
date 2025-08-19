@@ -117,7 +117,9 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                         options: control.options,
                         maxLength: control.maxLength,
                         isReadOnly: control.isReadOnly,
-                        fieldlabel: control.fieldLabel
+                        fieldlabel: control.fieldLabel,
+                        readOnly: readOnly,
+                        isDisabled: readOnly
                       };
 
                       return <Field {...fieldProps} />;

@@ -997,5 +997,7 @@ export const MessageEn = {
   'label.daysSupply': 'Days Supply',
   'label.refill': 'Refill',
   'label.instructions': 'Instructions',
-  'label.acknowledgementInformationIsCorrect': 'All the above information is correct.'
+  'label.acknowledgementInformationIsCorrect': 'All the above information is correct.',
+  'control.notifyUser': 'Notify User',
+  'messages.notifyUser': 'Notification mail has been sent successfully to the authorized user.'
 };

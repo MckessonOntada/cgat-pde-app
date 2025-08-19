@@ -352,7 +352,12 @@ function Payer({ readOnly, hasPermission }) {
           channelType={orderDetails?.channelType}
         />
         {readOnly && (
-          <NotifyAlert stage={ORDER_STAGES.PAYER_DETAILS} OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PAYER_DETAILS ? true : false} />
+          <NotifyAlert
+            stage={ORDER_STAGES.PAYER_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PAYER_DETAILS ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
+          />
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
 
