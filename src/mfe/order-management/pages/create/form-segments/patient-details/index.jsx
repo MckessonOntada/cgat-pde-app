@@ -190,8 +190,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) => {
-      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType);
+    async ({ payload, skipDuplicateCheck, isDraft }) => {
+      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isDraft);
     },
     {
       onSuccess: (result) => {
@@ -258,11 +258,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
     setInitialValues(form);
     if (!isSelfAttested) {
-      payload.isDraft = true;
       showSaveAsDraftConfirm({
         t,
         onOk: () => {
-          savePatientDetails({ payload, skipDuplicateCheck });
+          savePatientDetails({ payload, skipDuplicateCheck, isDraft: true });
         }
       });
     } else {

@@ -36,7 +36,7 @@ import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescrip
 import { useOrderPrice } from './useOrderPrice';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { NotifyAlert } from '../OrderUtil';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
 
 const INITIAL_VALUES = {
@@ -290,29 +290,32 @@ function AdditionalDetails({ readOnly }) {
     });
   };
 
-  const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(async (data) => OrderService.saveAdditionalDetails(orderId, data), {
-    onSuccess: (result) => {
-      const { id } = result;
-      if (isSelfAttested) {
-        navigateToNextStage(id);
-      } else {
+  const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
+    async ({ isDraft, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
+    {
+      onSuccess: (result) => {
+        const { id } = result;
+        if (isSelfAttested) {
+          navigateToNextStage(id);
+        } else {
+          setAlert({
+            description: 'Order Saved In Draft Successfully',
+            type: 'success'
+          });
+        }
+      },
+      onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         setAlert({
-          description: 'Order Saved In Draft Successfully',
-          type: 'success'
+          description,
+          type: 'error'
         });
       }
-    },
-    onError: (error) => {
-      const statusCode = error?.response?.status;
-      let description = t('error.default');
-      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
-      setAlert({
-        description,
-        type: 'error'
-      });
     }
-  });
+  );
 
   useEffect(() => {
     if (!alertState) {

@@ -117,9 +117,9 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                         isReadOnly: control.isReadOnly,
                         fieldlabel: control.fieldLabel,
                         readOnly: readOnly,
-                        isDisabled: readOnly,
-                        ...control,
-                        ...uploadControlAttributes
+                        isDisabled: readOnly
+                        // ...control,
+                        //...uploadControlAttributes
                       };
 
                       return <Field {...fieldProps} />;
