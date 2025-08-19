@@ -474,25 +474,28 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const { additionalDetails, spTherapyConfig } = orderDetails || {};
-    let initialValues = {};
+    const initialValues = {};
 
-    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      initialValues.drugFrom = spTherapyConfig.drugFrom;
-      initialValues.drugName = spTherapyConfig.drugName;
-      initialValues.strength = spTherapyConfig.strength;
-      initialValues.daysSupply = spTherapyConfig.daysSupply;
-      initialValues.quantity = spTherapyConfig.quantity;
-      initialValues.refills = spTherapyConfig.refills;
-      initialValues.instructions = spTherapyConfig.instructions;
-      initialValues.terms = false;
-      initialValues.consentPolicy = spTherapyConfig.consentPolicy;
-      if (!initialValues.consentPolicy) {
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig) {
+      Object.assign(initialValues, {
+        drugFrom: spTherapyConfig.drugFrom,
+        drugName: spTherapyConfig.drugName,
+        strength: spTherapyConfig.strength,
+        daysSupply: spTherapyConfig.daysSupply,
+        quantity: spTherapyConfig.quantity,
+        refills: spTherapyConfig.refills,
+        instructions: spTherapyConfig.instructions,
+        terms: false,
+        consentPolicy: spTherapyConfig.consentPolicy,
+        acknowledgement: false
+      });
+
+      if (!spTherapyConfig.consentPolicy) {
         setAlert({
           type: 'error',
           description: t('message.additionalDetails.missingTerms')
         });
       }
-      initialValues.acknowledgement = false;
     }
 
     if (additionalDetails) {
@@ -507,10 +510,11 @@ function AdditionalDetails() {
         configuredQuestionnaires,
         diagnosisCode,
         medicalRecordNumber,
-        clinicalDetails
+        clinicalDetails = {}
       } = additionalDetails;
 
-      const { variantDocumentPath, ...otherDetails } = variantDetails || {};
+      const { variantDocumentPath, ...otherDetails } = variantDetails;
+
       initialValues.poNumber = poNumber;
       initialValues.variant = {
         ...otherDetails,
@@ -519,53 +523,55 @@ function AdditionalDetails() {
       initialValues.variantAcknowledgement = patientConsentTaken;
 
       if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-        initialValues.allergyDetails = clinicalDetails.allergiesSpecification;
-        initialValues.dateOfAdministration = clinicalDetails.dateOfAdministration;
-        initialValues.hasAllergies = clinicalDetails.hasAllergies ? 'yes' : 'no';
+        Object.assign(initialValues, {
+          allergyDetails: clinicalDetails.allergiesSpecification,
+          dateOfAdministration: clinicalDetails.dateOfAdministration,
+          hasAllergies: clinicalDetails.hasAllergies ? 'yes' : 'no',
+          diagnosisCode: []
+        });
 
-        if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
+        if (typeof diagnosisCode === 'string') {
           try {
-            const diagnosisCodeOptions = JSON.parse(orderDetails.additionalDetails.diagnosisCode);
-            initialValues.diagnosisCode = [...diagnosisCodeOptions];
-          } catch (error) {
+            initialValues.diagnosisCode = JSON.parse(diagnosisCode);
+          } catch {
             initialValues.diagnosisCode = [];
           }
-        } else {
-          initialValues.diagnosisCode = [];
         }
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-        initialValues.dateOfAdministration = dateOfAdministration;
-        initialValues.coiId = coiId;
-        initialValues.orderQuantity = orderQuantity;
-        initialValues.slotNumber = slotNumber;
-        initialValues.medicalRecordNumber = medicalRecordNumber;
+        Object.assign(initialValues, {
+          dateOfAdministration,
+          coiId,
+          orderQuantity,
+          slotNumber,
+          medicalRecordNumber
+        });
       }
 
-      configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
+      if (configuredQuestionnaires) {
+        prepareQuestionnaire(configuredQuestionnaires);
+      }
 
-      setStoredValue((prevState) => ({
-        ...prevState,
+      setStoredValue((prev) => ({
+        ...prev,
         ...initialValues
       }));
-      if (!variantsData?.content || !variantDetails) {
-        return;
-      }
 
-      const targetVariant = variantsData.content?.find((v) => variantDetails.variant === v.variant);
-      setVariant({
-        ...targetVariant
-      });
-      setVariantAcknowledgement((prev) => ({
-        ...prev,
-        isChecked: patientConsentTaken
-      }));
+      if (variantsData?.content && variantDetails) {
+        const targetVariant = variantsData.content.find((v) => variantDetails.variant === v.variant);
+
+        setVariant({ ...targetVariant });
+        setVariantAcknowledgement((prev) => ({
+          ...prev,
+          isChecked: patientConsentTaken
+        }));
+      }
     }
-    setInitialFormValues((prevState) => ({
-      ...prevState,
+
+    setInitialFormValues((prev) => ({
+      ...prev,
       ...initialValues
     }));
   }, [orderDetails, variantsData]);
-  console.log(initialFormValues);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
