@@ -511,7 +511,7 @@ function AdditionalDetails() {
         initialValues.refills = spTherapyConfig.refills;
         initialValues.instructions = spTherapyConfig.instructions;
         initialValues.terms = false;
-        initialValues.contentPolicy = spTherapyConfig.contentPolicy;
+        initialValues.consentPolicy = spTherapyConfig.consentPolicy;
         initialValues.acknowledgement = false;
 
         if (orderDetails.additionalDetails?.diagnosisCode && typeof orderDetails.additionalDetails.diagnosisCode === 'string') {
