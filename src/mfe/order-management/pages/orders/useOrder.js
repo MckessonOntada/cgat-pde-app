@@ -42,7 +42,7 @@ const useOrder = (orderId) => {
             result[key] = undefined;
           }
         });
-        const { accountDetails, provider, payerDetails, therapy, spTherapyConfig } = result;
+        const { accountDetails, provider, payerDetails, therapy = {}, spTherapyConfig } = result;
         if (accountDetails?.soldToAccount?.channelType) {
           result.channelType = accountDetails.soldToAccount.channelType;
         }

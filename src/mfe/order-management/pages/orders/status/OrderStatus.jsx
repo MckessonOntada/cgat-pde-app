@@ -22,6 +22,7 @@ const OrderStatus = () => {
   const locationState = location?.state ?? {};
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const contentRef = useRef(null);
+  const { therapyConfig } = orderDetails;
   const { controlRef } = useContext(FooterContext);
 
   const printPage = useCustomPrint(
@@ -101,9 +102,14 @@ const OrderStatus = () => {
             <DetailSegment label={t('labels.patientName')} value={getFullName(patient?.patientInfo) || '-'} />
           </div>
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
-            <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+            {(therapyConfig?.isPIDRequired || patient?.patientIdentifier) && (
+              <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+            )}
+
             <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
             <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
+            {!(therapyConfig?.isPIDRequired || patient?.patientIdentifier) && <div></div>}
+
             {!spOrder && (
               <DetailSegment
                 className={styles.orderCost}
