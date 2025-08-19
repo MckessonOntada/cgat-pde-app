@@ -285,7 +285,7 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
               type: 'checkbox',
               isDisabled: false,
               isChecked: false,
-              caption: formValues?.['consentPolicy'],
+              caption: formValues?.['consentPolicy'] || 'N/A',
               size: 'md'
             }
           ]
