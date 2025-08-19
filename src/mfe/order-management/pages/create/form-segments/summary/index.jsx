@@ -47,7 +47,7 @@ import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showEditAlert } from '../OrderUtil';
 
-const Summary = ({ readOnly }) => {
+const Summary = ({ readOnly, checkEditPermission }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -493,6 +493,13 @@ const Summary = ({ readOnly }) => {
   const handleOnEditSection = (stage) => {
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
+      if (!checkEditPermission(stage)) {
+        setAlert({
+          description: t('labels.summaryEditMessage'),
+          type: 'error'
+        });
+        return;
+      }
 
       let formConfig = getUpdateFormConfig(stage, therapyConfig);
       let initialValues = {};

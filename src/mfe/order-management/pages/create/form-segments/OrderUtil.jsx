@@ -45,18 +45,15 @@ export function showEditAlert(title, message, cancelBtnLabel) {
 export const NotifyAlert = ({ stage, OnEdit = false }) => {
   const { t } = useTranslate();
   const messages = NOTIFY_ALERT(t);
-  const message = !!OnEdit ? t('labels.summaryEditMessage') : messages[stage];
+  const message = OnEdit ? t('labels.summaryEditMessage') : messages[stage];
 
-  const strMessage = (
+  const strMessage = OnEdit ? (
+    message
+  ) : (
     <div className="info-alert-message">
-      {!!OnEdit ? (
-        message
-      ) : (
-        <>
-          {message} <Link onClick={() => alert('Clicked!')}>Notify User</Link>
-        </>
-      )}
+      {message} <Link onClick={() => alert('Clicked!')}>Notify User</Link>
     </div>
   );
-  return <Alert type="info" description={strMessage} showCloseIcon={false} />;
+
+  return <Alert type={OnEdit ? 'error' : 'info'} description={strMessage} showCloseIcon={false} />;
 };

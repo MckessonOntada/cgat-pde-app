@@ -38,9 +38,15 @@ function getOptionsByStatus(props) {
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
   const { refreshData, assignedGroupsData, orderView } = useOrders();
-  const { hasPermission } = usePermission();
+  const { hasPermission, hasAnyPermission } = usePermission();
   const { search } = useLocation();
-
+  const hasEditPermission = hasAnyPermission([
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.ACCOUNT_SELECTION,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER
+  ]);
   // Mutations
   const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
     onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { isApprover: true, ...variables.preservedState } }),
@@ -202,7 +208,7 @@ function getOptionsByStatus(props) {
 
   let options = [];
   if (tab === ORDER_TABS.PENDING_SUBMISSION) {
-    if (status === ORDER_STATUS.IN_DRAFT && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+    if (status === ORDER_STATUS.IN_DRAFT && hasEditPermission) {
       options.push({
         label: translate(`labels.orderActions.resume`),
         value: ORDER_ENTITY_ACTION.RESUME
@@ -259,7 +265,7 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.VIEW
       });
     }
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+    if (hasEditPermission) {
       options.push({
         label: translate(`labels.orderActions.edit`),
         value: ORDER_ENTITY_ACTION.EDIT

@@ -1,6 +1,6 @@
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import * as Yup from 'yup';
 import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
+import { ORDER_STAGES } from '../Constants';
 
 export const getUpdateFormConfig = (stage, therapyConfig) => {
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
