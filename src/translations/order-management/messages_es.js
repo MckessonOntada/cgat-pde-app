@@ -648,7 +648,7 @@ export const MessageEs = {
   'label.drugForm': 'S_Drug Form',
   'label.quantity': 'S_Quantity',
   'label.daysSupply': 'S_Days Supply',
-  'label.refill': 'S_Refill',
+  'label.refill': 'S_Refills',
   'label.instructions': 'S_Instructions',
   'label.acknowledgementInformationIsCorrect': 'S_All the above information is correct.'
 };
