@@ -11,11 +11,15 @@ function DetailsFlexGrid({ invoiceDetails }) {
       {invoiceDetails &&
         Object.entries(invoiceDetails)?.map(([key, value], index) => (
           <div key={key} className={`element-row ${index % 2 == 0 ? `left-column` : `right-column`}`}>
-            <div className="list-item">
-              <div className="label">{key}</div>
-              <div className="value">{value || '-'}</div>
-            </div>
-            {!(Object.values(invoiceDetails).length === index + 1) && <div className="border-separator"></div>}
+            {!key.startsWith('__') ? (
+              <div className="list-item">
+                <div className="label">{key}</div>
+                <div className="value">{value || '-'}</div>
+              </div>
+            ) : (
+              <div></div>
+            )}
+            {!(Object.values(invoiceDetails).length === index + 1) && !key.startsWith('__') && <div className="border-separator"></div>}
           </div>
         ))}
     </div>

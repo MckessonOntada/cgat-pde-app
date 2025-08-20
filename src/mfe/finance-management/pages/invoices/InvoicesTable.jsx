@@ -193,7 +193,7 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('paymentInvoices.history.table.alternateInvoiceNumber'),
+      name: t('paymentInvoices.history.table.residualInvoiceNumber'),
       id: 'referenceDocumentNumber',
       selector: (row) => `${row.invoiceReference}`,
       minWidth: '220px',
@@ -210,14 +210,6 @@ export default function InvoicesTable() {
         </Link>
       )
     },
-    {
-      name: t('paymentInvoices.Details.referenceNumber'),
-      id: 'referenceDocumentNumber',
-      selector: (row) => `${row.referenceDocumentNumber}`,
-      maxWidth: '180px',
-      cell: (props) => <EclipsesTextcss str={props.referenceDocumentNumber} maxWidth={170} />
-    },
-
     {
       name: t('labels.soldToAccountName'),
       id: 'soldToName',

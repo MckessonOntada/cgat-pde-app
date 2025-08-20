@@ -82,6 +82,7 @@ export const MessageEs = {
   'labels.genericName': 'S_Generic Name',
   'labels.manufacturer': 'S_Manufacturer',
   'labels.formulation': 'S_Formulation',
+  'labels.productForm': 'S_Product Form',
   'labels.dosage': 'S_Dosage',
   'labels.therapyDetails': 'S_Therapy Details',
   'labels.price': 'S_Price',

@@ -133,7 +133,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
   },
   {
     id: 'formulation',
-    name: t('labels.formulation'),
+    name: t('labels.productForm'),
     selector: () => {},
     width: '140px',
     sortable: false,
