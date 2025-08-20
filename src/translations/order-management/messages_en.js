@@ -103,6 +103,8 @@ export const MessageEn = {
   'labels.materialDescription': 'Material Description',
   'labels.orderCost': 'Order Cost',
   'labels.unitPrice': 'Unit Price',
+  'labels.unitAmount': 'Unit Amount',
+  'labels.totalAmount': 'Total Amount',
   'labels.netAmount': 'Net Amount',
   'labels.taxAmount': 'Tax Amount',
   'labels.accountName': 'Account Name',

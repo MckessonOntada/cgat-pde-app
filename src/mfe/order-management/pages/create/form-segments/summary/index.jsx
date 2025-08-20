@@ -944,7 +944,7 @@ const Summary = () => {
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
                       status === ORDER_STATUS.SUBMITTED
                         ? !isSpOrder
-                          ? 'lg:grid-cols-5 xl:grid-cols-5'
+                          ? 'lg:grid-cols-6 xl:grid-cols-6'
                           : 'lg:grid-cols-2 xl:grid-cols-2'
                         : 'lg:grid-cols-5 xl:grid-cols-5'
                     }`}>
@@ -984,7 +984,7 @@ const Summary = () => {
                       <>
                         <div className="price-wrapper">
                           <DetailSegment
-                            label={t('labels.unitPrice')}
+                            label={t('labels.unitAmount')}
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
@@ -1031,7 +1031,7 @@ const Summary = () => {
                         </div>
                         <div className="price-wrapper">
                           <DetailSegment
-                            label={t('labels.orderCost')}
+                            label={t('labels.totalAmount')}
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
