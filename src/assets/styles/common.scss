@@ -613,10 +613,6 @@ div.disable-all {
       @media only screen and (max-width: 576px) {
         align-items: flex-start;
       }
-
-      input {
-        // margin-top: var(--spacing-01);
-      }
     }
   }
 }
@@ -851,9 +847,6 @@ div.disable-all {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-02);
-
-            .option {
-            }
           }
         }
       }
@@ -985,6 +978,12 @@ div.disable-all {
       border: none;
       cursor: pointer;
       padding: 0;
+
+      &[class*="--active--"] {
+        padding-bottom: var(--spacing-02) !important;
+        text-decoration: none !important;
+        border-bottom: 4px solid #f7c91e !important;
+      }
     }
   }
 }
@@ -1037,10 +1036,6 @@ div.disable-all {
       .response-control {
         grid-column: span 24;
 
-        &.price {
-          // grid-column: span 7;
-        }
-
         .empty-gap {
           display: none;
         }
@@ -1071,10 +1066,6 @@ div.disable-all {
 
         .response-control {
           grid-column: span 14;
-
-          &.price {
-            // grid-column: span 7;
-          }
 
           .empty-gap {
             display: initial;
