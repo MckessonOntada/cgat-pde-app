@@ -166,8 +166,6 @@ export default function Dashboard() {
     ];
   }, [isSystemAdminView, roleList, location.search]);
 
-  console.log(tabList);
-
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
