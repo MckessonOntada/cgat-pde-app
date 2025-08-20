@@ -862,7 +862,11 @@ function AdditionalDetails() {
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" disabled={!initialFormValues.consentPolicy} variant="primary" type="submit">
+                      <Button
+                        size="md"
+                        disabled={channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !initialFormValues.consentPolicy}
+                        variant="primary"
+                        type="submit">
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

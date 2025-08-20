@@ -102,6 +102,7 @@ export const MessageEn = {
   'labels.additionalDetails': 'Additional Details',
   'labels.materialDescription': 'Material Description',
   'labels.orderCost': 'Order Cost',
+  'labels.unitPrice': 'Unit Price',
   'labels.netAmount': 'Net Amount',
   'labels.taxAmount': 'Tax Amount',
   'labels.accountName': 'Account Name',

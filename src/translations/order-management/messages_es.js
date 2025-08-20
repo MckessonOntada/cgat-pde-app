@@ -101,6 +101,7 @@ export const MessageEs = {
   'labels.distributionsChannel': 'S_Distributions Channel',
   'labels.salesOrganization': 'S_Sales Organization',
   'labels.netPrice': 'S_Net Price',
+  'labels.unitPrice': 'S_Unit Price',
   'labels.contractPrice': 'S_Contract Price',
   'labels.WACPrice': 'S_WAC Price',
   'labels.regularPrice': 'S_Regular Price',

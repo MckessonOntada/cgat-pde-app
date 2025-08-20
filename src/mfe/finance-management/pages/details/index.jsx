@@ -216,7 +216,22 @@ function Details(props) {
         )
       },
       {
-        name: t('paymentInvoices.Details.netPrice'),
+        name: t('paymentInvoices.Details.unitAmount'),
+        id: 'unitPrice',
+        selector: (row) => {
+          row.unitPrice;
+        },
+        wrap: true,
+        right: true,
+        minWidth: '150px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={props.unitPrice || 0} style="currency" currency="USD" />
+          </div>
+        )
+      },
+      {
+        name: t('paymentInvoices.Details.netAmount'),
         id: 'netPrice',
         selector: (row) => {
           row.netPrice;
