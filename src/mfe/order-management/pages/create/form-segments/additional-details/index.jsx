@@ -113,14 +113,6 @@ function AdditionalDetails() {
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
     let schema = Yup.object({
-      dateOfAdministration: Yup.date()
-        .typeError(t('labels.enterValidDateOfAdministration'))
-        .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
-        .when([], {
-          is: () => therapyConfig.isDOARequired,
-          then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
-          otherwise: (schema) => schema.notRequired()
-        }),
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
@@ -167,6 +159,14 @@ function AdditionalDetails() {
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       schema = schema.concat(
         Yup.object({
+          dateOfAdministration: Yup.date()
+            .typeError(t('labels.enterValidDateOfAdministration'))
+            .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+            .when([], {
+              is: () => therapyConfig.isDOARequired,
+              then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
+              otherwise: (schema) => schema.notRequired()
+            }),
           coiId: Yup.string()
             .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
             .max(10, t('labels.COI_IdExceedDigits'))
@@ -761,6 +761,36 @@ function AdditionalDetails() {
       }
     }
   }, [variant, orderDetails, isSPCrossWalked]);
+
+  React.useEffect(() => {
+    // get Prescription Details
+    setAlert(null);
+    if (variant) {
+      OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then(({ spTherapyConfig }) => {
+        const prescriptionDetails = {};
+        Object.assign(prescriptionDetails, {
+          drugFrom: spTherapyConfig.drugFrom,
+          drugName: spTherapyConfig.drugName,
+          daysSupply: spTherapyConfig.daysSupply,
+          quantity: spTherapyConfig.quantity,
+          refills: spTherapyConfig.refills,
+          instructions: spTherapyConfig.instructions,
+          consentPolicy: spTherapyConfig.consentPolicy,
+          terms: false,
+          acknowledgement: false
+        });
+        if (!spTherapyConfig.consentPolicy) {
+          setAlert({
+            type: 'error',
+            description: t('message.additionalDetails.missingTerms')
+          });
+        }
+        setStoredValue((pre) => ({ ...pre, ...prescriptionDetails }));
+      });
+    }
+  }, [variant]);
+
+  console.log(initialFormValues);
 
   const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue) => {
     const updatedOptions = {
