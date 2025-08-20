@@ -34,6 +34,7 @@ import OrderStepper from '../OrderStepper';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
+import { showAlert } from '@src/store/reducer/alertReducer';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -238,6 +239,8 @@ function AdditionalDetails() {
       });
     }
   });
+
+  React.useEffe;
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
@@ -487,13 +490,6 @@ function AdditionalDetails() {
         consentPolicy: spTherapyConfig.consentPolicy,
         acknowledgement: false
       });
-
-      if (!spTherapyConfig.consentPolicy) {
-        setAlert({
-          type: 'error',
-          description: t('message.additionalDetails.missingTerms')
-        });
-      }
     }
 
     if (additionalDetails) {
@@ -617,6 +613,22 @@ function AdditionalDetails() {
       });
     }
   }, [variant]);
+
+  React.useEffect(() => {
+    if (variantsData && orderDetails) {
+      if (Array.isArray(variantsData) && variantsData.length === 0 && CommonUtils.isNonEmptyObject(orderDetails)) {
+        showAlert({
+          type: 'error',
+          description: t('message.additionalDetails.missingTerms')
+        });
+      } else if (!orderDetails.spTherapyConfig || !orderDetails.spTherapyConfig?.consentPolicy) {
+        showAlert({
+          type: 'error',
+          description: t('message.additionalDetails.missingTerms')
+        });
+      }
+    }
+  }, [variantsData, orderDetails]);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
