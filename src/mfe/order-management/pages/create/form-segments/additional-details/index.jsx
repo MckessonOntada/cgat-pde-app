@@ -79,7 +79,7 @@ function AdditionalDetails({ readOnly }) {
   });
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const { tradeDetails = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
@@ -298,6 +298,7 @@ function AdditionalDetails({ readOnly }) {
         if (isSelfAttested) {
           navigateToNextStage(id);
         } else {
+          refreshOrderDetails();
           setAlert({
             description: 'Order Saved In Draft Successfully',
             type: 'success'
@@ -546,7 +547,7 @@ function AdditionalDetails({ readOnly }) {
         clinicalDetails = {}
       } = additionalDetails;
 
-      const { variantDocumentPath, ...otherDetails } = variantDetails;
+      const { variantDocumentPath, ...otherDetails } = variantDetails || {};
 
       initialValues.poNumber = poNumber;
       initialValues.variant = {

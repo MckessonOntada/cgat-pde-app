@@ -158,7 +158,7 @@ export const OrderProvider = ({ children }) => {
 
   const { refetch: refreshAssignee } = useQuery({
     queryKey: ['assignee', assigneeRequestParams],
-    queryFn: async () => UserService.getAssignee(assigneRequestParams),
+    queryFn: async () => UserService.getAssignee(assigneeRequestParams),
     onSuccess: (result = []) => {
       const alreadySelected = assigneeList.filter((item) => item.isChecked) || [];
       setAssigneeList([...alreadySelected, ...result]);

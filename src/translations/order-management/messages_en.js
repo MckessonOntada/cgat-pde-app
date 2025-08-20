@@ -946,7 +946,7 @@ export const MessageEn = {
   'labels.quantity': 'Quantity',
   'labels.refills': 'Refills',
   'labels.instructions': 'Instructions',
-  'labels.daySupply': 'Day Supply',
+  'labels.daySupply': 'Days Supply',
   'labels.signature': 'Signature',
 
   'labels.validationMessages.daySupplyRequired': 'Days Supply required.',
