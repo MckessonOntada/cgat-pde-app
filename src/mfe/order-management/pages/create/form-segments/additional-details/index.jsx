@@ -513,13 +513,21 @@ function AdditionalDetails() {
         clinicalDetails = {}
       } = additionalDetails;
 
-      const { variantDocumentPath, ...otherDetails } = variantDetails;
+      if (variantDetails) {
+        const { variantDocumentPath, ...otherDetails } = variantDetails;
+
+        initialValues.variant = {
+          ...otherDetails
+        };
+        try {
+          const parsedVariantDocumentDetails = JSON.parse(variantDocumentPath);
+          initialValues.document = parsedVariantDocumentDetails;
+        } catch (error) {
+          initialValues.document = undefined;
+        }
+      }
 
       initialValues.poNumber = poNumber;
-      initialValues.variant = {
-        ...otherDetails,
-        document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
-      };
       initialValues.variantAcknowledgement = patientConsentTaken;
 
       if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
