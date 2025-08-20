@@ -478,8 +478,6 @@ function AdditionalDetails() {
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig) {
       Object.assign(initialValues, {
-        drugFrom: spTherapyConfig.drugFrom,
-        drugName: spTherapyConfig.drugName,
         strength: spTherapyConfig.strength,
         daysSupply: spTherapyConfig.daysSupply,
         quantity: spTherapyConfig.quantity,
@@ -580,6 +578,45 @@ function AdditionalDetails() {
       ...initialValues
     }));
   }, [orderDetails, variantsData]);
+
+  React.useEffect(() => {
+    setAlert(null);
+    if (variant) {
+      OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
+        const { spTherapyConfig } = result;
+        const prescriptionDetails = {
+          daysSupply: '',
+          quantity: '',
+          refills: '',
+          instructions: '',
+          consentPolicy: '',
+          terms: false,
+          acknowledgement: false
+        };
+
+        if (CommonUtils.isNonEmptyObject(spTherapyConfig)) {
+          prescriptionDetails.daysSupply = spTherapyConfig.daysSupply;
+          prescriptionDetails.quantity = spTherapyConfig.quantity;
+          prescriptionDetails.refills = spTherapyConfig.refills;
+          prescriptionDetails.instructions = spTherapyConfig.instructions;
+          prescriptionDetails.consentPolicy = spTherapyConfig.consentPolicy;
+        }
+
+        if (!spTherapyConfig || !spTherapyConfig.consentPolicy) {
+          setAlert({
+            type: 'error',
+            description: t('message.additionalDetails.missingTerms')
+          });
+        }
+
+        setStoredValue((pre) => ({ ...pre, ...prescriptionDetails }));
+        setInitialFormValues({
+          ...storedValue,
+          ...prescriptionDetails
+        });
+      });
+    }
+  }, [variant]);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
@@ -761,36 +798,6 @@ function AdditionalDetails() {
       }
     }
   }, [variant, orderDetails, isSPCrossWalked]);
-
-  React.useEffect(() => {
-    // get Prescription Details
-    setAlert(null);
-    if (variant) {
-      OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then(({ spTherapyConfig }) => {
-        const prescriptionDetails = {};
-        Object.assign(prescriptionDetails, {
-          drugFrom: spTherapyConfig.drugFrom,
-          drugName: spTherapyConfig.drugName,
-          daysSupply: spTherapyConfig.daysSupply,
-          quantity: spTherapyConfig.quantity,
-          refills: spTherapyConfig.refills,
-          instructions: spTherapyConfig.instructions,
-          consentPolicy: spTherapyConfig.consentPolicy,
-          terms: false,
-          acknowledgement: false
-        });
-        if (!spTherapyConfig.consentPolicy) {
-          setAlert({
-            type: 'error',
-            description: t('message.additionalDetails.missingTerms')
-          });
-        }
-        setStoredValue((pre) => ({ ...pre, ...prescriptionDetails }));
-      });
-    }
-  }, [variant]);
-
-  console.log(initialFormValues);
 
   const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue) => {
     const updatedOptions = {
