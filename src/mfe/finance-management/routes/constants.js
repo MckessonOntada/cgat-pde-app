@@ -29,11 +29,11 @@ export const tabListData = [
   },
   {
     id: 3,
-    configName: 'SCHEDULE PAYMENTS',
+    configName: 'SCHEDULED PAYMENTS',
     isActive: true,
     isActiveTab: false,
     sequence: 3,
-    labelForMobile: 'SCHEDULE PAYMENTS',
+    labelForMobile: 'SCHEDULED PAYMENTS',
     path: PATHS.pendingPayments
   },
   {

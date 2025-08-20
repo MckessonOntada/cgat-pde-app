@@ -212,7 +212,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       }
     },
     {
-      name: t('labels.formulation'),
+      name: t('labels.productForm'),
       id: 'formulation',
       selector: (row) => row.strength,
       wrap: true,

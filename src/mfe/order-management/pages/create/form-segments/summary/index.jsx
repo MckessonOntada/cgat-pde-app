@@ -946,7 +946,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                         ? !isSpOrder
                           ? 'lg:grid-cols-5 xl:grid-cols-5'
                           : 'lg:grid-cols-2 xl:grid-cols-2'
-                        : 'lg:grid-cols-4 xl:grid-cols-4'
+                        : 'lg:grid-cols-5 xl:grid-cols-5'
                     }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
                       (status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
@@ -984,6 +984,17 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                       <>
                         <div className="price-wrapper">
                           <DetailSegment
+                            label={t('labels.unitPrice')}
+                            value={
+                              <span className="dollarSign ">
+                                <span>$</span>
+                                {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice)}
+                              </span>
+                            }
+                          />
+                        </div>
+                        <div className="price-wrapper">
+                          <DetailSegment
                             label={t('labels.netAmount')}
                             value={
                               <span className="dollarSign ">
@@ -991,7 +1002,11 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                                 {CommonUtils.formatNumberWithoutSymbol(
                                   papOrderOptions.isChecked
                                     ? 0
-                                    : CommonUtils.getOrderCost(orderCost, simulationData?.updatedCatalogNetPrice || catalog?.netPrice)
+                                    : CommonUtils.getOrderCost(
+                                        orderCost,
+                                        simulationData?.updatedCatalogNetPrice * additionalDetails.orderQuantity ||
+                                          catalog?.netPrice * additionalDetails.orderQuantity
+                                      )
                                 )}
                               </span>
                             }

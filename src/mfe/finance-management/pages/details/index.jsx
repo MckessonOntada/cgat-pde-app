@@ -101,6 +101,7 @@ function Details(props) {
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
+          console.log(res.data);
           setInvoiceDetails(() => ({
             ...{},
             [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
@@ -116,9 +117,12 @@ function Details(props) {
               </Link>
             ),
             [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+            [t('paymentInvoices.Details.manufacturerPatientId')]: res.data.manufacturerPatientId,
+            ['__z0']: null,
             [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
-            ['']: <p></p>,
-            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
+            ['__z1']: null,
+            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
+            ['__z2']: null
           }));
           updateBillDates(res);
           return res.data;
@@ -212,7 +216,22 @@ function Details(props) {
         )
       },
       {
-        name: t('paymentInvoices.Details.netPrice'),
+        name: t('paymentInvoices.Details.unitAmount'),
+        id: 'unitPrice',
+        selector: (row) => {
+          row.unitPrice;
+        },
+        wrap: true,
+        right: true,
+        minWidth: '150px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={props.unitPrice || 0} style="currency" currency="USD" />
+          </div>
+        )
+      },
+      {
+        name: t('paymentInvoices.Details.netAmount'),
         id: 'netPrice',
         selector: (row) => {
           row.netPrice;

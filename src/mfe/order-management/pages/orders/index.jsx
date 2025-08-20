@@ -281,7 +281,7 @@ const OrderIndex = () => {
       availableFilters: filters,
       searchPlaceholder
     };
-  }, [location.search, assigneeList, assigneeIdsFromURL]);
+  }, [location.search, config.tab, assigneeList, assigneeIdsFromURL]);
 
   const initialFilterData = React.useMemo(() => {
     if (filterParams) {

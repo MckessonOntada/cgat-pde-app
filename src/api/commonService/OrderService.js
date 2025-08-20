@@ -479,6 +479,13 @@ async function notifyUser(orderId, eventType) {
   if (res.data) return res.data;
 }
 
+async function getPrescriptionDetailsByTherapy(therapyId) {
+  if (!therapyId) throw new Error('Therapy id is missing. Trade name is required to fetch prescription details.');
+  let url = `${ApiRoutes.THERAPIES()}/config/therapyId/${therapyId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -520,7 +527,8 @@ const OrderService = Object.freeze({
   getManufacturerLogo,
   getDiagnosisCodes,
   finalizeOrder,
-  notifyUser
+  notifyUser,
+  getPrescriptionDetailsByTherapy
 });
 
 export default OrderService;

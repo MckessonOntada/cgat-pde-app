@@ -44,7 +44,10 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const invoiceDetails = {
     'Bill to Account Number': selectedAccount?.accountNumber || '-',
     'Payment Method': state?.paymentMethod,
-    'Pay On Date': (type === PATHS.paymentHistory ? state?.dateScheduled : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
+    'Pay On Date':
+      (type === PATHS.paymentHistory
+        ? dayjs(state?.dateScheduled, 'DD/MM/YYYY').format('MM/DD/YYYY') || '-'
+        : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
@@ -61,7 +64,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
     'Credit Used': formatCurrency(state && state.totalCreditAmount) || '-',
     'Payment Initiated Date': state && state.paymentInitiationDate ? dayjs(state.paymentInitiationDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-',
     ...(type === PATHS.paymentHistory && {
-      'Payment Authorised Date': state && state.clearingDate ? dayjs(state.clearingDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-'
+      'Payment Authorized Date': state && state.clearingDate ? dayjs(state.clearingDate, 'DD/MM/YYYY').format('MMM D, YYYY') : '-'
     })
   };
 
