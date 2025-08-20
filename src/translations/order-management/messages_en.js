@@ -976,7 +976,7 @@ export const MessageEn = {
   'label.drugForm': 'Drug Form',
   'label.quantity': 'Quantity',
   'label.daysSupply': 'Days Supply',
-  'label.refill': 'Refill',
+  'label.refill': 'Refills',
   'label.instructions': 'Instructions',
   'label.acknowledgementInformationIsCorrect': 'All the above information is correct.'
 };
