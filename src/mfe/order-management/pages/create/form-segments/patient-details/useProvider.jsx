@@ -5,7 +5,7 @@ import ProviderService from '@src/api/commonService/ProviderService';
 import CommonUtils from '@src/util/CommonUtils';
 
 function useProvider(params) {
-  const { orderDetails, query } = params;
+  const { orderDetails, query, status } = params;
   const {
     data: providers = [],
     isFetching,
@@ -15,7 +15,8 @@ function useProvider(params) {
     queryFn: async () =>
       ProviderService.getAllProviders({
         channelType: orderDetails.channelType,
-        query
+        query,
+        ...(status && { status })
       }),
     select: (response) => {
       const { content = null } = response;
@@ -42,10 +43,7 @@ function useProvider(params) {
       }
       return [];
     },
-    enabled: Boolean(
-      orderDetails.id &&
-        orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-    )
+    enabled: Boolean(orderDetails.id && orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA)
   });
 
   return {
