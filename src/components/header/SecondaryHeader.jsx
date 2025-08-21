@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
@@ -90,6 +90,39 @@ const SecondaryHeader = ({ navLinks }) => {
     return updatedTabs;
   }, [navLinks, location.pathname]);
 
+  const state = useSelector((state) => state.orderState);
+  console.log(state);
+  const handleOnClick = (tab) => {
+    if (state.hasUnsavedChanges) {
+      const state = {};
+      state.title = t('messages.confirmation.discardheader');
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>{t('messages.confirmation.therapy')}</p>
+        </div>
+      );
+      state.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            {t('orgManagement.button.cancel')}
+          </Button>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              dispatch(closeModal());
+              navigate(tab.path);
+            }}>
+            {t('orgManagement.button.OK')}
+          </Button>
+        </div>
+      );
+      dispatch(openModal(state));
+    } else {
+      navigate(tab.path);
+    }
+  };
+
   const LeftSideView = () => {
     return (
       <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
@@ -99,10 +132,11 @@ const SecondaryHeader = ({ navLinks }) => {
           options={tabs}
           showShadow={false}
           alignment={'left'}
-          useAsButton={false}
+          useAsButton={true}
           role="tablist"
           aria-label="Secondary navigation tabs"
           LinkComponent={Link}
+          onTabClick={handleOnClick}
         />
       </div>
     );

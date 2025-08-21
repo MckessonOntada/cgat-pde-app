@@ -21,8 +21,9 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ModuleHeader from '@src/components/module-header';
-import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
+import { useDispatch } from 'react-redux';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -32,11 +33,12 @@ function TherapySelection() {
   const locationState = location?.state || {};
   const { search, pathname } = location || {};
   const [prevSearchState, setPrevSearchState] = React.useState(null);
-
+  const dispatch = useDispatch();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [tradeDetails, setTradeDetails] = useState(orderDetails?.tradeDetails);
+  const [isDirty, setIsDirty] = React.useState(false);
   const searchParams = new URLSearchParams(search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
@@ -52,6 +54,13 @@ function TherapySelection() {
     if (isPapOrder) navigate(`/orders${prevSearch}`);
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
   }, [orderDetails]);
+
+  React.useEffect(() => {
+    const isDirty = JSON.stringify(tradeDetails) !== JSON.stringify(orderDetails?.tradeDetails);
+    setIsDirty(isDirty);
+    dispatch(hasUnsavedChanges(isDirty));
+    return () => dispatch(hasUnsavedChanges(false));
+  }, [tradeDetails]);
 
   React.useEffect(() => {
     if (locationState && locationState.__prevSearch) setPrevSearchState(locationState.__prevSearch);
@@ -153,7 +162,6 @@ function TherapySelection() {
       }
     }
   };
-  const isDirty = JSON.stringify(tradeDetails) !== JSON.stringify(orderDetails?.tradeDetails);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -203,6 +211,8 @@ function TherapySelection() {
   const handleOnDrawerSelect = (details) => {
     setTradeDetails(details);
   };
+
+  React.useEffect(() => {}, [tradeDetails]);
 
   return (
     <div className="MCP-module-wrapper">
