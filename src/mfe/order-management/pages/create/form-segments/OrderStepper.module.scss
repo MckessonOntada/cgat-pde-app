@@ -1,7 +1,23 @@
 .custom-order-stepper {
   margin-bottom: 16px;
+
   [class*="Stepper-module--stepsItemContent"],
   [class*="Stepper-module--step"] {
     cursor: pointer;
+  }
+}
+
+.attestationWrapper {
+  margin-top: var(--spacing-03);
+  font-size: var(--brand-font-size--default);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-02);
+  p {
+    line-height: 20px;
+  }
+
+  [class*="CheckboxGroup-module--checkboxWrapper-"] {
+    align-items: flex-start;
   }
 }

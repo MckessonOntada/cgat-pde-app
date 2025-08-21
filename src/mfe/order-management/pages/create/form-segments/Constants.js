@@ -60,3 +60,27 @@ export const INFO_340B = [
     requirements: ['order.account.selection.compliance.requirements.requirement1']
   }
 ];
+
+export const ORDER_ATTESTATION_MESSAGES = (t) => ({
+  [ORDER_STAGES.THERAPY_SELECTION]: t('attestation.therapySelection'),
+  [ORDER_STAGES.ACCOUNT_DETAILS]: t('attestation.accountDetails'),
+  [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: t('attestation.patientAndProviderDetails'),
+  [ORDER_STAGES.PAYER_DETAILS]: t('attestation.payerDetails'),
+  [ORDER_STAGES.ADDITIONAL_DETAILS]: t('attestation.additionalDetails')
+});
+
+export const NOTIFY_ALERT = (t) => ({
+  [ORDER_STAGES.ACCOUNT_DETAILS]: t('captions.notifyUserAlert.accountSelection'),
+  [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: t('captions.notifyUserAlert.patientAndProviderDetails'),
+  [ORDER_STAGES.PAYER_DETAILS]: t('captions.notifyUserAlert.patientAndProviderDetails'),
+  [ORDER_STAGES.ADDITIONAL_DETAILS]: t('captions.notifyUserAlert.additionalDetails'),
+  [ORDER_STAGES.ORDER_SUMMARY]: t('captions.notifyUserAlert.orderSummary')
+});
+
+export const NOTIFY_USER_EVENT_TYPE = (t) => ({
+  [ORDER_STAGES.ACCOUNT_DETAILS]: 'ORDER_ACCOUNT_SELECTION_RESEND',
+  [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: 'ORDER_PATIENT_DETAILS_RESEND',
+  [ORDER_STAGES.PAYER_DETAILS]: 'ORDER_PATIENT_DETAILS_RESEND',
+  [ORDER_STAGES.ADDITIONAL_DETAILS]: 'ORDER_ADDITIONAL_DETAILS_RESEND',
+  [ORDER_STAGES.ORDER_SUMMARY]: 'ORDER_SUMMARY_RESEND'
+});

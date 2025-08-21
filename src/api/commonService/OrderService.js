@@ -42,7 +42,7 @@ async function getOrderById(orderId) {
   return {};
 }
 
-async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType) {
+async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const params = {
     skipDuplicateCheck
@@ -50,6 +50,7 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
   }
+  params.isDraft = isDraft;
   const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(params)}`;
   try {
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
@@ -61,11 +62,12 @@ async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, 
   }
 }
 
-async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, channelType) {
+async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, channelType, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to save payer details');
 
   const params = {
-    isPayerDetailsRequired
+    isPayerDetailsRequired,
+    isDraft
   };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;
@@ -82,10 +84,9 @@ async function savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetail
   }
 }
 
-async function saveAdditionalDetails(orderId, payload) {
+async function saveAdditionalDetails(orderId, payload, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
-
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details?isDraft=${isDraft}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
@@ -95,10 +96,10 @@ async function saveAdditionalDetails(orderId, payload) {
   return {};
 }
 
-async function saveAccount(orderId, payload) {
+async function saveAccount(orderId, payload, isDraft = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/account`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/account?isDraft=${isDraft}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
@@ -468,6 +469,16 @@ async function finalizeOrder(orderId, payload) {
   if (res.data) return res.data;
 }
 
+async function notifyUser(orderId, eventType) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to Notify User.');
+  if (!eventType) throw new Error('Event type is missing. Event type is required to Notify User.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/notify/${eventType}`;
+  console.log(url);
+  const res = await HttpResourceService.callRest(url, httpVerb.POST);
+  if (res.data) return res.data;
+}
+
 async function getPrescriptionDetailsByTherapy(therapyId) {
   if (!therapyId) throw new Error('Therapy id is missing. Trade name is required to fetch prescription details.');
   let url = `${ApiRoutes.THERAPIES()}/config/therapyId/${therapyId}`;
@@ -516,6 +527,7 @@ const OrderService = Object.freeze({
   getManufacturerLogo,
   getDiagnosisCodes,
   finalizeOrder,
+  notifyUser,
   getPrescriptionDetailsByTherapy
 });
 

@@ -364,6 +364,7 @@ export const MessageEs = {
   'messages.confirmation.therapy': 'S_You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'S_You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.patient': 'S_You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.payer': 'S_You have changed Payer details. Do you still want to go back? Your changes will be discarded!',
 
   'messages.header.confirmation': 'S_Confirmation!',
   'messages.header.warning': 'S_Warning!',
@@ -590,7 +591,6 @@ export const MessageEs = {
   'form.label.rxBin': 'S_RX BIN',
   'button.caption.addSecondaryMedicalInsurance': 'S_Add Secondary Medical Insurance',
   'button.caption.addSecondaryPharmacyInsurance': 'S_Add Secondary Pharmacy Insurance',
-
   'messages.enterInsuranceCompanyName': 'S_Please enter the Insurance Company name.',
   'messages.insuranceCompanyNameCharLimit': 'S_Insurance Company name must not exceed 100 characters.',
   'messages.avoidSpecialCharsNumbers': 'S_Avoid using special characters or numbers.',
@@ -629,11 +629,12 @@ export const MessageEs = {
   'column.material.crosswalk.spNDC': 'S_SP NDC',
   'column.material.crosswalk.action': 'S_Action',
   'controls.updateDocument': 'S_Upload Document',
-  'messages.insuranceCompanyExtraSpaceError': 'S_Insurance Company must not contain leading or trailing spaces',
-  'messages.phFirstNameExtraSpaceError': 'S_Policy Holder First Name must not contain leading or trailing spaces',
-  'messages.phLastNameExtraSpaceError': 'S_Policy Holder Last Name must not contain leading or trailing spaces',
-  'messages.pharmacyManagerExtraSpaceError': 'S_Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
-  'error.default': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
+  'messages.insuranceCompanyExtraSpaceError': 'S_S_Insurance Company must not contain leading or trailing spaces',
+  'messages.phFirstNameExtraSpaceError': 'S_S_Policy Holder First Name must not contain leading or trailing spaces',
+  'messages.phLastNameExtraSpaceError': 'S_S_Policy Holder Last Name must not contain leading or trailing spaces',
+  'messages.pharmacyManagerExtraSpaceError': 'S_S_Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
+  'error.default': 'S_S_System is facing issues in getting the information. Kindly Contact your System admin.',
+  'labels.collaborators': 'S_Collaborators:',
   'message.selectDocumentToUpload': 'S_Please select document to upload.',
   'message.documentUploadSuccess': 'S_Document has been successfully uploaded for Order ID: {orderId}',
   'label.uploadCrosswalk.info': 'S_For filling up the crosswalk template, please refer to the instruction file and product/material master.',
@@ -652,5 +653,7 @@ export const MessageEs = {
   'label.daysSupply': 'S_Days Supply',
   'label.refill': 'S_Refills',
   'label.instructions': 'S_Instructions',
-  'label.acknowledgementInformationIsCorrect': 'S_All the above information is correct.'
+  'label.acknowledgementInformationIsCorrect': 'S_All the above information is correct.',
+  'control.notifyUser': 'S_Notify User',
+  'messages.notifyUser': 'S_Notification mail has been sent successfully to the authorized user.'
 };

@@ -17,14 +17,18 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 
-const AccountSelection = () => {
+const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
@@ -34,16 +38,33 @@ const AccountSelection = () => {
   const [accountConfig, setAccountConfig] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = locationState;
+  const updatedLocationState = { ...locationState, isTherapyChanged: false };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [alert, setAlert] = useState(null);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
+
+  React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.ACCOUNT_DETAILS) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
+    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
   }, [orderDetails]);
 
@@ -82,15 +103,22 @@ const AccountSelection = () => {
     }
   }, [orderDetails]);
 
-  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async ({ isDraft, ...data }) => OrderService.saveAccount(orderId, data, isDraft), {
     onSuccess: async (result) => {
       const { id } = result;
-      try {
-        navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-          state: { ...locationState, alertState, isEdit: false, isApprover: isApprover }
+      if (isSelfAttested) {
+        try {
+          navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
+            state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover }
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        setAlert({
+          description: 'Order Saved In Draft Successfully',
+          type: 'success'
         });
-      } catch (err) {
-        console.error(err);
       }
     },
     onError: (error) => {
@@ -110,6 +138,7 @@ const AccountSelection = () => {
   };
   const handleOnClick = () => {
     setAlert(null);
+    setIsSelfAttested(false);
     setOpen(true);
   };
 
@@ -127,11 +156,11 @@ const AccountSelection = () => {
     }
     if (isEdit) {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...locationState, isEdit: isEdit, isApprover: isApprover }
+        state: { ...updatedLocationState, isEdit: isEdit, isApprover: isApprover }
       });
     } else {
       navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover, isBack: true }
+        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover, isBack: true }
       });
     }
   };
@@ -159,30 +188,46 @@ const AccountSelection = () => {
       soldToAccountId: selectedSoldToAccount.id,
       shipToAccountId: selectedShipToAccount.id
     };
-    setAlert(null);
-    saveAccount(payload);
+
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          saveAccount({ ...payload, isDraft: true });
+        }
+      });
+    } else {
+      setAlert(null);
+      if (isDirty) {
+        saveAccount(payload);
+      } else {
+        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+          state: { ...updatedLocationState, alertState, isEdit: false, isApprover }
+        });
+      }
+    }
   };
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = locationState?.__prevSearch || '';
+      const prevSearch = updatedLocationState?.__prevSearch || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 
   const handleNavigate = () => {
-    const prevSearch = locationState?.__prevSearch || '';
+    const prevSearch = updatedLocationState?.__prevSearch || '';
     if (modalSuccessCallback === 'list') {
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'details') {
       navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover, isBack: true }
+        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover, isBack: true }
       });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...locationState, isEdit: false, isApprover: isApprover }
+        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover }
       });
     }
   };
@@ -209,7 +254,12 @@ const AccountSelection = () => {
 
       <ModuleHeader
         heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">
@@ -218,6 +268,14 @@ const AccountSelection = () => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+        {readOnly && (
+          <NotifyAlert
+            stage={ORDER_STAGES.ACCOUNT_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ACCOUNT_DETAILS ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
+          />
+        )}
         <OrderHeaderDetails
           orderDetails={orderDetails}
           priceDetails={priceDetails}
@@ -228,6 +286,7 @@ const AccountSelection = () => {
           channelType={selectedSoldToAccount?.channelType}
         />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {/* <div className={`MCP-module-wrapper ${readOnly ? 'disabled-div' : ''}`}> */}
         <div className={`MCP-module-wrapper`}>
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -259,7 +318,7 @@ const AccountSelection = () => {
                         <React.Fragment>
                           <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
                           <div className={styles.btnAccount}>
-                            <Button size="md" onClick={handleOnClick} variant="secondary">
+                            <Button size="md" onClick={handleOnClick} variant="secondary" disabled={readOnly}>
                               {t('captions.btnSelectYourAccount')}
                             </Button>
                           </div>
@@ -270,7 +329,7 @@ const AccountSelection = () => {
                   {selectedSoldToAccount && (
                     <div className={`${styles.controls} left-floating-control`}>
                       <div className="styled-icon-button">
-                        <Button variant="tertiary" onClick={handleOnClick}>
+                        <Button variant="tertiary" onClick={handleOnClick} disabled={readOnly}>
                           {t('button.caption.change')}
                         </Button>
                       </div>
@@ -281,16 +340,17 @@ const AccountSelection = () => {
             </div>
             {selectedSoldToAccount && (
               <ShippingAddressProvider accountDetails={{ trade: tradeDetails, selectedAccount: selectedSoldToAccount }}>
-                <ShippingAddress selectedShippingAddress={selectedShipToAccount} setSelectedShippingAddress={setSelectedShipToAccount} />
+                <ShippingAddress selectedShippingAddress={selectedShipToAccount} readOnly={readOnly} setSelectedShippingAddress={setSelectedShipToAccount} />
               </ShippingAddressProvider>
             )}
           </div>
+          <OrderAttestation stage={ORDER_STAGES?.ACCOUNT_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} disabled={readOnly} />
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
+              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit" disabled={readOnly}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
@@ -317,4 +377,5 @@ const AccountSelection = () => {
   );
 };
 
-export default AccountSelection;
+//export default AccountSelection;
+export default withPermissions(AccountSelection, ORDER_STAGES.ACCOUNT_DETAILS);

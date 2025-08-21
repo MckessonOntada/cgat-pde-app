@@ -40,7 +40,8 @@ function TherapyDetailsWithTabs({
   showFooter = true,
   heading,
   isMaterialListing = false,
-  hideTab = false
+  hideTab = false,
+  readOnly = false
 }) {
   const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
   const isSPMaterial = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -297,7 +298,8 @@ function TherapyDetailsWithTabs({
       heading={heading}
       bodyPadding="var(--spacing-03) 0px var(--spacing-16)"
       controls={
-        showFooter && (
+        showFooter &&
+        !readOnly && (
           <div className="controls">
             <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
             <Button label={t('captions.btnSelecttherapy')} onClick={handleSelect} variant="primary" size="md" aria-label={t('captions.selectAccount')} />

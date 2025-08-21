@@ -23,6 +23,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { DateUtils } from '@src/util/DateUtil';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import usePermission from '@src/hooks/usePermissions';
 
 const OrderIndex = () => {
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ const OrderIndex = () => {
 
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
+  const { hasPermission } = usePermission();
+  const hasCreatePermissions = hasPermission(PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION);
+
   const [tabList, setTabList] = useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -132,9 +136,13 @@ const OrderIndex = () => {
   }, [location]);
 
   const handleOnCreateNewOrder = () => {
-    navigate(`${routesConfig.createOrder}`, {
-      state: { __prevSearch: location.search || '' }
-    });
+    if (!hasCreatePermissions) {
+      setAlert({ type: 'error', description: 'You are not authorized to place this order. Please contact your Organization Administrator for assistance' });
+    } else {
+      navigate(`${routesConfig.createOrder}`, {
+        state: { __prevSearch: location.search || '' }
+      });
+    }
   };
 
   useEffect(() => {
@@ -307,13 +315,13 @@ const OrderIndex = () => {
         <ModuleHeader
           heading={<Heading as="h1">{t('headings.orders')}</Heading>}
           controls={
-            <div className="controls">
-              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+            !isPhysician && (
+              <div className="controls">
                 <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnCreateNewOrder} size="lg" aria-label={t('controls.createNewOrder')}>
                   {t('controls.ariaLabels.createNewOrder')}
                 </Button>
-              </PermittedComponent>
-            </div>
+              </div>
+            )
           }
         />
 
