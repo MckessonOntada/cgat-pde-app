@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './TherapyDataColumns';
-import { useLocation, useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';

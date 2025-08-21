@@ -1015,8 +1015,8 @@ const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOn
         <Loader variant="circular" />
       </div>
     );
-  if (!isLoading && questionnaireTemplateConfig && !CommonUtils.isNonEmptyArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length === 0)
-    return null;
+  if ((!isLoading && !questionnaireTemplateConfig) || !CommonUtils.isNonEmptyArray(questionnaireTemplateConfig)) return null;
+
   return (
     <div className="form-segment configured-questionnaire-form">
       <div className="MCP-module-body">
