@@ -36,6 +36,7 @@ import OrderAttestation from '../OrderAttestation';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -315,7 +316,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     totalProviders
   } = useProvider({
     orderDetails,
-    query: providerQuery
+    query: providerQuery,
+    status: PROVIDER_STATUS.ACTIVE
   });
 
   React.useEffect(() => {
