@@ -38,6 +38,8 @@ import OrderAttestation from '../OrderAttestation';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { useDispatch } from 'react-redux';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 function Payer({ readOnly, hasPermission }) {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -63,6 +65,10 @@ function Payer({ readOnly, hasPermission }) {
     soldToAccountId,
     shipToAccountId
   });
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    return () => dispatch(hasUnsavedChanges(false));
+  }, []);
 
   const [isSelfAttested, setIsSelfAttested] = React.useState(false);
   const handleConfirmChange = (checked) => {
@@ -277,7 +283,7 @@ function Payer({ readOnly, hasPermission }) {
       }
     }
   };
-  console.log('isDirty', isDirty);
+
   const handleOnUpload = (config) => (file, setFieldValue, key) => {
     setIsSelfAttested(false);
     const side = key.endsWith('Front') ? 'FRONT' : 'BACK';
@@ -367,6 +373,7 @@ function Payer({ readOnly, hasPermission }) {
           {({ setValues, values, errors, setTouched, setErrors, setFieldValue, dirty }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
+              dispatch(hasUnsavedChanges(dirty));
               if (dirty) {
                 setIsSelfAttested(false);
               }

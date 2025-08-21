@@ -360,6 +360,7 @@ export const MessageEs = {
   'labels.description.finalDelivery': 'S_Order is delivered to your specified address',
 
   'messages.confirmation.discardheader': 'S_Discard Changes',
+  'messages.confirmation.discardUnsavedOrder': 'S_You have changed order details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.account': 'S_You have changed Account details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.therapy': 'S_You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'S_You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',

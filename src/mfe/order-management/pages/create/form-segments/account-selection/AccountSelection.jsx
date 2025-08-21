@@ -27,6 +27,8 @@ import OrderAttestation from '../OrderAttestation';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { useDispatch } from 'react-redux';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -141,12 +143,17 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     setIsSelfAttested(false);
     setOpen(true);
   };
+  const [isDirty, setIsDirty] = React.useState(false);
+  const dispatch = useDispatch();
 
-  const isDirty = useMemo(() => {
-    return (
+  React.useEffect(() => {
+    const isDirty =
       JSON.stringify(selectedSoldToAccount) !== JSON.stringify(orderDetails.accountDetails?.soldToAccount) ||
-      JSON.stringify(selectedShipToAccount) !== JSON.stringify(orderDetails.accountDetails?.shipToAccount)
-    );
+      JSON.stringify(selectedShipToAccount) !== JSON.stringify(orderDetails.accountDetails?.shipToAccount);
+
+    setIsDirty(isDirty);
+    dispatch(hasUnsavedChanges(isDirty));
+    return () => dispatch(hasUnsavedChanges(false));
   }, [selectedSoldToAccount, selectedShipToAccount]);
 
   const handleOnBack = () => {
