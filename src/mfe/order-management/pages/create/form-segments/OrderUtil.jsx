@@ -85,5 +85,5 @@ export const NotifyAlert = ({ stage, OnEdit = false, orderId, setAlert }) => {
     </div>
   );
 
-  return <Alert type={OnEdit ? 'error' : 'info'} description={strMessage} showCloseIcon={false} />;
+  return <Alert className="alert-container-print" type={OnEdit ? 'error' : 'info'} description={strMessage} showCloseIcon={false} />;
 };
