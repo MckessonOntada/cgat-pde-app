@@ -15,8 +15,9 @@ const Collaborator = ({ collaborators }) => {
   }, []);
 
   const initials = uniqueUsers.map((user) => {
-    const initials = user.name
-      .split(/[ ,]+/)
+    const names = user.name || '';
+    const initials = names
+      .split(', ')
       .filter(Boolean)
       .map((word) => word[0].toUpperCase())
       .join('');
