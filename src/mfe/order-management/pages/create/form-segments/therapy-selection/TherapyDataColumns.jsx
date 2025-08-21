@@ -6,7 +6,7 @@ import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.s
 import CommonUtils from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
 
-export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpandToggle }) => [
+export const createColumns = ({ t, trade = {}, onChange, readOnly, isRowExpanded, onExpandToggle }) => [
   {
     id: 'expandOrSelect',
     selector: () => null,
@@ -36,7 +36,7 @@ export const createColumns = ({ t, trade = {}, onChange, isRowExpanded, onExpand
             id={`radio-button-order-therapy-${row.id}`}
             items={[
               {
-                isDisabled: false,
+                isDisabled: readOnly || false,
                 label: ' ',
                 value: row.id
               }

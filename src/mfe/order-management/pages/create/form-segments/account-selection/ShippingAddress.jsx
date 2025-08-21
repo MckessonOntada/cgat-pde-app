@@ -7,7 +7,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useShippingAddress } from '@src/mfe/order-management/context/ShippingAddressContext';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
-function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }) {
+function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress, readOnly }) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, selectedAccount } = useShippingAddress();
 
@@ -27,6 +27,7 @@ function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }
         <ShippingAddressDataTable
           selectedShippingAddress={selectedShippingAddress}
           setSelectedShippingAddress={setSelectedShippingAddress}
+          readOnly={readOnly}
         />
       </div>
     </div>

@@ -29,7 +29,7 @@ function getFileNameAndType(url) {
 }
 const ALLOWED_FILE_TYPE = ['application/pdf', 'image/png', 'image/jpeg'];
 
-const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections = [], insurance, insuranceLevel }) => {
+const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections = [], insurance, insuranceLevel, readOnly }) => {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
 
@@ -117,7 +117,9 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
                         options: control.options,
                         maxLength: control.maxLength,
                         isReadOnly: control.isReadOnly,
-                        fieldlabel: control.fieldLabel
+                        fieldlabel: control.fieldLabel,
+                        readOnly: readOnly,
+                        isDisabled: readOnly
                       };
 
                       return <Field {...fieldProps} />;

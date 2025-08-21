@@ -18,7 +18,14 @@ import Payer from '../pages/create/form-segments/payers-details';
 import FinalizeOrder from '../pages/create/form-segments/finalize-order';
 
 function OrderManagementRoutes() {
-  const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
+  const orderPermissions = [
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.ACCOUNT_SELECTION,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS,
+    PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER,
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS
+  ];
   return (
     <Routes>
       <Route
@@ -32,7 +39,7 @@ function OrderManagementRoutes() {
       <Route
         path={`create-order`}
         element={
-          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS]}>
+          <ProtectedRoute permissions={orderPermissions}>
             <TherapyProvider>
               <TherapySelection />
             </TherapyProvider>
@@ -42,7 +49,7 @@ function OrderManagementRoutes() {
       <Route
         path={`edit-order/:orderId`}
         element={
-          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+          <ProtectedRoute permissions={orderPermissions}>
             <TherapyProvider>
               <TherapySelection />
             </TherapyProvider>
@@ -52,7 +59,7 @@ function OrderManagementRoutes() {
       <Route
         path={`:orderId/accounts`}
         element={
-          <ProtectedRoute permissions={addEditPermission}>
+          <ProtectedRoute permissions={orderPermissions}>
             <AccountSelection />
           </ProtectedRoute>
         }
@@ -60,7 +67,7 @@ function OrderManagementRoutes() {
       <Route
         path={`:orderId/patient`}
         element={
-          <ProtectedRoute permissions={addEditPermission}>
+          <ProtectedRoute permissions={orderPermissions}>
             <PatientDetails />
           </ProtectedRoute>
         }
@@ -68,7 +75,7 @@ function OrderManagementRoutes() {
       <Route
         path={`:orderId/payer`}
         element={
-          <ProtectedRoute permissions={[]}>
+          <ProtectedRoute permissions={orderPermissions}>
             <Payer />
           </ProtectedRoute>
         }
@@ -76,7 +83,7 @@ function OrderManagementRoutes() {
       <Route
         path={`:orderId/additional-details`}
         element={
-          <ProtectedRoute permissions={addEditPermission}>
+          <ProtectedRoute permissions={orderPermissions}>
             <AdditionalDetails />
           </ProtectedRoute>
         }

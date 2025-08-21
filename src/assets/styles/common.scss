@@ -1601,10 +1601,12 @@ div[role="row"] {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
+
   .form-segment {
     margin-top: var(--spacing-03);
     padding-top: var(--spacing-03);
     border-top: 1px solid var(--brand-color-grey-scale-cool-1);
+
     &:first-child {
       margin-top: 0;
       padding-top: 0;
@@ -1635,6 +1637,7 @@ div.empty-table-wrapper {
   border: 1px solid var(--brand-color-grey-scale-cool-1);
   border-radius: 4px;
   overflow: hidden;
+
   img {
     display: block;
     width: 100%;
@@ -1643,6 +1646,60 @@ div.empty-table-wrapper {
 .checkboxGroup {
   div[class*="CheckboxGroup-module"] {
     font-size: var(--brand-font-size--default) !important;
+  }
+}
+
+.collaborator {
+  font-size: var(--brand-font-size--small);
+  display: flex;
+  gap: var(--spacing-01);
+  align-items: center;
+
+  .collaborator-initials {
+    display: flex;
+    gap: var(--spacing-01);
+
+    span {
+      background-color: #007cc1;
+      color: #ffff;
+      height: var(--spacing-05);
+      width: var(--spacing-05);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.MCP-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+}
+
+.info-alert-message {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-700);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  a {
+    font-size: var(--brand-font-size--20);
+    color: var(--brand-color-primary);
+    text-decoration: underline;
+    text-wrap: nowrap;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  span {
+    font-size: var(--brand-font-size--20);
+    color: var(--brand-color-text-light-slate);
+    text-wrap: nowrap;
+    cursor: pointer;
   }
 }
 

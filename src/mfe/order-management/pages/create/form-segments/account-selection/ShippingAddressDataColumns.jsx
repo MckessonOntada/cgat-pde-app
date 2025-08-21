@@ -1,11 +1,6 @@
 import React from 'react';
 import { RadioGroup } from '@mckesson/mcp-component-library';
-export const createColumns = (
-  t,
-  navigate,
-  selectedShippingAddress,
-  setSelectedShippingAddress
-) => [
+export const createColumns = (t, navigate, selectedShippingAddress, setSelectedShippingAddress, readOnly) => [
   {
     id: 'shippingAddressId',
     name: '',
@@ -22,7 +17,7 @@ export const createColumns = (
             id={`radio-button-shipping-address-${props.id}`}
             items={[
               {
-                isDisabled: false,
+                isDisabled: readOnly || false,
                 label: ' ',
                 value: props.id
               }
@@ -31,11 +26,7 @@ export const createColumns = (
             onOtherTextChange={() => {}}
             onSubRadioFieldChange={() => {}}
             radioBtnWidth="auto"
-            value={
-              selectedShippingAddress && selectedShippingAddress.id === props.id
-                ? props.id
-                : ' '
-            }
+            value={selectedShippingAddress && selectedShippingAddress.id === props.id ? props.id : ' '}
           />
         </span>
       );
@@ -48,9 +39,7 @@ export const createColumns = (
     sortable: true,
     sortKey: 'accountName',
     width: '25%',
-    cell: (props) => (
-      <span className={'MCP-table-cell'}> {props.accountName}</span>
-    )
+    cell: (props) => <span className={'MCP-table-cell'}> {props.accountName}</span>
   },
   {
     id: 'shippingAddress',
@@ -72,8 +61,6 @@ export const createColumns = (
     width: '25%',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    cell: (props) => (
-      <span className={'MCP-table-cell'}> {props.accountNumber}</span>
-    )
+    cell: (props) => <span className={'MCP-table-cell'}> {props.accountNumber}</span>
   }
 ];

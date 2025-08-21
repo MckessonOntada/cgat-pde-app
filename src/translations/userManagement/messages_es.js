@@ -171,6 +171,7 @@ export const UserManagementES = {
   ADMIN_MANAGEMENT: 'S_System Admin Permissions',
   MANAGE_PROVIDERS: 'S_Manage Providers',
   MANAGE_LINKED_ACCOUNTS: 'S_Manage Linked Accounts',
+  CREATE_NEW_ORDER: 'S_Create New Order',
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'S_Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'S_Allows user to login',
@@ -242,6 +243,8 @@ export const UserManagementES = {
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'S_Allows to Perform Delete action, Enable delete option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'S_Edit Orders',
   'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION': 'S_Allows user to edit the order, Enable Edit order option',
+  'ORDER_MANAGEMENT.DISCARD_ORDERS': 'S_Discard Orders',
+  'ORDER_MANAGEMENT.DISCARD_ORDERS.DESCRIPTION': 'S_Allows user to discard the order',
   'ORDER_MANAGEMENT.VIEW_ORDERS': 'S_View Orders',
   'ORDER_MANAGEMENT.VIEW_ORDERS.DESCRIPTION': 'S_Allows User to View Submitted orders, Enables submitted tab',
   'ORDER_MANAGEMENT.APPROVE_ORDERS': 'S_Approve Orders',
@@ -399,5 +402,16 @@ export const UserManagementES = {
   'invalid.csv.file.headers.missing': 'S_The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'S_Uploaded file is empty. Please upload a valid file.',
   'invalid.csv.file.columns.missing': 'S_The upload file is not valid. Required columns are missing.',
-  'message.noLeadingTrailingSpace': 'S_No leading or trailing spaces are allowed'
+  'message.noLeadingTrailingSpace': 'S_No leading or trailing spaces are allowed',
+  'CREATE_NEW_ORDER.CREATE_NEW_ORDER': 'S_Create New Order',
+  'CREATE_NEW_ORDER.THERAPY_SELECTION': 'S_Therapy Selection',
+  'CREATE_NEW_ORDER.THERAPY_SELECTION.DESCRIPTION': 'S_Allows user to select Therapy',
+  'CREATE_NEW_ORDER.ACCOUNT_SELECTION': 'S_Account Selection',
+  'CREATE_NEW_ORDER.ACCOUNT_SELECTION.DESCRIPTION': 'S_Allows user to select sold to and ship to account',
+  'CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS': 'S_Patient, Provider and Payer Information',
+  'CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS.DESCRIPTION': 'S_Allows user to add patient, provider and insurance details,',
+  'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS': 'S_Additional Details',
+  'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS.DESCRIPTION': 'S_Allows user to fill additional details and configured questionnaire.',
+  'CREATE_NEW_ORDER.SUBMIT_ORDER': 'S_Submit Order',
+  'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'S_Allows user to submit the order.'
 };

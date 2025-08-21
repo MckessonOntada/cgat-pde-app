@@ -19,7 +19,7 @@ import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getInitialValues, getValidationSchema } from './forms/validation-schema';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
@@ -32,8 +32,13 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
+import OrderAttestation from '../OrderAttestation';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
 
-const PatientDetails = () => {
+const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
   const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
@@ -46,6 +51,22 @@ const PatientDetails = () => {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
+
+  React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.PATIENT_DETAILS) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -150,29 +171,41 @@ const PatientDetails = () => {
     });
   };
 
+  const navigateToNextStage = (id) => {
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
+        state: {
+          ...locationState,
+          isEdit: false,
+          isApprover: isApprover
+        }
+      });
+    } else {
+      navigate(`${RoutePaths.pathOrderManagement}/${id}/additional-details`, {
+        state: {
+          ...locationState,
+          isEdit: false,
+          isApprover: isApprover
+        }
+      });
+    }
+  };
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType),
+    async ({ payload, skipDuplicateCheck, isDraft }) => {
+      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isDraft);
+    },
     {
       onSuccess: (result) => {
         const { id } = result;
-        if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-          navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
-            state: {
-              ...locationState,
-              isEdit: false,
-              isApprover: isApprover
-            }
-          });
+        if (isSelfAttested) {
+          navigateToNextStage(id);
+          setProvider(null);
         } else {
-          navigate(`${RoutePaths.pathOrderManagement}/${id}/additional-details`, {
-            state: {
-              ...locationState,
-              isEdit: false,
-              isApprover: isApprover
-            }
+          setAlert({
+            description: 'Order Saved In Draft Successfully',
+            type: 'success'
           });
         }
-        setProvider(null);
       },
       onError: ({ err: error, payload }) => {
         const statusCode = error?.response?.status;
@@ -225,7 +258,20 @@ const PatientDetails = () => {
       skipDuplicateCheck = true;
     }
     setInitialValues(form);
-    savePatientDetails({ payload, skipDuplicateCheck });
+    if (!isSelfAttested) {
+      showSaveAsDraftConfirm({
+        t,
+        onOk: () => {
+          savePatientDetails({ payload, skipDuplicateCheck, isDraft: true });
+        }
+      });
+    } else {
+      if (isDirty) {
+        savePatientDetails({ payload, skipDuplicateCheck });
+      } else {
+        navigateToNextStage(orderId);
+      }
+    }
   };
 
   const handleOnBackToOrders = () => {
@@ -270,7 +316,8 @@ const PatientDetails = () => {
     totalProviders
   } = useProvider({
     orderDetails,
-    query: providerQuery
+    query: providerQuery,
+    status: PROVIDER_STATUS.ACTIVE
   });
 
   React.useEffect(() => {
@@ -335,12 +382,24 @@ const PatientDetails = () => {
             }
           />
         }
-        controls={orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+        controls={
+          <div className="controls">
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
+          </div>
+        }
       />
 
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
-
+        {readOnly && (
+          <NotifyAlert
+            stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PATIENT_DETAILS ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
+          />
+        )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
@@ -351,203 +410,212 @@ const PatientDetails = () => {
           {({ values, dirty, setFieldValue }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
+              setIsSelfAttested(false);
             }, [values]);
             return (
               <Form>
+                {/* <div className={`${styles.wrapper} ${readOnly ? 'disabled-div' : ''}`}>  */}
                 <div className={styles.wrapper}>
-                  <div className="MCP-module-body">
-                    <div className="MCP-panel-container">
-                      <ModuleHeader
-                        heading={
-                          <div>
-                            <Heading as="h2">{t('orderManagement.patientDetails.patient_details')}</Heading>
-                          </div>
-                        }
-                        controls={
-                          <p className="form-instruction">
-                            <span className="required">*</span> {t('labels.required')}
-                          </p>
-                        }
-                      />
+                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                    <div className="MCP-module-body">
+                      <div className="MCP-panel-container">
+                        <ModuleHeader
+                          heading={
+                            <div>
+                              <Heading as="h2">{t('orderManagement.patientDetails.patient_details')}</Heading>
+                            </div>
+                          }
+                          controls={
+                            <p className="form-instruction">
+                              <span className="required">*</span> {t('labels.required')}
+                            </p>
+                          }
+                        />
 
-                      <FormRenderer sections={PatientSections(channelType, therapyConfig)} />
-                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
-                        <>
-                          <hr className="form-section-separator" />
-                          <ModuleHeader
-                            heading={
-                              <div>
-                                <Heading as="h2">{t('orderManagement.patientDetails.address_details')}</Heading>
-                              </div>
-                            }
-                            controls={
-                              <p className="form-instruction">
-                                <span className="required">*</span> {t('labels.required')}
-                              </p>
-                            }
-                          />
-                          <FormRenderer sections={AddressSections(channelType)} />
-                        </>
-                      )}
-
-                      {shouldShowIdentifierSection && (
-                        <>
-                          <hr className="form-section-separator" />
-                          <ModuleHeader
-                            heading={
-                              <div>
-                                <Heading as="h2">{t('orderManagement.patientDetails.identifier_details')}</Heading>
-                              </div>
-                            }
-                            controls={
-                              shouldShowRequiredLabel && (
-                                <p className="form-instruction">
-                                  <span className="required">*</span> {t('labels.required')}
-                                </p>
-                              )
-                            }
-                          />
-                          <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} />
-                        </>
-                      )}
-                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
-                        <React.Fragment>
-                          <hr className="form-section-separator" />
-                          <div className="MCP-module-body">
+                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly} />
+                        {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                          <>
+                            <hr className="form-section-separator" />
                             <ModuleHeader
-                              heading={<Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>}
+                              heading={
+                                <div>
+                                  <Heading as="h2">{t('orderManagement.patientDetails.address_details')}</Heading>
+                                </div>
+                              }
                               controls={
                                 <p className="form-instruction">
                                   <span className="required">*</span> {t('labels.required')}
                                 </p>
                               }
                             />
+                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly} />
+                          </>
+                        )}
 
-                            <div className="provider-details">
-                              <Field
-                                component={Components['multiSelectDropdown']}
-                                id={'patient-info-provider'}
-                                name={'providerId'}
-                                label={' '}
-                                isMultiSelect={false}
-                                placeholder={'Select Provider'}
-                                onChange={(value) => handleOnSelection(value, setFieldValue)}
-                                options={(Array.isArray(providerList) ? providerList : []).map((item) => ({
-                                  label: item.fullname,
-                                  labelDescription: item.detailedAddress,
-                                  value: item.id
-                                }))}
-                                value={provider?.id.toString()}
-                                variant={'async'}
-                                onSearch={setProviderQuery}
-                                recordsCountToEnableSearch={5}
-                                size="lg"
-                                fieldDisplayValue={CommonUtils.isNonEmptyObject(provider) ? provider : undefined}
-                                isAsyncLoading={isFetchingProviders}
-                                refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
-                                asyncRecordsFound={totalProviders}
-                              />
-                              {provider && (
-                                <div className="details-card">
-                                  <ModuleHeader
-                                    heading={
-                                      <Heading className="details-title" as="h3">
-                                        <EclipsesText str={provider.fullname} />
-                                      </Heading>
-                                    }
-                                    controls={
-                                      provider.isNewlyAdded && (
-                                        <span>
-                                          <Button
-                                            Icon={EditPencil}
-                                            variant="tertiary"
-                                            className="button-icon"
-                                            size="md"
-                                            type="button"
-                                            onClick={() => {
-                                              setIsEditing(true);
-                                              setShowAddProviderForm(true);
-                                            }}>
-                                            {t('userManagement.button.edit')}
-                                          </Button>
-                                        </span>
-                                      )
-                                    }
-                                  />
-
-                                  <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
-                                    <Tooltip body={provider.detailedAddress}>
-                                      <p className="detail-segment inline-text-overflow">
-                                        <EclipsesText str={provider.detailedAddress} maxLength={35} />
-                                      </p>
-                                    </Tooltip>
-                                    {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
-                                      const rawValue = provider[key];
-                                      const labelMap = {
-                                        dea: t('provider.deaNumber'),
-                                        npi: t('provider.npiNumber'),
-                                        phone: t('provider.phoneNumber'),
-                                        email: t('provider.emailId'),
-                                        tin: t('provider.tin')
-                                      };
-                                      const value =
-                                        key === 'phone' ? CommonUtils.formatPhoneNumber(rawValue) : key === 'tin' ? CommonUtils.formatTIN(rawValue) : rawValue;
-                                      console.log(labelMap[key], { value });
-                                      return (
-                                        <Tooltip key={key} body={value}>
-                                          <p className="detail-segment inline-text-overflow">
-                                            {labelMap[key]} : {!!value ? <EclipsesText str={value} maxLength={35} /> : '-'}
-                                          </p>
-                                        </Tooltip>
-                                      );
-                                    })}
-                                  </div>
+                        {shouldShowIdentifierSection && (
+                          <>
+                            <hr className="form-section-separator" />
+                            <ModuleHeader
+                              heading={
+                                <div>
+                                  <Heading as="h2">{t('orderManagement.patientDetails.identifier_details')}</Heading>
                                 </div>
-                              )}
-                            </div>
+                              }
+                              controls={
+                                shouldShowRequiredLabel && (
+                                  <p className="form-instruction">
+                                    <span className="required">*</span> {t('labels.required')}
+                                  </p>
+                                )
+                              }
+                            />
+                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly} />
+                          </>
+                        )}
+                        {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                          <React.Fragment>
+                            <hr className="form-section-separator" />
+                            <div className="MCP-module-body">
+                              <ModuleHeader
+                                heading={<Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>}
+                                controls={
+                                  <p className="form-instruction">
+                                    <span className="required">*</span> {t('labels.required')}
+                                  </p>
+                                }
+                              />
 
-                            <div className="styled-icon-button">
-                              {!showAddProviderForm && (
-                                <Button
-                                  Icon={PlusIcon}
-                                  variant="tertiary"
-                                  type="button"
-                                  onClick={() => {
-                                    setIsEditing(false);
-                                    setShowAddProviderForm(true);
-                                    setProvider(null);
-                                    setFieldValue('providerId', null);
-                                  }}
-                                  size="md">
-                                  {t('provider.btnAddProvider')}
-                                </Button>
-                              )}
-                              {showAddProviderForm && <div id="provider-form-portal" />}
-                              {showAddProviderForm &&
-                                portalTarget &&
-                                ReactDOM.createPortal(
-                                  <div className="inline-provider-form-wrapper">
-                                    <ProviderAddUpdateForm
-                                      setShowAddProviderForm={setShowAddProviderForm}
-                                      providerData={isEditing ? provider : []}
-                                      accountId={soldToAccountId}
-                                      onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
+                              <div className="provider-details">
+                                <Field
+                                  component={Components['multiSelectDropdown']}
+                                  id={'patient-info-provider'}
+                                  name={'providerId'}
+                                  label={' '}
+                                  isMultiSelect={false}
+                                  placeholder={'Select Provider'}
+                                  onChange={(value) => handleOnSelection(value, setFieldValue)}
+                                  options={(Array.isArray(providerList) ? providerList : []).map((item) => ({
+                                    label: item.fullname,
+                                    labelDescription: item.detailedAddress,
+                                    value: item.id
+                                  }))}
+                                  value={provider?.id.toString()}
+                                  variant={'async'}
+                                  onSearch={setProviderQuery}
+                                  recordsCountToEnableSearch={5}
+                                  size="lg"
+                                  fieldDisplayValue={CommonUtils.isNonEmptyObject(provider) ? provider : undefined}
+                                  isAsyncLoading={isFetchingProviders}
+                                  refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
+                                  asyncRecordsFound={totalProviders}
+                                  isReadOnly={readOnly}
+                                />
+                                {provider && (
+                                  <div className="details-card">
+                                    <ModuleHeader
+                                      heading={
+                                        <Heading className="details-title" as="h3">
+                                          <EclipsesText str={provider.fullname} />
+                                        </Heading>
+                                      }
+                                      controls={
+                                        provider.isNewlyAdded && (
+                                          <span>
+                                            <Button
+                                              Icon={EditPencil}
+                                              variant="tertiary"
+                                              className="button-icon"
+                                              size="md"
+                                              type="button"
+                                              onClick={() => {
+                                                setIsEditing(true);
+                                                setShowAddProviderForm(true);
+                                              }}>
+                                              {t('userManagement.button.edit')}
+                                            </Button>
+                                          </span>
+                                        )
+                                      }
                                     />
-                                  </div>,
-                                  portalTarget
+
+                                    <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start grid-justify-start">
+                                      <Tooltip body={provider.detailedAddress}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          <EclipsesText str={provider.detailedAddress} maxLength={35} />
+                                        </p>
+                                      </Tooltip>
+                                      {['dea', 'npi', 'phone', 'email', 'tin'].map((key) => {
+                                        const rawValue = provider[key];
+                                        const labelMap = {
+                                          dea: t('provider.deaNumber'),
+                                          npi: t('provider.npiNumber'),
+                                          phone: t('provider.phoneNumber'),
+                                          email: t('provider.emailId'),
+                                          tin: t('provider.tin')
+                                        };
+                                        const value =
+                                          key === 'phone'
+                                            ? CommonUtils.formatPhoneNumber(rawValue)
+                                            : key === 'tin'
+                                            ? CommonUtils.formatTIN(rawValue)
+                                            : rawValue;
+                                        return (
+                                          <Tooltip key={key} body={value}>
+                                            <p className="detail-segment inline-text-overflow">
+                                              {labelMap[key]} : {!!value ? <EclipsesText str={value} maxLength={35} /> : '-'}
+                                            </p>
+                                          </Tooltip>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
                                 )}
+                              </div>
+
+                              <div className="styled-icon-button">
+                                {!showAddProviderForm && (
+                                  <Button
+                                    Icon={PlusIcon}
+                                    variant="tertiary"
+                                    type="button"
+                                    onClick={() => {
+                                      setIsEditing(false);
+                                      setShowAddProviderForm(true);
+                                      setProvider(null);
+                                      setFieldValue('providerId', null);
+                                    }}
+                                    size="md">
+                                    {t('provider.btnAddProvider')}
+                                  </Button>
+                                )}
+                                {showAddProviderForm && <div id="provider-form-portal" />}
+                                {showAddProviderForm &&
+                                  portalTarget &&
+                                  ReactDOM.createPortal(
+                                    <div className="inline-provider-form-wrapper">
+                                      <ProviderAddUpdateForm
+                                        setShowAddProviderForm={setShowAddProviderForm}
+                                        providerData={isEditing ? provider : []}
+                                        accountId={soldToAccountId}
+                                        onProviderSaved={(newProvider) => handleProviderSaved(newProvider, setFieldValue)}
+                                      />
+                                    </div>,
+                                    portalTarget
+                                  )}
+                              </div>
                             </div>
-                          </div>
-                        </React.Fragment>
-                      )}
+                          </React.Fragment>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                    <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                  </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit">
+                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>
@@ -569,4 +637,5 @@ const PatientDetails = () => {
     </div>
   );
 };
-export default PatientDetails;
+// export default PatientDetails;
+export default withPermissions(PatientDetails, ORDER_STAGES.PATIENT_DETAILS);

@@ -24,8 +24,13 @@ import ModuleHeader from '@src/components/module-header';
 import { ORDER_STATUS } from '../../../orders/config';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { useDispatch } from 'react-redux';
+import OrderAttestation from '../OrderAttestation';
+import { ORDER_STAGES } from '../Constants';
+import Collaborator from '../Collaborator';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
+import { NotifyAlert } from '../OrderUtil';
 
-function TherapySelection() {
+function TherapySelection({ readOnly }) {
   const { t } = useTranslate();
   const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
@@ -47,6 +52,11 @@ function TherapySelection() {
   const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
+  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+  const [attestationError, setAttestationError] = useState('');
+  const handleConfirmChange = (checked) => {
+    setIsSelfAttested(checked);
+  };
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -109,6 +119,18 @@ function TherapySelection() {
       });
     }
   });
+  const isTherapyChanged = tradeDetails?.tradeName.trim() !== orderDetails?.tradeDetails?.tradeName.trim();
+  const navigateToNextStage = (id) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
+      state: {
+        ...locationState,
+        ...(prevSearchState && { __prevSearch: prevSearchState }),
+        isEdit: false,
+        isApprover: isApprover,
+        isTherapyChanged: isTherapyChanged
+      }
+    });
+  };
 
   const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
     async ({ orderId, payload }) => {
@@ -117,15 +139,7 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
-          state: {
-            ...locationState,
-            ...(prevSearchState && { __prevSearch: prevSearchState }),
-            isEdit: false,
-            isApprover: isApprover,
-            isTherapyChanged: Number(tradeDetails?.tradeName) !== Number(orderDetails?.tradeDetails.tradeName)
-          }
-        });
+        navigateToNextStage(id);
       },
       onError: (error) => {
         const statusCode = error?.response?.status;
@@ -148,20 +162,39 @@ function TherapySelection() {
       });
       return;
     }
-
+    if (!isSelfAttested) {
+      setAttestationError('Please acknowledge to Save and continue');
+      return false;
+    }
     if (tradeDetails) {
       const payload = {
         ndc: tradeDetails.ndc,
         tradeName: tradeDetails.tradeName,
         channelType: tradeDetails.channelType
       };
+
       if (isEdit || isApprover || isBack) {
-        updateTherapy({ orderId, payload });
+        if (isTherapyChanged) {
+          updateTherapy({ orderId, payload });
+        } else {
+          navigateToNextStage(orderId);
+        }
       } else {
         createNewOrder(payload);
       }
     }
   };
+
+  React.useEffect(() => {
+    const stage = orderDetails?.currentStage;
+    if (stage == null || isDirty) {
+      setIsSelfAttested(false);
+    } else if (stage !== ORDER_STAGES.THERAPY_SELECTION) {
+      setIsSelfAttested(true);
+    } else {
+      setIsSelfAttested(isSelfAttested);
+    }
+  }, [orderDetails?.currentStage, isDirty]);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -223,7 +256,10 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <ModuleHeader heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />} controls={null} />
+      <ModuleHeader
+        heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
+        controls={orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+      />
 
       <div className="MCP-module-body">
         <OrderStepper
@@ -231,9 +267,17 @@ function TherapySelection() {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
+        {readOnly && (
+          <NotifyAlert
+            stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.THERAPY_SELECTION ? true : false}
+            orderId={orderId}
+            setAlert={setAlert}
+          />
+        )}
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
-        <div className={styles.wrapper}>
+        <div className={`${styles.wrapper}`}>
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
               <CommonFilters
@@ -247,14 +291,21 @@ function TherapySelection() {
             {therapySelectionMessage && (
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
-            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} />
+            <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} readOnly={readOnly} />
+            <OrderAttestation
+              disabled={readOnly}
+              stage={ORDER_STAGES?.THERAPY_SELECTION}
+              onCheck={handleConfirmChange}
+              error={attestationError}
+              isChecked={isSelfAttested}
+            />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
+              <Button size="md" variant="primary" type="submit" disabled={readOnly} onClick={handleOnSubmit}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
@@ -269,6 +320,7 @@ function TherapySelection() {
               buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
               spTherapyConstants={TherapyDetailsConstantsForSP}
               heading={t('manageMaterial.drawer.details.heading')}
+              readOnly={readOnly}
             />
           )}
         </div>
@@ -283,4 +335,4 @@ function TherapySelection() {
     </div>
   );
 }
-export default TherapySelection;
+export default withPermissions(TherapySelection, ORDER_STAGES.THERAPY_SELECTION);

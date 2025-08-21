@@ -410,6 +410,7 @@ export const MessageEn = {
   'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.payer': 'You have changed Payer details. Do you still want to go back? Your changes will be discarded!',
   'message.discardChangesConfirmation': "You're about to discard all unsaved changes to this order. Are you sure you want to continue?",
   'messages.header.confirmation': 'Confirmation!',
   'messages.header.warning': 'Warning!',
@@ -949,7 +950,7 @@ export const MessageEn = {
   'labels.quantity': 'Quantity',
   'labels.refills': 'Refills',
   'labels.instructions': 'Instructions',
-  'labels.daySupply': 'Day Supply',
+  'labels.daySupply': 'Days Supply',
   'labels.signature': 'Signature',
 
   'labels.validationMessages.daySupplyRequired': 'Days Supply required.',
@@ -971,6 +972,26 @@ export const MessageEn = {
   'labels.prescriberName': 'Signed By',
   'labels.consent':
     'By signing below, I, as the prescribing physician, certify that the information provided on this form was completed by me or at my direction. I understand and agree that, as the Prescriber, I will comply with my state-specific prescription requirements such as e-prescribing, state-specific prescription form, fax language, etc. I verify that the patient and prescriber information contained in this enrollment form is complete and accurate to the best of my knowledge and I have intention to prescribe INSPIROLINK and/or refer my patient to an administration center, on my professional judgment of medical necessity.',
+
+  'attestation.therapySelection': 'I confirm that the therapy selection is accurate and this order is ready to move forward.',
+  'attestation.accountDetails': 'I confirm that the account information provided is correct and ready for the next step.',
+  'attestation.patientAndProviderDetails': 'I confirm that the patient and provider information is accurate and complete.',
+  'attestation.payerDetails': 'I confirm that the payer information is accurate and complete.',
+  'attestation.additionalDetails': 'I confirm that the additional details have been reviewed and are ready for final submission.',
+  'attestation.warning':
+    'Kindly review the information. To proceed, you may check the box to trigger the notification, or select "Save as Draft" to retain the order without sending.',
+  'button.caption.saveAsDraft': 'Save as Draft',
+  'labels.collaborators': 'Collaborators:',
+  'labels.summaryEditMessage': 'You do not have permission to edit this step. Please contact your Organization Administrator if you need to make changes.',
+  'captions.notifyUser': 'Notify User',
+  'captions.notifyUserAlert.accountSelection': 'Therapy has been selected. The order has been forwarded to the assigned user for account selection.',
+  'captions.notifyUserAlert.patientAndProviderDetails':
+    'Account details have been saved. The order has been forwarded to the assigned user for patient details.',
+  'captions.notifyUserAlert.payerDetails': 'Patient information has been submitted. The order has been forwarded to the assigned user for additional details.',
+  'captions.notifyUserAlert.additionalDetails':
+    'Patient information has been submitted. The order has been forwarded to the assigned user for additional details.',
+  'captions.notifyUserAlert.orderSummary':
+    'Additional details have been completed. The order has been sent to the assigned user for review and final submission.',
   'dropdown.placeholder.search': 'Search',
   'dropdown.helperText': 'Select an option',
   'label.uploadCrosswalk.info': 'For filling up the crosswalk template, please refer to the instruction file and SP Therapy Info and SAP Therapy Info.',
@@ -980,5 +1001,7 @@ export const MessageEn = {
   'label.daysSupply': 'Days Supply',
   'label.refill': 'Refills',
   'label.instructions': 'Instructions',
-  'label.acknowledgementInformationIsCorrect': 'All the above information is correct.'
+  'label.acknowledgementInformationIsCorrect': 'All the above information is correct.',
+  'control.notifyUser': 'Notify User',
+  'messages.notifyUser': 'Notification mail has been sent successfully to the authorized user.'
 };
