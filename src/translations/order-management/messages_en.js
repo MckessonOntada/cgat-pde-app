@@ -406,6 +406,7 @@ export const MessageEn = {
   'labels.description.finalDelivery': 'Order is delivered to your specified address',
 
   'messages.confirmation.discardheader': 'Discard Changes',
+  'messages.confirmation.discardUnsavedOrder': 'You have changed order details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.account': 'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',

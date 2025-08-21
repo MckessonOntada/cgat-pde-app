@@ -39,6 +39,8 @@ import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
 import { showAlert } from '@src/store/reducer/alertReducer';
+import { useDispatch } from 'react-redux';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -91,6 +93,7 @@ function AdditionalDetails({ readOnly }) {
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+  const dispatch = useDispatch();
 
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
@@ -259,8 +262,6 @@ function AdditionalDetails({ readOnly }) {
     }
   });
 
-  React.useEffe;
-
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
@@ -326,6 +327,7 @@ function AdditionalDetails({ readOnly }) {
       return;
     }
     setAlert({ ...alertState });
+    return () => dispatch(hasUnsavedChanges(false));
   }, []);
 
   const prepareQuestionnaire = (result) => {
@@ -921,6 +923,7 @@ function AdditionalDetails({ readOnly }) {
             useEffect(() => {
               setIsDirty(dirty);
               setStoredValue(values);
+              dispatch(hasUnsavedChanges(dirty));
               if (dirty) {
                 setIsSelfAttested(false);
               }

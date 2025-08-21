@@ -37,6 +37,8 @@ import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
+import { useDispatch } from 'react-redux';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -52,7 +54,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isDirty, setIsDirty] = React.useState(false);
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [isSelfAttested, setIsSelfAttested] = React.useState(false);
-
+  const dispatch = useDispatch();
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
   };
@@ -140,6 +142,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       return;
     }
     setAlert({ ...alertState });
+    return () => dispatch(hasUnsavedChanges(false));
   }, []);
 
   const openDuplicateConfirmationModal = (payload) => {
@@ -410,6 +413,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           {({ values, dirty, setFieldValue }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
+              dispatch(hasUnsavedChanges(isDirty));
               setIsSelfAttested(false);
             }, [values]);
             return (

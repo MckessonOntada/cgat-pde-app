@@ -98,7 +98,7 @@ const SecondaryHeader = ({ navLinks }) => {
       state.title = t('messages.confirmation.discardheader');
       state.body = (
         <div className="MCP-modal-body">
-          <p>{t('messages.confirmation.therapy')}</p>
+          <p>{t('messages.confirmation.discardUnsavedOrder')}</p>
         </div>
       );
       state.footer = (
