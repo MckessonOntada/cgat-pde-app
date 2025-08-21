@@ -245,8 +245,6 @@ function TherapySelection({ readOnly }) {
     setTradeDetails(details);
   };
 
-  React.useEffect(() => {}, [tradeDetails]);
-
   return (
     <div className="MCP-module-wrapper">
       {(isSaving || isFetching || isUpdating) && <Loader type={'screen'} />}

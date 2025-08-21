@@ -91,7 +91,7 @@ const SecondaryHeader = ({ navLinks }) => {
   }, [navLinks, location.pathname]);
 
   const state = useSelector((state) => state.orderState);
-  console.log(state);
+
   const handleOnClick = (tab) => {
     if (state.hasUnsavedChanges) {
       const state = {};
