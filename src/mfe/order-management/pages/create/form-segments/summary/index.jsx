@@ -240,12 +240,21 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     .MCP-CardContainer > div{
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    .price-wrapper {
+      justify-content: flex-start !important;
+    }
+    .price-wrapper .fieldValue.normal {
+      justify-content: flex-start !important;
+    }
     #summary-alert-container{
       display: none !important;
     }
     .alert-container{
       display: none !important;
-    }`
+    }
+      .alert-container-print{
+        display: none !important;
+      }`
   );
 
   const { data: simulationData = {} } = useQuery({
@@ -892,9 +901,9 @@ const Summary = ({ readOnly, checkEditPermission }) => {
         {readOnly && status === ORDER_STATUS.IN_DRAFT && (
           <NotifyAlert stage={ORDER_STAGES.ORDER_SUMMARY} OnEdit={false} orderId={orderId} setAlert={setAlert} />
         )}
-        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {alert && <Alert className="alert-container-print" {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
-          <div className="">
+          <div className="alert-container-print">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
                 <Alert key={`${item.id}`} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
