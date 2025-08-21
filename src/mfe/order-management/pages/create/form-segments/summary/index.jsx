@@ -262,7 +262,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: isSpOrder ? false : !status ? false : !(status === ORDER_STATUS.REJECTED || status === ORDER_STATUS.SUBMITTED || status === 'DELETED'),
+    enabled: isSpOrder || readOnly ? false : !status ? false : !(status === ORDER_STATUS.REJECTED || status === ORDER_STATUS.SUBMITTED || status === 'DELETED'),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
