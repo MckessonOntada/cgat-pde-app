@@ -106,9 +106,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
           groupedPermissions.ORGANIZATION_MANAGEMENT[permission] = permission;
         } else if (
           [
-            'MANAGE_ORDERS',
-            'ADD_ORDERS',
-            'EDIT_ORDERS',
+            'UPLOAD_ORDER_DOCUMENTS',
             'VIEW_ORDERS',
             'APPROVE_ORDERS',
             'CANCEL_ORDER',

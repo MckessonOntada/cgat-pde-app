@@ -239,8 +239,8 @@ export const UserManagementEN = {
   'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS': 'Manage Linked account',
   'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS.DESCRIPTION': 'Allows org admin to Link provider with the account within the organization ',
 
-  'ORDER_MANAGEMENT.MANAGE_ORDERS': 'Manage Orders',
-  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'Allows to Perform Delete action, Enable delete option',
+  'ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS': 'Upload Order documents',
+  'ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS.DESCRIPTION': 'Allows to Upload Order Documents, Enable Upload Documents option',
   'ORDER_MANAGEMENT.REVIEW_ORDER': 'Review Order',
   'ORDER_MANAGEMENT.REVIEW_ORDER.DESCRIPTION': 'Allow physician user to review the order',
   'ORDER_MANAGEMENT.DISCARD_ORDER': 'Discard Order',
