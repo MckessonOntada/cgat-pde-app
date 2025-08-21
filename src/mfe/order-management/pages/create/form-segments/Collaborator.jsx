@@ -1,6 +1,6 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React from 'react';
-
+import { Tooltip } from '@mckesson/mcp-component-library';
 const Collaborator = ({ collaborators }) => {
   const { t } = useTranslate();
   const allUsers = Object.values(collaborators || {})
@@ -15,9 +15,15 @@ const Collaborator = ({ collaborators }) => {
   }, []);
 
   const initials = uniqueUsers.map((user) => {
-    const first = user?.name?.firstName?.[0]?.toUpperCase() || '';
-    const last = user?.name?.lastName?.[0]?.toUpperCase() || '';
-    return first + last;
+    const initials = user.name
+      .split(/[ ,]+/)
+      .filter(Boolean)
+      .map((word) => word[0].toUpperCase())
+      .join('');
+    return {
+      initials,
+      name: user.name
+    };
   });
 
   return (
@@ -26,7 +32,9 @@ const Collaborator = ({ collaborators }) => {
         <p>{t('labels.collaborators')}</p>
         <div className="collaborator-initials">
           {initials.map((init, idx) => (
-            <span key={idx}>{init}</span>
+            <Tooltip key={idx} body={init.name}>
+              <span>{init.initials}</span>
+            </Tooltip>
           ))}
         </div>
       </div>

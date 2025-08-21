@@ -1658,6 +1658,7 @@ div.empty-table-wrapper {
   .collaborator-initials {
     display: flex;
     gap: var(--spacing-01);
+    cursor: pointer;
 
     span {
       background-color: #007cc1;
