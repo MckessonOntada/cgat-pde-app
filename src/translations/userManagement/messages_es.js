@@ -239,8 +239,8 @@ export const UserManagementES = {
   'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS': 'S_Manage Linked account',
   'MANAGE_LINKED_ACCOUNTS.MANAGE_LINKED_ACCOUNTS.DESCRIPTION': 'S_Allows org admin to Link provider with the account within the organization ',
 
-  'ORDER_MANAGEMENT.MANAGE_ORDERS': 'S_Manage Orders',
-  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'S_Allows to Perform Delete action, Enable delete option',
+  'ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS': 'S_Upload Order documents',
+  'ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS.DESCRIPTION': 'S_Allows to Upload Order Documents, Enable Upload Documents option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'S_Edit Orders',
   'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION': 'S_Allows user to edit the order, Enable Edit order option',
   'ORDER_MANAGEMENT.DISCARD_ORDERS': 'S_Discard Orders',

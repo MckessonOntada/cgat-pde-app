@@ -277,10 +277,12 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
-    options.push({
-      label: translate(`labels.orderActions.uploadDocument`),
-      value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
-    });
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS)) {
+      options.push({
+        label: translate(`labels.orderActions.uploadDocument`),
+        value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
+      });
+    }
   }
 
   return (
