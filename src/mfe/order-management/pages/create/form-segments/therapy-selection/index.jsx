@@ -56,6 +56,7 @@ function TherapySelection({ readOnly }) {
   const [attestationError, setAttestationError] = useState('');
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
+    setAttestationError('');
   };
 
   React.useEffect(() => {
