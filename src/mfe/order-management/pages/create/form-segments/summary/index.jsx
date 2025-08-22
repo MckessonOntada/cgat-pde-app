@@ -1549,7 +1549,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                   </div>
                 )}
               </div>
-              {showControls && (
+              {showControls && !readOnly && (
                 <div className="MCP-module-body agreement-checkbox-control">
                   <CheckboxGroup
                     id={'default'}
