@@ -40,7 +40,7 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { Form, Formik } from 'formik';
 import { BUTTON_ACTIONS } from './constants';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsValidationSchema } from './EditConfig';
 import Collaborator from '../Collaborator';
@@ -256,6 +256,9 @@ const Summary = ({ readOnly, checkEditPermission }) => {
         display: none !important;
       }`
   );
+
+  const state = useSelector((state) => state.orderState);
+  console.log(state);
 
   const { data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],

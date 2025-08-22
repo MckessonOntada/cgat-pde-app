@@ -138,10 +138,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   }, [orderDetails]);
 
   useEffect(() => {
-    if (!alertState) {
-      return;
+    if (alertState) {
+      setAlert({ ...alertState });
     }
-    setAlert({ ...alertState });
     return () => dispatch(hasUnsavedChanges(false));
   }, []);
 
@@ -413,7 +412,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           {({ values, dirty, setFieldValue }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
-              dispatch(hasUnsavedChanges(isDirty));
+              dispatch(hasUnsavedChanges(dirty));
+            }, [dirty]);
+            React.useEffect(() => {
               setIsSelfAttested(false);
             }, [values]);
             return (

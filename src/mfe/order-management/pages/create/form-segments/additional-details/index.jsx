@@ -39,7 +39,7 @@ import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
 import { showAlert } from '@src/store/reducer/alertReducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 const INITIAL_VALUES = {
@@ -323,11 +323,12 @@ function AdditionalDetails({ readOnly }) {
   );
 
   useEffect(() => {
-    if (!alertState) {
-      return;
+    if (alertState) {
+      setAlert({ ...alertState });
     }
-    setAlert({ ...alertState });
-    return () => dispatch(hasUnsavedChanges(false));
+    return () => {
+      dispatch(hasUnsavedChanges(false));
+    };
   }, []);
 
   const prepareQuestionnaire = (result) => {
@@ -793,6 +794,7 @@ function AdditionalDetails({ readOnly }) {
       } else {
         navigateToNextStage(orderId);
       }
+      dispatch(hasUnsavedChanges(false));
     }
   };
 
@@ -926,7 +928,12 @@ function AdditionalDetails({ readOnly }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, errors }) => {
+          {({ dirty, values, errors, touched }) => {
+            React.useEffect(() => {
+              const isAnyFieldTouched = Object.keys(touched).length > 0;
+              dispatch(hasUnsavedChanges(isAnyFieldTouched && dirty));
+            }, [touched]);
+
             useEffect(() => {
               setIsDirty(dirty);
               setStoredValue(values);
