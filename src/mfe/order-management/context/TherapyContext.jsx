@@ -68,8 +68,8 @@ export const TherapyProvider = ({ children }) => {
 
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
+        totalElements,
+        totalPages
       }));
     },
     refetchOnWindowFocus: false

@@ -72,8 +72,8 @@ export const QuestionnaireProvider = ({ children }) => {
       const { totalElements, totalPages, content: data } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
+        totalElements,
+        totalPages
       }));
       return data;
     },

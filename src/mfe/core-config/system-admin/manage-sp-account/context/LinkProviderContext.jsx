@@ -66,8 +66,8 @@ export const LinkProviderProvider = ({ children }) => {
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
+        totalElements,
+        totalPages
       }));
       return data;
     },
