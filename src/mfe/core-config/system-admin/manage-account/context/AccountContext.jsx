@@ -89,8 +89,8 @@ export const AccountProvider = ({ children }) => {
       const { content: data, totalElements, totalPages } = res.data;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
+        totalElements,
+        totalPages
       }));
       return data;
     },

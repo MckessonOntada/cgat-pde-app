@@ -62,8 +62,8 @@ export const OrgProvider = ({ children }) => {
 
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          ...(totalElements && { totalElements }),
-          ...(totalPages && { totalPages })
+          totalElements,
+          totalPages
         }));
 
         return content;

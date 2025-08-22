@@ -103,8 +103,8 @@ export const UserProvider = ({ children }) => {
 
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          ...(totalElements && { totalElements }),
-          ...(totalPages && { totalPages })
+          totalElements,
+          totalPages
         }));
 
         return data;

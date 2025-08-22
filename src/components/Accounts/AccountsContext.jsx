@@ -91,15 +91,11 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       if (response) {
         const { content, totalElements, totalPages } = response.data;
 
-        setPaginationConfig((prevConfig) => {
-          if (totalElements) {
-            prevConfig.totalElements = totalElements;
-          }
-          if (totalPages) {
-            prevConfig.totalPages = totalPages;
-          }
-          return prevConfig;
-        });
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
+          totalElements,
+          totalPages
+        }));
 
         return content;
       }

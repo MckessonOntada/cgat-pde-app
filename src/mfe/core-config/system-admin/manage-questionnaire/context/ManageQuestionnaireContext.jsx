@@ -100,8 +100,8 @@ export const ManageQuestionnaireProvider = ({ children }) => {
 
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
+        totalElements,
+        totalPages
       }));
       return data;
     },
@@ -125,8 +125,8 @@ export const ManageQuestionnaireProvider = ({ children }) => {
       const { content: data, totalElements, totalPages } = res.data;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
+        totalElements,
+        totalPages
       }));
       return data;
     },
@@ -151,8 +151,8 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         const { content: data, totalElements, totalPages } = res.data;
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          ...(totalElements && { totalElements }),
-          ...(totalPages && { totalPages })
+          totalElements,
+          totalPages
         }));
         return data;
       }

@@ -252,9 +252,12 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     .alert-container{
       display: none !important;
     }
-      .alert-container-print{
-        display: none !important;
-      }`
+    .alert-container-print{
+      display: none !important;
+    }
+    .price-wrapper .fieldName {
+      justify-content: flex-start !important;
+    }`
   );
 
   const { data: simulationData = {} } = useQuery({
