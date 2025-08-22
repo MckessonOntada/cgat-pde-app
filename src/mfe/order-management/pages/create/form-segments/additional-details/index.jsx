@@ -907,7 +907,14 @@ function AdditionalDetails({ readOnly }) {
 
       <div className="MCP-module-body">
         <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
-        {readOnly && <NotifyAlert stage={ORDER_STAGES.ADDITIONAL_DETAILS} orderId={orderId} setAlert={setAlert} />}
+        {readOnly && (
+          <NotifyAlert
+            OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ADDITIONAL_DETAILS ? true : false}
+            stage={ORDER_STAGES.ADDITIONAL_DETAILS}
+            orderId={orderId}
+            setAlert={setAlert}
+          />
+        )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
