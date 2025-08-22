@@ -980,7 +980,7 @@ export const MessageEn = {
   'attestation.payerDetails': 'I confirm that the payer information is accurate and complete.',
   'attestation.additionalDetails': 'I confirm that the additional details have been reviewed and are ready for final submission.',
   'attestation.warning':
-    'Kindly review the information. To proceed, you may check the box to trigger the notification, or select "Save as Draft" to retain the order without sending.',
+    ' Please review and confirm the information by checking the box to trigger the notification, or click "Save as Draft" to retain the order without sending.',
   'button.caption.saveAsDraft': 'Save as Draft',
   'labels.collaborators': 'Collaborators:',
   'labels.summaryEditMessage': 'You do not have permission to edit this step. Please contact your Organization Administrator if you need to make changes.',
