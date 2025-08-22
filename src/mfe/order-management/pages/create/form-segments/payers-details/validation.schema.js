@@ -102,5 +102,6 @@ export const getBasePharmacyInsuranceValues = () => ({
 });
 
 export const baseValues = {
+  insuranceDetails: null,
   payerDetailsRequired: ''
 };

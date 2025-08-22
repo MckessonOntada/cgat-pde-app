@@ -40,6 +40,7 @@ import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
 function Payer({ readOnly, hasPermission }) {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -146,8 +147,38 @@ function Payer({ readOnly, hasPermission }) {
   }, [isSecondaryMedicalInsuranceOpen, isSecondaryPharmacyInsuranceOpen, isPayerDetailsRequired]);
 
   const handleOnBack = () => {
-    const prevSearch = locationState?.__prevSearch || '';
-    navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    const navigateFn = () => {
+      const prevSearch = locationState?.__prevSearch || '';
+      navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+    };
+    if (isDirty) {
+      const state = {};
+      state.title = t('messages.confirmation.discardheader');
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>{t('messages.confirmation.payer')}</p>
+        </div>
+      );
+      state.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            {t('orgManagement.button.cancel')}
+          </Button>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              dispatch(closeModal());
+              navigateFn();
+            }}>
+            {t('orgManagement.button.OK')}
+          </Button>
+        </div>
+      );
+      dispatch(openModal(state));
+    } else {
+      navigateFn();
+    }
   };
 
   const handleOnBackButtonClick = () => {
@@ -370,10 +401,10 @@ function Payer({ readOnly, hasPermission }) {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
-          {({ setValues, values, errors, setTouched, setErrors, setFieldValue, dirty }) => {
+          {({ setValues, values, touched, setTouched, setErrors, setFieldValue, dirty, ...rest }) => {
             React.useEffect(() => {
-              setIsDirty(dirty);
               dispatch(hasUnsavedChanges(dirty));
+              setIsDirty(dirty);
               if (dirty) {
                 setIsSelfAttested(false);
               }
@@ -462,7 +493,6 @@ function Payer({ readOnly, hasPermission }) {
 
             return (
               <Form>
-                {/* <div className={`MCP-module-body ${readOnly ? 'disabled-div' : ''}`}> */}
                 <div className="MCP-module-body">
                   <fieldset className="MCP-fieldset" disabled={readOnly}>
                     <div className="MCP-CardContainer">
