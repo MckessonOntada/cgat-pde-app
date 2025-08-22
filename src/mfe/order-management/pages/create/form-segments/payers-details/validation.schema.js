@@ -40,7 +40,9 @@ export const getMedicalInsuranceSchema = (key, t) => ({
         t('messages.invalidRelation')
       ),
     relation: Yup.string().when('relationshipToPatient', {
-      is: (val) => val === 'OTHER',
+      is: (val) => {
+        return val?.toUpperCase() === 'OTHER';
+      },
       then: (schema) => schema.required(t('labels.enterRelation')),
       otherwise: (schema) => schema.notRequired()
     }),
@@ -86,6 +88,7 @@ export const getBaseMedicalInsuranceValues = () => ({
   policyHolderLastName: '',
   dateOfBirth: '',
   relationshipToPatient: '',
+  relation: '',
   medicalCardFront: null,
   medicalCardBack: null
 });
