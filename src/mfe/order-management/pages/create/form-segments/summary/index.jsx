@@ -45,6 +45,7 @@ import { additionalDetailsValidationSchema, getUpdateFormConfig, patientDetailsV
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showEditAlert } from '../OrderUtil';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 const Summary = ({ readOnly, checkEditPermission }) => {
   const { t } = useTranslate();
@@ -94,6 +95,10 @@ const Summary = ({ readOnly, checkEditPermission }) => {
       });
     }
   }, [orderDetails]);
+
+  React.useEffect(() => {
+    return () => dispatch(hasUnsavedChanges(false));
+  }, []);
 
   React.useEffect(() => {
     if (isError) {
@@ -481,6 +486,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
           size="md"
           variant="primary"
           onClick={() => {
+            dispatch(hasUnsavedChanges(false));
             if (action === 'back') {
               dispatch(closeModal());
               const prevSearch = locationState?.__prevSearch || '';
@@ -556,6 +562,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
           {({ dirty, values }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
+              dispatch(hasUnsavedChanges(dirty));
             }, [dirty, values]);
             return (
               <Form>
