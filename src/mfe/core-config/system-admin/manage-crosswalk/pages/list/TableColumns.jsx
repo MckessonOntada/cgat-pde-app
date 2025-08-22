@@ -82,7 +82,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.FORMULATION,
-      name: t('labels.formulation'),
+      name: t('labels.productForm'),
       minWidth: '130px',
       cell: (props) => <EclipsesTextcss str={props?.formulation?.trim() || '-'} />
     },

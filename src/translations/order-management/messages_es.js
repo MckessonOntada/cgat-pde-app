@@ -152,7 +152,7 @@ export const MessageEs = {
   'controls.placeholder.reviewTabSearchBox': 'S_Search by Order ID, Patient name, Therapy',
   'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'S_Search by Account name or Number',
-  'controls.placeholder.therapySelection.search': 'S_Search Therapy, Number, NDC, Formulation, Dosage...',
+  'controls.placeholder.therapySelection.search': 'S_Search Therapy, Number, NDC, Product Form, Dosage...',
   'controls.placeholder.material.search': 'S_Search by Name, NDC, Material Number...',
   'controls.placeholder.Accounts.search': 'S_Search by Account Name, NDC, UDI...',
   'controls.placeholder.Catalogs.search': 'S_Search by Catalog Name, NDC, UDI...',

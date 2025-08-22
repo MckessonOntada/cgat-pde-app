@@ -5,7 +5,7 @@ export const SystemConfigurationES = {
   'manageMaterial.breadcrumbs.systemConfiguration': 'S_System Configuration',
   'manageMaterial.breadcrumbs.manageMaterial': 'S_Manage Material',
   // Filters
-  'manageMaterial.filters.searchPlaceholder': 'S_Search by Therapy, NDC, Generic Name, Formulation, Dosage...',
+  'manageMaterial.filters.searchPlaceholder': 'S_Search by Therapy, NDC, Generic Name, Product Form, Dosage...',
   // Table
   'manageMaterial.table.materialNumber': 'S_Material Number',
   'manageMaterial.table.materialDescription': 'S_Material Description',

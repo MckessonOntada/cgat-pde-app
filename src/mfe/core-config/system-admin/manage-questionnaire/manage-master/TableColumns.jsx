@@ -142,7 +142,7 @@ export const getColumnsByEntityType = ({
         },
         {
           id: 'formulation',
-          name: t('labels.formulation'),
+          name: t('labels.productForm'),
           selector: (row) => row.formulation || '',
           maxWidth: '200px',
           sortable: false,
