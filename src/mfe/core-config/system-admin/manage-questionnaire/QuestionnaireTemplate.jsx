@@ -28,7 +28,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview, readOnly }
     (typeof config === 'object' && !Array.isArray(config) && !config.hasOwnProperty('questions')) ||
     (typeof config !== 'object' && !Array.isArray(config))
   ) {
-    return <div>No preview</div>;
+    return null;
   }
 
   const getControl = (controlConfig, id, differentiator) => {
