@@ -277,7 +277,7 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS)) {
+    if (status === ORDER_STATUS.SUBMITTED && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS)) {
       options.push({
         label: translate(`labels.orderActions.uploadDocument`),
         value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT

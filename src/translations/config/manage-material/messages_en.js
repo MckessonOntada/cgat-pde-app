@@ -6,7 +6,7 @@ export const SystemConfigurationEN = {
   'manageMaterial.breadcrumbs.systemConfiguration': 'System Configuration',
   'manageMaterial.breadcrumbs.manageMaterial': 'Manage Material',
   // Filters
-  'manageMaterial.filters.searchPlaceholder': 'Search by Therapy, NDC, Generic Name, Formulation, Dosage...',
+  'manageMaterial.filters.searchPlaceholder': 'Search by Therapy, NDC, Generic Name, Product Form, Dosage...',
   // Table
   'manageMaterial.table.materialNumber': 'Material Number',
   'manageMaterial.table.materialDescription': 'Material Description',
