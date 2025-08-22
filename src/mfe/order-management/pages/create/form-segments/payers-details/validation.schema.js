@@ -1,6 +1,13 @@
 import * as Yup from 'yup';
 import { PATIENT_RELATIONSHIP } from './payer-details.config';
-import { ALPHA_NUMERIC, ALPHABETIC_FOR_NAME, NUMBER_REGEX, PHONE_REGEX, RX_SYMBOLS_ALLOWED } from '@src/components/form/ValidationRegExp';
+import {
+  ALPHA_NUMERIC,
+  ALPHABETIC_FOR_NAME,
+  ALPHABETIC_WITH_SPACE,
+  NUMBER_REGEX,
+  PHONE_REGEX,
+  RX_SYMBOLS_ALLOWED
+} from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 
 export const getMedicalInsuranceSchema = (key, t) => ({
@@ -39,13 +46,15 @@ export const getMedicalInsuranceSchema = (key, t) => ({
         }),
         t('messages.invalidRelation')
       ),
-    relation: Yup.string().when('relationshipToPatient', {
-      is: (val) => {
-        return val?.toUpperCase() === 'OTHER';
-      },
-      then: (schema) => schema.required(t('labels.enterRelation')),
-      otherwise: (schema) => schema.notRequired()
-    }),
+    relation: Yup.string()
+      .matches(ALPHABETIC_WITH_SPACE, t('messages.onlyAlpha'))
+      .when('relationshipToPatient', {
+        is: (val) => {
+          return val?.toUpperCase() === 'OTHER';
+        },
+        then: (schema) => schema.required(t('labels.enterRelation')),
+        otherwise: (schema) => schema.notRequired()
+      }),
     medicalCardFront: Yup.mixed().nullable(),
     medicalCardBack: Yup.mixed().nullable()
   })
