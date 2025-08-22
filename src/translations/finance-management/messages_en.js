@@ -330,6 +330,6 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.pending-payments': 'back to schedule payments details page',
   'paymentInvoices.Details.pending-payment-listing': 'back to schedule payments  page',
   'paymentInvoices.instruction.5040.text':
-    'InspiroLink does not support payments for certain accounts as per contract terms. Please refer to your contract documentation or contact customer support at {contact_no} for assistance.',
+    'InspiroLink does not support payments for certain manufacturer programs. Please contact customer support at {contact_no} for assistance.',
   'paymentInvoices.invoice.count.text': 'You can select upto 20 Invoices only'
 };
