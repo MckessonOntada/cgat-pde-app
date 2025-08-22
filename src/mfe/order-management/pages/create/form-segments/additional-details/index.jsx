@@ -39,7 +39,7 @@ import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
 import { showAlert } from '@src/store/reducer/alertReducer';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
 const INITIAL_VALUES = {
