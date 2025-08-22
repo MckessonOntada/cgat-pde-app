@@ -59,6 +59,10 @@
       li {
         border-right: unset;
 
+        button {
+          cursor: pointer;
+        }
+
         &:first-of-type {
           padding-left: 0px;
         }
