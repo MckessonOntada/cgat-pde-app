@@ -258,6 +258,9 @@ const CreateApproverGroup = () => {
                         pillsLabels={values.approverUsers.map((item) => ({ ...item, id: item.value, labelText: item.label }))}
                         pillsCount={5}
                         ispillsVisible={true}
+                        clearAllSelectedValues={() => {
+                          setFieldValue('approverUsers', []);
+                        }}
                         onChange={(value) => {
                           const changedValues = value.filter((item) => item.isChecked);
                           if (CommonUtils.isNonEmptyArray(changedValues) && !CommonUtils.areArraysUnique(changedValues, values.approverUsers))

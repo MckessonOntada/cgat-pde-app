@@ -85,6 +85,9 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
         isRequired: true,
         isMultiSelect: true,
         placeholder: translationFn('dropdown.placeholder.search'),
+        clearAllSelectedValues: () => {
+          setFieldValue('diagnosisCode', []);
+        },
         onChange: (value) => {
           const changedValues = value.filter((item) => item.isChecked);
           if (CommonUtils.isNonEmptyArray(changedValues) && !areArraysEqual(changedValues, formValues.diagnosisCode))
