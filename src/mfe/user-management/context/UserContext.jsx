@@ -60,7 +60,7 @@ export const UserProvider = ({ children }) => {
 
   const requestParams = useMemo(() => {
     let statusArray = [];
-    if (tab === USER_TABS.USERS) {
+    if (tab === USER_TABS.PENDING_REQUESTS) {
       if (filterConfig?.status === 'all') {
         statusArray = [UserProvisioningStatusEnum.PENDING, UserProvisioningStatusEnum.REJECTED];
       } else if (filterConfig?.status) {
