@@ -638,7 +638,7 @@ function AdditionalDetails({ readOnly }) {
         if (!spTherapyConfig || !spTherapyConfig.consentPolicy) {
           setAlert({
             type: 'error',
-            description: t('message.additionalDetails.missingTerms')
+            description: t('message.additionalDetails.missingPrescriptionDetails')
           });
         }
 
@@ -656,12 +656,12 @@ function AdditionalDetails({ readOnly }) {
       if (Array.isArray(variantsData) && variantsData.length === 0 && CommonUtils.isNonEmptyObject(orderDetails)) {
         showAlert({
           type: 'error',
-          description: t('message.additionalDetails.missingTerms')
+          description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       } else if (!orderDetails.spTherapyConfig || !orderDetails.spTherapyConfig?.consentPolicy) {
         showAlert({
           type: 'error',
-          description: t('message.additionalDetails.missingTerms')
+          description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       }
     }
