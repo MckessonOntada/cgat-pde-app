@@ -249,10 +249,17 @@ export const getColumnsByEntityType = ({
           id: 'checkbox',
           name:
             entityData?.length > 0
-              ? renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, entityData, 'id', paginationConfig, selectedRows, setSelectedRows)
+              ? renderTableCheckBox(
+                  { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+                  entityData,
+                  'catalog_id',
+                  paginationConfig,
+                  selectedRows,
+                  setSelectedRows
+                )
               : null,
           sortable: false,
-          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedRows, setSelectedRows),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'catalog_id', paginationConfig, selectedRows, setSelectedRows),
           selector: (row) => row.MRN,
           width: '50px'
         },
