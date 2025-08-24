@@ -1022,7 +1022,7 @@ function AdditionalDetails({ readOnly }) {
   );
 }
 
-const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOnRemoveDocument, handleOnDocumentChange, readOnly }) => {
+const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, onRemoveDocument, onDocumentChange, readOnly }) => {
   if (isLoading)
     return (
       <div>
@@ -1036,8 +1036,8 @@ const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, handleOn
       <div className="MCP-module-body">
         <div className="">
           <QuestionnaireTemplate
-            onRemoveDocument={handleOnRemoveDocument}
-            onDocumentChange={handleOnDocumentChange}
+            onRemoveDocument={onRemoveDocument}
+            onDocumentChange={onDocumentChange}
             config={questionnaireTemplateConfig}
             isPreview={false}
             readOnly={readOnly}
