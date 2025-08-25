@@ -1058,7 +1058,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                                     ? 0
                                     : isSubmitted
                                     ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost)
-                                    : CommonUtils.getOrderCost(orderCost, simulationData.updatedCost || 0) + (simulationData.updatedTaxAmount || 0)
+                                    : CommonUtils.getOrderCost(orderCost, simulationData.updatedCatalogNetPrice || 0) + (simulationData.updatedTaxAmount || 0)
                                 )}
                               </span>
                             }
