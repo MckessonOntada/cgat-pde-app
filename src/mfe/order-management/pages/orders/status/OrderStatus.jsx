@@ -13,12 +13,14 @@ import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import { RoutePaths } from '@src/routes/constants';
+import AuthUtils from '@src/util/AuthUtils';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const isPhysician = AuthUtils.isPhysician();
   const locationState = location?.state ?? {};
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const contentRef = useRef(null);
@@ -46,6 +48,22 @@ const OrderStatus = () => {
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
+  let message;
+
+  if (isPhysician) {
+    message = 'messages.prescriptionSuccess';
+  } else if (orderStatus === 'SUBMITTED') {
+    if (isApprover) {
+      message = 'messages.orderApprovalSuccess';
+    } else {
+      message = 'messages.orderSuccess';
+    }
+  } else if (orderStatus === 'REVIEW') {
+    message = 'messages.orderSuccessReviewPending';
+  } else {
+    message = 'messages.orderSuccessApprovalPending';
+  }
+
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
       {isFetching && <Loader type={'screen'} />}
@@ -59,7 +77,7 @@ const OrderStatus = () => {
             backToOrders();
           }}
           size="md">
-          {t('captions.btnBackToOrders')}
+          {t(isPhysician ? 'captions.btnBackToPrescriptions' : 'captions.btnBackToOrders')}
         </Button>
       </div>
       <ModuleHeader
@@ -71,19 +89,9 @@ const OrderStatus = () => {
             </div>
             <div className={styles.content}>
               {orderStatus && (
-                <>
-                  <Heading as={'h1'}>{spOrder ? t('headings.prescriptionSubmitted') : t('headings.orderSubmitted')}</Heading>
-                  <p className={styles.orderSubmitDescription}>
-                    {t(
-                      orderStatus === 'SUBMITTED'
-                        ? isApprover
-                          ? 'messages.orderApprovalSuccess'
-                          : 'messages.orderSuccess'
-                        : orderStatus === 'REVIEW'
-                        ? 'messages.orderSuccessReviewPending'
-                        : 'messages.orderSuccessApprovalPending'
-                    )}
-                  </p>
+                <> 
+                  <Heading as={'h1'}>{t(isPhysician ? 'headings.prescriptionSubmitted' : 'headings.orderSubmitted')}</Heading>
+                  <p className={styles.orderSubmitDescription}>{t(message)}</p> 
                 </>
               )}
             </div>
@@ -94,9 +102,9 @@ const OrderStatus = () => {
         <div className="MCP-panel-container">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             {orderStatus === 'SUBMITTED' ? (
-              <DetailSegment label={t(!spOrder ? 'labels.sapId' : 'labels.orderId')} value={backendOrderId} />
+              <DetailSegment label={t(isPhysician ? 'labels.orderView.prescriptionId' : spOrder ? 'labels.orderId' : 'labels.sapId')} value={backendOrderId} />
             ) : (
-              <DetailSegment label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')} value={orderId} />
+              <DetailSegment label={t(isPhysician ? 'labels.orderView.prescriptionId' : spOrder ? 'labels.orderId' : 'labels.pdeId')} value={orderId} />
             )}
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment label={t('labels.patientName')} value={getFullName(patient?.patientInfo) || '-'} />
@@ -141,7 +149,7 @@ const OrderStatus = () => {
             {t('captions.btnPrintSummary')}
           </Button>
           <Button size="md" variant="primary" onClick={backToOrders}>
-            {t('captions.btnGoToOrders')}
+            {t(isPhysician ? 'captions.btnGoToPrescriptions' : 'captions.btnGoToOrders')}
           </Button>
         </div>
       </div>

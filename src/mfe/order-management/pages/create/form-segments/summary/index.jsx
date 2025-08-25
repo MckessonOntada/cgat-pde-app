@@ -690,7 +690,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     const controlFinalizeOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
         <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
-          {t('captions.btnFinalizeOrder')}
+          {t('captions.btnFinalizePrescription')}
         </Button>
       </PermittedComponent>
     );
@@ -791,6 +791,15 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     (item) => item !== '' && item !== undefined && item !== null
   );
 
+ 
+  const backTextKey = backToInvoiceListing
+    ? 'orderManagement.backToInvoiceDetails'
+    : backToInvoiceDetails
+    ? 'paymentInvoices.Details.backToInvoiceDetails'
+    : isPhysician
+    ? 'captions.btnBackToPrescriptions'
+    : 'captions.btnBackToManageOrder';
+ 
   const unitAmount = CommonUtils.formatNumberWithoutSymbol(
     papOrderOptions.isChecked ? 0 : simulationData?.updatedCatalogNetPrice ? simulationData?.updatedCatalogNetPrice : catalog.netPrice
   );
@@ -809,6 +818,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
   const TotalCost = CommonUtils.formatNumberWithoutSymbol(
     papOrderOptions.isChecked ? 0 : isSubmitted ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) : simulationData?.updatedCost || 0
   );
+ 
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -818,11 +828,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
         <React.Fragment>
           <div>
             <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
-              {backToInvoiceListing
-                ? t('orderManagement.backToInvoiceDetails')
-                : backToInvoiceDetails
-                ? t('paymentInvoices.Details.backToInvoiceDetails')
-                : t('captions.btnBackToManageOrder')}
+              {t(backTextKey)}
             </Button>
           </div>
           <ModuleHeader
@@ -846,7 +852,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                 )}
                 {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
-                    <span>{t('labels.summary')}</span>
+                    <span>{t(isPhysician ? 'headings.prescription' : 'labels.summary')}</span>
                     {showPapBadge}
                   </Heading>
                 ) : null}
@@ -975,7 +981,9 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                 <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
-                    heading={<Heading as="h3">{t(isSpOrder ? 'labels.orderDetails' : 'labels.priceDetails')}</Heading>}
+                    heading={
+                      <Heading as="h3">{t(isPhysician ? 'labels.prescriptionDetails' : isSpOrder ? 'labels.orderDetails' : 'labels.priceDetails')}</Heading>
+                    }
                   />
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
@@ -987,7 +995,10 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                     }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
                       (status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
-                      <DetailSegment label={t('labels.orderId')} value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId} />
+                      <DetailSegment
+                        label={t(isPhysician ? 'labels.orderView.prescriptionId' : 'labels.orderId')}
+                        value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId}
+                      />
                     )}
                     <DetailSegment
                       label={t('labels.therapy')}
@@ -1124,7 +1135,10 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                           value={CommonUtils.getDetailedAddress(accountDetails?.shipToAccount?.address)}
                         />
                         <DetailSegment label={t('labels.shipToAccountName')} value={accountDetails?.shipToAccount?.accountName} />
-                        <DetailSegment label={t('labels.orderChannel')} value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)} />
+                        <DetailSegment
+                          label={t(isPhysician ? 'labels.prescriptionChannel' : 'labels.orderChannel')}
+                          value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)}
+                        />
                         {!isSpOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier]} />}
                       </div>
                     </div>

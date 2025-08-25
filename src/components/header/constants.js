@@ -1,5 +1,8 @@
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import { LOCALES } from '@src/translations/locales';
+import AuthUtils from '@src/util/AuthUtils';
+
+const isPhysician = AuthUtils.isPhysician();
 
 const HeaderConfig = {
   navLinks: [
@@ -22,7 +25,7 @@ const HeaderConfig = {
       isActive: true,
       isActiveTab: false,
       labelForMobile: 'Orders',
-      translationName: 'header.tabs.orders',
+      translationName: isPhysician ? 'header.tabs.prescription' : 'header.tabs.orders',
       permittedRoute: routePermissionConfig.orders,
       sequence: 2
     },
@@ -68,8 +71,8 @@ const HeaderConfig = {
   profileOptions: [
     {
       label: 'Account Setting',
-      value: '/account-setting',
-    },
+      value: '/account-setting'
+    }
   ],
   languages: [
     {

@@ -14,6 +14,7 @@ import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import Alert from '@src/components/cgat-alert/Alert';
 import styles from './FinalizeOrder.module.scss';
+import AuthUtils from '@src/util/AuthUtils';
 
 function FinalizeOrder() {
   const { t } = useTranslate();
@@ -22,6 +23,7 @@ function FinalizeOrder() {
   const { state: locationState = {} } = useLocation();
   const { orderId } = useParams();
   const { data: orderDetails = {} } = useOrder(orderId);
+  const isPhysician = AuthUtils.isPhysician();
 
   const initialValues = {
     ...getPrescriptionAndSignatureInitialValues,
@@ -89,11 +91,11 @@ function FinalizeOrder() {
       <React.Fragment>
         <div>
           <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
-            {t('captions.btnBackToManageOrder')}
+            {t(isPhysician ? 'captions.btnBackToPrescriptions' : 'captions.btnBackToManageOrder')}
           </Button>
         </div>
 
-        <PageHeader heading={t('captions.btnFinalizeOrder')} />
+        <PageHeader heading={t('captions.btnFinalizePrescription')} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
@@ -190,7 +192,7 @@ function FinalizeOrder() {
                         {t('captions.btnCancel')}
                       </Button>
                       <Button size="md" variant="primary" type="submit">
-                        {t('captions.btnFinalizeOrder')}
+                        {t('captions.btnFinalizePrescription')}
                       </Button>
                     </div>
                   </div>

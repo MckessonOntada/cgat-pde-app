@@ -49,6 +49,7 @@ export const DashboardEN = {
   'header.tabs.dashboard': 'Dashboard',
   'header.tabs.paymentAndInvoices': 'Invoices and Payments',
   'header.tabs.orders': 'Orders',
+  'header.tabs.prescription': 'Prescriptions',
   'header.tabs.admin': 'Admin',
 
   'dashboard.card.system_config_standard_settings': 'Standard Settings',
