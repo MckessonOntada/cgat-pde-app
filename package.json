@@ -6,7 +6,7 @@
   "description": "CGAT-PDE Frontend App",
   "dependencies": {
     "@fullstory/browser": "^2.0.6",
-    "@mckesson/mcp-component-library": "2.8.18",
+    "@mckesson/mcp-component-library": "3.0.52",
     "@okta/okta-auth-js": "^7.8.1",
     "@okta/okta-react": "^6.7.0",
     "@okta/okta-signin-widget": "^7.4.1",
