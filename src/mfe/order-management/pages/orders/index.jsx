@@ -205,7 +205,7 @@ const OrderIndex = () => {
         return { availableFilters: [], searchPlaceholder };
 
       case ORDER_TABS.PENDING_SUBMISSION: {
-        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
+        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED, ORDER_STATUS.REVIEW];
         filters.push({
           type: 'dropdown',
           name: 'status',
