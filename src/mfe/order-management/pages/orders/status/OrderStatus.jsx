@@ -72,7 +72,7 @@ const OrderStatus = () => {
             <div className={styles.content}>
               {orderStatus && (
                 <>
-                  <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
+                  <Heading as={'h1'}>{spOrder ? t('headings.prescriptionSubmitted') : t('headings.orderSubmitted')}</Heading>
                   <p className={styles.orderSubmitDescription}>
                     {t(
                       orderStatus === 'SUBMITTED'

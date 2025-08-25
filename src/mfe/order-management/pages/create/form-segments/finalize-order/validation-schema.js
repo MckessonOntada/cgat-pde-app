@@ -32,7 +32,6 @@ export const getPrescriptionAndSignatureSchema = (t) =>
 
 export const getPrescriptionAndSignatureInitialValues = {
   drugName: '',
-  drugForm: '',
   strength: '',
   quantity: '',
   refills: '',

@@ -42,10 +42,10 @@
 }
 
 .custom-date-range-picker {
-  >div {
-    >div {
-      >div {
-        >div {
+  > div {
+    > div {
+      > div {
+        > div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -767,7 +767,6 @@ div.disable-all {
 }
 
 .styled-heading {
-
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -909,7 +908,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  >div {
+  > div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -930,7 +929,6 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
-
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -1497,12 +1495,12 @@ div[role="row"] {
   }
 }
 
-.custom-radio input:checked~.checkmark {
+.custom-radio input:checked ~ .checkmark {
   background-color: var(--brand-color-primary);
   border: none;
 }
 
-.custom-radio input:disabled~.checkmark {
+.custom-radio input:disabled ~ .checkmark {
   background-color: var(--brand-color-dark-grey);
   border: none;
 }
@@ -1513,7 +1511,7 @@ div[role="row"] {
   display: none;
 }
 
-.custom-radio input:checked~.checkmark:after {
+.custom-radio input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -1551,7 +1549,7 @@ div[role="row"] {
     padding: 12px 0px 12px 16px;
   }
 
-  >div {
+  > div {
     border-left: none;
     border-top: none;
     border-right: none;
@@ -1662,7 +1660,6 @@ div.empty-table-wrapper {
     display: flex;
     gap: var(--spacing-01);
 
-
     span {
       background-color: #007cc1;
       color: #ffff;
@@ -1711,4 +1708,9 @@ div.empty-table-wrapper {
 div[class*="CheckboxGroup-module"] {
   font-size: var(--brand-font-size--small);
   align-items: flex-start;
+}
+input[type="checkbox"] + label {
+  font-size: var(--brand-font-size--default) !important;
+  line-height: var(--brand-line-height--m-large);
+  color: var(--brand-color-grey);
 }
