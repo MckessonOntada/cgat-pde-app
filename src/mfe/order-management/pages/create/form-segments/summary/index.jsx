@@ -791,6 +791,25 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     (item) => item !== '' && item !== undefined && item !== null
   );
 
+  const unitAmount = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked ? 0 : simulationData?.updatedCatalogNetPrice ? simulationData?.updatedCatalogNetPrice : catalog.netPrice
+  );
+  const netAmount = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked
+      ? 0
+      : CommonUtils.getOrderCost(
+          orderCost,
+          simulationData?.updatedCatalogNetPrice * additionalDetails.orderQuantity || catalog?.netPrice * additionalDetails.orderQuantity
+        )
+  );
+
+  const TaxAmount = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked ? 0 : isSubmitted ? orderDetails.taxAmount || 0 : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
+  );
+  const TotalCost = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked ? 0 : isSubmitted ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) : simulationData?.updatedCost || 0
+  );
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching) && <Loader type={'screen'} />}
@@ -1006,7 +1025,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice)}
+                                {unitAmount}
                               </span>
                             }
                           />
@@ -1017,15 +1036,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(
-                                  papOrderOptions.isChecked
-                                    ? 0
-                                    : CommonUtils.getOrderCost(
-                                        orderCost,
-                                        simulationData?.updatedCatalogNetPrice * additionalDetails.orderQuantity ||
-                                          catalog?.netPrice * additionalDetails.orderQuantity
-                                      )
-                                )}
+                                {netAmount}
                               </span>
                             }
                           />
@@ -1036,13 +1047,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(
-                                  papOrderOptions.isChecked
-                                    ? 0
-                                    : isSubmitted
-                                    ? orderDetails.taxAmount || 0
-                                    : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
-                                )}
+                                {TaxAmount}
                               </span>
                             }
                           />
@@ -1053,13 +1058,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(
-                                  papOrderOptions.isChecked
-                                    ? 0
-                                    : isSubmitted
-                                    ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost)
-                                    : CommonUtils.getOrderCost(orderCost, simulationData.updatedCost || 0) + (simulationData.updatedTaxAmount || 0)
-                                )}
+                                {TotalCost}
                               </span>
                             }
                           />
