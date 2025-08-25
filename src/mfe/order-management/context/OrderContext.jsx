@@ -45,7 +45,7 @@ export const OrderProvider = ({ children }) => {
     const filters = params.get('filters');
 
     if (tab) {
-      if (isPhysician && tab !== ORDER_TABS.REVIEW) {
+      if (isPhysician && ![ORDER_TABS.REVIEW, ORDER_TABS.SUBMITTED].includes(tab)) {
         tab = null;
       } else if (!isPhysician && !Object.values(ORDER_TABS).includes(tab)) {
         tab = null;
@@ -136,7 +136,9 @@ export const OrderProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['orders', requestParams],
     queryFn: async () => {
-      return isPhysician ? OrderService.getPhysicianOrders({ ...requestParams }) : OrderService.getOrders({ ...requestParams });
+      return isPhysician
+        ? OrderService.getPhysicianOrders({ ...requestParams, reviewSubmitted: config.tab === ORDER_TABS.SUBMITTED })
+        : OrderService.getOrders({ ...requestParams });
     },
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;

@@ -201,11 +201,10 @@ function getOptionsByStatus(props) {
     }
   };
 
-  // Check if the approver group exists
   const doesApproverGroupExist = (approverGroupIds, assignedGroups) => {
     return approverGroupIds?.some((id) => assignedGroups?.includes(id)) ?? false;
   };
-  console.log('hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.DISCARD_ORDER)', hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.DISCARD_ORDER));
+
   let options = [];
   if (tab === ORDER_TABS.PENDING_SUBMISSION) {
     if (status === ORDER_STATUS.IN_DRAFT && hasEditPermission) {
@@ -309,8 +308,7 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
 
 const getState = (props) => {
   const { status, approver } = props;
-  const { state: locationState = {}, search } = useLocation();
-  const { tabVariant, orderView } = useOrders();
+  const { search } = useLocation();
   if (!status) throw new Error('Order status not found, to get state.');
 
   const loggedInUserId = AuthUtils.getUserId();
@@ -351,6 +349,24 @@ const jsxColumns = () => [
   {
     id: COLUMNS.ORDER_ID,
     name: 'labels.orderView.internalOrderId',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'id',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
+    minWidth: '140px',
+    cell: (props) => {
+      const state = getState(props);
+      return (
+        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={state}>
+          <Tooltip body={props.id}>{props.id}</Tooltip>
+        </Link>
+      );
+    }
+  },
+  {
+    id: COLUMNS.PRESCRIPTION_ID,
+    name: 'labels.orderView.prescriptionId',
     selector: () => {},
     sortable: true,
     sortKey: 'id',

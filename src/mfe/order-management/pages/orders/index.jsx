@@ -145,7 +145,7 @@ const OrderIndex = () => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (error) {
       const description = CommonUtils.getUploadErrorMessage({}, t);
       showAlert({
@@ -181,7 +181,7 @@ const OrderIndex = () => {
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const tab = params.get('tab');
     if (!tab) {
       params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
@@ -201,6 +201,7 @@ const OrderIndex = () => {
         break;
 
       case ORDER_TABS.REVIEW:
+      case ORDER_TABS.SUBMITTED:
         searchPlaceholder = 'controls.placeholder.reviewTabSearchBox';
         return { availableFilters: [], searchPlaceholder };
 
@@ -313,7 +314,7 @@ const OrderIndex = () => {
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<Heading as="h1">{t('headings.orders')}</Heading>}
+          heading={<Heading as="h1">{t(isPhysician ? 'headings.prescription' : 'headings.orders')}</Heading>}
           controls={
             !isPhysician && (
               <div className="controls">
@@ -355,7 +356,7 @@ const OrderIndex = () => {
 
             <div className="MCP-table-wrapper">
               <ModuleHeader
-                heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
+                heading={<TableHeading heading={t(isPhysician ? 'table.ariaLabel.prescriptionList' : 'table.ariaLabel.orderList')} />}
                 controls={
                   CommonUtils.isNonEmptyArray(toggleFilters) && (
                     <div>
