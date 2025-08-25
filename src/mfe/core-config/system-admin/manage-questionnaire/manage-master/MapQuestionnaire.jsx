@@ -69,12 +69,12 @@ export default function MapQuestionnaire() {
       accountNumberList: isAccount ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.accountNumber) : [],
       catalogIdAttributes: isCatalog
         ? selectedRows
-            .filter((row) => row.channelType === ChannelType.BUY_AND_BILL)
+            .filter((row) => row.catalogPrice.channelType === ChannelType.BUY_AND_BILL)
             .map((row) => ({
-              sapMaterial: row.sapMaterial.toString(),
-              soldToCustomer: row.soldToCustomer,
-              shipToCustomer: row.shipToCustomer,
-              variant: row.variant
+              sapMaterial: row.catalogPrice.sapMaterial.toString(),
+              soldToCustomer: row.catalogPrice.soldToCustomer,
+              shipToCustomer: row.catalogPrice.shipToCustomer,
+              variant: row.catalogPrice.variant
             }))
         : []
     };
@@ -86,12 +86,12 @@ export default function MapQuestionnaire() {
       accountNumberList: isAccount ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.accountNumber) : [],
       catalogIdAttributes: isCatalog
         ? selectedRows
-            .filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA)
+            .filter((row) => row.catalogPrice.channelType === ChannelType.SPECIALITY_PHARMA)
             .map((row) => ({
-              sapMaterial: row.sapMaterial.toString(),
-              soldToCustomer: row.soldToCustomer,
-              shipToCustomer: row.shipToCustomer,
-              variant: row.variant
+              sapMaterial: row.catalogPrice.sapMaterial.toString(),
+              soldToCustomer: row.catalogPrice.soldToCustomer,
+              shipToCustomer: row.catalogPrice.shipToCustomer,
+              variant: row.catalogPrice.variant
             }))
         : []
     };
