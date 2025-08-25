@@ -448,6 +448,8 @@ export const MessageEs = {
     'S_You cannot proceed to the next step. Required consent has not been acknowledged. Please review and check the consent box before continuing.',
   'message.additionalDetails.missingTerms':
     'S_You cannot proceed to the next step. Consent requirements for the selected material are not configurable in the system. Please contact your administrator to configure the necessary consent and restart the order.',
+  'message.additionalDetails.missingPrescriptionDetails':
+    'S_Order submission cannot be completed. Prescription details have not been configured for this request. Please contact your system administrator to ensure prescription setup before proceeding.',
   'message.questionnaire.provideQuestionText': 'S_You must provide question text',
   'message.questionnaire.optionValueRequired': 'S_Option value is required',
   'heading.manageQuestionnaire': 'S_Manage Questionnaire',
