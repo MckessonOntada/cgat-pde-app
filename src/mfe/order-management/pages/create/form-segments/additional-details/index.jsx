@@ -915,6 +915,7 @@ function AdditionalDetails({ readOnly }) {
             stage={ORDER_STAGES.ADDITIONAL_DETAILS}
             orderId={orderId}
             setAlert={setAlert}
+            patientDetailsRequired={patientDetailsRequired}
           />
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />

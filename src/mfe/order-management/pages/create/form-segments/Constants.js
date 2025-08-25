@@ -64,16 +64,19 @@ export const INFO_340B = [
 export const ORDER_ATTESTATION_MESSAGES = (t) => ({
   [ORDER_STAGES.THERAPY_SELECTION]: t('attestation.therapySelection'),
   [ORDER_STAGES.ACCOUNT_DETAILS]: t('attestation.accountDetails'),
+  [ORDER_STAGES.PATIENT_DETAILS]: t('attestation.patientDetails'),
   [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: t('attestation.patientAndProviderDetails'),
   [ORDER_STAGES.PAYER_DETAILS]: t('attestation.payerDetails'),
   [ORDER_STAGES.ADDITIONAL_DETAILS]: t('attestation.additionalDetails')
 });
 
-export const NOTIFY_ALERT = (t) => ({
+export const NOTIFY_ALERT = (t, patientDetailsRequired) => ({
   [ORDER_STAGES.ACCOUNT_DETAILS]: t('captions.notifyUserAlert.accountSelection'),
   [ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS]: t('captions.notifyUserAlert.patientAndProviderDetails'),
   [ORDER_STAGES.PAYER_DETAILS]: t('captions.notifyUserAlert.patientAndProviderDetails'),
-  [ORDER_STAGES.ADDITIONAL_DETAILS]: t('captions.notifyUserAlert.additionalDetails'),
+  [ORDER_STAGES.ADDITIONAL_DETAILS]: t(
+    patientDetailsRequired ? 'captions.notifyUserAlert.additionalDetails' : 'captions.notifyUserAlert.additionalDetailsforNoPatientDetails'
+  ),
   [ORDER_STAGES.ORDER_SUMMARY]: t('captions.notifyUserAlert.orderSummary')
 });
 
