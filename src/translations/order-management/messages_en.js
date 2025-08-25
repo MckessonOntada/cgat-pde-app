@@ -367,7 +367,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient Identifier',
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
-  'orderManagement.patientDetails.inputLabel.doa': 'DOA',
+  'orderManagement.patientDetails.inputLabel.doa': 'Date of Administration',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.patient_details': 'Patient Details',
@@ -1009,5 +1009,7 @@ export const MessageEn = {
   'label.instructions': 'Instructions',
   'label.acknowledgementInformationIsCorrect': 'All the above information is correct.',
   'control.notifyUser': 'Notify User',
-  'messages.notifyUser': 'Notification mail has been sent successfully to the authorized user.'
+  'messages.notifyUser': 'Notification mail has been sent successfully to the authorized user.',
+  'labels.prescriptionDetails': 'Prescription Details',
+  'headings.prescriptionSubmitted': 'Prescription Submitted!'
 };

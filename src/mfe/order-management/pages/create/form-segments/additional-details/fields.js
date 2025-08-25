@@ -212,14 +212,14 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
               type: 'input'
             },
             {
-              name: 'drugForm',
-              label: translationFn('label.drugForm'),
+              name: 'strength',
+              label: translationFn('labels.therapy.strength'),
               isReadOnly: true,
               type: 'input'
             },
             {
-              name: 'strength',
-              label: translationFn('labels.therapy.strength'),
+              name: 'quantity',
+              label: translationFn('label.quantity'),
               isReadOnly: true,
               type: 'input'
             }
@@ -228,12 +228,6 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
         {
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
           controls: [
-            {
-              name: 'quantity',
-              label: translationFn('label.quantity'),
-              isReadOnly: true,
-              type: 'input'
-            },
             {
               name: 'daysSupply',
               label: translationFn('label.daysSupply'),

@@ -1428,6 +1428,36 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                   </div>
                 </div>
 
+                {spTherapyConfig?.isPrescriptionDetailsRequired && (
+                  <div className="MCP-CardContainer">
+                    <ModuleHeader
+                      className={styles.panelHeader}
+                      heading={<Heading as="h3">{t('labels.prescriptionDetails')}</Heading>}
+                      controls={
+                        showControls && (
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        )
+                      }
+                    />
+                    <div className="MCP-module-body">
+                      <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4'}>
+                        <DetailSegment label={t('label.drugName')} value={therapy?.materialDescription} />
+                        <DetailSegment label={t('labels.therapy.strength')} value={therapy?.strength} />
+                        <DetailSegment label={t('label.quantity')} value={spTherapyConfig?.quantity} />
+                        <DetailSegment label={t('label.daysSupply')} value={spTherapyConfig?.daysSupply} />
+                        <DetailSegment label={t('label.refill')} value={spTherapyConfig?.refills} />
+                        <DetailSegment label={t('label.instructions')} value={spTherapyConfig?.instructions} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {additionalDetails.variantDetails && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader

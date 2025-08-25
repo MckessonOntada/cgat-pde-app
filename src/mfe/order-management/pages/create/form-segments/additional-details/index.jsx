@@ -513,11 +513,12 @@ function AdditionalDetails({ readOnly }) {
   };
 
   React.useEffect(() => {
-    const { additionalDetails, spTherapyConfig } = orderDetails || {};
+    const { additionalDetails, spTherapyConfig, therapy } = orderDetails || {};
     const initialValues = {};
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig) {
       Object.assign(initialValues, {
+        drugName: therapy?.materialDescription,
         strength: spTherapyConfig.strength,
         daysSupply: spTherapyConfig.daysSupply,
         quantity: spTherapyConfig.quantity,
@@ -616,8 +617,9 @@ function AdditionalDetails({ readOnly }) {
     setAlert(null);
     if (variant) {
       OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
-        const { spTherapyConfig } = result;
+        const { spTherapyConfig, therapy } = result;
         const prescriptionDetails = {
+          drugName: '',
           daysSupply: '',
           quantity: '',
           refills: '',
@@ -628,6 +630,7 @@ function AdditionalDetails({ readOnly }) {
         };
 
         if (CommonUtils.isNonEmptyObject(spTherapyConfig)) {
+          prescriptionDetails.drugName = therapy?.materialDescription;
           prescriptionDetails.daysSupply = spTherapyConfig.daysSupply;
           prescriptionDetails.quantity = spTherapyConfig.quantity;
           prescriptionDetails.refills = spTherapyConfig.refills;

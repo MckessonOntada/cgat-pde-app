@@ -42,7 +42,7 @@
 }
 
 .stepper {
-  margin-bottom: var(--spacing-04);
+  margin-bottom: var(--spacing-03);
   margin-top: var(--spacing-02);
 }
 
@@ -87,13 +87,13 @@ div[data-testid^="dropdown-container-"] {
 .firstHeading {
   margin-top: 0px !important;
 }
-.commentWrap{
+.commentWrap {
   margin-top: var(--spacing-03);
-  span{
+  span {
     font-size: var(--brand-font-size--small);
     padding-bottom: var(--spacing-01);
   }
-  p{
+  p {
     font-size: var(--brand-font-size--default);
     font-weight: var(--brand-font-weight-600);
   }

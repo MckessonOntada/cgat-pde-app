@@ -250,81 +250,82 @@ const CreateUser = () => {
           {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
+      <div className="MCP-module-body">
+        <ModuleHeader
+          heading={
+            <Heading as="h1">
+              {t(
+                isEdit
+                  ? isSystemAdminView
+                    ? 'userManagement.edit_sysadmin'
+                    : 'userManagement.edit_organization_user'
+                  : isSystemAdminView
+                  ? 'userManagement.create_sysadmin'
+                  : 'userManagement.create_organization_user'
+              )}
+            </Heading>
+          }
+        />
 
-      <ModuleHeader
-        heading={
-          <Heading as="h1">
-            {t(
-              isEdit
-                ? isSystemAdminView
-                  ? 'userManagement.edit_sysadmin'
-                  : 'userManagement.edit_organization_user'
-                : isSystemAdminView
-                ? 'userManagement.create_sysadmin'
-                : 'userManagement.create_organization_user'
-            )}
-          </Heading>
-        }
-      />
+        {!isEdit && !isSystemAdminView && (
+          <div className="stepper">
+            <StepperMui
+              activeIndex={1}
+              dividerText="of"
+              stepHeaders={[
+                {
+                  label: t('userManagement.stepper.option.user_details')
+                },
+                {
+                  label: t('userManagement.stepper.option.roles_and_permissions')
+                },
 
-      {!isEdit && !isSystemAdminView && (
-        <div className="stepper">
-          <StepperMui
-            activeIndex={1}
-            dividerText="of"
-            stepHeaders={[
-              {
-                label: t('userManagement.stepper.option.user_details')
-              },
-              {
-                label: t('userManagement.stepper.option.roles_and_permissions')
-              },
+                {
+                  label: t('userManagement.stepper.option.associate_accounts')
+                }
+              ]}
+            />
+          </div>
+        )}
 
-              {
-                label: t('userManagement.stepper.option.associate_accounts')
-              }
-            ]}
-          />
-        </div>
-      )}
+        {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
 
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          enableReinitialize
+          onSubmit={(values, actions) => {
+            handleSubmit(values);
+            actions.setSubmitting(false);
+          }}>
+          {({ values, isValid, dirty }) => {
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [dirty]);
 
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        enableReinitialize
-        onSubmit={(values, actions) => {
-          handleSubmit(values);
-          actions.setSubmitting(false);
-        }}>
-        {({ values, isValid, dirty }) => {
-          React.useEffect(() => {
-            setIsDirty(dirty);
-          }, [dirty]);
-
-          return (
-            <Form>
-              <div className="MCP-panel-container">
-                <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
-              </div>
-              <div className={'buttonGroup'}>
-                <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
-                  {t('userManagement.button.back')}
-                </Button>
-                {isPending && (
-                  <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
-                    {t('userManagement.button.rejectrequest')}
+            return (
+              <Form>
+                <div className="MCP-panel-container">
+                  <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
+                </div>
+                <div className={'buttonGroup'}>
+                  <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
+                    {t('userManagement.button.back')}
                   </Button>
-                )}
-                <Button type="submit" size={'md'}>
-                  {t('userManagement.button.savencontinue')}
-                </Button>
-              </div>
-            </Form>
-          );
-        }}
-      </Formik>
+                  {isPending && (
+                    <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
+                      {t('userManagement.button.rejectrequest')}
+                    </Button>
+                  )}
+                  <Button type="submit" size={'md'}>
+                    {t('userManagement.button.savencontinue')}
+                  </Button>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
       <DiscardChangesModal
         heading="Discard Changes"
         description="You have changed user details. Do you still want to go back? Your changes will be discarded!"
