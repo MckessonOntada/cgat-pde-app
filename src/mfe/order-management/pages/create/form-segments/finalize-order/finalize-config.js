@@ -14,24 +14,12 @@ export const prescriptionAndSignatureSection = [
             readOnly: true
           },
           {
-            id: 'drugForm',
-            name: 'drugForm',
-            label: 'labels.drugForm',
-            type: 'input',
-            readOnly: true
-          },
-          {
             id: 'strength',
             name: 'strength',
             label: 'labels.therapy.strength',
             type: 'input',
             readOnly: true
-          }
-        ]
-      },
-      {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
-        controls: [
+          },
           {
             id: 'quantity',
             name: 'quantity',
@@ -40,7 +28,12 @@ export const prescriptionAndSignatureSection = [
             placeholder: ' ',
             isRequired: true,
             maxLength: 2
-          },
+          }
+        ]
+      },
+      {
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+        controls: [
           {
             id: 'day-supply',
             name: 'daysSupply',

@@ -667,5 +667,7 @@ export const MessageEs = {
   'label.instructions': 'S_Instructions',
   'label.acknowledgementInformationIsCorrect': 'S_All the above information is correct.',
   'control.notifyUser': 'S_Notify User',
-  'messages.notifyUser': 'S_Notification mail has been sent successfully to the authorized user.'
+  'messages.notifyUser': 'S_Notification mail has been sent successfully to the authorized user.',
+  'labels.prescriptionDetails': 'S_Prescription Details',
+  'orderManagement.patientDetails.inputLabel.doa': 'S_Date of Administration'
 };
