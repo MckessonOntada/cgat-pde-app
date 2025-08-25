@@ -977,6 +977,7 @@ export const MessageEn = {
   'attestation.therapySelection': 'I confirm that the therapy selection is accurate and this order is ready to move forward.',
   'attestation.accountDetails': 'I confirm that the account information provided is correct and ready for the next step.',
   'attestation.patientAndProviderDetails': 'I confirm that the patient and provider information is accurate and complete.',
+  'attestation.patientDetails': 'I confirm that the patient information is accurate and complete.',
   'attestation.payerDetails': 'I confirm that the payer information is accurate and complete.',
   'attestation.additionalDetails': 'I confirm that the additional details have been reviewed and are ready for final submission.',
   'attestation.warning':
@@ -989,6 +990,8 @@ export const MessageEn = {
   'captions.notifyUserAlert.patientAndProviderDetails':
     'Account details have been saved. The order has been forwarded to the assigned user for patient details.',
   'captions.notifyUserAlert.payerDetails': 'Patient information has been submitted. The order has been forwarded to the assigned user for additional details.',
+  'captions.notifyUserAlert.additionalDetailsforNoPatientDetails':
+    'Account information has been submitted. The order has been forwarded to the assigned user for additional details.',
   'captions.notifyUserAlert.additionalDetails':
     'Patient information has been submitted. The order has been forwarded to the assigned user for additional details.',
   'captions.notifyUserAlert.orderSummary':

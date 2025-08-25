@@ -46,10 +46,10 @@ export function showEditAlert(title, message, cancelBtnLabel) {
   });
 }
 
-export const NotifyAlert = ({ stage, OnEdit = false, orderId, setAlert }) => {
+export const NotifyAlert = ({ stage, OnEdit = false, orderId, setAlert, patientDetailsRequired = false }) => {
   const [userNotified, setUserNotified] = useState(false);
   const { t } = useTranslate();
-  const messages = NOTIFY_ALERT(t);
+  const messages = NOTIFY_ALERT(t, patientDetailsRequired);
   const message = OnEdit ? t('labels.summaryEditMessage') : messages[stage];
   const eventType = NOTIFY_USER_EVENT_TYPE(t)[stage];
 

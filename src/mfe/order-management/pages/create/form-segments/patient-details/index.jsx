@@ -613,7 +613,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         )}
                       </div>
                     </div>
-                    <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
+                    <OrderAttestation
+                      stage={
+                        orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL ? ORDER_STAGES?.PATIENT_DETAILS : ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS
+                      }
+                      onCheck={handleConfirmChange}
+                      isChecked={isSelfAttested}
+                    />
                   </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
