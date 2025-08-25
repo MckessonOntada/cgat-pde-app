@@ -1710,5 +1710,7 @@ div[class*="CheckboxGroup-module"] {
   align-items: flex-start;
 }
 input[type="checkbox"] + label {
-  font-size: var(--brand-font-size--small) !important;
+  font-size: var(--brand-font-size--default) !important;
+  line-height: var(--brand-line-height--m-large);
+  color: var(--brand-color-grey);
 }
