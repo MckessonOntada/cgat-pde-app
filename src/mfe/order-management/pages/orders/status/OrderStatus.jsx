@@ -149,7 +149,7 @@ const OrderStatus = () => {
             {t('captions.btnPrintSummary')}
           </Button>
           <Button size="md" variant="primary" onClick={backToOrders}>
-            {t('captions.btnGoToOrders')}
+            {t(isPhysician ? 'captions.btnGoToPrescriptions' : 'captions.btnGoToOrders')}
           </Button>
         </div>
       </div>
