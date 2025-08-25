@@ -1714,3 +1714,8 @@ input[type="checkbox"] + label {
   line-height: var(--brand-line-height--m-large);
   color: var(--brand-color-grey);
 }
+.form-segment-list {
+  input[type="checkbox"] + label {
+    font-size: var(--brand-font-size--small) !important;
+  }
+}
