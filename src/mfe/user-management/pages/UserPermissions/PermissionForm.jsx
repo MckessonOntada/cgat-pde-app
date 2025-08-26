@@ -155,8 +155,6 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             'ADD_PAYMENT_METHOD_CARD',
             'MANAGE_PAYMENT_METHOD_CARD',
             'DELETE_PAYMENT_METHOD_CARD',
-            'MANAGE_PAYMENT_METHOD_BANK',
-            'DELETE_PAYMENT_METHOD_BANK',
             'ADD_PAYMENT_METHOD_BANK',
             'VIEW_PAYMENT_METHOD_BANK',
             'CANCEL_PAYMENT',
