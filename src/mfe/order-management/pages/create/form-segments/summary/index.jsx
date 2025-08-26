@@ -814,9 +814,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
   const TaxAmount = CommonUtils.formatNumberWithoutSymbol(
     papOrderOptions.isChecked ? 0 : isSubmitted ? orderDetails.taxAmount || 0 : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
   );
-  const TotalCost = CommonUtils.formatNumberWithoutSymbol(
-    papOrderOptions.isChecked ? 0 : isSubmitted ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) : simulationData?.updatedCost || 0
-  );
+  const TotalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) || 0);
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
