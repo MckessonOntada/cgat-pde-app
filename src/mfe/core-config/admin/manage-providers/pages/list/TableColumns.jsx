@@ -92,9 +92,20 @@ export const getColumns = (setNotification) => {
           type: 'success'
         });
       },
-      onError: () => {
+      onError: (error) => {
+        const errorResponse = error.response.data;
+        let errorMessage = 'errors.default';
+        if (
+          errorResponse.status === 409 &&
+          errorResponse.errorCodes &&
+          Array.isArray(errorResponse.errorCodes) &&
+          errorResponse.errorCodes.includes('user.already.active.conflict')
+        ) {
+          errorMessage = 'error.userAlreadyActive';
+        }
+
         setNotification({
-          description: t('errors.default'),
+          description: t(errorMessage),
           type: 'error'
         });
       }

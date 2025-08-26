@@ -965,6 +965,7 @@ export const MessageEn = {
   'messages.phLastNameExtraSpaceError': 'Policy Holder Last Name must not contain leading or trailing spaces',
   'messages.pharmacyManagerExtraSpaceError': 'Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
   'error.default': 'System is facing issues in getting the information. Kindly Contact your System admin.',
+  'error.userAlreadyActive': 'Provider is already registered. This action is not permitted.',
   'labels.prescriptionDetails': 'Prescription Details',
   'labels.quantity': 'Quantity',
   'labels.refills': 'Refills',
