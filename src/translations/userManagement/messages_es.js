@@ -171,7 +171,7 @@ export const UserManagementES = {
   ADMIN_MANAGEMENT: 'S_System Admin Permissions',
   MANAGE_PROVIDERS: 'S_Manage Providers',
   MANAGE_LINKED_ACCOUNTS: 'S_Manage Linked Accounts',
-  CREATE_NEW_ORDER: 'S_Create New Order',
+  CREATE_NEW_ORDER: 'S_Order Lifecycle',
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'S_Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'S_Allows user to login',

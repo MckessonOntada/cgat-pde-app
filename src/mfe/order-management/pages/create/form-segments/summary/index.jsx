@@ -791,6 +791,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     (item) => item !== '' && item !== undefined && item !== null
   );
 
+ 
   const backTextKey = backToInvoiceListing
     ? 'orderManagement.backToInvoiceDetails'
     : backToInvoiceDetails
@@ -798,6 +799,26 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     : isPhysician
     ? 'captions.btnBackToPrescriptions'
     : 'captions.btnBackToManageOrder';
+ 
+  const unitAmount = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked ? 0 : simulationData?.updatedCatalogNetPrice ? simulationData?.updatedCatalogNetPrice : catalog.netPrice
+  );
+  const netAmount = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked
+      ? 0
+      : CommonUtils.getOrderCost(
+          orderCost,
+          simulationData?.updatedCatalogNetPrice * additionalDetails.orderQuantity || catalog?.netPrice * additionalDetails.orderQuantity
+        )
+  );
+
+  const TaxAmount = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked ? 0 : isSubmitted ? orderDetails.taxAmount || 0 : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
+  );
+  const TotalCost = CommonUtils.formatNumberWithoutSymbol(
+    papOrderOptions.isChecked ? 0 : isSubmitted ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) : simulationData?.updatedCost || 0
+  );
+ 
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -1012,7 +1033,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice)}
+                                {unitAmount}
                               </span>
                             }
                           />
@@ -1023,15 +1044,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(
-                                  papOrderOptions.isChecked
-                                    ? 0
-                                    : CommonUtils.getOrderCost(
-                                        orderCost,
-                                        simulationData?.updatedCatalogNetPrice * additionalDetails.orderQuantity ||
-                                          catalog?.netPrice * additionalDetails.orderQuantity
-                                      )
-                                )}
+                                {netAmount}
                               </span>
                             }
                           />
@@ -1042,13 +1055,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(
-                                  papOrderOptions.isChecked
-                                    ? 0
-                                    : isSubmitted
-                                    ? orderDetails.taxAmount || 0
-                                    : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
-                                )}
+                                {TaxAmount}
                               </span>
                             }
                           />
@@ -1059,13 +1066,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             value={
                               <span className="dollarSign ">
                                 <span>$</span>
-                                {CommonUtils.formatNumberWithoutSymbol(
-                                  papOrderOptions.isChecked
-                                    ? 0
-                                    : isSubmitted
-                                    ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost)
-                                    : CommonUtils.getOrderCost(orderCost, simulationData.updatedCost || 0) + (simulationData.updatedTaxAmount || 0)
-                                )}
+                                {TotalCost}
                               </span>
                             }
                           />
@@ -1436,6 +1437,36 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                     )}
                   </div>
                 </div>
+
+                {spTherapyConfig?.isPrescriptionDetailsRequired && (
+                  <div className="MCP-CardContainer">
+                    <ModuleHeader
+                      className={styles.panelHeader}
+                      heading={<Heading as="h3">{t('labels.prescriptionDetails')}</Heading>}
+                      controls={
+                        showControls && (
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        )
+                      }
+                    />
+                    <div className="MCP-module-body">
+                      <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4'}>
+                        <DetailSegment label={t('label.drugName')} value={therapy?.materialDescription} />
+                        <DetailSegment label={t('labels.therapy.strength')} value={therapy?.strength} />
+                        <DetailSegment label={t('label.quantity')} value={spTherapyConfig?.quantity} />
+                        <DetailSegment label={t('label.daysSupply')} value={spTherapyConfig?.daysSupply} />
+                        <DetailSegment label={t('label.refill')} value={spTherapyConfig?.refills} />
+                        <DetailSegment label={t('label.instructions')} value={spTherapyConfig?.instructions} />
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {additionalDetails.variantDetails && (
                   <div className="MCP-CardContainer">

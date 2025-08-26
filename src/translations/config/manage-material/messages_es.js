@@ -70,7 +70,7 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.configuration.body.sp.mrnRequired': 'S_MRN Required?',
 
   'manageMaterial.drawer.configuration.body.poNumberRequired': 'S_Make PO Number Mandatory',
-  'manageMaterial.drawer.configuration.body.doaRequired': 'S_Make DOA Mandatory',
+  'manageMaterial.drawer.configuration.body.doaRequired': 'S_Make Date of Administration Mandatory',
   'manageMaterial.drawer.configuration.body.patientIdentifier': 'S_Make Patient Identifier Mandatory',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.yes': 'S_Yes',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.no': 'S_No',
