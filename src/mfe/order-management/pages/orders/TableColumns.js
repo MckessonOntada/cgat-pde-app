@@ -462,7 +462,7 @@ const jsxColumns = () => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '120px',
+    maxWidth: '155px',
     cell: function (props) {
       return <EclipsesTextCss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />;
     }
@@ -478,7 +478,28 @@ const jsxColumns = () => [
       return <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM/DD/YYYY') : '-'}</span>;
     }
   },
-
+  {
+    id: COLUMNS.UPDATED_BY,
+    name: 'table.columns.captions.updatedBy',
+    selector: () => {},
+    sortable: true,
+    maxWidth: '155px',
+    sortKey: 'updatedBy.name',
+    cell: function (props) {
+      return <EclipsesTextCss tooltip={props.updatedBy?.userName} str={props.updatedBy?.name} maxWidth={130} className={'MCP-table-cell'} />;
+    }
+  },
+  {
+    id: COLUMNS.UPDATED_ON,
+    name: 'table.columns.captions.updatedOn',
+    selector: () => {},
+    sortable: true,
+    width: '155px',
+    sortKey: 'updatedAt',
+    cell: function (props) {
+      return <span>{props.updatedAt ? CommonUtils.convertDateStringFormat(props.updatedAt, 'MM/DD/YYYY') : '-'}</span>;
+    }
+  },
   {
     id: COLUMNS.STATUS,
     name: 'table.columns.captions.status',

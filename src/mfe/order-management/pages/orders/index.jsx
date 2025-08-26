@@ -201,7 +201,7 @@ const OrderIndex = () => {
 
       case ORDER_TABS.REVIEW:
       case ORDER_TABS.SUBMITTED:
-        searchPlaceholder = 'controls.placeholder.searchOrderPlaceholder';
+        searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
         return { availableFilters: [], searchPlaceholder };
 
       case ORDER_TABS.PENDING_SUBMISSION: {
