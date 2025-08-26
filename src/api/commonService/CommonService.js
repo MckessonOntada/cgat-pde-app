@@ -73,7 +73,7 @@ const updateSessionStorage = async () => {
 const getCurrentLoggedInUser = async () => {
   try {
     const response = await HttpResourceService.callRest(
-      ApiRoutes.GET_CURRENT_USER,
+      `${ApiRoutes.GET_CURRENT_USER}?login=true`,
       httpVerb.GET,
       {},
       {
