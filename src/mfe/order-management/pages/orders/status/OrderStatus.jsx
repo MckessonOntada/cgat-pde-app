@@ -89,9 +89,9 @@ const OrderStatus = () => {
             </div>
             <div className={styles.content}>
               {orderStatus && (
-                <> 
-                  <Heading as={'h1'}>{t(isPhysician ? 'headings.prescriptionSubmitted' : 'headings.orderSubmitted')}</Heading>
-                  <p className={styles.orderSubmitDescription}>{t(message)}</p> 
+                <>
+                  <Heading as={'h1'}>{t(isPhysician || spOrder ? 'headings.prescriptionSubmitted' : 'headings.orderSubmitted')}</Heading>
+                  <p className={styles.orderSubmitDescription}>{t(message)}</p>
                 </>
               )}
             </div>
