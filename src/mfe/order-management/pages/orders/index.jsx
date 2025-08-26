@@ -202,7 +202,7 @@ const OrderIndex = () => {
 
       case ORDER_TABS.REVIEW:
       case ORDER_TABS.SUBMITTED:
-        searchPlaceholder = 'controls.placeholder.reviewTabSearchBox';
+        searchPlaceholder = 'controls.placeholder.searchOrderPlaceholder';
         return { availableFilters: [], searchPlaceholder };
 
       case ORDER_TABS.PENDING_SUBMISSION: {
@@ -257,7 +257,7 @@ const OrderIndex = () => {
       filters.push({
         type: 'dropdown',
         name: 'orderDate',
-        label: 'Order Date',
+        label: currentTab.id === ORDER_TABS.SUBMITTED_SP ? 'Prescription Date' : 'Order Date',
         options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
           label: t(`labels.caption.${opt.value}`),
           value: opt.value
@@ -356,14 +356,18 @@ const OrderIndex = () => {
 
             <div className="MCP-table-wrapper">
               <ModuleHeader
-                heading={<TableHeading heading={t(isPhysician ? 'table.ariaLabel.prescriptionList' : 'table.ariaLabel.orderList')} />}
+                heading={
+                  <TableHeading
+                    heading={t(isPhysician || currentTab.id === ORDER_TABS.SUBMITTED_SP ? 'table.ariaLabel.prescriptionList' : 'table.ariaLabel.orderList')}
+                  />
+                }
                 controls={
                   CommonUtils.isNonEmptyArray(toggleFilters) && (
                     <div>
                       <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
                         {toggleFilters.map((filter, index) => (
                           <Tab key={index} value={filter}>
-                            {t(`labels.orderView.${filter}`)}
+                            {t(isPhysician || currentTab.id === ORDER_TABS.SUBMITTED_SP ? `labels.orderView.SP_${filter}` : `labels.orderView.${filter}`)}
                           </Tab>
                         ))}
                       </TabGroup>
@@ -394,8 +398,20 @@ const OrderIndex = () => {
                     isLoading={isFetching}
                     error={error && error.message}
                     image={EmptyDataImage}
-                    heading={!Boolean(filterParams) ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-                    description={!Boolean(filterParams) && t('captions.emptyTableSubtitle')}
+                    heading={
+                      Boolean(filterParams)
+                        ? t('errors.messages.noRecordsFound')
+                        : isPhysician
+                        ? t('captions.noPrescriptionFound')
+                        : t('captions.emptyTableTitle')
+                    }
+                    description={
+                      !Boolean(filterParams) && isPhysician
+                        ? t('captions.noPrescriptionFoundSubtitle')
+                        : !Boolean(filterParams)
+                        ? t('captions.emptyTableSubtitle')
+                        : null
+                    }
                   />
                 }
               />

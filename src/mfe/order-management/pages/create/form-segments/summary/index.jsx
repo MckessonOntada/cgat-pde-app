@@ -831,7 +831,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                 )}
                 {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
-                    <span>{t(isPhysician ? 'headings.prescription' : 'labels.summary')}</span>
+                    <span>{t(isPhysician ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
                     {showPapBadge}
                   </Heading>
                 ) : null}
@@ -974,10 +974,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                     }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
                       (status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
-                      <DetailSegment
-                        label={t(isPhysician ? 'labels.orderView.prescriptionId' : 'labels.orderId')}
-                        value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId}
-                      />
+                      <DetailSegment label={t('labels.orderId')} value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId} />
                     )}
                     <DetailSegment
                       label={t('labels.therapy')}

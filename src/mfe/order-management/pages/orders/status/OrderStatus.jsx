@@ -102,9 +102,9 @@ const OrderStatus = () => {
         <div className="MCP-panel-container">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             {orderStatus === 'SUBMITTED' ? (
-              <DetailSegment label={t(isPhysician ? 'labels.orderView.prescriptionId' : spOrder ? 'labels.orderId' : 'labels.sapId')} value={backendOrderId} />
+              <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.sapId')} value={backendOrderId} />
             ) : (
-              <DetailSegment label={t(isPhysician ? 'labels.orderView.prescriptionId' : spOrder ? 'labels.orderId' : 'labels.pdeId')} value={orderId} />
+              <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.pdeId')} value={orderId} />
             )}
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment label={t('labels.patientName')} value={getFullName(patient?.patientInfo) || '-'} />
