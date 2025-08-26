@@ -977,7 +977,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                 <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
-                    heading={<Heading as="h3">{t(isSpOrder ? 'labels.prescriptionDetails' : 'labels.priceDetails')}</Heading>}
+                    heading={<Heading as="h3">{t(isSpOrder ? 'labels.orderDetails' : 'labels.priceDetails')}</Heading>}
                   />
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
