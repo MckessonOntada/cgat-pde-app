@@ -480,18 +480,18 @@ const jsxColumns = () => [
   },
   {
     id: COLUMNS.UPDATED_BY,
-    name: 'table.columns.captions.updatedBy',
+    name: 'table.columns.captions.submittedBy',
     selector: () => {},
     sortable: true,
     maxWidth: '155px',
     sortKey: 'updatedBy.name',
     cell: function (props) {
-      return <EclipsesTextCss tooltip={props.updatedBy?.userName} str={props.updatedBy?.name} maxWidth={130} className={'MCP-table-cell'} />;
+      return <EclipsesTextCss tooltip={props.updatedBy?.name} str={props.updatedBy?.name} maxWidth={130} className={'MCP-table-cell'} />;
     }
   },
   {
     id: COLUMNS.UPDATED_ON,
-    name: 'table.columns.captions.updatedOn',
+    name: 'table.columns.captions.submittedOn',
     selector: () => {},
     sortable: true,
     width: '155px',
