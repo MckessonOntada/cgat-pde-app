@@ -60,11 +60,6 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
     }
   };
 
-  const handleOnClose = (event) => {
-    event.preventDefault();
-    if (onClose) onClose();
-  };
-
   React.useEffect(() => {
     const { rejectionDetails } = meta;
     if (rejectionDetails?.rejectionReason) {
@@ -83,7 +78,7 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
               open={openDrawer}
               anchor="right"
               onClose={onClose}
-              heading={t('captions.lblRejectOrder')}
+              heading={t(meta.isSpOrder ? 'captions.lblRejectPrescription' : 'captions.lblRejectOrder')}
               controls={
                 !readOnly && (
                   <div className="controls">
@@ -91,7 +86,7 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
                       {t('captions.btnCancel')}
                     </Button>
                     <Button type="submit" variant="primary" size="md">
-                      {t('captions.btnRejectOrder')}
+                      {t(meta.isSpOrder ? 'captions.btnRejectPrescription' : 'captions.btnRejectOrder')}
                     </Button>
                   </div>
                 )

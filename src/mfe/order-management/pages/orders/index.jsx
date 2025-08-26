@@ -1,29 +1,28 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading, TabList } from '@mckesson/mcp-component-library';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { routesConfig } from './../../routes/constants';
-import { useTranslate } from '@src/translations/useTranslation';
-import ModuleHeader from '../../../../components/module-header';
-import CommonFilters from '@src/components/Filters';
-import { useOrders } from '../../context/OrderContext';
-import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
-import PermittedComponent from '@src/components/permitted-component';
-import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
-import useAlert from '@src/hooks/useAlert';
 import Alert from '@src/components/cgat-alert/Alert';
-import useResponsiveView from '@src/hooks/useResponsiveView';
-import { getTableColumns } from './TableColumns';
-import TableHeading from '@src/components/tableHeading/TableHeading';
-import TabGroup from '../../../../components/tab-group';
-import Tab from '../../../../components/tab-group/Tab';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { DateUtils } from '@src/util/DateUtil';
-import CommonUtils from '@src/util/CommonUtils';
-import AuthUtils from '@src/util/AuthUtils';
+import CommonFilters from '@src/components/Filters';
+import TableHeading from '@src/components/tableHeading/TableHeading';
+import useAlert from '@src/hooks/useAlert';
 import usePermission from '@src/hooks/usePermissions';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import { useTranslate } from '@src/translations/useTranslation';
+import AuthUtils from '@src/util/AuthUtils';
+import CommonUtils from '@src/util/CommonUtils';
+import { DateUtils } from '@src/util/DateUtil';
+import React, { useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ModuleHeader from '../../../../components/module-header';
+import TabGroup from '../../../../components/tab-group';
+import Tab from '../../../../components/tab-group/Tab';
+import { useOrders } from '../../context/OrderContext';
+import { routesConfig } from './../../routes/constants';
+import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
+import { getTableColumns } from './TableColumns';
 
 const OrderIndex = () => {
   const navigate = useNavigate();
@@ -202,7 +201,7 @@ const OrderIndex = () => {
 
       case ORDER_TABS.REVIEW:
       case ORDER_TABS.SUBMITTED:
-        searchPlaceholder = 'controls.placeholder.reviewTabSearchBox';
+        searchPlaceholder = 'controls.placeholder.searchOrderPlaceholder';
         return { availableFilters: [], searchPlaceholder };
 
       case ORDER_TABS.PENDING_SUBMISSION: {
@@ -257,7 +256,7 @@ const OrderIndex = () => {
       filters.push({
         type: 'dropdown',
         name: 'orderDate',
-        label: 'Order Date',
+        label: currentTab.id === ORDER_TABS.SUBMITTED_SP ? 'Prescription Date' : 'Order Date',
         options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
           label: t(`labels.caption.${opt.value}`),
           value: opt.value
@@ -356,14 +355,18 @@ const OrderIndex = () => {
 
             <div className="MCP-table-wrapper">
               <ModuleHeader
-                heading={<TableHeading heading={t(isPhysician ? 'table.ariaLabel.prescriptionList' : 'table.ariaLabel.orderList')} />}
+                heading={
+                  <TableHeading
+                    heading={t(isPhysician || currentTab.id === ORDER_TABS.SUBMITTED_SP ? 'table.ariaLabel.prescriptionList' : 'table.ariaLabel.orderList')}
+                  />
+                }
                 controls={
                   CommonUtils.isNonEmptyArray(toggleFilters) && (
                     <div>
                       <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
                         {toggleFilters.map((filter, index) => (
                           <Tab key={index} value={filter}>
-                            {t(`labels.orderView.${filter}`)}
+                            {t(isPhysician || currentTab.id === ORDER_TABS.SUBMITTED_SP ? `labels.orderView.SP_${filter}` : `labels.orderView.${filter}`)}
                           </Tab>
                         ))}
                       </TabGroup>
@@ -394,8 +397,20 @@ const OrderIndex = () => {
                     isLoading={isFetching}
                     error={error && error.message}
                     image={EmptyDataImage}
-                    heading={!Boolean(filterParams) ? t('captions.emptyTableTitle') : t('errors.messages.noRecordsFound')}
-                    description={!Boolean(filterParams) && t('captions.emptyTableSubtitle')}
+                    heading={
+                      Boolean(filterParams)
+                        ? t('errors.messages.noRecordsFound')
+                        : isPhysician
+                        ? t('captions.noPrescriptionFound')
+                        : t('captions.emptyTableTitle')
+                    }
+                    description={
+                      !Boolean(filterParams) && isPhysician
+                        ? t('captions.noPrescriptionFoundSubtitle')
+                        : !Boolean(filterParams)
+                        ? t('captions.emptyTableSubtitle')
+                        : null
+                    }
                   />
                 }
               />
