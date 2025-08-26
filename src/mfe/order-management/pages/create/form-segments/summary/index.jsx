@@ -658,7 +658,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     const controlSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
         <Button size={'md'} disabled={isSaving} variant="primary" type="submit" onClick={handleOnSubmit}>
-          {t('captions.btnSubmitOrder')}
+          {t(isSpOrder ? 'captions.btnSubmitPrescription' : 'captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
     );
@@ -674,7 +674,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     const controlRejectOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
         <Button size={'md'} variant="primary" type="submit" onClick={handleReject}>
-          {t('captions.btnRejectOrder')}
+          {t(isSpOrder ? 'captions.btnRejectPrescription' : 'captions.btnRejectOrder')}
         </Button>
       </PermittedComponent>
     );
@@ -791,7 +791,6 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     (item) => item !== '' && item !== undefined && item !== null
   );
 
- 
   const backTextKey = backToInvoiceListing
     ? 'orderManagement.backToInvoiceDetails'
     : backToInvoiceDetails
@@ -799,7 +798,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     : isPhysician
     ? 'captions.btnBackToPrescriptions'
     : 'captions.btnBackToManageOrder';
- 
+
   const unitAmount = CommonUtils.formatNumberWithoutSymbol(
     papOrderOptions.isChecked ? 0 : simulationData?.updatedCatalogNetPrice ? simulationData?.updatedCatalogNetPrice : catalog.netPrice
   );
@@ -818,7 +817,6 @@ const Summary = ({ readOnly, checkEditPermission }) => {
   const TotalCost = CommonUtils.formatNumberWithoutSymbol(
     papOrderOptions.isChecked ? 0 : isSubmitted ? CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) : simulationData?.updatedCost || 0
   );
- 
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -852,7 +850,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                 )}
                 {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
-                    <span>{t(isPhysician ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
+                    <span>{t(isSpOrder ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
                     {showPapBadge}
                   </Heading>
                 ) : null}
@@ -981,9 +979,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                 <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
-                    heading={
-                      <Heading as="h3">{t(isPhysician ? 'labels.prescriptionDetails' : isSpOrder ? 'labels.orderDetails' : 'labels.priceDetails')}</Heading>
-                    }
+                    heading={<Heading as="h3">{t(isSpOrder ? 'labels.prescriptionDetails' : 'labels.priceDetails')}</Heading>}
                   />
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
@@ -1133,7 +1129,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                         />
                         <DetailSegment label={t('labels.shipToAccountName')} value={accountDetails?.shipToAccount?.accountName} />
                         <DetailSegment
-                          label={t(isPhysician ? 'labels.prescriptionChannel' : 'labels.orderChannel')}
+                          label={t(isSpOrder ? 'labels.prescriptionChannel' : 'labels.orderChannel')}
                           value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)}
                         />
                         {!isSpOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier]} />}
@@ -1642,7 +1638,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
       {!isError && isCommentPanelOpen && (
         <CommentPanel
           readOnly={isRejected}
-          meta={{ orderId, rejectionDetails }}
+          meta={{ orderId, rejectionDetails, isSpOrder }}
           onSuccess={handleAfterRejectOrder}
           onClose={() => setIsCommentPanelOpen(false)}
           openDrawer={isCommentPanelOpen}

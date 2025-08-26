@@ -186,17 +186,12 @@ export const OrderProvider = ({ children }) => {
   };
 
   React.useEffect(() => {
-    refreshAssignee();
+    if (!isPhysician) refreshAssignee();
   }, [assigneeRequestParams]);
 
   const setAssigneeOnChange = (list) => {
     setAssigneeList(list);
   };
-
-  const resetAssigneeList = assigneeList.map((item) => ({
-    ...item,
-    isChecked: false
-  }));
 
   return (
     <OrderContext.Provider
