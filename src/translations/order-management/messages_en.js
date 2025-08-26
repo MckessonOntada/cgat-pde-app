@@ -1028,5 +1028,8 @@ export const MessageEn = {
   'control.notifyUser': 'Notify User',
   'messages.notifyUser': 'Notification mail has been sent successfully to the authorized user.',
   'labels.prescriptionDetails': 'Prescription Details',
-  'headings.prescriptionSubmitted': 'Prescription Submitted!'
+  'headings.prescriptionSubmitted': 'Prescription Submitted!',
+  'controls.placeholder.searchReviewOrderPlaceholder': 'Search by Order ID, Patient name, Therapy',
+  'table.columns.captions.updatedBy': 'Updated By',
+  'table.columns.captions.updatedOn': 'Updated On'
 };

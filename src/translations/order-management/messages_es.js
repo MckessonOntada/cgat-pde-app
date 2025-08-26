@@ -674,5 +674,8 @@ export const MessageEs = {
   'control.notifyUser': 'S_Notify User',
   'messages.notifyUser': 'S_Notification mail has been sent successfully to the authorized user.',
   'labels.prescriptionDetails': 'S_Prescription Details',
-  'orderManagement.patientDetails.inputLabel.doa': 'S_Date of Administration'
+  'orderManagement.patientDetails.inputLabel.doa': 'S_Date of Administration',
+  'controls.placeholder.searchReviewOrderPlaceholder': 'S_Search by Order ID, Patient name, Therapy',
+  'table.columns.captions.updatedBy': 'S_Updated By',
+  'table.columns.captions.updatedOn': 'S_Updated On'
 };
