@@ -650,6 +650,7 @@ export const MessageEs = {
   'messages.phLastNameExtraSpaceError': 'S_S_Policy Holder Last Name must not contain leading or trailing spaces',
   'messages.pharmacyManagerExtraSpaceError': 'S_S_Pharmacy Benefit Manager Name must not contain leading or trailing spaces',
   'error.default': 'S_S_System is facing issues in getting the information. Kindly Contact your System admin.',
+  'error.userAlreadyActive': 'S_Provider is already registered. This action is not permitted.',
   'labels.collaborators': 'S_Collaborators:',
   'message.selectDocumentToUpload': 'S_Please select document to upload.',
   'message.documentUploadSuccess': 'S_Document has been successfully uploaded for Order ID: {orderId}',
