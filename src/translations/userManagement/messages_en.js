@@ -163,7 +163,7 @@ export const UserManagementEN = {
   'userManagement.searchFilter.addaccount_label': 'Search By Name or location',
   'userManagement.add_accounts.labelheader': 'Select accounts',
 
-  CREATE_NEW_ORDER: 'Order Lifecycle',
+  CREATE_NEW_ORDER: 'Order Workflow',
   USER_MANAGEMENT: 'User and account Management',
   ORGANIZATION_MANAGEMENT: 'Organization Management',
   ORDER_MANAGEMENT: 'Order Management',
