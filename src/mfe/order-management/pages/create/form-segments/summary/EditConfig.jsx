@@ -18,6 +18,15 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
                 type: 'input',
                 maxLength: 20,
                 isRequired: therapyConfig.isPIDRequired
+              },
+              {
+                id: 'patient-info-mrn',
+                name: 'medicalRecordNumber',
+                label: 'orderManagement.patientDetails.inputLabel.mrn',
+                placeholder: ' ',
+                type: 'input',
+                maxLength: 11,
+                isRequired: therapyConfig.isMRNRequired
               }
             ]
           }
@@ -26,15 +35,6 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
     ];
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
     const controls = [
-      {
-        id: 'patient-info-mrn',
-        name: 'medicalRecordNumber',
-        label: 'orderManagement.patientDetails.inputLabel.mrn',
-        placeholder: ' ',
-        type: 'input',
-        maxLength: 11,
-        isRequired: therapyConfig.isMRNRequired
-      },
       {
         id: 'patient-info-doa',
         name: 'dateOfAdministration',
@@ -91,6 +91,18 @@ export const patientDetailsValidationSchema = (t, therapyConfig) =>
               (value) => value === undefined || value.trim().length === value.length
             ),
         otherwise: (schema) => schema.notRequired()
+      }),
+    medicalRecordNumber: Yup.string()
+      .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
+      .test(
+        'no-leading-trailing-spaces',
+        t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+        (value) => value === undefined || value === null || value?.trim().length === value.length
+      )
+      .when([], {
+        is: () => therapyConfig?.isMRNRequired,
+        then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
+        otherwise: (schema) => schema.notRequired()
       })
   });
 
@@ -119,19 +131,6 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .when([], {
         is: () => therapyConfig.isDOARequired,
         then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
-        otherwise: (schema) => schema.notRequired()
-      }),
-
-    medicalRecordNumber: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
-      .test(
-        'no-leading-trailing-spaces',
-        t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-        (value) => value === undefined || value === null || value?.trim().length === value.length
-      )
-      .when([], {
-        is: () => therapyConfig?.isMRNRequired,
-        then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
         otherwise: (schema) => schema.notRequired()
       })
   });

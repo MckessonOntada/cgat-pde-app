@@ -56,14 +56,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
         isRequired: therapyConfig.isPORequired,
         component: Components['input'],
         maxLength: 35
-      },
-      {
-        name: 'medicalRecordNumber',
-        label: translationFn('orderManagement.patientDetails.inputLabel.mrn'),
-        placeholder: ' ',
-        isRequired: therapyConfig.isMRNRequired,
-        component: Components['input'],
-        maxLength: 11
       }
     );
   } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {

@@ -48,7 +48,6 @@ const INITIAL_VALUES = {
   slotNumber: '',
   poNumber: '',
   dateOfAdministration: '',
-  medicalRecordNumber: '',
   hasAllergies: '',
   allergyDetails: '',
   diagnosisCode: [],
@@ -216,18 +215,6 @@ function AdditionalDetails({ readOnly }) {
             .when([], {
               is: () => therapyConfig.isPORequired,
               then: (schema) => schema.required(t('labels.PONumberRequired')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          medicalRecordNumber: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
-            .test(
-              'no-leading-trailing-spaces',
-              t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-              (value) => value === undefined || value.trim().length === value.length
-            )
-            .when([], {
-              is: () => therapyConfig.isMRNRequired,
-              then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
               otherwise: (schema) => schema.notRequired()
             })
         })
@@ -541,7 +528,6 @@ function AdditionalDetails({ readOnly }) {
         variantDetails = {},
         configuredQuestionnaires,
         diagnosisCode,
-        medicalRecordNumber,
         clinicalDetails = {}
       } = additionalDetails;
 
@@ -582,8 +568,7 @@ function AdditionalDetails({ readOnly }) {
           dateOfAdministration,
           coiId,
           orderQuantity,
-          slotNumber,
-          medicalRecordNumber
+          slotNumber
         });
       }
 
@@ -731,7 +716,7 @@ function AdditionalDetails({ readOnly }) {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, medicalRecordNumber, diagnosisCode } = values;
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, diagnosisCode } = values;
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.sectionsDetails) return;
 
@@ -780,7 +765,6 @@ function AdditionalDetails({ readOnly }) {
       payload.orderQuantity = orderQuantity;
       payload.slotNumber = slotNumber;
       payload.dateOfAdministration = dateOfAdministration;
-      payload.medicalRecordNumber = medicalRecordNumber;
     }
 
     if (!isSelfAttested) {
