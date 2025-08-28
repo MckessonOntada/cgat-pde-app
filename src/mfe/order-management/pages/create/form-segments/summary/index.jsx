@@ -91,7 +91,8 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     if (orderDetails?.additionalDetails) {
       setDraftChanges({
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-        patientIdentifier: orderDetails.patient?.patientIdentifier
+        patientIdentifier: orderDetails.patient?.patientIdentifier,
+        medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
       });
     }
   }, [orderDetails]);
@@ -495,7 +496,8 @@ const Summary = ({ readOnly, checkEditPermission }) => {
               dispatch(closeModal());
               setDraftChanges({
                 additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-                patientIdentifier: orderDetails.patient?.patientIdentifier
+                patientIdentifier: orderDetails.patient?.patientIdentifier,
+                medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
               });
             }
           }}>
@@ -529,14 +531,14 @@ const Summary = ({ readOnly, checkEditPermission }) => {
         } else {
           initialValues = {
             coiId: additionalDetails.coiId || '',
-            medicalRecordNumber: additionalDetails.medicalRecordNumber || '',
             dateOfAdministration: additionalDetails.dateOfAdministration || '',
             poNumber: additionalDetails.poNumber || ''
           };
         }
       } else {
         initialValues = {
-          patientIdentifier: draftChanges?.patientIdentifier || ''
+          patientIdentifier: draftChanges?.patientIdentifier || '',
+          medicalRecordNumber: draftChanges?.medicalRecordNumber || ''
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -553,7 +555,8 @@ const Summary = ({ readOnly, checkEditPermission }) => {
             } else {
               setDraftChanges((prev) => ({
                 ...prev,
-                patientIdentifier: values.patientIdentifier
+                patientIdentifier: values.patientIdentifier,
+                medicalRecordNumber: values.medicalRecordNumber
               }));
             }
 
@@ -570,7 +573,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                   open={true}
                   anchor="right"
                   onClose={() => setDrawerElement(null)}
-                  heading={'Additional Details'}
+                  heading={stage === ORDER_STAGES.ADDITIONAL_DETAILS ? 'Additional Details' : 'Patient Details'}
                   controls={
                     <div className="controls">
                       <Button
@@ -629,7 +632,8 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     const controls = [];
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
       additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-      patientIdentifier: orderDetails.patient?.patientIdentifier
+      patientIdentifier: orderDetails.patient?.patientIdentifier,
+      medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
     });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
@@ -1149,7 +1153,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                         )
                       }
                     />
-                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-4' : 'xl:grid-cols-5'}`}>
+                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
                       {!isSpOrder && (
                         <DetailSegment
                           label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
@@ -1183,6 +1187,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                         }
                       />
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+                      <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
                     </div>
                   </div>
                 )}
@@ -1413,10 +1418,6 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                         <DetailSegment
                           label={t('labels.dateOfAdministration')}
                           value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
-                        />
-                        <DetailSegment
-                          label={t('orderManagement.patientDetails.inputLabel.mrn')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.medicalRecordNumber || '-'}
                         />
                       </>
                     )}

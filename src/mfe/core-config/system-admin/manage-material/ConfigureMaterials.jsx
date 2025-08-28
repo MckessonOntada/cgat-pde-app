@@ -53,7 +53,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
           patientInfoRequired: config.isPatientInformationRequired ? 'yes' : 'no',
           patientIdentifierRequired: config.isPatientInformationRequired ? (config.isPIDRequired ? 'yes' : 'no') : '',
           coiIdRequired: config.isCoiIdRequired ? 'yes' : 'no',
-          mrnRequired: config.isMRNRequired ? 'yes' : 'no',
+          mrnRequired: config.isPatientInformationRequired ? (config.isMRNRequired ? 'yes' : 'no') : '',
           doaRequired: config.isDOARequired ? 'yes' : 'no',
           poNumberRequired: config.isPORequired ? 'yes' : 'no'
         });
@@ -89,6 +89,10 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       caption: 'manageMaterial.drawer.configuration.body.patientIdentifier'
     },
     {
+      key: 'mrnRequired',
+      caption: 'manageMaterial.drawer.configuration.body.mrnRequired'
+    },
+    {
       key: 'coiIdRequired',
       caption: 'manageMaterial.drawer.configuration.body.coiIdRequired'
     },
@@ -96,10 +100,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       key: 'poNumberRequired',
       caption: 'manageMaterial.drawer.configuration.body.poNumberRequired'
     },
-    {
-      key: 'mrnRequired',
-      caption: 'manageMaterial.drawer.configuration.body.mrnRequired'
-    },
+
     {
       key: 'doaRequired',
       caption: 'manageMaterial.drawer.configuration.body.doaRequired'
@@ -109,8 +110,8 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const formFields = fieldConfigs.map(({ key, caption }) => {
     const isPatientInfoNo = formValues.patientInfoRequired === 'no';
     const isPatientIdentifierField = key === 'patientIdentifierRequired';
-    const isDisabled = isPatientIdentifierField && isPatientInfoNo;
-
+    const isMrnField = key === 'mrnRequired';
+    const isDisabled = (isPatientIdentifierField || isMrnField) && isPatientInfoNo;
     return {
       caption: t(caption),
       id: key,
@@ -125,7 +126,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
           setFormValues((prev) => ({
             ...prev,
             [key]: value,
-            ...(value === 'no' ? { patientIdentifierRequired: '' } : {})
+            ...(value === 'no' ? { patientIdentifierRequired: '', mrnRequired: '' } : {})
           }));
         } else {
           setFormValues((prev) => ({
@@ -140,10 +141,9 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const isApplyDisabled =
     formValues.patientInfoRequired &&
     formValues.coiIdRequired &&
-    formValues.mrnRequired &&
     formValues.poNumberRequired &&
     formValues.doaRequired &&
-    (formValues.patientInfoRequired === 'yes' ? formValues.patientIdentifierRequired : true);
+    (formValues.patientInfoRequired === 'yes' ? formValues.patientIdentifierRequired && formValues.mrnRequired : true);
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {

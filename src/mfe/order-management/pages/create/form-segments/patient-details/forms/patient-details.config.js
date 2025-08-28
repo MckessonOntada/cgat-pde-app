@@ -78,6 +78,16 @@ export const PatientSections = (channelType, therapyConfig) => [
                   type: 'input',
                   maxLength: 20,
                   isRequired: therapyConfig.isPIDRequired
+                },
+                {
+                  id: 'patient-info-identifier',
+                  name: 'patient.medicalRecordNumber',
+                  label: 'orderManagement.patientDetails.inputLabel.mrn',
+                  placeholder: ' ',
+                  type: 'input',
+                  maxLength: 20,
+                  isRequired: therapyConfig.isMRNRequired,
+                  maxLength: 11
                 }
               ]
             : [])
