@@ -152,7 +152,7 @@ const Materials = ({ onSelect, material }) => {
             cellValue = '';
           if (isExpandable) {
             toolTip = ndc.join(', ');
-            cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
+            cellValue = t('labels.multiple');
           } else {
             toolTip = ndc;
             cellValue = ndc;
