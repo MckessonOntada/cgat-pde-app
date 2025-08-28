@@ -165,16 +165,14 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           cellValue = '';
         if (isExpandable) {
           toolTip = ndc.join(', ');
-          cellValue = CommonUtils.getListOverflowingDisplayLabel(ndc, 2);
+          cellValue = t('labels.multiple');
         } else {
           toolTip = ndc;
           cellValue = ndc;
         }
         return (
           <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-            <Tooltip body={toolTip}>
-              <span>{cellValue}</span>
-            </Tooltip>
+            <Tooltip body={toolTip}>{cellValue}</Tooltip>
           </span>
         );
       }
