@@ -57,6 +57,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const dispatch = useDispatch();
   const handleConfirmChange = (checked) => {
     setIsSelfAttested(checked);
+    setIsDirty(true);
   };
 
   React.useEffect(() => {
@@ -419,7 +420,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             }, [values]);
             return (
               <Form>
-                {/* <div className={`${styles.wrapper} ${readOnly ? 'disabled-div' : ''}`}>  */}
                 <div className={styles.wrapper}>
                   <fieldset className="MCP-fieldset" disabled={readOnly}>
                     <div className="MCP-module-body">
