@@ -284,7 +284,7 @@ export const getColumns = (setNotification) => {
       cell: (props) => {
         const contextMenuOptions = getMenuOption(props);
         if (!contextMenuOptions || contextMenuOptions.length === 0) return;
-        return <MenuList menuIcon={<EllipsisIcon />} handleSelect={handleOnMenuClick(props)} options={contextMenuOptions} />;
+        return <MenuList size="md" menuIcon={<EllipsisIcon />} handleSelect={handleOnMenuClick(props)} options={contextMenuOptions} />;
       }
     }
   ];

@@ -150,6 +150,7 @@ function CustomCard({
                       handleSelect={() => {}}
                       options={[{ label: renderCell(col, row) }]}
                       aria-label="Order options"
+                      size="md"
                     />
                   )}
                 </React.Fragment>
