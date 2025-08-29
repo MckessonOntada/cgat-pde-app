@@ -106,9 +106,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async ({ isDraft, ...data }) => OrderService.saveAccount(orderId, data, isDraft), {
-    onSuccess: async (result) => {
+    onSuccess: async (result, variables) => {
       const { id } = result;
-      if (isSelfAttested) {
+      if (isSelfAttested || variables.isAttested) {
         try {
           navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
             state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover }
@@ -201,6 +201,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
         t,
         onOk: () => {
           saveAccount({ ...payload, isDraft: true });
+        },
+        onContinue: () => {
+          saveAccount({ ...payload, isAttested: true });
         }
       });
     } else {

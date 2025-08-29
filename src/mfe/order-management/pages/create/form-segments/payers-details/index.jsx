@@ -239,8 +239,8 @@ function Payer({ readOnly, hasPermission }) {
     queryKey: 'save-payer-details',
     mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
       OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
-    onSuccess: (response) => {
-      if (isSelfAttested) {
+    onSuccess: (response, variables) => {
+      if (isSelfAttested || variables.isAttested) {
         navigateToNextStage(orderId);
       } else {
         setAlert({
@@ -304,6 +304,9 @@ function Payer({ readOnly, hasPermission }) {
         t,
         onOk: () => {
           savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isDraft: true });
+        },
+        onContinue: () => {
+          savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isAttested: true });
         }
       });
     } else {

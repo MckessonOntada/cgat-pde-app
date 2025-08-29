@@ -9,9 +9,9 @@ import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import { Tooltip } from '@mckesson/mcp-component-library';
 
-export function showSaveAsDraftConfirm({ t, onOk, onCancel }) {
+export function showSaveAsDraftConfirm({ t, onOk, onCancel, onContinue }) {
   return renderModal({
-    title: t('messages.header.warning'),
+    title: t('messages.header.alert'),
     bodyContent: (
       <div className="MCP-modal-body">
         <p>{t('attestation.warning')}</p>
@@ -25,6 +25,10 @@ export function showSaveAsDraftConfirm({ t, onOk, onCancel }) {
       confirm: {
         label: t('button.caption.saveAsDraft'),
         action: () => onOk()
+      },
+      continue: {
+        label: t('captions.btnSaveAndContinue'),
+        action: () => onContinue()
       }
     }
   });
