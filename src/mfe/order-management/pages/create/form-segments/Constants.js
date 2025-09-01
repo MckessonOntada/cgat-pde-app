@@ -104,7 +104,7 @@ export const GET_STAGE_DISPLAY_NAME = (stageKey, channelType, t) => {
       channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? t('stepper.label.PATIENT_AND_PROVIDER_DETAILS') : t('labels.patientDetails'),
     [ORDER_STAGES.PAYER_DETAILS]: t('labels.payerDetails'),
     [ORDER_STAGES.ADDITIONAL_DETAILS]: t('labels.additionalDetails'),
-    [ORDER_STAGES.ORDER_SUMMARY]: t('labels.orderSummary')
+    [ORDER_STAGES.ORDER_SUMMARY]: t('labels.summary')
   };
   return displayMap[stageKey] || stageKey;
 };
