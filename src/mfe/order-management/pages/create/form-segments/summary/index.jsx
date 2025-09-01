@@ -56,7 +56,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
   const { orderId } = useParams();
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId);
   const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
@@ -87,6 +87,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+
   React.useEffect(() => {
     if (orderDetails?.additionalDetails) {
       setDraftChanges({
@@ -265,7 +266,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     }`
   );
 
-  const { data: simulationData = {} } = useQuery({
+  const { isLoading: isSimulationLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
@@ -275,7 +276,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
-
+      refreshOrderDetails();
       if (warningMessages.length > 0) {
         warningMessages.forEach((msg) => {
           addNotification({
@@ -803,22 +804,10 @@ const Summary = ({ readOnly, checkEditPermission }) => {
     ? 'captions.btnBackToPrescriptions'
     : 'captions.btnBackToManageOrder';
 
-  const unitAmount = CommonUtils.formatNumberWithoutSymbol(
-    papOrderOptions.isChecked ? 0 : simulationData?.updatedCatalogNetPrice ? simulationData?.updatedCatalogNetPrice : catalog.netPrice
-  );
-  const netAmount = CommonUtils.formatNumberWithoutSymbol(
-    papOrderOptions.isChecked
-      ? 0
-      : CommonUtils.getOrderCost(
-          orderCost,
-          simulationData?.updatedCatalogNetPrice * additionalDetails.orderQuantity || catalog?.netPrice * additionalDetails.orderQuantity
-        )
-  );
-
-  const TaxAmount = CommonUtils.formatNumberWithoutSymbol(
-    papOrderOptions.isChecked ? 0 : isSubmitted ? orderDetails.taxAmount || 0 : simulationData.updatedTaxAmount || orderDetails.taxAmount || 0
-  );
-  const TotalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : CommonUtils.getOrderCost(orderCost, simulationData.updatedCost) || 0);
+  const unitAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice);
+  const netAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.totalNetPrice);
+  const TaxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
+  const TotalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -1030,8 +1019,14 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             label={t('labels.unitAmount')}
                             value={
                               <span className="dollarSign ">
-                                <span>$</span>
-                                {unitAmount}
+                                {isSimulationLoading ? (
+                                  '-'
+                                ) : (
+                                  <>
+                                    <span>$</span>
+                                    {unitAmount}
+                                  </>
+                                )}
                               </span>
                             }
                           />
@@ -1041,8 +1036,14 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             label={t('labels.netAmount')}
                             value={
                               <span className="dollarSign ">
-                                <span>$</span>
-                                {netAmount}
+                                {isSimulationLoading ? (
+                                  '-'
+                                ) : (
+                                  <>
+                                    <span>$</span>
+                                    {netAmount}
+                                  </>
+                                )}
                               </span>
                             }
                           />
@@ -1052,8 +1053,14 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             label={t('labels.taxAmount')}
                             value={
                               <span className="dollarSign ">
-                                <span>$</span>
-                                {TaxAmount}
+                                {isSimulationLoading ? (
+                                  '-'
+                                ) : (
+                                  <>
+                                    <span>$</span>
+                                    {TaxAmount}
+                                  </>
+                                )}
                               </span>
                             }
                           />
@@ -1063,8 +1070,14 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                             label={t('labels.totalAmount')}
                             value={
                               <span className="dollarSign ">
-                                <span>$</span>
-                                {TotalCost}
+                                {isSimulationLoading ? (
+                                  '-'
+                                ) : (
+                                  <>
+                                    <span>$</span>
+                                    {TotalCost}
+                                  </>
+                                )}
                               </span>
                             }
                           />

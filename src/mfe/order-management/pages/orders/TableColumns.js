@@ -423,7 +423,7 @@ const jsxColumns = () => [
     showInMobileHeader: true,
     cardHeader: true,
     cell: function (props) {
-      return <EclipsesTextCss str={props.therapy?.materialDescription} maxWidth={280} className={'MCP-table-cell'} />;
+      return <EclipsesTextCss str={props.therapy?.materialDescription || props.tradeDetails?.tradeName} maxWidth={280} className={'MCP-table-cell'} />;
     }
   },
   {
