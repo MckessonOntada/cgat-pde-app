@@ -87,3 +87,23 @@ export const NOTIFY_USER_EVENT_TYPE = (t) => ({
   [ORDER_STAGES.ADDITIONAL_DETAILS]: 'ORDER_ADDITIONAL_DETAILS_RESEND',
   [ORDER_STAGES.ORDER_SUMMARY]: 'ORDER_SUMMARY_RESEND'
 });
+
+export const STAGE_COLORS = {
+  THERAPY_SELECTION: '#B05F59',
+  ACCOUNT_DETAILS: '#C86AC5',
+  PATIENT_DETAILS: '#297CB0',
+  PAYER_DETAILS: '#297CB0',
+  ADDITIONAL_DETAILS: '#EB7A7A',
+  ORDER_SUMMARY: '#5C56C2'
+};
+export const GET_STAGE_DISPLAY_NAME = (stageKey) => {
+  const displayMap = {
+    [ORDER_STAGES.THERAPY_SELECTION]: 'Therapy Selection',
+    [ORDER_STAGES.ACCOUNT_DETAILS]: 'Account Details',
+    [ORDER_STAGES.PATIENT_DETAILS]: 'Patient Details',
+    [ORDER_STAGES.PAYER_DETAILS]: 'Payer Details',
+    [ORDER_STAGES.ADDITIONAL_DETAILS]: 'Additional Details',
+    [ORDER_STAGES.ORDER_SUMMARY]: 'Order Summary'
+  };
+  return displayMap[stageKey] || stageKey;
+};
