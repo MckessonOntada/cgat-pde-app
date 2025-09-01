@@ -258,7 +258,7 @@ function TherapySelection({ readOnly }) {
 
       <ModuleHeader
         heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
-        controls={orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+        controls={orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
       />
 
       <div className="MCP-module-body">
