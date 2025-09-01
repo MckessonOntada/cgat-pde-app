@@ -96,14 +96,15 @@ export const STAGE_COLORS = {
   ADDITIONAL_DETAILS: '#EB7A7A',
   ORDER_SUMMARY: '#5C56C2'
 };
-export const GET_STAGE_DISPLAY_NAME = (stageKey) => {
+export const GET_STAGE_DISPLAY_NAME = (stageKey, channelType, t) => {
   const displayMap = {
-    [ORDER_STAGES.THERAPY_SELECTION]: 'Therapy Selection',
-    [ORDER_STAGES.ACCOUNT_DETAILS]: 'Account Details',
-    [ORDER_STAGES.PATIENT_DETAILS]: 'Patient Details',
-    [ORDER_STAGES.PAYER_DETAILS]: 'Payer Details',
-    [ORDER_STAGES.ADDITIONAL_DETAILS]: 'Additional Details',
-    [ORDER_STAGES.ORDER_SUMMARY]: 'Order Summary'
+    [ORDER_STAGES.THERAPY_SELECTION]: t('labels.therapySelection'),
+    [ORDER_STAGES.ACCOUNT_DETAILS]: t('labels.accountDetails'),
+    [ORDER_STAGES.PATIENT_DETAILS]:
+      channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? t('stepper.label.PATIENT_AND_PROVIDER_DETAILS') : t('labels.patientDetails'),
+    [ORDER_STAGES.PAYER_DETAILS]: t('labels.payerDetails'),
+    [ORDER_STAGES.ADDITIONAL_DETAILS]: t('labels.additionalDetails'),
+    [ORDER_STAGES.ORDER_SUMMARY]: t('labels.orderSummary')
   };
   return displayMap[stageKey] || stageKey;
 };

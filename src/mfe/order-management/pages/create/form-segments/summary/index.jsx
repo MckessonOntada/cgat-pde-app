@@ -899,7 +899,7 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                     )}
                   </div>
                 )}
-                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
               </div>
             }
