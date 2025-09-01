@@ -319,7 +319,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.pendingPayments.filter.payOnDateStart': 'S_Pay On Date (Start)',
   'paymentInvoices.pendingPayments.filter.payOnDateEnd': 'S_Pay On Date (End)',
   'paymentInvoices.Details.financeCharges':
-    'S_FINANCE CHARGES: Purchases that remain unpaid past their due date incur finance charges based on the outstanding balance calculated and prorated from the due date until paid. Customers incur finance charges based on the outstanding balance charged at a rate of 1.5% on the first late day and every 30 days thereafter. For either method, the maximum Annual Percentage Rate (APR) is 18% or, if lower, the maximum rate permitted under applicable law.',
+    'S_FINANCE CHARGES: Any outstanding balance not paid by the due date may be subject to a finance charge. This charge will be applied to the unpaid amount from the due date until the payment is received in full. For specific details on the finance charge rate and its calculation, please refer to the invoice.',
   'paymentInvoices.Details.payment-history': 'S_back to payments history details page',
   'paymentInvoices.Details.payment-history-listing': 'S_back to payment history page',
   'paymentInvoices.Details.pending-payments': 'S_back to schedule payments details page',
