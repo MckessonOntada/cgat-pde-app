@@ -330,6 +330,7 @@ function UserTable({ onActionSuccess }) {
                   : [])
               ]}
               aria-label="Order options"
+              size="md"
             />
           ),
         omit: isSystemAdminView || tab === USER_TABS.USERS,
