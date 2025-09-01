@@ -781,6 +781,35 @@ function areArraysUnique(arr1 = [], arr2 = []) {
   return true;
 }
 
+function deepCompare(a, b) {
+  if (typeof a !== typeof b) return false;
+
+  if (a === null || b === null || typeof a !== 'object') {
+    return a === b;
+  }
+
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b)) return false;
+    if (a.length !== b.length) return false;
+
+    for (let i = 0; i < a.length; i++) {
+      if (!deepCompare(a[i], b[i])) return false;
+    }
+    return true;
+  }
+
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+
+  for (let key of keysA) {
+    if (!b.hasOwnProperty(key)) return false;
+    if (!deepCompare(a[key], b[key])) return false;
+  }
+
+  return true;
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -841,7 +870,8 @@ const CommonUtils = Object.freeze({
   removeLeadingZeros,
   getOrderCost,
   formatSupportNumber,
-  areArraysUnique
+  areArraysUnique,
+  deepCompare
 });
 
 export default CommonUtils;

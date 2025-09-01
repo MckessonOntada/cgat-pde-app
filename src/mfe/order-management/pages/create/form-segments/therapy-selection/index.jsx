@@ -101,12 +101,15 @@ function TherapySelection({ readOnly }) {
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
       const { id } = result;
+      const isTherapyChanged = tradeDetails?.tradeName.trim() !== orderDetails?.tradeDetails?.tradeName.trim();
+
       navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
         state: {
           ...locationState,
           ...(prevSearchState && { __prevSearch: prevSearchState }),
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          isTherapyChanged: isTherapyChanged
         }
       });
     },
@@ -121,7 +124,7 @@ function TherapySelection({ readOnly }) {
       });
     }
   });
-  const isTherapyChanged = tradeDetails?.tradeName.trim() !== orderDetails?.tradeDetails?.tradeName.trim();
+  const isTherapyChanged = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
   const navigateToNextStage = (id) => {
     navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
       state: {

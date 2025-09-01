@@ -47,7 +47,7 @@ import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showEditAlert } from '../OrderUtil';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 
-const Summary = ({ readOnly, checkEditPermission }) => {
+const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -110,6 +110,22 @@ const Summary = ({ readOnly, checkEditPermission }) => {
       });
     }
   }, [isError]);
+
+  React.useEffect(() => {
+    const { changeOnPreviousStep = false } = location.state;
+    if (changeOnPreviousStep && !hasPermission) {
+      const { changeOnPreviousStep, ...newState } = location.state;
+      navigate(location.pathname, { state: newState });
+      const state = {};
+      state.title = 'Alert';
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>{t('message.stepSuccessfulCompletionAlert.additionalDetails')}</p>
+        </div>
+      );
+      dispatch(openModal(state));
+    }
+  }, []);
 
   const [openDetails, setOpenDetails] = React.useState(false);
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;

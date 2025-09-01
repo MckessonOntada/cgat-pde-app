@@ -29,6 +29,7 @@ import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
+import { openModal } from '@src/store/reducer/modalReducer';
 
 const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -77,6 +78,21 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
   }, [orderDetails]);
 
+  React.useEffect(() => {
+    if (isTherapyChanged && !hasPermission) {
+      const { isTherapyChanged, ...newState } = location.state;
+      navigate(location.pathname, { state: newState });
+      const state = {};
+      state.title = 'Alert';
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>{t('message.stepSuccessfulCompletionAlert.therapySelection')}</p>
+        </div>
+      );
+      dispatch(openModal(state));
+    }
+  }, []);
+
   const tradeDetails = orderDetails.tradeDetails;
 
   const { data: priceDetails } = useOrderPrice({
@@ -111,7 +127,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       if (isSelfAttested) {
         try {
           navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-            state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover }
+            state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover, changeOnPreviousStep: true }
           });
         } catch (err) {
           console.error(err);
