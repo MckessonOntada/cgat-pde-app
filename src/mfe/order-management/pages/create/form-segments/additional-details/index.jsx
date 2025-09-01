@@ -282,11 +282,11 @@ function AdditionalDetails({ readOnly }) {
   };
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
-    async ({ isDraft, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
+    async ({ isDraft, isAttested, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
     {
-      onSuccess: (result) => {
+      onSuccess: (result, variables) => {
         const { id } = result;
-        if (isSelfAttested) {
+        if (isSelfAttested || variables?.isAttested) {
           navigateToNextStage(id);
         } else {
           refreshOrderDetails();
@@ -773,6 +773,10 @@ function AdditionalDetails({ readOnly }) {
         onOk: () => {
           const draftPayload = { ...payload, isDraft: true };
           saveAdditionalDetails(draftPayload);
+        },
+        onContinue: () => {
+          const attestationPayload = { ...payload, isAttested: true };
+          saveAdditionalDetails(attestationPayload);
         }
       });
     } else {

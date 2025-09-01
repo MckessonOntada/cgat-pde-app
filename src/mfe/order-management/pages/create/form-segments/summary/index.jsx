@@ -1200,7 +1200,9 @@ const Summary = ({ readOnly, checkEditPermission }) => {
                         }
                       />
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                      {!isSpOrder && (
+                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                      )}
                     </div>
                   </div>
                 )}

@@ -198,9 +198,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isDraft);
     },
     {
-      onSuccess: (result) => {
+      onSuccess: (result, variables) => {
         const { id } = result;
-        if (isSelfAttested) {
+        if (isSelfAttested || variables.isAttested) {
           navigateToNextStage(id);
           setProvider(null);
         } else {
@@ -266,6 +266,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         t,
         onOk: () => {
           savePatientDetails({ payload, skipDuplicateCheck, isDraft: true });
+        },
+        onContinue: () => {
+          savePatientDetails({ payload, skipDuplicateCheck, isAttested: true });
         }
       });
     } else {
