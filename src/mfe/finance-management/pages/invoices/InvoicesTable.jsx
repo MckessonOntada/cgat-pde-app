@@ -162,7 +162,7 @@ export default function InvoicesTable() {
       },
 
       selector: (row) => row.MRN,
-      width: '50px',
+      width: '40px',
       showInMobileHeader: true,
       isSelectable: true,
       omit: !CommonUtils.enableReviewAndPay(selectedAccount)
@@ -196,7 +196,7 @@ export default function InvoicesTable() {
       name: t('paymentInvoices.history.table.residualInvoiceNumber'),
       id: 'referenceDocumentNumber',
       selector: (row) => `${row.invoiceReference}`,
-      minWidth: '220px',
+      minWidth: '175px',
       cell: (props) => <EclipsesTextcss str={props.invoiceReference} maxWidth={170} />
     },
     {
@@ -236,7 +236,7 @@ export default function InvoicesTable() {
     {
       name: t('paymentInvoices.history.table.invoiceAmount'),
       selector: (row) => row?.billAmount,
-      minWidth: '175px',
+      minWidth: '155px',
       sortable: true,
       right: true,
       id: 'billAmount',
@@ -249,7 +249,7 @@ export default function InvoicesTable() {
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
-      minWidth: '175px',
+      minWidth: '155px',
       sortable: true,
       id: 'openAmount',
       cell: (props) => (
