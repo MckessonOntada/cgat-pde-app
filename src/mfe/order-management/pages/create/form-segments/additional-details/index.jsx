@@ -287,9 +287,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     async ({ isDraft, isAttested, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
     {
       onSuccess: (result, variables) => {
-        const { id } = result; 
+        const { id } = result;
         if (isSelfAttested || variables?.isAttested) {
-          navigateToNextStage(id); 
+          navigateToNextStage(id, true);
         } else {
           refreshOrderDetails();
           setAlert({

@@ -217,9 +217,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     },
     {
       onSuccess: (result, variables) => {
-        const { id } = result; 
+        const { id } = result;
         if (isSelfAttested || variables.isAttested) {
-          navigateToNextStage(id); 
+          navigateToNextStage(id, true);
           setProvider(null);
         } else {
           setAlert({
