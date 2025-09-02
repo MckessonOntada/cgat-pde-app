@@ -128,6 +128,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
                 value: 'unlink'
               }
             ]}
+            size="md"
           />
         );
       },

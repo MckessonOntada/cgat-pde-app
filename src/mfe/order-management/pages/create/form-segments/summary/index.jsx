@@ -915,7 +915,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     )}
                   </div>
                 )}
-                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
               </div>
             }
@@ -1216,7 +1216,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         }
                       />
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                      {!isSpOrder && (
+                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                      )}
                     </div>
                   </div>
                 )}

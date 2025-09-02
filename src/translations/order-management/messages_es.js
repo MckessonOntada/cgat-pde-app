@@ -380,6 +380,7 @@ export const MessageEs = {
 
   'messages.header.confirmation': 'S_Confirmation!',
   'messages.header.warning': 'S_Warning!',
+  'messages.header.alert': 'S_Alert',
 
   'messages.confirmation.reject': 'S_Are you sure you want to reject this order',
   'messages.confirmation.approve': 'S_Are you sure you want to approve this order',

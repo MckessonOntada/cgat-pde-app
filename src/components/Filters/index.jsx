@@ -206,14 +206,13 @@ const Filters = ({
 };
 
 Filters.propTypes = {
-  initialFilters: PropTypes.object.isRequired,
   onApplyFilters: PropTypes.func.isRequired,
   onClearFilters: PropTypes.func,
   additionalFilters: PropTypes.arrayOf(
     PropTypes.shape({
-      type: PropTypes.oneOf(['select', 'multiselect', 'datepicker', 'dateRange']),
+      type: PropTypes.oneOf(['select', 'multiselect', 'datepicker', 'dateRange', 'multiSelectDropdown', 'dateRangePicker']),
       name: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
+      label: PropTypes.string,
       options: PropTypes.arrayOf(
         PropTypes.shape({
           value: PropTypes.string.isRequired,

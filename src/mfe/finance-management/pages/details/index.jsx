@@ -298,7 +298,7 @@ function Details(props) {
           {getBackLinkLabel()}
         </Button>
       </div>
-      <Heading>
+      <Heading as="h1">
         {INVOICES_SCREEN ? t('paymentInvoices.Details.Invoice') : t('paymentInvoices.Details.Credit')} - {`#${billNumber}` || '#'}
       </Heading>
 

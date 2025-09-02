@@ -216,10 +216,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isDraft);
     },
     {
-      onSuccess: (result) => {
-        const { id } = result;
-        if (isSelfAttested) {
-          navigateToNextStage(id, true);
+      onSuccess: (result, variables) => {
+        const { id } = result; 
+        if (isSelfAttested || variables.isAttested) {
+          navigateToNextStage(id); 
           setProvider(null);
         } else {
           setAlert({
@@ -284,6 +284,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         t,
         onOk: () => {
           savePatientDetails({ payload, skipDuplicateCheck, isDraft: true });
+        },
+        onContinue: () => {
+          savePatientDetails({ payload, skipDuplicateCheck, isAttested: true });
         }
       });
     } else {
@@ -405,7 +408,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         }
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={channelType} />}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }

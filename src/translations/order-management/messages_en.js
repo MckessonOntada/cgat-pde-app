@@ -429,7 +429,7 @@ export const MessageEn = {
   'message.discardChangesConfirmation': "You're about to discard all unsaved changes to this order. Are you sure you want to continue?",
   'messages.header.confirmation': 'Confirmation!',
   'messages.header.warning': 'Warning!',
-
+  'messages.header.alert': 'Alert',
   'messages.confirmation.reject': 'Are you sure you want to reject this order',
   'messages.confirmation.approve': 'Are you sure you want to approve this order',
   'messages.success.delete': 'Order Deleted Successfully.',
@@ -1000,7 +1000,7 @@ export const MessageEn = {
   'attestation.payerDetails': 'I confirm that the payer information is accurate and complete.',
   'attestation.additionalDetails': 'I confirm that the additional details have been reviewed and are ready for final submission.',
   'attestation.warning':
-    ' Please review and confirm the information by checking the box to trigger the notification, or click "Save as Draft" to retain the order without sending.',
+    'Acknowledgment has not been provided. Please select ‘Save and Continue’ to confirm and complete this step, or choose ‘Save as Draft’ to retain the order without submission.',
   'button.caption.saveAsDraft': 'Save as Draft',
   'labels.collaborators': 'Collaborators:',
   'labels.summaryEditMessage': 'You do not have permission to edit this step. Please contact your Organization Administrator if you need to make changes.',

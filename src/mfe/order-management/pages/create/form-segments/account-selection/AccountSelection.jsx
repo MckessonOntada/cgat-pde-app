@@ -122,9 +122,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async ({ isDraft, ...data }) => OrderService.saveAccount(orderId, data, isDraft), {
-    onSuccess: async (result) => {
+    onSuccess: async (result, variables) => {
       const { id } = result;
-      if (isSelfAttested) {
+      if (isSelfAttested || variables.isAttested) {
         try {
           navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
             state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover, changeOnPreviousStep: true }
@@ -217,6 +217,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
         t,
         onOk: () => {
           saveAccount({ ...payload, isDraft: true });
+        },
+        onContinue: () => {
+          saveAccount({ ...payload, isAttested: true });
         }
       });
     } else {
@@ -279,7 +282,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
         heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }

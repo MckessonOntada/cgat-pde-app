@@ -13,11 +13,7 @@ export function renderModal({ title, bodyContent, footerActions, modalClose }) {
     ) : (
       <>
         {footerActions?.cancel && (
-          <Button
-            variant="secondary"
-            size="md"
-            isModalButton={true}
-            onClick={() => store.dispatch(closeModal())}>
+          <Button variant="secondary" size="md" isModalButton={true} onClick={() => store.dispatch(closeModal())}>
             {footerActions.cancel.label || 'Cancel'}
           </Button>
         )}
@@ -34,6 +30,21 @@ export function renderModal({ title, bodyContent, footerActions, modalClose }) {
               } catch (err) {}
             }}>
             {footerActions.confirm.label || 'Confirm'}
+          </Button>
+        )}
+        {footerActions?.continue && (
+          <Button
+            dataTestId={'apply-continue'}
+            size={'md'}
+            isModalButton={true}
+            variant="primary"
+            onClick={() => {
+              try {
+                footerActions.continue.action();
+                store.dispatch(closeModal());
+              } catch (err) {}
+            }}>
+            {footerActions.continue.label || 'continue'}
           </Button>
         )}
       </>
