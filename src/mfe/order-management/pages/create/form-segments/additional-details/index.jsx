@@ -284,12 +284,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
-    async ({ isDraft, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
+    async ({ isDraft, isAttested, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
     {
-      onSuccess: (result) => {
-        const { id } = result;
-        if (isSelfAttested) {
-          navigateToNextStage(id, true);
+      onSuccess: (result, variables) => {
+        const { id } = result; 
+        if (isSelfAttested || variables?.isAttested) {
+          navigateToNextStage(id); 
         } else {
           refreshOrderDetails();
           setAlert({
@@ -796,6 +796,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         onOk: () => {
           const draftPayload = { ...payload, isDraft: true };
           saveAdditionalDetails(draftPayload);
+        },
+        onContinue: () => {
+          const attestationPayload = { ...payload, isAttested: true };
+          saveAdditionalDetails(attestationPayload);
         }
       });
     } else {
@@ -911,7 +915,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }

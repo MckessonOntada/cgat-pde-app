@@ -313,6 +313,7 @@ export default function InvoicesTable() {
               : [])
           ]}
           aria-label="invoice options"
+          size="md"
         />
       ),
       omit: !CommonUtils.enableReviewAndPay(selectedAccount)

@@ -256,10 +256,10 @@ function Payer({ readOnly, hasPermission }) {
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
     mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
-      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
-    onSuccess: (response) => {
-      if (isSelfAttested) {
-        navigateToNextStage(orderId, true);
+      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft), 
+      onSuccess: (response, variables) => {
+      if (isSelfAttested || variables.isAttested) {
+        navigateToNextStage(orderId); 
       } else {
         setAlert({
           description: 'Order Saved In Draft Successfully',
@@ -322,6 +322,9 @@ function Payer({ readOnly, hasPermission }) {
         t,
         onOk: () => {
           savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isDraft: true });
+        },
+        onContinue: () => {
+          savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isAttested: true });
         }
       });
     } else {
@@ -394,7 +397,7 @@ function Payer({ readOnly, hasPermission }) {
         }
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} />}
+            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails?.channelType} />}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }

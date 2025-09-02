@@ -285,7 +285,13 @@ function getOptionsByStatus(props) {
   }
 
   return (
-    <MenuList menuIcon={<IconEllipsis key={'menu-list-order-table'} />} handleSelect={handleOnOptionSelection} options={options} aria-label="Order options" />
+    <MenuList
+      menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
+      handleSelect={handleOnOptionSelection}
+      options={options}
+      aria-label="Order options"
+      size="md"
+    />
   );
 }
 

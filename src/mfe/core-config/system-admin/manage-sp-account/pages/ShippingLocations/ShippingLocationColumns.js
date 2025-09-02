@@ -87,6 +87,7 @@ export const getShippingLocationColumns = (
               disabled: !allowAction
             }
           ]}
+          size="md"
         />
       );
     },

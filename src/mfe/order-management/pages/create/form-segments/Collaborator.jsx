@@ -2,8 +2,14 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React from 'react';
 import { Tooltip } from '@mckesson/mcp-component-library';
 import { GET_STAGE_DISPLAY_NAME, ORDER_STAGES, STAGE_COLORS } from './Constants';
-const Collaborator = ({ collaborators }) => {
+const Collaborator = ({ collaborators, channelType }) => {
   const { t } = useTranslate();
+
+  const getStageIndex = (stageKey) => {
+    const stages = Object.keys(ORDER_STAGES);
+    return stages.indexOf(stageKey);
+  };
+
   function buildCollaborators(data) {
     const userMap = {};
     const getInitials = (name) => {
@@ -26,12 +32,14 @@ const Collaborator = ({ collaborators }) => {
             id,
             initials: getInitials(name),
             collaboratedOn: {},
-            color: null
+            color: null,
+            stageId: null
           };
         }
 
         if (!userMap[id].collaboratedOn[stage]) {
-          userMap[id].collaboratedOn[stage] = GET_STAGE_DISPLAY_NAME(stage);
+          userMap[id].collaboratedOn[stage] = GET_STAGE_DISPLAY_NAME(stage, channelType, t);
+          userMap[id].stageId = getStageIndex(stage);
         }
       });
     });
@@ -41,25 +49,20 @@ const Collaborator = ({ collaborators }) => {
       let maxIndex = -1;
       let finalStage = null;
 
-      const stageOrder = Object.keys(ORDER_STAGES);
-
       Object.keys(stages).forEach((stageKey) => {
-        const idx = stageOrder.indexOf(stageKey);
+        const idx = getStageIndex(stageKey);
         if (idx > maxIndex) {
           maxIndex = idx;
           finalStage = stageKey;
         }
       });
-
       userMap[id].color = finalStage ? STAGE_COLORS[finalStage] : null;
     }
-
-    return Object.values(userMap);
+    const sortedCollaborators = Object.values(userMap).sort((a, b) => a.stageId - b.stageId);
+    return sortedCollaborators;
   }
 
   const collaboratorsData = buildCollaborators(collaborators);
-
-  console.log('collaboratorsData:', collaboratorsData);
 
   return (
     collaboratorsData.length > 0 && (
