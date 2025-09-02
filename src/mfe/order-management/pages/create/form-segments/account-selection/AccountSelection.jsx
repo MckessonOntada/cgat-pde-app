@@ -83,10 +83,10 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       const { isTherapyChanged, ...newState } = location.state;
       navigate(location.pathname, { state: newState });
       const state = {};
-      state.title = 'Alert';
+      state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
         <div className="MCP-modal-body">
-          <p>{t('message.stepSuccessfulCompletionAlert.therapySelection')}</p>
+          <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
         </div>
       );
       dispatch(openModal(state));

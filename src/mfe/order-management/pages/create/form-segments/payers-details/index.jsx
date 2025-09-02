@@ -121,12 +121,10 @@ function Payer({ readOnly, hasPermission }) {
       const { changeOnPreviousStep, ...newState } = location.state;
       navigate(location.pathname, { state: newState });
       const state = {};
-      state.title = 'Alert';
+      state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
         <div className="MCP-modal-body">
-          <p>
-            Congratulations! Your patient details have been successfully saved, and the order has been forwarded to the assigned user for account selection.
-          </p>
+          <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
         </div>
       );
       dispatch(openModal(state));

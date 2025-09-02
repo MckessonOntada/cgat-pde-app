@@ -101,7 +101,7 @@ function TherapySelection({ readOnly }) {
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
       const { id } = result;
-      const isTherapyChanged = tradeDetails?.tradeName.trim() !== orderDetails?.tradeDetails?.tradeName.trim();
+      const isTherapyChanged = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
 
       navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
         state: {
