@@ -117,7 +117,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       const { changeOnPreviousStep, ...newState } = location.state;
       navigate(location.pathname, { state: newState });
       const state = {};
-      state.title = t('message.stepSuccessfulCompletionByUnAuthorizedUser');
+      state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
         <div className="MCP-modal-body">
           <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
