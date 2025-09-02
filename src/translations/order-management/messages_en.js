@@ -1030,6 +1030,6 @@ export const MessageEn = {
   'labels.prescriptionDetails': 'Prescription Details',
   'headings.prescriptionSubmitted': 'Prescription Submitted!',
   'controls.placeholder.searchReviewOrderPlaceholder': 'Search by Order ID, Patient name, Therapy',
-  'title.stepSuccessfulCompletionByUnAuthorizedUser': 'Congratulations!',
+  'title.stepSuccessfulCompletionByUnAuthorizedUser': 'Success',
   'message.stepSuccessfulCompletionByUnAuthorizedUser': 'Nice work — your part is done! 🎉 The next step is now assigned. 🚀'
 };

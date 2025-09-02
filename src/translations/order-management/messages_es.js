@@ -677,6 +677,6 @@ export const MessageEs = {
   'labels.prescriptionDetails': 'S_Prescription Details',
   'orderManagement.patientDetails.inputLabel.doa': 'S_Date of Administration',
   'controls.placeholder.searchReviewOrderPlaceholder': 'S_Search by Order ID, Patient name, Therapy',
-  'title.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Congratulations!',
+  'title.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Success',
   'message.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Nice work — your part is done! 🎉 The next step is now assigned. 🚀'
 };
