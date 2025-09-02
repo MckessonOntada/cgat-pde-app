@@ -114,6 +114,25 @@ function Payer({ readOnly, hasPermission }) {
     }
   }, [orderDetails]);
 
+  React.useEffect(() => {
+    const { changeOnPreviousStep = false } = location.state;
+
+    if (changeOnPreviousStep && !hasPermission) {
+      const { changeOnPreviousStep, ...newState } = location.state;
+      navigate(location.pathname, { state: newState });
+      const state = {};
+      state.title = 'Alert';
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>
+            Congratulations! Your patient details have been successfully saved, and the order has been forwarded to the assigned user for account selection.
+          </p>
+        </div>
+      );
+      dispatch(openModal(state));
+    }
+  }, []);
+
   const validationSchema = React.useMemo(() => {
     let schemaShape = {
       ...getInitialValidationSchema(t)
@@ -225,12 +244,13 @@ function Payer({ readOnly, hasPermission }) {
     });
   };
 
-  const navigateToNextStage = (orderId) => {
+  const navigateToNextStage = (orderId, changeOnPreviousStep) => {
     navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
       state: {
         ...locationState,
         isEdit: false,
-        isApprover: isApprover
+        isApprover: isApprover,
+        changeOnPreviousStep
       }
     });
   };
@@ -238,10 +258,10 @@ function Payer({ readOnly, hasPermission }) {
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
     mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
-      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
-    onSuccess: (response, variables) => {
+      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft), 
+      onSuccess: (response, variables) => {
       if (isSelfAttested || variables.isAttested) {
-        navigateToNextStage(orderId);
+        navigateToNextStage(orderId); 
       } else {
         setAlert({
           description: 'Order Saved In Draft Successfully',

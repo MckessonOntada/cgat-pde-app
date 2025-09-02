@@ -41,6 +41,7 @@ import OrderAttestation from '../OrderAttestation';
 import { showAlert } from '@src/store/reducer/alertReducer';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
+import { openModal } from '@src/store/reducer/modalReducer';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -59,7 +60,7 @@ const INITIAL_VALUES = {
   variantAcknowledgement: false
 };
 
-function AdditionalDetails({ readOnly }) {
+function AdditionalDetails({ readOnly, hasPermission }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -271,12 +272,13 @@ function AdditionalDetails({ readOnly }) {
     setValidationSchema(finalValidationSchema);
   }, [variantsData, questionnaireTemplateConfig, channelType]);
 
-  const navigateToNextStage = (id) => {
+  const navigateToNextStage = (id, changeOnPreviousStep) => {
     navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
       state: {
         ...locationState,
         isEdit: isEdit,
-        isApprover: isApprover
+        isApprover: isApprover,
+        changeOnPreviousStep
       }
     });
   };
@@ -285,9 +287,9 @@ function AdditionalDetails({ readOnly }) {
     async ({ isDraft, isAttested, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
     {
       onSuccess: (result, variables) => {
-        const { id } = result;
+        const { id } = result; 
         if (isSelfAttested || variables?.isAttested) {
-          navigateToNextStage(id);
+          navigateToNextStage(id); 
         } else {
           refreshOrderDetails();
           setAlert({
@@ -498,6 +500,32 @@ function AdditionalDetails({ readOnly }) {
     initialFormValues[fieldName].document = null;
     setInitialFormValues({ ...initialFormValues });
   };
+
+  React.useEffect(() => {
+    if (orderDetails) {
+      const { changeOnPreviousStep = false } = location.state;
+
+      if (changeOnPreviousStep && !hasPermission) {
+        let message = '';
+
+        if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired) {
+          message = 'message.stepSuccessfulCompletionAlert.accountSelection2';
+        } else {
+          message = 'message.stepSuccessfulCompletionAlert.patientDetails';
+        }
+        const { changeOnPreviousStep, ...newState } = location.state;
+        navigate(location.pathname, { state: newState });
+        const state = {};
+        state.title = 'Alert';
+        state.body = (
+          <div className="MCP-modal-body">
+            <p>{t(message)}</p>
+          </div>
+        );
+        dispatch(openModal(state));
+      }
+    }
+  }, [orderDetails]);
 
   React.useEffect(() => {
     const { additionalDetails, spTherapyConfig, therapy } = orderDetails || {};

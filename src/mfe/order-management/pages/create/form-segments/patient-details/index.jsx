@@ -39,6 +39,7 @@ import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
+import { openModal } from '@src/store/reducer/modalReducer';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -84,6 +85,21 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
           state: { ...locationState }
         });
+      else {
+        const { changeOnPreviousStep = false } = location.state;
+        if (changeOnPreviousStep && !hasPermission) {
+          const { changeOnPreviousStep, ...newState } = location.state;
+          navigate(location.pathname, { state: newState });
+          const state = {};
+          state.title = 'Alert';
+          state.body = (
+            <div className="MCP-modal-body">
+              <p>{t('message.stepSuccessfulCompletionAlert.accountSelection')}</p>
+            </div>
+          );
+          dispatch(openModal(state));
+        }
+      }
     }
   }, [orderDetails]);
 
@@ -174,13 +190,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     });
   };
 
-  const navigateToNextStage = (id) => {
+  const navigateToNextStage = (id, changeOnPreviousStep) => {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
         state: {
           ...locationState,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          changeOnPreviousStep
         }
       });
     } else {
@@ -188,7 +205,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         state: {
           ...locationState,
           isEdit: false,
-          isApprover: isApprover
+          isApprover: isApprover,
+          changeOnPreviousStep
         }
       });
     }
@@ -199,9 +217,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     },
     {
       onSuccess: (result, variables) => {
-        const { id } = result;
+        const { id } = result; 
         if (isSelfAttested || variables.isAttested) {
-          navigateToNextStage(id);
+          navigateToNextStage(id); 
           setProvider(null);
         } else {
           setAlert({
