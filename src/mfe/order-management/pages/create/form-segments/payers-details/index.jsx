@@ -256,10 +256,10 @@ function Payer({ readOnly, hasPermission }) {
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
     mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
-      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft), 
-      onSuccess: (response, variables) => {
+      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
+    onSuccess: (response, variables) => {
       if (isSelfAttested || variables.isAttested) {
-        navigateToNextStage(orderId); 
+        navigateToNextStage(orderId, true);
       } else {
         setAlert({
           description: 'Order Saved In Draft Successfully',
