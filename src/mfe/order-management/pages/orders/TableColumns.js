@@ -18,6 +18,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { FormattedNumber } from 'react-intl';
 import { CHANNEL_TYPE, ORDER_STAGES } from '../create/form-segments/Constants';
+import { SAP_ORDER_STATUS } from './constants';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -295,6 +296,25 @@ function getOptionsByStatus(props) {
   );
 }
 
+function getOrderProcessingStatus(orderProcessingStatus) {
+  const key = orderProcessingStatus?.toLowerCase();
+  const map = {
+    [SAP_ORDER_STATUS.OPEN.toLowerCase()]: {
+      text: 'labels.OrderProcesing.SAPOrderStatus.Open',
+      type: 'info'
+    },
+    [SAP_ORDER_STATUS.CANCELLED.toLowerCase()]: {
+      text: 'labels.OrderProcesing.SAPOrderStatus.Cancelled',
+      type: 'error'
+    },
+    [SAP_ORDER_STATUS.COMPLETED.toLowerCase()]: {
+      text: 'labels.OrderProcesing.SAPOrderStatus.Completed',
+      type: 'success'
+    }
+  };
+  return map[key] || null;
+}
+
 const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
   switch (currentStage) {
     case ORDER_STAGES.ACCOUNT_DETAILS:
@@ -516,10 +536,18 @@ const jsxColumns = () => [
     showInMobileHeader: true,
     cardStatus: true,
     cell: function (props) {
+      const { therapy, tradeDetails, status, orderProcessingStatus } = props;
+      let channelType = therapy?.channelType || tradeDetails?.channelType;
+      const orderProcessStatus =
+        channelType === CHANNEL_TYPE.BUY_AND_BILL && status === ORDER_STATUS.SUBMITTED ? getOrderProcessingStatus(orderProcessingStatus) : null;
+      const badgeText = orderProcessStatus
+        ? this.__meta__.translate(orderProcessStatus.text)
+        : this.__meta__.translate(`labels.caption.${status.toUpperCase()}`);
+      const badgeType = orderProcessStatus ? orderProcessStatus.type : getColorByStatus(status);
       return (
-        <Tooltip body={props.status}>
+        <Tooltip body={badgeText.toUpperCase()}>
           <span>
-            <Badge text={this.__meta__.translate(`labels.caption.${props.status.toUpperCase()}`)} type={getColorByStatus(props.status)} />
+            <Badge text={badgeText} type={badgeType} />
           </span>
         </Tooltip>
       );
