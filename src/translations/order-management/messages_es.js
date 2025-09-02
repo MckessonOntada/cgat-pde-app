@@ -676,14 +676,6 @@ export const MessageEs = {
   'labels.prescriptionDetails': 'S_Prescription Details',
   'orderManagement.patientDetails.inputLabel.doa': 'S_Date of Administration',
   'controls.placeholder.searchReviewOrderPlaceholder': 'S_Search by Order ID, Patient name, Therapy',
-  'message.stepSuccessfulCompletionAlert.therapySelection':
-    'Congratulations! The therapy has been selected, and the order has been forwarded to the assigned user for account selection.',
-  'message.stepSuccessfulCompletionAlert.accountSelection':
-    'Congratulations! Your account details have been successfully saved, and the order has been forwarded to the assigned user for patient details.',
-  'message.stepSuccessfulCompletionAlert.accountSelection2':
-    'Congratulations! Your account details have been successfully saved, and the order has been forwarded to the assigned user for patient details.',
-  'message.stepSuccessfulCompletionAlert.patientDetails':
-    'Congratulations! The patient information has been successfully submitted, and the order has been forwarded to the assigned user for additional details.',
-  'message.stepSuccessfulCompletionAlert.additionalDetails':
-    'Congratulations! The additional details have been successfully provided, and the order has been forwarded for final review and submission.'
+  'title.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Congratulations!',
+  'message.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Nice work — your part is done! 🎉 The next step is now assigned. 🚀'
 };

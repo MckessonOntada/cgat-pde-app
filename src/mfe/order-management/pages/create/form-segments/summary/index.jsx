@@ -117,10 +117,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       const { changeOnPreviousStep, ...newState } = location.state;
       navigate(location.pathname, { state: newState });
       const state = {};
-      state.title = 'Alert';
+      state.title = t('message.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
         <div className="MCP-modal-body">
-          <p>{t('message.stepSuccessfulCompletionAlert.additionalDetails')}</p>
+          <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
         </div>
       );
       dispatch(openModal(state));

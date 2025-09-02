@@ -508,18 +508,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       if (changeOnPreviousStep && !hasPermission) {
         let message = '';
 
-        if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired) {
-          message = 'message.stepSuccessfulCompletionAlert.accountSelection2';
-        } else {
-          message = 'message.stepSuccessfulCompletionAlert.patientDetails';
-        }
         const { changeOnPreviousStep, ...newState } = location.state;
         navigate(location.pathname, { state: newState });
         const state = {};
-        state.title = 'Alert';
+        state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
         state.body = (
           <div className="MCP-modal-body">
-            <p>{t(message)}</p>
+            <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
           </div>
         );
         dispatch(openModal(state));
