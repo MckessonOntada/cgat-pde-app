@@ -2,12 +2,9 @@ import React from 'react';
 import { Heading, Loader, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { FormattedNumber } from 'react-intl';
-import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { Link } from 'react-router-dom';
 
 const createColumns = (t, type, pageType) => {
   const commonColumns = [
@@ -42,7 +39,7 @@ const createColumns = (t, type, pageType) => {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
-      minWidth: '160px',
+      minWidth: '235px',
       sortable: true,
       wrap: true,
       cardHeader: true,
@@ -59,7 +56,7 @@ const createColumns = (t, type, pageType) => {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      width: '140px',
+      width: '145px',
       cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {

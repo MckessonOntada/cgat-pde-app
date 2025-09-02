@@ -34,9 +34,22 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       page-break-inside: avoid;
       page-break-after: auto;
     }
+    .bill-amount-wrapper{
+      flex-wrap: wrap !important;
+      display: flex !important;
+      justify-content: space-between;
+    }
     .details-table{
       page-break-inside: avoid;
       page-break-after: auto;
+    }
+    table {
+      overflow: visible !important;
+      max-height: none !important;
+    }
+    body {
+      zoom: 0.9;
+      width: 1200px;
     }
     `
   );
