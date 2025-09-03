@@ -14,19 +14,25 @@ export const useCustomPrint = (contentRef, pageStyle = '', ...rest) => {
         padding:20px;
     }
    .order-stepper-wrapper {
-        display: none  !important;
+        display: none !important;
     }
-    button{
+    button {
         display: none !important;
     }
     .fieldValue .overflowing {
-      white-space: wrap  !important;
+        white-space: wrap !important;
     }
   `;
 
   return useReactToPrint({
     contentRef,
     pageStyle: defaultPageStyle + pageStyle,
-    ...rest, 
+    onBeforeGetContent: async () => {
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    },
+    ...rest
   });
 };

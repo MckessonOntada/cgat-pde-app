@@ -56,7 +56,7 @@ const createColumns = (t, type, pageType) => {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      width: '145px',
+      width: '150px',
       cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
