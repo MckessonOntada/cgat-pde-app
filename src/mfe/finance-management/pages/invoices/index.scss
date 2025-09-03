@@ -166,3 +166,15 @@
     margin: 0px !important;
   }
 }
+
+span.scheduled-icon {
+  height: 22px;
+  width: 22px;
+  display: inline-flex;
+  background: var(--brand-color-primary);
+  color: var(--brand-color-background-white);
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--spacing-02);
+  border-radius: var(--spacing-04);
+}
