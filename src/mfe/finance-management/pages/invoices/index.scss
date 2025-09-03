@@ -168,8 +168,8 @@
 }
 
 span.scheduled-icon {
-  height: 22px;
-  width: 22px;
+  height: var(--spacing-04);
+  width: var(--spacing-04);
   display: inline-flex;
   background: var(--brand-color-primary);
   color: var(--brand-color-background-white);
