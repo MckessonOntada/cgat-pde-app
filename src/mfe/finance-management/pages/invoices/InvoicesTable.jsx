@@ -189,7 +189,7 @@ export default function InvoicesTable() {
               invoices: [...[], props],
               selectedPayToAcc: selectedAccount
             }}>{`${props?.billNumber || ''}`}</Link>
-          {props?.scheduled === 'X' ? <span className="scheduled-icon">s</span> : ''}
+          {props?.scheduled === 'X' ? <span className="scheduled-icon">S</span> : ''}
         </div>
       )
     },
