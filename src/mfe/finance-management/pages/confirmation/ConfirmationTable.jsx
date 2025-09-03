@@ -39,7 +39,7 @@ const createColumns = (t, type, pageType) => {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
-      minWidth: '235px',
+      minWidth: '250px',
       sortable: true,
       wrap: true,
       cardHeader: true,
@@ -62,7 +62,7 @@ const createColumns = (t, type, pageType) => {
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      width: '140px',
+      width: '150px',
       sortable: true,
       wrap: true,
       id: 'dueDate',
@@ -110,7 +110,7 @@ const createColumns = (t, type, pageType) => {
     {
       name: t('paymentInvoices.credits.table.amount'),
       selector: (row) => row?.billAmount,
-      minWidth: '140px',
+      minWidth: '150px',
       sortable: true,
       right: true,
       id: 'billAmount',
@@ -123,7 +123,7 @@ const createColumns = (t, type, pageType) => {
     {
       name: t('paymentInvoices.history.table.creditUsed'),
       selector: (row) => row?.authAmount,
-      minWidth: '140px',
+      minWidth: '180px',
       sortable: true,
       right: true,
       id: 'authAmount',
