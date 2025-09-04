@@ -148,7 +148,7 @@ export const AddressSections = (channelType) => [
             name: 'patient.patientAddress.state',
             label: 'orderManagement.patientDetails.inputLabel.state',
             placeholder: ' ',
-            type: 'dropdown',
+            type: 'stateDropdown',
             options: getStates(),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }
