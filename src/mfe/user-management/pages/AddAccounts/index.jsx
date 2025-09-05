@@ -1,18 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { StepperMui, Heading, Button, Loader } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import ModuleHeader from '@src/components/module-header';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { RoutePaths } from '@src/routes/constants';
-import { useMutation } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { Button, Heading, Loader, StepperMui } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import UserAccounts from '@src/components/Accounts/Accounts';
+import Alert from '@src/components/cgat-alert/Alert';
+import ModuleHeader from '@src/components/module-header';
+import { RoutePaths } from '@src/routes/constants';
+import { useTranslate } from '@src/translations/useTranslation';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import UserAccounts from '@src/components/Accounts/Accounts';
+import React, { useCallback, useState } from 'react';
+import { useMutation } from 'react-query';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from '../../routes';
-import Alert from '@src/components/cgat-alert/Alert';
 
 const AddAccounts = () => {
   const { t } = useTranslate();
@@ -23,7 +23,6 @@ const AddAccounts = () => {
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alertConfig, setAlertConfig] = React.useState(null);
   const { permissionsData, isEdit } = location.state || {};
-  const isSuccess = location.state?.isSuccess || false;
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
   const isSystemAdmin = AuthUtils.isSystemAdmin();
@@ -32,25 +31,11 @@ const AddAccounts = () => {
     navigate(RoutePaths.pathUserManagement);
   };
 
-  const handleAlertClose = () => {
-    setAlertConfig(null);
-  };
-
   const handleBackButton = () => {
     navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`, {
       state: { isBack: true, permissionsData: permissionsData }
     });
   };
-
-  const handleSearchChange = (inputValue) => {
-    setSearchText(inputValue);
-  };
-  const onRemoveAccount = useCallback(
-    (item) => {
-      setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
-    },
-    [selectedAccounts, setSelectedAccounts]
-  );
 
   const handleSaveandContinue = () => {
     handleAddAccounts();
@@ -63,7 +48,7 @@ const AddAccounts = () => {
     userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   };
 
-  const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+  const { mutate, isLoading } = useMutation(async ({ payload }) => {
     const url = `${ApiRoutes.USERS()}/${userId}/accounts?${serializeParams(requestParams)}`;
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     return res.data;
@@ -85,12 +70,9 @@ const AddAccounts = () => {
       },
       {
         onSuccess: (response) => {
-          console.log('User created/updated successfully:', response);
           navigate(`../${userId}`, { state: { isSuccess: true, recCount: selectedCount } });
         },
-        onError: (error) => {
-          console.log('Failed to add accounts:', error);
-        }
+        onError: (error) => {}
       }
     );
   };
@@ -134,6 +116,7 @@ const AddAccounts = () => {
         omitColumns={['action', 'cgatIdentifier', 'address']}
         practiceId={practiceId}
         selectableRows={true}
+        allowSelectAll={true}
       />
       <div className={'buttonGroup'}>
         <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>

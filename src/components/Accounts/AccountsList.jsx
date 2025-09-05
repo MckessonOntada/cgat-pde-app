@@ -1,40 +1,31 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { CheckboxGroup } from '@mckesson/mcp-component-library';
-import SelectedAccounts from './SelectedAccounts';
-import './styles.scss';
-import { useTranslate } from '@src/translations/useTranslation';
-import SelectedAccountChips from './SelectedAccountChips';
-import EmptyDataTable from '../EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import usePermission from '@src/hooks/usePermissions';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import { useTranslate } from '@src/translations/useTranslation';
+import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { CustomDataTable } from '../dataTableComponent';
+import { renderTableCheckBox } from '../dataTableComponent/assets/constants/CustomTableConstants';
+import EmptyDataTable from '../EmptyTable';
+import AccountDetails from './AccountDetails';
 import { useAccounts } from './AccountsContext';
 import Actions from './Action';
-import useResponsiveView from '@src/hooks/useResponsiveView';
-import { CustomDataTable } from '../dataTableComponent';
-import usePermission from '@src/hooks/usePermissions';
-import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
-import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
-import AccountDetails from './AccountDetails';
+import SelectedAccountChips from './SelectedAccountChips';
+import SelectedAccounts from './SelectedAccounts';
+import './styles.scss';
 
 export default function AccountsList(props) {
-  const {
-    selectedRows,
-    setSelectedRows,
-    showSelectedAccounts = false, // This is to show selected accounts in right rail
-    isLoading = false,
-    omitColumns = [],
-    practiceId,
-    userId,
-    isPhysicianUser
-  } = props;
-  const { data, paginationConfig, refetch, setPageNumber, filterConfig } = useAccounts();
+  const { selectedRows = [], setSelectedRows, showSelectedAccounts = false, isLoading = false, omitColumns = [], practiceId, userId, isPhysicianUser } = props;
+  const { data = [], paginationConfig, refetch, setPageNumber, filterConfig } = useAccounts();
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const [tableHeight, setTableHeight] = useState('100%');
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
-  const { hasPermission, hasAnyPermission } = usePermission();
+  const { hasAnyPermission } = usePermission();
   const isAuthorized = hasAnyPermission([
     PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS,
     PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS,
@@ -137,31 +128,18 @@ export default function AccountsList(props) {
     if (showSelectedAccounts) {
       _columns.unshift({
         id: 'checkbox',
-        cell: (row) => (
-          <CheckboxGroup
-            id={'default'}
-            caption=""
-            items={[
-              {
-                onChange: (event) => {
-                  if (event.target.checked) {
-                    setSelectedRows([...selectedRows, row]);
-                  } else {
-                    setSelectedRows(selectedRows.filter((item) => item.id !== row.id));
-                  }
-                },
-                value: '',
-                isChecked: !!selectedRows.filter((item) => item.id === row.id).length
-              }
-            ]}
-          />
-        ),
-        wrap: true,
-        width: '40px'
+        name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'accountNumber', paginationConfig, selectedRows, setSelectedRows),
+        cell: (row) => {
+          return renderTableCheckBox(row, data, 'accountNumber', paginationConfig, selectedRows, setSelectedRows);
+        },
+        selector: (row) => row.accountNumber,
+        width: '50px',
+        showInMobileHeader: true,
+        wrap: true
       });
     }
     return _columns;
-  }, [omitColumns]);
+  }, [omitColumns, showSelectedAccounts, data]);
 
   const onRemoveSelectedAccount = useCallback(
     (item) => {
@@ -176,7 +154,6 @@ export default function AccountsList(props) {
 
   return (
     <>
-      {/* {true && <Loader type={'screen'} />} */}
       {showSelectedAccounts && (
         <div className="selected-account-chips">
           <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
