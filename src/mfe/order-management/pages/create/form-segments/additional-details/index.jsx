@@ -38,7 +38,6 @@ import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
-import { showAlert } from '@src/store/reducer/alertReducer';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
@@ -225,7 +224,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     return schema;
   };
 
-  const { data: variantsData = {}, isFetching: isVariantsFetching } = useQuery({
+  const { data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
       OrderService.getVariants(
