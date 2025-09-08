@@ -38,7 +38,6 @@ import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import OrderAttestation from '../OrderAttestation';
-import { showAlert } from '@src/store/reducer/alertReducer';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
@@ -523,6 +522,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   }, [orderDetails]);
 
   React.useEffect(() => {
+    if (orderDetails.id) {
+      if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && variantsData.content?.length === 0 && !orderDetails.spTherapyConfig?.consentPolicy) {
+        setAlert({
+          type: 'error',
+          description: t('message.additionalDetails.missingPrescriptionDetails')
+        });
+      }
+    }
+  }, [orderDetails, variantsData]);
+
+  React.useEffect(() => {
     const { additionalDetails, spTherapyConfig, therapy } = orderDetails || {};
     const initialValues = {};
 
@@ -622,9 +632,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   }, [orderDetails, variantsData]);
 
   React.useEffect(() => {
-    setAlert(null);
     if (variant) {
       OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
+        setAlert(null);
         const { spTherapyConfig, therapy } = result;
         const prescriptionDetails = {
           drugName: '',
@@ -661,22 +671,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       });
     }
   }, [variant]);
-
-  React.useEffect(() => {
-    if (variantsData && orderDetails) {
-      if (Array.isArray(variantsData) && variantsData.length === 0 && CommonUtils.isNonEmptyObject(orderDetails)) {
-        showAlert({
-          type: 'error',
-          description: t('message.additionalDetails.missingPrescriptionDetails')
-        });
-      } else if (!orderDetails.spTherapyConfig || !orderDetails.spTherapyConfig?.consentPolicy) {
-        showAlert({
-          type: 'error',
-          description: t('message.additionalDetails.missingPrescriptionDetails')
-        });
-      }
-    }
-  }, [variantsData, orderDetails]);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
