@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import styles from './assets/styles/ConfigureMaterials.module.scss';
-import { useTranslate } from '@src/translations/useTranslation';
-import { Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
-import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
-import { useMutation, useQuery } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { Button, Label, RadioGroup } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
-import FloatingDrawer from '@src/components/floating-drawer';
-import Alert from '@src/components/cgat-alert/Alert';
-import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import OrderService from '@src/api/commonService/OrderService';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import Alert from '@src/components/cgat-alert/Alert';
+import FloatingDrawer from '@src/components/floating-drawer';
+import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { useTranslate } from '@src/translations/useTranslation';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import styles from './assets/styles/ConfigureMaterials.module.scss';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
@@ -19,16 +19,13 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     coiIdRequired: '',
     mrnRequired: '',
     doaRequired: '',
-    poNumberRequired: ''
+    poNumberRequired: '',
+    dateOfApheresisRequired: ''
   });
   const [error, setError] = useState(false);
 
   const { selectedMaterials, setSelectedMaterials, refetch } = useManageMaterial();
-  const {
-    isLoading,
-    isError,
-    data: MaterialData
-  } = useQuery({
+  const { data: MaterialData } = useQuery({
     queryKey: ['therapyDetailsByTrade'],
     queryFn: async () => {
       const result = await OrderService.getTherapyDetailsByTradeName2(
@@ -55,7 +52,8 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
           coiIdRequired: config.isCoiIdRequired ? 'yes' : 'no',
           mrnRequired: config.isPatientInformationRequired ? (config.isMRNRequired ? 'yes' : 'no') : '',
           doaRequired: config.isDOARequired ? 'yes' : 'no',
-          poNumberRequired: config.isPORequired ? 'yes' : 'no'
+          poNumberRequired: config.isPORequired ? 'yes' : 'no',
+          dateOfApheresisRequired: config.isDateOfApheresisRequired ? 'yes' : 'no'
         });
       }
     }
@@ -79,39 +77,56 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     }
   );
 
-  const fieldConfigs = [
-    {
-      key: 'patientInfoRequired',
-      caption: 'manageMaterial.drawer.configuration.body.patientInfoRequired'
-    },
-    {
-      key: 'patientIdentifierRequired',
-      caption: 'manageMaterial.drawer.configuration.body.patientIdentifier'
-    },
-    {
-      key: 'mrnRequired',
-      caption: 'manageMaterial.drawer.configuration.body.mrnRequired'
-    },
-    {
-      key: 'coiIdRequired',
-      caption: 'manageMaterial.drawer.configuration.body.coiIdRequired'
-    },
-    {
-      key: 'poNumberRequired',
-      caption: 'manageMaterial.drawer.configuration.body.poNumberRequired'
-    },
+  const fieldConfigs = React.useMemo(() => {
+    const flag = formValues.patientInfoRequired === 'no';
+    return [
+      {
+        key: 'patientInfoRequired',
+        caption: 'manageMaterial.drawer.configuration.body.patientInfoRequired',
+        isDisabled: false,
+        isRequired: true
+      },
+      {
+        key: 'patientIdentifierRequired',
+        caption: 'manageMaterial.drawer.configuration.body.patientIdentifier',
+        isDisabled: flag,
+        isRequired: !flag
+      },
+      {
+        key: 'mrnRequired',
+        caption: 'manageMaterial.drawer.configuration.body.mrnRequired',
+        isDisabled: flag,
+        isRequired: true
+      },
+      {
+        key: 'coiIdRequired',
+        caption: 'manageMaterial.drawer.configuration.body.coiIdRequired',
+        isDisabled: false,
+        isRequired: true
+      },
+      {
+        key: 'poNumberRequired',
+        caption: 'manageMaterial.drawer.configuration.body.poNumberRequired',
+        isDisabled: false,
+        isRequired: true
+      },
 
-    {
-      key: 'doaRequired',
-      caption: 'manageMaterial.drawer.configuration.body.doaRequired'
-    }
-  ];
+      {
+        key: 'doaRequired',
+        caption: 'manageMaterial.drawer.configuration.body.doaRequired',
+        isDisabled: false,
+        isRequired: true
+      },
+      {
+        key: 'dateOfApheresisRequired',
+        caption: 'manageMaterial.drawer.configuration.body.dateOfApheresisRequired',
+        isDisabled: false,
+        isRequired: true
+      }
+    ];
+  }, [formValues]);
 
-  const formFields = fieldConfigs.map(({ key, caption }) => {
-    const isPatientInfoNo = formValues.patientInfoRequired === 'no';
-    const isPatientIdentifierField = key === 'patientIdentifierRequired';
-    const isMrnField = key === 'mrnRequired';
-    const isDisabled = (isPatientIdentifierField || isMrnField) && isPatientInfoNo;
+  const formFields = fieldConfigs.map(({ key, caption, isDisabled, isRequired }) => {
     return {
       caption: t(caption),
       id: key,
@@ -120,7 +135,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
         { isDisabled, label: t('label.no'), value: 'no' }
       ],
       value: formValues[key],
-      required: !isPatientIdentifierField || !isPatientInfoNo,
+      required: isRequired,
       onChangeValue: (value) => {
         if (key === 'patientInfoRequired') {
           setFormValues((prev) => ({
@@ -143,6 +158,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     formValues.coiIdRequired &&
     formValues.poNumberRequired &&
     formValues.doaRequired &&
+    formValues.dateOfApheresisRequired &&
     (formValues.patientInfoRequired === 'yes' ? formValues.patientIdentifierRequired && formValues.mrnRequired : true);
 
   const handleApplyConfiguration = () => {
@@ -154,7 +170,8 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
         isDOARequired: formValues.doaRequired === 'yes',
         isMRNRequired: formValues.mrnRequired === 'yes',
         isPORequired: formValues.poNumberRequired === 'yes',
-        isPIDRequired: formValues.patientIdentifierRequired === 'yes'
+        isPIDRequired: formValues.patientIdentifierRequired === 'yes',
+        isDateOfApheresisRequired: formValues.dateOfApheresisRequired === 'yes'
       };
       applyConfiguration(configValues);
     } else {

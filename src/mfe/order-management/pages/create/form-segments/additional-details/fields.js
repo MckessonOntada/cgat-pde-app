@@ -1,6 +1,6 @@
 import Components from '@src/components/form/Components';
-import { CHANNEL_TYPE } from '../Constants';
 import CommonUtils from '@src/util/CommonUtils';
+import { CHANNEL_TYPE } from '../Constants';
 
 const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -45,6 +45,15 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
         label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
         placeholder: ' ',
         isRequired: therapyConfig.isDOARequired,
+        component: Components['datePicker'],
+        disableDateTill: new Date(),
+        disablePast: true
+      },
+      {
+        name: 'dateOfApheresis',
+        label: translationFn('orderManagement.patientDetails.inputLabel.dateOfApheresis'),
+        placeholder: ' ',
+        isRequired: therapyConfig.isDateOfApheresisRequired,
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
@@ -162,7 +171,7 @@ export const getPrescriptionDetailsFields = ({ translationFn, formValues, setFie
         isRequired: true,
         placeholder: ' ',
         component: Components['radioGroup'],
-        onChangeValue: (value, form) => {
+        onChangeValue: (value) => {
           setFieldValue('hasAllergies', value);
           if (value !== 'yes') {
             setFieldValue('allergyDetails', '');
@@ -190,7 +199,7 @@ export const getPrescriptionDetailsFields = ({ translationFn, formValues, setFie
 
   return fields;
 };
-export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formValues, setFieldValue }) => {
+export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formValues }) => {
   return [
     {
       rows: [

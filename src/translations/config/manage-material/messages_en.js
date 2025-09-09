@@ -66,7 +66,8 @@ export const SystemConfigurationEN = {
 
   'manageMaterial.drawer.configuration.body.patientInfoRequired': 'Patient Information Required',
   'manageMaterial.drawer.configuration.body.coiIdRequired': 'Make COI ID Mandatory',
-  'manageMaterial.drawer.configuration.body.mrnRequired': 'Make MRN Mandatory',
+  'manageMaterial.drawer.configuration.body.mrnRequired': 'MRN Required',
+  'manageMaterial.drawer.configuration.body.dateOfApheresisRequired': 'Make Date of Apheresis Mandatory',
   'manageMaterial.drawer.configuration.body.sp.coiIdRequired': 'COI ID Required?',
   'manageMaterial.drawer.configuration.body.sp.mrnRequired': 'MRN Required?',
   'manageMaterial.drawer.configuration.body.poNumberRequired': 'Make PO Number Mandatory',

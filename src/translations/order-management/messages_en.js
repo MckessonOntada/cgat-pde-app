@@ -180,7 +180,10 @@ export const MessageEn = {
   'labels.poNumberMustValid': 'PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',
   'labels.enterValidDateOfAdministration': 'Enter valid date of administration.',
+  'labels.enterValidDateOfApheresis': 'Enter valid date of apheresis.',
+  'labels.enterValidDateOfApheresis': 'Enter valid date of apheresis.',
   'labels.dateOfAdministrationFutureDateOnly': 'Date of Administration must be in the future',
+  'labels.dateOfApheresisFutureDateOnly': 'Date of Apheresis must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'Search by Order ID, Therapy, Submitted By',
   'controls.placeholder.reviewTabSearchBox': 'Search by Prescription ID, Patient name, Therapy',
@@ -382,6 +385,7 @@ export const MessageEn = {
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.inputLabel.doa': 'Date of Administration',
+  'orderManagement.patientDetails.inputLabel.dateOfApheresis': 'Date of Apheresis',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.patient_details': 'Patient Details',

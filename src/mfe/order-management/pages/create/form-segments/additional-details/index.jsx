@@ -16,21 +16,29 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
+import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { RoutePaths } from '@src/routes/constants';
+import { showAlert } from '@src/store/reducer/alertReducer';
+import { openModal } from '@src/store/reducer/modalReducer';
+import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { Field, Form, Formik, useFormikContext } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { ORDER_STATUS } from '../../../orders/config';
 import useOrder from '../../../orders/useOrder';
+import Collaborator from '../Collaborator';
 import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
+import OrderAttestation from '../OrderAttestation';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
+import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -48,6 +56,7 @@ const INITIAL_VALUES = {
   slotNumber: '',
   poNumber: '',
   dateOfAdministration: '',
+  dateOfApheresis: '',
   hasAllergies: '',
   allergyDetails: '',
   diagnosisCode: [],
@@ -187,6 +196,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .when([], {
               is: () => therapyConfig.isDOARequired,
               then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
+              otherwise: (schema) => schema.notRequired()
+            }),
+          dateOfApheresis: Yup.date()
+            .typeError(t('labels.enterValidDateOfApheresis'))
+            .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
+            .when([], {
+              is: () => therapyConfig.isDateOfApheresisRequired,
+              then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
               otherwise: (schema) => schema.notRequired()
             }),
           coiId: Yup.string()
@@ -383,13 +400,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   const variantType = isSPCrossWalked || isSPNonCrossWalked ? null : variant?.variant;
 
-  const {
-    data: configuredQuestions,
-    isFetching: isFetchingConfiguredQuestions,
-    isError: isErrorConfiguredQuestions,
-    error: configuredQuestionsError,
-    refetch: fetchConfiguredQuestions
-  } = useQuery({
+  const { isFetching: isFetchingConfiguredQuestions, refetch: fetchConfiguredQuestions } = useQuery({
     queryKey: ['configured-questionnaire', orderId, variant ? variant.materialNumber : 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = orderDetails;
@@ -431,7 +442,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   });
 
-  const { data: uploadDocumentResponse, mutate: uploadDocument } = useMutation(
+  const { mutate: uploadDocument } = useMutation(
     async ({ fieldName, file }) => {
       const [templateId] = fieldName.split('#');
       return QuestionnaireService.uploadQuestionnaireDocument({
@@ -458,8 +469,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   );
 
-  const { data: uploadVariantDocumentResponse, mutate: uploadVariantDocument } = useMutation(
-    async ({ fieldName, file }) => {
+  const { mutate: uploadVariantDocument } = useMutation(
+    async ({ file }) => {
       return QuestionnaireService.uploadVariantDocument({
         orderId,
         variantId: variant.variant,
@@ -505,8 +516,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const { changeOnPreviousStep = false } = location.state;
 
       if (changeOnPreviousStep && !hasPermission) {
-        let message = '';
-
         const { changeOnPreviousStep, ...newState } = location.state;
         navigate(location.pathname, { state: newState });
         const state = {};
@@ -553,6 +562,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     if (additionalDetails) {
       const {
         dateOfAdministration,
+        dateOfApheresis,
         coiId,
         orderQuantity,
         patientConsentTaken,
@@ -585,6 +595,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         Object.assign(initialValues, {
           allergyDetails: clinicalDetails.allergiesSpecification,
           dateOfAdministration: clinicalDetails.dateOfAdministration,
+          dateOfApheresis: clinicalDetails.dateOfApheresis,
           hasAllergies: clinicalDetails.hasAllergies ? 'yes' : 'no',
           diagnosisCode: []
         });
@@ -599,6 +610,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         Object.assign(initialValues, {
           dateOfAdministration,
+          dateOfApheresis,
           coiId,
           orderQuantity,
           slotNumber
@@ -733,7 +745,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, diagnosisCode } = values;
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode } = values;
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.sectionsDetails) return;
 
@@ -757,7 +769,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     };
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      const { hasAllergies, allergyDetails, dateOfAdministration } = values;
+      const { hasAllergies, allergyDetails, dateOfAdministration, dateOfApheresis } = values;
       const clinicalDetails = {
         hasAllergies: hasAllergies === 'yes'
       };
@@ -768,6 +780,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
       if (dateOfAdministration) {
         clinicalDetails.dateOfAdministration = dateOfAdministration;
+      }
+
+      if (dateOfApheresis) {
+        clinicalDetails.dateOfApheresis = dateOfApheresis;
       }
 
       payload.clinicalDetails = clinicalDetails;
@@ -782,6 +798,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       payload.orderQuantity = orderQuantity;
       payload.slotNumber = slotNumber;
       payload.dateOfAdministration = dateOfAdministration;
+      payload.dateOfApheresis = dateOfApheresis;
     }
 
     if (!isSelfAttested) {
@@ -937,7 +954,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, errors, touched }) => {
+          {({ dirty, values, touched }) => {
             React.useEffect(() => {
               const isAnyFieldTouched = Object.keys(touched).length > 0;
               dispatch(hasUnsavedChanges(isAnyFieldTouched && dirty));
