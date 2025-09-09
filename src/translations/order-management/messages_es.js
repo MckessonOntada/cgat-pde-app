@@ -157,7 +157,6 @@ export const MessageEs = {
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
   'labels.enterValidDateOfAdministration': 'S_Enter valid date of administration.',
   'labels.enterValidDateOfApheresis': 'S_Enter valid date of apheresis.',
-  'labels.enterValidDateOfApheresis': 'S_Enter valid date of apheresis.',
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'labels.dateOfApheresisFutureDateOnly': 'S_Date of Apheresis must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
