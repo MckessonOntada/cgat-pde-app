@@ -1,29 +1,28 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useAccountContext } from '../../context/AccountContext';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
+import { Alert, Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import ApiRoutes from '@src/api/ApiRoutes';
+import OrderService from '@src/api/commonService/OrderService';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import EmptyDataTable from '@src/components/EmptyTable';
+import { FooterContext } from '@src/components/footer/FooterContext';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { TherapyDetailsConstantsForBB } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
+import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { GeographicUtils } from '@src/util/GeographicUtil';
-import DetailsFlexGrid from '../../components/detailsList/DetailsFlexGrid';
-import './viewDetails.scss';
-import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
-import EmptyDataTable from '@src/components/EmptyTable';
-import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { PATHS } from '../../routes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { useMutation, useQuery } from 'react-query';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { TherapyDetailsConstantsForBB } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
-import useResponsiveView from '@src/hooks/useResponsiveView';
-import { CustomDataTable } from '@src/components/dataTableComponent';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { FormattedNumber } from 'react-intl';
-import { FooterContext } from '@src/components/footer/FooterContext';
-import OrderService from '@src/api/commonService/OrderService';
+import { useMutation, useQuery } from 'react-query';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
+import DetailsFlexGrid from '../../components/detailsList/DetailsFlexGrid';
+import { useAccountContext } from '../../context/AccountContext';
+import { PATHS } from '../../routes';
+import './viewDetails.scss';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -35,11 +34,9 @@ function Details(props) {
   const [invoiceDetails, setInvoiceDetails] = useState({});
   const [billDates, setBillDates] = useState({});
   const [therapy, setTherapy] = useState(null);
-  const searchParams = new URLSearchParams(location.search);
   const { controlRef } = useContext(FooterContext);
 
   const [open, setOpen] = useState(false);
-  const therapyDetails = searchParams.get('therapy-details');
   const navigate = useNavigate();
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
@@ -85,7 +82,7 @@ function Details(props) {
     }
   );
 
-  const { isLoading, isError, error, data, refetch } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ['invoiceDetails', selectedAccount],
     queryFn: async () => {
       if (selectedAccount?.id) {
@@ -118,11 +115,11 @@ function Details(props) {
             ),
             [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
             [t('paymentInvoices.Details.manufacturerPatientId')]: res.data.manufacturerPatientId,
-            ['__z0']: null,
+            [t('paymentInvoices.Details.dateOfAdministration')]: res.data.dateOfAdministration,
             [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
-            ['__z1']: null,
+            [t('paymentInvoices.Details.dateOfApheresis')]: res.data.dateOfApheresis,
             [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
-            ['__z2']: null
+            ['__z0']: null
           }));
           updateBillDates(res);
           return res.data;

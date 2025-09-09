@@ -156,7 +156,10 @@ export const MessageEs = {
   'labels.poNumberMustValid': 'S_PO Number should only contain letters and numbers.',
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
   'labels.enterValidDateOfAdministration': 'S_Enter valid date of administration.',
+  'labels.enterValidDateOfApheresis': 'S_Enter valid date of apheresis.',
+  'labels.enterValidDateOfApheresis': 'S_Enter valid date of apheresis.',
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
+  'labels.dateOfApheresisFutureDateOnly': 'S_Date of Apheresis must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
   'controls.placeholder.reviewTabSearchBox': 'S_Search by Prescription ID, Patient name, Therapy',
@@ -676,6 +679,7 @@ export const MessageEs = {
   'messages.notifyUser': 'S_Notification mail has been sent successfully to the authorized user.',
   'labels.prescriptionDetails': 'S_Prescription Details',
   'orderManagement.patientDetails.inputLabel.doa': 'S_Date of Administration',
+  'orderManagement.patientDetails.inputLabel.dateOfApheresis': 'Date of Apheresis',
   'controls.placeholder.searchReviewOrderPlaceholder': 'S_Search by Order ID, Patient name, Therapy',
   'title.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Success',
   'message.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Nice work — your part is done! 🎉 The next step is now assigned. 🚀'

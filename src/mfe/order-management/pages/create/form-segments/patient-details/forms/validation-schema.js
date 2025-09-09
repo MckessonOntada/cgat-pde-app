@@ -1,7 +1,6 @@
-import * as Yup from 'yup';
-import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX, ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
+import { ADDRESS_REGEX, ALPHA_NUMERIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
-import { channel } from 'process';
+import * as Yup from 'yup';
 
 export const getInitialValues = () => ({
   patient: {
@@ -142,13 +141,11 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
         .when([], {
           is: () => spMaterialConfig?.isMRNRequired || therapyConfig.isMRNRequired,
           then: (schema) =>
-            schema
-              .required(t('orderManagement.patientDetails.validation.mrn_required'))
-              .test(
-                'no-leading-trailing-spaces',
-                t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-                (value) => value === undefined || value.trim().length === value.length
-              ),
+            schema.test(
+              'no-leading-trailing-spaces',
+              t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+              (value) => value === undefined || value.trim().length === value.length
+            ),
           otherwise: (schema) => schema.notRequired()
         }),
       coiId: Yup.string()
