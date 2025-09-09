@@ -19,7 +19,6 @@ import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-ques
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { RoutePaths } from '@src/routes/constants';
-import { showAlert } from '@src/store/reducer/alertReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -42,13 +41,6 @@ import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
-import Collaborator from '../Collaborator';
-import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
-import OrderAttestation from '../OrderAttestation';
-import { useDispatch } from 'react-redux';
-import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
-import { openModal } from '@src/store/reducer/modalReducer';
 
 const INITIAL_VALUES = {
   coiId: '',
