@@ -614,7 +614,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         });
       }
 
-      if (configuredQuestionnaires) {
+      if (configuredQuestionnaires.length > 0) {
         prepareQuestionnaire(configuredQuestionnaires);
       }
 
@@ -639,55 +639,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       ...initialValues
     }));
   }, [orderDetails, variantsData]);
-
-  // React.useEffect(() => {
-  //   if (variant) {
-  //     setAlert(null);
-  //     OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
-  //       setAlert(null);
-  //       const { spTherapyConfig, therapy } = result;
-  //       const prescriptionDetails = {
-  //         drugName: '',
-  //         daysSupply: '',
-  //         quantity: '',
-  //         refills: '',
-  //         instructions: '',
-  //         consentPolicy: '',
-  //         terms: false,
-  //         acknowledgement: false
-  //       };
-
-  //       if (CommonUtils.isNonEmptyObject(spTherapyConfig)) {
-  //         prescriptionDetails.drugName = therapy?.materialDescription;
-  //         prescriptionDetails.daysSupply = spTherapyConfig.daysSupply;
-  //         prescriptionDetails.quantity = spTherapyConfig.quantity;
-  //         prescriptionDetails.refills = spTherapyConfig.refills;
-  //         prescriptionDetails.instructions = spTherapyConfig.instructions;
-  //         prescriptionDetails.consentPolicy = spTherapyConfig.consentPolicy;
-  //       }
-
-  //       if (!spTherapyConfig || !spTherapyConfig.consentPolicy) {
-  //         setAlert({
-  //           type: 'error',
-  //           description: t('message.additionalDetails.missingPrescriptionDetails')
-  //         });
-  //       }
-
-  //       //setStoredValue((pre) => ({ ...pre, ...prescriptionDetails }));
-  //       setStoredValue((prev) => {
-  //         const merged = { ...prev, ...prescriptionDetails };
-  //         setInitialFormValues((prevInit) => ({ ...prevInit, ...prescriptionDetails })); // keep existing keys too
-  //         return merged;
-  //       });
-  //       // updatePrescriptionDetails(prescriptionDetails);
-  //       //setInitialFormValues((pre) => ({ ...pre, ...storedValue, ...prescriptionDetails }));
-  //       // setInitialFormValues({
-  //       //   ...storedValue,
-  //       //   ...prescriptionDetails
-  //       // });
-  //     });
-  //   }
-  // }, [variant]);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
@@ -922,7 +873,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   React.useEffect(() => {
-    if (orderDetails?.id && orderDetails.additionalDetails?.configuredQuestionnaires.length === 0) {
+    if (orderDetails?.id && !(orderDetails.additionalDetails?.configuredQuestionnaires?.length > 0)) {
       const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
       if (soldToAccount && shipToAccount) {
         if ((isSPCrossWalked && variant) || !isSPCrossWalked) fetchConfiguredQuestions();
