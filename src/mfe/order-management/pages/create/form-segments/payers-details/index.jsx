@@ -34,8 +34,7 @@ import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import OrderAttestation from '../OrderAttestation';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
+import { NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
@@ -56,7 +55,8 @@ function Payer({ readOnly, hasPermission }) {
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
   const { isEdit = false, isApprover = false } = locationState || {};
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const isStageInDraft = orderDetails.isDraft;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -66,26 +66,12 @@ function Payer({ readOnly, hasPermission }) {
     soldToAccountId,
     shipToAccountId
   });
+
+  const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const dispatch = useDispatch();
   React.useEffect(() => {
     return () => dispatch(hasUnsavedChanges(false));
   }, []);
-
-  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
-  const handleConfirmChange = (checked) => {
-    setIsSelfAttested(checked);
-  };
-
-  React.useEffect(() => {
-    const stage = orderDetails?.currentStage;
-    if (stage == null) {
-      setIsSelfAttested(false);
-    } else if (stage !== ORDER_STAGES.PAYER_DETAILS) {
-      setIsSelfAttested(true);
-    } else {
-      setIsSelfAttested(isSelfAttested);
-    }
-  }, [orderDetails?.currentStage]);
 
   React.useEffect(() => {
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
@@ -107,7 +93,8 @@ function Payer({ readOnly, hasPermission }) {
       setIsPayerDetailsRequired('yes');
     } else if (isPayerDetailsRequired === false) {
       const formValues = {
-        payerDetailsRequired: 'no'
+        payerDetailsRequired: 'no',
+        insuranceDetails: null
       };
       setFormValues(formValues);
       setIsPayerDetailsRequired('no');
@@ -255,12 +242,14 @@ function Payer({ readOnly, hasPermission }) {
 
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
-    mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isDraft }) =>
-      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isDraft),
+    mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isSendNotification }) =>
+      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isOrderInDraft, isSendNotification),
     onSuccess: (response, variables) => {
-      if (isSelfAttested || variables.isAttested) {
+      if (!isOrderInDraft) {
         navigateToNextStage(orderId, true);
       } else {
+        refreshOrderDetails();
+        setIsDirty(false);
         setAlert({
           description: 'Order Saved In Draft Successfully',
           type: 'success'
@@ -292,14 +281,11 @@ function Payer({ readOnly, hasPermission }) {
 
     if (isMedical) {
       result.medicalCardFront = typeof medicalCardFront === 'object' ? medicalCardFront?.url : medicalCardFront;
-
       result.medicalCardBack = typeof medicalCardBack === 'object' ? medicalCardBack?.url : medicalCardBack;
     } else {
       result.pharmacyCardFront = typeof pharmacyCardFront === 'object' ? pharmacyCardFront?.url : pharmacyCardFront;
-
       result.pharmacyCardBack = typeof pharmacyCardBack === 'object' ? pharmacyCardBack?.url : pharmacyCardBack;
     }
-
     return result;
   }
 
@@ -317,19 +303,11 @@ function Payer({ readOnly, hasPermission }) {
       });
     }
 
-    if (!isSelfAttested) {
-      showSaveAsDraftConfirm({
-        t,
-        onOk: () => {
-          savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isDraft: true });
-        },
-        onContinue: () => {
-          savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isAttested: true });
-        }
-      });
-    } else {
-      if (isDirty) {
-        savePayerDetails({ isPayerDetailsRequired, insuranceDetails });
+    if (isDirty || isStageInDraft) {
+      savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: isOrderInDraft ? false : true });
+    } else if (!isDirty && !isStageInDraft) {
+      if (orderDetails?.currentStage === ORDER_STAGES.PAYER_DETAILS) {
+        savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: false });
       } else {
         navigateToNextStage(orderId);
       }
@@ -337,7 +315,6 @@ function Payer({ readOnly, hasPermission }) {
   };
 
   const handleOnUpload = (config) => (file, setFieldValue, key) => {
-    setIsSelfAttested(false);
     const side = key.endsWith('Front') ? 'FRONT' : 'BACK';
     const { insurance, insuranceLevel } = config;
     const payload = {
@@ -365,8 +342,16 @@ function Payer({ readOnly, hasPermission }) {
       });
   };
 
-  const handleOnClosePanel = (key, setFieldValue) => {
-    setFieldValue(key, null);
+  const handleOnClosePanel = (key, setFieldValue, currentValues, resetFormFn) => {
+    const next = {
+      ...currentValues,
+      insuranceDetails: {
+        ...currentValues.insuranceDetails,
+        [key]: null
+      }
+    };
+    resetFormFn({ values: next });
+
     if (key === 'secondaryMedicalInsurance') {
       setIsSecondaryMedicalInsuranceOpen(false);
     } else {
@@ -422,20 +407,14 @@ function Payer({ readOnly, hasPermission }) {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
-          {({ setValues, values, touched, setTouched, setErrors, setFieldValue, dirty, ...rest }) => {
+          {({ setValues, values, touched, setTouched, setErrors, setFieldValue, dirty, resetForm, ...rest }) => {
             React.useEffect(() => {
               dispatch(hasUnsavedChanges(dirty));
               setIsDirty(dirty);
-              if (dirty) {
-                setIsSelfAttested(false);
-              }
             }, [dirty]);
 
             React.useEffect(() => {
               setIsPayerDetailsRequired(values['payerDetailsRequired']);
-              if (dirty) {
-                setIsSelfAttested(false);
-              }
             }, [values]);
             React.useEffect(() => {
               setValues((prevValues) => ({
@@ -600,7 +579,7 @@ function Payer({ readOnly, hasPermission }) {
                             />
                           ) : (
                             <FormRenderer
-                              onClose={() => handleOnClosePanel('secondaryMedicalInsurance', setFieldValue)}
+                              onClose={() => handleOnClosePanel('secondaryMedicalInsurance', setFieldValue, values, resetForm)}
                               closeIcon={BinRedIcon}
                               onUpload={handleOnUpload({
                                 insurance: 'MEDICAL',
@@ -626,7 +605,7 @@ function Payer({ readOnly, hasPermission }) {
                             />
                           ) : (
                             <FormRenderer
-                              onClose={() => handleOnClosePanel('secondaryPharmacyInsurance', setFieldValue)}
+                              onClose={() => handleOnClosePanel('secondaryPharmacyInsurance', setFieldValue, values, resetForm)}
                               closeIcon={BinRedIcon}
                               onUpload={handleOnUpload({
                                 insurance: 'PHARMACY',
@@ -639,14 +618,16 @@ function Payer({ readOnly, hasPermission }) {
                         </div>
                       </div>
                     )}
-                    <OrderAttestation stage={ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
                   </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
+                      <Button size="md" onClick={() => setIsOrderInDraft(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+                        {t('button.caption.saveAsDraft')}
+                      </Button>
+                      <Button size="md" variant="primary" onClick={() => setIsOrderInDraft(false)} type="submit" disabled={readOnly}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

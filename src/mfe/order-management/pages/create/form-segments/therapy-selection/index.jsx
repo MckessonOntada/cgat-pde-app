@@ -24,7 +24,6 @@ import ModuleHeader from '@src/components/module-header';
 import { ORDER_STATUS } from '../../../orders/config';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { useDispatch } from 'react-redux';
-import OrderAttestation from '../OrderAttestation';
 import { ORDER_STAGES } from '../Constants';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
@@ -52,13 +51,6 @@ function TherapySelection({ readOnly }) {
   const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
-  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
-  const [attestationError, setAttestationError] = useState('');
-
-  const handleConfirmChange = (checked) => {
-    setIsSelfAttested(checked);
-    setAttestationError('');
-  };
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -167,10 +159,7 @@ function TherapySelection({ readOnly }) {
       });
       return;
     }
-    if (!isSelfAttested) {
-      setAttestationError('Please acknowledge to Save and continue');
-      return false;
-    }
+
     if (tradeDetails) {
       const payload = {
         ndc: tradeDetails.ndc,
@@ -189,17 +178,6 @@ function TherapySelection({ readOnly }) {
       }
     }
   };
-
-  React.useEffect(() => {
-    const stage = orderDetails?.currentStage;
-    if (stage == null || isDirty) {
-      setIsSelfAttested(false);
-    } else if (stage !== ORDER_STAGES.THERAPY_SELECTION) {
-      setIsSelfAttested(true);
-    } else {
-      setIsSelfAttested(isSelfAttested);
-    }
-  }, [orderDetails?.currentStage, isDirty]);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -295,13 +273,6 @@ function TherapySelection({ readOnly }) {
               <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
             )}
             <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} readOnly={readOnly} />
-            <OrderAttestation
-              disabled={readOnly}
-              stage={ORDER_STAGES?.THERAPY_SELECTION}
-              onCheck={handleConfirmChange}
-              error={attestationError}
-              isChecked={isSelfAttested}
-            />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">

@@ -34,10 +34,9 @@ import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
 import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
-import OrderAttestation from '../OrderAttestation';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
+import { NotifyAlert } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -73,6 +72,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [validationSchema, setValidationSchema] = React.useState(null);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
+  const [skipTerms, setSkipTerms] = React.useState(false);
   const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
@@ -87,27 +87,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
-  const therapyChannelType = orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
+  const therapyChannelType = tradeDetails?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const [diagnosisCode, setDiagnosisCode] = React.useState([]);
   const [diagnosisSearchQuery, setDiagnosisSearchQuery] = React.useState('');
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
-  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+  const isStageInDraft = orderDetails.isDraft;
+  const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const dispatch = useDispatch();
-
-  const handleConfirmChange = (checked) => {
-    setIsSelfAttested(checked);
-  };
-  React.useEffect(() => {
-    const stage = orderDetails?.currentStage;
-    if (stage == null) {
-      setIsSelfAttested(false);
-    } else if (stage !== ORDER_STAGES.ADDITIONAL_DETAILS) {
-      setIsSelfAttested(true);
-    } else {
-      setIsSelfAttested(isSelfAttested);
-    }
-  }, [orderDetails?.currentStage]);
 
   const variantsApiRequestParam = {
     pageNo: 0,
@@ -272,6 +259,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
 
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
+
     setInitialFormValues((pre) => ({
       ...pre,
       ...storedValue,
@@ -292,14 +280,15 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
-    async ({ isDraft, isAttested, ...data }) => OrderService.saveAdditionalDetails(orderId, data, isDraft),
+    async ({ payload, isSendNotification }) => OrderService.saveAdditionalDetails(orderId, payload, isOrderInDraft, isSendNotification),
     {
-      onSuccess: (result, variables) => {
+      onSuccess: (result) => {
         const { id } = result;
-        if (isSelfAttested || variables?.isAttested) {
+        if (!isOrderInDraft) {
           navigateToNextStage(id, true);
         } else {
           refreshOrderDetails();
+          setIsDirty(false);
           setAlert({
             description: 'Order Saved In Draft Successfully',
             type: 'success'
@@ -342,11 +331,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         section.questions.forEach((question) => {
           const fieldName = CommonUtils.generateUniqueCode(`${template.id}-${sectionIndex}#${question.text[LANGUAGE.ENGLISH]}`);
           questionnaireFields[fieldName] = {
-            value: question.value
+            value: question.value ?? ''
+            // ...(question.isDocumentRequired ? { document: question.document ?? null } : {})
           };
 
           if (question.isDocumentRequired && question.document) {
-            questionnaireFields[fieldName].document = question.document;
+            questionnaireFields[fieldName].document = question.document ?? null;
           }
 
           validationSchemaFields[fieldName] = Yup.object({
@@ -396,7 +386,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     queryKey: ['configured-questionnaire', orderId, variant ? variant.materialNumber : 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = orderDetails;
-      if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
+      if (orderDetails.additionalDetails?.configuredQuestionnaires.length > 0) return;
 
       let materialOrNdcNumber = '';
       if (isSPCrossWalked) {
@@ -537,7 +527,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     const { additionalDetails, spTherapyConfig, therapy } = orderDetails || {};
     const initialValues = {};
 
-    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig) {
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig && CommonUtils.isNonEmptyObject(therapy)) {
       Object.assign(initialValues, {
         drugName: therapy?.materialDescription,
         strength: spTherapyConfig.strength,
@@ -585,7 +575,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
       if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
         Object.assign(initialValues, {
-          allergyDetails: clinicalDetails.allergiesSpecification,
+          allergyDetails: clinicalDetails.allergiesSpecification ?? '',
           dateOfAdministration: clinicalDetails.dateOfAdministration,
           dateOfApheresis: clinicalDetails.dateOfApheresis,
           hasAllergies: clinicalDetails.hasAllergies ? 'yes' : 'no',
@@ -594,10 +584,25 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
         if (typeof diagnosisCode === 'string') {
           try {
-            initialValues.diagnosisCode = JSON.parse(diagnosisCode);
+            const parsedDiagnosisCodes = JSON.parse(diagnosisCode);
+            initialValues.diagnosisCode = parsedDiagnosisCodes.map((item) => ({
+              label: `${item.code} ${item.description}`,
+              value: item.code,
+              code: item.code,
+              description: item.description,
+              isChecked: true
+            }));
           } catch {
             initialValues.diagnosisCode = [];
           }
+        } else if (Array.isArray(diagnosisCode)) {
+          initialValues.diagnosisCode = diagnosisCode.map((item) => ({
+            label: `${item.code} ${item.description}`,
+            value: item.code,
+            code: item.code,
+            description: item.description,
+            isChecked: true
+          }));
         }
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         Object.assign(initialValues, {
@@ -635,46 +640,54 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }));
   }, [orderDetails, variantsData]);
 
-  React.useEffect(() => {
-    if (variant) {
-      OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
-        setAlert(null);
-        const { spTherapyConfig, therapy } = result;
-        const prescriptionDetails = {
-          drugName: '',
-          daysSupply: '',
-          quantity: '',
-          refills: '',
-          instructions: '',
-          consentPolicy: '',
-          terms: false,
-          acknowledgement: false
-        };
+  // React.useEffect(() => {
+  //   if (variant) {
+  //     setAlert(null);
+  //     OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
+  //       setAlert(null);
+  //       const { spTherapyConfig, therapy } = result;
+  //       const prescriptionDetails = {
+  //         drugName: '',
+  //         daysSupply: '',
+  //         quantity: '',
+  //         refills: '',
+  //         instructions: '',
+  //         consentPolicy: '',
+  //         terms: false,
+  //         acknowledgement: false
+  //       };
 
-        if (CommonUtils.isNonEmptyObject(spTherapyConfig)) {
-          prescriptionDetails.drugName = therapy?.materialDescription;
-          prescriptionDetails.daysSupply = spTherapyConfig.daysSupply;
-          prescriptionDetails.quantity = spTherapyConfig.quantity;
-          prescriptionDetails.refills = spTherapyConfig.refills;
-          prescriptionDetails.instructions = spTherapyConfig.instructions;
-          prescriptionDetails.consentPolicy = spTherapyConfig.consentPolicy;
-        }
+  //       if (CommonUtils.isNonEmptyObject(spTherapyConfig)) {
+  //         prescriptionDetails.drugName = therapy?.materialDescription;
+  //         prescriptionDetails.daysSupply = spTherapyConfig.daysSupply;
+  //         prescriptionDetails.quantity = spTherapyConfig.quantity;
+  //         prescriptionDetails.refills = spTherapyConfig.refills;
+  //         prescriptionDetails.instructions = spTherapyConfig.instructions;
+  //         prescriptionDetails.consentPolicy = spTherapyConfig.consentPolicy;
+  //       }
 
-        if (!spTherapyConfig || !spTherapyConfig.consentPolicy) {
-          setAlert({
-            type: 'error',
-            description: t('message.additionalDetails.missingPrescriptionDetails')
-          });
-        }
+  //       if (!spTherapyConfig || !spTherapyConfig.consentPolicy) {
+  //         setAlert({
+  //           type: 'error',
+  //           description: t('message.additionalDetails.missingPrescriptionDetails')
+  //         });
+  //       }
 
-        setStoredValue((pre) => ({ ...pre, ...prescriptionDetails }));
-        setInitialFormValues({
-          ...storedValue,
-          ...prescriptionDetails
-        });
-      });
-    }
-  }, [variant]);
+  //       //setStoredValue((pre) => ({ ...pre, ...prescriptionDetails }));
+  //       setStoredValue((prev) => {
+  //         const merged = { ...prev, ...prescriptionDetails };
+  //         setInitialFormValues((prevInit) => ({ ...prevInit, ...prescriptionDetails })); // keep existing keys too
+  //         return merged;
+  //       });
+  //       // updatePrescriptionDetails(prescriptionDetails);
+  //       //setInitialFormValues((pre) => ({ ...pre, ...storedValue, ...prescriptionDetails }));
+  //       // setInitialFormValues({
+  //       //   ...storedValue,
+  //       //   ...prescriptionDetails
+  //       // });
+  //     });
+  //   }
+  // }, [variant]);
 
   React.useEffect(() => {
     OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
@@ -747,8 +760,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           const fieldValue = values[fieldName];
           if (!fieldName) return;
 
-          question.value = fieldValue.value;
-          question.document = fieldValue.document;
+          question.value = fieldValue?.value;
+          question.document = fieldValue?.document;
         });
       });
     });
@@ -792,27 +805,22 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       payload.dateOfAdministration = dateOfAdministration;
       payload.dateOfApheresis = dateOfApheresis;
     }
-
-    if (!isSelfAttested) {
-      showSaveAsDraftConfirm({
-        t,
-        onOk: () => {
-          const draftPayload = { ...payload, isDraft: true };
-          saveAdditionalDetails(draftPayload);
-        },
-        onContinue: () => {
-          const attestationPayload = { ...payload, isAttested: true };
-          saveAdditionalDetails(attestationPayload);
-        }
-      });
-    } else {
-      if (isDirty) {
-        saveAdditionalDetails(payload);
+    if (skipTerms && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      if (isStageInDraft) {
+        saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
       } else {
         navigateToNextStage(orderId);
       }
-      dispatch(hasUnsavedChanges(false));
+    } else if (isDirty || isStageInDraft) {
+      saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
+    } else if (!isDirty && !isStageInDraft) {
+      if (orderDetails?.currentStage === ORDER_STAGES.ADDITIONAL_DETAILS) {
+        saveAdditionalDetails({ payload, isSendNotification: false });
+      } else {
+        navigateToNextStage(orderId);
+      }
     }
+    dispatch(hasUnsavedChanges(false));
   };
 
   const handleOnBackToOrders = () => {
@@ -869,11 +877,52 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       isChecked: false
     }));
 
+    OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
+      const { spTherapyConfig, therapy } = result;
+      setAlert(null);
+      const prescriptionDetails = {
+        drugName: '',
+        daysSupply: '',
+        quantity: '',
+        refills: '',
+        instructions: '',
+        consentPolicy: '',
+        terms: false,
+        acknowledgement: false
+      };
+
+      if (CommonUtils.isNonEmptyObject(spTherapyConfig)) {
+        prescriptionDetails.drugName = therapy?.materialDescription;
+        prescriptionDetails.daysSupply = spTherapyConfig.daysSupply;
+        prescriptionDetails.quantity = spTherapyConfig.quantity;
+        prescriptionDetails.refills = spTherapyConfig.refills;
+        prescriptionDetails.instructions = spTherapyConfig.instructions;
+        prescriptionDetails.consentPolicy = spTherapyConfig.consentPolicy;
+      }
+
+      if (!spTherapyConfig || !spTherapyConfig.consentPolicy) {
+        setAlert({
+          type: 'error',
+          description: t('message.additionalDetails.missingPrescriptionDetails')
+        });
+      }
+
+      setStoredValue((pre) => {
+        const updated = { ...pre, ...prescriptionDetails };
+        return updated;
+      });
+      setFieldValue('drugName', prescriptionDetails.drugName);
+      setFieldValue('daysSupply', prescriptionDetails.daysSupply, false);
+      setFieldValue('quantity', prescriptionDetails.quantity, false);
+      setFieldValue('refills', prescriptionDetails.refills, false);
+      setFieldValue('instructions', prescriptionDetails.instructions, false);
+      setFieldValue('consentPolicy', prescriptionDetails.consentPolicy, false);
+    });
     setVariant(variant);
   };
 
   React.useEffect(() => {
-    if (orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires) {
+    if (orderDetails?.id && orderDetails.additionalDetails?.configuredQuestionnaires.length === 0) {
       const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
       if (soldToAccount && shipToAccount) {
         if ((isSPCrossWalked && variant) || !isSPCrossWalked) fetchConfiguredQuestions();
@@ -895,7 +944,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   if (isSaving || isFetching) return <Loader type={'screen'} />;
-
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -937,6 +985,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+
         <Formik
           initialValues={initialFormValues}
           enableReinitialize={true}
@@ -946,20 +995,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, touched }) => {
+          {({ dirty, values, setFieldValue }) => {
             React.useEffect(() => {
-              const isAnyFieldTouched = Object.keys(touched).length > 0;
-              dispatch(hasUnsavedChanges(isAnyFieldTouched && dirty));
-            }, [touched]);
+              formEffects(values, initialFormValues, setFieldValue);
+            }, [values, initialFormValues, setFieldValue]);
 
             useEffect(() => {
+              const isReallyDirty = checkReallyDirty(initialFormValues, values);
+              setSkipTerms(!isReallyDirty);
               setIsDirty(dirty);
               setStoredValue(values);
-              dispatch(hasUnsavedChanges(dirty));
-              if (dirty) {
-                setIsSelfAttested(false);
-              }
-            }, [dirty, values]);
+              dispatch(hasUnsavedChanges(isReallyDirty));
+            }, [dirty, values, initialFormValues]);
 
             return (
               <Form>
@@ -1007,16 +1054,24 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                         />
                       </div>
                     </div>
-                    <OrderAttestation stage={ORDER_STAGES?.ADDITIONAL_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} />
                   </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
+                      </Button>{' '}
+                      <Button
+                        size="md"
+                        onClick={() => setIsOrderInDraft(true)}
+                        variant="primary"
+                        type="submit"
+                        disabled={readOnly || (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? skipTerms || !values.consentPolicy : !isDirty)}>
+                        {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button
                         size="md"
-                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !initialFormValues.consentPolicy) || readOnly}
+                        onClick={() => setIsOrderInDraft(false)}
+                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !values.consentPolicy) || readOnly}
                         variant="primary"
                         type="submit">
                         {t('captions.btnSaveAndContinue')}
@@ -1310,6 +1365,64 @@ const FormSectionWrapper = ({ title, isRequired, children }) => {
       {children}
     </div>
   );
+};
+
+const formEffects = (values, initialFormValues, setFieldValue) => {
+  if (!values || !initialFormValues) return;
+
+  Object.keys(values).forEach((k) => {
+    const curObj = values[k];
+    const initObj = initialFormValues[k];
+    if (!curObj || typeof curObj !== 'object' || !('value' in curObj)) return;
+    const cur = curObj.value;
+    const init = initObj?.value;
+    if (typeof init === 'string') {
+      if (Array.isArray(cur) && cur.length === 0) {
+        setFieldValue(`${k}.value`, '', false);
+        return;
+      }
+    }
+    if (Array.isArray(init)) {
+      if (cur === '' || cur == null) {
+        setFieldValue(`${k}.value`, [], false);
+        return;
+      }
+      if (Array.isArray(cur) && cur.length > 1) {
+        const sorted = [...cur].map(String).sort();
+        if (JSON.stringify(sorted) !== JSON.stringify(cur)) {
+          setFieldValue(`${k}.value`, sorted, false);
+        }
+      }
+
+      if ('document' in init && init.document === null && cur.document === undefined) {
+        setFieldValue(`${k}.document`, null, false);
+      }
+    }
+  });
+};
+
+const checkReallyDirty = (values, initialFormValues) => {
+  const ignored = new Set(['terms', 'acknowledgement']);
+
+  const isDirtyRecursive = (initial, current) => {
+    if (initial == null && current == null) return false;
+
+    if (typeof initial === 'object' && typeof current === 'object' && !Array.isArray(initial)) {
+      const allKeys = new Set([...Object.keys(initial), ...Object.keys(current)]);
+      return Array.from(allKeys).some((key) => {
+        if (!(key in initial) && (current[key] == null || current[key] === '')) return false;
+        return isDirtyRecursive(initial[key], current[key]);
+      });
+    }
+    return JSON.stringify(initial) !== JSON.stringify(current);
+  };
+
+  const isReallyDirty = Object.keys(initialFormValues || {}).some((k) => {
+    if (ignored.has(k)) return false;
+    if (!(k in values)) return true;
+    return isDirtyRecursive(initialFormValues[k], values[k]);
+  });
+  return isReallyDirty;
 };
 
 export default withPermissions(AdditionalDetails, ORDER_STAGES.ADDITIONAL_DETAILS);

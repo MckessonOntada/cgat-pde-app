@@ -75,6 +75,19 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
 
 export const getClinicalDetailFields = ({ translationFn, formValues, setFieldValue, onDiagnosisCodeSearch, diagnosisCode }) => {
   const fields = [];
+  const normalizedDiagnosisCodes = (formValues.diagnosisCode || []).map((item) => {
+    if (item.label && item.value) {
+      return item;
+    } else {
+      return {
+        label: `${item.code} ${item.description}`,
+        value: item.code,
+        code: item.code,
+        description: item.description,
+        isChecked: true // In edit mode, existing codes should be checked
+      };
+    }
+  });
 
   fields.push(
     ...[
@@ -97,12 +110,12 @@ export const getClinicalDetailFields = ({ translationFn, formValues, setFieldVal
               value.filter((item) => item.isChecked)
             );
         },
-        options: mergeLists(formValues.diagnosisCode, diagnosisCode),
+        options: mergeLists(normalizedDiagnosisCodes, diagnosisCode),
         variant: 'async',
         onSearch: onDiagnosisCodeSearch,
         recordsCountToEnableSearch: 5,
         size: 'lg',
-        asyncRecordsFound: formValues.diagnosisCode.length,
+        asyncRecordsFound: normalizedDiagnosisCodes.length,
         noSelectedCountMessage: translationFn('dropdown.helperText'),
         layout: {
           classes: 'grid grid-gap-16 grid-cols-3 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline'

@@ -32,8 +32,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import OrderAttestation from '../OrderAttestation';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
+import { NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
@@ -53,24 +52,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const { isEdit = false, isApprover = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
-  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
+  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const isStageInDraft = orderDetails.isDraft;
+  const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const dispatch = useDispatch();
-  const handleConfirmChange = (checked) => {
-    setIsSelfAttested(checked);
-    setIsDirty(true);
-  };
-
-  React.useEffect(() => {
-    const stage = orderDetails?.currentStage;
-    if (stage == null) {
-      setIsSelfAttested(false);
-    } else if (stage !== ORDER_STAGES.PATIENT_DETAILS) {
-      setIsSelfAttested(true);
-    } else {
-      setIsSelfAttested(isSelfAttested);
-    }
-  }, [orderDetails?.currentStage]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -148,7 +133,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         });
       }
       setInitialValues({
-        patient: orderDetails.patient,
+        patient: CommonUtils.normalizeFormData(orderDetails.patient),
         providerId: orderDetails.provider?.id
       });
     }
@@ -180,7 +165,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         confirm: {
           label: t('modal.action.continue'),
           action: () => {
-            handleSubmit(payload, true);
+            handleSubmit(payload, true, isOrderInDraft);
           }
         },
         cancel: {
@@ -212,16 +197,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck, isDraft }) => {
-      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isDraft);
+    async ({ payload, skipDuplicateCheck, isSendNotification }) => {
+      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isOrderInDraft, isSendNotification);
     },
     {
-      onSuccess: (result, variables) => {
+      onSuccess: (result) => {
         const { id } = result;
-        if (isSelfAttested || variables.isAttested) {
+        if (!isOrderInDraft) {
           navigateToNextStage(id, true);
           setProvider(null);
         } else {
+          refreshOrderDetails();
+          setIsDirty(false);
           setAlert({
             description: 'Order Saved In Draft Successfully',
             type: 'success'
@@ -279,19 +266,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       skipDuplicateCheck = true;
     }
     setInitialValues(form);
-    if (!isSelfAttested) {
-      showSaveAsDraftConfirm({
-        t,
-        onOk: () => {
-          savePatientDetails({ payload, skipDuplicateCheck, isDraft: true });
-        },
-        onContinue: () => {
-          savePatientDetails({ payload, skipDuplicateCheck, isAttested: true });
-        }
-      });
-    } else {
-      if (isDirty) {
-        savePatientDetails({ payload, skipDuplicateCheck });
+
+    if (isDirty || isStageInDraft) {
+      savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: isOrderInDraft ? false : true });
+    } else if (!isDirty && !isStageInDraft) {
+      if (orderDetails?.currentStage === ORDER_STAGES.PATIENT_DETAILS) {
+        savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: false });
       } else {
         navigateToNextStage(orderId);
       }
@@ -436,9 +416,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
               setIsDirty(dirty);
               dispatch(hasUnsavedChanges(dirty));
             }, [dirty]);
-            React.useEffect(() => {
-              setIsSelfAttested(false);
-            }, [values]);
+
             return (
               <Form>
                 <div className={styles.wrapper}>
@@ -634,20 +612,16 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         )}
                       </div>
                     </div>
-                    <OrderAttestation
-                      stage={
-                        orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL ? ORDER_STAGES?.PATIENT_DETAILS : ORDER_STAGES?.PATIENT_AND_PROVIDER_DETAILS
-                      }
-                      onCheck={handleConfirmChange}
-                      isChecked={isSelfAttested}
-                    />
                   </fieldset>
                   <div className="footer-wrapper" ref={controlRef}>
                     <div className="controls footer-controls">
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
+                      <Button size="md" onClick={() => setIsOrderInDraft(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+                        {t('button.caption.saveAsDraft')}
+                      </Button>
+                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

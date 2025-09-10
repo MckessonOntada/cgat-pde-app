@@ -23,8 +23,7 @@ import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import OrderAttestation from '../OrderAttestation';
-import { NotifyAlert, showSaveAsDraftConfirm } from '../OrderUtil';
+import { NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
@@ -44,26 +43,11 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const updatedLocationState = { ...locationState, isTherapyChanged: false };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [alert, setAlert] = useState(null);
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const isStageInDraft = orderDetails.isDraft;
 
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
-  const [isSelfAttested, setIsSelfAttested] = React.useState(false);
-
-  const handleConfirmChange = (checked) => {
-    setIsSelfAttested(checked);
-  };
-
-  React.useEffect(() => {
-    const stage = orderDetails?.currentStage;
-    if (stage == null) {
-      setIsSelfAttested(false);
-    } else if (stage !== ORDER_STAGES.ACCOUNT_DETAILS) {
-      setIsSelfAttested(true);
-    } else {
-      setIsSelfAttested(isSelfAttested);
-    }
-  }, [orderDetails?.currentStage]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -121,42 +105,46 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
   }, [orderDetails]);
 
-  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async ({ isDraft, ...data }) => OrderService.saveAccount(orderId, data, isDraft), {
-    onSuccess: async (result, variables) => {
-      const { id } = result;
-      if (isSelfAttested || variables.isAttested) {
-        try {
-          navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-            state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover, changeOnPreviousStep: true }
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(
+    async ({ isDraft, isSendNotification, ...data }) => OrderService.saveAccount(orderId, data, isDraft, isSendNotification),
+    {
+      onSuccess: async (result, variables) => {
+        const { id } = result;
+        if (!variables.isDraft) {
+          try {
+            navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
+              state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover, changeOnPreviousStep: true }
+            });
+          } catch (err) {
+            console.error(err);
+          }
+        } else {
+          refreshOrderDetails();
+          setIsDirty(false);
+          setAlert({
+            description: 'Order Saved In Draft Successfully',
+            type: 'success'
           });
-        } catch (err) {
-          console.error(err);
         }
-      } else {
+      },
+      onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         setAlert({
-          description: 'Order Saved In Draft Successfully',
-          type: 'success'
+          description,
+          type: 'error'
         });
       }
-    },
-    onError: (error) => {
-      const statusCode = error?.response?.status;
-      let description = t('error.default');
-      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
-      setAlert({
-        description,
-        type: 'error'
-      });
     }
-  });
+  );
 
   const handleOnClose = () => {
     setOpen(false);
   };
   const handleOnClick = () => {
     setAlert(null);
-    setIsSelfAttested(false);
     setOpen(true);
   };
   const [isDirty, setIsDirty] = React.useState(false);
@@ -164,9 +152,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
 
   React.useEffect(() => {
     const isDirty =
-      JSON.stringify(selectedSoldToAccount) !== JSON.stringify(orderDetails.accountDetails?.soldToAccount) ||
-      JSON.stringify(selectedShipToAccount) !== JSON.stringify(orderDetails.accountDetails?.shipToAccount);
-
+      (selectedSoldToAccount &&
+        JSON.stringify(selectedSoldToAccount?.accountNumber) !== JSON.stringify(orderDetails.accountDetails?.soldToAccount?.accountNumber)) ||
+      (selectedShipToAccount && JSON.stringify(selectedShipToAccount?.id) !== JSON.stringify(orderDetails.accountDetails?.shipToAccount?.id));
     setIsDirty(isDirty);
     dispatch(hasUnsavedChanges(isDirty));
     return () => dispatch(hasUnsavedChanges(false));
@@ -188,7 +176,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
   };
 
-  const handleOnSubmit = async () => {
+  const handleOnSubmit = async (isDraft) => {
     if (!selectedShipToAccount) {
       setAlert({
         type: 'error',
@@ -211,26 +199,13 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       soldToAccountId: selectedSoldToAccount.id,
       shipToAccountId: selectedShipToAccount.id
     };
-
-    if (!isSelfAttested) {
-      showSaveAsDraftConfirm({
-        t,
-        onOk: () => {
-          saveAccount({ ...payload, isDraft: true });
-        },
-        onContinue: () => {
-          saveAccount({ ...payload, isAttested: true });
-        }
-      });
+    setAlert(null);
+    if (isStageInDraft || isDirty) {
+      saveAccount({ ...payload, isDraft, isSendNotification: isDraft ? false : true });
     } else {
-      setAlert(null);
-      if (isDirty) {
-        saveAccount(payload);
-      } else {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
-          state: { ...updatedLocationState, alertState, isEdit: false, isApprover }
-        });
-      }
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+        state: { ...updatedLocationState, alertState, isEdit: false, isApprover }
+      });
     }
   };
 
@@ -312,7 +287,6 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
           channelType={selectedSoldToAccount?.channelType}
         />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-        {/* <div className={`MCP-module-wrapper ${readOnly ? 'disabled-div' : ''}`}> */}
         <div className={`MCP-module-wrapper`}>
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -370,13 +344,15 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
               </ShippingAddressProvider>
             )}
           </div>
-          <OrderAttestation stage={ORDER_STAGES?.ACCOUNT_DETAILS} onCheck={handleConfirmChange} isChecked={isSelfAttested} disabled={readOnly} />
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit" disabled={readOnly}>
+              <Button size="md" onClick={() => handleOnSubmit(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+                {t('button.caption.saveAsDraft')}
+              </Button>
+              <Button size="md" onClick={() => handleOnSubmit(false)} variant="primary" type="submit" disabled={readOnly}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
