@@ -810,6 +810,36 @@ function deepCompare(a, b) {
   return true;
 }
 
+export const normalizeFormData = (data, PRESERVE_KEYS = []) => {
+  const replaceNullWithEmptyString = (obj, preserveKeys = []) => {
+    if (obj === null || obj === undefined) {
+      return '';
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map((item) => replaceNullWithEmptyString(item, preserveKeys));
+    }
+
+    if (typeof obj === 'object' && !Array.isArray(obj)) {
+      const newObj = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (preserveKeys.includes(key) && obj[key] === null) {
+            newObj[key] = null;
+          } else {
+            newObj[key] = replaceNullWithEmptyString(obj[key], preserveKeys);
+          }
+        }
+      }
+      return newObj;
+    }
+
+    return obj;
+  };
+
+  return replaceNullWithEmptyString(data, PRESERVE_KEYS);
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -871,7 +901,8 @@ const CommonUtils = Object.freeze({
   getOrderCost,
   formatSupportNumber,
   areArraysUnique,
-  deepCompare
+  deepCompare,
+  normalizeFormData
 });
 
 export default CommonUtils;
