@@ -306,6 +306,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.invoiceNumber': 'S_Invoice Number',
   'paymentInvoices.Details.orderID': 'S_Order ID',
   'paymentInvoices.Details.purchaseOrderNumber': 'S_Purchase Order Number',
+  'paymentInvoices.Details.dateOfAdministration': 'S_Date of Administration',
+  'paymentInvoices.Details.dateOfApheresis': 'S_Date of Apheresis',
   'paymentInvoices.Details.billTo': 'S_Bill To',
   'paymentInvoices.Details.shipTo': 'S_Ship To',
   'paymentInvoices.Details.lineItem': 'S_Line Item',

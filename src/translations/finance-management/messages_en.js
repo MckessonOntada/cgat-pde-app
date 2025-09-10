@@ -311,6 +311,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.orderID': 'Order ID',
   'paymentInvoices.Details.purchaseOrderNumber': 'Purchase Order Number',
   'paymentInvoices.Details.manufacturerPatientId': 'Manufacturer Patient Id',
+  'paymentInvoices.Details.dateOfAdministration': 'Date of Administration',
+  'paymentInvoices.Details.dateOfApheresis': 'Date of Apheresis',
   'paymentInvoices.Details.billTo': 'Bill To',
   'paymentInvoices.Details.shipTo': 'Ship To',
   'paymentInvoices.Details.lineItem': 'Line Item',
