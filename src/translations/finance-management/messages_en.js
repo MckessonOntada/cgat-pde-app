@@ -115,6 +115,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.Invoice': 'Invoice',
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
+  'paymentInvoices.Details.btnDownloadPdf': 'Download PDF',
   'paymentInvoices.Details.print': 'Print',
   'paymentInvoices.Details.Bill': 'Bill',
   'paymentInvoices.Details.Reference': 'Reference',

@@ -98,7 +98,6 @@ function Details(props) {
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
-          console.log(res.data);
           setInvoiceDetails(() => ({
             ...{},
             [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
@@ -143,6 +142,42 @@ function Details(props) {
         };
     setBillDates(_invoiceDue);
   };
+
+  const { mutate: handleDownload } = useMutation(
+    async () => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, invoiceDetails.billNumber)}/details-pdf`;
+      const body = {
+        fiscalYear: source.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: invoiceDetails.billNumber
+      };
+      const headers = {
+        accept: 'application/json, text/plain, */*',
+        'content-type': 'application/json;charset=UTF-8'
+      };
+      const response = await HttpResourceService.callRest(url, httpVerb.POST, body, headers, null, null, null, 'blob');
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename = match ? match[1] : 'invoice.pdf';
+
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    },
+    {
+      onSuccess: () => {},
+      onError: () => {}
+    }
+  );
 
   const columns = useMemo(
     () => [
@@ -358,6 +393,11 @@ function Details(props) {
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
             <div className="footer-wrapper" ref={controlRef}>
               <div className="controls footer-controls">
+                {invoiceDetails.pdfIndicator && (
+                  <Button size="md" variant="secondary" onClick={handleDownload}>
+                    {t('paymentInvoices.Details.btnDownloadPdf')}
+                  </Button>
+                )}
                 <Button
                   size="md"
                   variant="primary"
