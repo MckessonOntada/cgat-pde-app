@@ -134,6 +134,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.Invoice': 'S_Invoice',
   'paymentInvoices.Details.DownloadPDF': 'S_DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'S_REVIEW AND PAY',
+  'paymentInvoices.Details.btnDownloadPdf': 'S_Download PDF',
   'paymentInvoices.details.distChannel': 'S_Dist Channel',
   'paymentInvoices.details.division': 'S_Division',
   'paymentInvoices.details.SAPMaterial': 'S_SAP Material',
