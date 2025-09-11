@@ -915,7 +915,15 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     )}
                   </div>
                 )}
-                {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
+                {orderDetails?.collaborators && (
+                  <Collaborator
+                    currentStage={orderDetails?.currentStage}
+                    collaborators={orderDetails?.collaborators}
+                    orderId={orderId}
+                    channelType={orderDetails.channelType}
+                    showControls={showControls}
+                  />
+                )}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
               </div>
             }

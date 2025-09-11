@@ -257,7 +257,14 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
         heading={<PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />}
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
+            {orderDetails?.collaborators && (
+              <Collaborator
+                collaborators={orderDetails?.collaborators}
+                channelType={orderDetails.channelType}
+                currentStage={orderDetails?.currentStage}
+                orderId={orderId}
+              />
+            )}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }
