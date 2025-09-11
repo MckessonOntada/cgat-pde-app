@@ -149,7 +149,7 @@ function Details(props) {
       const body = {
         fiscalYear: source.fiscalYear,
         companyCode: selectedAccount.companyCode,
-        documentNo: invoiceDetails.billNumber
+        documentNo: source.billNumber
       };
       const headers = {
         accept: 'application/json, text/plain, */*',
@@ -393,7 +393,7 @@ function Details(props) {
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
             <div className="footer-wrapper" ref={controlRef}>
               <div className="controls footer-controls">
-                {invoiceDetails.pdfIndicator && (
+                {data?.pdfIndicator && (
                   <Button size="md" variant="secondary" onClick={handleDownload}>
                     {t('paymentInvoices.Details.btnDownloadPdf')}
                   </Button>
