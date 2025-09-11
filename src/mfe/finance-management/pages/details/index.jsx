@@ -145,7 +145,7 @@ function Details(props) {
 
   const { mutate: handleDownload } = useMutation(
     async () => {
-      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, invoiceDetails.billNumber)}/details-pdf`;
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, source.billNumber)}/details-pdf`;
       const body = {
         fiscalYear: source.fiscalYear,
         companyCode: selectedAccount.companyCode,
