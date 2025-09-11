@@ -27,7 +27,7 @@
   }
   .card {
     border: 1px solid var(--brand-color-grey-scale-cool-1);
-    border-radius: 4px;
+    border-radius: var(--spacing-01);
     padding: 12px;
     margin-bottom: var(--spacing-03);
     h4 {
@@ -36,7 +36,7 @@
       margin-bottom: var(--spacing-02);
     }
     .pillsContainer {
-      margin-top: 4px;
+      margin-top: var(--spacing-01);
     }
   }
 }
