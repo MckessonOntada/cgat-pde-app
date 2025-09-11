@@ -681,5 +681,8 @@ export const MessageEs = {
   'orderManagement.patientDetails.inputLabel.dateOfApheresis': 'Date of Apheresis',
   'controls.placeholder.searchReviewOrderPlaceholder': 'S_Search by Order ID, Patient name, Therapy',
   'title.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Success',
-  'message.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Nice work — your part is done! 🎉 The next step is now assigned. 🚀'
+  'message.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Nice work — your part is done! 🎉 The next step is now assigned. 🚀',
+  'label.rolesListingBySteps': 'S_Roles Listing by Steps',
+  'label.whoCanDoWhat': 'S_Who Can Do What?',
+  'control.whoCanDoWhat': 'S_Who Can Do What'
 };

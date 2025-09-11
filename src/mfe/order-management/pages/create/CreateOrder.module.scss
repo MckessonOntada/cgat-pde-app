@@ -20,3 +20,32 @@
     }
   }
 }
+.stagesCards {
+  h4 {
+    margin-bottom: var(--spacing-03);
+    margin-top: 0px;
+  }
+  .card {
+    border: 1px solid var(--brand-color-grey-scale-cool-1);
+    border-radius: var(--spacing-01);
+    padding: 12px;
+    margin-bottom: var(--spacing-03);
+    h4 {
+      font-weight: var(--brand-font-weight-700) !important;
+      margin-top: 0px;
+      margin-bottom: var(--spacing-02);
+    }
+    .pillsContainer {
+      margin-top: var(--spacing-01);
+    }
+  }
+  .cardCurrent {
+    background-color: var(--brand-color-cool-blue);
+    border-color: var(--brand-color-primary);
+  }
+
+  .cardCompleted {
+    background-color: var(--brand-color-success-green-4);
+    border-color: #277036;
+  }
+}

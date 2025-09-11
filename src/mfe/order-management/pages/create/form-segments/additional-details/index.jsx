@@ -917,7 +917,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={orderDetails.channelType} />}
+            {orderDetails?.collaborators && (
+              <Collaborator
+                collaborators={orderDetails?.collaborators}
+                channelType={orderDetails.channelType}
+                orderId={orderId}
+                currentStage={orderDetails?.currentStage}
+              />
+            )}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }

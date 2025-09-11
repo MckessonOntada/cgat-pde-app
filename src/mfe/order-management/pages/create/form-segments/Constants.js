@@ -108,3 +108,12 @@ export const GET_STAGE_DISPLAY_NAME = (stageKey, channelType, t) => {
   };
   return displayMap[stageKey] || stageKey;
 };
+export const STAGE_INDEX = {
+  THERAPY_SELECTION: 1,
+  ACCOUNT_DETAILS: 2,
+  PATIENT_DETAILS: 3,
+  PATIENT_AND_PROVIDER_DETAILS: 3,
+  PAYER_DETAILS: 4,
+  ADDITIONAL_DETAILS: 5,
+  ORDER_SUMMARY: 6
+};
