@@ -488,6 +488,13 @@ async function getPrescriptionDetailsByTherapy(therapyId) {
   if (res.data) return res.data;
 }
 
+async function getOrderStagesRoles(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch order stages roles.');
+  let url = `${ApiRoutes.ORDERS()}/${orderId}/roleDetails`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -530,7 +537,8 @@ const OrderService = Object.freeze({
   getDiagnosisCodes,
   finalizeOrder,
   notifyUser,
-  getPrescriptionDetailsByTherapy
+  getPrescriptionDetailsByTherapy,
+  getOrderStagesRoles
 });
 
 export default OrderService;

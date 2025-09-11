@@ -1035,5 +1035,8 @@ export const MessageEn = {
   'headings.prescriptionSubmitted': 'Prescription Submitted!',
   'controls.placeholder.searchReviewOrderPlaceholder': 'Search by Order ID, Patient name, Therapy',
   'title.stepSuccessfulCompletionByUnAuthorizedUser': 'Success',
-  'message.stepSuccessfulCompletionByUnAuthorizedUser': 'Nice work — your part is done! 🎉 The next step is now assigned. 🚀'
+  'message.stepSuccessfulCompletionByUnAuthorizedUser': 'Nice work — your part is done! 🎉 The next step is now assigned. 🚀',
+  'label.rolesListingBySteps': 'Roles Listing by Steps',
+  'label.whoCanDoWhat': 'Who Can Do What?',
+  'control.whoCanDoWhat': 'Who Can Do What'
 };

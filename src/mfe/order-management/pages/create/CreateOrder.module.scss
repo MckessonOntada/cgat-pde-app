@@ -20,3 +20,23 @@
     }
   }
 }
+.stagesCards {
+  h4 {
+    margin-bottom: var(--spacing-03);
+    margin-top: 0px;
+  }
+  .card {
+    border: 1px solid var(--brand-color-grey-scale-cool-1);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: var(--spacing-03);
+    h4 {
+      font-weight: var(--brand-font-weight-700) !important;
+      margin-top: 0px;
+      margin-bottom: var(--spacing-02);
+    }
+    .pillsContainer {
+      margin-top: 4px;
+    }
+  }
+}

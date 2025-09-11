@@ -388,7 +388,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         }
         controls={
           <div className="controls">
-            {orderDetails?.collaborators && <Collaborator collaborators={orderDetails?.collaborators} channelType={channelType} />}
+            {orderDetails?.collaborators && (
+              <Collaborator collaborators={orderDetails?.collaborators} channelType={channelType} orderId={orderId} currentStage={orderDetails?.currentStage} />
+            )}
             {orderDetails?.therapy?.manufacturerName ? <ManufacturerLogo therapyId={orderDetails.therapy?.id} /> : null}
           </div>
         }
