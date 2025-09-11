@@ -39,4 +39,13 @@
       margin-top: var(--spacing-01);
     }
   }
+  .cardCurrent {
+    background-color: var(--brand-color-cool-blue);
+    border-color: var(--brand-color-primary);
+  }
+
+  .cardCompleted {
+    background-color: var(--brand-color-success-green-4);
+    border-color: #277036;
+  }
 }

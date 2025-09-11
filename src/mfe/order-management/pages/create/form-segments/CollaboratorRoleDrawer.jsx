@@ -7,19 +7,11 @@ import style from '../CreateOrder.module.scss';
 
 export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials, currentStage }) => {
   const { t } = useTranslate();
-  function getCardStyles(card) {
-    let background = '';
-    let borderColor = '';
 
-    if (currentStage === card.id) {
-      background = '#f2f6fa';
-      borderColor = '#007CC1';
-    } else if (currentStage > card.id) {
-      background = '#E7F4E4';
-      borderColor = '#277036';
-    }
-
-    return { background, borderColor };
+  function cardStateClass(card) {
+    if (currentStage === card.id) return style.cardCurrent;
+    if (currentStage > card.id) return style.cardCompleted;
+    return '';
   }
 
   function renderCollaboratorTooltip(card) {
@@ -65,7 +57,7 @@ export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials,
           </div>
           {stageCards.map((card) =>
             card.id ? (
-              <div key={card.id} className={style.card} style={getCardStyles(card)}>
+              <div key={card.id} className={`${style.card} ${cardStateClass(card)}`}>
                 <ModuleHeader
                   heading={
                     <div className="styled-heading">
