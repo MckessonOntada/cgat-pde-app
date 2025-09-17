@@ -41,7 +41,7 @@ const RolePermissions = () => {
   const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
   const [inheritedRole, setInheritedRole] = React.useState(null);
   const { refreshData } = useRole();
-  const { isEdit } = location.state || {};
+  const { isEdit, backFromPreferences } = location.state || {};
 
   const handleOnCancelButtonClick = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
@@ -61,13 +61,8 @@ const RolePermissions = () => {
         refreshData();
         if (data) {
           refreshData();
-          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`, {
-            state: {
-              showAlert: {
-                type: 'success',
-                description: t(row?.permissions ? 'orgManagement.messages.roleUpdate' : 'orgManagement.messages.newRoleCreation')
-              }
-            }
+          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles/${roleId}/notification-permissions`, {
+            state: { ...location.state }
           });
         }
       },
