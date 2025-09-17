@@ -72,6 +72,8 @@ export const SystemConfigurationES = {
 
   'manageMaterial.drawer.configuration.body.poNumberRequired': 'S_Make PO Number Mandatory',
   'manageMaterial.drawer.configuration.body.doaRequired': 'S_Make Date of Administration Mandatory',
+  'manageMaterial.drawer.details.configuration.body.dateOfApheresisRequired': 'S_Date of Apheresis Mandatory',
+
   'manageMaterial.drawer.configuration.body.patientIdentifier': 'S_Make Patient Identifier Mandatory',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.yes': 'S_Yes',
   'manageMaterial.drawer.configuration.body.patientInfoRequired.no': 'S_No',
