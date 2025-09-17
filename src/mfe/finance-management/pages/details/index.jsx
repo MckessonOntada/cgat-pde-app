@@ -23,6 +23,7 @@ import DetailsFlexGrid from '../../components/detailsList/DetailsFlexGrid';
 import { useAccountContext } from '../../context/AccountContext';
 import { PATHS } from '../../routes';
 import './viewDetails.scss';
+import History from './history';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -385,6 +386,7 @@ function Details(props) {
             }
           />
         </div>
+        <History billNumber={billNumber} />
       </div>
       {INVOICES_SCREEN && <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>}
 

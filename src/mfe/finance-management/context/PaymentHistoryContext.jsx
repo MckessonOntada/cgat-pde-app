@@ -38,10 +38,14 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 
-export const PaymentHistoryProvider = ({ children }) => {
+export const PaymentHistoryProvider = ({ children, defaultFilters }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
-  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [filterConfig, setFilterConfig] = useState({
+    ...INITIAL_FILTER_STATE,
+    ...(defaultFilters ?? {})
+  });
+
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
@@ -245,9 +249,22 @@ export const PaymentHistoryProvider = ({ children }) => {
     }
   };
 
+  const filterPaymentsByInvoicesCriteria = (_data) => {
+    return defaultFilters
+      ? _data.filter((item) => {
+          const matchesBillNo = filterConfig?.searchQuery
+            ? (item.invoices || []).some((invoice) => invoice.billNo?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()))
+            : true;
+          const matchesPaymentStatus = filterConfig?.paymentStatus?.length ? filterConfig.paymentStatus.includes(item.paymentStatus) : true;
+          return matchesBillNo && matchesPaymentStatus;
+        })
+      : _data;
+  };
+
   const sortData = (newSortConfig) => {
     let _data = [...[], ...unSlicedData];
-    let _modifiedData = _data.sort((a, b) => {
+    let _filteredData = filterPaymentsByInvoicesCriteria(_data);
+    let _modifiedData = _filteredData.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 
