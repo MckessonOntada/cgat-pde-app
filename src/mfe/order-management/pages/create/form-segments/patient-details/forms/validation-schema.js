@@ -141,11 +141,13 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
         .when([], {
           is: () => spMaterialConfig?.isMRNRequired || therapyConfig.isMRNRequired,
           then: (schema) =>
-            schema.test(
-              'no-leading-trailing-spaces',
-              t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-              (value) => value === undefined || value.trim().length === value.length
-            ),
+            schema
+              .required(t('orderManagement.patientDetails.validation.mrn_required'))
+              .test(
+                'no-leading-trailing-spaces',
+                t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
+                (value) => value === undefined || value.trim().length === value.length
+              ),
           otherwise: (schema) => schema.notRequired()
         }),
       coiId: Yup.string()
