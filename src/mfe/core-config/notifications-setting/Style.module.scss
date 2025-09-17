@@ -1,0 +1,85 @@
+.info {
+  font-size: var(--brand-font-size--20);
+  font-weight: var(--brand-font-weight-600);
+  line-height: var(--brand-line-height--24);
+  p {
+    font-size: var(--brand-font-size--small);
+    color: var(--brand-color-text-light-slate);
+    font-weight: var(--brand-font-weight-400);
+  }
+}
+.sms-config-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-04);
+  .info {
+    flex-grow: 1;
+  }
+  .field {
+    display: inline-flex;
+    flex-direction: row;
+    gap: var(--spacing-02);
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.notification-setting {
+  .grid {
+    display: grid;
+    grid-template-columns: auto 240px;
+    gap: 1rem;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    div.option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &.header {
+        font-size: var(--brand-font-size--large);
+        font-weight: var(--brand-font-weight-600);
+        text-transform: capitalize;
+      }
+    }
+  }
+  .module-header {
+    font-size: var(--brand-font-size--24);
+    font-weight: var(--brand-font-weight-700);
+  }
+  .sections {
+    .section {
+      border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
+      &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      padding: var(--spacing-04) 0;
+      .header {
+        padding-bottom: var(--spacing-02);
+      }
+      .rows {
+        margin-left: var(--spacing-02);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: stretch;
+        gap: var(--spacing-02);
+        margin-top: var(--spacing-02);
+        .info {
+          font-size: var(--brand-font-size--large);
+          font-weight: var(--brand-font-weight-600);
+          p {
+            font-size: var(--brand-font-size--small);
+            color: var(--brand-color-text-light-slate);
+            font-weight: var(--brand-font-weight-400);
+          }
+        }
+      }
+    }
+  }
+}

@@ -72,6 +72,10 @@ const HeaderConfig = {
     {
       label: 'Account Setting',
       value: '/account-setting'
+    },
+    {
+      label: 'Notification Setting',
+      value: '/notification-setting'
     }
   ],
   languages: [

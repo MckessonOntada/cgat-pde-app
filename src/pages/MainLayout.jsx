@@ -1,30 +1,30 @@
-import React, { Suspense } from 'react';
-import { connect } from 'react-redux';
-import { Navigate, Route, Routes } from 'react-router-dom';
 import { Loader } from '@mckesson/mcp-component-library';
-import { debugIds, ID } from '@src/constants/id';
-import styles from '../../src/assets/styles/MainLayout.module.scss';
-import AuthUtils from '@src/util/AuthUtils';
-import AppRoutes from '../routes/AppRoutes';
-import Header from '../components/header';
-import NotFound from './error-pages/NotFound';
-import ProtectedRoute from '@src/routes/ProtectedRoute';
-import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import AccountSetting from '@src/components/AccountSetting';
+import Footer from '@src/components/footer';
+import { FooterProvider } from '@src/components/footer/FooterContext';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
+import { debugIds, ID } from '@src/constants/id';
+import AdminRoutes from '@src/mfe/core-config/admin';
+import { NotificationSetting } from '@src/mfe/core-config/notifications-setting';
+import Dashboard from '@src/mfe/core-config/system-admin';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
-import Footer from '@src/components/footer';
-import ErrorWrapper from './ErrorWrapper';
-import AccountSetting from '@src/components/AccountSetting';
-import { FooterProvider } from '@src/components/footer/FooterContext';
-import Dashboard from '@src/mfe/core-config/system-admin';
-import AdminRoutes from '@src/mfe/core-config/admin';
 import Notifications from '@src/mfe/notification-mfe/Notifications';
 import { NotificationDrawer } from '@src/mfe/notification-mfe/components/NotificationDrawer/NotificationDrawer';
 import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
-const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
+import ProtectedRoute from '@src/routes/ProtectedRoute';
+import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import AuthUtils from '@src/util/AuthUtils';
+import React, { Suspense } from 'react';
+import { connect } from 'react-redux';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import styles from '../../src/assets/styles/MainLayout.module.scss';
+import Header from '../components/header';
+import AppRoutes from '../routes/AppRoutes';
+import ErrorWrapper from './ErrorWrapper';
+import NotFound from './error-pages/NotFound';
+
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
-const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
   const { notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
@@ -103,6 +103,7 @@ function MainLayout() {
                       }
                     />
                     <Route path="/account-setting" element={<AccountSetting />} />
+                    <Route path="/notification-setting" element={<NotificationSetting />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
