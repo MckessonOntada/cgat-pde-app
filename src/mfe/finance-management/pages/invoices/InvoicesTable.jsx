@@ -111,6 +111,7 @@ export default function InvoicesTable() {
   const isAllChecked = (data, selectedData, dataKey) => {
     return data.every((item) => selectedData.some((selected) => selected[dataKey] === item[dataKey]));
   };
+  const selectableRows = React.useMemo(() => (data || []).filter((r) => r.scheduled !== 'X'), [data]);
 
   const columns = [
     {
@@ -118,7 +119,7 @@ export default function InvoicesTable() {
       name: (() => {
         const headerCheckbox = renderTableCheckBox(
           { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-          data,
+          selectableRows,
           'billNumber',
           paginationConfig,
           includeinvoiceData,
@@ -128,7 +129,7 @@ export default function InvoicesTable() {
           false,
           MAX_SELECTION
         );
-        const isHeaderDisabled = includeinvoiceData.length >= MAX_SELECTION && !isAllChecked(data, includeinvoiceData, 'billNumber');
+        const isHeaderDisabled = includeinvoiceData.length >= MAX_SELECTION && !isAllChecked(selectableRows, includeinvoiceData, 'billNumber');
         return isHeaderDisabled ? (
           <Tooltip body={t('paymentInvoices.invoice.count.text')} placement="right">
             <span>{headerCheckbox}</span>
@@ -139,7 +140,10 @@ export default function InvoicesTable() {
       })(),
       sortable: false,
       cell: (row, index) => {
-        const isDisabled = includeinvoiceData.length >= MAX_SELECTION && !includeinvoiceData.some((item) => item.billNumber === row.billNumber);
+        const isScheduled = row.scheduled === 'X';
+        const isDisabled =
+          (includeinvoiceData.length >= MAX_SELECTION && !includeinvoiceData.some((item) => item.billNumber === row.billNumber)) || isScheduled;
+
         const rowCheckBox = renderTableCheckBox(
           row,
           data,
@@ -152,7 +156,7 @@ export default function InvoicesTable() {
           isDisabled,
           MAX_SELECTION
         );
-        return isDisabled ? (
+        return isDisabled && !isScheduled ? (
           <Tooltip body={t('paymentInvoices.invoice.count.text')} placement="right">
             <span>{rowCheckBox}</span>
           </Tooltip>
