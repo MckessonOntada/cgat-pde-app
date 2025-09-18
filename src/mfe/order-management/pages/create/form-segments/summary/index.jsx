@@ -549,7 +549,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           initialValues = {
             coiId: additionalDetails.coiId || '',
             dateOfAdministration: additionalDetails.dateOfAdministration || '',
-            poNumber: additionalDetails.poNumber || ''
+            poNumber: additionalDetails.poNumber || '',
+            dateOfApheresis: additionalDetails.dateOfApheresis || ''
           };
         }
       } else {
@@ -1457,6 +1458,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         <DetailSegment
                           label={t('labels.dateOfAdministration')}
                           value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
+                        />
+                        <DetailSegment
+                          label={t('orderManagement.patientDetails.inputLabel.dateOfApheresis')}
+                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfApheresis || '-'}
                         />
                       </>
                     )}
