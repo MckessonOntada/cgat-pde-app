@@ -272,5 +272,6 @@ export const ConfigurationMessagesEN = {
   'notificationPreferences.onBehalfOf.tooltip': 'option tooltip',
   'notificationPreferences.optionEmail': 'Email',
   'notificationPreferences.optionInApp': 'In-App',
-  'notificationPreferences.optionSMS': 'SMS'
+  'notificationPreferences.optionSMS': 'SMS',
+  'notificationPreferences.optionNotAllowed': 'This setting is managed by your org admin. Please contact your admin for changes'
 };

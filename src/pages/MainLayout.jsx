@@ -5,7 +5,6 @@ import { FooterProvider } from '@src/components/footer/FooterContext';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import { debugIds, ID } from '@src/constants/id';
 import AdminRoutes from '@src/mfe/core-config/admin';
-import { NotificationSetting } from '@src/mfe/core-config/notifications-setting';
 import Dashboard from '@src/mfe/core-config/system-admin';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
@@ -23,6 +22,7 @@ import Header from '../components/header';
 import AppRoutes from '../routes/AppRoutes';
 import ErrorWrapper from './ErrorWrapper';
 import NotFound from './error-pages/NotFound';
+import NotificationPreference from '@src/mfe/core-config/notifications-setting/NotificationPreference';
 
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 
@@ -103,7 +103,7 @@ function MainLayout() {
                       }
                     />
                     <Route path="/account-setting" element={<AccountSetting />} />
-                    <Route path="/notification-setting" element={<NotificationSetting />} />
+                    <Route path="/notification-setting" element={<NotificationPreference />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

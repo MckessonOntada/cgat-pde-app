@@ -10,7 +10,7 @@ import SettingPanelRenderer from './Renderer';
 import SMSConfiguration from './SMSConfiguration';
 import style from './Style.module.scss';
 
-const SettingPanel = () => {
+const NotificationPreference = () => {
   const { t: translateFn } = useTranslate();
   const [isInvitationAccepted, setIsInvitationAccepted] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
@@ -110,4 +110,4 @@ const SettingPanel = () => {
   );
 };
 
-export default SettingPanel;
+export default NotificationPreference;

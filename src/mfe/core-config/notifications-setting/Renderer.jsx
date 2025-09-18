@@ -1,3 +1,4 @@
+import React from 'react';
 import { Switch, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useFormikContext } from 'formik';
@@ -39,13 +40,16 @@ const SettingPanelRenderer = ({ config }) => {
                       const { tooltip } = section.optionValues[index] || {};
                       return (
                         <div className={style.option}>
-                          <Tooltip body={translateFn(tooltip)}>
-                            <Switch
-                              id={`notification-setting-${index}-header-${optionKey}`}
-                              size="lg"
-                              checked={values.preferences?.sections[sectionIndex]?.optionValues[index] || false}
-                              onChange={(e) => handleOnChange(e, `sections[${sectionIndex}].optionValues[${index}]`)}
-                            />
+                          <Tooltip body={translateFn(section.isPreferred ? 'notificationPreferences.optionNotAllowed' : tooltip)}>
+                            <div className={style['switch-control']}>
+                              <Switch
+                                id={`notification-setting-${index}-header-${optionKey}`}
+                                size="lg"
+                                disabled={section.isPreferred}
+                                checked={values.preferences?.sections[sectionIndex]?.optionValues[index] || false}
+                                onChange={(e) => handleOnChange(e, `sections[${sectionIndex}].optionValues[${index}]`)}
+                              />
+                            </div>
                           </Tooltip>
                         </div>
                       );
@@ -67,14 +71,16 @@ const SettingPanelRenderer = ({ config }) => {
                             const { tooltip } = optionValues[index] || {};
                             return (
                               <div className={style.option}>
-                                <Tooltip body={translateFn(tooltip)}>
-                                  <Switch
-                                    id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
-                                    size="lg"
-                                    disabled={isPreferred}
-                                    checked={values.preferences?.sections[sectionIndex]?.rows[rowIndex]?.optionValues[index] || false}
-                                    onChange={(e) => handleOnChange(e, `sections[${sectionIndex}].rows[${rowIndex}].optionValues[${index}]`)}
-                                  />
+                                <Tooltip body={translateFn(isPreferred ? 'notificationPreferences.optionNotAllowed' : tooltip)}>
+                                  <div className={style['switch-control']}>
+                                    <Switch
+                                      id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
+                                      size="lg"
+                                      disabled={isPreferred}
+                                      checked={values.preferences?.sections[sectionIndex]?.rows[rowIndex]?.optionValues[index] || false}
+                                      onChange={(e) => handleOnChange(e, `sections[${sectionIndex}].rows[${rowIndex}].optionValues[${index}]`)}
+                                    />
+                                  </div>
                                 </Tooltip>
                               </div>
                             );

@@ -10,7 +10,7 @@ import { debugIds, ID } from '@src/constants/id';
 import { Button, MenuList, Modal } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import HeaderConfig from './constants';
+import { profileOptions, languages } from './constants';
 import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
@@ -34,11 +34,22 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const userName = AuthUtils.getFullName();
   const [textMaxWidth, setTextMaxWidth] = useState('');
   const channel = new BroadcastChannel('auth_channel');
   const impersonatedByUser = AuthUtils.getImpersonatedByUser();
   const impersonatedUserName = getFullName(impersonatedByUser?.name);
+  const [filteredProfileOptions, setFilteredProfileOptions] = React.useState(profileOptions);
+
+  React.useEffect(() => {
+    if (!isSystemAdmin) {
+      filteredProfileOptions.push({
+        label: 'Notification Setting',
+        value: '/notification-setting'
+      });
+    }
+  }, []);
 
   const { unreadCount: notificationsCount } = useNotifications() || { unreadCount: 0 };
 
@@ -83,6 +94,8 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     setSelectedOrg(value);
     setIsOpen(true);
   };
+
+  React.useEffect(() => {}, []);
 
   const confirmChangeOrganization = () => {
     setIsOpen(false);
@@ -138,7 +151,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   };
 
   const RightSideView = ({ notificationsCount, handleNotificationClick }) => {
-    const currentLanguage = HeaderConfig.languages.find((lang) => lang.value == currentLocale);
+    const currentLanguage = languages.find((lang) => lang.value == currentLocale);
     const handleSelectOption = (option) => {
       navigate(option);
     };
@@ -162,7 +175,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
       </button>,
       // ),
 
-      <MenuList size="md" handleSelect={(e) => handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
+      <MenuList size="md" handleSelect={(e) => handleSelectOption(e)} options={profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
           <span>
             <EclipsesTextcss str={impersonatedUserName || userName || 'Anonymous'} maxWidth={textMaxWidth} />
@@ -170,24 +183,6 @@ const PrimaryHeader = ({ onNotificationClick }) => {
           <IconArrowDown />
         </div>
       </MenuList>,
-      // <div className={styles.languageSelect}>
-      //   <MenuList
-      //     handleSelect={(val) => {
-      //       localStorage.setItem('APP_LOCALE', val);
-      //       window.location.reload();
-      //     }}
-      //     options={HeaderConfig.languages}
-      //     aria-label="language options">
-      //     <div className={styles.actionLink} aria-label="language options">
-      //       <span>{currentLanguage?.label || 'English'}</span>
-      //       <IconArrowDown />
-      //     </div>
-      //   </MenuList>
-      // </div>,
-      // <Link className={styles.actionLink} to={'help'} aria-label="Help center">
-      //   <span>{t('header.label.help')}</span>
-      //   <IconHelp />
-      // </Link>,
       <Button
         label={'button.logout'}
         aria-label="Log out of account"
@@ -225,7 +220,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
           <div aria-label="Account options">
             <EclipsesTextcss str={impersonatedUserName || userName || 'Anonymous'} maxWidth={textMaxWidth} />
             <ul className={styles.quickLinksInner} role="navigation" aria-label="Quick access links">
-              {HeaderConfig.profileOptions.map((item, index) => (
+              {profileOptions.map((item, index) => (
                 <li key={`quick-links-item-${index}`}>
                   <Link onClick={() => onClose()} className={styles.actionLink} to={item.value} aria-label={item.label}>
                     {item.label}

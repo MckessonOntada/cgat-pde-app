@@ -3,6 +3,7 @@ import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Field, useFormikContext } from 'formik';
 import style from './Style.module.scss';
+import React from 'react';
 
 function SMSConfiguration() {
   const { t: translateFn } = useTranslate();

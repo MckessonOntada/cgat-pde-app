@@ -10,6 +10,7 @@ import { SESSION_CONST } from '@src/constants/SessionConstants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import { navLinks } from './constants';
 
 const impersonateLogout = () => {
   return new Promise(async function (resolve, reject) {
@@ -22,7 +23,7 @@ const impersonateLogout = () => {
   });
 };
 
-const SecondaryHeader = ({ navLinks }) => {
+const SecondaryHeader = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
