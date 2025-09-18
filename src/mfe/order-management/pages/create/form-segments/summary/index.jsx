@@ -921,7 +921,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     collaborators={orderDetails?.collaborators}
                     orderId={orderId}
                     channelType={orderDetails.channelType}
-                    showControls={showControls}
+                    showControls={false}
                   />
                 )}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
