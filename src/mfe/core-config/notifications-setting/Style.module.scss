@@ -1,8 +1,15 @@
+.decorated-link {
+  display: inline-block;
+  text-decoration: underline;
+  color: var(--brand-color-primary);
+}
 .info {
-  font-size: var(--brand-font-size--20);
-  font-weight: var(--brand-font-weight-600);
-  line-height: var(--brand-line-height--24);
-  p {
+  .heading {
+    font-size: var(--brand-font-size--20);
+    font-weight: var(--brand-font-weight-600);
+    line-height: var(--brand-line-height--24);
+  }
+  p.details {
     font-size: var(--brand-font-size--small);
     color: var(--brand-color-text-light-slate);
     font-weight: var(--brand-font-weight-400);
@@ -23,6 +30,7 @@
     gap: var(--spacing-02);
     align-items: center;
     justify-content: space-between;
+    margin-bottom: var(--spacing-02);
   }
 }
 .notification-setting {
@@ -71,8 +79,10 @@
         gap: var(--spacing-02);
         margin-top: var(--spacing-02);
         .info {
-          font-size: var(--brand-font-size--large);
-          font-weight: var(--brand-font-weight-600);
+          .heading {
+            font-size: var(--brand-font-size--large);
+            font-weight: var(--brand-font-weight-600);
+          }
           p {
             font-size: var(--brand-font-size--small);
             color: var(--brand-color-text-light-slate);

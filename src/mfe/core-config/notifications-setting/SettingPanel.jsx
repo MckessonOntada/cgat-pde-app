@@ -1,73 +1,113 @@
+import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 import ModuleHeader from '@src/components/module-header';
-import { Heading, Alert, Button } from '@mckesson/mcp-component-library';
-import React from 'react';
 import { useTranslate } from '@src/translations/useTranslation';
+import { Form, Formik } from 'formik';
+import React from 'react';
+import * as Yup from 'yup';
 import notificationConfig from './config';
 import SettingPanelRenderer from './Renderer';
 import SMSConfiguration from './SMSConfiguration';
-import { Formik } from 'formik';
+import style from './Style.module.scss';
 
-function SettingPanel() {
+const SettingPanel = () => {
   const { t: translateFn } = useTranslate();
-  const [formValues, setFormValues] = React.useState({
+  const [isInvitationAccepted, setIsInvitationAccepted] = React.useState(false);
+  const [alert, setAlert] = React.useState(null);
+
+  const VALIDATION_SCHEMA = React.useMemo(
+    () =>
+      Yup.object().shape({
+        linkedContactNumber: Yup.string()
+          .matches(PHONE_REGEX, translateFn('message.enterPhoneNumber'))
+          .when('subscribeSMSNotification', {
+            is: true,
+            then: (schema) => schema.required(translateFn('message.phoneNumberRequired')),
+            otherwise: (schema) => schema.notRequired()
+          }),
+        subscribeSMSNotification: Yup.boolean(),
+        preferences: Yup.object()
+      }),
+    [translateFn]
+  );
+
+  const initialValues = {
     linkedContactNumber: '',
-    preferences: {}
-  });
-  React.useEffect(() => {
-    //api call to fetch data
-    //set response to form values
-  }, []);
-  const handleOnSubmit = (values) => {};
+    subscribeSMSNotification: false,
+    preferences: { ...notificationConfig }
+  };
+
+  const handleOnSubmit = (values) => {
+    console.log('Form submitted:', values);
+    //API submit here
+  };
 
   return (
     <div className="MCP-module-wrapper">
-      <Formik initialValues={formValues} handleSubmit={handleOnSubmit}>
-        {({ values, setFieldValue }) => {
+      <Formik initialValues={initialValues} validationSchema={VALIDATION_SCHEMA} onSubmit={handleOnSubmit} enableReinitialize>
+        {() => {
           return (
-            <div className="MCP-module-body">
-              <ModuleHeader heading={<Heading as="h1">{translateFn('heading.notificationSetting')}</Heading>} />
-              <Alert
-                type="info"
-                showCloseIcon
-                showTitle
-                onClose={() => {}}
-                title={
-                  <div>
-                    <p>You are not receiving SMS notifications yet!</p>
-                    <p>An SMS invitation has been sent to 761-289-7654. Please reply via SMS to fully opt into SMS notifications.</p>
-                  </div>
-                }
-                description={
-                  <div>
-                    <p>You can disable your individual notification types once you have fully opted in.</p>
-                    <p>
-                      Not seeing a text?{' '}
-                      <a className="MCP-table-link" href="#">
-                        Resend Invite
-                      </a>{' '}
-                      (Last message sent 09/11/2025 12:43pm IST)
-                    </p>
-                  </div>
-                }
-              />
-              <div className="MCP-CardContainer">
-                <SettingPanelRenderer config={notificationConfig} />
-                <SMSConfiguration value={values.linkedContactNumber} onChange={(value) => setFieldValue('linkedContactNumber', value)} />
+            <Form>
+              <div className="MCP-module-body">
+                <ModuleHeader heading={<Heading as="h1">{translateFn('heading.notificationSetting')}</Heading>} />
+
+                {!isInvitationAccepted && (
+                  <Alert
+                    type="info"
+                    showCloseIcon
+                    showTitle
+                    onClose={() => {}}
+                    title={
+                      <div>
+                        <p>{translateFn('smsSubscriptionAlert.title1')}</p>
+                        <p>{translateFn('smsSubscriptionAlert.title2')}</p>
+                      </div>
+                    }
+                    description={
+                      <div>
+                        <p>{translateFn('smsSubscriptionAlert.description1')}</p>
+                        <p>
+                          {translateFn('smsSubscriptionAlert.description2', {
+                            link: (
+                              <a className={style['decorated-link']} href="#">
+                                {translateFn('smsSubscriptionAlert.resendInvite')}
+                              </a>
+                            ),
+                            lastSent: new Date().toISOString()
+                          })}
+                        </p>
+                      </div>
+                    }
+                  />
+                )}
+
+                {alert && <Alert id="activity-alert" {...alert} showCloseIcon onClose={() => setAlert(null)} />}
+
+                <div className="MCP-CardContainer">
+                  <SettingPanelRenderer config={notificationConfig} />
+                  <SMSConfiguration />
+                </div>
+
+                <div className="controls">
+                  <Button
+                    size="md"
+                    variant="secondary"
+                    onClick={() => {
+                      // handle back navigation
+                    }}>
+                    {translateFn('captions.btnBack')}
+                  </Button>{' '}
+                  <Button size="md" variant="primary" type="submit">
+                    {translateFn('button.caption.saveAsDraft')}
+                  </Button>
+                </div>
               </div>
-              <div className="controls">
-                <Button size="md" variant="secondary" onClick={() => {}}>
-                  {translateFn('captions.btnBack')}
-                </Button>{' '}
-                <Button size="md" onClick={() => {}} variant="primary" type="submit">
-                  {translateFn('button.caption.saveAsDraft')}
-                </Button>
-              </div>
-            </div>
+            </Form>
           );
         }}
       </Formik>
     </div>
   );
-}
+};
 
 export default SettingPanel;

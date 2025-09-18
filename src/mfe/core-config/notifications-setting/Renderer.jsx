@@ -1,17 +1,24 @@
-import React from 'react';
-import { Switch, Tooltip, Heading } from '@mckesson/mcp-component-library';
+import { Switch, Tooltip } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
+import { useFormikContext } from 'formik';
 import style from './Style.module.scss';
 
 const SettingPanelRenderer = ({ config }) => {
+  const { t: translateFn } = useTranslate();
   const { moduleName, options, sections } = config;
+  const { values, setFieldValue } = useFormikContext();
+
+  const handleOnChange = (e, keyPath) => {
+    setFieldValue(`preferences.${keyPath}`, e.target.checked);
+  };
   return (
     <div className={style['notification-setting']}>
       <div className={style.grid}>
-        <div className={style['module-header']}>{moduleName}</div>
+        <div className={style['module-header']}>{translateFn(moduleName)}</div>
         <div className={style.options}>
           {options.map((key) => (
             <div className={`${style.option} ${style.header}`} key={`option-column-${key}`}>
-              {key}
+              {translateFn(key)}
             </div>
           ))}
         </div>
@@ -23,15 +30,23 @@ const SettingPanelRenderer = ({ config }) => {
             <div className={style.section}>
               <div className={`${style.grid} ${style.header}`}>
                 <div className={style.info}>
-                  <div>{title}</div>
-                  <p>{subtitle}</p>
+                  <div className={style.heading}>{translateFn(title)}</div>
+                  <p className={style.details}>{translateFn(subtitle)}</p>
                 </div>
                 <div className={style.options}>
                   {section.optionValues &&
                     options.map((optionKey, index) => {
+                      const { tooltip } = section.optionValues[index] || {};
                       return (
                         <div className={style.option}>
-                          <Switch id={`notification-setting-${sectionIndex}-header-${optionKey}`} size="lg" checked={false} onChange={() => {}} />
+                          <Tooltip body={translateFn(tooltip)}>
+                            <Switch
+                              id={`notification-setting-${index}-header-${optionKey}`}
+                              size="lg"
+                              checked={values.preferences?.sections[sectionIndex]?.optionValues[index] || false}
+                              onChange={(e) => handleOnChange(e, `sections[${sectionIndex}].optionValues[${index}]`)}
+                            />
+                          </Tooltip>
                         </div>
                       );
                     })}
@@ -40,21 +55,26 @@ const SettingPanelRenderer = ({ config }) => {
               {rows.length > 0 ? (
                 <div className={style.rows}>
                   {rows.map((row, rowIndex) => {
-                    const { title, subtitle, optionValues } = row;
+                    const { title, subtitle, optionValues, isPreferred } = row;
                     return (
                       <div className={style.grid}>
                         <div className={style.info}>
-                          <div>{title}</div>
-                          <p>{subtitle}</p>
+                          <div className={style.heading}>{translateFn(title)}</div>
+                          <p className={style.details}>{translateFn(subtitle)}</p>
                         </div>
-                        {}
                         <div className={style.options}>
                           {options.map((optionKey, index) => {
-                            const { value, tooltip } = optionValues[index] || {};
+                            const { tooltip } = optionValues[index] || {};
                             return (
                               <div className={style.option}>
-                                <Tooltip body={tooltip}>
-                                  <Switch id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`} size="lg" checked={value} onChange={() => {}} />
+                                <Tooltip body={translateFn(tooltip)}>
+                                  <Switch
+                                    id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
+                                    size="lg"
+                                    disabled={isPreferred}
+                                    checked={values.preferences?.sections[sectionIndex]?.rows[rowIndex]?.optionValues[index] || false}
+                                    onChange={(e) => handleOnChange(e, `sections[${sectionIndex}].rows[${rowIndex}].optionValues[${index}]`)}
+                                  />
                                 </Tooltip>
                               </div>
                             );

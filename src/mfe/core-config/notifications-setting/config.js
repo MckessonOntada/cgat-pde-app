@@ -1,42 +1,47 @@
 const notificationConfig = {
-  moduleName: 'Manage Email, SMS & In-app Notifications',
-  options: ['email', 'in-app', 'sms'],
+  moduleName: 'notificationPreferences.moduleName',
+  options: ['notificationPreferences.optionEmail', 'notificationPreferences.optionInApp', 'notificationPreferences.optionSMS'],
   sections: [
     {
-      title: 'User Management',
+      title: 'notificationPreferences.userManagement.title',
+      id: 'userManagement',
       rows: [
         {
-          title: 'Process Update',
-          subtitle: 'Get notified when a new user is created.',
+          title: 'notificationPreferences.userManagement.processUpdate.title',
+          subtitle: 'notificationPreferences.userManagement.processUpdate.subtitle',
+          id: 'processUpdate',
+          isPreferred: true,
           optionValues: [
             {
-              tooltip: "You can't modify this. Contact your Organization Admin if you want to make any changes to it.",
+              tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip.locked',
               value: false
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip',
               value: false
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip',
               value: false
             }
           ]
         },
         {
-          title: 'Reminders',
-          subtitle: 'Receive reminders about pending user setup.',
+          title: 'notificationPreferences.userManagement.reminders.title',
+          subtitle: 'notificationPreferences.userManagement.reminders.subtitle',
+          id: 'reminders',
+          isPreferred: false,
           optionValues: [
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
               value: false
             }
           ]
@@ -44,40 +49,45 @@ const notificationConfig = {
       ]
     },
     {
-      title: 'Order Management',
+      title: 'notificationPreferences.orderManagement.title',
+      id: 'orderManagement',
       rows: [
         {
-          title: 'Process Update',
-          subtitle: 'Stay informed on perscription or order placement and modification',
+          title: 'notificationPreferences.orderManagement.processUpdate.title',
+          subtitle: 'notificationPreferences.orderManagement.processUpdate.subtitle',
+          id: 'processUpdate',
+          isPreferred: false,
           optionValues: [
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
               value: false
             }
           ]
         },
         {
-          title: 'Reminders',
-          subtitle: 'Receive reminders about pending prescription or order or unprocessed updates.',
+          title: 'notificationPreferences.orderManagement.reminders.title',
+          subtitle: 'notificationPreferences.orderManagement.reminders.subtitle',
+          id: 'reminders',
+          isPreferred: false,
           optionValues: [
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
               value: false
             }
           ]
@@ -85,40 +95,45 @@ const notificationConfig = {
       ]
     },
     {
-      title: 'Order Approval',
+      title: 'notificationPreferences.orderApproval.title',
+      id: 'orderApproval',
       rows: [
         {
-          title: 'Process Update',
-          subtitle: 'Get notified when an order requires your review, approval or rejection.',
+          title: 'notificationPreferences.orderApproval.processUpdate.title',
+          subtitle: 'notificationPreferences.orderApproval.processUpdate.subtitle',
+          id: 'processUpdate',
+          isPreferred: false,
           optionValues: [
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
               value: false
             }
           ]
         },
         {
-          title: 'Reminders',
-          subtitle: 'Receive reminders about pending prescription or order or unprocessed updates.',
+          title: 'notificationPreferences.orderApproval.reminders.title',
+          subtitle: 'notificationPreferences.orderApproval.reminders.subtitle',
+          id: 'reminders',
+          isPreferred: false,
           optionValues: [
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
               value: true
             },
             {
-              tooltip: 'option tooltip',
+              tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
               value: false
             }
           ]
@@ -126,19 +141,20 @@ const notificationConfig = {
       ]
     },
     {
-      title: 'On Behalf of',
-      subtitle: 'Get notified when another user submits or manages a prescription or order on behalf of you.',
+      title: 'notificationPreferences.onBehalfOf.title',
+      id: 'onBehalfOf',
+      subtitle: 'notificationPreferences.onBehalfOf.subtitle',
       optionValues: [
         {
-          tooltip: 'option tooltip',
+          tooltip: 'notificationPreferences.onBehalfOf.tooltip',
           value: true
         },
         {
-          tooltip: 'option tooltip',
+          tooltip: 'notificationPreferences.onBehalfOf.tooltip',
           value: true
         },
         {
-          tooltip: 'option tooltip',
+          tooltip: 'notificationPreferences.onBehalfOf.tooltip',
           value: false
         }
       ]
