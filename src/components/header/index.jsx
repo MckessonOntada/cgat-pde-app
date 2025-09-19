@@ -1,7 +1,7 @@
 import React from 'react';
+import { debugIds, ID } from '../../constants/id';
 import PrimaryHeader from './PrimaryHeader';
 import SecondaryHeader from './SecondaryHeader';
-import { debugIds, ID } from '../../constants/id';
 
 const GlobalHeader = ({ onNotificationClick }) => {
   return (

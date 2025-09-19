@@ -1,15 +1,14 @@
-import React, { useMemo } from 'react';
-import { connect, useSelector } from 'react-redux';
-import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
-import styles from './assets/styles/Header.module.scss';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useSessionFeatures from '@src/hooks/useSessionFeatures';
-import AuthUtils from '@src/util/AuthUtils';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
-import { useTranslate } from '@src/translations/useTranslation';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { useDispatch } from 'react-redux';
+import { setUserData } from '@src/store/reducer/userReducer';
+import { useTranslate } from '@src/translations/useTranslation';
+import AuthUtils from '@src/util/AuthUtils';
+import { useMemo } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import styles from './assets/styles/Header.module.scss';
 import { navLinks } from './constants';
 
 const impersonateLogout = () => {

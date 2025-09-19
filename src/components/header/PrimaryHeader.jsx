@@ -1,28 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { ReactComponent as AppLogo } from '@src/assets/svg/HeaderLogo.svg';
-import { ReactComponent as IconNotification } from '@src/assets/svg/bell.svg';
-import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
-import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
-import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-filled.svg';
-import { connect } from 'react-redux';
-import { setUserData } from '@src/store/reducer/userReducer';
-import { debugIds, ID } from '@src/constants/id';
 import { Button, MenuList, Modal } from '@mckesson/mcp-component-library';
-import styles from './assets/styles/Header.module.scss';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { profileOptions, languages } from './constants';
-import FloatingDrawer from '../floating-drawer';
-import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
-import useSessionFeatures from '../../hooks/useSessionFeatures';
-import { useQuery } from 'react-query';
-import CommonDataService from '../../api/commonService/CommonDataService';
-import AuthUtils from '../../util/AuthUtils';
-import { useTranslate } from '@src/translations/useTranslation';
-import { currentLocale } from '@src/translations/i18n';
-import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
-import { getFullName } from '@src/util/CommonUtils';
+import AuthService from '@src/api/authService/AuthService';
+import { ReactComponent as AppLogo } from '@src/assets/svg/HeaderLogo.svg';
+import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-filled.svg';
+import { ReactComponent as IconNotification } from '@src/assets/svg/bell.svg';
+import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
+import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
+import { debugIds, ID } from '@src/constants/id';
 import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
+import { setUserData } from '@src/store/reducer/userReducer';
+import { useTranslate } from '@src/translations/useTranslation';
+import { getFullName } from '@src/util/CommonUtils';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import { connect } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import CommonDataService from '../../api/commonService/CommonDataService';
+import useSessionFeatures from '../../hooks/useSessionFeatures';
+import AuthUtils from '../../util/AuthUtils';
+import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
+import FloatingDrawer from '../floating-drawer';
+import styles from './assets/styles/Header.module.scss';
+import { profileOptions } from './constants';
 
 const PrimaryHeader = ({ onNotificationClick }) => {
   const { t } = useTranslate();
@@ -48,6 +47,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
         label: 'Notification Setting',
         value: '/notification-setting'
       });
+      setFilteredProfileOptions([...filteredProfileOptions]);
     }
   }, []);
 
@@ -59,7 +59,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Call on mount to set initial width
+    handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -74,7 +74,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     []
   );
 
-  const { isLoading, data, isError, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
       const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
@@ -89,11 +89,6 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   } = useSessionFeatures();
 
   const { data: organizationLogo } = CommonDataService.useOrganizationLogo(selectedOrganization.logoUrl, selectedOrganization.id);
-
-  const handleChange = (value) => {
-    setSelectedOrg(value);
-    setIsOpen(true);
-  };
 
   React.useEffect(() => {}, []);
 
@@ -151,7 +146,6 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   };
 
   const RightSideView = ({ notificationsCount, handleNotificationClick }) => {
-    const currentLanguage = languages.find((lang) => lang.value == currentLocale);
     const handleSelectOption = (option) => {
       navigate(option);
     };
