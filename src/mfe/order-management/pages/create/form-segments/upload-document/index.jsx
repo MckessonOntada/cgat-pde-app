@@ -19,16 +19,10 @@ import { ORDER_STATUS } from '../../../orders/config';
 import { CHANNEL_TYPE } from '../Constants';
 import Alert from '@src/components/cgat-alert/Alert';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from '../additional-details/constants';
 
 const COMMENT_MAX_LENGTH = 5000;
-const ALLOWED_FILE_TYPE = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/plain',
-  'image/png',
-  'image/jpeg'
-];
+
 function UploadOrderDocument() {
   const { orderId } = useParams();
   const location = useLocation();
@@ -41,6 +35,8 @@ function UploadOrderDocument() {
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const [validationMessage, setValidationMessage] = React.useState(null);
   const channelType = orderDetails.channelType;
+  const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
+  const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
 
   React.useEffect(() => {
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
@@ -173,8 +169,8 @@ function UploadOrderDocument() {
             isRequired={true}
             uploadLabel={'labels.upload.document'}
             suffixChildren={true}
-            fileTypeText={'PDF, Word, PNG, JPEG, JPG, .TXT'}
-            onFileSelection={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}>
+            fileTypeText={allowedFileTypeText}
+            onFileSelection={(file) => validateFile(t, file, allowedFileTypes)}>
             <Textarea
               name="document-comment"
               label={t('label.comments')}
