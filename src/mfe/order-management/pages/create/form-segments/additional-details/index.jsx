@@ -1008,6 +1008,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           onDocumentChange={handleOnDocumentChange}
                           config={questionnaireTemplateConfig}
                           questionnaireTemplateConfig={questionnaireTemplateConfig}
+                          channelType={channelType}
                           readOnly={readOnly}
                         />
                       </div>
@@ -1053,7 +1054,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   );
 }
 
-const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, onRemoveDocument, onDocumentChange, readOnly }) => {
+const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, onRemoveDocument, onDocumentChange, readOnly, channelType }) => {
   if (isLoading)
     return (
       <div>
@@ -1072,6 +1073,7 @@ const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, onRemove
             config={questionnaireTemplateConfig}
             isPreview={false}
             readOnly={readOnly}
+            channelType={channelType}
           />
         </div>
       </div>
@@ -1254,12 +1256,14 @@ const VariantDetails = ({
   handleOnAcknowledgmentChange,
   variant,
   handleOnVariantChange,
-  readOnly
+  readOnly,
+  channelType
 }) => {
   const { t } = useTranslate();
   const { setErrors, errors, touched, values, setFieldTouched, setFieldValue } = useFormikContext();
   if (!variantsData?.content || !CommonUtils.isNonEmptyObject(variantsData.content)) return null;
-
+  const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
+  const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
   return (
     <FormSectionWrapper title={t('labels.selectVariant')} isRequired={true}>
       <div>
@@ -1297,9 +1301,9 @@ const VariantDetails = ({
           setFieldValue={setFieldValue}
           disabled={Boolean(!variant)}
           attachmentValue={values?.variant?.document || null}
-          validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
+          validateOnChange={(file) => validateFile(t, file, allowedFileTypes)}
           onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
-          fileTypeText={ALLOWED_FILE_TYPE_TEXT}
+          fileTypeText={allowedFileTypeText}
         />
       </div>
     </FormSectionWrapper>

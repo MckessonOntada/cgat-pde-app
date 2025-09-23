@@ -76,6 +76,11 @@ export const ConfigConstants = [
         displayCondition: (details) => details?.isPatientInformationRequired !== false
       },
       {
+        label: 'manageMaterial.drawer.details.configuration.body.sp.mrnRequired',
+        value: 'isMRNRequired',
+        displayCondition: (details) => details?.isPatientInformationRequired !== false
+      },
+      {
         label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
         value: 'isCoiIdRequired'
       },
@@ -84,12 +89,12 @@ export const ConfigConstants = [
         value: 'isPORequired'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.mrnRequired',
-        value: 'isMRNRequired'
-      },
-      {
         label: 'manageMaterial.drawer.details.configuration.body.doaRequired',
         value: 'isDOARequired'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.dateOfApheresisRequired',
+        value: 'isDateOfApheresisRequired'
       }
     ],
 
