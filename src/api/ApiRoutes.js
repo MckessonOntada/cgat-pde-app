@@ -47,6 +47,7 @@ const ApiRoutes = Object.freeze({
   POST_USER_LOGOUT: constructUserManagementServiceUrl('users/postLogout'),
   GET_ROLES: () => constructUserManagementServiceUrl(`roles`),
   GET_ROLE_PERMISSIONS: (roleId) => constructUserManagementServiceUrl(`roles/${roleId}/permissions`),
+  GET_COMMUNICATION_PREFERENCES: (roleId) => constructUserManagementServiceUrl(`roles/${roleId}/communication-preferences`),
   GET_PERMISSIONS: (userType) => constructUserManagementServicePublicUrl(`global/permissions/${userType}`),
   ORGANIZATIONS: constructUserManagementServiceUrl('practices'),
   ORGANIZATION_BASE: () => constructUserManagementServiceUrl(''),

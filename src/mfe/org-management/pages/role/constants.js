@@ -1,120 +1,85 @@
 export const INITIAL_PREFERENCES = {
-  userManagement: {
-    processUpdates: { setPreference: false, email: false, inApp: false, sms: false },
-    reminders: { setPreference: false, email: false, inApp: false, sms: false }
+  USER_MANAGEMENT: {
+    PROCESS_UPDATES: { email: false, inApp: false, sms: false },
+    REMINDERS: { email: false, inApp: false, sms: false }
   },
-  orderManagement: {
-    processUpdates: { setPreference: false, email: false, inApp: false, sms: false },
-    reminders: { setPreference: false, email: false, inApp: false, sms: false }
+  ORDER_MANAGEMENT: {
+    PROCESS_UPDATES: { email: false, inApp: false, sms: false },
+    REMINDERS: { email: false, inApp: false, sms: false }
   },
-  orderApproval: {
-    processUpdates: { setPreference: false, email: false, inApp: false, sms: false },
-    reminders: { setPreference: false, email: false, inApp: false, sms: false }
+  ORDER_APPROVAL: {
+    PROCESS_UPDATES: { email: false, inApp: false, sms: false },
+    REMINDERS: { email: false, inApp: false, sms: false }
   },
-  onBehalfOf: {
-    onBehalfOf: { setPreference: false, email: false, inApp: false, sms: false }
+  ON_BEHALF_OF: {
+    PROCESS_UPDATES: { email: false, inApp: false, sms: false }
   }
 };
 
 export const COMMUNICATION_PREFERENCES = [
   {
-    sectionKey: 'userManagement',
-    sectionTitle: 'User Management',
+    sectionKey: 'USER_MANAGEMENT',
+    sectionTitle: 'label.User_Management',
     items: [
       {
-        itemKey: 'processUpdates',
-        itemTitle: 'Process Updates',
-        itemDescription: 'Get notified when a new user is created.',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'PROCESS_UPDATES',
+        itemTitle: 'label.Process_Updates',
+        itemDescription: 'label.user_management.process_updates.description',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       },
       {
-        itemKey: 'reminders',
-        itemTitle: 'Reminders',
-        itemDescription: 'Receive reminders about pending user setup.',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'REMINDERS',
+        itemTitle: 'label.Reminders',
+        itemDescription: 'label.user_management.reminders.description',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       }
     ]
   },
   {
-    sectionKey: 'orderManagement',
-    sectionTitle: 'Order Management',
+    sectionKey: 'ORDER_MANAGEMENT',
+    sectionTitle: 'label.Order_Management',
     items: [
       {
-        itemKey: 'processUpdates',
-        itemTitle: 'Process Updates',
-        itemDescription: 'Stay informed on prescription or order placements & modifications.',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'PROCESS_UPDATES',
+        itemTitle: 'label.Process_Updates',
+        itemDescription: 'label.order_management.process_updates.description',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       },
       {
-        itemKey: 'reminders',
-        itemTitle: 'Reminders',
-        itemDescription: 'Receive reminders about pending prescription or orders or unprocessed updates.',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'REMINDERS',
+        itemTitle: 'label.Reminders',
+        itemDescription: 'label.order_management.reminders.description',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       }
     ]
   },
   {
-    sectionKey: 'orderApproval',
-    sectionTitle: 'Order Approval',
+    sectionKey: 'ORDER_APPROVAL',
+    sectionTitle: 'label.Order_Approval',
     items: [
       {
-        itemKey: 'processUpdates',
-        itemTitle: 'Process Updates',
-        itemDescription: 'Get notified when an order requires your review, approval, or rejection.',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'PROCESS_UPDATES',
+        itemTitle: 'label.Process_Updates',
+        itemDescription: 'label.order_approval.process_updates.description',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       },
       {
-        itemKey: 'reminders',
-        itemTitle: 'Reminders',
-        itemDescription: 'Receive reminders for orders still awaiting your review or approval.',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'REMINDERS',
+        itemTitle: 'label.Reminders',
+        itemDescription: 'label.order_approval.reminders.description',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       }
     ]
   },
   {
-    sectionKey: 'onBehalfOf',
-    sectionTitle: 'On Behalf of',
-    sectionDescription: 'Get notified when another user submits or manages a prescription or order on behalf of you.',
+    sectionKey: 'ON_BEHALF_OF',
+    sectionTitle: 'label.On_Behalf_of',
+    sectionDescription: 'label.on_behalf_of.description',
     items: [
       {
-        itemKey: 'onBehalfOf',
-        itemTitle: 'On Behalf of',
-        switches: [
-          { field: 'setPreference', disabledIf: null },
-          { field: 'email', disabledIf: 'setPreference' },
-          { field: 'inApp', disabledIf: 'setPreference' },
-          { field: 'sms', disabledIf: 'setPreference' }
-        ]
+        itemKey: 'PROCESS_UPDATES',
+        itemTitle: 'label.On_Behalf_of',
+        switches: [{ field: 'email' }, { field: 'inApp' }, { field: 'sms' }]
       }
     ]
   }

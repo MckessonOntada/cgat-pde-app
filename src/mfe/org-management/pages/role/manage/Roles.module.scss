@@ -2,6 +2,10 @@
   p {
     font-size: var(--brand-line-height--large);
     font-weight: var(--brand-font-weight-600);
+  }
+}
+.headingReadOnly {
+  p {
     text-align: center;
   }
 }
@@ -31,7 +35,10 @@
     }
   }
   .switches {
-    div {
+    label {
+      line-height: 2.125rem !important;
+    }
+    > div {
       justify-content: center;
     }
   }

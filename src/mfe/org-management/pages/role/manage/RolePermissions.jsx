@@ -41,7 +41,7 @@ const RolePermissions = () => {
   const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
   const [inheritedRole, setInheritedRole] = React.useState(null);
   const { refreshData } = useRole();
-  const { isEdit, backFromPreferences } = location.state || {};
+  const { isEdit } = location.state || {};
 
   const handleOnCancelButtonClick = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
@@ -62,7 +62,7 @@ const RolePermissions = () => {
         if (data) {
           refreshData();
           navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles/${roleId}/notification-permissions`, {
-            state: { ...location.state }
+            state: { data: { ...location.state.data, permissions: enabledPermissions } }
           });
         }
       },
@@ -76,20 +76,6 @@ const RolePermissions = () => {
         setIsAlertVisible(true);
       }
     }
-  );
-
-  const forms = React.useMemo(
-    () => [
-      {
-        name: 'roleDetails',
-        label: t('orgManagement.role.labelRolesDetails')
-      },
-      {
-        name: 'addPermissions',
-        label: t('orgManagement.role.labelAddPermissions')
-      }
-    ],
-    [t]
   );
 
   const handleGoBack = () => {

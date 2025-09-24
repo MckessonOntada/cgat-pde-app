@@ -7,7 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
 import NotFound from '@src/pages/error-pages/NotFound';
 import RoleDetail from '../role/detail';
-import NotificationRoles from './manage/NotificationRols';
+import NotificationRolePreferences from './manage/NotificationRolePreferences';
 
 const Role = () => {
   return (
@@ -17,7 +17,7 @@ const Role = () => {
         <Route path={PATHS.createRole} element={<RoleDetails />} />
         <Route path={PATHS.editRole} element={<RoleDetails />} />
         <Route path={PATHS.permissions} element={<RolePermissions />} />
-        <Route path={PATHS.notificationPermissions} element={<NotificationRoles />} />
+        <Route path={PATHS.notificationPermissions} element={<NotificationRolePreferences />} />
         <Route path={':roleId'} element={<RoleDetail />} />
         <Route path={'*'} element={<NotFound />} />
       </Routes>
