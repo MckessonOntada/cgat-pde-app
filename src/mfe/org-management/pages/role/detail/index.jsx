@@ -234,7 +234,7 @@ const roleDetail = () => {
           </div>
           <div className="secondryTitle">
             <ModuleHeader
-              heading={<Heading as="h1">{t('Communication Preference')}</Heading>}
+              heading={<Heading as="h1">{t('label.Communication_Preference')}</Heading>}
               controls={
                 <div className="controls">
                   <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
