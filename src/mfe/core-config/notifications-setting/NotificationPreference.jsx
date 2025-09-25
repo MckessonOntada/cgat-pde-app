@@ -1,6 +1,5 @@
 import React from 'react';
 import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
-import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Form, Formik } from 'formik';
@@ -10,27 +9,72 @@ import SettingPanelRenderer from './Renderer';
 import SMSConfiguration from './SMSConfiguration';
 import style from './Style.module.scss';
 import { useNavigate } from 'react-router-dom';
+import UserService from '@src/api/commonService/UserService';
+
+const VALIDATION_SCHEMA = Yup.object().shape({
+  preferences: Yup.object()
+});
+
+const initialValues = {
+  preferences: { ...notificationConfig }
+};
 
 const NotificationPreference = () => {
   const { t: translateFn } = useTranslate();
   const navigate = useNavigate();
-  const [isInvitationAccepted, setIsInvitationAccepted] = React.useState(false);
+
+  const [isInvitationDisabled, setIsInvitationDisabled] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  const [verificationStatus, setVerificationStatus] = React.useState({});
 
-  const VALIDATION_SCHEMA = React.useMemo(
-    () =>
-      Yup.object().shape({
-        preferences: Yup.object()
-      }),
-    [translateFn]
-  );
+  const timeoutRef = React.useRef();
 
-  const initialValues = React.useMemo(
-    () => ({
-      preferences: { ...notificationConfig }
-    }),
-    []
-  );
+  React.useEffect(() => {
+    UserService.getSubscriptionDetails()
+      .then((data) => {
+        setVerificationStatus({ ...data });
+      })
+      .catch((error) => {
+        setAlert({ description: error.message, type: 'error' });
+      });
+
+    return () => clearTimeout(timeoutRef.current);
+  }, []);
+
+  React.useEffect(() => {
+    if (verificationStatus.lastResendSMSTime) {
+      const last = new Date(verificationStatus.lastResendSMSTime).getTime();
+      const remaining = last + 30_000 - Date.now();
+
+      if (remaining > 0) {
+        setIsInvitationDisabled(true);
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => setIsInvitationDisabled(false), remaining);
+      } else {
+        setIsInvitationDisabled(false);
+      }
+    }
+    return () => clearTimeout(timeoutRef.current);
+  }, [verificationStatus.lastResendSMSTime]);
+
+  const resendInvitation = () => {
+    setIsInvitationDisabled(true);
+    UserService.resendInvitation()
+      .then((lastResendSMSTime) => {
+        setVerificationStatus((prev) => ({ ...prev, lastResendSMSTime }));
+        setAlert({
+          description: translateFn('message.resendInvitationSuccess'),
+          type: 'success'
+        });
+      })
+      .catch((error) => {
+        setIsInvitationDisabled(false);
+        setAlert({
+          description: translateFn('message.resendInvitationError'),
+          type: 'error'
+        });
+      });
+  };
 
   const handleOnSubmit = React.useCallback((values) => {
     console.log('Form submitted:', values);
@@ -47,7 +91,7 @@ const NotificationPreference = () => {
             <div className="MCP-module-body">
               <ModuleHeader heading={<Heading as="h1">{translateFn('heading.notificationSetting')}</Heading>} />
 
-              {!isInvitationAccepted && (
+              {verificationStatus.isNumberVerified === false && (
                 <Alert
                   type="info"
                   showCloseIcon
@@ -56,7 +100,7 @@ const NotificationPreference = () => {
                   title={
                     <div>
                       <p>{translateFn('smsSubscriptionAlert.title1')}</p>
-                      <p>{translateFn('smsSubscriptionAlert.title2')}</p>
+                      <p>{translateFn('smsSubscriptionAlert.title2', { number: verificationStatus.number })}</p>
                     </div>
                   }
                   description={
@@ -65,11 +109,16 @@ const NotificationPreference = () => {
                       <p>
                         {translateFn('smsSubscriptionAlert.description2', {
                           link: (
-                            <a key="resend-link" className={style['decorated-link']} href="#">
+                            <button
+                              type="button"
+                              disabled={isInvitationDisabled}
+                              key="resend-link"
+                              className={style['decorated-link']}
+                              onClick={resendInvitation}>
                               {translateFn('smsSubscriptionAlert.resendInvite')}
-                            </a>
+                            </button>
                           ),
-                          lastSent: new Date().toISOString()
+                          lastSent: new Date(verificationStatus.lastResendSMSTime).toLocaleString()
                         })}
                       </p>
                     </div>
@@ -81,7 +130,11 @@ const NotificationPreference = () => {
 
               <div className="MCP-CardContainer">
                 <SettingPanelRenderer config={notificationConfig} />
-                <SMSConfiguration setAlert={setAlert} />
+                <SMSConfiguration
+                  setLinkedNumber={(phone) => setVerificationStatus({ ...verificationStatus, number: phone })}
+                  linkedContactNumber={verificationStatus.number}
+                  setAlert={setAlert}
+                />
               </div>
 
               <div className="controls">

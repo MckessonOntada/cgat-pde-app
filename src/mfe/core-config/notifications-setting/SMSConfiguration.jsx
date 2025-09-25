@@ -1,42 +1,49 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Switch, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import style from './Style.module.scss';
 import UserService from '@src/api/commonService/UserService';
-import PhoneInputFormik from '@src/components/form/formik/PhoneInputFormik';
 import PhoneInput from '@src/components/form/PhoneInput';
 import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 
-function SMSConfiguration({ linkedContactNumber = '', setAlert }) {
+function SMSConfiguration({ linkedContactNumber = '', setAlert, setLinkedNumber }) {
   const { t: translateFn } = useTranslate();
-  const [isSubscribeSMSNotification, setIsSubscribeSMSNotification] = React.useState(Boolean(linkedContactNumber));
-  const [form, setForm] = React.useState({
-    value: linkedContactNumber,
-    error: null
-  });
 
-  const isValidPhoneNumber = (number = '') => number.match(PHONE_REGEX);
+  const [isSubscribed, setIsSubscribed] = useState(Boolean(linkedContactNumber));
+  const [phone, setPhone] = useState(linkedContactNumber);
+  const [error, setError] = useState(null);
 
-  const handleOnChange = (e) => {
-    if (!form.value) {
-      setForm({
-        ...form,
-        error: translateFn('message.phoneNumberRequired')
-      });
-      return;
-    } else if (!isValidPhoneNumber(form.value)) {
-      setForm({
-        ...form,
-        error: translateFn('message.enterPhoneNumber')
-      });
-      return;
+  useEffect(() => {
+    setPhone(linkedContactNumber);
+    setIsSubscribed(Boolean(linkedContactNumber));
+    setError(null);
+  }, [linkedContactNumber]);
+
+  const isValidPhoneNumber = useCallback((number = '') => PHONE_REGEX.test(number), []);
+
+  const validatePhone = useCallback(() => {
+    if (!phone) {
+      setError(translateFn('message.phoneNumberRequired'));
+      return false;
+    } else if (!isValidPhoneNumber(phone)) {
+      setError(translateFn('message.enterPhoneNumber'));
+      return false;
     }
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      if (isValidPhoneNumber(form.value)) {
-        UserService.subscribeSmsNotification(form.value)
+    setError(null);
+    return true;
+  }, [phone, isValidPhoneNumber, translateFn]);
+
+  const handleSwitchChange = useCallback(
+    (e) => {
+      const checked = e.target.checked;
+
+      if (checked) {
+        if (!validatePhone()) return;
+
+        UserService.subscribeSmsNotification(phone)
           .then(() => {
-            setIsSubscribeSMSNotification(isChecked);
+            setIsSubscribed(true);
+            setLinkedNumber(phone);
             setAlert({
               description: translateFn('smsSubscription.phoneNumberUpdated'),
               type: 'success'
@@ -49,36 +56,26 @@ function SMSConfiguration({ linkedContactNumber = '', setAlert }) {
             });
           });
       } else {
-        setForm({
-          ...form,
-          error: translateFn('message.enterPhoneNumber')
-        });
+        setIsSubscribed(false);
       }
-    } else {
-      setIsSubscribeSMSNotification(isChecked);
-    }
-  };
+    },
+    [phone, validatePhone, setAlert, translateFn]
+  );
 
-  const handleOnInput = (value) => {
-    setForm({
-      value,
-      error: null
-    });
-  };
+  const handleInputChange = useCallback((value) => {
+    setPhone(value);
+    setError(null);
+  }, []);
 
-  const handleOnBlur = () => {
-    if (!form.value) {
-      setForm({
-        ...form,
-        error: translateFn('message.phoneNumberRequired')
-      });
-    } else if (!isValidPhoneNumber(form.value)) {
-      setForm({
-        ...form,
-        error: translateFn('message.enterPhoneNumber')
-      });
-    }
-  };
+  const handleInputBlur = useCallback(() => {
+    validatePhone();
+  }, [validatePhone]);
+
+  const tooltipContent = isSubscribed
+    ? translateFn('smsConfiguration.switchTooltip')
+    : !phone
+    ? translateFn('smsConfiguration.switchTooltipEnterPhoneNumber')
+    : translateFn('smsConfiguration.switchTooltipSavePhoneNumber', { number: phone });
 
   return (
     <div className={style['sms-config-wrapper']}>
@@ -87,30 +84,21 @@ function SMSConfiguration({ linkedContactNumber = '', setAlert }) {
           <label className={style.heading}>{translateFn('smsConfiguration.enableSMSNotification')}</label>
           <PhoneInput
             name="linkedContactNumber"
-            onBlurFn={handleOnBlur}
-            onChangeFn={handleOnInput}
-            disabled={isSubscribeSMSNotification}
-            value={form.value}
-            error={form.error}
-            className={`phone-input-field ${form.error ? 'outline-error' : ''}`}
+            value={phone}
+            onChangeFn={handleInputChange}
+            onBlurFn={handleInputBlur}
+            disabled={isSubscribed}
+            error={error}
+            className={`phone-input-field ${error ? 'outline-error' : ''}`}
             isRequired={false}
             size="sm"
           />
         </div>
         <p className={style.details}>{translateFn('smsConfiguration.description')}</p>
       </div>
-      <div>
-        <Tooltip
-          body={
-            isSubscribeSMSNotification
-              ? translateFn('smsConfiguration.switchTooltip')
-              : translateFn(!form.value ? 'smsConfiguration.switchTooltipEnterPhoneNumber' : 'smsConfiguration.switchTooltipSavePhoneNumber', {
-                  number: form.value
-                })
-          }>
-          <Switch id="sms-config-switch" size="lg" checked={isSubscribeSMSNotification} onChange={handleOnChange} />
-        </Tooltip>
-      </div>
+      <Tooltip body={tooltipContent}>
+        <Switch id="sms-config-switch" size="lg" checked={isSubscribed} onChange={handleSwitchChange} />
+      </Tooltip>
     </div>
   );
 }

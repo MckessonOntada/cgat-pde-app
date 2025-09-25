@@ -1,7 +1,15 @@
 .decorated-link {
-  display: inline-block;
+  display: inline !important;
   text-decoration: underline;
   color: var(--brand-color-primary);
+  background-color: transparent;
+  padding: 0px !important;
+  border: none;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 }
 
 .info {

@@ -236,7 +236,7 @@ export const ConfigurationMessagesEN = {
   'message.enterPhoneNumber': 'Enter valid phone number',
   'message.phoneNumberRequired': 'Phone number is required',
   'smsSubscriptionAlert.title1': 'You are not receiving SMS notifications yet!',
-  'smsSubscriptionAlert.title2': 'An SMS invitation has been sent to 761-289-7654. Please reply via SMS to fully opt into SMS notifications.',
+  'smsSubscriptionAlert.title2': 'An SMS invitation has been sent to {number}. Please reply via SMS to fully opt into SMS notifications.',
   'smsSubscriptionAlert.description1': 'You can disable your individual notification types once you have fully opted in.',
   'smsSubscriptionAlert.description2': 'Not seeing a text? {link}. Last message sent {lastSent}.',
   'smsSubscriptionAlert.resendInvite': 'Resend Invite',
@@ -279,5 +279,7 @@ export const ConfigurationMessagesEN = {
   'smsConfiguration.switchTooltip': 'Disable to edit phone number',
   'smsConfiguration.switchTooltipSavePhoneNumber': 'Subscribe sms notification on {number}',
   'smsConfiguration.switchTooltipEnterPhoneNumber': 'Enter phone number to subscribe sms notification',
-  'button.caption.saveChanges': 'Save Changes'
+  'button.caption.saveChanges': 'Save Changes',
+  'message.resendInvitationSuccess': 'New invitation sent successfully.',
+  'message.resendInvitationFailed': 'Failed to sent invitation. Please try again later.'
 };

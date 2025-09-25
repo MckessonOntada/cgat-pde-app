@@ -51,10 +51,58 @@ async function subscribeSmsNotification(number) {
   }
 }
 
+async function resendInvitation() {
+  let userId = null;
+  const impersonatedUserId = sessionStorage.getItem('x-imp-user-id');
+  if (impersonatedUserId) {
+    try {
+      const impersonatedUserBy = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+      userId = impersonatedUserBy.id;
+    } catch (error) {}
+  } else {
+    userId = AuthUtils.getUserId();
+  }
+
+  if (!userId) {
+    throw new Error('No valid user found');
+  }
+  const url = `${ApiRoutes.USERS()}/${userId}/resend-number-verification-sms`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+}
+
+async function getSubscriptionDetails() {
+  let userId = null;
+  const impersonatedUserId = sessionStorage.getItem('x-imp-user-id');
+  if (impersonatedUserId) {
+    try {
+      const impersonatedUserBy = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+      userId = impersonatedUserBy.id;
+    } catch (error) {}
+  } else {
+    userId = AuthUtils.getUserId();
+  }
+
+  if (!userId) {
+    throw new Error('No valid user found');
+  }
+  const url = `${ApiRoutes.USERS()}/${userId}/number-verification-status`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+}
+
 const UserService = Object.freeze({
   getTherapyById,
   getAssignee,
-  subscribeSmsNotification
+  subscribeSmsNotification,
+  resendInvitation,
+  getSubscriptionDetails
 });
 
 export default UserService;
