@@ -162,6 +162,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
         paginationConfig={paginationConfig}
         isFetching={isFetching}
         pageType={type}
+        paymentInitiationDate={state?.paymentInitiationDate}
       />
       {renderFooterButtons()}
     </div>
