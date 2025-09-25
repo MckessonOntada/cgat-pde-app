@@ -273,5 +273,11 @@ export const ConfigurationMessagesEN = {
   'notificationPreferences.optionEmail': 'Email',
   'notificationPreferences.optionInApp': 'In-App',
   'notificationPreferences.optionSMS': 'SMS',
-  'notificationPreferences.optionNotAllowed': 'This setting is managed by your org admin. Please contact your admin for changes'
+  'notificationPreferences.optionNotAllowed': 'This setting is managed by your org admin. Please contact your admin for changes',
+  'smsSubscription.phoneNumberUpdated': 'Phone number updated successfully.',
+  'smsSubscription.phoneNumberUpdateFailed': 'Failed to update phone number. Please try again later.',
+  'smsConfiguration.switchTooltip': 'Disable to edit phone number',
+  'smsConfiguration.switchTooltipSavePhoneNumber': 'Subscribe sms notification on {number}',
+  'smsConfiguration.switchTooltipEnterPhoneNumber': 'Enter phone number to subscribe sms notification',
+  'button.caption.saveChanges': 'Save Changes'
 };

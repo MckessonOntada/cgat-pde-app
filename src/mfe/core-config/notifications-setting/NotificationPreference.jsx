@@ -20,14 +20,6 @@ const NotificationPreference = () => {
   const VALIDATION_SCHEMA = React.useMemo(
     () =>
       Yup.object().shape({
-        linkedContactNumber: Yup.string()
-          .matches(PHONE_REGEX, translateFn('message.enterPhoneNumber'))
-          .when('subscribeSMSNotification', {
-            is: true,
-            then: (schema) => schema.required(translateFn('message.phoneNumberRequired')),
-            otherwise: (schema) => schema.notRequired()
-          }),
-        subscribeSMSNotification: Yup.boolean(),
         preferences: Yup.object()
       }),
     [translateFn]
@@ -35,8 +27,6 @@ const NotificationPreference = () => {
 
   const initialValues = React.useMemo(
     () => ({
-      linkedContactNumber: '',
-      subscribeSMSNotification: false,
       preferences: { ...notificationConfig }
     }),
     []
@@ -91,7 +81,7 @@ const NotificationPreference = () => {
 
               <div className="MCP-CardContainer">
                 <SettingPanelRenderer config={notificationConfig} />
-                <SMSConfiguration />
+                <SMSConfiguration setAlert={setAlert} />
               </div>
 
               <div className="controls">
@@ -99,7 +89,7 @@ const NotificationPreference = () => {
                   {translateFn('captions.btnBack')}
                 </Button>{' '}
                 <Button size="md" variant="primary" type="submit">
-                  {translateFn('button.caption.saveAsDraft')}
+                  {translateFn('button.caption.saveChanges')}
                 </Button>
               </div>
             </div>

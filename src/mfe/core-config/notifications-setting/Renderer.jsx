@@ -1,3 +1,4 @@
+import React from 'react';
 import { Switch, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useFormikContext } from 'formik';

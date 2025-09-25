@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, TabList } from '@mckesson/mcp-component-library';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';

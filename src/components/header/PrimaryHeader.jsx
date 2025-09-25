@@ -42,7 +42,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const [filteredProfileOptions, setFilteredProfileOptions] = React.useState(profileOptions);
 
   React.useEffect(() => {
-    if (!isSystemAdmin) {
+    if (AuthUtils.getPracticeId() != 1) {
       filteredProfileOptions.push({
         label: 'Notification Setting',
         value: '/notification-setting'
