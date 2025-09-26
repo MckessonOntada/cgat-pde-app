@@ -32,6 +32,7 @@ function AttachmentCard(props) {
   const { fileName, fileSize, url } = props;
   const fileType = fileName.split('.').pop();
   const fileIcon = getFileIcon(fileType);
+  const shouldShowSize = typeof fileSize === 'number' && !Number.isNaN(fileSize);
   const handleOnClick = async () => {
     const response = await OrderService.downloadDocument(url); //Prio1
 
@@ -58,7 +59,7 @@ function AttachmentCard(props) {
         <p className="name fieldValue">
           <div className="overflowing">{fileName}</div>
         </p>
-        <p className="size">{CommonUtils.getFileSize(fileSize)}</p>
+        {shouldShowSize && <p className="size">{CommonUtils.getFileSize(fileSize)}</p>}
       </div>
     </div>
   );

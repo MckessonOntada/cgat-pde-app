@@ -760,7 +760,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       if (isStageInDraft) {
         saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
       } else {
-        navigateToNextStage(orderId);
+        saveAdditionalDetails({ payload, isSendNotification: false });
       }
     } else if (isDirty || isStageInDraft) {
       saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
