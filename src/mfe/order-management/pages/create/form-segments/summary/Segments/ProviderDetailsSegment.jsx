@@ -13,12 +13,12 @@ export default function ProviderDetailsSegment({ provider, showControls, onEdit 
 
   if (!provider) return null;
 
-  const providerName = getFullName(provider?.name) || '-';
-  const providerAddress = getAddress(provider?.address || '-') || '-';
-  const phone = CommonUtils.formatPhoneNumber(provider?.phone || '-') || '-';
-  const tin = CommonUtils.formatTIN(provider?.tin || '-') || '-';
-  const dea = provider?.dea || '-';
-  const npi = provider?.npi || '-';
+  const providerName = provider?.name ? getFullName(provider?.name) : '-';
+  const providerAddress = provider?.address ? getAddress(provider?.address) : '-';
+  const phone = provider?.phone ? CommonUtils.formatPhoneNumber(provider?.phone) : '-';
+  const tin = provider?.tin ? CommonUtils.formatTIN(provider?.tin) : '-';
+  const dea = provider?.dea ?? '-';
+  const npi = provider?.npi ?? '-';
 
   return (
     <div className="MCP-CardContainer">
@@ -27,7 +27,7 @@ export default function ProviderDetailsSegment({ provider, showControls, onEdit 
         heading={<Heading as="h3">{t('labels.providerDetails')}</Heading>}
         controls={
           showControls && (
-            <Button size="md" variant="tertiary" onClick={() => onEdit(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
+            <Button size="md" variant="tertiary" onClick={() => onEdit(ORDER_STAGES.PATIENT_DETAILS)} Icon={IconEditField}>
               {t('captions.btnEdit')}
             </Button>
           )

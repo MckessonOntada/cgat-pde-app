@@ -26,7 +26,7 @@ function PayerDetailsSegment({ payerDetails, showControls, onEdit }) {
           heading={<Heading as="h3">{t(labelKey)}</Heading>}
           controls={
             showControls && (
-              <Button size="md" variant="tertiary" onClick={() => onEdit(ORDER_STAGES.PAYER_DETAILS)} Icon={() => <IconEditField />}>
+              <Button size="md" variant="tertiary" onClick={() => onEdit(ORDER_STAGES.PAYER_DETAILS)} Icon={IconEditField}>
                 {t('captions.btnEdit')}
               </Button>
             )
@@ -79,7 +79,7 @@ function PayerDetailsSegment({ payerDetails, showControls, onEdit }) {
           heading={<Heading as="h3">{t(labelKey)}</Heading>}
           controls={
             showControls && (
-              <Button size="md" variant="tertiary" onClick={() => onEdit(ORDER_STAGES.PAYER_DETAILS)} Icon={() => <IconEditField />}>
+              <Button size="md" variant="tertiary" onClick={() => onEdit(ORDER_STAGES.PAYER_DETAILS)} Icon={IconEditField}>
                 {t('captions.btnEdit')}
               </Button>
             )
