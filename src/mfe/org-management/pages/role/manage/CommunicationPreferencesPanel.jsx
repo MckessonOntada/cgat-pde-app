@@ -6,6 +6,41 @@ import style from './Roles.module.scss';
 
 const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, handleToggleChannel, readOnly }) => {
   const { t } = useTranslate();
+
+  const renderSwitchOrPill = (sectionKey, itemKey, sw, itemData) => {
+    const handleToggle = () => handleToggleChannel(sectionKey, itemKey, sw.field);
+
+    if (readOnly) {
+      return (
+        <Pills
+          key={sw.field}
+          id={sw.field}
+          labels={[
+            {
+              id: 1,
+              labelText: itemData[sw.field] ? t('label.Enabled') : t('label.No_Preference')
+            }
+          ]}
+          name="Pill"
+          size="md"
+          variant={itemData[sw.field] ? 'secondary' : 'primary'}
+        />
+      );
+    }
+
+    return (
+      <Switch
+        key={sw.field}
+        handleToggle={handleToggle}
+        id={`${sectionKey}-${itemKey}-${sw.field}`}
+        label={itemData[sw.field] ? t('label.Enabled') : t('label.No_Preference')}
+        labelPosition="right"
+        name={`${sectionKey}-${itemKey}-${sw.field}`}
+        size="lg"
+        value={itemData[sw.field]}
+      />
+    );
+  };
   return (
     <div className="MCP-panel-container">
       <div className="MCP-panel-header grid grid-gap-16 grid-cols-2">
@@ -38,34 +73,7 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
                     <p className={style.itemDescription}>{t(item.itemDescription)}</p>
                   </div>
                   <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
-                    {item.switches.map((sw) => {
-                      const handleToggle = () => handleToggleChannel(section.sectionKey, item.itemKey, sw.field);
-                      return readOnly ? (
-                        <Pills
-                          id={sw.field}
-                          labels={[
-                            {
-                              id: 1,
-                              labelText: itemData[sw.field] ? t('label.Enabled') : t('label.No_Preference')
-                            }
-                          ]}
-                          name="Pill"
-                          size="md"
-                          variant={itemData[sw.field] ? 'secondary' : 'primary'}
-                        />
-                      ) : (
-                        <Switch
-                          key={sw.field}
-                          handleToggle={handleToggle}
-                          id={`${section.sectionKey}-${item.itemKey}-${sw.field}`}
-                          label={itemData[sw.field] ? t('label.Enabled') : t('label.No_Preference')}
-                          labelPosition="right"
-                          name={`${section.sectionKey}-${item.itemKey}-${sw.field}`}
-                          size="lg"
-                          value={itemData[sw.field]}
-                        />
-                      );
-                    })}
+                    {item.switches.map((sw) => renderSwitchOrPill(section.sectionKey, item.itemKey, sw, itemData))}
                   </div>
                 </div>
               );
@@ -74,32 +82,7 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
             <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
               {section.items[0].switches.map((sw) => {
                 const itemData = preferences[section.sectionKey][section.items[0].itemKey];
-                const handleToggle = () => handleToggleChannel(section.sectionKey, section.items[0].itemKey, sw.field);
-                return readOnly ? (
-                  <Pills
-                    id={sw.field}
-                    labels={[
-                      {
-                        id: 1,
-                        labelText: itemData[sw.field] ? t('label.Enabled') : t('label.No_Preference')
-                      }
-                    ]}
-                    name="Pill"
-                    size="md"
-                    variant={itemData[sw.field] ? 'secondary' : 'primary'}
-                  />
-                ) : (
-                  <Switch
-                    key={sw.field}
-                    handleToggle={handleToggle}
-                    id={`${section.sectionKey}-${section.items[0].itemKey}-${sw.field}`}
-                    label={itemData[sw.field] ? t('label.Enabled') : t('label.No_Preference')}
-                    labelPosition="right"
-                    name={`${section.sectionKey}-${section.items[0].itemKey}-${sw.field}`}
-                    size="lg"
-                    value={itemData[sw.field]}
-                  />
-                );
+                return renderSwitchOrPill(section.sectionKey, section.items[0].itemKey, sw, itemData);
               })}
             </div>
           )}

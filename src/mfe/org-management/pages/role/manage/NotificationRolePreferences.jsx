@@ -80,7 +80,7 @@ const NotificationRolePreferences = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={IconArrowLeft} onClick={handleGoBack} size="md">
           {t(isEdit ? 'control.Back_to_role_details_page' : 'orgManagement.role.captionsBtnBackToManageRoles')}
         </Button>
       </div>
