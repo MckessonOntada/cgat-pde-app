@@ -42,18 +42,19 @@ const NotificationPreference = () => {
   }, []);
 
   React.useEffect(() => {
-    if (verificationStatus.lastResendSMSTime) {
-      const last = new Date(verificationStatus.lastResendSMSTime).getTime();
-      const remaining = last + 30_000 - Date.now();
+    if (!verificationStatus.lastResendSMSTime) return;
 
-      if (remaining > 0) {
-        setIsInvitationDisabled(true);
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => setIsInvitationDisabled(false), remaining);
-      } else {
-        setIsInvitationDisabled(false);
-      }
+    const last = new Date(verificationStatus.lastResendSMSTime).getTime();
+    const remaining = last + 30_000 - Date.now();
+
+    if (remaining > 0) {
+      setIsInvitationDisabled(true);
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setIsInvitationDisabled(false), remaining);
+    } else {
+      setIsInvitationDisabled(false);
     }
+
     return () => clearTimeout(timeoutRef.current);
   }, [verificationStatus.lastResendSMSTime]);
 
@@ -61,13 +62,16 @@ const NotificationPreference = () => {
     setIsInvitationDisabled(true);
     UserService.resendInvitation()
       .then((lastResendSMSTime) => {
-        setVerificationStatus((prev) => ({ ...prev, lastResendSMSTime }));
+        setVerificationStatus((prev) => ({
+          ...prev,
+          lastResendSMSTime: lastResendSMSTime ?? prev.lastResendSMSTime
+        }));
         setAlert({
           description: translateFn('message.resendInvitationSuccess'),
           type: 'success'
         });
       })
-      .catch((error) => {
+      .catch(() => {
         setIsInvitationDisabled(false);
         setAlert({
           description: translateFn('message.resendInvitationError'),
@@ -118,7 +122,7 @@ const NotificationPreference = () => {
                               {translateFn('smsSubscriptionAlert.resendInvite')}
                             </button>
                           ),
-                          lastSent: new Date(verificationStatus.lastResendSMSTime).toLocaleString()
+                          lastSent: verificationStatus.lastResendSMSTime ? new Date(verificationStatus.lastResendSMSTime).toLocaleString() : ''
                         })}
                       </p>
                     </div>
