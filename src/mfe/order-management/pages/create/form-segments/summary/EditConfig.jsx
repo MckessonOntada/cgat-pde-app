@@ -19,15 +19,19 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
                 maxLength: 20,
                 isRequired: therapyConfig.isPIDRequired
               },
-              {
-                id: 'patient-info-mrn',
-                name: 'medicalRecordNumber',
-                label: 'orderManagement.patientDetails.inputLabel.mrn',
-                placeholder: ' ',
-                type: 'input',
-                maxLength: 11,
-                isRequired: therapyConfig.isMRNRequired
-              }
+              ...(therapyConfig.isMRNRequired
+                ? [
+                    {
+                      id: 'patient-info-mrn',
+                      name: 'medicalRecordNumber',
+                      label: 'orderManagement.patientDetails.inputLabel.mrn',
+                      placeholder: ' ',
+                      type: 'input',
+                      maxLength: 11,
+                      isRequired: therapyConfig.isMRNRequired
+                    }
+                  ]
+                : [])
             ]
           }
         ]
