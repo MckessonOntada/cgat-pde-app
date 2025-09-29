@@ -342,6 +342,48 @@ function Payer({ readOnly, hasPermission }) {
       });
   };
 
+  const isValidToSaveAsDraft = (values, errors, touched, setTouched, setErrors) => {
+    let allValid = true;
+    const newTouched = { ...touched };
+    const newErrors = { ...errors };
+
+    const traverse = (valObj, errObj, touchObj, errAcc) => {
+      Object.keys(valObj).forEach((key) => {
+        const value = valObj[key];
+        const error = errObj?.[key];
+
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          if (!touchObj[key] || typeof touchObj[key] !== 'object') touchObj[key] = {};
+          if (!errAcc[key] || typeof errAcc[key] !== 'object') errAcc[key] = {};
+          traverse(value, error || {}, touchObj[key], errAcc[key]);
+        } else {
+          if (value !== undefined && value !== '') {
+            if (error) allValid = false;
+          } else {
+            touchObj[key] = false;
+            errAcc[key] = '';
+          }
+        }
+      });
+    };
+
+    traverse(values, errors, newTouched, newErrors);
+    setTouched(newTouched);
+    setErrors(newErrors);
+
+    return allValid;
+  };
+
+  const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
+    const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
+    if (!isValid) {
+      setAlert({ type: 'error', description: 'Some filled fields have errors. Please fix them before saving as draft.' });
+      return;
+    }
+    setIsOrderInDraft(true);
+    handleOnSubmit(values);
+  };
+
   const handleOnClosePanel = (key, setFieldValue, currentValues, resetFormFn) => {
     const next = {
       ...currentValues,
@@ -414,7 +456,9 @@ function Payer({ readOnly, hasPermission }) {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
-          {({ setValues, values, touched, setTouched, setErrors, setFieldValue, dirty, resetForm, ...rest }) => {
+          {({ setValues, errors, values, touched, setTouched, setErrors, setFieldValue, dirty, resetForm, ...rest }) => {
+            console.log(touched);
+
             React.useEffect(() => {
               dispatch(hasUnsavedChanges(dirty));
               setIsDirty(dirty);
@@ -639,7 +683,12 @@ function Payer({ readOnly, hasPermission }) {
                       <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+                      <Button
+                        size="md"
+                        onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
+                        variant="primary"
+                        type="button"
+                        disabled={readOnly || !isDirty}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button size="md" variant="primary" onClick={() => setIsOrderInDraft(false)} type="submit" disabled={readOnly}>
