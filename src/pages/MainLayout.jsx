@@ -5,6 +5,7 @@ import { FooterProvider } from '@src/components/footer/FooterContext';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import { debugIds, ID } from '@src/constants/id';
 import AdminRoutes from '@src/mfe/core-config/admin';
+import NotificationPreference from '@src/mfe/core-config/notifications-setting/NotificationPreference';
 import Dashboard from '@src/mfe/core-config/system-admin';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
@@ -16,13 +17,12 @@ import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import AuthUtils from '@src/util/AuthUtils';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import styles from '../../src/assets/styles/MainLayout.module.scss';
 import Header from '../components/header';
 import AppRoutes from '../routes/AppRoutes';
 import ErrorWrapper from './ErrorWrapper';
 import NotFound from './error-pages/NotFound';
-import NotificationPreference from '@src/mfe/core-config/notifications-setting/NotificationPreference';
 
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 
@@ -103,7 +103,9 @@ function MainLayout() {
                       }
                     />
                     <Route path="/account-setting" element={<AccountSetting />} />
-                    <Route path="/notification-setting" element={<NotificationPreference />} />
+                    <Route element={<UserOnlyRout />}>
+                      <Route path="/notification-setting" element={<NotificationPreference />} />
+                    </Route>
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
@@ -118,5 +120,10 @@ function MainLayout() {
   );
 }
 
-const mapStateToProps = (state) => ({});
+const UserOnlyRout = () => {
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
+  return isSystemAdmin ? <Navigate to="/" /> : <Outlet />;
+};
+
+const mapStateToProps = () => ({});
 export default connect(mapStateToProps, {})(MainLayout);

@@ -10,12 +10,13 @@ const SettingPanelRenderer = ({ config }) => {
   const { values, setFieldValue } = useFormikContext();
 
   const handleOnChange = (e, keyPath) => {
-    setFieldValue(`preferences.${keyPath}`, e.target.checked);
+    setFieldValue(`${keyPath}`, e.target.checked);
   };
 
-  const handleHeaderChange = (sectionIndex, index) => (e) => handleOnChange(e, `sections[${sectionIndex}].optionValues[${index}]`);
+  const handleHeaderChange = (sectionIndex, index) => (e) => handleOnChange(e, `sections[${sectionIndex}].optionValues[${index}].value`);
 
-  const handleRowChange = (sectionIndex, rowIndex, index) => (e) => handleOnChange(e, `sections[${sectionIndex}].rows[${rowIndex}].optionValues[${index}]`);
+  const handleRowChange = (sectionIndex, rowIndex, index) => (e) =>
+    handleOnChange(e, `sections[${sectionIndex}].rows[${rowIndex}].optionValues[${index}].value`);
 
   return (
     <div className={style['notification-setting']}>
@@ -44,7 +45,7 @@ const SettingPanelRenderer = ({ config }) => {
                 <div className={style.options}>
                   {optionValues &&
                     options.map((optionKey, index) => {
-                      const { tooltip } = optionValues[index] || {};
+                      const { tooltip, isPreferred } = optionValues[index] || {};
                       return (
                         <div className={style.option} key={`section-${sectionIndex}-header-option-${index}`}>
                           <Tooltip body={translateFn(isPreferred ? 'notificationPreferences.optionNotAllowed' : tooltip)}>
@@ -53,7 +54,7 @@ const SettingPanelRenderer = ({ config }) => {
                                 id={`notification-setting-${sectionIndex}-header-${optionKey}`}
                                 size="lg"
                                 disabled={isPreferred}
-                                checked={values.preferences?.sections?.[sectionIndex]?.optionValues?.[index] ?? false}
+                                checked={values.sections?.[sectionIndex]?.optionValues?.[index].value ?? false}
                                 onChange={handleHeaderChange(sectionIndex, index)}
                               />
                             </div>
@@ -76,7 +77,7 @@ const SettingPanelRenderer = ({ config }) => {
                         </div>
                         <div className={style.options}>
                           {options.map((optionKey, index) => {
-                            const { tooltip } = rowOptionValues[index] || {};
+                            const { tooltip, isPreferred = false } = rowOptionValues[index] || {};
                             return (
                               <div className={style.option} key={`section-${sectionIndex}-row-${rowIndex}-option-${index}`}>
                                 <Tooltip body={translateFn(rowPreferred ? 'notificationPreferences.optionNotAllowed' : tooltip)}>
@@ -84,8 +85,8 @@ const SettingPanelRenderer = ({ config }) => {
                                     <Switch
                                       id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
                                       size="lg"
-                                      disabled={rowPreferred}
-                                      checked={values.preferences?.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index] ?? false}
+                                      disabled={isPreferred}
+                                      checked={values.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index].value ?? false}
                                       onChange={handleRowChange(sectionIndex, rowIndex, index)}
                                     />
                                   </div>

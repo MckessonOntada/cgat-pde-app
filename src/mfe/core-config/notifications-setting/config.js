@@ -4,13 +4,12 @@ const notificationConfig = {
   sections: [
     {
       title: 'notificationPreferences.userManagement.title',
-      id: 'userManagement',
+      id: 'USER_MANAGEMENT',
       rows: [
         {
           title: 'notificationPreferences.userManagement.processUpdate.title',
           subtitle: 'notificationPreferences.userManagement.processUpdate.subtitle',
-          id: 'processUpdate',
-          isPreferred: true,
+          id: 'PROCESS_UPDATES',
           optionValues: [
             {
               tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip.locked',
@@ -29,16 +28,15 @@ const notificationConfig = {
         {
           title: 'notificationPreferences.userManagement.reminders.title',
           subtitle: 'notificationPreferences.userManagement.reminders.subtitle',
-          id: 'reminders',
-          isPreferred: false,
+          id: 'REMINDERS',
           optionValues: [
             {
               tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
@@ -50,21 +48,20 @@ const notificationConfig = {
     },
     {
       title: 'notificationPreferences.orderManagement.title',
-      id: 'orderManagement',
+      id: 'ORDER_MANAGEMENT',
       rows: [
         {
           title: 'notificationPreferences.orderManagement.processUpdate.title',
           subtitle: 'notificationPreferences.orderManagement.processUpdate.subtitle',
-          id: 'processUpdate',
-          isPreferred: false,
+          id: 'PROCESS_UPDATES',
           optionValues: [
             {
               tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
@@ -75,16 +72,15 @@ const notificationConfig = {
         {
           title: 'notificationPreferences.orderManagement.reminders.title',
           subtitle: 'notificationPreferences.orderManagement.reminders.subtitle',
-          id: 'reminders',
-          isPreferred: false,
+          id: 'REMINDERS',
           optionValues: [
             {
               tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
@@ -96,21 +92,20 @@ const notificationConfig = {
     },
     {
       title: 'notificationPreferences.orderApproval.title',
-      id: 'orderApproval',
+      id: 'ORDER_APPROVAL',
       rows: [
         {
           title: 'notificationPreferences.orderApproval.processUpdate.title',
           subtitle: 'notificationPreferences.orderApproval.processUpdate.subtitle',
-          id: 'processUpdate',
-          isPreferred: false,
+          id: 'PROCESS_UPDATES',
           optionValues: [
             {
               tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
@@ -121,16 +116,15 @@ const notificationConfig = {
         {
           title: 'notificationPreferences.orderApproval.reminders.title',
           subtitle: 'notificationPreferences.orderApproval.reminders.subtitle',
-          id: 'reminders',
-          isPreferred: false,
+          id: 'REMINDERS',
           optionValues: [
             {
               tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
-              value: true
+              value: false
             },
             {
               tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
@@ -142,16 +136,16 @@ const notificationConfig = {
     },
     {
       title: 'notificationPreferences.onBehalfOf.title',
-      id: 'onBehalfOf',
+      id: 'ON_BEHALF_OF',
       subtitle: 'notificationPreferences.onBehalfOf.subtitle',
       optionValues: [
         {
           tooltip: 'notificationPreferences.onBehalfOf.tooltip',
-          value: true
+          value: false
         },
         {
           tooltip: 'notificationPreferences.onBehalfOf.tooltip',
-          value: true
+          value: false
         },
         {
           tooltip: 'notificationPreferences.onBehalfOf.tooltip',

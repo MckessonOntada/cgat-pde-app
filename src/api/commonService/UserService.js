@@ -49,12 +49,26 @@ async function getSubscriptionDetails() {
   return res.data ?? null;
 }
 
+async function getCommunicationPreferences() {
+  const url = `${ApiRoutes.USERS()}/current/communication-preference`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  return res.data ?? null;
+}
+async function setCommunicationPreferences(payload) {
+  const url = `${ApiRoutes.USERS()}/current/communication-preference`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  return res.data ?? null;
+}
+
 const UserService = Object.freeze({
   getTherapyById,
   getAssignee,
   subscribeSmsNotification,
   resendInvitation,
-  getSubscriptionDetails
+  getSubscriptionDetails,
+  getCommunicationPreferences,
+  setCommunicationPreferences
 });
 
 export default UserService;

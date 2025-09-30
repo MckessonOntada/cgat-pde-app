@@ -15,10 +15,6 @@ const VALIDATION_SCHEMA = Yup.object().shape({
   preferences: Yup.object()
 });
 
-const initialValues = {
-  preferences: { ...notificationConfig }
-};
-
 const NotificationPreference = () => {
   const { t: translateFn } = useTranslate();
   const navigate = useNavigate();
@@ -28,6 +24,80 @@ const NotificationPreference = () => {
   const [verificationStatus, setVerificationStatus] = React.useState({});
 
   const timeoutRef = React.useRef();
+
+  const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
+
+  React.useEffect(() => {
+    UserService.getCommunicationPreferences()
+      .then((preferences = {}) => {
+        const userCommunicationPreferences = preferences.userCommunicationPreferences?.preferences || {},
+          roleCommunicationPreferences = preferences.roleCommunicationPreferences?.preferences || {};
+        const optionMap = ['email', 'inApp', 'sms'];
+
+        const updatedConfig = {
+          ...preferencesConfig,
+          sections: preferencesConfig.sections.map((section) => {
+            const userSection = userCommunicationPreferences[section.id] || {};
+            const roleSection = roleCommunicationPreferences[section.id] || {};
+
+            if (section.rows) {
+              return {
+                ...section,
+                rows: section.rows.map((row) => {
+                  const userRow = userSection[row.id] || {};
+                  const roleRow = roleSection[row.id] || {};
+
+                  const optionValues = row.optionValues.map((opt, idx) => {
+                    const channel = optionMap[idx];
+
+                    let value = userRow[channel] ?? opt.value;
+
+                    if (roleRow[channel] === true) {
+                      value = true;
+                      return { ...opt, value, isPreferred: true };
+                    }
+                    return { ...opt, value };
+                  });
+
+                  return { ...row, optionValues };
+                })
+              };
+            }
+
+            if (section.optionValues) {
+              const userRow = userSection['PROCESS_UPDATES'] || {};
+              const roleRow = roleSection['PROCESS_UPDATES'] || {};
+              debugger;
+              const optionValues = section.optionValues.map((opt, idx) => {
+                const channel = optionMap[idx];
+                const updatedOptions = { ...opt };
+                if (roleRow[channel] === true) {
+                  updatedOptions.value = true;
+                  updatedOptions.isPreferred = true;
+                } else {
+                  if (userRow[channel] === null && ['email', 'inApp'].includes(channel)) {
+                    updatedOptions.value = true;
+                  } else {
+                    updatedOptions.value = userRow[channel] ?? opt.value;
+                  }
+                }
+
+                return updatedOptions;
+              });
+
+              return { ...section, optionValues };
+            }
+
+            return section;
+          })
+        };
+
+        setPreferenceConfig(updatedConfig);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   React.useEffect(() => {
     UserService.getSubscriptionDetails()
@@ -80,16 +150,64 @@ const NotificationPreference = () => {
       });
   };
 
-  const handleOnSubmit = React.useCallback((values) => {
-    console.log('Form submitted:', values);
-    // API submit here
-  }, []);
+  function extractUserPreferences(preferencesConfig) {
+    const optionMap = ['email', 'inApp', 'sms'];
+    const preferences = {};
+
+    preferencesConfig.sections.forEach((section) => {
+      if (section.rows) {
+        preferences[section.id] = {};
+
+        section.rows.forEach((row) => {
+          const userRow = {};
+
+          row.optionValues.forEach((opt, idx) => {
+            const channel = optionMap[idx];
+            userRow[channel] = opt.value;
+          });
+
+          preferences[section.id][row.id] = userRow;
+        });
+      }
+
+      if (section.optionValues) {
+        const userRow = {};
+        section.optionValues.forEach((opt, idx) => {
+          const channel = optionMap[idx];
+          userRow[channel] = opt.value;
+        });
+        preferences[section.id] = { PROCESS_UPDATES: userRow };
+      }
+    });
+
+    return { preferences };
+  }
+
+  const handleOnSubmit = (values) => {
+    const payload = extractUserPreferences(values);
+    console.log(payload);
+    UserService.setCommunicationPreferences(payload)
+      .then((response) => {
+        console.log(response);
+        setAlert({
+          description: 'Communication preferences updated successfully.',
+          type: 'success'
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlert({
+          description: 'Failed to update communication preferences. Please try again later.',
+          type: 'error'
+        });
+      });
+  };
 
   const handleBack = () => navigate(-1);
 
   return (
     <div className="MCP-module-wrapper">
-      <Formik initialValues={initialValues} validationSchema={VALIDATION_SCHEMA} onSubmit={handleOnSubmit} enableReinitialize>
+      <Formik initialValues={preferencesConfig} validationSchema={VALIDATION_SCHEMA} onSubmit={handleOnSubmit} enableReinitialize>
         {() => (
           <Form>
             <div className="MCP-module-body">
@@ -98,9 +216,8 @@ const NotificationPreference = () => {
               {verificationStatus.isNumberVerified === false && (
                 <Alert
                   type="info"
-                  showCloseIcon
+                  showCloseIcon={false}
                   showTitle
-                  onClose={() => {}}
                   title={
                     <div>
                       <p>{translateFn('smsSubscriptionAlert.title1')}</p>
@@ -133,7 +250,7 @@ const NotificationPreference = () => {
               {alert && <Alert id="activity-alert" {...alert} showCloseIcon onClose={() => setAlert(null)} />}
 
               <div className="MCP-CardContainer">
-                <SettingPanelRenderer config={notificationConfig} />
+                <SettingPanelRenderer config={preferencesConfig} />
                 <SMSConfiguration
                   setLinkedNumber={(phone) => setVerificationStatus({ ...verificationStatus, number: phone })}
                   linkedContactNumber={verificationStatus.number}
