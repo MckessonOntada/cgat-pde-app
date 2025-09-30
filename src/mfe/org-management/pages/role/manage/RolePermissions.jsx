@@ -61,13 +61,8 @@ const RolePermissions = () => {
         refreshData();
         if (data) {
           refreshData();
-          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`, {
-            state: {
-              showAlert: {
-                type: 'success',
-                description: t(row?.permissions ? 'orgManagement.messages.roleUpdate' : 'orgManagement.messages.newRoleCreation')
-              }
-            }
+          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles/${roleId}/notification-permissions`, {
+            state: { data: { ...location.state.data, permissions: enabledPermissions } }
           });
         }
       },
@@ -81,20 +76,6 @@ const RolePermissions = () => {
         setIsAlertVisible(true);
       }
     }
-  );
-
-  const forms = React.useMemo(
-    () => [
-      {
-        name: 'roleDetails',
-        label: t('orgManagement.role.labelRolesDetails')
-      },
-      {
-        name: 'addPermissions',
-        label: t('orgManagement.role.labelAddPermissions')
-      }
-    ],
-    [t]
   );
 
   const handleGoBack = () => {
