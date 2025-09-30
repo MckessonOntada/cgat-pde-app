@@ -354,7 +354,6 @@ function Details(props) {
           )}
           <DetailsFlexGrid invoiceDetails={invoiceDetails} />
         </div>
-
         {CommonUtils.isNonEmptyObject(billDates) && <DetailMetrics data={billDates} />}
         <div className="datatable-container">
           <CustomDataTable

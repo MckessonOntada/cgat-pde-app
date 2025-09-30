@@ -23,7 +23,8 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   paymentMethod: '',
   paymentStatus: '',
-  dateRange: [dayjs().subtract(179, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
+  dateRange: [dayjs().subtract(179, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
+  billNo: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -38,12 +39,12 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 
-export const PaymentHistoryProvider = ({ children, defaultFilters }) => {
+export const PaymentHistoryProvider = ({ children, billNo }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState({
     ...INITIAL_FILTER_STATE,
-    ...(defaultFilters ?? {})
+    billNo: billNo || ''
   });
 
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
@@ -100,7 +101,7 @@ export const PaymentHistoryProvider = ({ children, defaultFilters }) => {
   };
 
   const { isFetching, isError, refetch } = useQuery({
-    queryKey: ['paymentHistorylisting', selectedAccount?.id],
+    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig.billNo],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
@@ -109,7 +110,8 @@ export const PaymentHistoryProvider = ({ children, defaultFilters }) => {
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
         dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        ...(filterConfig.billNo ? { billNo: filterConfig.billNo } : {})
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
@@ -249,22 +251,9 @@ export const PaymentHistoryProvider = ({ children, defaultFilters }) => {
     }
   };
 
-  const filterPaymentsByInvoicesCriteria = (_data) => {
-    return defaultFilters
-      ? _data.filter((item) => {
-          const matchesBillNo = filterConfig?.searchQuery
-            ? (item.invoices || []).some((invoice) => invoice.billNo?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()))
-            : true;
-          const matchesPaymentStatus = filterConfig?.paymentStatus?.length ? filterConfig.paymentStatus.includes(item.paymentStatus) : true;
-          return matchesBillNo && matchesPaymentStatus;
-        })
-      : _data;
-  };
-
   const sortData = (newSortConfig) => {
     let _data = [...[], ...unSlicedData];
-    let _filteredData = filterPaymentsByInvoicesCriteria(_data);
-    let _modifiedData = _filteredData.sort((a, b) => {
+    let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 

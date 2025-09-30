@@ -6,13 +6,14 @@ import { PaymentHistoryProvider, usePaymentHistory } from '../../context/Payment
 import { useTranslate } from '@src/translations/useTranslation';
 
 function HistoryTableWrapper(props) {
-  const { data, isFetching } = usePaymentHistory();
+  const { data, isFetching, filterConfig } = usePaymentHistory();
   const { t } = useTranslate();
   if (isFetching || !data.length) return null;
+  if (!filterConfig?.billNo || !Array.isArray(data) || data.length === 0) return null;
   return (
     <>
       <Heading as="h2" className="secondaryHeading">
-        {t('paymentInvoices.table.schedulePayments')}
+        {t('paymentInvoices.table.paymentHistory')}
       </Heading>
       <PaymentHistoryTable />
     </>
@@ -21,7 +22,7 @@ function HistoryTableWrapper(props) {
 
 function History(props) {
   return (
-    <PaymentHistoryProvider defaultFilters={{ searchQuery: props?.billNumber, paymentStatus: ['Processed'] }}>
+    <PaymentHistoryProvider billNo={props?.billNumber}>
       <HistoryTableWrapper />
     </PaymentHistoryProvider>
   );
