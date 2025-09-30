@@ -357,7 +357,7 @@ function Payer({ readOnly, hasPermission }) {
           if (!errAcc[key] || typeof errAcc[key] !== 'object') errAcc[key] = {};
           traverse(value, error || {}, touchObj[key], errAcc[key]);
         } else {
-          if (value !== undefined && value !== '') {
+          if (value !== undefined && value !== '' && value !== null) {
             if (error) allValid = false;
           } else {
             touchObj[key] = false;
