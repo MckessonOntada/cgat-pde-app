@@ -562,6 +562,8 @@ function Payer({ readOnly, hasPermission }) {
                           })}
                           readOnly={readOnly}
                           sections={getMedicalInsuranceUiTemplate('primaryMedicalInsurance', 'Primary Medical Insurance')}
+                          ALLOWED_FILE_TYPE={'application/pdf'}
+                          ALLOWED_FILE_TYPE_TEXT={'PDF'}
                         />
                         <hr className="form-section-separator" />
                         <FormRenderer
@@ -570,6 +572,8 @@ function Payer({ readOnly, hasPermission }) {
                             insuranceLevel: 'PRIMARY'
                           })}
                           sections={getPharmacyInsuranceUiTemplate('primaryPharmacyInsurance', 'Primary Pharmacy Insurance')}
+                          ALLOWED_FILE_TYPE={'application/pdf'}
+                          ALLOWED_FILE_TYPE_TEXT={'PDF'}
                         />
                         <hr className="form-section-separator" />
                         <div>
@@ -594,6 +598,8 @@ function Payer({ readOnly, hasPermission }) {
                               })}
                               readOnly={readOnly}
                               sections={getMedicalInsuranceUiTemplate('secondaryMedicalInsurance', 'Secondary Medical Insurance')}
+                              ALLOWED_FILE_TYPE={'application/pdf'}
+                              ALLOWED_FILE_TYPE_TEXT={'PDF'}
                             />
                           )}
                         </div>
@@ -620,6 +626,8 @@ function Payer({ readOnly, hasPermission }) {
                               })}
                               readOnly={readOnly}
                               sections={getPharmacyInsuranceUiTemplate('secondaryPharmacyInsurance', 'Secondary Pharmacy Insurance')}
+                              ALLOWED_FILE_TYPE={'application/pdf'}
+                              ALLOWED_FILE_TYPE_TEXT={'PDF'}
                             />
                           )}
                         </div>

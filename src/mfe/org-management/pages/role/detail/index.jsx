@@ -18,6 +18,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommunicationPreferencesPanel from '../manage/CommunicationPreferencesPanel';
 
 const roleDetail = () => {
   const { t } = useTranslate();
@@ -214,7 +215,6 @@ const roleDetail = () => {
                                 <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
                               </div>
                             </div>
-                            {/* Add a divider dynamically */}
                             {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
                           </React.Fragment>
                         );
@@ -229,6 +229,42 @@ const roleDetail = () => {
                 image={EmptyDataImage}
                 heading={t('userManagement.label.emptyPermissionListTitle')}
                 description={t('userManagement.label.emptyPermissionListSubtitle')}
+              />
+            )}
+          </div>
+          <div className="secondryTitle">
+            <ModuleHeader
+              heading={<Heading as="h1">{t('label.Communication_Preference')}</Heading>}
+              controls={
+                <div className="controls">
+                  <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
+                    <Button
+                      Icon={EditPencil}
+                      variant="secondary"
+                      className="button-icon"
+                      size="md"
+                      disabled={!data?.isActive}
+                      onClick={() =>
+                        navigate(`notification-permissions`, {
+                          state: { communicationPreferences: data?.communicationPreferences?.preferences, isEdit: true }
+                        })
+                      }>
+                      {t('userManagement.button.edit')}
+                    </Button>
+                  </PermittedComponent>
+                </div>
+              }
+            />
+          </div>
+          <div className="MCP-panel-container grid grid-gap-16">
+            {data?.communicationPreferences?.preferences ? (
+              <CommunicationPreferencesPanel preferences={data?.communicationPreferences?.preferences} readOnly={true} />
+            ) : (
+              <EmptyDataTable
+                isLoading={false}
+                image={EmptyDataImage}
+                heading={t('empty.role.No_communication_preferences_available')}
+                description={t('empty.role.Please_assign_communication_preference_to_see_it_here')}
               />
             )}
           </div>

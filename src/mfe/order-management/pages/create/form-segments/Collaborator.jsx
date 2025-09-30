@@ -25,7 +25,7 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
   };
 
   const { data: roles } = useQuery({
-    queryKey: ['order', 'variants', orderId],
+    queryKey: [currentStage, orderId],
     queryFn: () => OrderService.getOrderStagesRoles(orderId)
   });
 

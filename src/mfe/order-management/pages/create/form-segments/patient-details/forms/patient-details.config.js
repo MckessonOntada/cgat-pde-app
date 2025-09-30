@@ -88,7 +88,8 @@ export const PatientSections = (channelType, therapyConfig) => [
                         placeholder: ' ',
                         type: 'input',
                         maxLength: 20,
-                        maxLength: 11
+                        maxLength: 11,
+                        isRequired: therapyConfig.isMRNRequired
                       }
                     ]
                   : [])

@@ -27,9 +27,19 @@ function getFileNameAndType(url) {
     type
   };
 }
-const ALLOWED_FILE_TYPE = ['application/pdf', 'image/png', 'image/jpeg'];
 
-const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections = [], insurance, insuranceLevel, readOnly }) => {
+const FormRenderer = ({
+  onClose,
+  onUpload,
+  closeIcon,
+  fieldPrefix = '',
+  sections = [],
+  insurance,
+  insuranceLevel,
+  readOnly,
+  ALLOWED_FILE_TYPE,
+  ALLOWED_FILE_TYPE_TEXT
+}) => {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
 
@@ -100,7 +110,7 @@ const FormRenderer = ({ onClose, onUpload, closeIcon, fieldPrefix = '', sections
 
                         uploadControlAttributes.validateOnChange = (file) => validateFile(t, file, ALLOWED_FILE_TYPE);
                         uploadControlAttributes.onFileChange = (file) => onUpload(file, setFieldValue, control.name);
-                        uploadControlAttributes.fileTypeText = 'PDF, PNG, JPEG, JPG';
+                        uploadControlAttributes.fileTypeText = ALLOWED_FILE_TYPE_TEXT;
                       }
 
                       // Prepare all props for Field

@@ -6,7 +6,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
 
-const createColumns = (t, type, pageType) => {
+const createColumns = (t, type, pageType, paymentInitiationDate) => {
   const commonColumns = [
     {
       name: t('paymentInvoices.history.table.invoiceNumber'),
@@ -17,23 +17,7 @@ const createColumns = (t, type, pageType) => {
       minWidth: '112px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
-      cell: (props) => (
-        <div className="cellEllipse">
-          {/* <Link
-            style={{
-              color: 'var(--brand-color-primary)',
-              fontWeight: '600',
-              textDecoration: 'none'
-            }}
-            to={`/record/invoices/${props?.billNo || ''}/details`}
-            state={{
-              pageType: pageType
-            }}>
-            {props?.billNo || ''}
-          </Link> */}
-          {props?.billNo || ''}
-        </div>
-      )
+      cell: (props) => <div className="cellEllipse">{props?.billNo || ''}</div>
     },
     {
       id: 'soldToSite',
@@ -105,7 +89,7 @@ const createColumns = (t, type, pageType) => {
       sortable: true,
       wrap: true,
       id: 'usedDate',
-      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.usedDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.credits.table.amount'),
@@ -138,7 +122,7 @@ const createColumns = (t, type, pageType) => {
   return type === 'invoice' ? invoiceColumns : creditColumns;
 };
 
-function ConfirmationTable({ invoiceData, creditData, pageType }) {
+function ConfirmationTable({ invoiceData, creditData, pageType, paymentInitiationDate }) {
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
 
@@ -151,7 +135,7 @@ function ConfirmationTable({ invoiceData, creditData, pageType }) {
         <CustomDataTable
           id="invoice-data-table"
           type="normal"
-          columns={createColumns(t, 'invoice', pageType)}
+          columns={createColumns(t, 'invoice', pageType, paymentInitiationDate)}
           data={invoiceData || []}
           onSortIconClick={() => {}}
           handleChangePage={() => {}}
@@ -181,7 +165,7 @@ function ConfirmationTable({ invoiceData, creditData, pageType }) {
             <CustomDataTable
               id="credit-data-table"
               type="normal"
-              columns={createColumns(t, 'credit', pageType)}
+              columns={createColumns(t, 'credit', pageType, paymentInitiationDate)}
               data={creditData || []}
               onSortIconClick={() => {}}
               handleChangePage={() => {}}
