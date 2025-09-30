@@ -7,20 +7,14 @@ import CheckBox from '@src/components/form/CheckBox';
 import CommonUtils from '@src/util/CommonUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from '@src/mfe/order-management/pages/create/form-segments/additional-details/constants';
 
-const ALLOWED_FILE_TYPE = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/plain',
-  'image/png',
-  'image/jpeg'
-];
-const ALLOWED_FILE_TYPE_TEXT = 'PDF, Word, PNG, JPEG, JPG, .TXT';
-
-function QuestionnaireTemplate({ onDocumentChange, config, isPreview, readOnly }) {
+function QuestionnaireTemplate({ onDocumentChange, config, isPreview, readOnly, channelType }) {
   const activeLanguage = LANGUAGE.ENGLISH;
   const { t } = useTranslate();
+  const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
+  const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
   const { values: formValues = {}, setFieldValue } = useFormikContext();
 
   if (
@@ -102,12 +96,12 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview, readOnly }
             <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
               <Field
                 name={`${fieldName}.document`}
-                validateOnChange={(file) => validateFile(t, file, ALLOWED_FILE_TYPE)}
+                validateOnChange={(file) => validateFile(t, file, allowedFileTypes)}
                 onFileChange={(file) => onDocumentChange(fieldName, file, setFieldValue)}
                 component={Components['inputFile']}
                 attachmentValue={attachmentValue}
                 setFieldValue={setFieldValue}
-                fileTypeText={ALLOWED_FILE_TYPE_TEXT}
+                fileTypeText={allowedFileTypeText}
               />
             </div>
           )}

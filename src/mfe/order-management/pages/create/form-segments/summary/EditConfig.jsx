@@ -19,15 +19,19 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
                 maxLength: 20,
                 isRequired: therapyConfig.isPIDRequired
               },
-              {
-                id: 'patient-info-mrn',
-                name: 'medicalRecordNumber',
-                label: 'orderManagement.patientDetails.inputLabel.mrn',
-                placeholder: ' ',
-                type: 'input',
-                maxLength: 11,
-                isRequired: therapyConfig.isMRNRequired
-              }
+              ...(therapyConfig.isMRNRequired
+                ? [
+                    {
+                      id: 'patient-info-mrn',
+                      name: 'medicalRecordNumber',
+                      label: 'orderManagement.patientDetails.inputLabel.mrn',
+                      placeholder: ' ',
+                      type: 'input',
+                      maxLength: 11,
+                      isRequired: therapyConfig.isMRNRequired
+                    }
+                  ]
+                : [])
             ]
           }
         ]
@@ -60,6 +64,14 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
         type: 'input',
         maxLength: 20,
         isRequired: therapyConfig.isPORequired
+      },
+      {
+        id: 'patient-info-dateOfApheresis',
+        name: 'dateOfApheresis',
+        label: 'orderManagement.patientDetails.inputLabel.dateOfApheresis',
+        placeholder: ' ',
+        type: 'datePicker',
+        isRequired: therapyConfig.isDateOfApheresisRequired
       }
     ];
     const formattedControls = [
@@ -131,6 +143,14 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .when([], {
         is: () => therapyConfig.isDOARequired,
         then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
+        otherwise: (schema) => schema.notRequired()
+      }),
+    dateOfApheresis: Yup.date()
+      .typeError(t('labels.enterValidDateOfApheresis'))
+      .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
+      .when([], {
+        is: () => therapyConfig.isDateOfApheresisRequired,
+        then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
         otherwise: (schema) => schema.notRequired()
       })
   });

@@ -25,9 +25,7 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
     payload.paymentSchedule.TODAY = dayjs().format('YYYY-MM-DD');
   }
   if (state.paymentOption == t('paymentInvoices.reviewPayments.payDuedate')) {
-    let _due_date = state?.invoices.reduce((min, current) =>
-      dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min
-    );
+    let _due_date = state?.invoices.reduce((min, current) => (dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min));
     payload.paymentSchedule.DUE_DATE = dayjs(_due_date.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
   }
   if (state.paymentOption == t('paymentInvoices.reviewPayments.paySpecfic')) {
@@ -48,13 +46,14 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
     });
   }
 
-  if (state.creditsSelected && state.creditsSelected.length > 0) { 
+  if (state.creditsSelected && state.creditsSelected.length > 0) {
     state.creditsSelected.map((item) => {
       payload.credits.push({
         billNumber: item.billNumber,
         amount: item.openAmount, //item.billAmount,
         soldToSite: item.soldToSite,
-        fiscalYear: item.fiscalYear
+        fiscalYear: item.fiscalYear,
+        docLineItemNo: parseInt(item.lineItem)
       });
     });
   }

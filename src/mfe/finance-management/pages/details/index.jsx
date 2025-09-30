@@ -51,7 +51,12 @@ function Details(props) {
   };
 
   useEffect(() => {
-    if (!CommonUtils.enableReviewAndPay(selectedAccount)) {
+    if (source?.scheduled === 'X') {
+      setAlert({
+        description: t('paymentInvoices.instruction.scheduled.text', {}),
+        type: 'info'
+      });
+    } else if (!CommonUtils.enableReviewAndPay(selectedAccount)) {
       setAlert({
         description: t('paymentInvoices.instruction.5040.text', {
           contact_no: CommonUtils.formatSupportNumber(globalConfig?.supportContactNumber || '')
@@ -61,7 +66,7 @@ function Details(props) {
     } else {
       setAlert(null);
     }
-  }, [selectedAccount]);
+  }, [selectedAccount, source?.scheduled]);
 
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
@@ -334,13 +339,11 @@ function Details(props) {
       <Heading as="h1">
         {INVOICES_SCREEN ? t('paymentInvoices.Details.Invoice') : t('paymentInvoices.Details.Credit')} - {`#${billNumber}` || '#'}
       </Heading>
-
       {alert && (
         <div>
           <Alert description={alert?.description} type={alert?.type} onClose={() => setAlert(null)} />
         </div>
       )}
-
       <div className="details-card-wrapper">
         <div className="details-card-container">
           {CommonUtils.isNonEmptyObject(selectedAccount) && (
@@ -404,6 +407,7 @@ function Details(props) {
                   size="md"
                   variant="primary"
                   type="submit"
+                  disabled={source.scheduled === 'X'}
                   onClick={() => {
                     navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
                   }}>
