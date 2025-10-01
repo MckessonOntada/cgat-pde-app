@@ -65,7 +65,8 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
 
           {section.sectionKey !== 'ON_BEHALF_OF' ? (
             section.items.map((item) => {
-              const itemData = preferences[section.sectionKey][item.itemKey];
+              const itemData = preferences?.[section.sectionKey]?.[item.itemKey];
+              if (!itemData) return null;
               return (
                 <div key={item.itemKey} className={`grid grid-gap-16 grid-cols-2`}>
                   <div className={style.itemContent}>

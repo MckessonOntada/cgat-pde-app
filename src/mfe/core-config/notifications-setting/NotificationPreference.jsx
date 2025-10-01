@@ -22,7 +22,8 @@ const NotificationPreference = () => {
   const [isInvitationDisabled, setIsInvitationDisabled] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
   const [verificationStatus, setVerificationStatus] = React.useState({});
-
+  const [isLoadingPreferences, setIsLoadingPreferences] = React.useState(true);
+  const [isLoadingVerification, setIsLoadingVerification] = React.useState(true);
   const timeoutRef = React.useRef();
 
   const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
@@ -50,13 +51,14 @@ const NotificationPreference = () => {
                   const optionValues = row.optionValues.map((opt, idx) => {
                     const channel = optionMap[idx];
 
-                    let value = userRow[channel] ?? opt.value;
-
+                    const updatedOptions = { ...opt };
+                    updatedOptions.value = userRow[channel] ?? opt.value;
                     if (roleRow[channel] === true) {
-                      value = true;
-                      return { ...opt, value, isPreferred: true };
+                      updatedOptions.value = true;
+                      updatedOptions.isPreferred = true;
                     }
-                    return { ...opt, value };
+
+                    return updatedOptions;
                   });
 
                   return { ...row, optionValues };
@@ -67,19 +69,14 @@ const NotificationPreference = () => {
             if (section.optionValues) {
               const userRow = userSection['PROCESS_UPDATES'] || {};
               const roleRow = roleSection['PROCESS_UPDATES'] || {};
-              debugger;
+
               const optionValues = section.optionValues.map((opt, idx) => {
                 const channel = optionMap[idx];
                 const updatedOptions = { ...opt };
+                updatedOptions.value = userRow[channel] ?? opt.value;
                 if (roleRow[channel] === true) {
                   updatedOptions.value = true;
                   updatedOptions.isPreferred = true;
-                } else {
-                  if (userRow[channel] === null && ['email', 'inApp'].includes(channel)) {
-                    updatedOptions.value = true;
-                  } else {
-                    updatedOptions.value = userRow[channel] ?? opt.value;
-                  }
                 }
 
                 return updatedOptions;
@@ -96,6 +93,9 @@ const NotificationPreference = () => {
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        setIsLoadingPreferences(false);
       });
   }, []);
 
@@ -106,6 +106,9 @@ const NotificationPreference = () => {
       })
       .catch((error) => {
         setAlert({ description: error.message, type: 'error' });
+      })
+      .finally(() => {
+        setIsLoadingVerification(false);
       });
 
     return () => clearTimeout(timeoutRef.current);
@@ -250,8 +253,9 @@ const NotificationPreference = () => {
               {alert && <Alert id="activity-alert" {...alert} showCloseIcon onClose={() => setAlert(null)} />}
 
               <div className="MCP-CardContainer">
-                <SettingPanelRenderer config={preferencesConfig} />
+                <SettingPanelRenderer isLoadingPreferences={isLoadingPreferences} config={preferencesConfig} />
                 <SMSConfiguration
+                  isLoadingVerification={isLoadingVerification}
                   setLinkedNumber={(phone) => setVerificationStatus({ ...verificationStatus, number: phone })}
                   linkedContactNumber={verificationStatus.number}
                   setAlert={setAlert}
@@ -262,7 +266,7 @@ const NotificationPreference = () => {
                 <Button size="md" variant="secondary" onClick={handleBack}>
                   {translateFn('captions.btnBack')}
                 </Button>{' '}
-                <Button size="md" variant="primary" type="submit">
+                <Button disabled={isLoadingPreferences} size="md" variant="primary" type="submit">
                   {translateFn('button.caption.saveChanges')}
                 </Button>
               </div>

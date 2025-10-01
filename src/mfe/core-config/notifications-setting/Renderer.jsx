@@ -4,7 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useFormikContext } from 'formik';
 import style from './Style.module.scss';
 
-const SettingPanelRenderer = ({ config }) => {
+const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
   const { t: translateFn } = useTranslate();
   const { moduleName, options, sections } = config;
   const { values, setFieldValue } = useFormikContext();
@@ -45,16 +45,21 @@ const SettingPanelRenderer = ({ config }) => {
                 <div className={style.options}>
                   {optionValues &&
                     options.map((optionKey, index) => {
-                      const { tooltip, isPreferred } = optionValues[index] || {};
+                      const { isPreferred } = optionValues[index] || {};
+                      const controlValue = values.sections?.[sectionIndex]?.optionValues?.[index].value ?? false;
+                      let finalizedTooltip = 'notificationPreferences.optionNotAllowed';
+                      if (!isPreferred) {
+                        finalizedTooltip = controlValue ? 'notificationPreferences.unsubscribePreference' : 'notificationPreferences.subscribePreference';
+                      }
                       return (
                         <div className={style.option} key={`section-${sectionIndex}-header-option-${index}`}>
-                          <Tooltip body={translateFn(isPreferred ? 'notificationPreferences.optionNotAllowed' : tooltip)}>
+                          <Tooltip body={translateFn(finalizedTooltip)}>
                             <div className={style['switch-control']}>
                               <Switch
                                 id={`notification-setting-${sectionIndex}-header-${optionKey}`}
                                 size="lg"
-                                disabled={isPreferred}
-                                checked={values.sections?.[sectionIndex]?.optionValues?.[index].value ?? false}
+                                disabled={isPreferred || isLoadingPreferences}
+                                checked={controlValue}
                                 onChange={handleHeaderChange(sectionIndex, index)}
                               />
                             </div>
@@ -77,16 +82,21 @@ const SettingPanelRenderer = ({ config }) => {
                         </div>
                         <div className={style.options}>
                           {options.map((optionKey, index) => {
-                            const { tooltip, isPreferred = false } = rowOptionValues[index] || {};
+                            const { isPreferred = false } = rowOptionValues[index] || {};
+                            const controlValue = values.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index].value ?? false;
+                            let finalizedTooltip = 'notificationPreferences.optionNotAllowed';
+                            if (!isPreferred) {
+                              finalizedTooltip = controlValue ? 'notificationPreferences.unsubscribePreference' : 'notificationPreferences.subscribePreference';
+                            }
                             return (
                               <div className={style.option} key={`section-${sectionIndex}-row-${rowIndex}-option-${index}`}>
-                                <Tooltip body={translateFn(rowPreferred ? 'notificationPreferences.optionNotAllowed' : tooltip)}>
+                                <Tooltip body={translateFn(finalizedTooltip)}>
                                   <div className={style['switch-control']}>
                                     <Switch
                                       id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
                                       size="lg"
-                                      disabled={isPreferred}
-                                      checked={values.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index].value ?? false}
+                                      disabled={isPreferred || isLoadingPreferences}
+                                      checked={controlValue}
                                       onChange={handleRowChange(sectionIndex, rowIndex, index)}
                                     />
                                   </div>

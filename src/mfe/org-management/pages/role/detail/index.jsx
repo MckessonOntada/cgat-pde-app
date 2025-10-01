@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import Alert from '@src/components/cgat-alert/Alert';
 import CommunicationPreferencesPanel from '../manage/CommunicationPreferencesPanel';
+import { INITIAL_PREFERENCES } from '../constants';
 
 const roleDetail = () => {
   const { t } = useTranslate();
@@ -35,6 +36,13 @@ const roleDetail = () => {
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${roleId}`, httpVerb.GET, {});
       return res.data;
+    },
+    select: (data) => {
+      data.communicationPreferences.preferences = {
+        ...INITIAL_PREFERENCES,
+        ...data.communicationPreferences.preferences
+      };
+      return data;
     },
     enabled: !!roleId,
     refetchOnWindowFocus: false

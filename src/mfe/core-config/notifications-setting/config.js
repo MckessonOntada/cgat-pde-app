@@ -12,15 +12,12 @@ const notificationConfig = {
           id: 'PROCESS_UPDATES',
           optionValues: [
             {
-              tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip.locked',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.userManagement.processUpdate.tooltip',
               value: false
             }
           ]
@@ -35,11 +32,9 @@ const notificationConfig = {
               value: false
             },
             {
-              tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.userManagement.reminders.tooltip',
               value: false
             }
           ]
@@ -56,15 +51,12 @@ const notificationConfig = {
           id: 'PROCESS_UPDATES',
           optionValues: [
             {
-              tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderManagement.processUpdate.tooltip',
               value: false
             }
           ]
@@ -75,15 +67,12 @@ const notificationConfig = {
           id: 'REMINDERS',
           optionValues: [
             {
-              tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderManagement.reminders.tooltip',
               value: false
             }
           ]
@@ -100,15 +89,12 @@ const notificationConfig = {
           id: 'PROCESS_UPDATES',
           optionValues: [
             {
-              tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderApproval.processUpdate.tooltip',
               value: false
             }
           ]
@@ -119,15 +105,12 @@ const notificationConfig = {
           id: 'REMINDERS',
           optionValues: [
             {
-              tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
               value: false
             },
             {
-              tooltip: 'notificationPreferences.orderApproval.reminders.tooltip',
               value: false
             }
           ]
@@ -140,15 +123,12 @@ const notificationConfig = {
       subtitle: 'notificationPreferences.onBehalfOf.subtitle',
       optionValues: [
         {
-          tooltip: 'notificationPreferences.onBehalfOf.tooltip',
           value: false
         },
         {
-          tooltip: 'notificationPreferences.onBehalfOf.tooltip',
           value: false
         },
         {
-          tooltip: 'notificationPreferences.onBehalfOf.tooltip',
           value: false
         }
       ]

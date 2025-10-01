@@ -6,7 +6,7 @@ import UserService from '@src/api/commonService/UserService';
 import PhoneInput from '@src/components/form/PhoneInput';
 import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 
-function SMSConfiguration({ linkedContactNumber = '', setAlert, setLinkedNumber }) {
+function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', setAlert, setLinkedNumber }) {
   const { t: translateFn } = useTranslate();
 
   const [isSubscribed, setIsSubscribed] = useState(Boolean(linkedContactNumber));
@@ -87,7 +87,7 @@ function SMSConfiguration({ linkedContactNumber = '', setAlert, setLinkedNumber 
             value={phone}
             onChangeFn={handleInputChange}
             onBlurFn={handleInputBlur}
-            disabled={isSubscribed}
+            disabled={isSubscribed || isLoadingVerification}
             error={error}
             className={`phone-input-field ${error ? 'outline-error' : ''}`}
             isRequired={false}
@@ -97,7 +97,7 @@ function SMSConfiguration({ linkedContactNumber = '', setAlert, setLinkedNumber 
         <p className={style.details}>{translateFn('smsConfiguration.description')}</p>
       </div>
       <Tooltip body={tooltipContent}>
-        <Switch id="sms-config-switch" size="lg" checked={isSubscribed} onChange={handleSwitchChange} />
+        <Switch id="sms-config-switch" size="lg" disabled={isLoadingVerification} checked={isSubscribed} onChange={handleSwitchChange} />
       </Tooltip>
     </div>
   );
