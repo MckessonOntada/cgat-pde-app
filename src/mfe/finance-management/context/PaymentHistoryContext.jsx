@@ -23,7 +23,8 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   paymentMethod: '',
   paymentStatus: '',
-  dateRange: [dayjs().subtract(179, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
+  dateRange: [dayjs().subtract(179, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
+  billNo: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -38,10 +39,14 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 
-export const PaymentHistoryProvider = ({ children }) => {
+export const PaymentHistoryProvider = ({ children, billNo }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
-  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [filterConfig, setFilterConfig] = useState({
+    ...INITIAL_FILTER_STATE,
+    billNo: billNo || ''
+  });
+
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
@@ -96,7 +101,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const { isFetching, isError, refetch } = useQuery({
-    queryKey: ['paymentHistorylisting', selectedAccount?.id],
+    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig.billNo],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
@@ -105,7 +110,8 @@ export const PaymentHistoryProvider = ({ children }) => {
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
         dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        ...(filterConfig.billNo ? { billNo: filterConfig.billNo } : {})
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
