@@ -193,6 +193,7 @@ export default function Dashboard() {
         <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <div className="MCP-CardContainer">
             <CommonFilters
+              autoFocus={true}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={AdditionalFiltersConfig}

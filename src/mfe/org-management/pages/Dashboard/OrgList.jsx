@@ -231,7 +231,6 @@ const OrgList = ({ onActionSuccess }) => {
   return (
     <div>
       {/* {isLoading && <Loader type="screen" />} */}
-
       <TableHeading
         heading={t('orgManagement.org_list')}
         secondaryView={!!selectedRows}
@@ -243,7 +242,6 @@ const OrgList = ({ onActionSuccess }) => {
         }
         style={{ marginBottom: '16px' }}
       />
-
       <CustomDataTable
         id="my-data-table"
         type="normal"

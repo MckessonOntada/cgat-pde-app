@@ -86,9 +86,7 @@ const AddAccounts = () => {
           {t('userManagement.user.backmessage')}
         </Button>
       </div>
-
       <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
-
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
           <StepperMui
@@ -110,6 +108,7 @@ const AddAccounts = () => {
       )}
       {alertConfig?.isVisible && <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} />}
       <UserAccounts
+        autoFocus={true}
         selectedRows={selectedAccounts}
         setSelectedRows={setSelectedAccounts}
         showSelectedAccounts={true}

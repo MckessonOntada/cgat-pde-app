@@ -151,6 +151,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
         <CommonFilters
+          autoFocus={true}
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={additionalFiltersConfig}

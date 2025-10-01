@@ -19,7 +19,8 @@ const Filters = ({
   searchPlaceholder = 'Search...',
   actualData = [],
   initialData = {},
-  onLoadExpanded = false
+  onLoadExpanded = false,
+  autoFocus = false
 }) => {
   const { t } = useTranslate();
 
@@ -121,7 +122,7 @@ const Filters = ({
   };
 
   React.useEffect(() => {
-    if (formRef.current) {
+    if (formRef.current && autoFocus) {
       const searchField = formRef.current.querySelector('input[id="input-searchQuery"]');
       if (searchField) searchField.focus();
     }
