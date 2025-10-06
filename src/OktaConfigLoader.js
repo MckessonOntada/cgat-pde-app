@@ -3,9 +3,8 @@ import OktaHelper from './config/OktaHelper';
 
 const OktaConfigLoader = (props) => {
   const { children } = props;
-  //    baseUrl: 'https://inspirolink-dev.mckesson.com',
   const res = {
-    baseUrl: 'https://ikmg2.oktapreview.com',
+    baseUrl: process.env.REACT_APP_OKTA_BASE_URL,
     protocol: 'oauth2',
     authServerId: process.env.REACT_APP_OKTA_AUTH_SERVER_ID,
     clientId: process.env.REACT_APP_OKTA_CLIENT_ID,
