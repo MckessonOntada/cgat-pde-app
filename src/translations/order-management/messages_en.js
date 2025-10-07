@@ -305,7 +305,7 @@ export const MessageEn = {
   'labels.therapyDescription': 'Therapy Description',
   'labels.therapyNumber': 'Therapy Number',
   'labels.COI_IdExceedDigits': 'COI Id cannot exceed 10 characters.',
-  'labels.COI_IdMustValidNumber': 'COI Id is not valid, it must contain alphabets and number',
+  'labels.COI_IdMustValidNumber': 'COI Id is not valid, it must contain alphabets and numbers',
   'labels.OrderQuantityShouldPositive': 'Order quantity must be a number',
   'labels.OrderQuantityShouldGreaterThanZero': 'Order quantity must be greater than zero',
   'labels.OrderQuantityMustBeInteger': 'Order quantity must be an integer',
