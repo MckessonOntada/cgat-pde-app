@@ -169,6 +169,7 @@ export default function ViewOrganization() {
         selectedRows={selectedAccounts}
         setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
         practiceId={addNewAccounts ? null : orgId}
+        practiceName={data?.name}
       />
 
       {addNewAccounts && (

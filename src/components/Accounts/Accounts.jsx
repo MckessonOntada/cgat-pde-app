@@ -22,7 +22,7 @@ function AccountsDashboard(props) {
 
 export default function (props) {
   return (
-    <AccountsProvider showSelectedAccounts={props.showSelectedAccounts} practiceId={props.practiceId} userId={props.userId}>
+    <AccountsProvider showSelectedAccounts={props.showSelectedAccounts} practiceId={props.practiceId} userId={props.userId} practiceName={props.practiceName}>
       <AccountsDashboard {...props} />
     </AccountsProvider>
   );
