@@ -1213,19 +1213,20 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         }
                       />
                       <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
-
-                      <DetailSegment
-                        label={t('labels.emailId')}
-                        value={
-                          patient?.contact?.emailId ? (
-                            <Tooltip body={patient.contact.emailId}>
-                              <span className="overflowing">{patient.contact.emailId}</span>
-                            </Tooltip>
-                          ) : (
-                            '-'
-                          )
-                        }
-                      />
+                      {isSpOrder && (
+                        <DetailSegment
+                          label={t('labels.emailId')}
+                          value={
+                            patient?.contact?.emailId ? (
+                              <Tooltip body={patient.contact.emailId}>
+                                <span className="overflowing">{patient.contact.emailId}</span>
+                              </Tooltip>
+                            ) : (
+                              '-'
+                            )
+                          }
+                        />
+                      )}
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
                       {!isSpOrder && draftChanges?.medicalRecordNumber && (
                         <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />

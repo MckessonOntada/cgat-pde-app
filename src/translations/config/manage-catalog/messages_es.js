@@ -1,5 +1,5 @@
 export const ManageCatalogMessagesES = {
-  'ManageCatalog.SearchByMaterialId': 'S_Search by Material Id',
+  'ManageCatalog.SearchByMaterialId': 'S_Search by Material ID',
   'ManageCatalog.SelectOrganization': 'S_Select organization',
   'ManageCatalog.SelectAccount': 'S_Select Account',
   'ManageCatalog.Table.SAPMaterialID': 'S_SAP Material ID',

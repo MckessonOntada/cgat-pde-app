@@ -126,7 +126,7 @@ export const ConfigurationMessagesES = {
   'provider.phone.required': 'S_Please enter your Phone Number.',
   'provider.phone.format': 'S_Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.',
   'provider.emailID': 'Email-ID',
-  'provider.emailId': 'S_Email Id',
+  'provider.emailId': 'S_Email ID',
   'provider.email.required': 'S_Please enter your Email ID.',
   'provider.invalid_email': 'S_Please enter a valid email address',
 
@@ -149,9 +149,9 @@ export const ConfigurationMessagesES = {
 
   'serverResponse.provider.dea.conflict': 'S_A provider with this DEA Number already exists. Please enter a unique DEA Number.',
   'serverResponse.provider.npi.conflict': 'S_A provider with this NPI Number already exists. Please enter a unique NPI Number.',
-  'serverResponse.provider.email.conflict': 'S_A provider with this Email Id already exists. Please enter a unique Email Id.',
+  'serverResponse.provider.email.conflict': 'S_A provider with this Email ID already exists. Please enter a unique Email ID.',
   'serverResponse.provider.email.conflict.provider.npi.conflict':
-    'A provider with this Email Id and NPI Number already exists. Please enter a unique Email Id and NPI Number.',
+    'A provider with this Email ID and NPI Number already exists. Please enter a unique Email ID and NPI Number.',
   'serverResponse.provider.dea.conflict.provider.npi.conflict':
     'A provider with this DEA Number and NPI Number already exists. Please verify and enter unique details.',
   'button.caption.confirm': 'S_Confirm',
