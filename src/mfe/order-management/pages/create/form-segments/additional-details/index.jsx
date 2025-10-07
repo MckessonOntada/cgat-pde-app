@@ -936,7 +936,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
     const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
     if (!isValid) {
-      setAlert({ type: 'error', description: 'Some filled fields have errors. Please fix them before saving as draft.' });
       return;
     }
     setIsOrderInDraft(true);
