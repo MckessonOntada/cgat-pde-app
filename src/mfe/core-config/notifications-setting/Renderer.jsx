@@ -9,12 +9,8 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
   const { moduleName, options, sections } = config;
   const { values, setFieldValue } = useFormikContext();
 
-  const handleOnChange = (e, keyPath) => {
-    setFieldValue(`${keyPath}`, e.target.checked);
-  };
-
+  const handleOnChange = (e, keyPath) => setFieldValue(keyPath, e.target.checked);
   const handleHeaderChange = (sectionIndex, index) => (e) => handleOnChange(e, `sections[${sectionIndex}].optionValues[${index}].value`);
-
   const handleRowChange = (sectionIndex, rowIndex, index) => (e) =>
     handleOnChange(e, `sections[${sectionIndex}].rows[${rowIndex}].optionValues[${index}].value`);
 
@@ -33,7 +29,7 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
 
       <div className={style.sections}>
         {sections.map((section, sectionIndex) => {
-          const { title, subtitle, rows = [], optionValues, isPreferred } = section;
+          const { title, subtitle, rows = [], optionValues } = section;
           return (
             <div className={style.section} key={`section-${sectionIndex}`}>
               <div className={`${style.grid} ${style.header}`}>
@@ -41,19 +37,19 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
                   <div className={style.heading}>{translateFn(title)}</div>
                   <p className={style.details}>{translateFn(subtitle)}</p>
                 </div>
-
                 <div className={style.options}>
                   {optionValues &&
                     options.map((optionKey, index) => {
                       const { isPreferred } = optionValues[index] || {};
                       const controlValue = values.sections?.[sectionIndex]?.optionValues?.[index].value ?? false;
-                      let finalizedTooltip = 'notificationPreferences.optionNotAllowed';
-                      if (!isPreferred) {
-                        finalizedTooltip = controlValue ? 'notificationPreferences.unsubscribePreference' : 'notificationPreferences.subscribePreference';
-                      }
+                      const tooltipKey = isPreferred
+                        ? 'notificationPreferences.optionNotAllowed'
+                        : controlValue
+                        ? 'notificationPreferences.unsubscribePreference'
+                        : 'notificationPreferences.subscribePreference';
                       return (
                         <div className={style.option} key={`section-${sectionIndex}-header-option-${index}`}>
-                          <Tooltip body={translateFn(finalizedTooltip)}>
+                          <Tooltip body={translateFn(tooltipKey)}>
                             <div className={style['switch-control']}>
                               <Switch
                                 id={`notification-setting-${sectionIndex}-header-${optionKey}`}
@@ -73,7 +69,7 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
               {rows.length > 0 && (
                 <div className={style.rows}>
                   {rows.map((row, rowIndex) => {
-                    const { title, subtitle, optionValues: rowOptionValues, isPreferred: rowPreferred } = row;
+                    const { title, subtitle, optionValues: rowOptionValues } = row;
                     return (
                       <div className={style.grid} key={`section-${sectionIndex}-row-${rowIndex}`}>
                         <div className={style.info}>
@@ -83,14 +79,15 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
                         <div className={style.options}>
                           {options.map((optionKey, index) => {
                             const { isPreferred = false } = rowOptionValues[index] || {};
-                            const controlValue = values.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index].value ?? false;
-                            let finalizedTooltip = 'notificationPreferences.optionNotAllowed';
-                            if (!isPreferred) {
-                              finalizedTooltip = controlValue ? 'notificationPreferences.unsubscribePreference' : 'notificationPreferences.subscribePreference';
-                            }
+                            const controlValue = values.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index]?.value ?? false;
+                            const tooltipKey = isPreferred
+                              ? 'notificationPreferences.optionNotAllowed'
+                              : controlValue
+                              ? 'notificationPreferences.unsubscribePreference'
+                              : 'notificationPreferences.subscribePreference';
                             return (
                               <div className={style.option} key={`section-${sectionIndex}-row-${rowIndex}-option-${index}`}>
-                                <Tooltip body={translateFn(finalizedTooltip)}>
+                                <Tooltip body={translateFn(tooltipKey)}>
                                   <div className={style['switch-control']}>
                                     <Switch
                                       id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}

@@ -9,8 +9,8 @@ import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', setAlert, setLinkedNumber }) {
   const { t: translateFn } = useTranslate();
 
-  const [isSubscribed, setIsSubscribed] = useState(Boolean(linkedContactNumber));
   const [phone, setPhone] = useState(linkedContactNumber);
+  const [isSubscribed, setIsSubscribed] = useState(Boolean(linkedContactNumber));
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -25,7 +25,8 @@ function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', set
     if (!phone) {
       setError(translateFn('message.phoneNumberRequired'));
       return false;
-    } else if (!isValidPhoneNumber(phone)) {
+    }
+    if (!isValidPhoneNumber(phone)) {
       setError(translateFn('message.enterPhoneNumber'));
       return false;
     }
@@ -96,6 +97,7 @@ function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', set
         </div>
         <p className={style.details}>{translateFn('smsConfiguration.description')}</p>
       </div>
+
       <Tooltip body={tooltipContent}>
         <Switch id="sms-config-switch" size="lg" disabled={isLoadingVerification} checked={isSubscribed} onChange={handleSwitchChange} />
       </Tooltip>
