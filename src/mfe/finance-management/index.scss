@@ -200,3 +200,16 @@
     }
   }
 }
+
+#summary-alert-container:empty {
+  display: none;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+#summary-alert-container {
+  width: 100%;
+  height: auto;
+  z-index: 1000;
+}
