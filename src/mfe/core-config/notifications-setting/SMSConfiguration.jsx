@@ -5,6 +5,7 @@ import style from './Style.module.scss';
 import UserService from '@src/api/commonService/UserService';
 import PhoneInput from '@src/components/form/PhoneInput';
 import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
 
 function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', setAlert, setLinkedNumber }) {
   const { t: translateFn } = useTranslate();
@@ -51,8 +52,12 @@ function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', set
             });
           })
           .catch(() => {
+            const statusCode = error?.response?.status;
+            let description = translateFn('error.default');
+            if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
             setAlert({
-              description: translateFn('smsSubscription.phoneNumberUpdateFailed'),
+              description,
               type: 'error'
             });
           });

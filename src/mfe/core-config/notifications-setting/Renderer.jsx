@@ -4,7 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useFormikContext } from 'formik';
 import style from './Style.module.scss';
 
-const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
+const SettingPanelRenderer = ({ config, isLoadingPreferences, isPreferencesLoaded }) => {
   const { t: translateFn } = useTranslate();
   const { moduleName, options, sections } = config;
   const { values, setFieldValue } = useFormikContext();
@@ -41,6 +41,7 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
                   {optionValues &&
                     options.map((optionKey, index) => {
                       const { isPreferred } = optionValues[index] || {};
+                      const isDisabled = !isPreferencesLoaded || isPreferred || isLoadingPreferences;
                       const controlValue = values.sections?.[sectionIndex]?.optionValues?.[index].value ?? false;
                       const tooltipKey = isPreferred
                         ? 'notificationPreferences.optionNotAllowed'
@@ -54,7 +55,7 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
                               <Switch
                                 id={`notification-setting-${sectionIndex}-header-${optionKey}`}
                                 size="lg"
-                                disabled={isPreferred || isLoadingPreferences}
+                                disabled={isDisabled}
                                 checked={controlValue}
                                 onChange={handleHeaderChange(sectionIndex, index)}
                               />
@@ -80,6 +81,7 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
                           {options.map((optionKey, index) => {
                             const { isPreferred = false } = rowOptionValues[index] || {};
                             const controlValue = values.sections?.[sectionIndex]?.rows?.[rowIndex]?.optionValues?.[index]?.value ?? false;
+                            const isDisabled = !isPreferencesLoaded || isPreferred || isLoadingPreferences;
                             const tooltipKey = isPreferred
                               ? 'notificationPreferences.optionNotAllowed'
                               : controlValue
@@ -92,7 +94,7 @@ const SettingPanelRenderer = ({ config, isLoadingPreferences }) => {
                                     <Switch
                                       id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
                                       size="lg"
-                                      disabled={isPreferred || isLoadingPreferences}
+                                      disabled={isDisabled}
                                       checked={controlValue}
                                       onChange={handleRowChange(sectionIndex, rowIndex, index)}
                                     />

@@ -10,6 +10,7 @@ import SMSConfiguration from './SMSConfiguration';
 import style from './Style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import UserService from '@src/api/commonService/UserService';
+import CommonUtils from '@src/util/CommonUtils';
 
 const VALIDATION_SCHEMA = Yup.object().shape({
   preferences: Yup.object()
@@ -23,6 +24,7 @@ const NotificationPreference = () => {
   const [alert, setAlert] = React.useState(null);
   const [verificationStatus, setVerificationStatus] = React.useState({});
   const [isLoadingPreferences, setIsLoadingPreferences] = React.useState(true);
+  const [isPreferencesLoaded, setIsPreferencesLoaded] = React.useState(false);
   const [isLoadingVerification, setIsLoadingVerification] = React.useState(true);
   const timeoutRef = React.useRef();
 
@@ -88,8 +90,8 @@ const NotificationPreference = () => {
             return section;
           })
         };
-
         setPreferenceConfig(updatedConfig);
+        setIsPreferencesLoaded(true);
       })
       .catch((error) => {
         console.error(error);
@@ -105,7 +107,14 @@ const NotificationPreference = () => {
         setVerificationStatus({ ...data });
       })
       .catch((error) => {
-        setAlert({ description: error.message, type: 'error' });
+        const statusCode = error?.response?.status;
+        let description = translateFn('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+        setAlert({
+          description,
+          type: 'error'
+        });
       })
       .finally(() => {
         setIsLoadingVerification(false);
@@ -144,10 +153,14 @@ const NotificationPreference = () => {
           type: 'success'
         });
       })
-      .catch(() => {
+      .catch((error) => {
         setIsInvitationDisabled(false);
+        const statusCode = error?.response?.status;
+        let description = translateFn('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         setAlert({
-          description: translateFn('message.resendInvitationError'),
+          description,
           type: 'error'
         });
       });
@@ -198,9 +211,12 @@ const NotificationPreference = () => {
         });
       })
       .catch((error) => {
-        console.log(error);
+        const statusCode = error?.response?.status;
+        let description = translateFn('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
         setAlert({
-          description: 'Failed to update communication preferences. Please try again later.',
+          description,
           type: 'error'
         });
       });
@@ -253,7 +269,7 @@ const NotificationPreference = () => {
               {alert && <Alert id="activity-alert" {...alert} showCloseIcon onClose={() => setAlert(null)} />}
 
               <div className="MCP-CardContainer">
-                <SettingPanelRenderer isLoadingPreferences={isLoadingPreferences} config={preferencesConfig} />
+                <SettingPanelRenderer isPreferencesLoaded={isPreferencesLoaded} isLoadingPreferences={isLoadingPreferences} config={preferencesConfig} />
                 <SMSConfiguration
                   isLoadingVerification={isLoadingVerification}
                   setLinkedNumber={(phone) => setVerificationStatus({ ...verificationStatus, number: phone })}
