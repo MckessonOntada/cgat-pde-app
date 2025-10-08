@@ -93,7 +93,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isStageInDraft = orderDetails.isDraft;
-  const [isOrderInDraft, setIsOrderInDraft] = React.useState(false);
+  const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const dispatch = useDispatch();
 
   const variantsApiRequestParam = {
@@ -905,7 +905,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         const value = valObj[key];
         const error = errObj?.[key];
 
-        if (key === 'variantAcknowledgement' || key === 'variant') {
+        if (key === 'variantAcknowledgement' || key === 'variant' || key === 'terms' || key === 'acknowledgement' || key === 'diagnosisCode') {
           touchObj[key] = false;
           errAcc[key] = '';
           return;
@@ -934,11 +934,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
+    setIsOrderInDraft(true);
     const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
     if (!isValid) {
       return;
     }
-    setIsOrderInDraft(true);
+
     handleOnSubmit(values);
   };
 
