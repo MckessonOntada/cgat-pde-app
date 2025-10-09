@@ -43,6 +43,7 @@ function ManageMaterial() {
         <div className={`${styles.cardContainer}`}>
           <div className={`${styles.cardContainer}`}>
             <CommonFilters
+              autoFocus={true}
               additionalFilters={[]}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

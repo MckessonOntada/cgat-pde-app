@@ -127,26 +127,20 @@ function DashboardPage() {
           controls={
             <div className="controls">
               {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
-                <Button
-                  Icon={add_circle_bold}
-                  className="button-icon"
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate(`${PATHS.createOrg}`)}>
+                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
                   {t('orgManagement.add.label')}
                 </Button>
               )}
             </div>
           }
         />
-        {(isSuccess || isDeactivate) && isAlertVisible && (
-          <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />
-        )}
+        {(isSuccess || isDeactivate) && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />}
 
         <div className="MCP-module-body">
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
               <CommonFilters
+                autoFocus={true}
                 onApplyFilters={applyFilters}
                 onClearFilters={() => {
                   clearFilters();

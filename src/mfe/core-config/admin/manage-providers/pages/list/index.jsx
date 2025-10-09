@@ -126,6 +126,7 @@ const List = () => {
       <div className="MCP-CardContainer">
         <div className="MCP-CardContainer">
           <CommonFilters
+            autoFocus={true}
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}
             additionalFilters={additionalFiltersConfig}

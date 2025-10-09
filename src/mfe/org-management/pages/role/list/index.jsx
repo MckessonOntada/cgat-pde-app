@@ -93,6 +93,7 @@ function RolesList() {
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
               <CommonFilters
+                autoFocus={true}
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={AdditionalFiltersConfig}

@@ -46,6 +46,7 @@ function ManageCatalog(props) {
           <OrgAccountsSelect handleAccountChange={() => {}} />
           <div className="MCP-panel-container">
             <CommonFilters
+              autoFocus={true}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={[]}

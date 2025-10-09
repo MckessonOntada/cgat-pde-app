@@ -9,7 +9,7 @@ function AccountsDashboard(props) {
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
           <div className="MCP-CardContainer">
-            <AccountsFilter />
+            <AccountsFilter autoFocus={props.autoFocus} />
           </div>
           <div className="MCP-table-wrapper">
             <AccountsList {...props} />
