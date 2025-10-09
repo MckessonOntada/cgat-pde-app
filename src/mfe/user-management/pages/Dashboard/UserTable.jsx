@@ -23,6 +23,7 @@ import { PATHS } from '../../routes';
 import { RoutePaths } from '@src/routes/constants';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import { USER_TABS } from './constants';
+import ProviderService from '@src/api/commonService/ProviderService';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -35,7 +36,7 @@ function getBackgroundColorByRole(Role) {
   }
 }
 
-function UserTable({ onActionSuccess }) {
+function UserTable({ onActionSuccess, showAlert }) {
   const { t } = useTranslate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -141,13 +142,41 @@ function UserTable({ onActionSuccess }) {
     );
     return rejectResponse.data;
   });
+  const { mutate: resendVerifyLink } = useMutation(
+    async (email) => {
+      await ProviderService.resendVerifyLink(email);
+    },
+    {
+      onSuccess: () => {
+        showAlert('success', t('userManagement.message.resendLinkSuccess'));
+      },
+      onError: (error) => {
+        const errorResponse = error.response.data;
+        let errorMessage = 'errors.default';
+        if (
+          errorResponse.status === 409 &&
+          errorResponse.errorCodes &&
+          Array.isArray(errorResponse.errorCodes) &&
+          errorResponse.errorCodes.includes('user.already.active.conflict')
+        ) {
+          errorMessage = 'error.userAlreadyActive';
+        }
+
+        showAlert('error', t(errorMessage));
+      }
+    }
+  );
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
       navigate(row.status == 'PENDING' ? `../${PATHS.editUser}/${row.id}` : `../${PATHS.reviewUser}/${row.id}`, {
         state: { isPending: true }
       });
-    } else {
+    } else if (value === 'resendLink') {
+      resendVerifyLink(row.contact.email);
+    } else if (value === 'edit') {
+      navigate(`${row.id}`);
+    } else if (value === 'reject') {
       rejectUser(
         { userId: row.id },
         {
@@ -310,30 +339,42 @@ function UserTable({ onActionSuccess }) {
         id: 'action',
         center: true,
         name: t('userManagement.table.action'),
-        cell: (row) =>
-          tab === USER_TABS.PENDING_REQUESTS && (
-            <MenuList
-              menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
-              handleSelect={(value) => handleOnOptionSelection(value, row)}
-              options={[
-                {
-                  label: t('userManagement.table.action.review'),
-                  value: 'review'
-                },
-                ...(row.status !== 'REJECTED'
-                  ? [
-                      {
-                        label: t('userManagement.button.rejectrequest'),
-                        value: 'reject'
-                      }
-                    ]
-                  : [])
-              ]}
-              aria-label="Order options"
-              size="md"
-            />
-          ),
-        omit: isSystemAdminView || tab === USER_TABS.USERS,
+        cell: (row) => (
+          <MenuList
+            menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
+            handleSelect={(value) => handleOnOptionSelection(value, row)}
+            options={
+              tab === USER_TABS.PENDING_REQUESTS
+                ? [
+                    {
+                      label: t('userManagement.table.action.review'),
+                      value: 'review'
+                    },
+                    ...(row.status !== 'REJECTED'
+                      ? [
+                          {
+                            label: t('userManagement.button.rejectrequest'),
+                            value: 'reject'
+                          }
+                        ]
+                      : [])
+                  ]
+                : [
+                    {
+                      label: t('userManagement.button.resendLink'),
+                      value: 'resendLink'
+                    },
+                    {
+                      label: t('userManagement.edit_user'),
+                      value: 'edit'
+                    }
+                  ]
+            }
+            aria-label="Order options"
+            size="md"
+          />
+        ),
+        omit: isSystemAdminView,
         isAction: true
       }
     ];

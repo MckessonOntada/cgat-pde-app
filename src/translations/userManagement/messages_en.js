@@ -444,5 +444,7 @@ export const UserManagementEN = {
   'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS': 'Additional Details',
   'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS.DESCRIPTION': 'Allows user to fill additional details and configured questionnaire.',
   'CREATE_NEW_ORDER.SUBMIT_ORDER': 'Submit Order',
-  'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'Allows user to submit the order.'
+  'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'Allows user to submit the order.',
+  'userManagement.button.resendLink': 'Resend Link',
+  'userManagement.message.resendLinkSuccess': 'Activation link has been resent successfully.'
 };
