@@ -32,6 +32,37 @@ export const getInitialValues = () => ({
   providerId: ''
 });
 
+export const normalizePatient = (patient) => {
+  const p = patient || {};
+  return {
+    ...p,
+    contact: {
+      emailId: '',
+      phoneNumber: '',
+      homePhone: '',
+      workPhone: '',
+      preferedMethodOfContact: '',
+      ...(p.contact || {})
+    },
+    patientAddress: {
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      zipCode: '',
+      state: '',
+      ...(p.patientAddress || {})
+    },
+    patientInfo: {
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      gender: '',
+      dateOfBirth: '',
+      ...(p.patientInfo || {})
+    }
+  };
+};
+
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
