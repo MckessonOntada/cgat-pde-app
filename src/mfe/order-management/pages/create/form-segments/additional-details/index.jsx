@@ -894,6 +894,55 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     setVariantAcknowledgement(updatedOptions);
   };
 
+  const isValidToSaveAsDraft = (values, errors, touched, setTouched, setErrors) => {
+    setIsOrderInDraft(true);
+    let allValid = true;
+    const newTouched = { ...touched };
+    const newErrors = { ...errors };
+
+    const traverse = (valObj, errObj, touchObj, errAcc) => {
+      Object.keys(valObj).forEach((key) => {
+        const value = valObj[key];
+        const error = errObj?.[key];
+
+        if (key === 'variantAcknowledgement' || key === 'variant' || key === 'terms' || key === 'acknowledgement' || key === 'diagnosisCode') {
+          touchObj[key] = false;
+          errAcc[key] = '';
+          return;
+        }
+
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          if (!touchObj[key] || typeof touchObj[key] !== 'object') touchObj[key] = {};
+          if (!errAcc[key] || typeof errAcc[key] !== 'object') errAcc[key] = {};
+          traverse(value, error || {}, touchObj[key], errAcc[key]);
+        } else {
+          if (value !== undefined && value !== '' && value !== null) {
+            if (error) allValid = false;
+          } else {
+            touchObj[key] = false;
+            errAcc[key] = '';
+          }
+        }
+      });
+    };
+
+    traverse(values, errors, newTouched, newErrors);
+    setTouched(newTouched);
+    setErrors(newErrors);
+
+    return allValid;
+  };
+
+  const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
+    setIsOrderInDraft(true);
+    const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
+    if (!isValid) {
+      return;
+    }
+
+    handleOnSubmit(values);
+  };
+
   if (isSaving || isFetching) return <Loader type={'screen'} />;
   return (
     <div className="MCP-module-wrapper">
@@ -953,7 +1002,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, setFieldValue }) => {
+          {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors }) => {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
             }, [values, initialFormValues, setFieldValue]);
@@ -1021,9 +1070,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       </Button>{' '}
                       <Button
                         size="md"
-                        onClick={() => setIsOrderInDraft(true)}
+                        onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
                         variant="primary"
-                        type="submit"
+                        type="button"
                         disabled={readOnly || (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? skipTerms || !values.consentPolicy : !isDirty)}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
