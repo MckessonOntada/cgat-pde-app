@@ -6,5 +6,6 @@ export const PATHS = {
   roles: 'roles',
   createRole: 'create-role',
   editRole: ':roleId/edit-role',
-  permissions: ':roleId/permissions'
+  permissions: ':roleId/permissions',
+  notificationPermissions: ':roleId/notification-permissions'
 };
