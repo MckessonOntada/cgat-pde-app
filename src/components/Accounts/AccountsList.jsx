@@ -18,7 +18,17 @@ import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 
 export default function AccountsList(props) {
-  const { selectedRows = [], setSelectedRows, showSelectedAccounts = false, isLoading = false, omitColumns = [], practiceId, userId, isPhysicianUser } = props;
+  const {
+    selectedRows = [],
+    setSelectedRows,
+    showSelectedAccounts = false,
+    isLoading = false,
+    omitColumns = [],
+    practiceId,
+    userId,
+    isPhysicianUser,
+    practiceName
+  } = props;
   const { data = [], paginationConfig, refetch, setPageNumber, filterConfig } = useAccounts();
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
@@ -194,7 +204,7 @@ export default function AccountsList(props) {
             <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
           </div>
         )}
-        <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} selectedDetails={selectedDetails} />
+        <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} selectedDetails={selectedDetails} practiceName={practiceName} />
       </div>
     </>
   );
