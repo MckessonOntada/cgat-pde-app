@@ -1,15 +1,16 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import PropTypes, { element } from 'prop-types';
 import { Button } from '@mckesson/mcp-component-library';
-import arrow_down from '@src/assets/image/arrow_down.svg';
 import arrow_right from '@src/assets/image/arrow_right.svg';
+import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
+import AdditionalFilters from './AdditionalFilters';
+import { generateInitialFilterState } from './utils';
+import { Field, Formik, Form } from 'formik';
+import Components from '../form/Components';
+import './Filters.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
-import { Field, Form, Formik } from 'formik';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Components from '../form/Components';
-import AdditionalFilters from './AdditionalFilters';
-import './Filters.scss';
-import { generateInitialFilterState } from './utils';
 
 const Filters = ({
   onApplyFilters,
@@ -80,17 +81,13 @@ const Filters = ({
     clearInputs();
     clearOptions();
     onClearFilters();
-    if (formRef.current) {
-      const searchField = formRef.current.querySelector('input[id="input-searchQuery"]');
-      if (searchField) searchField.focus();
-    }
   };
 
   const getDateKeysAndValues = (values) => {
     return Object.keys(values)
-      .filter((key) => key.toLowerCase().includes('date'))
+      .filter((key) => key.toLowerCase().includes('date')) // Find keys containing "date"
       .reduce((acc, key) => {
-        acc[key] = values[key];
+        acc[key] = values[key]; // Store raw date values
         return acc;
       }, {});
   };
@@ -103,11 +100,16 @@ const Filters = ({
       const value = dateKeyValues[key];
 
       let config = additionalFilters?.find((f) => f.name === key);
+      // For Linked Filters
       config = additionalFilters.flatMap((f) => f.linkedFilters?.(values[f.name] || '') || []).find((lf) => lf.name === key);
 
       if (config?.required) {
         const [start, end] = value || [];
         const range = CommonUtils.getDateRangeValidationError(start, end, config?.required ?? False);
+        // if (!start || !end) {
+        //   errors[key] = 'Please select a valid date range.';
+        //   return;
+        // }
         if (range) {
           errors[key] = range;
         }
@@ -209,6 +211,25 @@ const Filters = ({
       }}
     </Formik>
   );
+};
+
+Filters.propTypes = {
+  onApplyFilters: PropTypes.func.isRequired,
+  onClearFilters: PropTypes.func,
+  additionalFilters: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.oneOf(['select', 'multiselect', 'datepicker', 'dateRange', 'multiSelectDropdown', 'dateRangePicker']),
+      name: PropTypes.string.isRequired,
+      label: PropTypes.string,
+      options: PropTypes.arrayOf(
+        PropTypes.shape({
+          value: PropTypes.string.isRequired,
+          label: PropTypes.string.isRequired
+        })
+      )
+    })
+  ),
+  showControls: PropTypes.bool
 };
 
 export default Filters;

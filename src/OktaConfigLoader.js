@@ -1,14 +1,14 @@
 import AppRoutes from './routes/AppRoutes';
 import OktaHelper from './config/OktaHelper';
+import { REACT_APP_OKTA_AUTH_SERVER_ID, REACT_APP_OKTA_BASE_URL, REACT_APP_OKTA_CLIENT_ID } from './config/AppConfig';
 
 const OktaConfigLoader = (props) => {
   const { children } = props;
-  //    baseUrl: 'https://inspirolink-dev.mckesson.com',
   const res = {
-    baseUrl: 'https://ikmg2.oktapreview.com',
+    baseUrl: REACT_APP_OKTA_BASE_URL,
     protocol: 'oauth2',
-    authServerId: process.env.REACT_APP_OKTA_AUTH_SERVER_ID,
-    clientId: process.env.REACT_APP_OKTA_CLIENT_ID,
+    authServerId: REACT_APP_OKTA_AUTH_SERVER_ID,
+    clientId: REACT_APP_OKTA_CLIENT_ID,
     redirectUri: '/login/callback',
     endSessionRedirectUri: '/login',
     scopes: 'openid,email,profile,offline_access',

@@ -91,3 +91,35 @@ export const NotifyAlert = ({ stage, OnEdit = false, orderId, setAlert, patientD
 
   return <Alert className="alert-container-print" type={OnEdit ? 'error' : 'info'} description={strMessage} showCloseIcon={false} />;
 };
+
+export const isValidToSaveAsDraft = (values, errors, touched, setTouched, setErrors) => {
+  let allValid = true;
+  const newTouched = { ...touched };
+  const newErrors = { ...errors };
+
+  const traverse = (valObj, errObj, touchObj, errAcc) => {
+    Object.keys(valObj).forEach((key) => {
+      const value = valObj[key];
+      const error = errObj?.[key];
+
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        if (!touchObj[key] || typeof touchObj[key] !== 'object') touchObj[key] = {};
+        if (!errAcc[key] || typeof errAcc[key] !== 'object') errAcc[key] = {};
+        traverse(value, error || {}, touchObj[key], errAcc[key]);
+      } else {
+        if (value !== undefined && value !== '' && value !== null) {
+          if (error) allValid = false;
+        } else {
+          touchObj[key] = false;
+          errAcc[key] = '';
+        }
+      }
+    });
+  };
+
+  traverse(values, errors, newTouched, newErrors);
+  setTouched(newTouched);
+  setErrors(newErrors);
+
+  return allValid;
+};

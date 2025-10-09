@@ -1,5 +1,5 @@
 ## Introduction
-
+ 
 Welcome to the frontend repository of CGAT-PDE, a web product designed for Practice Users. This React bassed application offers a streamlined user experience and customizable features.
 
 ## Architecture Overview

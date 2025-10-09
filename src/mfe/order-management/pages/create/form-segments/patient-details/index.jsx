@@ -18,7 +18,7 @@ import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
-import { getInitialValues, getValidationSchema } from './forms/validation-schema';
+import { getInitialValues, getValidationSchema, normalizePatient } from './forms/validation-schema';
 import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
@@ -32,7 +32,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { NotifyAlert } from '../OrderUtil';
+import { isValidToSaveAsDraft, NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
@@ -133,7 +133,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         });
       }
       setInitialValues({
-        patient: CommonUtils.normalizeFormData(orderDetails.patient),
+        patient: CommonUtils.normalizeFormData(normalizePatient(orderDetails.patient)),
         providerId: orderDetails.provider?.id
       });
     }
@@ -232,6 +232,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   );
 
+  const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
+    const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
+    if (!isValid) {
+      return;
+    }
+    setIsOrderInDraft(true);
+    handleSubmit(values);
+  };
   const handleOnBack = () => {
     if (isDirty) {
       setModalSuccessCallback(isEdit ? 'summary' : 'account');
@@ -413,7 +421,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig)}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
-          {({ values, dirty, setFieldValue }) => {
+          {({ values, errors, touched, dirty, setFieldValue, setTouched, setErrors }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
               dispatch(hasUnsavedChanges(dirty));
@@ -620,7 +628,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+                      <Button
+                        size="md"
+                        onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
+                        variant="primary"
+                        type="button"
+                        disabled={readOnly || !isDirty}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly}>
