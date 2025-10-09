@@ -547,7 +547,7 @@ export const MessageEs = {
   'labels.npiNumber': 'S_NPI Number',
   'table.columns.captions.createdBy': 'S_Created by',
   'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
-  'labels.orderView.internalOrderId': 'S_Internal Order Id',
+  'labels.orderView.internalOrderId': 'S_Internal Order ID',
   'labels.orderView.prescriptionId': 'S_Prescription Id',
   'table.columns.captions.createdDate': 'S_Created Date',
   'labels.select-account.coveredEntity': "S_I'm a covered Entity.",

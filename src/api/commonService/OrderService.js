@@ -482,7 +482,7 @@ async function notifyUser(orderId, eventType) {
 }
 
 async function getPrescriptionDetailsByTherapy(therapyId) {
-  if (!therapyId) throw new Error('Therapy id is missing. Trade name is required to fetch prescription details.');
+  if (!therapyId) throw new Error('Therapy ID is missing. Trade name is required to fetch prescription details.');
   let url = `${ApiRoutes.THERAPIES()}/config/therapyId/${therapyId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
