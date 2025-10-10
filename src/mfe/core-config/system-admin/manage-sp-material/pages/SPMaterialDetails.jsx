@@ -14,7 +14,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import { PREVIEW_URL } from '../../manage-questionnaire/constants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import CommonUtils from '@src/util/CommonUtils';
-import { SPMaterialConfigConstants } from '../../manage-material/assets/constants/MaterialConstants';
+import { Requirement, SPMaterialConfigConstants } from '../../manage-material/assets/constants/MaterialConstants';
 
 export const SPMaterialDetailsConstants = [
   {
@@ -271,10 +271,16 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   function ConfigItem({ label, value, display = true }) {
     const { t } = useTranslate();
     if (!display) return null;
+    let renderValue = value;
+    if (typeof value === 'boolean') {
+      renderValue = value ? 'YES' : 'NO';
+    } else {
+      value === Requirement.NOT_REQUIRED ? (renderValue = t('labels.notRequired').toUpperCase()) : (renderValue = value);
+    }
     return (
       <div className="details-li">
         <div className="leftContentBold">{label}</div>
-        <div>{typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}</div>
+        <div>{renderValue}</div>
       </div>
     );
   }
