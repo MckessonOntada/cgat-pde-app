@@ -51,7 +51,7 @@ function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', set
               type: 'success'
             });
           })
-          .catch(() => {
+          .catch((error) => {
             const statusCode = error?.response?.status;
             let description = translateFn('error.default');
             if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);

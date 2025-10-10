@@ -6,13 +6,13 @@ import AuthUtils from '@src/util/AuthUtils';
 
 async function getTherapyById(id) {
   const url = `${ApiRoutes.THERAPIES()}/${id}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }
 
 async function getAssignee(params) {
   const url = `${ApiRoutes.USERS()}?${serializeParams(params)}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return (
     res.data?.content?.map((item) => ({
       value: item.id,
@@ -27,7 +27,7 @@ async function subscribeSmsNotification(number) {
 
   const userType = AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL';
   const url = `${ApiRoutes.USERS()}/${userId}/number?${serializeParams({ number, userType })}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, {});
   return res.data ?? null;
 }
 
@@ -36,7 +36,7 @@ async function resendInvitation() {
   if (!userId) throw new Error('No valid user found');
 
   const url = `${ApiRoutes.USERS()}/${userId}/resend-number-verification-sms`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }
 
@@ -45,13 +45,13 @@ async function getSubscriptionDetails() {
   if (!userId) throw new Error('No valid user found');
 
   const url = `${ApiRoutes.USERS()}/${userId}/number-verification-status`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }
 
 async function getCommunicationPreferences() {
   const url = `${ApiRoutes.USERS()}/current/communication-preference`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }
 
