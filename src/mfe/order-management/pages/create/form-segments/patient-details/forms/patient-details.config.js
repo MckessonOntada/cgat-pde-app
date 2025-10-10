@@ -70,7 +70,7 @@ export const PatientSections = (channelType, therapyConfig) => [
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
             ? [
-                ...(therapyConfig.isPIDRequired !== 'NOT_REQUIRED'
+                ...(therapyConfig.patientIdentifierRequirement !== 'NOT_REQUIRED'
                   ? [
                       {
                         id: 'patient-info-identifier',
@@ -79,11 +79,11 @@ export const PatientSections = (channelType, therapyConfig) => [
                         placeholder: ' ',
                         type: 'input',
                         maxLength: 20,
-                        isRequired: therapyConfig.isPIDRequired === 'MANDATORY'
+                        isRequired: therapyConfig.patientIdentifierRequirement === 'MANDATORY'
                       }
                     ]
                   : []),
-                ...(therapyConfig.isMRNRequired !== 'NOT_REQUIRED'
+                ...(therapyConfig.mrnRequirement !== 'NOT_REQUIRED'
                   ? [
                       {
                         id: 'patient-info-medicalRecordNumber',
@@ -93,7 +93,7 @@ export const PatientSections = (channelType, therapyConfig) => [
                         type: 'input',
                         maxLength: 20,
                         maxLength: 11,
-                        isRequired: therapyConfig.isMRNRequired === 'MANDATORY'
+                        isRequired: therapyConfig.mrnRequirement === 'MANDATORY'
                       }
                     ]
                   : [])

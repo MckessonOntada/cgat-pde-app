@@ -15,12 +15,12 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
   const fields = [];
 
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    if (therapyConfig.isCoiIdRequired !== 'NOT_REQUIRED') {
+    if (therapyConfig.coiIdRequirement !== 'NOT_REQUIRED') {
       fields.push({
         name: 'coiId',
         label: translationFn('labels.coiId'),
         placeholder: ' ',
-        isRequired: therapyConfig.isCoiIdRequired === 'MANDATORY',
+        isRequired: therapyConfig.coiIdRequirement === 'MANDATORY',
         component: Components['input'],
         maxLength: 10
       });
@@ -44,36 +44,36 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       maxLength: 20
     });
 
-    if (therapyConfig.isDOARequired !== 'NOT_REQUIRED') {
+    if (therapyConfig.dateOfAdministrationRequirement !== 'NOT_REQUIRED') {
       fields.push({
         name: 'dateOfAdministration',
         label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
         placeholder: ' ',
-        isRequired: therapyConfig.isDOARequired === 'MANDATORY',
+        isRequired: therapyConfig.dateOfAdministrationRequirement === 'MANDATORY',
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
       });
     }
 
-    if (therapyConfig.isDateOfApheresisRequired !== 'NOT_REQUIRED') {
+    if (therapyConfig.dateOfApheresisRequirement !== 'NOT_REQUIRED') {
       fields.push({
         name: 'dateOfApheresis',
         label: translationFn('orderManagement.patientDetails.inputLabel.dateOfApheresis'),
         placeholder: ' ',
-        isRequired: therapyConfig.isDateOfApheresisRequired === 'MANDATORY',
+        isRequired: therapyConfig.dateOfApheresisRequirement === 'MANDATORY',
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
       });
     }
 
-    if (therapyConfig.isPORequired !== 'NOT_REQUIRED') {
+    if (therapyConfig.poNumberRequirement !== 'NOT_REQUIRED') {
       fields.push({
         name: 'poNumber',
         label: translationFn('labels.providePONumber'),
         placeholder: ' ',
-        isRequired: therapyConfig.isPORequired === 'MANDATORY',
+        isRequired: therapyConfig.poNumberRequirement === 'MANDATORY',
         component: Components['input'],
         maxLength: 35
       });
