@@ -65,6 +65,16 @@ const useOrder = (orderId) => {
         }
       }
 
+      result.therapyConfig = {
+        isPatientInformationRequired: true,
+        isCoiIdRequired: 'NOT_REQUIRED',
+        isMRNRequired: 'OPTIONAL',
+        isDOARequired: 'NOT_REQUIRED',
+        isPORequired: 'NOT_REQUIRED',
+        isPIDRequired: 'OPTIONAL',
+        isDateOfApheresisRequired: 'NOT_REQUIRED'
+      };
+
       return result;
     },
     onError: (error) => {

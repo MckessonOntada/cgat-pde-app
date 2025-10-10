@@ -15,58 +15,75 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
   const fields = [];
 
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    fields.push(
-      {
+    // coiId field
+    if (therapyConfig.isCoiIdRequired !== 'NOT_REQUIRED') {
+      fields.push({
         name: 'coiId',
         label: translationFn('labels.coiId'),
         placeholder: ' ',
-        isRequired: therapyConfig.isCoiIdRequired,
+        isRequired: therapyConfig.isCoiIdRequired === 'MANDATORY',
         component: Components['input'],
         maxLength: 10
-      },
-      {
-        name: 'orderQuantity',
-        label: translationFn('labels.orderQuantity'),
-        placeholder: ' ',
-        isRequired: true,
-        component: Components['input'],
-        maxLength: 2
-      },
-      {
-        name: 'slotNumber',
-        label: translationFn('labels.provideSlotNumber'),
-        placeholder: ' ',
-        isRequired: true,
-        component: Components['input'],
-        maxLength: 20
-      },
-      {
+      });
+    }
+
+    // orderQuantity field (always required, no config)
+    fields.push({
+      name: 'orderQuantity',
+      label: translationFn('labels.orderQuantity'),
+      placeholder: ' ',
+      isRequired: true,
+      component: Components['input'],
+      maxLength: 2
+    });
+
+    // slotNumber field (always required, no config)
+    fields.push({
+      name: 'slotNumber',
+      label: translationFn('labels.provideSlotNumber'),
+      placeholder: ' ',
+      isRequired: true,
+      component: Components['input'],
+      maxLength: 20
+    });
+
+    // dateOfAdministration field
+    if (therapyConfig.isDOARequired !== 'NOT_REQUIRED') {
+      fields.push({
         name: 'dateOfAdministration',
         label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
         placeholder: ' ',
-        isRequired: therapyConfig.isDOARequired,
+        isRequired: therapyConfig.isDOARequired === 'MANDATORY',
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
-      },
-      {
+      });
+    }
+
+    // dateOfApheresis field
+    if (therapyConfig.isDateOfApheresisRequired !== 'NOT_REQUIRED') {
+      fields.push({
         name: 'dateOfApheresis',
         label: translationFn('orderManagement.patientDetails.inputLabel.dateOfApheresis'),
         placeholder: ' ',
-        isRequired: therapyConfig.isDateOfApheresisRequired,
+        isRequired: therapyConfig.isDateOfApheresisRequired === 'MANDATORY',
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
-      },
-      {
+      });
+    }
+
+    // poNumber field
+    if (therapyConfig.isPORequired !== 'NOT_REQUIRED') {
+      fields.push({
         name: 'poNumber',
         label: translationFn('labels.providePONumber'),
         placeholder: ' ',
-        isRequired: therapyConfig.isPORequired,
+        isRequired: therapyConfig.isPORequired === 'MANDATORY',
         component: Components['input'],
         maxLength: 35
-      }
-    );
+      });
+    }
   } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
   }
 

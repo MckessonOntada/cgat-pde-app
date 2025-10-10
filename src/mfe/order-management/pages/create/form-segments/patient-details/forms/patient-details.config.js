@@ -70,26 +70,30 @@ export const PatientSections = (channelType, therapyConfig) => [
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
             ? [
-                {
-                  id: 'patient-info-identifier',
-                  name: 'patient.patientIdentifier',
-                  label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
-                  placeholder: ' ',
-                  type: 'input',
-                  maxLength: 20,
-                  isRequired: therapyConfig.isPIDRequired
-                },
-                ...(therapyConfig.isMRNRequired
+                ...(therapyConfig.isPIDRequired !== 'NOT_REQUIRED'
                   ? [
                       {
                         id: 'patient-info-identifier',
+                        name: 'patient.patientIdentifier',
+                        label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
+                        placeholder: ' ',
+                        type: 'input',
+                        maxLength: 20,
+                        isRequired: therapyConfig.isPIDRequired === 'MANDATORY'
+                      }
+                    ]
+                  : []),
+                ...(therapyConfig.isMRNRequired !== 'NOT_REQUIRED'
+                  ? [
+                      {
+                        id: 'patient-info-medicalRecordNumber',
                         name: 'patient.medicalRecordNumber',
                         label: 'orderManagement.patientDetails.inputLabel.mrn',
                         placeholder: ' ',
                         type: 'input',
                         maxLength: 20,
                         maxLength: 11,
-                        isRequired: therapyConfig.isMRNRequired
+                        isRequired: therapyConfig.isMRNRequired === 'MANDATORY'
                       }
                     ]
                   : [])
