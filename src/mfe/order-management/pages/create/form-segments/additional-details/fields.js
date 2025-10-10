@@ -15,7 +15,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
   const fields = [];
 
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    // coiId field
     if (therapyConfig.isCoiIdRequired !== 'NOT_REQUIRED') {
       fields.push({
         name: 'coiId',
@@ -27,7 +26,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       });
     }
 
-    // orderQuantity field (always required, no config)
     fields.push({
       name: 'orderQuantity',
       label: translationFn('labels.orderQuantity'),
@@ -37,7 +35,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       maxLength: 2
     });
 
-    // slotNumber field (always required, no config)
     fields.push({
       name: 'slotNumber',
       label: translationFn('labels.provideSlotNumber'),
@@ -47,7 +44,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       maxLength: 20
     });
 
-    // dateOfAdministration field
     if (therapyConfig.isDOARequired !== 'NOT_REQUIRED') {
       fields.push({
         name: 'dateOfAdministration',
@@ -60,7 +56,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       });
     }
 
-    // dateOfApheresis field
     if (therapyConfig.isDateOfApheresisRequired !== 'NOT_REQUIRED') {
       fields.push({
         name: 'dateOfApheresis',
@@ -73,7 +68,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       });
     }
 
-    // poNumber field
     if (therapyConfig.isPORequired !== 'NOT_REQUIRED') {
       fields.push({
         name: 'poNumber',
