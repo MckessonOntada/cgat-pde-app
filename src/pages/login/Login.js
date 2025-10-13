@@ -189,16 +189,10 @@ const Login = () => {
           <p>{t('login.page.desc.1')}</p>
         </div>
         <div className={style.loginContainor}>
-          <p className={style.lWelcome}>{t('login.welcome')}</p>
           <Heading as="h3" className={style.lHead}>
-            {t('login.ordringPortal')}
+            {t('header.login.title')}
           </Heading>
-          <p className={style.lDetails}>{t('login.details')}</p>
           <div className={'w-100'} ref={widgetRef} id={debugIds(ID.LOGIN, ID.WIDGET)}></div>
-          <p className={style.lNote}>
-            <span>{t('login.note')}: </span>
-            {t('login.details')}
-          </p>
         </div>
       </div>
       <Footer />
