@@ -222,8 +222,8 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       placeholder: ' ',
       type: 'input',
       maxLength: 20,
-      isRequired: false,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isPatientIdentifierRequired
+      isRequired: spTherapyConfig.patientIdentifierRequirement === 'MANDATORY',
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
     },
     {
       id: 'coiId',
@@ -232,8 +232,8 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       placeholder: ' ',
       type: 'input',
       maxLength: 10,
-      isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isCoiIdRequired,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isCoiIdRequired
+      isRequired: spTherapyConfig.coiIdRequirement === 'MANDATORY' && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.coiIdRequirement !== 'NOT_REQUIRED'
     },
     {
       id: 'patient-info-medicalRecordNumber',
@@ -242,8 +242,8 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       placeholder: ' ',
       type: 'input',
       maxLength: 20,
-      isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isMRNRequired,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.isMRNRequired
+      isRequired: spTherapyConfig.mrnRequirement === 'MANDATORY' && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig.mrnRequirement !== 'NOT_REQUIRED'
     }
   ];
 

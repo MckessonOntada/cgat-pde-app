@@ -133,7 +133,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const shouldShowIdentifierSection =
-    isSpOrder && (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
+    isSpOrder &&
+    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some((key) => key !== 'NOT_REQUIRED');
 
   const {
     data: sapOrderDetails,
@@ -1232,7 +1233,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         }
                       />
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      {!isSpOrder && draftChanges?.medicalRecordNumber && therapyConfig.mrnRequirement && (
+                      {!isSpOrder && therapyConfig.mrnRequirement !== 'NOT_REQUIRED' && (
                         <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
                       )}
                     </div>
