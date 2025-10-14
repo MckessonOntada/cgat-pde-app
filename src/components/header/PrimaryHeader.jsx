@@ -42,8 +42,8 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const { unreadCount: notificationsCount = 0 } = useNotifications() || {};
 
   useEffect(() => {
-    if (!AuthUtils.isSystemAdmin()) {
-      setFilteredProfileOptions((prev) => [...prev, { label: 'Notification Setting', value: '/notification-setting' }]);
+    if (!AuthUtils.isRootAdmin()) {
+      setFilteredProfileOptions((prev) => [...prev, { label: 'Notification Settings', value: '/notification-setting' }]);
     }
   }, []);
 

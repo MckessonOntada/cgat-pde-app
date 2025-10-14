@@ -57,7 +57,7 @@ export const navLinks = [
 ];
 export const profileOptions = [
   {
-    label: 'Account Setting',
+    label: 'Account Settings',
     value: '/account-setting'
   }
 ];
