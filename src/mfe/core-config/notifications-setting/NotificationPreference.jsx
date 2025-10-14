@@ -201,10 +201,8 @@ const NotificationPreference = () => {
 
   const handleOnSubmit = (values) => {
     const payload = extractUserPreferences(values);
-    console.log(payload);
     UserService.setCommunicationPreferences(payload)
       .then((response) => {
-        console.log(response);
         setAlert({
           description: 'Communication preferences updated successfully.',
           type: 'success'

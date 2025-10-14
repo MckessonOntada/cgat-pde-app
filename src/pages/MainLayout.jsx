@@ -121,7 +121,7 @@ function MainLayout() {
 }
 
 const UserOnlyRout = () => {
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const isSystemAdmin = AuthUtils.isRootAdmin();
   return isSystemAdmin ? <Navigate to="/" /> : <Outlet />;
 };
 

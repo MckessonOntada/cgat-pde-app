@@ -5,7 +5,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
 
 async function getTherapyById(id) {
-  const url = `${ApiRoutes.THERAPIES()}/${id}`;
+  const url = `${ApiRoutes.THERAPIES_BY_ID(id)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }

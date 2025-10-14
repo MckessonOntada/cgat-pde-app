@@ -73,6 +73,20 @@ const isSystemAdmin = function () {
   return userRole === 'System Admin';
 };
 
+const isRootAdmin = function () {
+  const isImpersonated = getImpersonateId() > 0;
+  if (isImpersonated) {
+    try {
+      const impersonatedByUser = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+      return impersonatedByUser.role?.name === 'System Admin';
+    } catch {
+      return false;
+    }
+  } else {
+    return getUserRole() === 'System Admin';
+  }
+};
+
 const isSystemAdminView = function () {
   const impersonateId = getImpersonateId();
   if (impersonateId) {
@@ -190,7 +204,8 @@ const AuthUtils = Object.freeze({
   isTreatmentCentreExecutive,
   isReservedUserRole,
   isPhysician,
-  getLoggedInUserId
+  getLoggedInUserId,
+  isRootAdmin
 });
 
 export default AuthUtils;

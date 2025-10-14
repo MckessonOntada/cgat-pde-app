@@ -1,3 +1,5 @@
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+
 const notificationConfig = {
   moduleName: 'notificationPreferences.moduleName',
   options: ['notificationPreferences.optionEmail', 'notificationPreferences.optionInApp', 'notificationPreferences.optionSMS'],
@@ -5,6 +7,7 @@ const notificationConfig = {
     {
       title: 'notificationPreferences.userManagement.title',
       id: 'USER_MANAGEMENT',
+      permissions: [PERMISSIONS_ENUM.USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST],
       rows: [
         {
           title: 'notificationPreferences.userManagement.processUpdate.title',
@@ -44,6 +47,7 @@ const notificationConfig = {
     {
       title: 'notificationPreferences.orderManagement.title',
       id: 'ORDER_MANAGEMENT',
+      permissions: [...Object.values(PERMISSIONS_ENUM.CREATE_NEW_ORDER), PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER],
       rows: [
         {
           title: 'notificationPreferences.orderManagement.processUpdate.title',
@@ -82,6 +86,7 @@ const notificationConfig = {
     {
       title: 'notificationPreferences.orderApproval.title',
       id: 'ORDER_APPROVAL',
+      permissions: [PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER],
       rows: [
         {
           title: 'notificationPreferences.orderApproval.processUpdate.title',
@@ -120,6 +125,7 @@ const notificationConfig = {
     {
       title: 'notificationPreferences.onBehalfOf.title',
       id: 'ON_BEHALF_OF',
+      permissions: PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER,
       subtitle: 'notificationPreferences.onBehalfOf.subtitle',
       optionValues: [
         {
