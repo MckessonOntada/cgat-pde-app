@@ -19,6 +19,7 @@ const NotificationRolePreferences = () => {
   const location = useLocation();
   const [alert, setAlert] = useState(null);
   const { isEdit, communicationPreferences } = location.state || {};
+  const permissions = location.state?.data?.permissions || location.state?.permissions;
   const [preferences, setPreferences] = useState(communicationPreferences || INITIAL_PREFERENCES);
   const handleToggleChannel = (sectionKey, itemKey, channel) => {
     const current = preferences[sectionKey][itemKey];
@@ -89,7 +90,7 @@ const NotificationRolePreferences = () => {
       {alert && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
-        <CommunicationPreferencesPanel preferences={preferences} handleToggleChannel={handleToggleChannel} />
+        <CommunicationPreferencesPanel preferences={preferences} handleToggleChannel={handleToggleChannel} permissions={permissions} />
         <div className={'buttonGroup'}>
           <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
             {t('userManagement.button.back')}
