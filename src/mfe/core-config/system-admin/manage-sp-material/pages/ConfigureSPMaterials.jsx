@@ -9,13 +9,14 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import Alert from '@src/components/cgat-alert/Alert';
 import { useSPMaterial } from '../context/SPMaterialContext';
 import MaterialService from '@src/api/commonService/MaterialService';
+import { REQUIREMENT_OPTIONS } from '../../manage-material/assets/constants/MaterialConstants';
 
 function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
-    patientIdentifierRequired: '',
-    coiIdRequired: '',
-    mrnRequired: ''
+    pidRequirement: '',
+    coiIdRequirement: '',
+    mrnRequirement: ''
   });
   const [error, setError] = useState(false);
 
@@ -40,16 +41,16 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   useEffect(() => {
     if (spConfig) {
       if (selectedSPMaterial.length === 1) {
-        setFormValues({ 
-          patientIdentifierRequired: spConfig.isPatientIdentifierRequired === true ? 'yes' : spConfig.isPatientIdentifierRequired === false ? 'no' : '',
-          coiIdRequired: spConfig.isCoiIdRequired === true ? 'yes' : spConfig.isCoiIdRequired === false ? 'no' : '',
-          mrnRequired: spConfig.isMRNRequired === true ? 'yes' : spConfig.isMRNRequired === false ? 'no' : '' 
+        setFormValues({
+          pidRequirement: spConfig.patientIdentifierRequirement,
+          coiIdRequirement: spConfig.coiIdRequirement,
+          mrnRequirement: spConfig.mrnRequirement
         });
       } else {
         setFormValues({
-          patientIdentifierRequired: '',
-          coiIdRequired: '',
-          mrnRequired: ''
+          pidRequirement: '',
+          coiIdRequirement: '',
+          mrnRequirement: ''
         });
       }
     }
@@ -75,66 +76,39 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
 
   const formFields = [
     {
-      caption: t('manageMaterial.drawer.details.configuration.body.sp.patientIdentifierRequired'),
-      id: 'patientIdentifierRequired',
-      items: [
-        {
-          label: t('manageMaterial.drawer.configuration.body.patientIdentifierRequired.yes'),
-          value: 'yes'
-        },
-        {
-          label: t('manageMaterial.drawer.configuration.body.patientIdentifierRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.patientIdentifierRequired,
+      caption: t('manageMaterial.drawer.details.configuration.body.sp.patientIdentifier'),
+      id: 'pidRequirement',
+      options: REQUIREMENT_OPTIONS,
+      value: formValues.pidRequirement,
       required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, patientIdentifierRequired: value }))
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, pidRequirement: value }))
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.sp.coiIdRequired'),
-      id: 'coiIdRequired',
-      items: [
-        {
-          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.yes'),
-          value: 'yes'
-        },
-        {
-          label: t('manageMaterial.drawer.configuration.body.coiIdRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.coiIdRequired,
+      caption: t('manageMaterial.drawer.details.configuration.body.coiId'),
+      id: 'coiIdRequirement',
+      options: REQUIREMENT_OPTIONS,
+      value: formValues.coiIdRequirement,
       required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequirement: value }))
     },
     {
-      caption: t('manageMaterial.drawer.configuration.body.sp.mrnRequired'),
-      id: 'mrnRequired',
-      items: [
-        {
-          label: t('manageMaterial.drawer.configuration.body.mrnRequired.yes'),
-          value: 'yes'
-        },
-        {
-          label: t('manageMaterial.drawer.configuration.body.mrnRequired.no'),
-          value: 'no'
-        }
-      ],
-      value: formValues.mrnRequired,
+      caption: t('manageMaterial.drawer.details.configuration.body.mrn'),
+      id: 'mrnRequirement',
+      options: REQUIREMENT_OPTIONS,
+      value: formValues.mrnRequirement,
       required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, mrnRequired: value }))
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, mrnRequirement: value }))
     }
   ];
-  const isApplyDisabled = formValues.patientIdentifierRequired && formValues.coiIdRequired && formValues.mrnRequired;
+  const isApplyDisabled = formValues.pidRequirement && formValues.coiIdRequirement && formValues.mrnRequirement;
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
       const configValues = {
         spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
-        isPatientIdentifierRequired: formValues.patientIdentifierRequired === 'yes',
-        isCoiIdRequired: formValues.coiIdRequired === 'yes',
-        isMrnRequired: formValues.mrnRequired === 'yes'
+        pidRequirement: formValues.pidRequirement,
+        coiIdRequirement: formValues.coiIdRequirement,
+        mrnRequirement: formValues.mrnRequirement
       };
       applyConfiguration(configValues);
     } else {
@@ -182,7 +156,10 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
                 <RadioGroup
                   direction="row"
                   id={field.id}
-                  items={field.items}
+                  items={field.options.map((option) => ({
+                    label: t(option.label),
+                    value: option.value
+                  }))}
                   onChangeValue={field.onChangeValue}
                   radioBtnWidth="auto"
                   value={field.value}
