@@ -173,7 +173,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .typeError(t('labels.enterValidDateOfAdministration'))
             .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
             .when([], {
-              is: () => therapyConfig.isDOARequired,
+              is: () => therapyConfig.dateOfAdministrationRequirement === 'MANDATORY',
               then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -181,7 +181,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .typeError(t('labels.enterValidDateOfApheresis'))
             .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
             .when([], {
-              is: () => therapyConfig.isDateOfApheresisRequired,
+              is: () => therapyConfig.dateOfApheresisRequirement === 'MANDATORY',
               then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -189,7 +189,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
             .max(10, t('labels.COI_IdExceedDigits'))
             .when([], {
-              is: () => therapyConfig.isCoiIdRequired,
+              is: () => therapyConfig.coiIdRequirement === 'MANDATORY',
               then: (schema) => schema.required(t('labels.COIIdRequired')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -209,7 +209,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .max(35, t('labels.PONumberLengthError'))
             .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
             .when([], {
-              is: () => therapyConfig.isPORequired,
+              is: () => therapyConfig.poNumberRequirement === 'MANDATORY',
               then: (schema) => schema.required(t('labels.PONumberRequired')),
               otherwise: (schema) => schema.notRequired()
             })

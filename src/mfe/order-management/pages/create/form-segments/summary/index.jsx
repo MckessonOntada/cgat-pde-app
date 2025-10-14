@@ -95,7 +95,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       setDraftChanges({
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
         patientIdentifier: orderDetails.patient?.patientIdentifier,
-        ...(therapyConfig.isMRNRequired && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+        ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
       });
     }
   }, [orderDetails]);
@@ -133,7 +133,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const shouldShowIdentifierSection =
-    isSpOrder && (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
+    isSpOrder &&
+    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some((key) => key !== 'NOT_REQUIRED');
 
   const {
     data: sapOrderDetails,
@@ -516,7 +517,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDraftChanges({
                 additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
                 patientIdentifier: orderDetails.patient?.patientIdentifier,
-                ...(therapyConfig.isMRNRequired && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+                ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
               });
             }
           }}>
@@ -558,7 +559,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       } else {
         initialValues = {
           patientIdentifier: draftChanges?.patientIdentifier || '',
-          ...(therapyConfig.isMRNRequired && { medicalRecordNumber: draftChanges?.medicalRecordNumber || '' })
+          ...(therapyConfig.mrnRequirement && { medicalRecordNumber: draftChanges?.medicalRecordNumber || '' })
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -576,7 +577,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDraftChanges((prev) => ({
                 ...prev,
                 patientIdentifier: values.patientIdentifier,
-                ...(therapyConfig.isMRNRequired && { medicalRecordNumber: values.medicalRecordNumber })
+                ...(therapyConfig.mrnRequirement && { medicalRecordNumber: values.medicalRecordNumber })
               }));
             }
 
@@ -653,7 +654,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
       additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
       patientIdentifier: orderDetails.patient?.patientIdentifier,
-      ...(therapyConfig.isMRNRequired && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+      ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
     });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
@@ -1187,17 +1188,22 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
                         (showControls || allowUpdateBnBAfterSubmit) && (
-                          <Button size="md" variant="tertiary" onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            disabled={[therapyConfig.mrnRequirement, therapyConfig.patientIdentifierRequirement].every((val) => val === 'NOT_REQUIRED')}
+                            onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                            Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
                           </Button>
                         )
                       }
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
-                      {!isSpOrder && (
+                      {!isSpOrder && therapyConfig.patientIdentifierRequirement !== 'NOT_REQUIRED' && (
                         <DetailSegment
                           label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
-                          value={!!draftChanges ? draftChanges?.patientIdentifier || '-' : '-'}
+                          value={!!draftChanges ? draftChanges?.patientIdentifier : '-'}
                         />
                       )}
                       <DetailSegment
@@ -1228,7 +1234,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         />
                       )}
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      {!isSpOrder && draftChanges?.medicalRecordNumber && (
+                      {!isSpOrder && therapyConfig.mrnRequirement !== 'NOT_REQUIRED' && (
                         <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
                       )}
                     </div>
@@ -1275,6 +1281,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         <Button
                           size="md"
                           variant="tertiary"
+                          disabled={[
+                            therapyConfig.coiIdRequirement,
+                            therapyConfig.poNumberRequirement,
+                            therapyConfig.dateOfAdministrationRequirement,
+                            therapyConfig.dateOfApheresisRequirement
+                          ].every((val) => val === 'NOT_REQUIRED')}
                           onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
                           {t('captions.btnEdit')}
@@ -1285,20 +1297,28 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
                     {!isSpOrder && (
                       <>
-                        <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || '-'} />
+                        {therapyConfig.coiIdRequirement !== 'NOT_REQUIRED' && (
+                          <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || '-'} />
+                        )}
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}
                         {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
-                        <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
-                        <DetailSegment
-                          label={t('labels.dateOfAdministration')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
-                        />
-                        <DetailSegment
-                          label={t('orderManagement.patientDetails.inputLabel.dateOfApheresis')}
-                          value={draftChanges?.additionalDetailsRequestDTO?.dateOfApheresis || '-'}
-                        />
+                        {therapyConfig.poNumberRequirement !== 'NOT_REQUIRED' && (
+                          <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
+                        )}
+                        {therapyConfig.dateOfAdministrationRequirement !== 'NOT_REQUIRED' && (
+                          <DetailSegment
+                            label={t('labels.dateOfAdministration')}
+                            value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
+                          />
+                        )}
+                        {therapyConfig.dateOfApheresisRequirement !== 'NOT_REQUIRED' && (
+                          <DetailSegment
+                            label={t('orderManagement.patientDetails.inputLabel.dateOfApheresis')}
+                            value={draftChanges?.additionalDetailsRequestDTO?.dateOfApheresis || '-'}
+                          />
+                        )}
                       </>
                     )}
 
