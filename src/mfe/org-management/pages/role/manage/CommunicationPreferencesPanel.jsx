@@ -4,8 +4,26 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { COMMUNICATION_PREFERENCES, INITIAL_PREFERENCES } from '../constants';
 import style from './Roles.module.scss';
 
-const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, handleToggleChannel, readOnly }) => {
+const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, handleToggleChannel, readOnly, permissions }) => {
   const { t } = useTranslate();
+  function groupedPreferences() {
+    const groupedAccordingToPermission = COMMUNICATION_PREFERENCES.map((section) => ({
+      ...section,
+      isHideSection: true
+    }));
+    permissions.forEach((permission) => {
+      if (permission === 'CREATE_USER_FOR_PENDING_USER_REQUEST') {
+        groupedAccordingToPermission[0].isHideSection = false;
+      } else if (['THERAPY_SELECTION', 'ACCOUNT_SELECTION', 'UPDATE_PATIENTS_DETAILS', 'UPDATE_ADDITIONAL_DETAILS'].includes(permission)) {
+        groupedAccordingToPermission[1].isHideSection = false;
+      } else if (['APPROVE_ORDERS', 'REJECT_ORDER'].includes(permission)) {
+        groupedAccordingToPermission[2].isHideSection = false;
+      } else if (permission === 'ON_BEHALF_OF_USER') {
+        groupedAccordingToPermission[3].isHideSection = false;
+      }
+    });
+    return groupedAccordingToPermission;
+  }
 
   const renderSwitchOrPill = (sectionKey, itemKey, sw, itemData) => {
     const handleToggle = () => handleToggleChannel(sectionKey, itemKey, sw.field);
@@ -53,42 +71,43 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
           </div>
         </div>
       </div>
-
-      {COMMUNICATION_PREFERENCES.map((section) => (
-        <div
-          key={section.sectionKey}
-          className={`${style.permissionPanel} ${section.sectionKey === 'ON_BEHALF_OF' ? 'grid grid-gap-16 grid-cols-2 ' + style.onBehalfOf : ''}`}>
-          <div className={style.sectionHeader}>
-            <Heading as="h3">{t(section.sectionTitle)}</Heading>
-            {section.sectionDescription && <p className={style.sectionDescription}>{t(section.sectionDescription)}</p>}
-          </div>
-
-          {section.sectionKey !== 'ON_BEHALF_OF' ? (
-            section.items.map((item) => {
-              const itemData = preferences?.[section.sectionKey]?.[item.itemKey];
-              if (!itemData) return null;
-              return (
-                <div key={item.itemKey} className={`grid grid-gap-16 grid-cols-2`}>
-                  <div className={style.itemContent}>
-                    <Heading as="h4">{t(item.itemTitle)}</Heading>
-                    <p className={style.itemDescription}>{t(item.itemDescription)}</p>
-                  </div>
-                  <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
-                    {item.switches.map((sw) => renderSwitchOrPill(section.sectionKey, item.itemKey, sw, itemData))}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
-              {section.items[0].switches.map((sw) => {
-                const itemData = preferences[section.sectionKey][section.items[0].itemKey];
-                return renderSwitchOrPill(section.sectionKey, section.items[0].itemKey, sw, itemData);
-              })}
+      {groupedPreferences().map((section) => {
+        if (section.isHideSection) return null;
+        return (
+          <div
+            key={section.sectionKey}
+            className={`${style.permissionPanel} ${section.sectionKey === 'ON_BEHALF_OF' ? `grid grid-gap-16 grid-cols-2 ${style.onBehalfOf}` : ''}`}>
+            <div className={style.sectionHeader}>
+              <Heading as="h3">{t(section.sectionTitle)}</Heading>
+              {section.sectionDescription && <p className={style.sectionDescription}>{t(section.sectionDescription)}</p>}
             </div>
-          )}
-        </div>
-      ))}
+            {section.sectionKey !== 'ON_BEHALF_OF' ? (
+              section.items.map((item) => {
+                const itemData = preferences?.[section.sectionKey]?.[item.itemKey];
+                if (!itemData) return null;
+                return (
+                  <div key={item.itemKey} className="grid grid-gap-16 grid-cols-2">
+                    <div className={style.itemContent}>
+                      <Heading as="h4">{t(item.itemTitle)}</Heading>
+                      <p className={style.itemDescription}>{t(item.itemDescription)}</p>
+                    </div>
+                    <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
+                      {item.switches.map((sw) => renderSwitchOrPill(section.sectionKey, item.itemKey, sw, itemData))}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
+                {section.items[0].switches.map((sw) => {
+                  const itemData = preferences?.[section.sectionKey]?.[section.items[0].itemKey];
+                  return renderSwitchOrPill(section.sectionKey, section.items[0].itemKey, sw, itemData);
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };

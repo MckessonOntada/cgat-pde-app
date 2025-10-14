@@ -254,7 +254,7 @@ const roleDetail = () => {
                       disabled={!data?.isActive}
                       onClick={() =>
                         navigate(`notification-permissions`, {
-                          state: { communicationPreferences: data?.communicationPreferences?.preferences, isEdit: true }
+                          state: { communicationPreferences: data?.communicationPreferences?.preferences, isEdit: true, permissions: data?.permissions }
                         })
                       }>
                       {t('userManagement.button.edit')}
@@ -266,7 +266,7 @@ const roleDetail = () => {
           </div>
           <div className="MCP-panel-container grid grid-gap-16">
             {data?.communicationPreferences?.preferences ? (
-              <CommunicationPreferencesPanel preferences={data?.communicationPreferences?.preferences} readOnly={true} />
+              <CommunicationPreferencesPanel preferences={data?.communicationPreferences?.preferences} readOnly={true} permissions={data.permissions} />
             ) : (
               <EmptyDataTable
                 isLoading={false}

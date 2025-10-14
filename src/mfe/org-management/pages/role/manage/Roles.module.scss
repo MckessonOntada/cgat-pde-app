@@ -9,12 +9,14 @@
     text-align: center;
   }
 }
+.permissionPanel:not(:last-child) {
+  border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
+}
 .permissionPanel {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding-bottom: var(--spacing-03);
-  border-bottom: 1px solid #d9d8d7;
   .sectionHeader {
     p {
       color: var(--brand-color-text-light-slate);
@@ -45,5 +47,4 @@
 }
 .onBehalfOf {
   display: grid !important;
-  border-bottom: none;
 }
