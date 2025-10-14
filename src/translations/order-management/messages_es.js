@@ -684,5 +684,7 @@ export const MessageEs = {
   'message.stepSuccessfulCompletionByUnAuthorizedUser': 'S_Nice work — your part is done! 🎉 The next step is now assigned. 🚀',
   'label.rolesListingBySteps': 'S_Roles Listing by Steps',
   'label.whoCanDoWhat': 'S_Who Can Do What?',
-  'control.whoCanDoWhat': 'S_Who Can Do What'
+  'control.whoCanDoWhat': 'S_Who Can Do What',
+  'label.userList': 'User List',
+  'label.userNotAssigned': 'User not assigned'
 };
