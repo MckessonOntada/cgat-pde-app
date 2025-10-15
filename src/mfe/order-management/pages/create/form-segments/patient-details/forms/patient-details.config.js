@@ -1,5 +1,6 @@
 import { US_STATES } from '@src/components/form/util';
 import { CHANNEL_TYPE } from '../../Constants';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const getStates = () => {
   const options = US_STATES();
@@ -70,7 +71,7 @@ export const PatientSections = (channelType, therapyConfig) => [
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
             ? [
-                ...(therapyConfig.patientIdentifierRequirement !== 'NOT_REQUIRED'
+                ...(therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED
                   ? [
                       {
                         id: 'patient-info-identifier',
@@ -79,11 +80,11 @@ export const PatientSections = (channelType, therapyConfig) => [
                         placeholder: ' ',
                         type: 'input',
                         maxLength: 20,
-                        isRequired: therapyConfig.patientIdentifierRequirement === 'MANDATORY'
+                        isRequired: therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY
                       }
                     ]
                   : []),
-                ...(therapyConfig.mrnRequirement !== 'NOT_REQUIRED'
+                ...(therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
                   ? [
                       {
                         id: 'patient-info-medicalRecordNumber',
@@ -93,7 +94,7 @@ export const PatientSections = (channelType, therapyConfig) => [
                         type: 'input',
                         maxLength: 20,
                         maxLength: 11,
-                        isRequired: therapyConfig.mrnRequirement === 'MANDATORY'
+                        isRequired: therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY
                       }
                     ]
                   : [])
@@ -222,7 +223,7 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       placeholder: ' ',
       type: 'input',
       maxLength: 20,
-      isRequired: spTherapyConfig.patientIdentifierRequirement === 'MANDATORY',
+      isRequired: spTherapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
       show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
     },
     {
@@ -232,8 +233,8 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       placeholder: ' ',
       type: 'input',
       maxLength: 10,
-      isRequired: spTherapyConfig.coiIdRequirement === 'MANDATORY' && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.coiIdRequirement !== 'NOT_REQUIRED'
+      isRequired: spTherapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED
     },
     {
       id: 'patient-info-medicalRecordNumber',
@@ -242,8 +243,8 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       placeholder: ' ',
       type: 'input',
       maxLength: 20,
-      isRequired: spTherapyConfig.mrnRequirement === 'MANDATORY' && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig.mrnRequirement !== 'NOT_REQUIRED'
+      isRequired: spTherapyConfig.mrnRequirement === REQUIREMENT.MANDATORY && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
     }
   ];
 

@@ -10,7 +10,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
-import { YES_NO_OPTIONS, REQUIREMENT_OPTIONS, Requirement } from './assets/constants/MaterialConstants';
+import { YES_NO_OPTIONS, REQUIREMENT_OPTIONS, REQUIREMENT } from './assets/constants/MaterialConstants';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
@@ -176,8 +176,8 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       const configValues = {
         ndcNumbers: selectedMaterials.map((material) => material.ndc),
         isPatientInformationRequired: isYes,
-        pidRequirement: !isYes ? Requirement.OPTIONAL : formValues.pidRequirement,
-        mrnRequirement: !isYes ? Requirement.OPTIONAL : formValues.mrnRequirement,
+        pidRequirement: !isYes ? REQUIREMENT.OPTIONAL : formValues.pidRequirement,
+        mrnRequirement: !isYes ? REQUIREMENT.OPTIONAL : formValues.mrnRequirement,
         coiIdRequirement: formValues.coiIdRequirement,
         doaRequirement: formValues.doaRequirement,
         poRequirement: formValues.poRequirement,

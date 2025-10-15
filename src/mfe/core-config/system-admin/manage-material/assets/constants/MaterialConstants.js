@@ -141,7 +141,7 @@ export const SPMaterialConfigConstants = [
   }
 ];
 
-export const Requirement = Object.freeze({
+export const REQUIREMENT = Object.freeze({
   MANDATORY: 'MANDATORY',
   OPTIONAL: 'OPTIONAL',
   NOT_REQUIRED: 'NOT_REQUIRED'

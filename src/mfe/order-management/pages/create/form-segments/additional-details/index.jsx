@@ -40,6 +40,7 @@ import { NotifyAlert } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -173,7 +174,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .typeError(t('labels.enterValidDateOfAdministration'))
             .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
             .when([], {
-              is: () => therapyConfig.dateOfAdministrationRequirement === 'MANDATORY',
+              is: () => therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -181,7 +182,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .typeError(t('labels.enterValidDateOfApheresis'))
             .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
             .when([], {
-              is: () => therapyConfig.dateOfApheresisRequirement === 'MANDATORY',
+              is: () => therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -189,7 +190,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
             .max(10, t('labels.COI_IdExceedDigits'))
             .when([], {
-              is: () => therapyConfig.coiIdRequirement === 'MANDATORY',
+              is: () => therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.COIIdRequired')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -209,7 +210,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .max(35, t('labels.PONumberLengthError'))
             .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
             .when([], {
-              is: () => therapyConfig.poNumberRequirement === 'MANDATORY',
+              is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.PONumberRequired')),
               otherwise: (schema) => schema.notRequired()
             })

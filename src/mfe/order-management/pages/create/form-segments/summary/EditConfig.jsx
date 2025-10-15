@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import { ORDER_STAGES } from '../Constants';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 export const getUpdateFormConfig = (stage, therapyConfig) => {
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
@@ -10,7 +11,7 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
           {
             grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
             controls: [
-              ...(therapyConfig.patientIdentifierRequirement !== 'NOT_REQUIRED'
+              ...(therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED
                 ? [
                     {
                       id: 'patient-info-identifier',
@@ -19,11 +20,11 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
                       placeholder: ' ',
                       type: 'input',
                       maxLength: 20,
-                      isRequired: therapyConfig.patientIdentifierRequirement == 'MANDATORY'
+                      isRequired: therapyConfig.patientIdentifierRequirement == REQUIREMENT.MANDATORY
                     }
                   ]
                 : []),
-              ...(therapyConfig.mrnRequirement !== 'NOT_REQUIRED'
+              ...(therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
                 ? [
                     {
                       id: 'patient-info-mrn',
@@ -32,7 +33,7 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
                       placeholder: ' ',
                       type: 'input',
                       maxLength: 11,
-                      isRequired: therapyConfig.mrnRequirement === 'MANDATORY'
+                      isRequired: therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY
                     }
                   ]
                 : [])
@@ -43,7 +44,7 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
     ];
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
     const controls = [
-      ...(therapyConfig.dateOfAdministrationRequirement != 'NOT_REQUIRED'
+      ...(therapyConfig.dateOfAdministrationRequirement != REQUIREMENT.NOT_REQUIRED
         ? [
             {
               id: 'patient-info-doa',
@@ -51,11 +52,11 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
               label: 'orderManagement.patientDetails.inputLabel.doa',
               placeholder: ' ',
               type: 'datePicker',
-              isRequired: therapyConfig.dateOfAdministrationRequirement == 'MANDATORY'
+              isRequired: therapyConfig.dateOfAdministrationRequirement == REQUIREMENT.MANDATORY
             }
           ]
         : []),
-      ...(therapyConfig.coiIdRequirement !== 'NOT_REQUIRED'
+      ...(therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED
         ? [
             {
               id: 'patient-info-coiId',
@@ -64,11 +65,11 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
               placeholder: ' ',
               type: 'input',
               maxLength: 10,
-              isRequired: therapyConfig.coiIdRequirement == 'MANDATORY'
+              isRequired: therapyConfig.coiIdRequirement == REQUIREMENT.MANDATORY
             }
           ]
         : []),
-      ...(therapyConfig.poNumberRequirement !== 'NOT_REQUIRED'
+      ...(therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED
         ? [
             {
               id: 'patient-info-poNumber',
@@ -77,11 +78,11 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
               placeholder: ' ',
               type: 'input',
               maxLength: 20,
-              isRequired: therapyConfig.poNumberRequirement == 'MANDATORY'
+              isRequired: therapyConfig.poNumberRequirement == REQUIREMENT.MANDATORY
             }
           ]
         : []),
-      ...(therapyConfig.dateOfApheresisRequirement !== 'NOT_REQUIRED'
+      ...(therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED
         ? [
             {
               id: 'patient-info-dateOfApheresis',
@@ -89,7 +90,7 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
               label: 'orderManagement.patientDetails.inputLabel.dateOfApheresis',
               placeholder: ' ',
               type: 'datePicker',
-              isRequired: therapyConfig.dateOfApheresisRequirement == 'MANDATORY'
+              isRequired: therapyConfig.dateOfApheresisRequirement == REQUIREMENT.MANDATORY
             }
           ]
         : [])
@@ -113,7 +114,7 @@ export const patientDetailsValidationSchema = (t, therapyConfig) =>
       .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
       .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
       .when([], {
-        is: () => therapyConfig.patientIdentifierRequirement === 'MANDATORY',
+        is: () => therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
         then: (schema) =>
           schema
             .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
@@ -132,7 +133,7 @@ export const patientDetailsValidationSchema = (t, therapyConfig) =>
         (value) => value === undefined || value === null || value?.trim().length === value.length
       )
       .when([], {
-        is: () => therapyConfig?.mrnRequirement === 'MANDATORY',
+        is: () => therapyConfig?.mrnRequirement === REQUIREMENT.MANDATORY,
         then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
         otherwise: (schema) => schema.notRequired()
       })
@@ -144,7 +145,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
       .max(10, t('labels.COI_IdExceedDigits'))
       .when([], {
-        is: () => therapyConfig.coiIdRequirement === 'MANDATORY',
+        is: () => therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
         then: (schema) => schema.required(t('labels.COIIdRequired')),
         otherwise: (schema) => schema.notRequired()
       }),
@@ -153,7 +154,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .max(35, t('labels.PONumberLengthError'))
       .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
       .when([], {
-        is: () => therapyConfig.poNumberRequirement === 'MANDATORY',
+        is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
         then: (schema) => schema.required(t('labels.PONumberRequired')),
         otherwise: (schema) => schema.notRequired()
       }),
@@ -161,7 +162,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .typeError(t('labels.enterValidDateOfAdministration'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
       .when([], {
-        is: () => therapyConfig.dateOfAdministrationRequirement === 'MANDATORY',
+        is: () => therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
         then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
         otherwise: (schema) => schema.notRequired()
       }),
@@ -169,7 +170,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .typeError(t('labels.enterValidDateOfApheresis'))
       .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
       .when([], {
-        is: () => therapyConfig.dateOfApheresisRequirement === 'MANDATORY',
+        is: () => therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
         then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
         otherwise: (schema) => schema.notRequired()
       })

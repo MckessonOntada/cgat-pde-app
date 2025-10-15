@@ -39,6 +39,7 @@ import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/con
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -112,7 +113,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const shouldShowIdentifierSection =
     channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
-    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some((key) => key !== 'NOT_REQUIRED');
+    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some(
+      (key) => key !== REQUIREMENT.NOT_REQUIRED
+    );
   const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { data: priceDetails } = useOrderPrice({
