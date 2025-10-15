@@ -189,5 +189,7 @@ export const OrgManagementES = {
   'control.Back_to_role_details_page': 'S_Back to role details page',
   'label.Edit_Role': 'S_Edit Role',
   'empty.role.No_communication_preferences_available': 'S_No communication preferences available',
-  'empty.role.Please_assign_communication_preference_to_see_it_here': 'S_Please assign communication preference to see it here'
+  'empty.role.Please_assign_communication_preference_to_see_it_here': 'S_Please assign communication preference to see it here',
+  'empty.role.No_communication_preferences_available_onEdit': 'No communication preferences available',
+  'empty.role.Please_assign_communication_preference_to_see_it_here_onEdit': 'Please select related permission to see communication preference.'
 };
