@@ -90,7 +90,9 @@ const NotificationRolePreferences = () => {
       {alert && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
-        <CommunicationPreferencesPanel preferences={preferences} handleToggleChannel={handleToggleChannel} permissions={permissions} />
+        <div className="MCP-panel-container">
+          <CommunicationPreferencesPanel preferences={preferences} handleToggleChannel={handleToggleChannel} permissions={permissions} />
+        </div>
         <div className={'buttonGroup'}>
           <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
             {t('userManagement.button.back')}
