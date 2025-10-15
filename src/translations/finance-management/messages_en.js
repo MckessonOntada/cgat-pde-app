@@ -314,6 +314,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.dateOfAdministration': 'Date of Administration',
   'paymentInvoices.Details.dateOfApheresis': 'Date of Apheresis',
   'paymentInvoices.Details.billTo': 'Bill To',
+  'paymentInvoices.Details.MRN': 'MRN',
   'paymentInvoices.Details.shipTo': 'Ship To',
   'paymentInvoices.Details.lineItem': 'Line Item',
   'paymentInvoices.Details.lineNumber': 'Line Number',
