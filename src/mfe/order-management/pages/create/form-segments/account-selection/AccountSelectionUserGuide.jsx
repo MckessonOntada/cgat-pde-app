@@ -130,7 +130,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
   if (isFetchingConfig) {
     return (
       <div className={styles.wrapper}>
-        <Loader variant="circular" />
+        <Loader variant="text" type="screen" />
       </div>
     );
   }

@@ -3,6 +3,7 @@ import { Heading, Switch, Pills } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { COMMUNICATION_PREFERENCES, INITIAL_PREFERENCES } from '../constants';
 import style from './Roles.module.scss';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, handleToggleChannel, readOnly, permissions }) => {
   const { t } = useTranslate();
@@ -12,13 +13,22 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
       isHideSection: true
     }));
     permissions.forEach((permission) => {
-      if (permission === 'CREATE_USER_FOR_PENDING_USER_REQUEST') {
+      if (permission === PERMISSIONS_ENUM.USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST) {
         groupedAccordingToPermission[0].isHideSection = false;
-      } else if (['THERAPY_SELECTION', 'ACCOUNT_SELECTION', 'UPDATE_PATIENTS_DETAILS', 'UPDATE_ADDITIONAL_DETAILS'].includes(permission)) {
+      } else if (
+        [
+          PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION,
+          PERMISSIONS_ENUM.CREATE_NEW_ORDER.ACCOUNT_SELECTION,
+          PERMISSIONS_ENUM.CREATE_NEW_ORDER.UPDATE_PATIENTS_DETAILS,
+          PERMISSIONS_ENUM.CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS,
+          PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER,
+          'REVIEW_ORDER'
+        ].includes(permission)
+      ) {
         groupedAccordingToPermission[1].isHideSection = false;
-      } else if (['APPROVE_ORDERS', 'REJECT_ORDER'].includes(permission)) {
+      } else if ([PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER].includes(permission)) {
         groupedAccordingToPermission[2].isHideSection = false;
-      } else if (permission === 'ON_BEHALF_OF_USER') {
+      } else if (permission === PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER) {
         groupedAccordingToPermission[3].isHideSection = false;
       }
     });
