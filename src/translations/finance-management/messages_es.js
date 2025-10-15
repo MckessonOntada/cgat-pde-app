@@ -330,5 +330,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.instruction.5040.text':
     'S_InspiroLink does not support payments for certain manufacturer programs. Please contact customer support at {contact_no} for assistance.',
   'paymentInvoices.invoice.count.text': 'S_You can select upto 20 Invoices only',
-  'paymentInvoices.instruction.scheduled.text': 'S_A scheduled payment already exists for this invoice. No additional payments can be made.'
+  'paymentInvoices.instruction.scheduled.text': 'S_A scheduled payment already exists for this invoice. No additional payments can be made.',
+  'paymentInvoices.Details.MRN': 'S_MRN'
 };
