@@ -1,6 +1,7 @@
 import Components from '@src/components/form/Components';
 import CommonUtils from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -15,12 +16,12 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
   const fields = [];
 
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    if (therapyConfig.coiIdRequirement !== 'NOT_REQUIRED') {
+    if (therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED) {
       fields.push({
         name: 'coiId',
         label: translationFn('labels.coiId'),
         placeholder: ' ',
-        isRequired: therapyConfig.coiIdRequirement === 'MANDATORY',
+        isRequired: therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
         component: Components['input'],
         maxLength: 10
       });
@@ -44,36 +45,36 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       maxLength: 20
     });
 
-    if (therapyConfig.dateOfAdministrationRequirement !== 'NOT_REQUIRED') {
+    if (therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED) {
       fields.push({
         name: 'dateOfAdministration',
         label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
         placeholder: ' ',
-        isRequired: therapyConfig.dateOfAdministrationRequirement === 'MANDATORY',
+        isRequired: therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
       });
     }
 
-    if (therapyConfig.dateOfApheresisRequirement !== 'NOT_REQUIRED') {
+    if (therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED) {
       fields.push({
         name: 'dateOfApheresis',
         label: translationFn('orderManagement.patientDetails.inputLabel.dateOfApheresis'),
         placeholder: ' ',
-        isRequired: therapyConfig.dateOfApheresisRequirement === 'MANDATORY',
+        isRequired: therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
         component: Components['datePicker'],
         disableDateTill: new Date(),
         disablePast: true
       });
     }
 
-    if (therapyConfig.poNumberRequirement !== 'NOT_REQUIRED') {
+    if (therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED) {
       fields.push({
         name: 'poNumber',
         label: translationFn('labels.providePONumber'),
         placeholder: ' ',
-        isRequired: therapyConfig.poNumberRequirement === 'MANDATORY',
+        isRequired: therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
         component: Components['input'],
         maxLength: 35
       });

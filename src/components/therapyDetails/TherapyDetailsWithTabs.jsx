@@ -12,7 +12,7 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
-import { ConfigConstants, Requirement, SPMaterialConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { ConfigConstants, REQUIREMENT, SPMaterialConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import AuthUtils from '@src/util/AuthUtils';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { renderModal } from '@src/util/ModalUtil';
@@ -422,7 +422,7 @@ function ConfigItem({ label, value, display = true }) {
   if (typeof value === 'boolean') {
     renderValue = value ? 'YES' : 'NO';
   } else {
-    value === Requirement.NOT_REQUIRED ? (renderValue = t('labels.notRequired').toUpperCase()) : (renderValue = value);
+    value === REQUIREMENT.NOT_REQUIRED ? (renderValue = t('labels.notRequired').toUpperCase()) : (renderValue = value);
   }
   return (
     <>
