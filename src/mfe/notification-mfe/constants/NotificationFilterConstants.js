@@ -26,7 +26,8 @@ export const NOTIFICATION_CATEGORIES_LIST = [
   { label: 'Order Approval', value: 'Order Approval' },
   { label: 'Order Management', value: 'Order Management' },
   { label: 'Pending Submission', value: 'Pending Submission' },
-  { label: 'On Behalf', value: 'On Behalf' }
+  { label: 'On Behalf', value: 'On Behalf' },
+  { label: 'Prescriber Management', value: 'Prescriber Management' }
 ];
 
 // =========================
