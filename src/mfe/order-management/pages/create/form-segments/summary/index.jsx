@@ -1193,9 +1193,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           <Button
                             size="md"
                             variant="tertiary"
-                            disabled={[therapyConfig.mrnRequirement, therapyConfig.patientIdentifierRequirement].every(
-                              (val) => val === REQUIREMENT.NOT_REQUIRED
-                            )}
+                            disabled={
+                              orderDetails.status === ORDER_STATUS.SUBMITTED &&
+                              !isSpOrder &&
+                              [(therapyConfig.mrnRequirement, therapyConfig.patientIdentifierRequirement)].every((val) => val === REQUIREMENT.NOT_REQUIRED)
+                            }
                             onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
                             Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
@@ -1285,12 +1287,16 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         <Button
                           size="md"
                           variant="tertiary"
-                          disabled={[
-                            therapyConfig.coiIdRequirement,
-                            therapyConfig.poNumberRequirement,
-                            therapyConfig.dateOfAdministrationRequirement,
-                            therapyConfig.dateOfApheresisRequirement
-                          ].every((val) => val === REQUIREMENT.NOT_REQUIRED)}
+                          disabled={
+                            orderDetails.status === ORDER_STATUS.SUBMITTED &&
+                            !isSpOrder &&
+                            [
+                              therapyConfig.coiIdRequirement,
+                              therapyConfig.poNumberRequirement,
+                              therapyConfig.dateOfAdministrationRequirement,
+                              therapyConfig.dateOfApheresisRequirement
+                            ].every((val) => val === REQUIREMENT.NOT_REQUIRED)
+                          }
                           onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
                           {t('captions.btnEdit')}
