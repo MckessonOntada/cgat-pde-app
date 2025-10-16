@@ -16,7 +16,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-bottom: var(--spacing-03);
+  padding: var(--spacing-03) 0px;
   .sectionHeader {
     p {
       color: var(--brand-color-text-light-slate);
