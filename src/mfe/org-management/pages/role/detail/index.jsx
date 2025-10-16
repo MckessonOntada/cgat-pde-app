@@ -38,11 +38,19 @@ const roleDetail = () => {
       return res.data;
     },
     select: (data) => {
-      data.communicationPreferences.preferences = {
-        ...INITIAL_PREFERENCES,
-        ...data.communicationPreferences.preferences
+      const communicationPreferences = data?.communicationPreferences ?? {};
+      const preferences = communicationPreferences.preferences ?? {};
+
+      return {
+        ...data,
+        communicationPreferences: {
+          ...communicationPreferences,
+          preferences: {
+            ...INITIAL_PREFERENCES,
+            ...preferences
+          }
+        }
       };
-      return data;
     },
     enabled: !!roleId,
     refetchOnWindowFocus: false
@@ -266,7 +274,7 @@ const roleDetail = () => {
           </div>
           <div className="MCP-panel-container grid grid-gap-16">
             {data?.communicationPreferences?.preferences ? (
-              <CommunicationPreferencesPanel preferences={data?.communicationPreferences?.preferences} readOnly={true} permissions={data.permissions} />
+              <CommunicationPreferencesPanel preferences={data?.communicationPreferences?.preferences} readOnly={true} permissions={data?.permissions} />
             ) : (
               <EmptyDataTable
                 isLoading={false}
