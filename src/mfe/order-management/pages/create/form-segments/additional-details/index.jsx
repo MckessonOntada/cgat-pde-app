@@ -83,6 +83,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   });
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
+  const [fulfillmentAlert, setFulfillmentAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const { tradeDetails = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
@@ -95,6 +96,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
+  const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
+
   const dispatch = useDispatch();
 
   const variantsApiRequestParam = {
@@ -831,7 +834,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
       const { spTherapyConfig, therapy } = result;
-      setAlert(null);
+
       const prescriptionDetails = {
         drugName: '',
         daysSupply: '',
@@ -856,6 +859,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         setAlert({
           type: 'error',
           description: t('message.additionalDetails.missingPrescriptionDetails')
+        });
+      }
+      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.fulfillmentChannel)) {
+        setIsAllowedToProceed(false);
+        setFulfillmentAlert({
+          description: 'message.fulfillmentConfigMissing',
+          type: 'error'
         });
       }
 
@@ -993,6 +1003,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {fulfillmentAlert && <Alert {...fulfillmentAlert} onClose={() => setFulfillmentAlert(null)} />}
 
         <Formik
           initialValues={initialFormValues}
@@ -1019,7 +1030,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             return (
               <Form>
                 <div className="MCP-module-body">
-                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                  <fieldset className="MCP-fieldset" disabled={readOnly || !isAllowedToProceed}>
                     <div className="MCP-panel-container">
                       <ModuleHeader
                         heading={<Heading as="h2">{t('labels.additionalDetails')}</Heading>}
@@ -1080,7 +1091,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       <Button
                         size="md"
                         onClick={() => setIsOrderInDraft(false)}
-                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !values.consentPolicy) || readOnly}
+                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !values.consentPolicy) || readOnly || !isAllowedToProceed}
                         variant="primary"
                         type="submit">
                         {t('captions.btnSaveAndContinue')}

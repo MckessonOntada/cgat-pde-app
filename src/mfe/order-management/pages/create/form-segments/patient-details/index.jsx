@@ -56,6 +56,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
+  const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -137,6 +138,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       setInitialValues({
         patient: CommonUtils.normalizeFormData(normalizePatient(orderDetails.patient)),
         providerId: orderDetails.provider?.id
+      });
+    }
+
+    if (orderDetails.CHANNEL_TYPE === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.fulfillmentChannel)) {
+      setIsAllowedToProceed(false);
+      setAlert({
+        description: 'message.fulfillmentConfigMissing',
+        type: 'error'
       });
     }
   }, [orderDetails]);
@@ -432,7 +441,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>
-                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                  <fieldset className="MCP-fieldset" disabled={readOnly || !isAllowedToProceed}>
                     <div className="MCP-module-body">
                       <div className="MCP-panel-container">
                         <ModuleHeader
@@ -635,7 +644,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
                         variant="primary"
                         type="button"
-                        disabled={readOnly || !isDirty}>
+                        disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly}>
