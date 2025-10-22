@@ -60,6 +60,9 @@ export const SystemConfigurationEN = {
   'manageMaterial.drawer.details.configuration.body.sp.coiId': 'COI ID',
 
   'manageMaterial.drawer.details.configuration.body.sp.patientIdentifier': 'Manufacturer Patient Identifier',
+  'manageMaterial.drawer.details.configuration.body.triageChannel': 'Triage Channel',
+  'labels.hub': 'HUB',
+  'labels.sp': 'SP',
   // Configuration Drawer
 
   'manageMaterial.drawer.configuration.heading': 'Material Configuration',

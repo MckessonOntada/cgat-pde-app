@@ -57,6 +57,9 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.details.configuration.body.doa': 'S_Date of Administration',
   'manageMaterial.drawer.details.configuration.body.dateOfApheresis': 'S_Date of Apheresis',
   'manageMaterial.drawer.details.configuration.body.sp.coiId': 'S_COI ID',
+  'manageMaterial.drawer.details.configuration.body.triageChannel': 'S_Triage Channel',
+  'labels.hub': 'S_HUB',
+  'labels.sp': 'S_SP',
 
   'manageMaterial.drawer.details.configuration.body.sp.patientIdentifier': 'S_Manufacturer Patient Identifier',
   // Configuration Drawer

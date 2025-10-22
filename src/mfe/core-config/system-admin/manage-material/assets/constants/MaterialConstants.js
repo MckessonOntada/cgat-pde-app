@@ -135,6 +135,10 @@ export const SPMaterialConfigConstants = [
       {
         label: 'manageMaterial.drawer.details.configuration.body.mrn',
         value: 'mrnRequirement'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.triageChannel',
+        value: 'fulfillmentChannel'
       }
     ],
     questionnaire: false
@@ -156,4 +160,9 @@ export const REQUIREMENT_OPTIONS = Object.freeze([
   { value: 'MANDATORY', label: 'labels.mandatory' },
   { value: 'OPTIONAL', label: 'labels.optional' },
   { value: 'NOT_REQUIRED', label: 'labels.notRequired' }
+]);
+
+export const TRIAGE_CHANNEL = Object.freeze([
+  { value: 'SP', label: 'labels.sp' },
+  { value: 'HUB', label: 'labels.hub' }
 ]);
