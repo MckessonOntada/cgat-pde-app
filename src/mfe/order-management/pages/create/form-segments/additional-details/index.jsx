@@ -864,7 +864,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.fulfillmentChannel)) {
         setIsAllowedToProceed(false);
         setFulfillmentAlert({
-          description: 'message.fulfillmentConfigMissing',
+          description: t('message.fulfillmentConfigMissing'),
           type: 'error'
         });
       }

@@ -144,7 +144,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     if (orderDetails.CHANNEL_TYPE === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.fulfillmentChannel)) {
       setIsAllowedToProceed(false);
       setAlert({
-        description: 'message.fulfillmentConfigMissing',
+        description: t('message.fulfillmentConfigMissing'),
         type: 'error'
       });
     }
