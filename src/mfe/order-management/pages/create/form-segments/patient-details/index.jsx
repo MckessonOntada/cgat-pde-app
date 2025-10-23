@@ -141,7 +141,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       });
     }
 
-    if (orderDetails.CHANNEL_TYPE === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.fulfillmentChannel)) {
+    if (orderDetails.CHANNEL_TYPE === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
       setIsAllowedToProceed(false);
       setAlert({
         description: t('message.fulfillmentConfigMissing'),

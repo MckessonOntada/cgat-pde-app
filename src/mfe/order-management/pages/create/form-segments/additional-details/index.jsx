@@ -834,7 +834,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
       const { spTherapyConfig, therapy } = result;
-
       const prescriptionDetails = {
         drugName: '',
         daysSupply: '',
@@ -861,7 +860,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       }
-      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.fulfillmentChannel)) {
+      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.triageChannel)) {
         setIsAllowedToProceed(false);
         setFulfillmentAlert({
           description: t('message.fulfillmentConfigMissing'),
