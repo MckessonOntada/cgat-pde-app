@@ -138,7 +138,7 @@ export const SPMaterialConfigConstants = [
       },
       {
         label: 'manageMaterial.drawer.details.configuration.body.triageChannel',
-        value: 'fulfillmentChannel'
+        value: 'triageChannel'
       }
     ],
     questionnaire: false
