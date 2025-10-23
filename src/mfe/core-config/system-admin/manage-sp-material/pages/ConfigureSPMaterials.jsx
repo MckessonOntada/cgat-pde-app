@@ -17,7 +17,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
     pidRequirement: '',
     coiIdRequirement: '',
     mrnRequirement: '',
-    fulfillmentChannel: ''
+    triageChannel: ''
   });
   const [error, setError] = useState(false);
 
@@ -46,14 +46,14 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
           pidRequirement: spConfig.patientIdentifierRequirement,
           coiIdRequirement: spConfig.coiIdRequirement,
           mrnRequirement: spConfig.mrnRequirement,
-          fulfillmentChannel: spConfig.fulfillmentChannel || ''
+          triageChannel: spConfig.triageChannel || ''
         });
       } else {
         setFormValues({
           pidRequirement: '',
           coiIdRequirement: '',
           mrnRequirement: '',
-          fulfillmentChannel: ''
+          triageChannel: ''
         });
       }
     }
@@ -104,14 +104,14 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
     },
     {
       caption: t('manageMaterial.drawer.details.configuration.body.triageChannel'),
-      id: 'fulfillmentChannel',
+      id: 'triageChannel',
       options: TRIAGE_CHANNEL,
-      value: formValues.fulfillmentChannel,
+      value: formValues.triageChannel,
       required: true,
-      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, fulfillmentChannel: value }))
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, triageChannel: value }))
     }
   ];
-  const isApplyDisabled = formValues.pidRequirement && formValues.coiIdRequirement && formValues.mrnRequirement && formValues.fulfillmentChannel;
+  const isApplyDisabled = formValues.pidRequirement && formValues.coiIdRequirement && formValues.mrnRequirement && formValues.triageChannel;
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
@@ -120,7 +120,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
         pidRequirement: formValues.pidRequirement,
         coiIdRequirement: formValues.coiIdRequirement,
         mrnRequirement: formValues.mrnRequirement,
-        fulfillmentChannel: formValues.fulfillmentChannel
+        triageChannel: formValues.triageChannel
       };
       applyConfiguration(configValues);
     } else {
