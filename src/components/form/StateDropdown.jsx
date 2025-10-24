@@ -4,7 +4,7 @@ import { getNestedValue, US_STATES } from './util';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { Label, TextError } from '@mckesson/mcp-component-library';
 
-function StateDropdown({ field, form, label = 'State', isRequired = false }) {
+function StateDropdown({ field, form, label = 'State', isRequired = false, readOnly }) {
   const { t } = useTranslate();
   const [selectedState, setSelectedState] = useState(null);
   const [searchKey, setSearchKey] = useState();
@@ -51,6 +51,8 @@ function StateDropdown({ field, form, label = 'State', isRequired = false }) {
           value={field.value || ''}
           fieldDisplayValue={options.find((opt) => opt.value === field.value) || undefined}
           error={isFieldTouched && errorMessage}
+          readOnly={readOnly}
+          isDisabled={readOnly}
         />
       </div>
     </React.Fragment>

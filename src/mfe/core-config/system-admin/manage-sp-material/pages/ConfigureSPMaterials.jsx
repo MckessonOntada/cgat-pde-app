@@ -9,14 +9,15 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import Alert from '@src/components/cgat-alert/Alert';
 import { useSPMaterial } from '../context/SPMaterialContext';
 import MaterialService from '@src/api/commonService/MaterialService';
-import { REQUIREMENT_OPTIONS } from '../../manage-material/assets/constants/MaterialConstants';
+import { REQUIREMENT_OPTIONS, TRIAGE_CHANNEL } from '../../manage-material/assets/constants/MaterialConstants';
 
 function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
     pidRequirement: '',
     coiIdRequirement: '',
-    mrnRequirement: ''
+    mrnRequirement: '',
+    triageChannel: ''
   });
   const [error, setError] = useState(false);
 
@@ -44,13 +45,15 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
         setFormValues({
           pidRequirement: spConfig.patientIdentifierRequirement,
           coiIdRequirement: spConfig.coiIdRequirement,
-          mrnRequirement: spConfig.mrnRequirement
+          mrnRequirement: spConfig.mrnRequirement,
+          triageChannel: spConfig.triageChannel || ''
         });
       } else {
         setFormValues({
           pidRequirement: '',
           coiIdRequirement: '',
-          mrnRequirement: ''
+          mrnRequirement: '',
+          triageChannel: ''
         });
       }
     }
@@ -98,9 +101,17 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
       value: formValues.mrnRequirement,
       required: true,
       onChangeValue: (value) => setFormValues((prev) => ({ ...prev, mrnRequirement: value }))
+    },
+    {
+      caption: t('manageMaterial.drawer.details.configuration.body.triageChannel'),
+      id: 'triageChannel',
+      options: TRIAGE_CHANNEL,
+      value: formValues.triageChannel,
+      required: true,
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, triageChannel: value }))
     }
   ];
-  const isApplyDisabled = formValues.pidRequirement && formValues.coiIdRequirement && formValues.mrnRequirement;
+  const isApplyDisabled = formValues.pidRequirement && formValues.coiIdRequirement && formValues.mrnRequirement && formValues.triageChannel;
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
@@ -108,7 +119,8 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
         spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
         pidRequirement: formValues.pidRequirement,
         coiIdRequirement: formValues.coiIdRequirement,
-        mrnRequirement: formValues.mrnRequirement
+        mrnRequirement: formValues.mrnRequirement,
+        triageChannel: formValues.triageChannel
       };
       applyConfiguration(configValues);
     } else {

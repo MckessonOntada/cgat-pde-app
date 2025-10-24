@@ -56,6 +56,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
+  const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -137,6 +138,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       setInitialValues({
         patient: CommonUtils.normalizeFormData(normalizePatient(orderDetails.patient)),
         providerId: orderDetails.provider?.id
+      });
+    }
+
+    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
+      setIsAllowedToProceed(false);
+      setAlert({
+        description: t('message.fulfillmentConfigMissing'),
+        type: 'error'
       });
     }
   }, [orderDetails]);
@@ -432,7 +441,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>
-                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                  <fieldset className="MCP-fieldset" disabled={readOnly || !isAllowedToProceed}>
                     <div className="MCP-module-body">
                       <div className="MCP-panel-container">
                         <ModuleHeader
@@ -448,7 +457,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                           }
                         />
 
-                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly} />
+                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>
                             <hr className="form-section-separator" />
@@ -464,7 +473,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 </p>
                               }
                             />
-                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly} />
+                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
 
@@ -485,7 +494,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 )
                               }
                             />
-                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly} />
+                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -524,6 +533,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                   isAsyncLoading={isFetchingProviders}
                                   refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                   asyncRecordsFound={totalProviders}
+                                  isDisabled={!isAllowedToProceed}
                                   isReadOnly={readOnly}
                                 />
                                 {provider && (
@@ -635,10 +645,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
                         variant="primary"
                         type="button"
-                        disabled={readOnly || !isDirty}>
+                        disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly}>
+                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly || !isAllowedToProceed}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>
