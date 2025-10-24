@@ -1040,7 +1040,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                         }
                       />
                       <div className="form-segment-list">
-                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly} />
+                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
 
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
@@ -1050,17 +1050,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           variant={variant}
                           handleOnVariantChange={handleOnVariantChange}
                           handleOnVariantDocumentChange={handleOnVariantDocumentChange}
-                          readOnly={readOnly}
+                          readOnly={readOnly || !isAllowedToProceed}
                         />
 
                         <ClinicalDetails
                           channelType={channelType}
                           onDiagnosisCodeSearch={setDiagnosisSearchQuery}
                           diagnosisCode={diagnosisCode}
-                          readOnly={readOnly}
+                          readOnly={readOnly || !isAllowedToProceed}
                         />
 
-                        <PrescriptionDetails channelType={channelType} readOnly={readOnly} />
+                        <PrescriptionDetails channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
 
                         <QuestionnaireDetails
                           isLoading={isFetchingConfiguredQuestions}
@@ -1069,7 +1069,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           config={questionnaireTemplateConfig}
                           questionnaireTemplateConfig={questionnaireTemplateConfig}
                           channelType={channelType}
-                          readOnly={readOnly}
+                          readOnly={readOnly || !isAllowedToProceed}
                         />
                       </div>
                     </div>

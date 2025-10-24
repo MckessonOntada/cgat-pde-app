@@ -141,7 +141,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       });
     }
 
-    if (orderDetails.CHANNEL_TYPE === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
+    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
       setIsAllowedToProceed(false);
       setAlert({
         description: t('message.fulfillmentConfigMissing'),
@@ -457,7 +457,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                           }
                         />
 
-                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly} />
+                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>
                             <hr className="form-section-separator" />
@@ -473,7 +473,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 </p>
                               }
                             />
-                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly} />
+                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
 
@@ -494,7 +494,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 )
                               }
                             />
-                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly} />
+                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -533,6 +533,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                   isAsyncLoading={isFetchingProviders}
                                   refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                   asyncRecordsFound={totalProviders}
+                                  isDisabled={!isAllowedToProceed}
                                   isReadOnly={readOnly}
                                 />
                                 {provider && (
@@ -647,7 +648,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly}>
+                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly || !isAllowedToProceed}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>
