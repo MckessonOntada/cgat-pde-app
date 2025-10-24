@@ -82,6 +82,7 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMate
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
+      allAccounts: selectedOrganization?.value === 'all' ? true : false,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(!isSpMaterial && { practiceId: organizationId }),
       ...(!isSpMaterial && { partnerFunction: 'SOLD_TO' }),
@@ -103,10 +104,10 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMate
     queryKey: ['SPAccounts', selectedOrganization?.id, requestParams, organizationId, isSpMaterial, spMaterialId],
     queryFn: async () => {
       let result;
-      console.log(isSpMaterial, 'isSpMaterial');
+
       if (!isSpMaterial) {
-        if (!organizationId) return [];
-        result = await AccountService.getAccountList(requestParams, organizationId);
+        if (!organizationId && selectedOrganization.value !== 'all') return [];
+        result = await AccountService.getAccountList(requestParams, organizationId || 0);
       } else {
         result = await AccountService.getAssociatedMaterialSPAccountList(requestParams, spMaterialId);
       }
@@ -119,7 +120,7 @@ export const SPAccountProvider = ({ children, isLinkedAccounts = false, isSpMate
       return data;
     },
     refetchOnWindowFocus: false,
-    enabled: Boolean(organizationId)
+    enabled: Boolean(organizationId || selectedOrganization?.value === 'all')
   });
 
   useEffect(() => {

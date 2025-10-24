@@ -22,7 +22,12 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     totalAccs
   } = useOrgAccountSelectionContext();
   const onOrganizationChange = (selectedValue) => {
-    let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
+    let _selected;
+    if (selectedValue && selectedValue === 'all') {
+      _selected = { label: 'All', value: 'all' };
+    } else {
+      _selected = organizationOptions.find((ele) => ele.id == selectedValue);
+    }
     setSelectedOrganization(_selected);
     setCheckedAccounts([]);
     if (handleOrgChange) {
