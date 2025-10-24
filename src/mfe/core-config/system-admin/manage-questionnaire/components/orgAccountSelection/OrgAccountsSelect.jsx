@@ -64,7 +64,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           recordsCountToEnableSearch={5}
           size="md"
           isSortEnable={false}
-          value={selectedOrganization?.id.toString() || ''}
+          value={selectedOrganization?.value || ''}
           noSelectedCountMessage={t(!showAccountsSelect ? 'ManageCatalog.SelectOrganization' : 'ALL')}
           refineFilterMessage={[t('refineFilter.message')]}
           asyncRecordsFound={totalOrgs}

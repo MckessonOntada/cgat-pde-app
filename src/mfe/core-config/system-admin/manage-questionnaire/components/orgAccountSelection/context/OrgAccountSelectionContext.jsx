@@ -23,7 +23,7 @@ const ACCOUNTS_PER_SEARCH = 20;
 export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true, defaultFirstOrgSelected = false, enableConfigure = false }) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
-  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [selectedOrganization, setSelectedOrganization] = useState({ label: 'All', value: 'all' });
   const [searchAccountText, setSearchAccountText] = useState('');
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [options, setOptions] = useState([]);
@@ -58,7 +58,11 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             label: item.name,
             value: item.id
           }));
-          if (defaultFirstOrgSelected && !selectedOrganization) {
+          data.unshift({
+            label: 'All',
+            value: 'all'
+          });
+          if (!selectedOrganization) {
             setSelectedOrganization(content[0]);
           }
           if (selectedOrganization) {
@@ -97,7 +101,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
     status: 'active',
     partnerFunction: 'SOLD_TO',
     practiceIdList: !!selectedOrganization ? selectedOrganization?.id : [],
-    allAccounts: !!selectedOrganization ? false : true,
+    allAccounts: !selectedOrganization || selectedOrganization.value === 'all' ? true : false,
     channelType: CHANNEL_TYPE.BUY_AND_BILL
   };
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
