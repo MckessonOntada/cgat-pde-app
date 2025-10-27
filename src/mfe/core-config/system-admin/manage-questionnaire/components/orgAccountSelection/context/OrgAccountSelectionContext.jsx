@@ -20,10 +20,20 @@ export const useOrgAccountSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true, defaultFirstOrgSelected = false, enableConfigure = false }) => {
+export const OrgAccountSelectionProvider = ({
+  children,
+  allAccounts = false,
+  enableOrg = true,
+  enableAcct = true,
+  defaultFirstOrgSelected = false,
+  enableConfigure = false
+}) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
-  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [selectedOrganization, setSelectedOrganization] = useState(() => {
+    if (allAccounts) return { label: 'All', value: 'all' };
+    return null;
+  });
   const [searchAccountText, setSearchAccountText] = useState('');
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [options, setOptions] = useState([]);
@@ -58,10 +68,15 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             label: item.name,
             value: item.id
           }));
-          if (defaultFirstOrgSelected && !selectedOrganization) {
-            setSelectedOrganization(content[0]);
+          if (allAccounts)
+            data.unshift({
+              label: 'All',
+              value: 'all'
+            });
+          if (!allAccounts && !selectedOrganization) {
+            // setSelectedOrganization(content[0]);
           }
-          if (selectedOrganization) {
+          if ((!allAccounts && selectedOrganization) || (allAccounts && selectedOrganization?.value !== 'all')) {
             let findOrg = data.find((item) => item.value == selectedOrganization.id);
             !findOrg &&
               data.unshift({
@@ -77,8 +92,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       }
       return [];
     },
-    refetchOnWindowFocus: false,
-    enabled: !!enableOrg
+    refetchOnWindowFocus: false
   });
   const debounceOrgSearch = useCallback(() => {
     let timeoutId;
@@ -97,7 +111,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
     status: 'active',
     partnerFunction: 'SOLD_TO',
     practiceIdList: !!selectedOrganization ? selectedOrganization?.id : [],
-    allAccounts: !!selectedOrganization ? false : true,
+    allAccounts: (!allAccounts && !selectedOrganization) || (allAccounts && selectedOrganization.value === 'all') ? true : false,
     channelType: CHANNEL_TYPE.BUY_AND_BILL
   };
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
@@ -144,6 +158,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
     selectedOrganization,
     setSelectedOrganization,
     accountsList: accountsList || [],
+    allAccounts,
     searchAccountList,
     selectedAccount,
     setSelectedAccount,
