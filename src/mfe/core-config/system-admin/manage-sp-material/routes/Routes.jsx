@@ -13,7 +13,7 @@ function ManageSPMaterialRoute() {
       <Route
         path={routeConstants.ASSOCIATED_ACCOUNT}
         element={
-          <OrgAccountSelectionProvider enableOrg={false} enableAcct={false} defaultFirstOrgSelected={false} enableConfigure={false}>
+          <OrgAccountSelectionProvider allAccounts={true} enableOrg={false} enableAcct={false} defaultFirstOrgSelected={false} enableConfigure={false}>
             <SPAccountProvider isSpMaterial={true}>
               <AssociatedSPAccount />
             </SPAccountProvider>

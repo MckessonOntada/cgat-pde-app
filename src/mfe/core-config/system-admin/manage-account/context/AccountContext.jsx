@@ -33,7 +33,7 @@ const INITIAL_FILTER_STATE = {
 
 export const AccountProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
-  const { selectedOrganization } = useOrgAccountSelectionContext();
+  const { selectedOrganization, allAccounts } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export const AccountProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       practiceId: selectedOrganization?.id || selectedOrganization?.value,
-      allAccounts: selectedOrganization?.value === 'all' ? true : false,
+      allAccounts: allAccounts && selectedOrganization?.value === 'all' ? true : false,
       partnerFunction: 'SOLD_TO'
     };
 
@@ -80,7 +80,7 @@ export const AccountProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['Accounts', selectedOrganization?.id, requestParams],
     queryFn: async () => {
-      if (!selectedOrganization?.id && selectedOrganization?.value !== 'all') return [];
+      if (!selectedOrganization?.id && allAccounts && selectedOrganization?.value !== 'all') return [];
       const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization?.id || 0}/accounts?${serializeParams(requestParams)}`;
 
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
