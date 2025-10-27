@@ -93,7 +93,7 @@ export default function SystemConfiguration() {
         path={'manage-sp-account/*'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-            <OrgAccountSelectionProvider enableAcct={false} defaultFirstOrgSelected={true}>
+            <OrgAccountSelectionProvider allAccounts={true} enableAcct={false} defaultFirstOrgSelected={true}>
               <ManageSPAccountRoute />
             </OrgAccountSelectionProvider>
           </ProtectedRoute>
