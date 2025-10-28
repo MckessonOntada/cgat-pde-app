@@ -5,27 +5,31 @@ import PaymentHistoryTable from '../paymentHistory/PaymentHistoryTable';
 import { PaymentHistoryProvider, usePaymentHistory } from '../../context/PaymentHistoryContext';
 import { useTranslate } from '@src/translations/useTranslation';
 
-function HistoryTableWrapper(props) {
-  const { data, isFetching, filterConfig } = usePaymentHistory();
+function Section({ titleKey, showPayOn = false }) {
   const { t } = useTranslate();
-  if (isFetching || !data.length) return null;
-  if (!filterConfig?.billNo || !Array.isArray(data) || data.length === 0) return null;
+  const { data, isFetching, filterConfig } = usePaymentHistory();
+  if (!filterConfig?.billNo || !Array.isArray(data) || data.length === 0 || isFetching) return null;
+
   return (
     <>
       <Heading as="h2" className="secondaryHeading">
-        {t('paymentInvoices.table.paymentHistory')}
+        {t(titleKey)}
       </Heading>
-      <PaymentHistoryTable />
+      <PaymentHistoryTable isToShowPayOn={showPayOn} />
     </>
   );
 }
 
-function History(props) {
+export default function HistoryAndScheduledPayments({ billNumber }) {
   return (
-    <PaymentHistoryProvider billNo={props?.billNumber}>
-      <HistoryTableWrapper />
-    </PaymentHistoryProvider>
+    <>
+      <PaymentHistoryProvider billNo={billNumber} paymentStatuses={['Cancelled', 'Processed']}>
+        <Section titleKey="paymentInvoices.table.paymentHistory" />
+      </PaymentHistoryProvider>
+
+      <PaymentHistoryProvider billNo={billNumber} paymentStatuses={['In Process']}>
+        <Section titleKey="paymentInvoices.table.schedulePayments" showPayOn />
+      </PaymentHistoryProvider>
+    </>
   );
 }
-
-export default History;
