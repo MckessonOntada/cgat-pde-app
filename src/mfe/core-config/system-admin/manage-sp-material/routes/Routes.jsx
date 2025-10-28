@@ -10,6 +10,8 @@ function ManageSPMaterialRoute() {
   return (
     <Routes>
       <Route path={routeConstants.MANAGESPMATERIAL} element={<ManageSPMaterial />} />
+      <Route path={routeConstants.DX_CONFIG} element={<div>DX Configuration</div>} />
+      <Route path={routeConstants.ADD_DIAGNOSIS_CODES} element={<div>DX Configuration &gt; Add Diagnosis Codes</div>} />
       <Route
         path={routeConstants.ASSOCIATED_ACCOUNT}
         element={
