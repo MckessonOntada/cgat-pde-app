@@ -83,7 +83,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   });
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
-  const [fulfillmentAlert, setFulfillmentAlert] = React.useState(null);
+  const [triageAlert, setTriageAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const { tradeDetails = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
@@ -862,8 +862,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       }
       if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.triageChannel)) {
         setIsAllowedToProceed(false);
-        setFulfillmentAlert({
-          description: t('message.fulfillmentConfigMissing'),
+        setTriageAlert({
+          description: t('message.triageChannelConfigMissing'),
           type: 'error'
         });
       }
@@ -1002,7 +1002,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-        {fulfillmentAlert && <Alert {...fulfillmentAlert} onClose={() => setFulfillmentAlert(null)} />}
+        {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
 
         <Formik
           initialValues={initialFormValues}

@@ -520,7 +520,7 @@ export const MessageEn = {
     'You cannot proceed to the next step. Consent requirements for the selected material are not configurable in the system. Please contact your administrator to configure the necessary consent and restart the order.',
   'message.additionalDetails.missingPrescriptionDetails':
     'Order submission cannot be completed. Prescription details have not been configured for this request. Please contact your system administrator to ensure prescription setup before proceeding.',
-  'message.fulfillmentConfigMissing': 'Fulfillment channel setup for this material is missing. Please contact your admin before submitting the order.',
+  'message.triageChannelConfigMissing': 'Triage channel setup for this material is missing. Please contact your admin before submitting the order.',
   'message.questionnaire.optionValueRequired': 'Option value is required',
   'heading.manageQuestionnaire': 'Manage Questionnaire',
   'button.caption.addQuestionnaire': 'Add Questionnaire',

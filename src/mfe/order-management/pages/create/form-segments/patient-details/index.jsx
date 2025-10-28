@@ -144,7 +144,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
       setIsAllowedToProceed(false);
       setAlert({
-        description: t('message.fulfillmentConfigMissing'),
+        description: t('message.triageChannelConfigMissing'),
         type: 'error'
       });
     }
