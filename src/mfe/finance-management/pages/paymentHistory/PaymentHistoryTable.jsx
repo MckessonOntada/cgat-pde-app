@@ -86,7 +86,7 @@ export default function PaymentHistoryTable({ dataFilteredByStatus, isToShowPayO
     {
       id: 'payOn',
       name: t('paymentInvoices.history.table.PayOnDate'),
-      selector: (row) => `${row.invoices?.[0]?.dueDate || ''}`,
+      selector: (row) => `${row.dateScheduled || ''}`,
       sortable: true,
       wrap: true,
       maxWidth: '145px',
@@ -94,7 +94,7 @@ export default function PaymentHistoryTable({ dataFilteredByStatus, isToShowPayO
         const s = (props?.paymentStatus || '').toLowerCase();
         const isInProcess = s === 'in process' || s === 'inprocess';
         if (!isInProcess) return '-';
-        const dueDate = props.invoices?.[0]?.dueDate || '';
+        const dueDate = props?.dateScheduled || '';
         return dueDate ? CommonUtils.convertDateStringFormat(dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY') : '-';
       },
       omit: !isToShowPayOn
