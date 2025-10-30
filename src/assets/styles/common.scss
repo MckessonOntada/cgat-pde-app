@@ -1716,3 +1716,10 @@ input[type="checkbox"] + label {
     font-size: var(--brand-font-size--small) !important;
   }
 }
+.user-list-tooltip {
+  text-align: left;
+}
+.user-list {
+  margin: 0;
+  padding-left: var(--spacing-03);
+}

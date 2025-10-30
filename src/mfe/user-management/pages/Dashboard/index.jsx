@@ -193,6 +193,7 @@ export default function Dashboard() {
         <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <div className="MCP-CardContainer">
             <CommonFilters
+              autoFocus={true}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={AdditionalFiltersConfig}
@@ -206,7 +207,12 @@ export default function Dashboard() {
             </div>
           )}
           <div className="userList">
-            <UserTable key={tab} selectableRows={tab === USER_TABS.USERS} onActionSuccess={tab === USER_TABS.USERS ? handleSuccess : undefined} />
+            <UserTable
+              key={tab}
+              showAlert={showAlert}
+              selectableRows={tab === USER_TABS.USERS}
+              onActionSuccess={tab === USER_TABS.USERS ? handleSuccess : undefined}
+            />
           </div>
         </div>
       </div>

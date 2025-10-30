@@ -177,20 +177,22 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   };
 
   const handleOnSubmit = async (isDraft) => {
-    if (!selectedShipToAccount) {
-      setAlert({
-        type: 'error',
-        description: t('messages.selectshippingAddress')
-      });
-      return;
-    }
-    if (!selectedSoldToAccount) {
-      setAlert({
-        type: 'error',
-        description: t('messages.selectAccount'),
-        anchorEl: alertContainerId
-      });
-      return;
+    if (!isDraft) {
+      if (!selectedShipToAccount) {
+        setAlert({
+          type: 'error',
+          description: t('messages.selectshippingAddress')
+        });
+        return;
+      }
+      if (!selectedSoldToAccount) {
+        setAlert({
+          type: 'error',
+          description: t('messages.selectAccount'),
+          anchorEl: alertContainerId
+        });
+        return;
+      }
     }
     if (isSaving) return;
 

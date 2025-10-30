@@ -344,6 +344,7 @@ const OrderIndex = () => {
 
             <div className="MCP-CardContainer" key={currentTab.id}>
               <CommonFilters
+                autoFocus={true}
                 onApplyFilters={handleApplyFilters}
                 onClearFilters={handleClearFilters}
                 additionalFilters={additionalFiltersConfig.availableFilters}

@@ -1,4 +1,5 @@
 import { ADDRESS_REGEX, ALPHA_NUMERIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import CommonUtils from '@src/util/CommonUtils';
 import * as Yup from 'yup';
 
@@ -31,6 +32,37 @@ export const getInitialValues = () => ({
   },
   providerId: ''
 });
+
+export const normalizePatient = (patient) => {
+  const p = patient || {};
+  return {
+    ...p,
+    contact: {
+      emailId: '',
+      phoneNumber: '',
+      homePhone: '',
+      workPhone: '',
+      preferedMethodOfContact: '',
+      ...(p.contact || {})
+    },
+    patientAddress: {
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      zipCode: '',
+      state: '',
+      ...(p.patientAddress || {})
+    },
+    patientInfo: {
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      gender: '',
+      dateOfBirth: '',
+      ...(p.patientInfo || {})
+    }
+  };
+};
 
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
@@ -125,7 +157,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
         .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
         .when([], {
-          is: () => !isSpOrder && therapyConfig.isPIDRequired,
+          is: () => !isSpOrder && therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
           then: (schema) =>
             schema
               .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
@@ -139,7 +171,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
       medicalRecordNumber: Yup.string()
         .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
         .when([], {
-          is: () => spMaterialConfig?.isMRNRequired || therapyConfig.isMRNRequired,
+          is: () => (isSpOrder && spMaterialConfig?.mrnRequirement === REQUIREMENT.MANDATORY) || therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY,
           then: (schema) =>
             schema
               .required(t('orderManagement.patientDetails.validation.mrn_required'))
@@ -154,7 +186,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
         .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
         .max(10, t('labels.COI_IdExceedDigits'))
         .when([], {
-          is: () => isSpOrder && spMaterialConfig?.isCoiIdRequired,
+          is: () => isSpOrder && spMaterialConfig?.coiIdRequirement === REQUIREMENT.MANDATORY,
           then: (schema) => schema.required(t('labels.COIIdRequired')),
           otherwise: (schema) => schema.notRequired()
         })

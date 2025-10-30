@@ -62,13 +62,19 @@ export default function ViewOrganization() {
 
   const addNewAccountsClick = () => {
     if (selectedAccounts?.length <= 0) {
-      setUpdateState({ isSuccess: true });
-      setAlertConfig({
-        isVisible: true,
-        description: `Select at least one account`,
-        type: 'error'
-      });
-      return;
+      if (!isView) {
+        navigate(RoutePaths.pathOrgManagement, {
+          state: { isSuccess: true }
+        });
+      } else {
+        setUpdateState({ isSuccess: true });
+        setAlertConfig({
+          isVisible: true,
+          description: `Select at least one account`,
+          type: 'error'
+        });
+        return;
+      }
     }
 
     const payload = selectedAccounts?.map((account) => account.id);
@@ -169,6 +175,7 @@ export default function ViewOrganization() {
         selectedRows={selectedAccounts}
         setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
         practiceId={addNewAccounts ? null : orgId}
+        practiceName={data?.name}
       />
 
       {addNewAccounts && (

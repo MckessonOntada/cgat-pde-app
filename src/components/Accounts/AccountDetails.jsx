@@ -38,7 +38,7 @@ export const SpAccountDetailsConstants = [
   }
 ];
 
-function AccountDetails({ openDetails, setOpenDetails, selectedDetails }) {
+function AccountDetails({ openDetails, setOpenDetails, selectedDetails, practiceName }) {
   const { t } = useTranslate();
   const organization = sessionStorage.getItem('selectedOrganization');
   const account = selectedDetails || {};
@@ -64,7 +64,7 @@ function AccountDetails({ openDetails, setOpenDetails, selectedDetails }) {
                     value = isSPAccount ? account.address[field.value.split('.')[1]] || '-' : getAddress(account.address) || '-';
                   }
                   if (field.value === 'organization') {
-                    value = JSON.parse(organization).name || '-';
+                    value = organization ? JSON.parse(organization).name : practiceName || '-';
                   }
                   if (field.value === 'name') {
                     value = getFullName(account.name || '-');

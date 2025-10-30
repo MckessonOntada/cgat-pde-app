@@ -39,7 +39,7 @@ export const getMaterialList = async (requestParams) => {
 };
 
 async function getSPMaterialById(spMaterialId, requestParams) {
-  if (!spMaterialId) throw new Error('SP Material id is missing. SP Material id is required to fetch details.');
+  if (!spMaterialId) throw new Error('SP Material ID is missing. SP Material ID is required to fetch details.');
   const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spMaterialId)}?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {

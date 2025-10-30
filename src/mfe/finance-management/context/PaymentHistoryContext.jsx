@@ -39,13 +39,20 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 
-export const PaymentHistoryProvider = ({ children, billNo }) => {
+export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState({
     ...INITIAL_FILTER_STATE,
-    billNo: billNo || ''
+    billNo: billNo || '',
+    paymentStatuses: paymentStatuses || []
   });
+  const normalize = (v) => (v ?? '').toString().trim().toLowerCase();
+  const statusSet = useMemo(() => {
+    if (!paymentStatuses) return null;
+    const arr = Array.isArray(paymentStatuses) ? paymentStatuses : [paymentStatuses];
+    return new Set(arr.map(normalize));
+  }, [paymentStatuses]);
 
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
@@ -87,7 +94,9 @@ export const PaymentHistoryProvider = ({ children, billNo }) => {
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
       // return matchesSearchQuery;
     });
-
+    if (statusSet && statusSet.size) {
+      _modifiedData = _modifiedData.filter((row) => statusSet.has(normalize(row.paymentStatus)));
+    }
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
     const endIndex = startIndex + paginationConfig.pageSize;
     // Updating the page count and total records
@@ -101,7 +110,7 @@ export const PaymentHistoryProvider = ({ children, billNo }) => {
   };
 
   const { isFetching, isError, refetch } = useQuery({
-    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig.billNo],
+    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig.billNo, , Array.from(statusSet ?? [])],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
@@ -130,7 +139,9 @@ export const PaymentHistoryProvider = ({ children, billNo }) => {
 
           return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
         });
-
+        if (statusSet && statusSet.size) {
+          _modifiedData = _modifiedData.filter((row) => statusSet.has(normalize(row.paymentStatus)));
+        }
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
         setData(_modifiedData.slice(startIndex, endIndex));
@@ -234,7 +245,7 @@ export const PaymentHistoryProvider = ({ children, billNo }) => {
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
       sortData(sortConfig);
     }
-  }, [filterConfig, paginationConfig.pageNumber]);
+  }, [filterConfig, paginationConfig.pageNumber, statusSet]);
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));

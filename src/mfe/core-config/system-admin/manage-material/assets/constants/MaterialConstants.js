@@ -71,30 +71,30 @@ export const ConfigConstants = [
         value: 'isPatientInformationRequired'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.pIdentifierRequired',
-        value: 'isPIDRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.pIdentifier',
+        value: 'patientIdentifierRequirement',
         displayCondition: (details) => details?.isPatientInformationRequired !== false
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.sp.mrnRequired',
-        value: 'isMRNRequired',
+        label: 'manageMaterial.drawer.details.configuration.body.mrn',
+        value: 'mrnRequirement',
         displayCondition: (details) => details?.isPatientInformationRequired !== false
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired',
-        value: 'isCoiIdRequired'
+        label: 'manageMaterial.drawer.details.configuration.body.coiId',
+        value: 'coiIdRequirement'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.poNumberRequired',
-        value: 'isPORequired'
+        label: 'manageMaterial.drawer.details.configuration.body.poNumber',
+        value: 'poNumberRequirement'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.doaRequired',
-        value: 'isDOARequired'
+        label: 'manageMaterial.drawer.details.configuration.body.doa',
+        value: 'dateOfAdministrationRequirement'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.dateOfApheresisRequired',
-        value: 'isDateOfApheresisRequired'
+        label: 'manageMaterial.drawer.details.configuration.body.dateOfApheresis',
+        value: 'dateOfApheresisRequirement'
       }
     ],
 
@@ -125,18 +125,44 @@ export const SPMaterialConfigConstants = [
     ],
     sectionData: [
       {
-        label: 'manageMaterial.drawer.details.configuration.body.patientIdentifierRequired',
-        value: 'isPatientIdentifierRequired'
+        label: 'manageMaterial.drawer.details.configuration.body.sp.patientIdentifier',
+        value: 'patientIdentifierRequirement'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.sp.coiIdRequired',
-        value: 'isCoiIdRequired'
+        label: 'manageMaterial.drawer.details.configuration.body.coiId',
+        value: 'coiIdRequirement'
       },
       {
-        label: 'manageMaterial.drawer.details.configuration.body.sp.mrnRequired',
-        value: 'isMRNRequired'
+        label: 'manageMaterial.drawer.details.configuration.body.mrn',
+        value: 'mrnRequirement'
+      },
+      {
+        label: 'manageMaterial.drawer.details.configuration.body.triageChannel',
+        value: 'triageChannel'
       }
     ],
     questionnaire: false
   }
 ];
+
+export const REQUIREMENT = Object.freeze({
+  MANDATORY: 'MANDATORY',
+  OPTIONAL: 'OPTIONAL',
+  NOT_REQUIRED: 'NOT_REQUIRED'
+});
+
+export const YES_NO_OPTIONS = Object.freeze([
+  { value: 'yes', label: 'labels.yes' },
+  { value: 'no', label: 'labels.no' }
+]);
+
+export const REQUIREMENT_OPTIONS = Object.freeze([
+  { value: 'MANDATORY', label: 'labels.mandatory' },
+  { value: 'OPTIONAL', label: 'labels.optional' },
+  { value: 'NOT_REQUIRED', label: 'labels.notRequired' }
+]);
+
+export const TRIAGE_CHANNEL = Object.freeze([
+  { value: 'SP', label: 'labels.sp' },
+  { value: 'HUB', label: 'labels.hub' }
+]);

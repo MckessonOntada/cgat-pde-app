@@ -12,7 +12,7 @@ import {
   TherapyDetailsConstantsForBB,
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
-import { ConfigConstants, SPMaterialConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { ConfigConstants, REQUIREMENT, SPMaterialConfigConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import AuthUtils from '@src/util/AuthUtils';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { renderModal } from '@src/util/ModalUtil';
@@ -418,12 +418,17 @@ function DetailItem({ label, value }) {
 function ConfigItem({ label, value, display = true }) {
   const { t } = useTranslate();
   if (!display) return null;
-
+  let renderValue = value;
+  if (typeof value === 'boolean') {
+    renderValue = value ? 'YES' : 'NO';
+  } else {
+    value === REQUIREMENT.NOT_REQUIRED ? (renderValue = t('labels.notRequired').toUpperCase()) : (renderValue = value);
+  }
   return (
     <>
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{label}</div>
-        <div className={styles.rightContentAction}>{typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}</div>
+        <div className={styles.rightContentAction}>{renderValue}</div>
       </div>
     </>
   );

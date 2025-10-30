@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react';
-import { connect, useSelector } from 'react-redux';
-import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
-import styles from './assets/styles/Header.module.scss';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useSessionFeatures from '@src/hooks/useSessionFeatures';
-import AuthUtils from '@src/util/AuthUtils';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
-import { useTranslate } from '@src/translations/useTranslation';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { useDispatch } from 'react-redux';
+import { setUserData } from '@src/store/reducer/userReducer';
+import { useTranslate } from '@src/translations/useTranslation';
+import AuthUtils from '@src/util/AuthUtils';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import styles from './assets/styles/Header.module.scss';
+import { navLinks } from './constants';
 
 const impersonateLogout = () => {
-  return new Promise(async function (resolve, reject) {
+  return new Promise(async (resolve, reject) => {
     try {
       await AuthUtils.removeImpersonateId();
       resolve('Exiting impersonate login');
@@ -22,21 +22,21 @@ const impersonateLogout = () => {
   });
 };
 
-const SecondaryHeader = ({ navLinks }) => {
+const SecondaryHeader = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
   const dispatch = useDispatch();
-
   const location = useLocation();
   const {
     organization: { removeOrganization }
   } = useSessionFeatures();
+  const state = useSelector((state) => state.orderState);
+
   const handleSystemAdminViewClick = () => {
     removeOrganization();
-
     if (location.pathname === '/') {
       window.location.reload();
     } else {
@@ -61,86 +61,74 @@ const SecondaryHeader = ({ navLinks }) => {
       ];
     }
 
-    let updatedTabs = [];
+    if (!Array.isArray(navLinks) || navLinks.length === 0) return [];
 
-    if (Array.isArray(navLinks) && navLinks.length > 0) {
-      updatedTabs = navLinks
-        .map((item) => {
-          if (item.configName === 'Dashboard' || (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(item.permittedRoute))) {
-            let isActiveTab = false;
-
-            if (item.configName === 'Dashboard' && location.pathname === '/') isActiveTab = true;
-
-            if (item.configName !== 'Dashboard' && location.pathname.includes(item.path)) isActiveTab = true;
-
-            if (item.configName === 'Orders' && isSystemAdmin) {
-              return false;
-            }
-
-            return {
-              ...item,
-              isActiveTab: isActiveTab,
-              ariaSelected: isActiveTab ? 'true' : 'false',
-              configName: t(item.translationName)
-            };
-          }
-        })
-        .filter((item) => !!item);
-    }
-    return updatedTabs;
+    return navLinks
+      .map((item) => {
+        if (item.configName === 'Dashboard' || (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(item.permittedRoute))) {
+          let isActiveTab = false;
+          if (item.configName === 'Dashboard' && location.pathname === '/') isActiveTab = true;
+          if (item.configName !== 'Dashboard' && location.pathname.includes(item.path)) isActiveTab = true;
+          if (item.configName === 'Orders' && isSystemAdmin) return false;
+          return {
+            ...item,
+            isActiveTab,
+            ariaSelected: isActiveTab ? 'true' : 'false',
+            configName: t(item.translationName)
+          };
+        }
+      })
+      .filter(Boolean);
   }, [navLinks, location.pathname]);
-
-  const state = useSelector((state) => state.orderState);
 
   const handleOnClick = (tab) => {
     if (state.hasUnsavedChanges) {
-      const state = {};
-      state.title = t('messages.confirmation.discardheader');
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>{t('messages.confirmation.discardUnsavedOrder')}</p>
-        </div>
-      );
-      state.footer = (
-        <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            {t('orgManagement.button.cancel')}
-          </Button>
-          <Button
-            size="md"
-            variant="primary"
-            onClick={() => {
-              dispatch(closeModal());
-              navigate(tab.path);
-            }}>
-            {t('orgManagement.button.OK')}
-          </Button>
-        </div>
-      );
-      dispatch(openModal(state));
+      const modalState = {
+        title: t('messages.confirmation.discardheader'),
+        body: (
+          <div className="MCP-modal-body">
+            <p>{t('messages.confirmation.discardUnsavedOrder')}</p>
+          </div>
+        ),
+        footer: (
+          <div className="controls">
+            <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+              {t('orgManagement.button.cancel')}
+            </Button>
+            <Button
+              size="md"
+              variant="primary"
+              onClick={() => {
+                dispatch(closeModal());
+                navigate(tab.path);
+              }}>
+              {t('orgManagement.button.OK')}
+            </Button>
+          </div>
+        )
+      };
+      dispatch(openModal(modalState));
     } else {
       navigate(tab.path);
     }
   };
 
-  const LeftSideView = () => {
-    return (
-      <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
-        <TabList
-          className={styles.compactTablist}
-          type="link"
-          options={tabs}
-          showShadow={false}
-          alignment={'left'}
-          useAsButton={true}
-          role="tablist"
-          aria-label="Secondary navigation tabs"
-          LinkComponent={Link}
-          onTabClick={handleOnClick}
-        />
-      </div>
-    );
-  };
+  const LeftSideView = () => (
+    <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
+      <TabList
+        className={styles.compactTablist}
+        type="link"
+        options={tabs}
+        showShadow={false}
+        alignment="left"
+        useAsButton
+        role="tablist"
+        aria-label="Secondary navigation tabs"
+        LinkComponent={Link}
+        onTabClick={handleOnClick}
+      />
+    </div>
+  );
 
   const getImpersonateLoginDetails = () => {
     const exitUserView = () => {
@@ -152,28 +140,29 @@ const SecondaryHeader = ({ navLinks }) => {
           console.log(`error: ${error}`);
         });
     };
+
     const handleOnExitUserView = () => {
-      const state = {};
-      state.title = `${t('button.captions.exitUserView')}?`;
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>
+      const modalState = {
+        title: `${t('button.captions.exitUserView')}?`,
+        body: (
+          <div className="MCP-modal-body">
             <p>{`${t('message.exitUserViewConfirmation')} ${impersonatedUsername}?`}</p>
-          </p>
-        </div>
-      );
-      state.footer = (
-        <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            {t('button.caption.no')}
-          </Button>
-          <Button size="md" variant="primary" onClick={exitUserView}>
-            {t('button.caption.yes')}
-          </Button>
-        </div>
-      );
-      dispatch(openModal(state));
+          </div>
+        ),
+        footer: (
+          <div className="controls">
+            <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+              {t('button.caption.no')}
+            </Button>
+            <Button size="md" variant="primary" onClick={exitUserView}>
+              {t('button.caption.yes')}
+            </Button>
+          </div>
+        )
+      };
+      dispatch(openModal(modalState));
     };
+
     if (impersonatedUsername) {
       return (
         <div className="impersonate-info-panel">
@@ -186,25 +175,16 @@ const SecondaryHeader = ({ navLinks }) => {
     }
   };
 
-  const showSystemAdminViewBtn = () => {
-    return (
-      (AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView()) ||
-      (AuthUtils.isCustomerCenter() && !AuthUtils.isCustomerCenterView()) ||
-      (AuthUtils.isTreatmentCentreExecutive() && !AuthUtils.isSystemAdminView())
-    );
-  };
+  const showSystemAdminViewBtn = () =>
+    (AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView()) ||
+    (AuthUtils.isCustomerCenter() && !AuthUtils.isCustomerCenterView()) ||
+    (AuthUtils.isTreatmentCentreExecutive() && !AuthUtils.isSystemAdminView());
 
   const RightSideView = () => {
-    if (isSystemAdminView) {
-      return null;
-    }
+    if (isSystemAdminView) return null;
     return (
       <div className={styles.navItemsRight} aria-label="System administration view">
         <div className={styles.navOptions}>
-          {/* 
-            The button is only visible for system admin.
-            The isSystemAdminView return false for non-admin user.
-          */}
           {getImpersonateLoginDetails()}
           {showSystemAdminViewBtn() && (
             <Button color="secondary" onClick={handleSystemAdminViewClick}>

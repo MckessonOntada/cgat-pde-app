@@ -20,7 +20,8 @@ const Filters = ({
   searchPlaceholder = 'Search...',
   actualData = [],
   initialData = {},
-  onLoadExpanded = false
+  onLoadExpanded = false,
+  autoFocus = false
 }) => {
   const { t } = useTranslate();
 
@@ -121,6 +122,13 @@ const Filters = ({
     });
     return errors;
   };
+
+  React.useEffect(() => {
+    if (formRef.current && autoFocus) {
+      const searchField = formRef.current.querySelector('input[id="input-searchQuery"]');
+      if (searchField) searchField.focus();
+    }
+  }, []);
 
   const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
   const initialValues = generateInitialFilterState(additionalFilters);

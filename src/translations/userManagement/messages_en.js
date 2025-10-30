@@ -17,7 +17,7 @@ export const UserManagementEN = {
 
   'userManagement.breadcrumb.labeldashboard': 'Dashboard',
   'userManagement.table.name': 'Name',
-  'userManagement.table.email': 'Email',
+  'userManagement.table.email': 'Email ID',
   'userManagement.table.role': 'Role',
   'userManagement.table.status': 'Status',
   'userManagement.table.dateAdded': 'Date Added',
@@ -108,7 +108,7 @@ export const UserManagementEN = {
   'userManagement.create_user.inputLabel.city': 'City',
   'userManagement.create_user.inputLabel.zip': 'Zip Code',
   'userManagement.create_user.inputLabel.state': 'State',
-  'userManagement.create_user.inputLabel.email': 'Email Id',
+  'userManagement.create_user.inputLabel.email': 'Email ID',
   'userManagement.create_user.inputLabel.phone_no': 'Phone Number',
   'userManagement.create_user.inputLabel.fax': 'Fax',
   'userManagement.create_user.validation.first_name_required': 'First Name is required',
@@ -129,7 +129,7 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.zip': 'Enter a valid Zip Code.',
   'userManagement.create_account.validation.zip_max': 'zip can be a maximum of 15 characters',
   'userManagement.create_user.validation.state_required': 'State is required',
-  'userManagement.create_user.validation.email_required': 'Email Id is required',
+  'userManagement.create_user.validation.email_required': 'Email ID is required',
   'userManagement.create_user.validation.invalid_email': 'Enter a valid Email Address',
   'userManagement.create_user.validation.phone_no_required': 'Phone Number is required..',
   'userManagement.create_user.validation.phone_no': 'Enter a valid Phone Number.',
@@ -444,5 +444,8 @@ export const UserManagementEN = {
   'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS': 'Additional Details',
   'CREATE_NEW_ORDER.UPDATE_ADDITIONAL_DETAILS.DESCRIPTION': 'Allows user to fill additional details and configured questionnaire.',
   'CREATE_NEW_ORDER.SUBMIT_ORDER': 'Submit Order',
-  'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'Allows user to submit the order.'
+  'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'Allows user to submit the order.',
+  'userManagement.button.resendLink': 'Resend Link',
+  'userManagement.message.resendLinkSuccess': 'Activation link has been resent successfully.',
+  'userManagement.viewUser': 'View User'
 };

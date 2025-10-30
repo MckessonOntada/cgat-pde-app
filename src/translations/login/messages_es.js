@@ -7,7 +7,7 @@ export const LoginMessagesES = {
   'header.label.systemAdminView': 'S_System Admin View',
   'header.label.loggedInAs': 'S_Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'S_Exit User View',
-  'login.header.1': 'Simplifying complex orders like never before.',
+  'login.header.1': 'Implementing complex ordering workflows has never been easier.',
   'login.header.2': 'S_Health Outcomes for All',
   'login.page.desc.1': 'S_Solutions for your pharmacy, hospital,',
   'login.page.desc.2': 'S_organization or biopharma company',
@@ -52,5 +52,8 @@ export const LoginMessagesES = {
   'forms.validation.firstNameRequired': 'S_Please enter the First Name',
   'forms.validation.invalidFirstName': 'S_Please enter a valid First Name',
   'forms.validation.lastNameRequired': 'S_Please enter the Last Name',
-  'forms.validation.invalidLastName': 'S_Please enter a valid Last Name'
+  'forms.validation.invalidLastName': 'S_Please enter a valid Last Name',
+  'header.login.title': 'S_Welcome to InspiroLink',
+  'login.page.desc.1':
+    'S_InspiroLink is an ordering application designed to provide a simplified experience for healthcare providers providing cell, gene, and advanced therapy treatments. InspiroLink was developed from the ground up to implement customized order workflows and make ordering, scheduling, and tracking product as effortless as possible.'
 };

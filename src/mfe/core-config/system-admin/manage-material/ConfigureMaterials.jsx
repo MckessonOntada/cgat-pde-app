@@ -10,17 +10,18 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
+import { YES_NO_OPTIONS, REQUIREMENT_OPTIONS, REQUIREMENT } from './assets/constants/MaterialConstants';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
-    patientInfoRequired: '',
-    patientIdentifierRequired: '',
-    coiIdRequired: '',
-    mrnRequired: '',
-    doaRequired: '',
-    poNumberRequired: '',
-    dateOfApheresisRequired: ''
+    isPatientInformationRequired: '',
+    pidRequirement: '',
+    coiIdRequirement: '',
+    mrnRequirement: '',
+    doaRequirement: '',
+    poRequirement: '',
+    dateOfApheresisRequirement: ''
   });
   const [error, setError] = useState(false);
 
@@ -47,13 +48,13 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
         const config = matchedMaterial.materialConfig;
 
         setFormValues({
-          patientInfoRequired: config.isPatientInformationRequired ? 'yes' : 'no',
-          patientIdentifierRequired: config.isPatientInformationRequired ? (config.isPIDRequired ? 'yes' : 'no') : '',
-          coiIdRequired: config.isCoiIdRequired ? 'yes' : 'no',
-          mrnRequired: config.isPatientInformationRequired ? (config.isMRNRequired ? 'yes' : 'no') : '',
-          doaRequired: config.isDOARequired ? 'yes' : 'no',
-          poNumberRequired: config.isPORequired ? 'yes' : 'no',
-          dateOfApheresisRequired: config.isDateOfApheresisRequired ? 'yes' : 'no'
+          isPatientInformationRequired: config.isPatientInformationRequired ? 'yes' : 'no',
+          pidRequirement: config.isPatientInformationRequired ? config.patientIdentifierRequirement : '',
+          coiIdRequirement: config.coiIdRequirement,
+          mrnRequirement: config.isPatientInformationRequired ? config.mrnRequirement : '',
+          doaRequirement: config.dateOfAdministrationRequirement,
+          poRequirement: config.poNumberRequirement,
+          dateOfApheresisRequirement: config.dateOfApheresisRequirement
         });
       }
     }
@@ -78,70 +79,78 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   );
 
   const fieldConfigs = React.useMemo(() => {
-    const flag = formValues.patientInfoRequired === 'no';
+    const flag = formValues.isPatientInformationRequired === 'no';
     return [
       {
-        key: 'patientInfoRequired',
-        caption: 'manageMaterial.drawer.configuration.body.patientInfoRequired',
+        key: 'isPatientInformationRequired',
+        caption: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired',
+        options: YES_NO_OPTIONS,
         isDisabled: false,
         isRequired: true
       },
       {
-        key: 'patientIdentifierRequired',
-        caption: 'manageMaterial.drawer.configuration.body.patientIdentifier',
+        key: 'pidRequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.pIdentifier',
+        options: REQUIREMENT_OPTIONS,
         isDisabled: flag,
         isRequired: !flag
       },
       {
-        key: 'mrnRequired',
-        caption: 'manageMaterial.drawer.configuration.body.mrnRequired',
+        key: 'mrnRequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.mrn',
+        options: REQUIREMENT_OPTIONS,
         isDisabled: flag,
-        isRequired: true
+        isRequired: !flag
       },
       {
-        key: 'coiIdRequired',
-        caption: 'manageMaterial.drawer.configuration.body.coiIdRequired',
+        key: 'coiIdRequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.coiId',
+        options: REQUIREMENT_OPTIONS,
         isDisabled: false,
         isRequired: true
       },
       {
-        key: 'poNumberRequired',
-        caption: 'manageMaterial.drawer.configuration.body.poNumberRequired',
+        key: 'poRequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.poNumber',
+        options: REQUIREMENT_OPTIONS,
         isDisabled: false,
         isRequired: true
       },
 
       {
-        key: 'doaRequired',
-        caption: 'manageMaterial.drawer.configuration.body.doaRequired',
+        key: 'doaRequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.doa',
+        options: REQUIREMENT_OPTIONS,
         isDisabled: false,
         isRequired: true
       },
       {
-        key: 'dateOfApheresisRequired',
-        caption: 'manageMaterial.drawer.configuration.body.dateOfApheresisRequired',
+        key: 'dateOfApheresisRequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.dateOfApheresis',
+        options: REQUIREMENT_OPTIONS,
         isDisabled: false,
         isRequired: true
       }
     ];
   }, [formValues]);
 
-  const formFields = fieldConfigs.map(({ key, caption, isDisabled, isRequired }) => {
+  const formFields = fieldConfigs.map(({ key, caption, options, isDisabled, isRequired }) => {
     return {
       caption: t(caption),
       id: key,
-      items: [
-        { isDisabled, label: t('label.yes'), value: 'yes' },
-        { isDisabled, label: t('label.no'), value: 'no' }
-      ],
+      items: options.map((option) => ({
+        isDisabled,
+        label: t(option.label),
+        value: option.value
+      })),
       value: formValues[key],
       required: isRequired,
       onChangeValue: (value) => {
-        if (key === 'patientInfoRequired') {
+        if (key === 'isPatientInformationRequired') {
           setFormValues((prev) => ({
             ...prev,
             [key]: value,
-            ...(value === 'no' ? { patientIdentifierRequired: '', mrnRequired: '' } : {})
+            ...(value === 'no' ? { pidRequirement: '', mrnRequirement: '' } : {})
           }));
         } else {
           setFormValues((prev) => ({
@@ -154,24 +163,25 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   });
 
   const isApplyDisabled =
-    formValues.patientInfoRequired &&
-    formValues.coiIdRequired &&
-    formValues.poNumberRequired &&
-    formValues.doaRequired &&
-    formValues.dateOfApheresisRequired &&
-    (formValues.patientInfoRequired === 'yes' ? formValues.patientIdentifierRequired && formValues.mrnRequired : true);
+    formValues.isPatientInformationRequired &&
+    formValues.coiIdRequirement &&
+    formValues.poRequirement &&
+    formValues.doaRequirement &&
+    formValues.dateOfApheresisRequirement &&
+    (formValues.isPatientInformationRequired === 'yes' ? formValues.pidRequirement && formValues.mrnRequirement : true);
 
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
+      const isYes = formValues.isPatientInformationRequired === 'yes';
       const configValues = {
         ndcNumbers: selectedMaterials.map((material) => material.ndc),
-        isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
-        isCoiIdRequired: formValues.coiIdRequired === 'yes',
-        isDOARequired: formValues.doaRequired === 'yes',
-        isMRNRequired: formValues.mrnRequired === 'yes',
-        isPORequired: formValues.poNumberRequired === 'yes',
-        isPIDRequired: formValues.patientIdentifierRequired === 'yes',
-        isDateOfApheresisRequired: formValues.dateOfApheresisRequired === 'yes'
+        isPatientInformationRequired: isYes,
+        pidRequirement: !isYes ? REQUIREMENT.OPTIONAL : formValues.pidRequirement,
+        mrnRequirement: !isYes ? REQUIREMENT.OPTIONAL : formValues.mrnRequirement,
+        coiIdRequirement: formValues.coiIdRequirement,
+        doaRequirement: formValues.doaRequirement,
+        poRequirement: formValues.poRequirement,
+        dateOfApheresisRequirement: formValues.dateOfApheresisRequirement
       };
       applyConfiguration(configValues);
     } else {

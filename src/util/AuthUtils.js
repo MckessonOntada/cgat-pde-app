@@ -41,7 +41,7 @@ const setPracticeId = function (practiceId) {
 const removePracticeId = function () {
   return sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
 };
- 
+
 const getRoleId = () => {
   return sessionStorage.getItem(SESSION_CONST.ROLE_ID);
 };
@@ -67,10 +67,24 @@ const isReservedUserRole = () => {
   const currentUserId = getUserId();
   return reservedUserRoleIds.includes(currentUserId);
 };
- 
+
 const isSystemAdmin = function () {
   const userRole = getUserRole();
   return userRole === 'System Admin';
+};
+
+const isRootAdmin = function () {
+  const isImpersonated = getImpersonateId() > 0;
+  if (isImpersonated) {
+    try {
+      const impersonatedByUser = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+      return impersonatedByUser.role?.name === 'System Admin';
+    } catch {
+      return false;
+    }
+  } else {
+    return getUserRole() === 'System Admin';
+  }
 };
 
 const isSystemAdminView = function () {
@@ -154,6 +168,19 @@ const getImpersonatedByUser = () => {
   return null;
 };
 
+function getLoggedInUserId() {
+  const impersonatedUserId = sessionStorage.getItem('x-imp-user-id');
+  if (impersonatedUserId) {
+    try {
+      const impersonatedUserBy = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+      return impersonatedUserBy?.id || null;
+    } catch (error) {
+      return null;
+    }
+  }
+  return getUserId();
+}
+
 const AuthUtils = Object.freeze({
   userHasRole,
   userHasPermission,
@@ -176,7 +203,9 @@ const AuthUtils = Object.freeze({
   getImpersonatedByUser,
   isTreatmentCentreExecutive,
   isReservedUserRole,
-  isPhysician
+  isPhysician,
+  getLoggedInUserId,
+  isRootAdmin
 });
 
 export default AuthUtils;

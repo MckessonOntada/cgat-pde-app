@@ -96,7 +96,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.CreditRemaining': 'S_Credit Remaining',
   'paymentInvoices.Details.ValidFrom': 'S_Valid From',
   'paymentInvoices.Details.Item': 'S_Item',
-  'paymentInvoices.Details.therapyId': 'S_Therapy Id',
+  'paymentInvoices.Details.therapyId': 'S_Therapy ID',
   'paymentInvoices.Details.Description': 'S_Description',
   'paymentInvoices.Details.referenceDocument': 'S_Reference Document',
   'paymentInvoices.Details.Quantity': 'S_Quantity',
@@ -119,7 +119,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.invoiceAmount': 'S_Invoice Amount',
   'paymentInvoices.history.table.invoiceDate': 'S_Invoice Date',
   'paymentInvoices.history.table.PaymentTerm': 'S_Payment Term',
-  'paymentInvoices.Details.manufacturerPatientId': 'S_Manufacturer Patient Id',
+  'paymentInvoices.Details.manufacturerPatientId': 'S_Manufacturer Patient ID',
   'paymentInvoices.history.table.DueDate': 'S_Due Date',
   'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
   'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
@@ -330,5 +330,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.instruction.5040.text':
     'S_InspiroLink does not support payments for certain manufacturer programs. Please contact customer support at {contact_no} for assistance.',
   'paymentInvoices.invoice.count.text': 'S_You can select upto 20 Invoices only',
-  'paymentInvoices.instruction.scheduled.text': 'S_A scheduled payment already exists for this invoice. No additional payments can be made.'
+  'paymentInvoices.instruction.scheduled.text': 'S_A scheduled payment already exists for this invoice. No additional payments can be made.',
+  'paymentInvoices.Details.MRN': 'S_MRN'
 };

@@ -40,6 +40,7 @@ import { NotifyAlert } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -82,6 +83,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   });
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
+  const [triageAlert, setTriageAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const { tradeDetails = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
@@ -94,6 +96,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
+  const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
+
   const dispatch = useDispatch();
 
   const variantsApiRequestParam = {
@@ -173,7 +177,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .typeError(t('labels.enterValidDateOfAdministration'))
             .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
             .when([], {
-              is: () => therapyConfig.isDOARequired,
+              is: () => therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -181,7 +185,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .typeError(t('labels.enterValidDateOfApheresis'))
             .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
             .when([], {
-              is: () => therapyConfig.isDateOfApheresisRequired,
+              is: () => therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -189,7 +193,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
             .max(10, t('labels.COI_IdExceedDigits'))
             .when([], {
-              is: () => therapyConfig.isCoiIdRequired,
+              is: () => therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.COIIdRequired')),
               otherwise: (schema) => schema.notRequired()
             }),
@@ -209,7 +213,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .max(35, t('labels.PONumberLengthError'))
             .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
             .when([], {
-              is: () => therapyConfig.isPORequired,
+              is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.PONumberRequired')),
               otherwise: (schema) => schema.notRequired()
             })
@@ -830,7 +834,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     OrderService.getPrescriptionDetailsByTherapy(variant.therapyId).then((result) => {
       const { spTherapyConfig, therapy } = result;
-      setAlert(null);
       const prescriptionDetails = {
         drugName: '',
         daysSupply: '',
@@ -855,6 +858,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         setAlert({
           type: 'error',
           description: t('message.additionalDetails.missingPrescriptionDetails')
+        });
+      }
+      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.triageChannel)) {
+        setIsAllowedToProceed(false);
+        setTriageAlert({
+          description: t('message.triageChannelConfigMissing'),
+          type: 'error'
         });
       }
 
@@ -892,6 +902,55 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
     setFieldValue('variantAcknowledgement', updatedOptions.isChecked);
     setVariantAcknowledgement(updatedOptions);
+  };
+
+  const isValidToSaveAsDraft = (values, errors, touched, setTouched, setErrors) => {
+    setIsOrderInDraft(true);
+    let allValid = true;
+    const newTouched = { ...touched };
+    const newErrors = { ...errors };
+
+    const traverse = (valObj, errObj, touchObj, errAcc) => {
+      Object.keys(valObj).forEach((key) => {
+        const value = valObj[key];
+        const error = errObj?.[key];
+
+        if (key === 'variantAcknowledgement' || key === 'variant' || key === 'terms' || key === 'acknowledgement' || key === 'diagnosisCode') {
+          touchObj[key] = false;
+          errAcc[key] = '';
+          return;
+        }
+
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          if (!touchObj[key] || typeof touchObj[key] !== 'object') touchObj[key] = {};
+          if (!errAcc[key] || typeof errAcc[key] !== 'object') errAcc[key] = {};
+          traverse(value, error || {}, touchObj[key], errAcc[key]);
+        } else {
+          if (value !== undefined && value !== '' && value !== null) {
+            if (error) allValid = false;
+          } else {
+            touchObj[key] = false;
+            errAcc[key] = '';
+          }
+        }
+      });
+    };
+
+    traverse(values, errors, newTouched, newErrors);
+    setTouched(newTouched);
+    setErrors(newErrors);
+
+    return allValid;
+  };
+
+  const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
+    setIsOrderInDraft(true);
+    const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
+    if (!isValid) {
+      return;
+    }
+
+    handleOnSubmit(values);
   };
 
   if (isSaving || isFetching) return <Loader type={'screen'} />;
@@ -943,6 +1002,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
 
         <Formik
           initialValues={initialFormValues}
@@ -953,7 +1013,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, setFieldValue }) => {
+          {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors }) => {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
             }, [values, initialFormValues, setFieldValue]);
@@ -969,7 +1029,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             return (
               <Form>
                 <div className="MCP-module-body">
-                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                  <fieldset className="MCP-fieldset" disabled={readOnly || !isAllowedToProceed}>
                     <div className="MCP-panel-container">
                       <ModuleHeader
                         heading={<Heading as="h2">{t('labels.additionalDetails')}</Heading>}
@@ -980,7 +1040,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                         }
                       />
                       <div className="form-segment-list">
-                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly} />
+                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
 
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
@@ -990,17 +1050,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           variant={variant}
                           handleOnVariantChange={handleOnVariantChange}
                           handleOnVariantDocumentChange={handleOnVariantDocumentChange}
-                          readOnly={readOnly}
+                          readOnly={readOnly || !isAllowedToProceed}
                         />
 
                         <ClinicalDetails
                           channelType={channelType}
                           onDiagnosisCodeSearch={setDiagnosisSearchQuery}
                           diagnosisCode={diagnosisCode}
-                          readOnly={readOnly}
+                          readOnly={readOnly || !isAllowedToProceed}
                         />
 
-                        <PrescriptionDetails channelType={channelType} readOnly={readOnly} />
+                        <PrescriptionDetails channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
 
                         <QuestionnaireDetails
                           isLoading={isFetchingConfiguredQuestions}
@@ -1009,7 +1069,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           config={questionnaireTemplateConfig}
                           questionnaireTemplateConfig={questionnaireTemplateConfig}
                           channelType={channelType}
-                          readOnly={readOnly}
+                          readOnly={readOnly || !isAllowedToProceed}
                         />
                       </div>
                     </div>
@@ -1021,16 +1081,16 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       </Button>{' '}
                       <Button
                         size="md"
-                        onClick={() => setIsOrderInDraft(true)}
+                        onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
                         variant="primary"
-                        type="submit"
+                        type="button"
                         disabled={readOnly || (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? skipTerms || !values.consentPolicy : !isDirty)}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button
                         size="md"
                         onClick={() => setIsOrderInDraft(false)}
-                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !values.consentPolicy) || readOnly}
+                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !values.consentPolicy) || readOnly || !isAllowedToProceed}
                         variant="primary"
                         type="submit">
                         {t('captions.btnSaveAndContinue')}

@@ -23,7 +23,7 @@ import DetailsFlexGrid from '../../components/detailsList/DetailsFlexGrid';
 import { useAccountContext } from '../../context/AccountContext';
 import { PATHS } from '../../routes';
 import './viewDetails.scss';
-import History from './history';
+import HistoryAndScheduledPayments from './history';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -104,28 +104,52 @@ function Details(props) {
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
-          setInvoiceDetails(() => ({
-            ...{},
-            [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
-            [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName,
-            [t('paymentInvoices.Details.orderID')]: (
-              <Link
-                className="MCP-table-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleOnClickOrderId(res?.data?.orderId);
-                }}>
-                {res?.data?.orderId || '-'}
-              </Link>
-            ),
-            [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
-            [t('paymentInvoices.Details.manufacturerPatientId')]: res.data.manufacturerPatientId,
-            [t('paymentInvoices.Details.dateOfAdministration')]: res.data.dateOfAdministration,
-            [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
-            [t('paymentInvoices.Details.dateOfApheresis')]: res.data.dateOfApheresis,
-            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
-            ['__z0']: null
-          }));
+          setInvoiceDetails(() => {
+            if (!res?.data) return {};
+
+            const baseDetails = {
+              [t('paymentInvoices.Details.invoiceNumber')]: res.data.billNumber,
+              [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
+              [t('paymentInvoices.Details.orderID')]: (
+                <Link
+                  className="MCP-table-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleOnClickOrderId(res?.data?.orderId);
+                  }}>
+                  {res?.data?.orderId || '-'}
+                </Link>
+              ),
+              [t('paymentInvoices.Details.billTo')]: res.data.billToAccountName
+            };
+
+            if (res.data?.mrnRequirement === null || res.data.mrnRequirement === 'NOT_REQUIRED') {
+              return {
+                ...baseDetails,
+                [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
+                [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+                [t('paymentInvoices.Details.manufacturerPatientId')]: res.data.manufacturerPatientId,
+                [t('paymentInvoices.Details.dateOfAdministration')]: CommonUtils.convertDateStringFormat(
+                  res.data.dateOfAdministration,
+                  'MM/DD/YYYY',
+                  'DD/MM/YYYY'
+                )
+              };
+            }
+            return {
+              ...baseDetails,
+              [t('paymentInvoices.Details.MRN')]: res.data.medicalRecordNumber || '-',
+              [t('paymentInvoices.Details.shipTo')]: res.data.shipToAccountName,
+              [t('paymentInvoices.Details.purchaseOrderNumber')]: res.data.poNumber,
+              [t('paymentInvoices.Details.dateOfAdministration')]: CommonUtils.convertDateStringFormat(
+                res.data.dateOfAdministration,
+                'MM/DD/YYYY',
+                'DD/MM/YYYY'
+              ),
+              [t('paymentInvoices.Details.manufacturerPatientId')]: res.data.manufacturerPatientId,
+              ['__z0']: null
+            };
+          });
           updateBillDates(res);
           return res.data;
         }
@@ -388,7 +412,7 @@ function Details(props) {
             }
           />
         </div>
-        <History billNumber={billNumber} />
+        <HistoryAndScheduledPayments billNumber={billNumber} />
       </div>
       {INVOICES_SCREEN && <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>}
 

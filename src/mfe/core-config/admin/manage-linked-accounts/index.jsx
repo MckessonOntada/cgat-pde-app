@@ -56,6 +56,7 @@ function ManageLinkedAccount() {
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
+              autoFocus={true}
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={additionalFiltersConfig}

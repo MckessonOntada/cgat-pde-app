@@ -18,7 +18,7 @@ import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
-import { getInitialValues, getValidationSchema } from './forms/validation-schema';
+import { getInitialValues, getValidationSchema, normalizePatient } from './forms/validation-schema';
 import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
@@ -32,13 +32,14 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { NotifyAlert } from '../OrderUtil';
+import { isValidToSaveAsDraft, NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -55,6 +56,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
+  const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -112,8 +114,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const shouldShowIdentifierSection =
     channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
-    (spTherapyConfig.isCoiIdRequired || spTherapyConfig.isPatientIdentifierRequired || spTherapyConfig.isMRNRequired);
-
+    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some(
+      (key) => key !== REQUIREMENT.NOT_REQUIRED
+    );
   const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { data: priceDetails } = useOrderPrice({
@@ -133,8 +136,16 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         });
       }
       setInitialValues({
-        patient: CommonUtils.normalizeFormData(orderDetails.patient),
+        patient: CommonUtils.normalizeFormData(normalizePatient(orderDetails.patient)),
         providerId: orderDetails.provider?.id
+      });
+    }
+
+    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
+      setIsAllowedToProceed(false);
+      setAlert({
+        description: t('message.triageChannelConfigMissing'),
+        type: 'error'
       });
     }
   }, [orderDetails]);
@@ -232,6 +243,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   );
 
+  const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
+    const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
+    if (!isValid) {
+      return;
+    }
+    setIsOrderInDraft(true);
+    handleSubmit(values);
+  };
   const handleOnBack = () => {
     if (isDirty) {
       setModalSuccessCallback(isEdit ? 'summary' : 'account');
@@ -413,7 +432,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig)}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
-          {({ values, dirty, setFieldValue }) => {
+          {({ values, errors, touched, dirty, setFieldValue, setTouched, setErrors }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
               dispatch(hasUnsavedChanges(dirty));
@@ -422,7 +441,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>
-                  <fieldset className="MCP-fieldset" disabled={readOnly}>
+                  <fieldset className="MCP-fieldset" disabled={readOnly || !isAllowedToProceed}>
                     <div className="MCP-module-body">
                       <div className="MCP-panel-container">
                         <ModuleHeader
@@ -438,7 +457,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                           }
                         />
 
-                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly} />
+                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>
                             <hr className="form-section-separator" />
@@ -454,7 +473,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 </p>
                               }
                             />
-                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly} />
+                            <FormRenderer sections={AddressSections(channelType)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
 
@@ -475,7 +494,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 )
                               }
                             />
-                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly} />
+                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -514,6 +533,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                   isAsyncLoading={isFetchingProviders}
                                   refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
                                   asyncRecordsFound={totalProviders}
+                                  isDisabled={!isAllowedToProceed}
                                   isReadOnly={readOnly}
                                 />
                                 {provider && (
@@ -620,10 +640,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                       <Button size="md" variant="secondary" onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+                      <Button
+                        size="md"
+                        onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
+                        variant="primary"
+                        type="button"
+                        disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly}>
+                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly || !isAllowedToProceed}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

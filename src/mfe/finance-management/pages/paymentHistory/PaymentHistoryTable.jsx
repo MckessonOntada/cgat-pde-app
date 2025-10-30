@@ -25,9 +25,10 @@ const PAYMENT_STATUS = {
   'ON HOLD': { label: 'On Hold', color: 'warning' }
 };
 
-export default function PaymentHistoryTable() {
+export default function PaymentHistoryTable({ dataFilteredByStatus, isToShowPayOn = false }) {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig, filteredData } = usePaymentHistory();
+  const dataToDisplay = dataFilteredByStatus || data;
   const showCardView = useResponsiveView();
   const columns = [
     {
@@ -82,15 +83,22 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
-    // {
-    //   id: 'payOn',
-    //   name: t('paymentInvoices.history.table.PayOnDate'),
-    //   selector: (row) => row.payOn,
-    //   sortable: true,
-    //   wrap: true,
-    //   maxWidth: '145px',
-    //   cell: (props) => CommonUtils.convertDateStringFormat(props.payOn, 'MM/DD/YYYY', 'DD/MM/YYYY')
-    // },
+    {
+      id: 'payOn',
+      name: t('paymentInvoices.history.table.PayOnDate'),
+      selector: (row) => `${row.dateScheduled || ''}`,
+      sortable: true,
+      wrap: true,
+      maxWidth: '145px',
+      cell: (props) => {
+        const s = (props?.paymentStatus || '').toLowerCase();
+        const isInProcess = s === 'in process' || s === 'inprocess';
+        if (!isInProcess) return '-';
+        const dueDate = props?.dateScheduled || '';
+        return dueDate ? CommonUtils.convertDateStringFormat(dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY') : '-';
+      },
+      omit: !isToShowPayOn
+    },
     {
       id: 'paymentStatus',
       name: t('paymentInvoices.history.table.paymentStatus'),
@@ -111,7 +119,8 @@ export default function PaymentHistoryTable() {
             '-'
           )}
         </div>
-      )
+      ),
+      omit: isToShowPayOn
     },
     {
       id: 'totalAuthorizedPaymentAmount',
@@ -141,7 +150,7 @@ export default function PaymentHistoryTable() {
         id="my-data-table"
         type="normal"
         columns={columns}
-        data={data || []}
+        data={dataToDisplay || []}
         onSortIconClick={handleSort}
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}

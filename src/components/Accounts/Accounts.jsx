@@ -9,7 +9,7 @@ function AccountsDashboard(props) {
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
           <div className="MCP-CardContainer">
-            <AccountsFilter />
+            <AccountsFilter autoFocus={props.autoFocus} />
           </div>
           <div className="MCP-table-wrapper">
             <AccountsList {...props} />
@@ -22,7 +22,7 @@ function AccountsDashboard(props) {
 
 export default function (props) {
   return (
-    <AccountsProvider showSelectedAccounts={props.showSelectedAccounts} practiceId={props.practiceId} userId={props.userId}>
+    <AccountsProvider showSelectedAccounts={props.showSelectedAccounts} practiceId={props.practiceId} userId={props.userId} practiceName={props.practiceName}>
       <AccountsDashboard {...props} />
     </AccountsProvider>
   );

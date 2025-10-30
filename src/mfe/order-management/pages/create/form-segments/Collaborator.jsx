@@ -1,6 +1,6 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useMemo, useState } from 'react';
-import { Tooltip, Button } from '@mckesson/mcp-component-library';
+import { Tooltip, Button, Loader } from '@mckesson/mcp-component-library';
 import { CHANNEL_TYPE, GET_STAGE_DISPLAY_NAME, ORDER_STAGES, STAGE_COLORS, STAGE_INDEX } from './Constants';
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
@@ -24,7 +24,7 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
       .slice(0, 2);
   };
 
-  const { data: roles } = useQuery({
+  const { data: roles, isLoading } = useQuery({
     queryKey: [currentStage, orderId],
     queryFn: () => OrderService.getOrderStagesRoles(orderId)
   });
@@ -73,26 +73,31 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
 
   const collaboratorsData = buildCollaborators(collaborators);
 
+  const getRoleAndUsersList = (permission) => {
+    const found = roles?.find((r) => r.permission === permission);
+    return found?.roleAndUsersList || {};
+  };
+
   const generateStageCards = () => {
     return [
       {
         id: 1,
         name: t('labels.therapySelection') || GET_STAGE_DISPLAY_NAME(stage, channelType, t),
-        labels: roles?.THERAPY_SELECTION?.split(',') || [],
+        labels: getRoleAndUsersList('THERAPY_SELECTION'),
         collaborators: collaborators.THERAPY_SELECTION?.map((item) => item.name),
         initialsColor: STAGE_COLORS.THERAPY_SELECTION
       },
       {
         id: 2,
         name: t('labels.accountSelection'),
-        labels: roles?.ACCOUNT_SELECTION?.split(',') || [],
+        labels: getRoleAndUsersList('ACCOUNT_SELECTION'),
         collaborators: collaborators.ACCOUNT_DETAILS?.map((item) => item.name),
         initialsColor: STAGE_COLORS.ACCOUNT_DETAILS
       },
       {
         id: 3,
         name: t(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'stepper.label.PATIENT_AND_PROVIDER_DETAILS' : 'labels.patientDetails'),
-        labels: roles?.UPDATE_PATIENTS_DETAILS?.split(',') || [],
+        labels: getRoleAndUsersList('UPDATE_PATIENTS_DETAILS'),
         collaborators: collaborators.PATIENT_DETAILS?.map((item) => item.name),
         initialsColor: STAGE_COLORS.PATIENT_DETAILS
       },
@@ -101,7 +106,7 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
             {
               id: 4,
               name: t('labels.payerDetails'),
-              labels: roles?.UPDATE_PATIENTS_DETAILS?.split(',') || [],
+              labels: getRoleAndUsersList('UPDATE_PATIENTS_DETAILS'),
               collaborators: collaborators.PAYER_DETAILS?.map((item) => item.name),
               initialsColor: STAGE_COLORS.PAYER_DETAILS
             }
@@ -110,14 +115,14 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
       {
         id: 5,
         name: t('labels.additionalDetails'),
-        labels: roles?.UPDATE_ADDITIONAL_DETAILS?.split(',') || [],
+        labels: getRoleAndUsersList('UPDATE_ADDITIONAL_DETAILS'),
         collaborators: collaborators.ADDITIONAL_DETAILS?.map((item) => item.name),
         initialsColor: STAGE_COLORS.ADDITIONAL_DETAILS
       },
       {
         id: 6,
         name: t('labels.summary'),
-        labels: roles?.SUBMIT_ORDER?.split(',') || [],
+        labels: getRoleAndUsersList('SUBMIT_ORDER'),
         collaborators: collaborators.ORDER_SUMMARY?.map((item) => item.name),
         initialsColor: STAGE_COLORS.ORDER_SUMMARY
       }
@@ -154,6 +159,7 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
           stageCards={stageCards}
           getInitials={getInitials}
           currentStage={STAGE_INDEX[currentStage]}
+          isLoading={isLoading}
         />
       </div>
     )

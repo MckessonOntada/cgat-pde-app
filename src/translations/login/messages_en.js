@@ -7,10 +7,10 @@ export const LoginMessagesEN = {
   'header.label.loggedInAs': 'Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'Exit User View',
   'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com',
-  'login.header.1': 'Simplifying complex orders like never before.',
+  'login.header.1': 'Implementing complex ordering workflows has never been easier.',
   'login.header.2': 'Health Outcomes for All',
   'login.page.desc.1':
-    'InspiroLink is an ordering app built to streamline the ordering, scheduling, and tracking of cell, gene, and advanced therapy treatments, offering a simplified experience for healthcare providers.',
+    'InspiroLink is an ordering application designed to provide a simplified experience for healthcare providers providing cell, gene, and advanced therapy treatments. InspiroLink was developed from the ground up to implement customized order workflows and make ordering, scheduling, and tracking product as effortless as possible.',
   'login.welcome': 'Welcome !',
   'login.ordringPortal': 'Ordering Portal',
   'login.details': 'Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
@@ -67,5 +67,6 @@ export const LoginMessagesEN = {
   'forms.validation.firstNameRequired': 'Please enter the First Name',
   'forms.validation.invalidFirstName': 'Please enter a valid First Name',
   'forms.validation.lastNameRequired': 'Please enter the Last Name',
-  'forms.validation.invalidLastName': 'Please enter a valid Last Name'
+  'forms.validation.invalidLastName': 'Please enter a valid Last Name',
+  'header.login.title': 'Welcome to InspiroLink'
 };

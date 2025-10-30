@@ -1,11 +1,11 @@
-import { Tooltip, Heading, Pills } from '@mckesson/mcp-component-library';
+import { Tooltip, Heading, Pills, Loader } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import React from 'react';
 import style from '../CreateOrder.module.scss';
 
-export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials, currentStage }) => {
+export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials, currentStage, isLoading }) => {
   const { t } = useTranslate();
 
   function cardStateClass(card) {
@@ -48,6 +48,34 @@ export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials,
     );
   }
 
+  function getLabels(card) {
+    const labels = Object.entries(card.labels || {}).map(([role, value], idx) => {
+      const tooltipBody = Array.isArray(value) ? (
+        <div className="user-list-tooltip">
+          <strong>{t('label.userList')}</strong>
+          <ul className="user-list">
+            {value.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        value || t('label.userNotAssigned')
+      );
+
+      return {
+        id: idx + 1,
+        labelText: (
+          <Tooltip body={tooltipBody}>
+            <span>{role}</span>
+          </Tooltip>
+        )
+      };
+    });
+
+    return labels;
+  }
+
   return (
     <FloatingDrawer open={open} anchor="right" onClose={onClose} heading={t('label.whoCanDoWhat')}>
       <div className="details-main-wrapper">
@@ -55,28 +83,26 @@ export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials,
           <div className="styled-heading rolesHeading">
             <Heading as="h4">{t('label.rolesListingBySteps')}</Heading>
           </div>
-          {stageCards.map((card) =>
-            card.id ? (
-              <div key={card.id} className={`${style.card} ${cardStateClass(card)}`}>
-                <ModuleHeader
-                  heading={
-                    <div className="styled-heading">
-                      <Heading as="h4">{card.name}</Heading>
-                    </div>
-                  }
-                  controls={<div className="collaborator-initials">{renderCollaboratorTooltip(card)}</div>}
-                />
-                <div className={style.pillsContainer}>
-                  <Pills
-                    id={card.name?.toLowerCase().replace(/\s+/g, '-')}
-                    labels={card.labels?.map((text, idx) => ({ id: idx + 1, labelText: text }))}
-                    name={name}
-                    size="sm"
-                    variant="secondary"
+          {isLoading ? (
+            <Loader variant="circular" />
+          ) : (
+            stageCards.map((card) =>
+              card.id ? (
+                <div key={card.id} className={`${style.card} ${cardStateClass(card)}`}>
+                  <ModuleHeader
+                    heading={
+                      <div className="styled-heading">
+                        <Heading as="h4">{card.name}</Heading>
+                      </div>
+                    }
+                    controls={<div className="collaborator-initials">{renderCollaboratorTooltip(card)}</div>}
                   />
+                  <div className={style.pillsContainer}>
+                    <Pills id={card.name?.toLowerCase().replace(/\s+/g, '-')} labels={getLabels(card)} name={name} size="sm" variant="secondary" />
+                  </div>
                 </div>
-              </div>
-            ) : null
+              ) : null
+            )
           )}
         </div>
       </div>

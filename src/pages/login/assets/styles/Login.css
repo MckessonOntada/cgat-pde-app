@@ -67,3 +67,6 @@ h2.okta-form-title.o-form-head{
         max-width: 100%;
     }
 }
+#okta-sign-in .custom-checkbox label{
+    background-position: -16px -10px !important;
+}
