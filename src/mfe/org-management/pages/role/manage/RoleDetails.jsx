@@ -1,11 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
-import {
-  Required,
-  Button,
-  Heading,
-  Loader
-} from '@mckesson/mcp-component-library';
+import { Required, Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -25,10 +20,7 @@ const getRoleValidationSchema = (t) =>
       .required(t('orgManagement.form.errors.roleNameRequired'))
       .min(2, t('orgManagement.form.errors.roleNameMinLength'))
       .max(50, t('orgManagement.form.errors.roleNameMaxLength'))
-      .matches(
-        /^[A-Za-z\s]+$/,
-        t('orgManagement.form.errors.roleNamevalidation')
-      ),
+      .matches(/^[A-Za-z\s]+$/, t('orgManagement.form.errors.roleNamevalidation')),
     roleDescription: Yup.string()
       .min(10, t('orgManagement.form.errors.roleDescriptionMinLength'))
       .max(100, t('orgManagement.form.errors.roleDescriptionMaxLength'))
@@ -91,11 +83,7 @@ const RoleDetails = () => {
         apiUrl += `/${roleId}`;
         actionSpecificHttpVerb = httpVerb.PATCH;
       }
-      const res = await HttpResourceService.callRest(
-        apiUrl,
-        actionSpecificHttpVerb,
-        data
-      );
+      const res = await HttpResourceService.callRest(apiUrl, actionSpecificHttpVerb, data);
       return res;
     },
     {
@@ -107,14 +95,9 @@ const RoleDetails = () => {
           const { name, description } = data;
 
           refreshData();
-          navigate(
-            isEdit
-              ? `${moduleBasePath}/${roleId}`
-              : `${moduleBasePath}/${id}/permissions`,
-            {
-              state: isEdit ? { ...row, name, description } : { data: data }
-            }
-          );
+          navigate(isEdit ? `${moduleBasePath}/${roleId}` : `${moduleBasePath}/${id}/permissions`, {
+            state: isEdit ? { ...row, name, description } : { data: data }
+          });
         }
       },
       onError: (error) => {
@@ -212,18 +195,15 @@ const RoleDetails = () => {
                         </div>
                       </div>
                     </div>
-                    <ModuleHeader
-                      controls={
-                        <div className="controls">
-                          <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
-                            {t('orgManagement.button.cancel')}
-                          </Button>
-                          <Button size="md" variant="primary" type="submit">
-                            {t('orgManagement.role.captionsBtnSaveAndCancel')}
-                          </Button>
-                        </div>
-                      }
-                    />
+
+                    <div className="controls">
+                      <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
+                        {t('orgManagement.button.cancel')}
+                      </Button>
+                      <Button size="md" variant="primary" type="submit">
+                        {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                      </Button>
+                    </div>
                   </div>
                 </Form>
               );
