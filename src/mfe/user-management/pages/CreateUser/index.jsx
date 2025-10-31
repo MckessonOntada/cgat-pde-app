@@ -202,7 +202,7 @@ const CreateUser = () => {
                 : `/admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
               : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`,
             {
-              state: { permissionsData: permissionsData }
+              state: { permissionsData: permissionsData, isEdit: isEdit }
             }
           );
         },
