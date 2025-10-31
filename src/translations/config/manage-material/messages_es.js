@@ -97,6 +97,7 @@ export const SystemConfigurationES = {
   'labels.mandatory': 'S_Mandatory',
   'labels.optional': 'S_Optional',
   'labels.notRequired': 'S_Not Required',
+  'labels.doNotDisplay': 'Do Not Display',
   'labels.yes': 'S_Yes',
   'labels.no': 'S_No'
 };

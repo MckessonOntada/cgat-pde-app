@@ -98,6 +98,7 @@ export const SystemConfigurationEN = {
   'labels.mandatory': 'Mandatory',
   'labels.optional': 'Optional',
   'labels.notRequired': 'Not Required',
+  'labels.doNotDisplay': 'Do Not Display',
   'labels.yes': 'Yes',
   'labels.no': 'No'
 };
