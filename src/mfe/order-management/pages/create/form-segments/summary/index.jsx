@@ -727,7 +727,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING && status !== ORDER_STATUS.REVIEW) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if (allowUpdateBnBAfterSubmit) {
+    } else if ((allowUpdateBnBAfterSubmit && isPhysician) || CommonUtils.isNonEmptyObject(draftChanges)) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
