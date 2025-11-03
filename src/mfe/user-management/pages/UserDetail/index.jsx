@@ -56,7 +56,7 @@ const UserDetail = () => {
   const [alertType, setAlertType] = useState(null);
   const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
-  const { isSuccess = false, isPending = false } = location.state || {};
+  const { isSuccess = false, isPending = false, isEdit = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +71,15 @@ const UserDetail = () => {
     userId: null,
     isActive: false
   });
+
+  useEffect(() => {
+    if (isEdit) {
+      setIsProvisioned(true);
+      setIsAlertVisible(true);
+      setAlertType('success');
+      setAlertDescription(t('userManagement.message.updateUser'));
+    }
+  }, [isEdit]);
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'

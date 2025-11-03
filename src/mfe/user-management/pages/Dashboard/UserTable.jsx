@@ -159,7 +159,7 @@ function UserTable({ onActionSuccess, showAlert }) {
           Array.isArray(errorResponse.errorCodes) &&
           errorResponse.errorCodes.includes('user.already.active.conflict')
         ) {
-          errorMessage = 'error.userAlreadyActive';
+          errorMessage = 'error.userActive';
         }
 
         showAlert('error', t(errorMessage));
@@ -365,7 +365,7 @@ function UserTable({ onActionSuccess, showAlert }) {
                       value: 'resendLink'
                     },
                     {
-                      label: t('userManagement.edit_user'),
+                      label: t('userManagement.viewUser'),
                       value: 'edit'
                     }
                   ]
