@@ -1723,3 +1723,6 @@ input[type="checkbox"] + label {
   margin: 0;
   padding-left: var(--spacing-03);
 }
+.textarea textarea {
+  height: 70px !important;
+}

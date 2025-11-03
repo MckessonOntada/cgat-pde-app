@@ -3,19 +3,7 @@ import { TextareaInput, Label, TextError } from '@mckesson/mcp-component-library
 import { highlightFieldOnLabelClick } from './util';
 
 export default function Textarea(props) {
-  const {
-    id,
-    label,
-    labelControls,
-    value,
-    error,
-    isRequired,
-    maxCharLimit = 1000,
-    displayType = 'outline',
-    onChange,
-    onBlur,
-    ...rest
-  } = props;
+  const { id, label, labelControls, value, error, isRequired, maxCharLimit = 1000, displayType = 'outline', onChange, onBlur, ...rest } = props;
   const fieldContainerRef = useRef(null);
 
   return (
@@ -35,6 +23,7 @@ export default function Textarea(props) {
         showError={!!error}
         displayType={displayType}
         maxCharLimit={maxCharLimit}
+        minRows={3}
         value={value}
         {...rest}
       />
