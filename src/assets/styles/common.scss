@@ -1225,7 +1225,7 @@ div[role="row"] {
 
 .statusCenter {
   @include mixins.respond(md) {
-    padding-left: 30px;
+    padding-left: 20px;
   }
 }
 
@@ -1725,4 +1725,9 @@ input[type="checkbox"] + label {
 }
 .textarea textarea {
   height: 70px !important;
+.QEODL {
+  padding: 12px var(--spacing-03) !important;
+}
+.imeerY {
+  padding: 12px var(--spacing-03) !important;
 }
