@@ -16,6 +16,7 @@ import ConfigureSPMaterials from './ConfigureSPMaterials';
 import CommonUtils from '@src/util/CommonUtils';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
+import { routeConstants } from '../routes/constants';
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...props }) {
   const { t } = useTranslate();
@@ -37,6 +38,11 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     ...item,
     active: item.itemStatus === 'A' ? true : false
   }));
+  const handleOnOptionSelection = (value, row) => {
+    if (value === 'DXConfiguration') {
+      handleDXConfiguration([row]);
+    }
+  };
   const columns = getSPMaterialColumns({
     t,
     paginationConfig,
@@ -45,7 +51,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     setSelectedSPMaterial,
     setViewSPMaterial,
     setOpenSPMaterialDetails,
-    isLinkCatalog
+    isLinkCatalog,
+    handleOnOptionSelection
   });
 
   const linkSpColumns = getLinkSPMaterialColumns({
@@ -56,7 +63,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     setSelectedSPMaterial,
     setViewSPMaterial,
     setOpenSPMaterialDetails,
-    isLinkCatalog
+    isLinkCatalog,
+    handleOnOptionSelection
   });
 
   const ExpandedComponent = ({ data }) => {
@@ -128,6 +136,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
   };
 
   const isMultipleSelected = selectedSPMaterial?.length > 1;
+  const handleDXConfiguration = (selectedSPMaterial) => {
+    navigate(routeConstants.DX_CONFIG, {
+      state: { selectedSPMaterial }
+    });
+  };
+
   return (
     <div>
       {isLinkCatalog ? (
@@ -159,6 +173,14 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           secondaryViewHeading={`${selectedSPMaterial?.length} ${t('manageMaterial.table.header.text')}`}
           secondaryViewControls={
             <div className="controls">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  handleDXConfiguration(selectedSPMaterial);
+                }}
+                size="sm">
+                {t('manageMaterial.table.header.button.DXConfiguration')}
+              </Button>
               {!isMultipleSelected && (
                 <Button
                   variant="secondary"
