@@ -1225,7 +1225,7 @@ div[role="row"] {
 
 .statusCenter {
   @include mixins.respond(md) {
-    padding-left: 30px;
+    padding-left: 20px;
   }
 }
 
@@ -1722,4 +1722,44 @@ input[type="checkbox"] + label {
 .user-list {
   margin: 0;
   padding-left: var(--spacing-03);
+}
+.textarea textarea {
+  height: 70px !important;
+}
+.QEODL {
+  padding: 12px var(--spacing-03) !important;
+}
+.imeerY {
+  padding: 12px var(--spacing-03) !important;
+}
+.notification-content-wrap {
+  font-size: var(--brand-font-size--small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+}
+.notification-header {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+}
+.notification-btn {
+  border: 2px solid #007cc1;
+  color: #007cc1;
+  width: fit-content;
+  padding: 7px var(--spacing-03);
+  border-radius: 6px;
+  font-weight: var(--brand-font-weight-600);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.notification-summary {
+  gap: var(--spacing-03) 0px;
+  span {
+    font-size: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+  }
+}
+.notification-summary p {
+  display: flex;
+  flex-direction: column;
 }
