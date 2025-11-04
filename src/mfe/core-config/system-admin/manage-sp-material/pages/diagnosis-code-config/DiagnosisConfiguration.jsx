@@ -1,21 +1,34 @@
-import React from 'react';
-import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { useNavigate } from 'react-router-dom';
-import { useTranslate } from '@src/translations/useTranslation';
 import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
-import style from './style.module.scss';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import DiagnosisCodeTable from './DiagnosisCodeTable';
+import { useFilters } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { useTranslate } from '@src/translations/useTranslation';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { routeConstants } from '../../routes/constants';
+import DiagnosisCodeTable from './DiagnosisCodeTable';
+import SelectedTherapyListControl from './SelectedTherapyListControl';
 
 function DiagnosisConfiguration() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { filters, applyFilters, clearFilters } = useFilters();
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const [selectedCodes, setSelectedCodes] = React.useState([]);
+  const [selectedTherapy, setSelectedTherapy] = React.useState(null);
+
+  React.useEffect(() => {
+    const { selectedTherapy } = location.state || {};
+
+    if (!selectedTherapy) {
+      navigate('../');
+    }
+    setSelectedTherapy(selectedTherapy);
+  }, []);
 
   return (
     <div className="MCP-module-wrapper">
@@ -24,7 +37,7 @@ function DiagnosisConfiguration() {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => navigate('/system-admin/config/manage-sp-material', { state: { isAssociatedAccount: true } })}
+          onClick={() => navigate('../', { state: { selectedTherapies: selectedTherapy } })}
           size="md">
           {translateFn('Back to sp material master')}
         </Button>
@@ -32,15 +45,15 @@ function DiagnosisConfiguration() {
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{translateFn('Dx Configuration')}</Heading>}
-          controls={<SelectedTherapyListControl onChange={() => {}} therapies={[{ name: 'Custom selected therapy name' }]} />}
+          controls={selectedTherapy && <SelectedTherapyListControl onChange={() => navigate('../')} therapies={[selectedTherapy]} />}
         />
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
-              onApplyFilters={() => {}}
-              onClearFilters={() => {}}
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
               additionalFilters={[]}
-              searchPlaceholder={translateFn('manageSPAccount.filters.searchPlaceholder')}
+              searchPlaceholder={translateFn('Search by ICD-10 code, description')}
             />
           </div>
           {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
@@ -50,7 +63,9 @@ function DiagnosisConfiguration() {
             ) : (
               <ModuleHeader
                 heading={<TableHeading heading={translateFn('Diagnosis Code Listing')} />}
-                controls={<Button onClick={() => navigate(routeConstants.ADD_DIAGNOSIS_CODES)}>{translateFn('Add Diagnosis Codes')}</Button>}
+                controls={
+                  <Button onClick={() => navigate(routeConstants.ADD_DIAGNOSIS_CODES, { state: location.state })}>{translateFn('Add Diagnosis Codes')}</Button>
+                }
               />
             )}
           </React.Fragment>
@@ -62,19 +77,3 @@ function DiagnosisConfiguration() {
 }
 
 export default DiagnosisConfiguration;
-
-const SelectedTherapyListControl = ({ therapies = [], onChange }) => {
-  if (!therapies || !Array.isArray(therapies) || therapies.length === 0) return null;
-
-  return (
-    <div className={style['therapy-selection-panel']}>
-      <label className={style['therapies']}>
-        Therapies:&nbsp;
-        <span>{therapies.map((therapy) => therapy.name).join(', ')}</span>
-      </label>
-      <Button variant="tertiary" onClick={onChange}>
-        Change
-      </Button>
-    </div>
-  );
-};

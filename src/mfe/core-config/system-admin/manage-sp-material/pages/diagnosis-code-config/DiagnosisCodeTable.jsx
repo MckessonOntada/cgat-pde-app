@@ -1,12 +1,16 @@
+import { CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
+import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import { usePagination, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { CheckboxGroup } from '@mckesson/mcp-component-library';
 import React from 'react';
 
-function DiagnosisCodeTable() {
+function DiagnosisCodeTable({ omitColumns = [] }) {
   const showCardView = useResponsiveView();
+  const { pagination, changePage } = usePagination();
+  const { data } = useTable();
   const { t: translateFn } = useTranslate();
   const columns = React.useMemo(() => {
     return [
@@ -34,9 +38,6 @@ function DiagnosisCodeTable() {
       {
         id: 'icd-10-codes',
         name: translateFn('ICD-10 Codes'),
-        selector: (row) => row.contact,
-        sortable: true,
-        sortKey: 'email',
         wrap: true,
         minWidth: '200px',
         cell: (props) => (
@@ -48,9 +49,6 @@ function DiagnosisCodeTable() {
       {
         id: 'description',
         name: translateFn('Description'),
-        selector: (row) => row.description,
-        sortable: true,
-        sortKey: 'description',
         wrap: true,
         minWidth: '200px',
         cell: (props) => (
@@ -62,39 +60,42 @@ function DiagnosisCodeTable() {
       {
         id: 'last-updated-on',
         name: translateFn('Last Updated On'),
-        selector: (row) => row.lastUpdatedOn,
-        sortable: true,
-        sortKey: 'lastUpdatedOn',
         wrap: true,
         minWidth: '200px',
         cell: (props) => (
           <div>
             <EclipsesTextcss str={props.lastUpdatedOn} maxWidth={190} />
           </div>
-        )
+        ),
+        omit: omitColumns.includes('last-updated-on')
       },
       {
         id: 'action',
         name: translateFn('Action'),
         wrap: true,
         minWidth: '200px',
-        cell: (props) => <div>Action</div>
+        cell: (props) => (
+          <div className="styled-icon-button error-button">
+            <IconButton size="lg" textButton={true} color={'error'} variant={'tertiary'} Icon={DeleteIcon} onClick={() => {}} />
+          </div>
+        ),
+        omit: omitColumns.includes('action')
       }
     ];
-  }, []);
+  }, [omitColumns]);
   return (
     <div>
       <CustomDataTable
         type={'normal'}
         columns={columns}
-        data={[{}]}
+        data={data}
         onSortIconClick={() => {}}
-        handleChangePage={() => {}}
+        handleChangePage={changePage}
         selectableRowsHeader={false}
-        currentPage={1}
-        totalPageCount={13}
-        totalRocords={100}
-        recordsPerPage={8}
+        currentPage={pagination.pageNo}
+        totalPageCount={pagination.totalPages}
+        totalRocords={pagination.totalElements}
+        recordsPerPage={pagination.pageSize}
         paginationTotalRecorsMessage={translateFn('userManagement.results')}
         paginationRecordsPerPageMessage={translateFn('userManagement.per_page')}
         stickyHeader

@@ -6,13 +6,30 @@ import AssociatedSPAccount from '../pages/AssociatedSPAccount';
 import { SPAccountProvider } from '../../manage-sp-account/context/SPAccountContext';
 import { OrgAccountSelectionProvider } from '../../manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import DiagnosisConfiguration from '../pages/diagnosis-code-config/DiagnosisConfiguration';
+import AddDiagnosisCode from '../pages/diagnosis-code-config/AddDiagnosisCode';
+import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import MaterialService from '@src/api/commonService/MaterialService';
 
 function ManageSPMaterialRoute() {
   return (
     <Routes>
       <Route path={routeConstants.MANAGESPMATERIAL} element={<ManageSPMaterial />} />
-      <Route path={routeConstants.DIAGNOSIS_CODE} element={<DiagnosisConfiguration />} />
-      <Route path={`${routeConstants.DIAGNOSIS_CODE}/${routeConstants.ADD_DIAGNOSIS_CODES}`} element={<div>DX Configuration &gt; Add Diagnosis Codes</div>} />
+      <Route
+        path={routeConstants.DIAGNOSIS_CODE}
+        element={
+          <TableProvider fetchFn={MaterialService.getAssignedDiagnosisCodes}>
+            <DiagnosisConfiguration />
+          </TableProvider>
+        }
+      />
+      <Route
+        path={`${routeConstants.DIAGNOSIS_CODE}/${routeConstants.ADD_DIAGNOSIS_CODES}`}
+        element={
+          <TableProvider fetchFn={MaterialService.getUnassignedDiagnosisCodes}>
+            <AddDiagnosisCode />
+          </TableProvider>
+        }
+      />
       <Route
         path={routeConstants.ASSOCIATED_ACCOUNT}
         element={

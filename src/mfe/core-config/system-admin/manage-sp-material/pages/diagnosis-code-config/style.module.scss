@@ -17,3 +17,19 @@
     }
   }
 }
+
+.diagnosis-code-bucket-wrapper {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap: 1rem;
+
+  .dx-code-card-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 42px;
+    label {
+      display: inline-block;
+    }
+  }
+}

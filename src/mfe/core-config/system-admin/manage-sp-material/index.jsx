@@ -1,20 +1,22 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
-import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
-import CommonFilters from '@src/components/Filters';
-import SPMaterialDataTable from './pages/SPMaterialDataTable';
-import ModuleHeader from '@src/components/module-header';
-import { useSPMaterial } from './context/SPMaterialContext';
 import MaterialService from '@src/api/commonService/MaterialService';
-import { useMutation } from 'react-query';
+import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
 import Alert from '@src/components/cgat-alert/Alert';
+import CommonFilters from '@src/components/Filters';
+import ModuleHeader from '@src/components/module-header';
+import { useTranslate } from '@src/translations/useTranslation';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { useSPMaterial } from './context/SPMaterialContext';
+import SPMaterialDataTable from './pages/SPMaterialDataTable';
 
 function ManageSPMaterial() {
   const { t } = useTranslate();
+  const navigate = useNavigate();
   const { applyFilters, clearFilters } = useSPMaterial();
   const [manufacturerList, setManufacturerList] = useState([]);
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = React.useState(null);
   const translatedBreadcrumbs = [
     {
       label: 'systemAdministrator',
@@ -87,6 +89,19 @@ function ManageSPMaterial() {
   return (
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
+      <button
+        onClick={() =>
+          navigate('diagnosis-code', {
+            state: {
+              selectedTherapy: {
+                id: 1,
+                name: 'Custom selected therapy name'
+              }
+            }
+          })
+        }>
+        DX Config
+      </button>
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>} />
         {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}

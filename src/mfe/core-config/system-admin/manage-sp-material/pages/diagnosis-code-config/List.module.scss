@@ -1,0 +1,25 @@
+.list-wrapper {
+  border-radius: 8px;
+  border: 1px solid #bac5cc;
+  overflow-x: auto;
+  overflow-y: auto;
+  min-width: 280px;
+  .list-title {
+    padding: 12px 0 12px 16px;
+    font-weight: var(--brand-font-weight-600);
+    font-size: var(--brand-font-size--default);
+    background-color: var(--brand-color-cool-grey-2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .list-item-wrapper {
+    font-size: var(--brand-font-size--default);
+    > * {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0px;
+      margin: 0px 16px;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
