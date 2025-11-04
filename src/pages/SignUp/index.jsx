@@ -229,7 +229,7 @@ const SignUp = () => {
                         </div>
                         {errors.practiceId && touched.practiceId && !values.practiceId && <TextError errorMessage={errors.practiceId} />}
                       </div>
-                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                      <div className="textarea grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                         <Field
                           name="comment"
                           fieldlabel={t('forms.labels.comment')}
@@ -237,9 +237,10 @@ const SignUp = () => {
                           component={Components['textarea']}
                           maxCharHelperText={t('forms.placeholder.max_5000_chars')}
                           maxCharLimit={5000}
+                          minRows={3}
                         />
                       </div>
-                    </div>{' '}
+                    </div>
                   </div>
                   <div className={'buttonGroup'}>
                     <Button size="md" variant="secondary" type="button" onClick={() => navigate('/')}>
