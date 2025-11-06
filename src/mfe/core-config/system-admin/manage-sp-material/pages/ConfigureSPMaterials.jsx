@@ -11,7 +11,7 @@ import { useSPMaterial } from '../context/SPMaterialContext';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { REQUIREMENT_OPTIONS, TRIAGE_CHANNEL } from '../../manage-material/assets/constants/MaterialConstants';
 
-function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
+function ConfigureSPMaterials({ onClose, onSuccess, onError, configureRow }) {
   const { t } = useTranslate();
   const [formValues, setFormValues] = useState({
     pidRequirement: '',
@@ -22,6 +22,8 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const [error, setError] = useState(false);
 
   const { selectedSPMaterial, refreshData, setSelectedSPMaterial } = useSPMaterial();
+  const selectedMaterialRow = configureRow || selectedSPMaterial || [];
+
   const requestParams = {
     channelType: 'SPECIALITY_PHARMA'
   };
@@ -30,18 +32,18 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
     isError,
     data: spConfig
   } = useQuery({
-    queryKey: ['SPMaterialdetails', selectedSPMaterial?.[0]?.materialNumber],
+    queryKey: ['SPMaterialdetails', selectedMaterialRow?.[0]?.materialNumber],
     queryFn: async () => {
-      const result = await MaterialService.getSPMaterialById(selectedSPMaterial?.[0]?.materialNumber, requestParams);
+      const result = await MaterialService.getSPMaterialById(selectedMaterialRow?.[0]?.materialNumber, requestParams);
       return result?.spTherapyConfig;
     },
-    enabled: Array.isArray(selectedSPMaterial) && selectedSPMaterial.length === 1 && !!selectedSPMaterial[0]?.materialNumber ? true : false,
+    enabled: Array.isArray(selectedMaterialRow) && selectedMaterialRow.length === 1 && !!selectedMaterialRow[0]?.materialNumber ? true : false,
     refetchOnWindowFocus: false
   });
 
   useEffect(() => {
     if (spConfig) {
-      if (selectedSPMaterial.length === 1) {
+      if (Array.isArray(selectedMaterialRow) && selectedMaterialRow.length === 1) {
         setFormValues({
           pidRequirement: spConfig.patientIdentifierRequirement,
           coiIdRequirement: spConfig.coiIdRequirement,
@@ -116,7 +118,7 @@ function ConfigureSPMaterials({ onClose, onSuccess, onError }) {
   const handleApplyConfiguration = () => {
     if (isApplyDisabled) {
       const configValues = {
-        spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
+        spProductIds: selectedMaterialRow.map((material) => material.materialNumber),
         pidRequirement: formValues.pidRequirement,
         coiIdRequirement: formValues.coiIdRequirement,
         mrnRequirement: formValues.mrnRequirement,
