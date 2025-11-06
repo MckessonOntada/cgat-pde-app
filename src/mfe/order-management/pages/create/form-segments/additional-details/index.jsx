@@ -204,10 +204,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .required(t('labels.orderQuantityRequired'))
             .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
             .integer(t('labels.OrderQuantityMustBeInteger')),
-          slotNumber: Yup.string()
-            .required(t('labels.slotNumberRequired'))
-            .max(20, t('labels.slotNumberLengthError'))
-            .trim(t('labels.slotNumberExtraSpaceError')),
+          // slotNumber: Yup.string()
+          //   .required(t('labels.slotNumberRequired'))
+          //   .max(20, t('labels.slotNumberLengthError'))
+          //   .trim(t('labels.slotNumberExtraSpaceError')),
           poNumber: Yup.string()
             .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
             .max(35, t('labels.PONumberLengthError'))

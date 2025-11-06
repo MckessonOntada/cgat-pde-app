@@ -36,14 +36,14 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       maxLength: 2
     });
 
-    fields.push({
-      name: 'slotNumber',
-      label: translationFn('labels.provideSlotNumber'),
-      placeholder: ' ',
-      isRequired: true,
-      component: Components['input'],
-      maxLength: 20
-    });
+    // fields.push({
+    //   name: 'slotNumber',
+    //   label: translationFn('labels.provideSlotNumber'),
+    //   placeholder: ' ',
+    //   isRequired: true,
+    //   component: Components['input'],
+    //   maxLength: 20
+    // });
 
     if (therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED) {
       fields.push({
