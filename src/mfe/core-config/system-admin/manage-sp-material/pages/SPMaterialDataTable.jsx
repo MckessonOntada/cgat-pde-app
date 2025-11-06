@@ -17,8 +17,9 @@ import CommonUtils from '@src/util/CommonUtils';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
 import { routeConstants } from '../routes/constants';
+import Alert from '@src/components/cgat-alert/Alert';
 
-function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...props }) {
+function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert, ...props }) {
   const { t } = useTranslate();
   const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
     useSPMaterial();
@@ -43,6 +44,16 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       handleDXConfiguration([row]);
     }
   };
+
+  useEffect(() => {
+    if (location.state?.alert?.type && location.state?.alert?.messages) {
+      setAlert({
+        type: location.state.alert.type,
+        message: location.state.alert.messages
+      });
+    }
+  }, [location, setAlert]);
+
   const columns = getSPMaterialColumns({
     t,
     paginationConfig,
@@ -138,7 +149,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
   const isMultipleSelected = selectedSPMaterial?.length > 1;
   const handleDXConfiguration = (selectedSPMaterial) => {
     navigate(routeConstants.DX_CONFIG, {
-      state: { selectedSPMaterial }
+      state: { therapy: selectedSPMaterial }
     });
   };
 
@@ -173,26 +184,28 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           secondaryViewHeading={`${selectedSPMaterial?.length} ${t('manageMaterial.table.header.text')}`}
           secondaryViewControls={
             <div className="controls">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  handleDXConfiguration(selectedSPMaterial);
-                }}
-                size="sm">
-                {t('manageMaterial.table.header.button.DXConfiguration')}
-              </Button>
               {!isMultipleSelected && (
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setOpenConfiguration((prev) => ({
-                      ...prev,
-                      prescriptionConfig: !prev.prescriptionConfig
-                    }));
-                  }}
-                  size="sm">
-                  {t('manageMaterial.table.header.button.prescriptionDetails')}
-                </Button>
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      handleDXConfiguration(selectedSPMaterial);
+                    }}
+                    size="sm">
+                    {t('manageMaterial.table.header.button.DXConfiguration')}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setOpenConfiguration((prev) => ({
+                        ...prev,
+                        prescriptionConfig: !prev.prescriptionConfig
+                      }));
+                    }}
+                    size="sm">
+                    {t('manageMaterial.table.header.button.prescriptionDetails')}
+                  </Button>
+                </>
               )}
 
               <Button

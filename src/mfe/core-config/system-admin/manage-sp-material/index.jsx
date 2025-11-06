@@ -103,6 +103,7 @@ function ManageSPMaterial() {
           <SPMaterialDataTable
             onSuccess={() => showAlert('success', t('manageMaterial.drawer.controls.apply.success'))}
             onError={() => showAlert('error', t('errors.default'))}
+            setAlert={setAlert}
           />
         </div>
       </div>
