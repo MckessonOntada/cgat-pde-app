@@ -36,7 +36,7 @@ const UserPermissions = () => {
   };
 
   const handleGoBack = () => {
-    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
+    navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const handleBack = () => {
@@ -103,7 +103,7 @@ const UserPermissions = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
+          {t(isEdit ? 'userManagement.back_to_user_details' : isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />

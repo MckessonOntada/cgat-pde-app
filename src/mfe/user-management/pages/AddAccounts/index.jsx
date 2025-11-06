@@ -28,7 +28,7 @@ const AddAccounts = () => {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
 
   const handleGoBack = () => {
-    navigate(RoutePaths.pathUserManagement);
+    navigate(isEdit ? -1 : RoutePaths.pathUserManagement);
   };
 
   const handleBackButton = () => {
@@ -83,7 +83,7 @@ const AddAccounts = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t('userManagement.user.backmessage')}
+          {t(isEdit ? 'userManagement.back_to_user_details' : 'userManagement.user.backmessage')}
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />

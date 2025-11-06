@@ -408,6 +408,7 @@ export const UserManagementEN = {
   'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
   'userManagement.edit_sysadmin': 'Edit System Administrator',
   'userManagement.edit_organization_user': 'Edit Organization User',
+  'userManagement.back_to_user_details': 'Back to User Details Page',
 
   'labels.caption.ALL': 'All',
   'labels.caption.IN_DRAFT': 'In Draft',
@@ -446,5 +447,7 @@ export const UserManagementEN = {
   'CREATE_NEW_ORDER.SUBMIT_ORDER': 'Submit Order',
   'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'Allows user to submit the order.',
   'userManagement.button.resendLink': 'Resend Link',
-  'userManagement.message.resendLinkSuccess': 'Activation link has been resent successfully.'
+  'userManagement.message.resendLinkSuccess': 'Activation link has been resent successfully.',
+  'userManagement.viewUser': 'View User',
+  'userManagement.message.updateUser': 'User details updated successfully.'
 };

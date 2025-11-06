@@ -1,0 +1,34 @@
+.therapy-selection-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+  .therapies {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    span {
+      display: inline-block;
+      font-weight: bold;
+      max-width: 280px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.diagnosis-code-bucket-wrapper {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap: 1rem;
+
+  .dx-code-card-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    label {
+      display: inline-block;
+    }
+  }
+}

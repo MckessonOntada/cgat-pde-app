@@ -51,7 +51,7 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.details.configuration.actions.delete': 'S_Delete',
 
   'manageMaterial.drawer.details.configuration.body.patientInfoRequired': 'S_Patient Information Required',
-  'manageMaterial.drawer.details.configuration.body.pIdentifier': 'S_Patient Identifier',
+  'manageMaterial.drawer.details.configuration.body.pIdentifier': 'S_Manufacturer Patient Identifier',
   'manageMaterial.drawer.details.configuration.body.coiId': 'S_COI ID',
   'manageMaterial.drawer.details.configuration.body.poNumber': 'S_PO Number',
   'manageMaterial.drawer.details.configuration.body.mrn': 'S_MRN',

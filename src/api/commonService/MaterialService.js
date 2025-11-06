@@ -20,6 +20,52 @@ async function getMaterialConfigById(id) {
   return [];
 }
 
+async function getUnassignedDiagnosisCodes(spProductId, params) {
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes?${serializeParams(params)}`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function getAssignedDiagnosisCodes(spProductId, params) {
+  if (!spProductId) {
+    throw new Error('Missing required params. SP product id is required.');
+  }
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function removeAssignedDiagnosisCode(spProductId, codes) {
+  if (!codes || !Array.isArray(codes)) throw new Error("Invalid sp product id's. Provide an array of sp product id's");
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes`;
+  const payload = {
+    spProductId: productIds
+  };
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function addDiagnosisCode(spProductId, productIds) {
+  if (!productIds || !Array.isArray(productIds)) throw new Error("Invalid sp product id's. Provide an array of sp product id's");
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, productIds);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 async function deleteMaterialConfig(id) {
   const url = `${ApiRoutes.DELETE_MATERIAL_CONFIG(id)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.DELETE, {});
@@ -49,6 +95,7 @@ async function getSPMaterialById(spMaterialId, requestParams) {
 }
 
 async function getSPMaterial(requestParams) {
+  console.log('Calling this method');
   const url = `${ApiRoutes.THERAPIES()}/type/speciality-pharma?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
@@ -82,7 +129,11 @@ const MaterialService = Object.freeze({
   getSPMaterialById,
   getSPMaterial,
   getManufacturerListSPMaterial,
-  deleteSPMaterialConfig
+  deleteSPMaterialConfig,
+  getUnassignedDiagnosisCodes,
+  getAssignedDiagnosisCodes,
+  removeAssignedDiagnosisCode,
+  addDiagnosisCode
 });
 
 export default MaterialService;

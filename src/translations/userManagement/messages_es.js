@@ -378,6 +378,7 @@ export const UserManagementES = {
   'userManagement.confirmationMessage': 'S_Confirmation message',
   'userManagement.edit_sysadmin': 'S_Edit System Administrator',
   'userManagement.edit_organization_user': 'S_Edit Organization User',
+  'userManagement.back_to_user_details': 'S_Back to User Details Page',
   'errors.messages.dateRange': "S_S_Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.emptyDataDescription': 'S_System is facing issues in getting the information. Kindly Contact your System admin.',
   'label.comment': 'S_S_Comment',
@@ -415,5 +416,7 @@ export const UserManagementES = {
   'CREATE_NEW_ORDER.SUBMIT_ORDER': 'S_Submit Order',
   'CREATE_NEW_ORDER.SUBMIT_ORDER.DESCRIPTION': 'S_Allows user to submit the order.',
   'userManagement.button.resendLink': 'S_Resend Link',
-  'userManagement.message.resendLinkSuccess': 'S_Activation link has been resent successfully.'
+  'userManagement.message.resendLinkSuccess': 'S_Activation link has been resent successfully.',
+  'userManagement.viewUser': 'S_View User',
+  'userManagement.message.updateUser': 'S_User details updated successfully.'
 };
