@@ -94,8 +94,9 @@ function ManageSPMaterial() {
           navigate('diagnosis-code', {
             state: {
               selectedTherapy: {
-                id: 1,
-                name: 'Custom selected therapy name'
+                id: 997,
+                name: 'Venetoclax',
+                description: 'Water Do Not Use'
               }
             }
           })

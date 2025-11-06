@@ -8,7 +8,7 @@ const SelectedTherapyListControl = ({ therapies = [], onChange }) => {
     <div className={style['therapy-selection-panel']}>
       <label className={style['therapies']}>
         Therapies:&nbsp;
-        <span>{therapies.map((therapy) => therapy.name).join(', ')}</span>
+        <span>{therapies.map((therapy) => `${therapy.name}(${therapy.description})`).join(', ')}</span>
       </label>
       <Button variant="tertiary" onClick={onChange}>
         Change

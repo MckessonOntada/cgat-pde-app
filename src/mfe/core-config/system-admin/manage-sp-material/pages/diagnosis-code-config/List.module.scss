@@ -13,10 +13,13 @@
   }
   .list-item-wrapper {
     font-size: var(--brand-font-size--default);
+    height: 36px;
+    overflow-y: scroll;
     > * {
       border-bottom: 1px solid #ccc;
       padding: 8px 0px;
       margin: 0px 16px;
+      min-height: 42px;
       &:last-child {
         border-bottom: none;
       }

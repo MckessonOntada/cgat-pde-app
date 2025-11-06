@@ -20,8 +20,9 @@ async function getMaterialConfigById(id) {
   return [];
 }
 
-async function getUnassignedDiagnosisCodes(spProductId) {
-  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes`;
+async function getUnassignedDiagnosisCodes(spProductId, params) {
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes?${serializeParams(params)}`;
+
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -30,7 +31,7 @@ async function getUnassignedDiagnosisCodes(spProductId) {
 }
 
 async function getAssignedDiagnosisCodes(spProductId, params) {
-  if (spProductId) {
+  if (!spProductId) {
     throw new Error('Missing required params. SP product id is required.');
   }
   const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes?${serializeParams(params)}`;
@@ -54,13 +55,11 @@ async function removeAssignedDiagnosisCode(spProductId, codes) {
   return [];
 }
 
-async function addDiagnosisCode(productIds) {
+async function addDiagnosisCode(spProductId, productIds) {
   if (!productIds || !Array.isArray(productIds)) throw new Error("Invalid sp product id's. Provide an array of sp product id's");
-  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(id)}/diagnosis-codes`;
-  const payload = {
-    spProductId: productIds
-  };
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, productIds);
   if (res.data) {
     return res.data;
   }

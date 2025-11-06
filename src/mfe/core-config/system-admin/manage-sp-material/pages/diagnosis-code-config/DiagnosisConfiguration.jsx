@@ -4,13 +4,14 @@ import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { useFilters } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider, useFilters } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routeConstants } from '../../routes/constants';
 import DiagnosisCodeTable from './DiagnosisCodeTable';
 import SelectedTherapyListControl from './SelectedTherapyListControl';
+import MaterialService from '@src/api/commonService/MaterialService';
 
 function DiagnosisConfiguration() {
   const navigate = useNavigate();
@@ -69,11 +70,25 @@ function DiagnosisConfiguration() {
               />
             )}
           </React.Fragment>
-          <DiagnosisCodeTable />
+          <DiagnosisCodeTable {...{ selectedCodes, setSelectedCodes }} />
         </div>
       </div>
     </div>
   );
 }
 
-export default DiagnosisConfiguration;
+export default function () {
+  const location = useLocation();
+  const { selectedTherapy } = location.state || {};
+  if (!selectedTherapy) {
+    navigate('../');
+  }
+
+  return (
+    <TableProvider
+      defaultFilters={{ showLinkedCodes: true }}
+      fetchFn={(requestParams) => MaterialService.getAssignedDiagnosisCodes(selectedTherapy.id, requestParams)}>
+      <DiagnosisConfiguration />
+    </TableProvider>
+  );
+}
