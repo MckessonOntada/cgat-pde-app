@@ -135,6 +135,11 @@ export const getSPMaterialColumns = ({
               label: t('manageMaterial.table.header.button.DXConfiguration'),
               value: 'DXConfiguration',
               disabled: row.itemStatus !== 'A' || selectedSPMaterial.length > 0
+            },
+            {
+              label: t('manageMaterial.table.header.button.configure'),
+              value: 'configure',
+              disabled: row.itemStatus !== 'A' || selectedSPMaterial.length > 0
             }
           ]}
           size="md"

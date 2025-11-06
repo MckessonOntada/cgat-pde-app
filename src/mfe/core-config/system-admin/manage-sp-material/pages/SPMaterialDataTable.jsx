@@ -31,6 +31,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [tableHeight, setTableHeight] = useState('100%');
+  const [configureRow, setConfigureRow] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const isAssociatedAccount = location.state?.isAssociatedAccount;
@@ -42,6 +43,13 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   const handleOnOptionSelection = (value, row) => {
     if (value === 'DXConfiguration') {
       handleDXConfiguration([row]);
+    }
+    if (value === 'configure') {
+      setOpenConfiguration((prev) => ({
+        ...prev,
+        config: !prev.config
+      }));
+      setConfigureRow([row]);
     }
   };
 
@@ -281,7 +289,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
       />
       {/* {openConfiguration && <ConfigureSPMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />} */}
       {openConfiguration.config && (
-        <ConfigureSPMaterials onClose={() => setOpenConfiguration((prev) => ({ ...prev, config: false }))} onSuccess={onSuccess} onError={onError} />
+        <ConfigureSPMaterials
+          configureRow={configureRow}
+          onClose={() => setOpenConfiguration((prev) => ({ ...prev, config: false }))}
+          onSuccess={onSuccess}
+          onError={onError}
+        />
       )}
       {openConfiguration.prescriptionConfig && (
         <ConfigureSPPrescription
