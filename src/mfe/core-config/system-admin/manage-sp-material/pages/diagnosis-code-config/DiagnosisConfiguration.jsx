@@ -4,7 +4,7 @@ import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { TableProvider, useFilters } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider, useFilters, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -12,24 +12,54 @@ import { routeConstants } from '../../routes/constants';
 import DiagnosisCodeTable from './DiagnosisCodeTable';
 import SelectedTherapyListControl from './SelectedTherapyListControl';
 import MaterialService from '@src/api/commonService/MaterialService';
+import CommonUtils from '@src/util/CommonUtils';
 
 function DiagnosisConfiguration() {
   const navigate = useNavigate();
   const location = useLocation();
   const { filters, applyFilters, clearFilters } = useFilters();
+  const { refreshTable } = useTable();
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const [selectedCodes, setSelectedCodes] = React.useState([]);
   const [selectedTherapy, setSelectedTherapy] = React.useState(null);
 
   React.useEffect(() => {
-    const { selectedTherapy } = location.state || {};
+    const { therapy } = location.state || {};
 
-    if (!selectedTherapy) {
+    if (!therapy) {
       navigate('../');
     }
-    setSelectedTherapy(selectedTherapy);
+    setSelectedTherapy({
+      id: therapy.materialNumber,
+      name: therapy.tradeName,
+      description: therapy.materialDescription
+    });
   }, []);
+
+  const handleOnDelete = (ids) => {
+    if (!ids || !Array.isArray(ids)) return;
+
+    MaterialService.removeAssignedDiagnosisCode(selectedTherapy.id, ids)
+      .then((_response) => {
+        setAlert({
+          description: translateFn(`${ids.length} Diagnosis codes has been removed.`),
+          type: 'success'
+        });
+        setSelectedCodes([]);
+        refreshTable();
+      })
+      .catch((error) => {
+        const statusCode = error?.response?.status;
+        let description = translateFn('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+        setAlert({
+          description,
+          type: 'error'
+        });
+      });
+  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -58,19 +88,25 @@ function DiagnosisConfiguration() {
             />
           </div>
           {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-          <React.Fragment>
-            {selectedCodes.length > 0 ? (
-              <div>Ribbon Options</div>
-            ) : (
-              <ModuleHeader
-                heading={<TableHeading heading={translateFn('Diagnosis Code Listing')} />}
-                controls={
-                  <Button onClick={() => navigate(routeConstants.ADD_DIAGNOSIS_CODES, { state: location.state })}>{translateFn('Add Diagnosis Codes')}</Button>
-                }
-              />
-            )}
-          </React.Fragment>
-          <DiagnosisCodeTable {...{ selectedCodes, setSelectedCodes }} />
+          <TableHeading
+            heading={translateFn('Diagnosis Code Listing')}
+            controls={
+              <Button size="md" onClick={() => navigate(routeConstants.ADD_DIAGNOSIS_CODES, { state: location.state })}>
+                {translateFn('Add Diagnosis Codes')}
+              </Button>
+            }
+            secondaryView={selectedCodes && selectedCodes.length > 0}
+            secondaryViewHeading={`${selectedCodes.length} ${translateFn('userManagement.selected_items')}`}
+            secondaryViewControls={
+              <div className="controls">
+                <Button onClick={() => handleOnDelete(selectedCodes.map((code) => code.id))} size="sm" variant="secondary">
+                  {translateFn('Delete')}
+                </Button>
+              </div>
+            }
+          />
+
+          <DiagnosisCodeTable {...{ selectedCodes, setSelectedCodes, onDelete: handleOnDelete }} />
         </div>
       </div>
     </div>
@@ -79,15 +115,16 @@ function DiagnosisConfiguration() {
 
 export default function () {
   const location = useLocation();
-  const { selectedTherapy } = location.state || {};
-  if (!selectedTherapy) {
+  const navigate = useNavigate();
+  const { therapy } = location.state || {};
+  if (!therapy) {
     navigate('../');
   }
 
   return (
     <TableProvider
       defaultFilters={{ showLinkedCodes: true }}
-      fetchFn={(requestParams) => MaterialService.getAssignedDiagnosisCodes(selectedTherapy.id, requestParams)}>
+      fetchFn={(requestParams) => MaterialService.getAssignedDiagnosisCodes(therapy.materialNumber, requestParams)}>
       <DiagnosisConfiguration />
     </TableProvider>
   );
