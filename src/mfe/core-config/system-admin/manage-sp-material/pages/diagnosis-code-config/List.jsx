@@ -1,4 +1,4 @@
-import ListStyle from './list.module.scss';
+import ListStyle from './List.module.scss';
 
 function List(props) {
   const { title } = props;
