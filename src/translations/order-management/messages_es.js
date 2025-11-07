@@ -688,5 +688,6 @@ export const MessageEs = {
   'label.whoCanDoWhat': 'S_Who Can Do What?',
   'control.whoCanDoWhat': 'S_Who Can Do What',
   'label.userList': 'User List',
-  'label.userNotAssigned': 'User not assigned'
+  'label.userNotAssigned': 'User not assigned',
+  'message.additionalDetails.diagnosisCodeNotConfigured': 'S_Diagnosis Code is not configured for this therapy. Please contact your System Administrator.'
 };
