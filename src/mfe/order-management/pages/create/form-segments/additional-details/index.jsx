@@ -524,6 +524,25 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       }
+      if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && variantsData?.content?.length === 0) {
+        const diagnosisList = orderDetails?.spTherapyConfig?.diagnosisCodes || [];
+
+        if (diagnosisList.length === 0) {
+          setDiagnosisCode([]);
+          setTriageAlert({
+            type: 'error',
+            description: t('message.additionalDetails.diagnosisCodeNotConfigured')
+          });
+        } else {
+          setDiagnosisCode(
+            diagnosisList.map((item) => ({
+              code: item.code,
+              description: item.longDescription
+            }))
+          );
+          setTriageAlert(null);
+        }
+      }
     }
   }, [orderDetails, variantsData]);
 
