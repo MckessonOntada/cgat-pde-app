@@ -14,6 +14,7 @@ import PageHeader from '@src/components/pageHeader';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
+import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
@@ -40,7 +41,6 @@ import { NotifyAlert } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
-import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -204,10 +204,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .required(t('labels.orderQuantityRequired'))
             .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
             .integer(t('labels.OrderQuantityMustBeInteger')),
-          slotNumber: Yup.string()
-            .required(t('labels.slotNumberRequired'))
-            .max(20, t('labels.slotNumberLengthError'))
-            .trim(t('labels.slotNumberExtraSpaceError')),
           poNumber: Yup.string()
             .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
             .max(35, t('labels.PONumberLengthError'))
