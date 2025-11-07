@@ -1,17 +1,19 @@
 import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import style from './style.module.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 const SelectedTherapyListControl = ({ therapies = [], onChange }) => {
+  const { t: translateFn } = useTranslate();
   if (!therapies || !Array.isArray(therapies) || therapies.length === 0) return null;
 
   return (
     <div className={style['therapy-selection-panel']}>
       <label className={style['therapies']}>
-        Therapies:&nbsp;
+        <span>{translateFn('label.therapies')}</span>:&nbsp;
         <span>{therapies.map((therapy) => `${therapy.name}(${therapy.description})`).join(', ')}</span>
       </label>
       <Button variant="tertiary" onClick={onChange}>
-        Change
+        {translateFn('button.caption.change')}
       </Button>
     </div>
   );

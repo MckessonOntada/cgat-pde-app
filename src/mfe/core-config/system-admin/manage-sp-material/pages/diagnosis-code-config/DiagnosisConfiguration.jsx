@@ -27,9 +27,6 @@ function DiagnosisConfiguration() {
   React.useEffect(() => {
     const { therapy } = location.state || {};
 
-    if (!therapy) {
-      navigate('../');
-    }
     setSelectedTherapy({
       id: therapy.materialNumber,
       name: therapy.tradeName,
@@ -43,7 +40,7 @@ function DiagnosisConfiguration() {
     MaterialService.removeAssignedDiagnosisCode(selectedTherapy.id, ids)
       .then((_response) => {
         setAlert({
-          description: translateFn(`${ids.length} Diagnosis codes has been removed.`),
+          description: translateFn('successMessage.nCodesRemoved', { n: ids.length }),
           type: 'success'
         });
         setSelectedCodes([]);
@@ -70,37 +67,37 @@ function DiagnosisConfiguration() {
           Icon={() => <IconArrowLeft />}
           onClick={() => navigate('../', { state: { selectedTherapies: selectedTherapy } })}
           size="md">
-          {translateFn('Back to sp material master')}
+          {translateFn('button.caption.backToSpMaterial')}
         </Button>
       </div>
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<Heading as="h1">{translateFn('Dx Configuration')}</Heading>}
+          heading={<Heading as="h1">{translateFn('module.title.dxConfiguration')}</Heading>}
           controls={selectedTherapy && <SelectedTherapyListControl onChange={() => navigate('../')} therapies={[selectedTherapy]} />}
         />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={[]}
-              searchPlaceholder={translateFn('Search by ICD-10 code, description')}
+              searchPlaceholder={translateFn('placeholder.diagnosisCodesTable')}
             />
           </div>
-          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
           <TableHeading
-            heading={translateFn('Diagnosis Code Listing')}
+            heading={translateFn('table.title.diagnosisCodeListing')}
             controls={
               <Button size="md" onClick={() => navigate(routeConstants.ADD_DIAGNOSIS_CODES, { state: location.state })}>
-                {translateFn('Add Diagnosis Codes')}
+                {translateFn('button.caption.addDiagnosisCodes')}
               </Button>
             }
             secondaryView={selectedCodes && selectedCodes.length > 0}
-            secondaryViewHeading={`${selectedCodes.length} ${translateFn('userManagement.selected_items')}`}
+            secondaryViewHeading={translateFn('table.ribbon.nItemsSelected', { n: selectedCodes.length })}
             secondaryViewControls={
               <div className="controls">
                 <Button onClick={() => handleOnDelete(selectedCodes.map((code) => code.id))} size="sm" variant="secondary">
-                  {translateFn('Delete')}
+                  {translateFn('button.caption.remove')}
                 </Button>
               </div>
             }
@@ -117,7 +114,7 @@ export default function () {
   const location = useLocation();
   const navigate = useNavigate();
   const { therapy } = location.state || {};
-  if (!therapy) {
+  if (!therapy || !therapy.id) {
     navigate('../');
   }
 

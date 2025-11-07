@@ -30,9 +30,6 @@ function AddDiagnosisCode() {
   React.useEffect(() => {
     const { therapy } = location.state || {};
 
-    if (!therapy) {
-      navigate('./../../');
-    }
     setSelectedTherapy({
       id: therapy.materialNumber,
       name: therapy.tradeName,
@@ -41,7 +38,13 @@ function AddDiagnosisCode() {
   }, []);
 
   const handleOnSubmit = () => {
-    if (!selectedCodes || selectedCodes.length === 0) return;
+    if (!selectedCodes || selectedCodes.length === 0) {
+      setAlert({
+        type: 'error',
+        description: translateFn('errorMessages.selectDiagnosisCodesToSave')
+      });
+      return;
+    }
 
     const codeIds = selectedCodes.map((code) => code.id);
 
@@ -51,7 +54,7 @@ function AddDiagnosisCode() {
           state: {
             alert: {
               type: 'success',
-              description: translateFn(`${codeIds.length} Diagnosis codes has been successfully added.`)
+              description: translateFn('successMessage.nCodesAdded', { n: codeIds.length })
             }
           }
         });
@@ -71,7 +74,9 @@ function AddDiagnosisCode() {
     const newList = selectedCodes.filter((item) => item.id != id);
     setSelectedCodes(newList);
   };
-  const handleOnCancel = () => {};
+  const handleOnCancel = () => {
+    navigate('./../..');
+  };
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -81,30 +86,30 @@ function AddDiagnosisCode() {
           Icon={() => <IconArrowLeft />}
           onClick={() => navigate('./..', { state: location.state })}
           size="md">
-          {translateFn('Back to Manage DC Configuration')}
+          {translateFn('button.caption.backToDcConfiguration')}
         </Button>
       </div>
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<Heading as="h1">{translateFn('Add Diagnosis Codes')}</Heading>}
+          heading={<Heading as="h1">{translateFn('module.title.addDiagnosisCodes')}</Heading>}
           controls={selectedTherapy && <SelectedTherapyListControl onChange={() => navigate('./../..')} therapies={[selectedTherapy]} />}
         />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={[]}
-              searchPlaceholder={translateFn('Search by ICD-10 code, description')}
+              searchPlaceholder={translateFn('placeholder.diagnosisCodesTable')}
             />
           </div>
-          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
           <React.Fragment>
-            <ModuleHeader heading={<TableHeading heading={translateFn('Select Diagnosis Code')} />} />
+            <ModuleHeader heading={<TableHeading heading={translateFn('table.title.selectDiagnosisCodes')} />} />
           </React.Fragment>
           <div className={style['diagnosis-code-bucket-wrapper']}>
             <DiagnosisCodeTable {...{ selectedCodes, setSelectedCodes }} omitColumns={['last-updated-on', 'action']} />
-            <List title={'Selected Codes'}>
+            <List title={translateFn('list.title.selectedCodes')}>
               {selectedCodes.map((item = {}, index) => {
                 const { code, longDescription } = item;
                 return (
@@ -134,7 +139,7 @@ function AddDiagnosisCode() {
               {translateFn('Cancel')}
             </Button>
             <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
-              {translateFn('Add Codes')}
+              {translateFn('button.caption.addCodes')}
             </Button>
           </div>
         </div>
@@ -147,8 +152,8 @@ export default function () {
   const location = useLocation();
   const navigate = useNavigate();
   const { therapy } = location.state || {};
-  if (!therapy) {
-    navigate('../');
+  if (!therapy || therapy.id) {
+    navigate('./../../');
   }
 
   return (

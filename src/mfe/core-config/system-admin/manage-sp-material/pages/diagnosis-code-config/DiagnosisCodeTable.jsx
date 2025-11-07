@@ -53,7 +53,7 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes,
       },
       {
         id: 'description',
-        name: translateFn('Description'),
+        name: translateFn('table.column.caption.description'),
         wrap: true,
         minWidth: '420px',
         cell: (props) => (
@@ -64,7 +64,7 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes,
       },
       {
         id: 'last-updated-on',
-        name: translateFn('Last Updated On'),
+        name: translateFn('table.column.caption.lastUpdatedOn'),
         wrap: true,
         maxWidth: '200px',
         cell: (props) => (
@@ -76,14 +76,14 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes,
       },
       {
         id: 'action',
-        name: translateFn('Action'),
+        name: translateFn('table.column.caption.action'),
         wrap: true,
         maxWidth: '120px',
         cell: (props) => (
           <div className="styled-icon-button error-button">
             <IconButton
               size="lg"
-              label={'Delete'}
+              label={translateFn('button.caption.remove')}
               textButton={true}
               iconButton={false}
               color={'error'}
@@ -111,8 +111,8 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes,
         totalPageCount={pagination.totalPages}
         totalRocords={pagination.totalElements}
         recordsPerPage={pagination.pageSize}
-        paginationTotalRecorsMessage={translateFn('userManagement.results')}
-        paginationRecordsPerPageMessage={translateFn('userManagement.per_page')}
+        paginationTotalRecorsMessage={translateFn('table.pagination.result')}
+        paginationRecordsPerPageMessage={translateFn('table.pagination.perPage')}
         stickyHeader
         responsive
         pagination={true}
@@ -123,8 +123,8 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes,
             isLoading={loading}
             isError={error}
             image={EmptyDataImage}
-            heading={isFilterApplied ? translateFn('errors.messages.noRecordsFound') : translateFn('No Assigned Diagnosis Found')}
-            description={!isFilterApplied && translateFn('You need to assign diagnosis codes to see in this table.')}
+            heading={isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('table.message.noRecordsFoundDiagnosisCodes')}
+            description={!isFilterApplied && translateFn('table.description.noRecordsFoundDiagnosisCodes')}
           />
         }
       />
