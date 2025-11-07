@@ -45,10 +45,8 @@ async function getAssignedDiagnosisCodes(spProductId, params) {
 async function removeAssignedDiagnosisCode(spProductId, codes) {
   if (!codes || !Array.isArray(codes)) throw new Error("Invalid sp product id's. Provide an array of sp product id's");
   const url = `${ApiRoutes.GET_SP_MATERIAL_CONFIG_BY_ID(spProductId)}/diagnosis-codes`;
-  const payload = {
-    spProductId: productIds
-  };
-  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, payload);
+
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, codes);
   if (res.data) {
     return res.data;
   }

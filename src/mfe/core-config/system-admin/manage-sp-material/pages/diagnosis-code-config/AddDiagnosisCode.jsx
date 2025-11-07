@@ -28,12 +28,16 @@ function AddDiagnosisCode() {
   const [selectedTherapy, setSelectedTherapy] = React.useState(null);
 
   React.useEffect(() => {
-    const { selectedTherapy } = location.state || {};
+    const { therapy } = location.state || {};
 
-    if (!selectedTherapy) {
-      navigate('../../');
+    if (!therapy) {
+      navigate('./../../');
     }
-    setSelectedTherapy(selectedTherapy);
+    setSelectedTherapy({
+      id: therapy.materialNumber,
+      name: therapy.tradeName,
+      description: therapy.materialDescription
+    });
   }, []);
 
   const handleOnSubmit = () => {
@@ -43,7 +47,7 @@ function AddDiagnosisCode() {
 
     MaterialService.addDiagnosisCode(selectedTherapy.id, codeIds)
       .then((_response) => {
-        navigate('../../', {
+        navigate('./../../', {
           state: {
             alert: {
               type: 'success',
@@ -63,18 +67,27 @@ function AddDiagnosisCode() {
         });
       });
   };
+  const removeFromBucket = (id) => {
+    const newList = selectedCodes.filter((item) => item.id != id);
+    setSelectedCodes(newList);
+  };
   const handleOnCancel = () => {};
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('../', { state: null })} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate('./..', { state: location.state })}
+          size="md">
           {translateFn('Back to Manage DC Configuration')}
         </Button>
       </div>
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{translateFn('Add Diagnosis Codes')}</Heading>}
-          controls={selectedTherapy && <SelectedTherapyListControl onChange={() => navigate('../../')} therapies={[selectedTherapy]} />}
+          controls={selectedTherapy && <SelectedTherapyListControl onChange={() => navigate('./../..')} therapies={[selectedTherapy]} />}
         />
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
@@ -99,7 +112,14 @@ function AddDiagnosisCode() {
                     <div className={style['dx-code-card-with-action']}>
                       <label>{`${code}(${longDescription})`}</label>
                       <div className="styled-icon-button error-button">
-                        <IconButton size="lg" textButton={true} color={'error'} variant={'tertiary'} Icon={DeleteIcon} onClick={() => {}} />
+                        <IconButton
+                          size="lg"
+                          textButton={true}
+                          color={'error'}
+                          variant={'tertiary'}
+                          Icon={DeleteIcon}
+                          onClick={() => removeFromBucket(item.id)}
+                        />
                       </div>
                     </div>
                   </ListItem>
@@ -125,13 +145,14 @@ function AddDiagnosisCode() {
 
 export default function () {
   const location = useLocation();
-  const { selectedTherapy } = location.state || {};
-  if (!selectedTherapy) {
+  const navigate = useNavigate();
+  const { therapy } = location.state || {};
+  if (!therapy) {
     navigate('../');
   }
 
   return (
-    <TableProvider fetchFn={(requestParams) => MaterialService.getUnassignedDiagnosisCodes(selectedTherapy.id, requestParams)}>
+    <TableProvider fetchFn={(requestParams) => MaterialService.getUnassignedDiagnosisCodes(therapy.materialNumber, requestParams)}>
       <AddDiagnosisCode />
     </TableProvider>
   );

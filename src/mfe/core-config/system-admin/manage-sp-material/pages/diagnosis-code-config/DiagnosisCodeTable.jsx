@@ -1,20 +1,21 @@
-import { CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
+import { IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { usePagination, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React from 'react';
 
-function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes }) {
+function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes, onDelete }) {
   const showCardView = useResponsiveView();
   const { pagination, changePage } = usePagination();
-  const { data } = useTable();
+  const { data, loading, error, isFilterApplied } = useTable();
   const { t: translateFn } = useTranslate();
-  console.log(selectedCodes);
   const columns = React.useMemo(() => {
     return [
       {
@@ -88,7 +89,7 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes 
               color={'error'}
               variant={'tertiary'}
               Icon={DeleteIcon}
-              onClick={() => {}}
+              onClick={() => onDelete([props.id])}
             />
           </div>
         ),
@@ -117,7 +118,15 @@ function DiagnosisCodeTable({ omitColumns = [], selectedCodes, setSelectedCodes 
         pagination={true}
         showCardView={showCardView}
         defaultExpandedCardView={true}
-        noDataComponent={'No Data Found'}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={loading}
+            isError={error}
+            image={EmptyDataImage}
+            heading={isFilterApplied ? translateFn('errors.messages.noRecordsFound') : translateFn('No Assigned Diagnosis Found')}
+            description={!isFilterApplied && translateFn('You need to assign diagnosis codes to see in this table.')}
+          />
+        }
       />
     </div>
   );

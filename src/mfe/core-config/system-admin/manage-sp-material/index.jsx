@@ -7,16 +7,18 @@ import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSPMaterial } from './context/SPMaterialContext';
 import SPMaterialDataTable from './pages/SPMaterialDataTable';
 
 function ManageSPMaterial() {
   const { t } = useTranslate();
-  const navigate = useNavigate();
+  const location = useLocation();
+
   const { applyFilters, clearFilters } = useSPMaterial();
   const [manufacturerList, setManufacturerList] = useState([]);
   const [alert, setAlert] = React.useState(null);
+
   const translatedBreadcrumbs = [
     {
       label: 'systemAdministrator',
@@ -53,11 +55,11 @@ function ManageSPMaterial() {
   }, []);
 
   const handleAlertClose = () => {
-    setAlert({ type: null, message: null });
+    setAlert(null);
   };
 
-  const showAlert = (type, message) => {
-    setAlert({ type, message });
+  const showAlert = (type, description) => {
+    setAlert({ type, description });
   };
 
   const AdditionalFiltersConfig = useMemo(() => {
@@ -86,26 +88,19 @@ function ManageSPMaterial() {
     ];
   }, [manufacturerList]);
 
+  React.useEffect(() => {
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert({ ...alert });
+    }
+  }, [location]);
+
   return (
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
-      <button
-        onClick={() =>
-          navigate('diagnosis-code', {
-            state: {
-              selectedTherapy: {
-                id: 997,
-                name: 'Venetoclax',
-                description: 'Water Do Not Use'
-              }
-            }
-          })
-        }>
-        DX Config
-      </button>
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>} />
-        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+        {alert && <Alert {...alert} onClose={handleAlertClose} />}
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters

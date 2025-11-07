@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Loader, Badge, Heading, Button } from '@mckesson/mcp-component-library';
+import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -13,15 +13,13 @@ import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import ConfigureSPMaterials from './ConfigureSPMaterials';
-import CommonUtils from '@src/util/CommonUtils';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
 import { routeConstants } from '../routes/constants';
-import Alert from '@src/components/cgat-alert/Alert';
 
-function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert, ...props }) {
+function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
+  const { paginationConfig, data, setPageNumber, isLoading, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState({
@@ -57,7 +55,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
     if (location.state?.alert?.type && location.state?.alert?.messages) {
       setAlert({
         type: location.state.alert.type,
-        message: location.state.alert.messages
+        description: location.state.alert.messages
       });
     }
   }, [location, setAlert]);
@@ -85,27 +83,6 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
     isLinkCatalog,
     handleOnOptionSelection
   });
-
-  const ExpandedComponent = ({ data }) => {
-    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
-    const expandedData = data.therapies || [];
-    // const expandedColumns = createColumns({ t, trade, onChange });
-    return (
-      <div className="expanded-rows">
-        <CustomDataTable
-          data={expandedData}
-          columns={columns}
-          noTableHead
-          noHeader
-          pagination={false}
-          showHeader={false}
-          hideColumnHeader
-          type="expanded"
-          striped
-        />
-      </div>
-    );
-  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -156,9 +133,10 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
 
   const isMultipleSelected = selectedSPMaterial?.length > 1;
   const handleDXConfiguration = (selectedSPMaterial) => {
-    navigate(routeConstants.DX_CONFIG, {
-      state: { therapy: selectedSPMaterial }
-    });
+    if (selectedSPMaterial && Array.isArray(selectedSPMaterial) && selectedSPMaterial[0])
+      navigate(routeConstants.DIAGNOSIS_CODE, {
+        state: { therapy: selectedSPMaterial[0] }
+      });
   };
 
   return (

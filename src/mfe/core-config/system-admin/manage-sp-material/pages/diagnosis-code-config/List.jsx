@@ -1,17 +1,17 @@
 import React from 'react';
-import style from './list.module.scss';
+import ListStyle from './list.module.scss';
 
 function List(props) {
   const { title } = props;
   return (
-    <div className={style['list-wrapper']}>
-      {title && <div className={style['list-title']}>{title}</div>}
-      <div className={style['list-item-wrapper']}>{props.children}</div>
+    <div className={ListStyle['list-wrapper']}>
+      {title && <div className={ListStyle['list-title']}>{title}</div>}
+      <div className={ListStyle['list-item-wrapper']}>{props.children}</div>
     </div>
   );
 }
 function ListItem(props) {
-  return <div className={style['list-item']}>{props.children}</div>;
+  return <div className={ListStyle['list-item']}>{props.children}</div>;
 }
 
 export { List, ListItem };

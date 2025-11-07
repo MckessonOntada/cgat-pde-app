@@ -1,3 +1,5 @@
+@use "@src/assets/styles/abstracts/mixins";
+
 .therapy-selection-panel {
   display: flex;
   flex-direction: row;
@@ -19,10 +21,14 @@
 }
 
 .diagnosis-code-bucket-wrapper {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr;
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
-
+  width: 100%;
+  box-sizing: border-box;
+  @include mixins.respond(md) {
+    flex-direction: column;
+  }
   .dx-code-card-with-action {
     display: flex;
     align-items: center;
