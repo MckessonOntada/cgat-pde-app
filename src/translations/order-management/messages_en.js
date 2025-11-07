@@ -1042,5 +1042,6 @@ export const MessageEn = {
   'label.whoCanDoWhat': 'Who Can Do What?',
   'control.whoCanDoWhat': 'Who Can Do What',
   'label.userList': 'User List',
-  'label.userNotAssigned': 'User not assigned'
+  'label.userNotAssigned': 'User not assigned',
+  'message.additionalDetails.diagnosisCodeNotConfigured': 'Diagnosis Code is not configured for this therapy. Please contact your System Administrator.'
 };
