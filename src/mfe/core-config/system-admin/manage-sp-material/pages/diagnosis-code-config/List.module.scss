@@ -4,7 +4,6 @@
   overflow-x: auto;
   overflow-y: auto;
   min-width: 280px;
-  max-height: 590px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -17,9 +16,8 @@
   }
   .list-item-wrapper {
     font-size: var(--brand-font-size--default);
-    flex-grow: 99;
     background-color: #fff;
-    min-height: 336px;
+    height: 336px;
     overflow-y: scroll;
     > * {
       border-bottom: 1px solid #ccc;
