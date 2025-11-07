@@ -20,6 +20,7 @@ export const SystemConfigurationEN = {
   'manageMaterial.table.emptyDataDescription': 'Try again or adjust filters',
   'manageMaterial.table.header.text': 'Item(s) Selected',
   'manageMaterial.table.header.button.configure': 'Configure',
+  'manageMaterial.table.header.button.DXConfiguration': 'DX Configuration',
   'manageMaterial.table.header.button.prescriptionDetails': 'Prescription Details',
   'manageMaterial.table.bnbMaterialDescription': 'Buy & Bill Material Description',
   'manageMaterial.table.bnbNDC': 'Buy & Bill NDC',

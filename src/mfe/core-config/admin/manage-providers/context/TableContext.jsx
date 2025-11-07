@@ -1,6 +1,4 @@
-import ProviderService from '@src/api/commonService/ProviderService';
-import React from 'react';
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const TableContext = createContext();
 
@@ -103,6 +101,7 @@ const INITIAL_SORT_STATE = {
 export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, allowedSort = [], children }) => {
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters || { query: '' });
+  const [isFilterApplied, setIsFilterApplied] = React.useState(false);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectedRowObjects, setSelectedRowObjects] = useState(new Set());
   const [pagination, setPagination] = useState(INITIAL_PAGINATION_STATE);
@@ -220,6 +219,9 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
   };
 
   const applyFilters = (filters) => {
+    if (typeof filters === 'object' && Object.values(filters).some((filter) => Boolean(filter))) {
+      setIsFilterApplied(true);
+    }
     setPagination((prev) => ({ ...prev, pageNo: 1 }));
     setFilters({ ...defaultFilters, ...filters });
   };
@@ -241,6 +243,7 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
 
   const clearFilters = () => {
     setFilters(defaultFilters || { query: '' });
+    setIsFilterApplied(false);
   };
 
   const changePage = (pageNo) => {
@@ -255,6 +258,7 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
     loading,
     error,
     filters,
+    isFilterApplied,
     pagination,
     columns,
     sort,

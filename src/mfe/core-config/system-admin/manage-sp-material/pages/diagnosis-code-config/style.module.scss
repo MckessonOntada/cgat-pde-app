@@ -1,0 +1,41 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.therapy-selection-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+  .therapies {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    span {
+      display: inline-block;
+      font-weight: bold;
+      max-width: 280px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.diagnosis-code-bucket-wrapper {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  @include mixins.respond(sm) {
+    flex-direction: row;
+  }
+  .dx-code-card-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    label {
+      display: inline-block;
+    }
+  }
+}

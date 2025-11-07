@@ -520,6 +520,25 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       }
+      if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && variantsData?.content?.length === 0) {
+        const diagnosisList = orderDetails?.spTherapyConfig?.diagnosisCodes || [];
+
+        if (diagnosisList.length === 0) {
+          setDiagnosisCode([]);
+          setTriageAlert({
+            type: 'error',
+            description: t('message.additionalDetails.diagnosisCodeNotConfigured')
+          });
+        } else {
+          setDiagnosisCode(
+            diagnosisList.map((item) => ({
+              code: item.code,
+              description: item.longDescription
+            }))
+          );
+          setTriageAlert(null);
+        }
+      }
     }
   }, [orderDetails, variantsData]);
 
@@ -639,19 +658,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       ...initialValues
     }));
   }, [orderDetails, variantsData]);
-
-  React.useEffect(() => {
-    OrderService.getDiagnosisCodes(diagnosisSearchQuery).then((result) => {
-      if (result.content && CommonUtils.isNonEmptyArray(result.content)) {
-        setDiagnosisCode(
-          result.content.map((item) => ({
-            code: item.code,
-            description: item.longDescription
-          }))
-        );
-      }
-    });
-  }, [diagnosisSearchQuery]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -816,6 +822,21 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
+    if (variant.diagnosisCodes && variant.diagnosisCodes.length > 0) {
+      setDiagnosisCode(
+        variant?.diagnosisCodes?.map((item) => ({
+          code: item.code,
+          description: item.longDescription
+        }))
+      );
+      setTriageAlert(null);
+    } else {
+      setDiagnosisCode([]);
+      setTriageAlert({
+        type: 'error',
+        description: t('message.additionalDetails.diagnosisCodeNotConfigured')
+      });
+    }
     if (errors && errors.variant) {
       const { variant, ...newErrors } = errors;
       setErrors(newErrors);
@@ -1037,7 +1058,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       />
                       <div className="form-segment-list">
                         <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
-
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
                           handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
@@ -1086,7 +1106,11 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       <Button
                         size="md"
                         onClick={() => setIsOrderInDraft(false)}
-                        disabled={(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !values.consentPolicy) || readOnly || !isAllowedToProceed}
+                        disabled={
+                          (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (!values.consentPolicy || diagnosisCode.length === 0)) ||
+                          readOnly ||
+                          !isAllowedToProceed
+                        }
                         variant="primary"
                         type="submit">
                         {t('captions.btnSaveAndContinue')}

@@ -9,8 +9,8 @@ import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segmen
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { REQUIREMENT, REQUIREMENT_OPTIONS, YES_NO_OPTIONS } from './assets/constants/MaterialConstants';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
-import { YES_NO_OPTIONS, REQUIREMENT_OPTIONS, REQUIREMENT } from './assets/constants/MaterialConstants';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();

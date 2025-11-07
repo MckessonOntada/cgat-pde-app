@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Stepper, Heading, Button, Loader } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import ModuleHeader from '@src/components/module-header';
-import './index.scss';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { PATHS } from '../../routes/constants';
-import { Form, Formik } from 'formik';
-import PermissionForm from './PermissionForm';
-import { useMutation } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { Button, Heading, Loader, Stepper } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
-import AuthUtils from '@src/util/AuthUtils';
-import { RoutePaths } from '@src/routes/constants';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import Alert from '@src/components/cgat-alert/Alert';
+import ModuleHeader from '@src/components/module-header';
+import { RoutePaths } from '@src/routes/constants';
+import { useTranslate } from '@src/translations/useTranslation';
+import { serializeParams } from '@src/util/ApiUtils';
+import AuthUtils from '@src/util/AuthUtils';
+import { Form, Formik } from 'formik';
+import { useState } from 'react';
+import { useMutation } from 'react-query';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { PATHS } from '../../routes/constants';
+import './index.scss';
+import PermissionForm from './PermissionForm';
 
 const UserPermissions = () => {
   const { t } = useTranslate();

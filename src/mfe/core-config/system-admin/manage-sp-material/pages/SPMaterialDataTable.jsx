@@ -1,25 +1,25 @@
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import EmptyDataTable from '@src/components/EmptyTable';
+import ModuleHeader from '@src/components/module-header';
+import TableHeading from '@src/components/tableHeading/TableHeading';
+import { useTranslate } from '@src/translations/useTranslation';
+import AuthUtils from '@src/util/AuthUtils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Loader, Badge, Heading, Button } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import EmptyDataTable from '@src/components/EmptyTable';
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useSPMaterial } from '../context/SPMaterialContext';
-import SPMaterialDetails from './SPMaterialDetails';
-import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
 import '../manageSPMaterial.scss';
-import ModuleHeader from '@src/components/module-header';
-import AuthUtils from '@src/util/AuthUtils';
-import { CustomDataTable } from '@src/components/dataTableComponent';
+import { routeConstants } from '../routes/constants';
 import ConfigureSPMaterials from './ConfigureSPMaterials';
-import CommonUtils from '@src/util/CommonUtils';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
+import SPMaterialDetails from './SPMaterialDetails';
 
-function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...props }) {
+function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
+  const { paginationConfig, data, setPageNumber, isLoading, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState({
@@ -29,6 +29,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [tableHeight, setTableHeight] = useState('100%');
+  const [configureRow, setConfigureRow] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const isAssociatedAccount = location.state?.isAssociatedAccount;
@@ -37,6 +38,28 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     ...item,
     active: item.itemStatus === 'A' ? true : false
   }));
+  const handleOnOptionSelection = (value, row) => {
+    if (value === 'DXConfiguration') {
+      handleDXConfiguration([row]);
+    }
+    if (value === 'configure') {
+      setOpenConfiguration((prev) => ({
+        ...prev,
+        config: !prev.config
+      }));
+      setConfigureRow([row]);
+    }
+  };
+
+  useEffect(() => {
+    if (location.state?.alert?.type && location.state?.alert?.messages) {
+      setAlert({
+        type: location.state.alert.type,
+        description: location.state.alert.messages
+      });
+    }
+  }, [location, setAlert]);
+
   const columns = getSPMaterialColumns({
     t,
     paginationConfig,
@@ -45,7 +68,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     setSelectedSPMaterial,
     setViewSPMaterial,
     setOpenSPMaterialDetails,
-    isLinkCatalog
+    isLinkCatalog,
+    handleOnOptionSelection
   });
 
   const linkSpColumns = getLinkSPMaterialColumns({
@@ -56,29 +80,9 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
     setSelectedSPMaterial,
     setViewSPMaterial,
     setOpenSPMaterialDetails,
-    isLinkCatalog
+    isLinkCatalog,
+    handleOnOptionSelection
   });
-
-  const ExpandedComponent = ({ data }) => {
-    if (!CommonUtils.isNonEmptyArray(data.therapies)) return null;
-    const expandedData = data.therapies || [];
-    // const expandedColumns = createColumns({ t, trade, onChange });
-    return (
-      <div className="expanded-rows">
-        <CustomDataTable
-          data={expandedData}
-          columns={columns}
-          noTableHead
-          noHeader
-          pagination={false}
-          showHeader={false}
-          hideColumnHeader
-          type="expanded"
-          striped
-        />
-      </div>
-    );
-  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -128,6 +132,13 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
   };
 
   const isMultipleSelected = selectedSPMaterial?.length > 1;
+  const handleDXConfiguration = (selectedSPMaterial) => {
+    if (selectedSPMaterial && Array.isArray(selectedSPMaterial) && selectedSPMaterial[0])
+      navigate(routeConstants.DIAGNOSIS_CODE, {
+        state: { therapy: selectedSPMaterial[0] }
+      });
+  };
+
   return (
     <div>
       {isLinkCatalog ? (
@@ -160,17 +171,27 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
           secondaryViewControls={
             <div className="controls">
               {!isMultipleSelected && (
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setOpenConfiguration((prev) => ({
-                      ...prev,
-                      prescriptionConfig: !prev.prescriptionConfig
-                    }));
-                  }}
-                  size="sm">
-                  {t('manageMaterial.table.header.button.prescriptionDetails')}
-                </Button>
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      handleDXConfiguration(selectedSPMaterial);
+                    }}
+                    size="sm">
+                    {t('manageMaterial.table.header.button.DXConfiguration')}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setOpenConfiguration((prev) => ({
+                        ...prev,
+                        prescriptionConfig: !prev.prescriptionConfig
+                      }));
+                    }}
+                    size="sm">
+                    {t('manageMaterial.table.header.button.prescriptionDetails')}
+                  </Button>
+                </>
               )}
 
               <Button
@@ -246,7 +267,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, ...pro
       />
       {/* {openConfiguration && <ConfigureSPMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />} */}
       {openConfiguration.config && (
-        <ConfigureSPMaterials onClose={() => setOpenConfiguration((prev) => ({ ...prev, config: false }))} onSuccess={onSuccess} onError={onError} />
+        <ConfigureSPMaterials
+          configureRow={configureRow}
+          onClose={() => setOpenConfiguration((prev) => ({ ...prev, config: false }))}
+          onSuccess={onSuccess}
+          onError={onError}
+        />
       )}
       {openConfiguration.prescriptionConfig && (
         <ConfigureSPPrescription

@@ -1,7 +1,7 @@
-import React from 'react';
+import { Badge, MenuList } from '@mckesson/mcp-component-library';
+import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { Badge } from '@mckesson/mcp-component-library';
 import CommonUtils from '@src/util/CommonUtils';
 import { Link } from 'react-router-dom';
 
@@ -13,7 +13,8 @@ export const getSPMaterialColumns = ({
   setSelectedSPMaterial,
   setViewSPMaterial,
   setOpenSPMaterialDetails,
-  isLinkCatalog
+  isLinkCatalog,
+  handleOnOptionSelection
 }) => [
   {
     id: 'checkbox',
@@ -109,7 +110,7 @@ export const getSPMaterialColumns = ({
     name: t('manageSPMaterial.table.status'),
     selector: () => {},
     sortKey: 'status',
-    minWidth: '100px',
+    width: '145px',
     center: true,
     cell: (props) =>
       props.itemStatus === 'A' ? (
@@ -118,6 +119,34 @@ export const getSPMaterialColumns = ({
         <Badge customStyle={{ minWidth: '120px' }} text="Inactive" type="info-default" />
       ),
     omit: isLinkCatalog ? true : false
+  },
+  {
+    id: 'action',
+    center: true,
+    name: t('manageSPAccount.table.action'),
+    cell: (row) => {
+      return (
+        <MenuList
+          menuIcon={<IconEllipsis key={'menu-list-shippinglocation-table'} />}
+          handleSelect={(value) => handleOnOptionSelection(value, row)}
+          options={[
+            {
+              label: t('manageMaterial.table.header.button.DXConfiguration'),
+              value: 'DXConfiguration',
+              disabled: row.itemStatus !== 'A' || selectedSPMaterial.length > 0
+            },
+            {
+              label: t('manageMaterial.table.header.button.configure'),
+              value: 'configure',
+              disabled: row.itemStatus !== 'A' || selectedSPMaterial.length > 0
+            }
+          ]}
+          size="md"
+        />
+      );
+    },
+    omit: isLinkCatalog ? true : false,
+    isAction: true
   }
 ];
 
