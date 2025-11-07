@@ -1,7 +1,6 @@
-import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
-import style from './style.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
+import style from './style.module.scss';
 const SelectedTherapyListControl = ({ therapies = [], onChange }) => {
   const { t: translateFn } = useTranslate();
   if (!therapies || !Array.isArray(therapies) || therapies.length === 0) return null;

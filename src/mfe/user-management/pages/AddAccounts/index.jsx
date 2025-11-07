@@ -9,7 +9,7 @@ import { RoutePaths } from '@src/routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from '../../routes';

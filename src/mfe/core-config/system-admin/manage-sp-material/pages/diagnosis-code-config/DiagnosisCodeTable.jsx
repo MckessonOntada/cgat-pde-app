@@ -1,10 +1,10 @@
 import { IconButton } from '@mckesson/mcp-component-library';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import EmptyDataTable from '@src/components/EmptyTable';
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { usePagination, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';

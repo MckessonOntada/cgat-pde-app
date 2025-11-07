@@ -1,21 +1,21 @@
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import EmptyDataTable from '@src/components/EmptyTable';
+import ModuleHeader from '@src/components/module-header';
+import TableHeading from '@src/components/tableHeading/TableHeading';
+import { useTranslate } from '@src/translations/useTranslation';
+import AuthUtils from '@src/util/AuthUtils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import EmptyDataTable from '@src/components/EmptyTable';
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useSPMaterial } from '../context/SPMaterialContext';
-import SPMaterialDetails from './SPMaterialDetails';
-import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
 import '../manageSPMaterial.scss';
-import ModuleHeader from '@src/components/module-header';
-import AuthUtils from '@src/util/AuthUtils';
-import { CustomDataTable } from '@src/components/dataTableComponent';
+import { routeConstants } from '../routes/constants';
 import ConfigureSPMaterials from './ConfigureSPMaterials';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
-import { routeConstants } from '../routes/constants';
+import SPMaterialDetails from './SPMaterialDetails';
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();

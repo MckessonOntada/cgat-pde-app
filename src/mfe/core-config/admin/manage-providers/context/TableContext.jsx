@@ -1,6 +1,4 @@
-import ProviderService from '@src/api/commonService/ProviderService';
-import React from 'react';
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const TableContext = createContext();
 

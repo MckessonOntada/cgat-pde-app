@@ -7,7 +7,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useSPMaterial } from './context/SPMaterialContext';
 import SPMaterialDataTable from './pages/SPMaterialDataTable';
 

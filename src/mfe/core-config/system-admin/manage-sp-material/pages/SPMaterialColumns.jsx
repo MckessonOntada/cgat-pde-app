@@ -1,8 +1,7 @@
-import React from 'react';
-import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { Badge, MenuList } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import { Link } from 'react-router-dom';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import ListStyle from './list.module.scss';
 
 function List(props) {
