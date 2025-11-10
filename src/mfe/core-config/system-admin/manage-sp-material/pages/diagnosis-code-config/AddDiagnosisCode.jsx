@@ -5,6 +5,7 @@ import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import { List, ListItem } from '@src/components/list';
 import ModuleHeader from '@src/components/module-header';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { TableProvider, useFilters } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
@@ -13,7 +14,6 @@ import CommonUtils from '@src/util/CommonUtils';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DiagnosisCodeTable from './DiagnosisCodeTable';
-import { List, ListItem } from './List';
 import SelectedTherapyListControl from './SelectedTherapyListControl';
 import style from './style.module.scss';
 
