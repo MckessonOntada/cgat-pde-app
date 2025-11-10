@@ -174,13 +174,17 @@ export const OrgManagementEN = {
   'label.SMS': 'SMS',
   'label.Process_Updates': 'Process Updates',
   'label.Reminders': 'Reminders',
-  'label.user_management.process_updates.description': 'Get notified when a new user is created.',
-  'label.user_management.reminders.description': 'Receive reminders about pending user setup.',
-  'label.order_management.process_updates.description': 'Stay informed on prescription or order placements & modifications.',
-  'label.order_management.reminders.description': 'Receive reminders about pending prescription or orders or unprocessed updates.',
-  'label.order_approval.process_updates.description': 'Get notified when an order requires your review, approval, or rejection.',
-  'label.order_approval.reminders.description': 'Receive reminders for orders still awaiting your review or approval.',
-  'label.on_behalf_of.description': 'Get notified when another user submits or manages a prescription or order on behalf of you.',
+  'label.user_management.process_updates.description':
+    'Get notified when a new user registration or account access request is submitted for review or approval.',
+  'label.user_management.reminders.description':
+    'Receive follow-up alerts for pending user approvals or incomplete account activations that require attention.',
+  'label.order_management.process_updates.description': 'Stay informed about prescription or therapy order creation, submission, and key status updates.',
+  'label.order_management.reminders.description': 'Receive reminders for orders in draft or pending states to ensure timely completion and processing.',
+  'label.order_approval.process_updates.description':
+    'Get notified when an order is submitted for your clinical or administrative approval, or when its approval status changes.',
+  'label.order_approval.reminders.description':
+    'Receive periodic reminders for orders awaiting your review, approval, or decision to maintain workflow efficiency.',
+  'label.on_behalf_of.description': 'Receive a notification whenever an authorized user works on your account on your behalf.',
   'label.No_Preference': 'No Preference',
   'label.Enabled': 'Enabled',
   'control.Create_Role': 'Create Role',

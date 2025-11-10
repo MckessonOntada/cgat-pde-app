@@ -246,9 +246,11 @@ export const ConfigurationMessagesEN = {
   'notificationPreferences.moduleName': 'Manage Email, SMS & In-app Notifications',
   'notificationPreferences.userManagement.title': 'User Management',
   'notificationPreferences.userManagement.processUpdate.title': 'Process Updates',
-  'notificationPreferences.userManagement.processUpdate.subtitle': 'Get notified when a new user is created.',
+  'notificationPreferences.userManagement.processUpdate.subtitle':
+    'Get notified when a new user registration or account access request is submitted for review or approval.',
   'notificationPreferences.userManagement.reminders.title': 'Reminders',
-  'notificationPreferences.userManagement.reminders.subtitle': 'Receive reminders about pending user setup.',
+  'notificationPreferences.userManagement.reminders.subtitle':
+    'Receive follow-up alerts for pending user approvals or incomplete account activations that require attention.',
   'notificationPreferences.orderManagement.title': 'Order Management',
   'notificationPreferences.orderManagement.processUpdate.title': 'Process Updates',
   'notificationPreferences.orderManagement.processUpdate.subtitle': 'Stay informed on perscription or order placement and modification',
@@ -260,7 +262,7 @@ export const ConfigurationMessagesEN = {
   'notificationPreferences.orderApproval.reminders.title': 'Reminders',
   'notificationPreferences.orderApproval.reminders.subtitle': 'Receive reminders about pending prescription or order or unprocessed updates.',
   'notificationPreferences.onBehalfOf.title': 'On Behalf of',
-  'notificationPreferences.onBehalfOf.subtitle': 'Get notified when another user submits or manages a prescription or order on behalf of you.',
+  'notificationPreferences.onBehalfOf.subtitle': 'Receive a notification whenever an authorized user works on your account on your behalf.',
   'notificationPreferences.optionEmail': 'Email',
   'notificationPreferences.optionInApp': 'In-app',
   'notificationPreferences.optionSMS': 'SMS',
