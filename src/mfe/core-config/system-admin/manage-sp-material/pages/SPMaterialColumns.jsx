@@ -4,6 +4,7 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 export const getSPMaterialColumns = ({
   t,

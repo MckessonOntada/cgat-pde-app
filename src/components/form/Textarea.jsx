@@ -1,5 +1,5 @@
 import { Label, TextareaInput, TextError } from '@mckesson/mcp-component-library';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { highlightFieldOnLabelClick } from './util';
 
 export default function Textarea(props) {
