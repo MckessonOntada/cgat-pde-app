@@ -1,4 +1,5 @@
 import ListStyle from './Style.module.scss';
+import React from 'react';
 
 export default function List(props) {
   const { title } = props;
