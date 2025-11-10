@@ -244,9 +244,11 @@ export const ConfigurationMessagesES = {
   'notificationPreferences.moduleName': 'S_Manage Email, SMS & In-app Notifications',
   'notificationPreferences.userManagement.title': 'S_User Management',
   'notificationPreferences.userManagement.processUpdate.title': 'S_Process Update',
-  'notificationPreferences.userManagement.processUpdate.subtitle': 'S_Get notified when a new user is created.',
+  'notificationPreferences.userManagement.processUpdate.subtitle':
+    'S_Get notified when a new user registration or account access request is submitted for review or approval.',
   'notificationPreferences.userManagement.reminders.title': 'S_Reminders',
-  'notificationPreferences.userManagement.reminders.subtitle': 'S_Receive reminders about pending user setup.',
+  'notificationPreferences.userManagement.reminders.subtitle':
+    'S_Receive follow-up alerts for pending user approvals or incomplete account activations that require attention.',
   'notificationPreferences.orderManagement.title': 'S_Order Management',
   'notificationPreferences.orderManagement.processUpdate.title': 'S_Process Update',
   'notificationPreferences.orderManagement.processUpdate.subtitle': 'S_Stay informed on perscription or order placement and modification',
@@ -258,7 +260,7 @@ export const ConfigurationMessagesES = {
   'notificationPreferences.orderApproval.reminders.title': 'S_Reminders',
   'notificationPreferences.orderApproval.reminders.subtitle': 'S_Receive reminders about pending prescription or order or unprocessed updates.',
   'notificationPreferences.onBehalfOf.title': 'S_On Behalf of',
-  'notificationPreferences.onBehalfOf.subtitle': 'S_Get notified when another user submits or manages a prescription or order on behalf of you.',
+  'notificationPreferences.onBehalfOf.subtitle': 'S_Receive a notification whenever an authorized user works on your account on your behalf.',
   'notificationPreferences.optionEmail': 'S_Email',
   'notificationPreferences.optionInApp': 'S_In-app',
   'notificationPreferences.optionSMS': 'S_SMS',
