@@ -1,6 +1,6 @@
-import ListStyle from './List.module.scss';
+import ListStyle from './Style.module.scss';
 
-function List(props) {
+export default function List(props) {
   const { title } = props;
   return (
     <div className={ListStyle['list-wrapper']}>
@@ -9,8 +9,3 @@ function List(props) {
     </div>
   );
 }
-function ListItem(props) {
-  return <div className={ListStyle['list-item']}>{props.children}</div>;
-}
-
-export { List, ListItem };
