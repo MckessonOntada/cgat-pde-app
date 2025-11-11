@@ -57,7 +57,6 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
 
   const renderSwitchOrPill = (sectionKey, itemKey, sw, itemData) => {
     const handleToggle = () => handleToggleChannel(sectionKey, itemKey, sw.field);
-
     if (readOnly) {
       return (
         <Pills
@@ -119,6 +118,7 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
                 {section.sectionKey !== 'ON_BEHALF_OF' ? (
                   section.items.map((item) => {
                     const itemData = preferences?.[section.sectionKey]?.[item.itemKey];
+                    debugger;
                     if (!itemData) return null;
 
                     return (
@@ -137,6 +137,7 @@ const CommunicationPreferencesPanel = ({ preferences = INITIAL_PREFERENCES, hand
                   <div className={`${style.switches} grid grid-gap-16 grid-cols-3`}>
                     {section.items[0].switches.map((sw) => {
                       const itemData = preferences?.[section.sectionKey]?.[section.items[0].itemKey];
+                      debugger;
                       return renderSwitchOrPill(section.sectionKey, section.items[0].itemKey, sw, itemData);
                     })}
                   </div>

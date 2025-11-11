@@ -22,6 +22,100 @@ import UserAccounts from '@src/components/Accounts/Accounts';
 import PermittedComponent from '@src/components/permitted-component';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import Alert from '@src/components/cgat-alert/Alert';
+import NotificationPreference from '@src/mfe/core-config/notifications-setting/NotificationPreference';
+import CommunicationPreferencesPanel from '@src/mfe/org-management/pages/role/manage/CommunicationPreferencesPanel';
+import NotificationRolePreferences from '@src/mfe/org-management/pages/role/manage/NotificationRolePreferences';
+
+const PREFERENCES = {
+  USER_MANAGEMENT: {
+    PROCESS_UPDATES: {
+      email: true,
+      inApp: true,
+      sms: false
+    },
+    REMINDERS: {
+      email: false,
+      inApp: true,
+      sms: true
+    }
+  },
+  ORDER_MANAGEMENT: {
+    PROCESS_UPDATES: {
+      email: false,
+      inApp: true,
+      sms: true
+    },
+    REMINDERS: {
+      email: true,
+      inApp: true,
+      sms: false
+    }
+  },
+  ORDER_APPROVAL: {
+    PROCESS_UPDATES: {
+      email: true,
+      inApp: true,
+      sms: false
+    },
+    REMINDERS: {
+      email: false,
+      inApp: true,
+      sms: true
+    }
+  },
+  ON_BEHALF_OF: {
+    PROCESS_UPDATES: {
+      email: false,
+      inApp: true,
+      sms: true
+    }
+  }
+};
+const PERMISSIONS = [
+  'UPLOAD_USERS',
+  'ADD_ROLES',
+  'VIEW_INVOICES',
+  'UPDATE_ADDITIONAL_DETAILS',
+  'APPROVE_ORDERS',
+  'VIEW_ROLES',
+  'VIEW_APPROVER_GROUP',
+  'MANAGE_INVOICES',
+  'ON_BEHALF_OF_USER',
+  'ADD_USERS',
+  'VIEW_PAYMENT_HISTORY',
+  'CREATE_USER_FOR_PENDING_USER_REQUEST',
+  'EDIT_PROVIDER',
+  'MANAGE_USERS_SCREEN',
+  'VIEW_PROVIDER',
+  'ADD_PROVIDER',
+  'EDIT_APPROVER_GROUP',
+  'ACCOUNT_SELECTION',
+  'MANAGE_CUSTOMER_STATEMENT',
+  'UPLOAD_ORDER_DOCUMENTS',
+  'MANAGE_LINKED_ACCOUNTS',
+  'SUBMIT_ORDER',
+  'PAY_INVOICES',
+  'CANCEL_ORDER',
+  'CANCEL_PAYMENT',
+  'THERAPY_SELECTION',
+  'VIEW_ORDERS',
+  'REJECT_ORDER',
+  'ADD_PAYMENT_METHOD_BANK',
+  'VIEW_PENDING_ORDERS',
+  'MANAGE_ROLES_SCREEN',
+  'UPDATE_PATIENTS_DETAILS',
+  'UPLOAD_PROVIDER',
+  'MANAGE_PROVIDERS_SCREEN',
+  'VIEW_CUSTOMER_STATEMENT',
+  'ADD_APPROVER_GROUP',
+  'VIEW_CREDIT_LISTING',
+  'MANAGE_APPROVER_GROUP',
+  'VIEW_USERS',
+  'EDIT_USERS',
+  'VIEW_PAYMENT_METHOD_BANK',
+  'EDIT_ROLES',
+  'DISCARD_ORDER'
+];
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -66,6 +160,7 @@ const UserDetail = () => {
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const isSelf = userId === AuthUtils.getUserId();
+  const isImpersonated = AuthUtils.getImpersonateId() > 0;
   const disablePay = useRef(false);
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
@@ -93,7 +188,7 @@ const UserDetail = () => {
     }, 500);
   };
 
-  const { isLoading, isError, data, refetch } = useQuery({
+  const { isLoading, data, refetch } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
       const url = isPending ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}` : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
@@ -113,13 +208,13 @@ const UserDetail = () => {
       return res.data;
     },
     {
-      onSuccess: (res) => {
+      onSuccess: () => {
         setIsAlertVisible(true);
         setIsProvisioned(true);
         setAlertType('success');
         setAlertDescription(t('messages.provisionedsuccess'));
       },
-      onError: (error) => {
+      onError: () => {
         setIsAlertVisible(true);
         setIsProvisioned(true);
         setAlertType('error');
@@ -173,17 +268,6 @@ const UserDetail = () => {
     }
   };
 
-  const onRemoveAccount = useCallback(
-    (item) => {
-      setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
-    },
-    [selectedAccounts, setSelectedAccounts]
-  );
-
-  const handleSearchChange = (inputValue) => {
-    setSearchText(inputValue);
-  };
-
   const handleActivateDeactivateUser = async ({ userId, isActive }) => {
     let res;
     if (isActive) {
@@ -196,7 +280,7 @@ const UserDetail = () => {
 
   const { mutate } = useMutation({
     mutationFn: handleActivateDeactivateUser,
-    onSuccess: (response) => {
+    onSuccess: () => {
       refetch();
       setIsDeactivate(true);
       setIsAlertVisible(true);
@@ -250,8 +334,8 @@ const UserDetail = () => {
 
   const { mutate: OnBehalfNotification } = useMutation({
     mutationFn: handleonBehalfNotifcaiton,
-    onSuccess: (response) => {},
-    onError: (error) => {
+    onSuccess: () => {},
+    onError: () => {
       setIsAlertVisible(true);
       setAlertType('error');
       setAlertDescription(t('errors.default'));
@@ -526,6 +610,34 @@ const UserDetail = () => {
                 isPhysicianUser={isPhysicianUser}
               />
             )}
+
+            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
+              <div className="MCP-module-wrapper">
+                <div className="MCP-module-body">
+                  <ModuleHeader
+                    heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
+                    controls={
+                      prePermissions && (
+                        <div className="controls">
+                          <Button
+                            Icon={EditPencil}
+                            variant="secondary"
+                            className="button-icon"
+                            size="md"
+                            onClick={() => navigate(`${PATHS.NOTIFICATION_PREFERENCES}`)}>
+                            {t('userManagement.button.edit')}
+                          </Button>
+                        </div>
+                      )
+                    }
+                  />
+
+                  <div className="MCP-panel-container">
+                    <CommunicationPreferencesPanel preferences={PREFERENCES} handleToggleChannel={() => {}} readOnly={true} permissions={PERMISSIONS} />
+                  </div>
+                </div>
+              </div>
+            </PermittedComponent>
           </div>
         )}
       </div>

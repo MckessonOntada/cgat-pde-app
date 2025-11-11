@@ -20,10 +20,8 @@ const Routes = () => {
       <Route path={PATHS.uploadUser} element={<UploadUsers />} />
       <Route path={`${PATHS.reviewUser}/:userId`} element={<ReviewUser />} />
       <Route path={`${PATHS.editUser}/:userId`} element={<EditUser />} />
-      <Route
-        path={`${PATHS.userPermissions}/:userId`}
-        element={<UserPermissions />}
-      />
+      <Route path={`:userId/${PATHS.NOTIFICATION_PREFERENCES}`} element={<div>NOTIFICATION_PREFERENCES</div>} />
+      <Route path={`${PATHS.userPermissions}/:userId`} element={<UserPermissions />} />
       <Route path={`${PATHS.addAccounts}/:userId`} element={<AddAccounts />} />
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
