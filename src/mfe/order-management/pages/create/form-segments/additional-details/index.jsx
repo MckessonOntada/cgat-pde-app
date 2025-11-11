@@ -822,20 +822,22 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
-    if (variant.diagnosisCodes && variant.diagnosisCodes.length > 0) {
-      setDiagnosisCode(
-        variant?.diagnosisCodes?.map((item) => ({
-          code: item.code,
-          description: item.longDescription
-        }))
-      );
-      setTriageAlert(null);
-    } else {
-      setDiagnosisCode([]);
-      setTriageAlert({
-        type: 'error',
-        description: t('message.additionalDetails.diagnosisCodeNotConfigured')
-      });
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      if (variant.diagnosisCodes && variant.diagnosisCodes.length > 0) {
+        setDiagnosisCode(
+          variant?.diagnosisCodes?.map((item) => ({
+            code: item.code,
+            description: item.longDescription
+          }))
+        );
+        setTriageAlert(null);
+      } else {
+        setDiagnosisCode([]);
+        setTriageAlert({
+          type: 'error',
+          description: t('message.additionalDetails.diagnosisCodeNotConfigured')
+        });
+      }
     }
     if (errors && errors.variant) {
       const { variant, ...newErrors } = errors;
