@@ -1043,5 +1043,13 @@ export const MessageEn = {
   'control.whoCanDoWhat': 'Who Can Do What',
   'label.userList': 'User List',
   'label.userNotAssigned': 'User not assigned',
-  'message.additionalDetails.diagnosisCodeNotConfigured': 'Diagnosis Code is not configured for this therapy. Please contact your System Administrator.'
+  'message.additionalDetails.diagnosisCodeNotConfigured': 'Diagnosis Code is not configured for this therapy. Please contact your System Administrator.',
+  'manageMaterial.table.header.button.OrderQuantity': 'Order Quantity',
+  'material.minQuantity': 'Minimum Quantity',
+  'material.maxQuantity': 'Maximum Quantity',
+  'manageMaterial.drawer.details.configuration.body.rangeValidation': 'must be between 1 and 99',
+  'manageMaterial.drawer.details.configuration.body.minQuantityRequired': 'Minimum quantity is required',
+  'manageMaterial.drawer.details.configuration.body.maxQuantityRequired': 'Maximum quantity is required',
+  'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'Minimum quantity must be less than maximum quantity',
+  'additional.details.order.quantity.error': 'The entered quantity is outside the permitted range for this material. Please enter a value between'
 };

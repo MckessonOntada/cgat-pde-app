@@ -708,6 +708,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       : null;
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode } = values;
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      if (orderQuantity < therapyConfig.minQuantity || orderQuantity > therapyConfig.maxQuantity) {
+        setAlert({
+          type: 'error',
+          description: `${t('additional.details.order.quantity.error')} ${therapyConfig.minQuantity} and ${therapyConfig.maxQuantity}.`
+        });
+
+        return;
+      }
+    }
+
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.sectionsDetails) return;
 

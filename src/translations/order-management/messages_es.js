@@ -689,5 +689,13 @@ export const MessageEs = {
   'control.whoCanDoWhat': 'S_Who Can Do What',
   'label.userList': 'User List',
   'label.userNotAssigned': 'User not assigned',
-  'message.additionalDetails.diagnosisCodeNotConfigured': 'S_Diagnosis Code is not configured for this therapy. Please contact your System Administrator.'
+  'message.additionalDetails.diagnosisCodeNotConfigured': 'S_Diagnosis Code is not configured for this therapy. Please contact your System Administrator.',
+  'manageMaterial.table.header.button.OrderQuantity': 'S_Order Quantity',
+  'material.minQuantity': 'S_Minimum Quantity',
+  'material.maxQuantity': 'S_Maximum Quantity',
+  'manageMaterial.drawer.details.configuration.body.rangeValidation': 'S_must be between 1 and 99',
+  'manageMaterial.drawer.details.configuration.body.minQuantityRequired': 'S_Minimum quantity is required',
+  'manageMaterial.drawer.details.configuration.body.maxQuantityRequired': 'S_Maximum quantity is required',
+  'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'S_Minimum quantity must be less than maximum quantity',
+  'additional.details.order.quantity.error': 'S_The entered quantity is outside the permitted range for this material. Please enter a value between'
 };
