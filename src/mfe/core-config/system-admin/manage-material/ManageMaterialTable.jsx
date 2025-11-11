@@ -20,12 +20,15 @@ import {
   TherapyDetailsConstantsForSP
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import OrderQuantityConfig from './OrderQuantityConfig';
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials, filterConfig, applySort } = useManageMaterial();
-  const [openDetails, setOpenDetails] = React.useState(false);
-  const [openConfiguration, setOpenConfiguration] = React.useState(false);
+  const [openConfiguration, setOpenConfiguration] = React.useState({
+    config: false,
+    orderQuantityConfig: false
+  });
   const [materialNumber, setMaterialNumber] = React.useState(null);
   const searchParams = new URLSearchParams(location.search);
   const trade = searchParams.get('trade');
@@ -290,15 +293,28 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
         secondaryView={selectedMaterials?.length}
         secondaryViewHeading={`${selectedMaterials?.length} ${t('manageMaterial.table.header.text')}`}
         secondaryViewControls={
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setOpenConfiguration(!openConfiguration);
-            }}
-            size="sm"
-            disabled={isBothSelected || isSPSelected}>
-            {t('manageMaterial.table.header.button.configure')}
-          </Button>
+          <div className="controls">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setOpenConfiguration((prev) => ({
+                  ...prev,
+                  orderQuantityConfig: !prev.orderQuantityConfig
+                }));
+              }}
+              size="sm">
+              {t('manageMaterial.table.header.button.OrderQuantity')}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setOpenConfiguration((prev) => ({ ...prev, config: !prev.config }));
+              }}
+              size="sm"
+              disabled={isBothSelected || isSPSelected}>
+              {t('manageMaterial.table.header.button.configure')}
+            </Button>
+          </div>
         }
       />
 
@@ -361,7 +377,16 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           showFooter={false}
         />
       )}
-      {openConfiguration && <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} onSuccess={onSuccess} onError={onError} />}
+      {openConfiguration.config && (
+        <ConfigureMaterials onClose={() => setOpenConfiguration((prev) => ({ ...prev, config: false }))} onSuccess={onSuccess} onError={onError} />
+      )}
+      {openConfiguration.orderQuantityConfig && (
+        <OrderQuantityConfig
+          onClose={() => setOpenConfiguration((prev) => ({ ...prev, orderQuantityConfig: false }))}
+          onSuccess={onSuccess}
+          onError={onError}
+        />
+      )}
     </React.Fragment>
   );
 }
