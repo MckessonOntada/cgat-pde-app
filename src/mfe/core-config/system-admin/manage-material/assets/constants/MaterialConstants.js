@@ -159,7 +159,7 @@ export const YES_NO_OPTIONS = Object.freeze([
 export const REQUIREMENT_OPTIONS = Object.freeze([
   { value: 'MANDATORY', label: 'labels.mandatory' },
   { value: 'OPTIONAL', label: 'labels.optional' },
-  { value: 'NOT_REQUIRED', label: 'labels.notRequired' }
+  { value: 'NOT_REQUIRED', label: 'labels.doNotDisplay' }
 ]);
 
 export const TRIAGE_CHANNEL = Object.freeze([
