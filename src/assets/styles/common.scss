@@ -1659,6 +1659,11 @@ div.empty-table-wrapper {
   .collaborator-initials {
     display: flex;
     gap: var(--spacing-01);
+    align-items: center;
+
+    p {
+      font-weight: 600;
+    }
 
     span {
       color: #ffff;
@@ -1706,19 +1711,23 @@ div[class*="CheckboxGroup-module"] {
   font-size: var(--brand-font-size--small);
   align-items: flex-start;
 }
+
 input[type="checkbox"] + label {
   font-size: var(--brand-font-size--default) !important;
   line-height: var(--brand-line-height--m-large);
   color: var(--brand-color-grey);
 }
+
 .form-segment-list {
   input[type="checkbox"] + label {
     font-size: var(--brand-font-size--small) !important;
   }
 }
+
 .user-list-tooltip {
   text-align: left;
 }
+
 .user-list {
   margin: 0;
   padding-left: var(--spacing-03);

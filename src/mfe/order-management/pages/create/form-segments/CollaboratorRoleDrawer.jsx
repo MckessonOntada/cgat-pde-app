@@ -95,7 +95,12 @@ export const CollaboratorRoleDrawer = ({ open, onClose, stageCards, getInitials,
                         <Heading as="h4">{card.name}</Heading>
                       </div>
                     }
-                    controls={<div className="collaborator-initials">{renderCollaboratorTooltip(card)}</div>}
+                    controls={
+                      <div className="collaborator-initials">
+                        {card.collaborators?.length > 0 && <p>Collaborators:</p>}
+                        {renderCollaboratorTooltip(card)}
+                      </div>
+                    }
                   />
                   <div className={style.pillsContainer}>
                     <Pills id={card.name?.toLowerCase().replace(/\s+/g, '-')} labels={getLabels(card)} name={name} size="sm" variant="secondary" />
