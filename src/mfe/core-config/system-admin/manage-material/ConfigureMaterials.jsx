@@ -21,6 +21,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     mrnRequirement: '',
     doaRequirement: '',
     poRequirement: '',
+    shipToPORequirement: '',
     dateOfApheresisRequirement: ''
   });
   const [error, setError] = useState(false);
@@ -54,6 +55,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
           mrnRequirement: config.isPatientInformationRequired ? config.mrnRequirement : '',
           doaRequirement: config.dateOfAdministrationRequirement,
           poRequirement: config.poNumberRequirement,
+          shipToPORequirement: config.shipToPORequirement,
           dateOfApheresisRequirement: config.dateOfApheresisRequirement
         });
       }
@@ -116,7 +118,13 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
         isDisabled: false,
         isRequired: true
       },
-
+      {
+        key: 'shipToPORequirement',
+        caption: 'manageMaterial.drawer.details.configuration.body.shipToPORequirement',
+        options: REQUIREMENT_OPTIONS,
+        isDisabled: false,
+        isRequired: true
+      },
       {
         key: 'doaRequirement',
         caption: 'manageMaterial.drawer.details.configuration.body.doa',
@@ -168,6 +176,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     formValues.poRequirement &&
     formValues.doaRequirement &&
     formValues.dateOfApheresisRequirement &&
+    formValues.shipToPORequirement &&
     (formValues.isPatientInformationRequired === 'yes' ? formValues.pidRequirement && formValues.mrnRequirement : true);
 
   const handleApplyConfiguration = () => {
@@ -181,6 +190,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
         coiIdRequirement: formValues.coiIdRequirement,
         doaRequirement: formValues.doaRequirement,
         poRequirement: formValues.poRequirement,
+        shipToPORequirement: formValues.shipToPORequirement,
         dateOfApheresisRequirement: formValues.dateOfApheresisRequirement
       };
       applyConfiguration(configValues);

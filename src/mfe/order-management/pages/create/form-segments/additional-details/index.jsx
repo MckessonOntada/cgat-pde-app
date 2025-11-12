@@ -47,6 +47,7 @@ const INITIAL_VALUES = {
   orderQuantity: '',
   slotNumber: '',
   poNumber: '',
+  shipToPONumber: '',
   dateOfAdministration: '',
   dateOfApheresis: '',
   hasAllergies: '',
@@ -211,6 +212,19 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             .when([], {
               is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
               then: (schema) => schema.required(t('labels.PONumberRequired')),
+              otherwise: (schema) => schema.notRequired()
+            }),
+          shipToPONumber: Yup.string()
+            .matches(ALPHA_NUMERIC_ONLY, t('labels.shipToPONumberMustValid'))
+            .max(35, t('labels.shipToPONumberLengthError'))
+            .test(
+              'no-leading-trailing-spaces',
+              t('labels.shipToPONumberExtraSpaceError'),
+              (value) => value === undefined || value.trim().length === value.length
+            )
+            .when([], {
+              is: () => therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
+              then: (schema) => schema.required(t('labels.shipToPONumberRequired')),
               otherwise: (schema) => schema.notRequired()
             })
         })
@@ -568,6 +582,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         orderQuantity,
         patientConsentTaken,
         poNumber,
+        shipToPONumber,
         slotNumber,
         variantDetails = {},
         configuredQuestionnaires,
@@ -629,7 +644,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           dateOfApheresis,
           coiId,
           orderQuantity,
-          slotNumber
+          slotNumber,
+          shipToPONumber
         });
       }
 
@@ -707,7 +723,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode } = values;
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (orderQuantity < therapyConfig.minQuantity || orderQuantity > therapyConfig.maxQuantity) {
         setAlert({
@@ -770,6 +786,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
       payload.slotNumber = slotNumber;
+      payload.shipToPONumber = shipToPONumber;
       payload.dateOfAdministration = dateOfAdministration;
       payload.dateOfApheresis = dateOfApheresis;
     }

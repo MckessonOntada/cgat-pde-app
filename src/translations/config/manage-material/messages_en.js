@@ -101,5 +101,6 @@ export const SystemConfigurationEN = {
   'labels.notRequired': 'Not Required',
   'labels.doNotDisplay': 'Do Not Display',
   'labels.yes': 'Yes',
-  'labels.no': 'No'
+  'labels.no': 'No',
+  'manageMaterial.drawer.details.configuration.body.shipToPORequirement': 'Ship to PO Number'
 };

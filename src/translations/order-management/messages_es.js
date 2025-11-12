@@ -697,5 +697,10 @@ export const MessageEs = {
   'manageMaterial.drawer.details.configuration.body.minQuantityRequired': 'S_Minimum quantity is required',
   'manageMaterial.drawer.details.configuration.body.maxQuantityRequired': 'S_Maximum quantity is required',
   'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'S_Minimum quantity must be less than maximum quantity',
-  'additional.details.order.quantity.error': 'S_The entered quantity is outside the permitted range for this material. Please enter a value between'
+  'additional.details.order.quantity.error': 'S_The entered quantity is outside the permitted range for this material. Please enter a value between',
+  'labels.shipToPONumber': 'S_Ship to PO Number',
+  'labels.shipToPONumberLengthError': 'S_Ship to PO Number should not exceed 35 characters',
+  'labels.shipToPONumberMustValid': 'S_Ship to PO Number should only contain letters and numbers.',
+  'labels.shipToPONumberExtraSpaceError': 'S_Ship to PO Number must not contain leading or trailing spaces',
+  'labels.shipToPONumberRequired': 'S_Ship to PO Number is required'
 };

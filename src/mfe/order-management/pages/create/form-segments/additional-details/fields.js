@@ -70,6 +70,16 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
         maxLength: 35
       });
     }
+    if (therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED) {
+      fields.push({
+        name: 'shipToPONumber',
+        label: translationFn('labels.shipToPONumber'),
+        placeholder: ' ',
+        isRequired: therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
+        component: Components['input'],
+        maxLength: 35
+      });
+    }
   } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
   }
 
