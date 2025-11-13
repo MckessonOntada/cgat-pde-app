@@ -253,14 +253,18 @@ export const ConfigurationMessagesEN = {
     'Receive follow-up alerts for pending user approvals or incomplete account activations that require attention.',
   'notificationPreferences.orderManagement.title': 'Order Management',
   'notificationPreferences.orderManagement.processUpdate.title': 'Process Updates',
-  'notificationPreferences.orderManagement.processUpdate.subtitle': 'Stay informed on perscription or order placement and modification',
+  'notificationPreferences.orderManagement.processUpdate.subtitle':
+    'Stay informed about prescription or therapy order creation, submission, and key status updates.',
   'notificationPreferences.orderManagement.reminders.title': 'Reminders',
-  'notificationPreferences.orderManagement.reminders.subtitle': 'Receive reminders about pending prescription or order or unprocessed updates.',
+  'notificationPreferences.orderManagement.reminders.subtitle':
+    'Receive reminders for orders in draft or pending states to ensure timely completion and processing.',
   'notificationPreferences.orderApproval.title': 'Order Approval',
   'notificationPreferences.orderApproval.processUpdate.title': 'Process Updates',
-  'notificationPreferences.orderApproval.processUpdate.subtitle': 'Get notified when an order requires your review, approval or rejection.',
+  'notificationPreferences.orderApproval.processUpdate.subtitle':
+    'Get notified when an order is submitted for your clinical or administrative approval, or when its approval status changes.',
   'notificationPreferences.orderApproval.reminders.title': 'Reminders',
-  'notificationPreferences.orderApproval.reminders.subtitle': 'Receive reminders about pending prescription or order or unprocessed updates.',
+  'notificationPreferences.orderApproval.reminders.subtitle':
+    'Receive periodic reminders for orders awaiting your review, approval, or decision to maintain workflow efficiency.',
   'notificationPreferences.onBehalfOf.title': 'On Behalf of',
   'notificationPreferences.onBehalfOf.subtitle': 'Receive a notification whenever an authorized user works on your account on your behalf.',
   'notificationPreferences.optionEmail': 'Email',
