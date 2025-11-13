@@ -212,6 +212,7 @@ const NotificationPreference = () => {
                 <NotificationPreferencePanel
                   readOnly={false}
                   showLabel={false}
+                  showTooltip={true}
                   isPreferencesLoaded={isPreferencesLoaded}
                   isLoadingPreferences={isLoadingPreferences}
                   config={{ ...preferencesConfig, userPermissions: AuthUtils.getUserPermissions() }}

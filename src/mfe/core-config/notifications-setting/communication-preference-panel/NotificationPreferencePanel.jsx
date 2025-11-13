@@ -1,10 +1,18 @@
 import React from 'react';
-import { Switch, Tooltip, Pills } from '@mckesson/mcp-component-library';
+import { Switch, Tooltip as MCPTooltip, Pills } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useFormikContext } from 'formik';
 import style from './style.module.scss';
 
-const NotificationPreferencePanel = ({ config, allPreferred = false, readOnly = true, showLabel = true, isLoadingPreferences, isPreferencesLoaded }) => {
+const NotificationPreferencePanel = ({
+  config,
+  allPreferred = false,
+  showTooltip = false,
+  readOnly = true,
+  showLabel = true,
+  isLoadingPreferences,
+  isPreferencesLoaded
+}) => {
   const { t: translateFn } = useTranslate();
   const { moduleName, options, sections, userPermissions } = config;
   const { values, setFieldValue } = useFormikContext();
@@ -42,7 +50,12 @@ const NotificationPreferencePanel = ({ config, allPreferred = false, readOnly = 
                   ? 'notificationPreferences.unsubscribePreference'
                   : 'notificationPreferences.subscribePreference';
                 return (
-                  <div className={style.option} key={`section-${sectionIndex}-header-option-${index}`}>
+                  <div
+                    style={{
+                      justifyContent: showLabel ? 'flex-start' : 'center'
+                    }}
+                    className={style.option}
+                    key={`section-${sectionIndex}-header-option-${index}`}>
                     {readOnly ? (
                       <Pills
                         id={`notification-setting-${sectionIndex}-header-${optionKey}-pill-label`}
@@ -58,18 +71,18 @@ const NotificationPreferencePanel = ({ config, allPreferred = false, readOnly = 
                         variant={controlValue ? 'secondary' : 'primary'}
                       />
                     ) : (
-                      <Tooltip body={translateFn(tooltipKey)}>
-                        <div
-                          style={{
-                            justifyContent: showLabel ? 'flex-start' : 'center'
-                          }}
-                          className={style['switch-control']}>
+                      <Tooltip body={true && translateFn(tooltipKey)}>
+                        <div className={style['switch-control']}>
                           <Switch
                             id={`notification-setting-${sectionIndex}-header-${optionKey}`}
                             size="lg"
                             disabled={allPreferred ? false : isDisabled}
-                            label={showLabel && (controlValue ? translateFn('label.Enabled') : translateFn('label.No_Preference'))}
-                            labelPosition="right"
+                            {...(showLabel
+                              ? {
+                                  label: controlValue ? translateFn('label.Enabled') : translateFn('label.No_Preference'),
+                                  labelPosition: 'right'
+                                }
+                              : {})}
                             checked={controlValue}
                             onChange={handleHeaderChange(sectionIndex, index)}
                           />
@@ -104,7 +117,12 @@ const NotificationPreferencePanel = ({ config, allPreferred = false, readOnly = 
                         : 'notificationPreferences.subscribePreference';
                       return (
                         <React.Fragment>
-                          <div className={style.option} key={`section-${sectionIndex}-row-${rowIndex}-option-${index}`}>
+                          <div
+                            style={{
+                              justifyContent: showLabel ? 'flex-start' : 'center'
+                            }}
+                            className={style.option}
+                            key={`section-${sectionIndex}-row-${rowIndex}-option-${index}`}>
                             {readOnly ? (
                               <Pills
                                 id={`notification-setting-${sectionIndex}-header-${optionKey}`}
@@ -120,18 +138,18 @@ const NotificationPreferencePanel = ({ config, allPreferred = false, readOnly = 
                                 variant={controlValue ? 'secondary' : 'primary'}
                               />
                             ) : (
-                              <Tooltip body={translateFn(tooltipKey)}>
-                                <div
-                                  style={{
-                                    justifyContent: showLabel ? 'flex-start' : 'center'
-                                  }}
-                                  className={style['switch-control']}>
+                              <Tooltip body={showTooltip && translateFn(tooltipKey)}>
+                                <div className={style['switch-control']}>
                                   <Switch
                                     id={`notification-setting-${sectionIndex}-${rowIndex}-${optionKey}`}
                                     size="lg"
                                     disabled={allPreferred ? false : isDisabled}
-                                    label={showLabel && (controlValue ? translateFn('label.Enabled') : translateFn('label.No_Preference'))}
-                                    labelPosition="right"
+                                    {...(showLabel
+                                      ? {
+                                          label: controlValue ? translateFn('label.Enabled') : translateFn('label.No_Preference'),
+                                          labelPosition: 'right'
+                                        }
+                                      : {})}
                                     checked={controlValue}
                                     onChange={handleRowChange(sectionIndex, rowIndex, index)}
                                   />
@@ -176,5 +194,15 @@ const NotificationPreferencePanel = ({ config, allPreferred = false, readOnly = 
     </div>
   );
 };
+
+function Tooltip(props) {
+  const { body } = props;
+  if (!body) return props.children;
+  return (
+    <MCPTooltip body={body} {...props}>
+      {props.children}
+    </MCPTooltip>
+  );
+}
 
 export default NotificationPreferencePanel;
