@@ -449,5 +449,6 @@ export const UserManagementEN = {
   'userManagement.button.resendLink': 'Resend Link',
   'userManagement.message.resendLinkSuccess': 'Activation link has been resent successfully.',
   'userManagement.viewUser': 'View User',
-  'userManagement.message.updateUser': 'User details updated successfully.'
+  'userManagement.message.updateUser': 'User details updated successfully.',
+  'message.communicationPreferencesUpdated': 'Communication preferences for user updated successfully.'
 };

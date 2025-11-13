@@ -1,40 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Loader, Switch, Heading } from '@mckesson/mcp-component-library';
+import React from 'react';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
 import Alert from '@src/components/cgat-alert/Alert';
-import { INITIAL_PREFERENCES } from '../constants';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useMutation } from 'react-query';
-import CommunicationPreferencesPanel from './CommunicationPreferencesPanel';
+import NotificationPreferencePanel from '@src/mfe/core-config/notifications-setting/communication-preference-panel/NotificationPreferencePanel';
+import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
+import { Form, Formik } from 'formik';
+import { extractUserPreferences, getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
 
 const NotificationRolePreferences = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { roleId } = useParams();
   const location = useLocation();
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = React.useState(null);
   const { isEdit, communicationPreferences } = location.state || {};
   const permissions = location.state?.data?.permissions || location.state?.permissions;
-  const [preferences, setPreferences] = useState(communicationPreferences || INITIAL_PREFERENCES);
-  const handleToggleChannel = (sectionKey, itemKey, channel) => {
-    const current = preferences[sectionKey][itemKey];
-    const updated = {
-      ...preferences,
-      [sectionKey]: {
-        ...preferences[sectionKey],
-        [itemKey]: {
-          ...current,
-          [channel]: !current[channel]
-        }
-      }
-    };
-    setPreferences(updated);
-  };
+  const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
+
+  React.useEffect(() => {
+    const updatedConfig = getMergedPreferences(preferencesConfig, communicationPreferences, {});
+    setPreferenceConfig(updatedConfig);
+  }, []);
 
   const handleGoBack = () => {
     navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles/${roleId}/permissions`, {
@@ -69,10 +62,8 @@ const NotificationRolePreferences = () => {
       }
     }
   );
-  const handleSubmit = () => {
-    const payload = {
-      preferences: { ...preferences }
-    };
+  const handleSubmit = (values) => {
+    const payload = extractUserPreferences(values);
     mutate(payload);
   };
   if (isLoading) {
@@ -89,19 +80,29 @@ const NotificationRolePreferences = () => {
       <ModuleHeader heading={<PageHeader heading={t(isEdit ? 'label.Edit_Role' : 'orgManagement.role.labelAddRole')} />} />
       {alert && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
-      <div className="MCP-module-body">
-        <div className="MCP-panel-container">
-          <CommunicationPreferencesPanel preferences={preferences} handleToggleChannel={handleToggleChannel} permissions={permissions} />
-        </div>
-        <div className={'buttonGroup'}>
-          <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
-            {t('userManagement.button.back')}
-          </Button>
-          <Button variant="primary" type="submit" onClick={handleSubmit} size={'md'}>
-            {t(isEdit ? 'control.Update_Role' : 'control.Create_Role')}
-          </Button>
-        </div>
-      </div>
+      <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={handleSubmit}>
+        <Form>
+          <div className="MCP-module-body">
+            <div className="MCP-panel-container">
+              <NotificationPreferencePanel
+                readOnly={false}
+                showLabels={true}
+                isLoadingPreferences={false}
+                allPreferred={true}
+                config={{ ...preferencesConfig, userPermissions: permissions }}
+              />
+            </div>
+            <div className={'buttonGroup'}>
+              <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
+                {t('userManagement.button.back')}
+              </Button>
+              <Button variant="primary" type="submit" onClick={handleSubmit} size={'md'}>
+                {t(isEdit ? 'control.Update_Role' : 'control.Create_Role')}
+              </Button>
+            </div>
+          </div>
+        </Form>
+      </Formik>
     </div>
   );
 };

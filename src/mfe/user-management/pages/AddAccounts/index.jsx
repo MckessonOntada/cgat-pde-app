@@ -37,7 +37,7 @@ const AddAccounts = () => {
     });
   };
 
-  const handleSaveandContinue = () => {
+  const handleSaveAndContinue = () => {
     handleAddAccounts();
     if (selectedAccounts?.length > 0) {
       navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
@@ -70,7 +70,15 @@ const AddAccounts = () => {
       },
       {
         onSuccess: (response) => {
-          navigate(`../${userId}`, { state: { isSuccess: true, recCount: selectedCount } });
+          navigate(`../${userId}`, {
+            state: {
+              alert: {
+                pinPoint: 'linked_accounts',
+                type: 'success',
+                description: `${selectedCount} ${t('messages.accountlinkSuccess')}.`
+              }
+            }
+          });
         },
         onError: (error) => {}
       }
@@ -122,7 +130,7 @@ const AddAccounts = () => {
           {t('userManagement.button.back')}
         </Button>
         {!isEdit && (
-          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'}>
+          <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>
             {t('userManagement.button.adduser')}
           </Button>
         )}

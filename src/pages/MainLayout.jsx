@@ -5,7 +5,7 @@ import { FooterProvider } from '@src/components/footer/FooterContext';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import { debugIds, ID } from '@src/constants/id';
 import AdminRoutes from '@src/mfe/core-config/admin';
-import NotificationPreference from '@src/mfe/core-config/notifications-setting/NotificationPreference';
+import NotificationPreference from '@src/mfe/core-config/notifications-setting/UserNotificationPreference';
 import Dashboard from '@src/mfe/core-config/system-admin';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
