@@ -4,13 +4,15 @@ import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import notificationConfig from './config';
-import SettingPanelRenderer from './Renderer';
-import SMSConfiguration from './SMSConfiguration';
+import notificationConfig from './communication-preference-panel/config';
+import SMSConfigurationPanel from './communication-preference-panel/SMSConfigurationPanel';
 import style from './Style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import UserService from '@src/api/commonService/UserService';
 import CommonUtils from '@src/util/CommonUtils';
+import { extractUserPreferences, getMergedPreferences } from './communication-preference-panel/helpers';
+import NotificationPreferencePanel from './communication-preference-panel/NotificationPreferencePanel';
+import AuthUtils from '@src/util/AuthUtils';
 
 const VALIDATION_SCHEMA = Yup.object().shape({
   preferences: Yup.object()
@@ -35,61 +37,7 @@ const NotificationPreference = () => {
       .then((preferences = {}) => {
         const userCommunicationPreferences = preferences.userCommunicationPreferences?.preferences || {},
           roleCommunicationPreferences = preferences.roleCommunicationPreferences?.preferences || {};
-        const optionMap = ['email', 'inApp', 'sms'];
-
-        const updatedConfig = {
-          ...preferencesConfig,
-          sections: preferencesConfig.sections.map((section) => {
-            const userSection = userCommunicationPreferences[section.id] || {};
-            const roleSection = roleCommunicationPreferences[section.id] || {};
-
-            if (section.rows) {
-              return {
-                ...section,
-                rows: section.rows.map((row) => {
-                  const userRow = userSection[row.id] || {};
-                  const roleRow = roleSection[row.id] || {};
-
-                  const optionValues = row.optionValues.map((opt, idx) => {
-                    const channel = optionMap[idx];
-
-                    const updatedOptions = { ...opt };
-                    updatedOptions.value = userRow[channel] ?? opt.value;
-                    if (roleRow[channel] === true) {
-                      updatedOptions.value = true;
-                      updatedOptions.isPreferred = true;
-                    }
-
-                    return updatedOptions;
-                  });
-
-                  return { ...row, optionValues };
-                })
-              };
-            }
-
-            if (section.optionValues) {
-              const userRow = userSection['PROCESS_UPDATES'] || {};
-              const roleRow = roleSection['PROCESS_UPDATES'] || {};
-
-              const optionValues = section.optionValues.map((opt, idx) => {
-                const channel = optionMap[idx];
-                const updatedOptions = { ...opt };
-                updatedOptions.value = userRow[channel] ?? opt.value;
-                if (roleRow[channel] === true) {
-                  updatedOptions.value = true;
-                  updatedOptions.isPreferred = true;
-                }
-
-                return updatedOptions;
-              });
-
-              return { ...section, optionValues };
-            }
-
-            return section;
-          })
-        };
+        const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences, roleCommunicationPreferences);
         setPreferenceConfig(updatedConfig);
         setIsPreferencesLoaded(true);
       })
@@ -102,7 +50,8 @@ const NotificationPreference = () => {
   }, []);
 
   React.useEffect(() => {
-    UserService.getSubscriptionDetails()
+    const userId = AuthUtils.getLoggedInUserId();
+    UserService.getSubscriptionDetails(userId)
       .then((data) => {
         setVerificationStatus({ ...data });
       })
@@ -166,39 +115,6 @@ const NotificationPreference = () => {
       });
   };
 
-  function extractUserPreferences(preferencesConfig) {
-    const optionMap = ['email', 'inApp', 'sms'];
-    const preferences = {};
-
-    preferencesConfig.sections.forEach((section) => {
-      if (section.rows) {
-        preferences[section.id] = {};
-
-        section.rows.forEach((row) => {
-          const userRow = {};
-
-          row.optionValues.forEach((opt, idx) => {
-            const channel = optionMap[idx];
-            userRow[channel] = opt.value;
-          });
-
-          preferences[section.id][row.id] = userRow;
-        });
-      }
-
-      if (section.optionValues) {
-        const userRow = {};
-        section.optionValues.forEach((opt, idx) => {
-          const channel = optionMap[idx];
-          userRow[channel] = opt.value;
-        });
-        preferences[section.id] = { PROCESS_UPDATES: userRow };
-      }
-    });
-
-    return { preferences };
-  }
-
   const handleOnSubmit = (values) => {
     const payload = extractUserPreferences(values);
     UserService.setCommunicationPreferences(payload)
@@ -221,6 +137,32 @@ const NotificationPreference = () => {
   };
 
   const handleBack = () => navigate(-1);
+
+  const handleOnSaveNumber = (phoneNumber) => {
+    const params = {
+      number: phoneNumber,
+      userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+    };
+    const userId = AuthUtils.getLoggedInUserId();
+    UserService.subscribeSmsNotification(userId, params)
+      .then(() => {
+        setVerificationStatus({ ...verificationStatus, number: phoneNumber });
+        setAlert({
+          description: translateFn('smsSubscription.phoneNumberUpdated'),
+          type: 'success'
+        });
+      })
+      .catch((error) => {
+        const statusCode = error?.response?.status;
+        let description = translateFn('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+        setAlert({
+          description,
+          type: 'error'
+        });
+      });
+  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -267,12 +209,20 @@ const NotificationPreference = () => {
               {alert && <Alert id="activity-alert" {...alert} showCloseIcon onClose={() => setAlert(null)} />}
 
               <div className="MCP-CardContainer">
-                <SettingPanelRenderer isPreferencesLoaded={isPreferencesLoaded} isLoadingPreferences={isLoadingPreferences} config={preferencesConfig} />
-                <SMSConfiguration
+                <NotificationPreferencePanel
+                  readOnly={false}
+                  showLabel={false}
+                  showTooltip={true}
+                  isPreferencesLoaded={isPreferencesLoaded}
+                  isLoadingPreferences={isLoadingPreferences}
+                  config={{ ...preferencesConfig, userPermissions: AuthUtils.getUserPermissions() }}
+                />
+                {/* <SettingPanelRenderer /> */}
+                <SMSConfigurationPanel
                   isLoadingVerification={isLoadingVerification}
-                  setLinkedNumber={(phone) => setVerificationStatus({ ...verificationStatus, number: phone })}
                   linkedContactNumber={verificationStatus.number}
                   setAlert={setAlert}
+                  onSave={handleOnSaveNumber}
                 />
               </div>
 

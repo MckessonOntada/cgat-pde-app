@@ -18,24 +18,38 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import Alert from '@src/components/cgat-alert/Alert';
-import CommunicationPreferencesPanel from '../manage/CommunicationPreferencesPanel';
 import { INITIAL_PREFERENCES } from '../constants';
+import { Form, Formik } from 'formik';
+import NotificationPreferencePanel from '@src/mfe/core-config/notifications-setting/communication-preference-panel/NotificationPreferencePanel';
+import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
+import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
 
 const roleDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { roleId } = useParams();
   const dispatch = useDispatch();
+  const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
+
   const [messageConfig, setMessageConfig] = useState({
     type: '',
     message: ''
   });
 
-  const { isLoading, isError, data, refetch } = useQuery({
+  const {
+    isLoading,
+    isError,
+    data: roleDetails,
+    refetch
+  } = useQuery({
     queryKey: [`roles/${roleId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${roleId}`, httpVerb.GET, {});
       return res.data;
+    },
+    onSuccess: (data) => {
+      const updatedConfig = getMergedPreferences(preferencesConfig, {}, data.communicationPreferences?.preferences);
+      setPreferenceConfig(updatedConfig);
     },
     select: (data) => {
       const communicationPreferences = data?.communicationPreferences ?? {};
@@ -130,7 +144,7 @@ const roleDetail = () => {
     return groupedPermissions;
   };
 
-  const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
+  const groupedPermissions = groupPermissionsByCategory(roleDetails?.permissions || [], PERMISSIONS_ENUM);
 
   return (
     <div className="MCP-module-wrapper">
@@ -148,7 +162,7 @@ const roleDetail = () => {
           <ModuleHeader
             heading={
               <div className="subheader-text">
-                <EclipsesTextcss str={data?.name} maxWidth={500} />
+                <EclipsesTextcss str={roleDetails?.name} maxWidth={500} />
               </div>
             }
             controls={
@@ -158,8 +172,8 @@ const roleDetail = () => {
                   variant="secondary"
                   className="button-icon"
                   size="md"
-                  disabled={!data?.isActive}
-                  onClick={() => navigate(`edit-role`, { state: data })}>
+                  disabled={!roleDetails?.isActive}
+                  onClick={() => navigate(`edit-role`, { state: roleDetails })}>
                   {t('userManagement.button.edit')}
                 </Button>
               </PermittedComponent>
@@ -169,21 +183,23 @@ const roleDetail = () => {
           <div className="MCP-panel-container">
             <div className="role-header">
               <div className="role-info">
-                <p className="label-text">{data?.description || '-'}</p>
+                <p className="label-text">{roleDetails?.description || '-'}</p>
               </div>
               <div className="role-status">
                 <span className="view_label">{t('userManagement.label.createdOn')}:</span>
-                <span className="label-text">{CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM/DD/YYYY')}</span>
+                <span className="label-text">
+                  {CommonUtils.convertDateStringFormat(roleDetails?.createdAt ? roleDetails?.createdAt : roleDetails?.updatedAt, 'MM/DD/YYYY')}
+                </span>
                 <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES}>
                   <Switch
                     handleToggle={handleOnUserConfirmation}
                     id="id"
-                    disabled={!data?.isActive}
-                    label={data?.isActive ? t('userManagement.status.active') : ''}
+                    disabled={!roleDetails?.isActive}
+                    label={roleDetails?.isActive ? t('userManagement.status.active') : ''}
                     labelPosition="right"
                     name="Toggle"
                     size="lg"
-                    value={data?.isActive}
+                    value={roleDetails?.isActive}
                   />
                 </PermittedComponent>
               </div>
@@ -200,10 +216,10 @@ const roleDetail = () => {
                       variant="secondary"
                       className="button-icon"
                       size="md"
-                      disabled={!data?.isActive}
+                      disabled={!roleDetails?.isActive}
                       onClick={() =>
                         navigate(`permissions`, {
-                          state: { data, isEdit: true }
+                          state: { data: roleDetails, isEdit: true }
                         })
                       }>
                       {t('userManagement.button.edit')}
@@ -214,7 +230,7 @@ const roleDetail = () => {
             />
           </div>
           <div className="MCP-panel-container grid grid-gap-16">
-            {data?.permissions?.length > 0 ? (
+            {roleDetails?.permissions?.length > 0 ? (
               Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
                 <div key={categoryKey} className="MCP-module-body permission-category">
                   <div className="subheader-text">{t(categoryKey)}</div>
@@ -259,10 +275,14 @@ const roleDetail = () => {
                       variant="secondary"
                       className="button-icon"
                       size="md"
-                      disabled={!data?.isActive}
+                      disabled={!roleDetails?.isActive}
                       onClick={() =>
                         navigate(`notification-permissions`, {
-                          state: { communicationPreferences: data?.communicationPreferences?.preferences, isEdit: true, permissions: data?.permissions }
+                          state: {
+                            communicationPreferences: roleDetails?.communicationPreferences?.preferences,
+                            isEdit: true,
+                            permissions: roleDetails?.permissions
+                          }
                         })
                       }>
                       {t('userManagement.button.edit')}
@@ -273,8 +293,19 @@ const roleDetail = () => {
             />
           </div>
           <div className="MCP-panel-container grid grid-gap-16">
-            {data?.communicationPreferences?.preferences ? (
-              <CommunicationPreferencesPanel preferences={data?.communicationPreferences?.preferences} readOnly={true} permissions={data?.permissions} />
+            {roleDetails?.communicationPreferences?.preferences ? (
+              <Formik initialValues={preferencesConfig} enableReinitialize={true}>
+                <Form>
+                  <div className="MCP-panel-container">
+                    <NotificationPreferencePanel
+                      readOnly={true}
+                      showLabels={true}
+                      isLoadingPreferences={false}
+                      config={{ ...preferencesConfig, userPermissions: roleDetails.permissions }}
+                    />
+                  </div>
+                </Form>
+              </Formik>
             ) : (
               <EmptyDataTable
                 isLoading={false}

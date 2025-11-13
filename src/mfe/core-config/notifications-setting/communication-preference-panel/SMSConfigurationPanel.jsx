@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Switch, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import style from './Style.module.scss';
-import UserService from '@src/api/commonService/UserService';
+import style from './style.module.scss';
 import PhoneInput from '@src/components/form/PhoneInput';
 import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
-import CommonUtils from '@src/util/CommonUtils';
 
-function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', setAlert, setLinkedNumber }) {
+function SMSConfigurationPanel({ isLoadingVerification, onSave, linkedContactNumber = '', setAlert }) {
   const { t: translateFn } = useTranslate();
 
   const [phone, setPhone] = useState(linkedContactNumber);
@@ -41,26 +39,9 @@ function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', set
 
       if (checked) {
         if (!validatePhone()) return;
-
-        UserService.subscribeSmsNotification(phone)
-          .then(() => {
-            setIsSubscribed(true);
-            setLinkedNumber(phone);
-            setAlert({
-              description: translateFn('smsSubscription.phoneNumberUpdated'),
-              type: 'success'
-            });
-          })
-          .catch((error) => {
-            const statusCode = error?.response?.status;
-            let description = translateFn('error.default');
-            if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
-            setAlert({
-              description,
-              type: 'error'
-            });
-          });
+        if (onSave) {
+          onSave(phone);
+        }
       } else {
         setIsSubscribed(false);
       }
@@ -110,4 +91,4 @@ function SMSConfiguration({ isLoadingVerification, linkedContactNumber = '', set
   );
 }
 
-export default SMSConfiguration;
+export default SMSConfigurationPanel;

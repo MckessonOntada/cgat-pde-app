@@ -21,12 +21,10 @@ async function getAssignee(params) {
   );
 }
 
-async function subscribeSmsNotification(number) {
-  const userId = AuthUtils.getLoggedInUserId();
+async function subscribeSmsNotification(userId, params) {
   if (!userId) throw new Error('No valid user found');
 
-  const userType = AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL';
-  const url = `${ApiRoutes.USERS()}/${userId}/number?${serializeParams({ number, userType })}`;
+  const url = `${ApiRoutes.USERS()}/${userId}/number?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, {});
   return res.data ?? null;
 }
@@ -40,11 +38,10 @@ async function resendInvitation() {
   return res.data ?? null;
 }
 
-async function getSubscriptionDetails() {
-  const userId = AuthUtils.getLoggedInUserId();
+async function getSubscriptionDetails(userId, params = {}) {
   if (!userId) throw new Error('No valid user found');
 
-  const url = `${ApiRoutes.USERS()}/${userId}/number-verification-status`;
+  const url = `${ApiRoutes.USERS()}/${userId}/number-verification-status?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }
@@ -55,8 +52,8 @@ async function getCommunicationPreferences() {
   return res.data ?? null;
 }
 
-async function setCommunicationPreferences(payload) {
-  const url = `${ApiRoutes.USERS()}/current/communication-preference`;
+async function setCommunicationPreferences(payload, params = {}) {
+  const url = `${ApiRoutes.USERS()}/current/communication-preference?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
   return res.data ?? null;
 }

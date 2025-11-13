@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -22,6 +22,10 @@ import UserAccounts from '@src/components/Accounts/Accounts';
 import PermittedComponent from '@src/components/permitted-component';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import Alert from '@src/components/cgat-alert/Alert';
+import NotificationPreferencePanel from '@src/mfe/core-config/notifications-setting/communication-preference-panel/NotificationPreferencePanel';
+import { Form, Formik } from 'formik';
+import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
+import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -49,11 +53,7 @@ const UserDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
-  const [searchText, setSearchText] = useState('');
-  const [selectedAccounts, setSelectedAccounts] = useState([]);
-  const [alertDescription, setAlertDescription] = useState('');
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [alertType, setAlertType] = useState(null);
+  const [alert, setAlert] = useState(null);
   const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
   const { isSuccess = false, isPending = false, isEdit = false } = location.state || {};
@@ -66,6 +66,8 @@ const UserDetail = () => {
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const isSelf = userId === AuthUtils.getUserId();
+  const [preferencesConfig, setPreferenceConfig] = useState(notificationConfig);
+  const [isPreferencesLoaded, setIsPreferencesLoaded] = useState(false);
   const disablePay = useRef(false);
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
@@ -75,9 +77,11 @@ const UserDetail = () => {
   useEffect(() => {
     if (isEdit) {
       setIsProvisioned(true);
-      setIsAlertVisible(true);
-      setAlertType('success');
-      setAlertDescription(t('userManagement.message.updateUser'));
+      setAlert({
+        description: t('userManagement.message.updateUser'),
+        type: 'success'
+      });
+      navigate(location.pathname);
     }
   }, [isEdit]);
 
@@ -93,7 +97,11 @@ const UserDetail = () => {
     }, 500);
   };
 
-  const { isLoading, isError, data, refetch } = useQuery({
+  const {
+    isLoading,
+    data: userDetails,
+    refetch
+  } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
       const url = isPending ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}` : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
@@ -103,7 +111,16 @@ const UserDetail = () => {
     enabled: !!userId,
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
+      const userCommunicationPreferences = data?.userCommunicationPreferences || {};
+      const roleCommunicationPreferences = data?.role?.communicationPreferences?.preferences || {};
+      const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
+      setPreferenceConfig(updatedConfig);
+      setIsPreferencesLoaded(true);
       setIsPhysicianUser(AuthUtils.isPhysician(data?.role?.name, data?.role?.id));
+    },
+    select: (data) => {
+      if (!data.communicationPreferences) data.communicationPreferences = {};
+      return data;
     }
   });
 
@@ -113,50 +130,49 @@ const UserDetail = () => {
       return res.data;
     },
     {
-      onSuccess: (res) => {
-        setIsAlertVisible(true);
+      onSuccess: () => {
         setIsProvisioned(true);
-        setAlertType('success');
-        setAlertDescription(t('messages.provisionedsuccess'));
+        setAlert({
+          description: t('messages.provisionedsuccess'),
+          type: 'success'
+        });
       },
-      onError: (error) => {
-        setIsAlertVisible(true);
+      onError: () => {
         setIsProvisioned(true);
-        setAlertType('error');
-        setAlertDescription(t('messages.provisionederrror'));
+        setAlert({
+          description: t('messages.provisionederrror'),
+          type: 'error'
+        });
       }
     }
   );
 
   useEffect(() => {
-    if (data?.provisionedInOktaStatus !== 'PROVISIONED' && data?.isActive) {
-      setIsAlertVisible(true);
+    if (userDetails?.provisionedInOktaStatus !== 'PROVISIONED' && userDetails?.isActive) {
       setIsProvisioned(true);
-      setAlertType('error');
-      setAlertDescription(
-        <>
-          {t('userManagement.provision.message', {
-            click: (
-              <span>
-                <IconButton label={t('userManagement.button.clickhere')} size="lg" iconButton={false} textButton={true} onClick={handleRetry} />
-              </span>
-            )
-          })}
-        </>
-      );
+      setAlert({
+        type: 'error',
+        description: t('userManagement.provision.message', {
+          click: (
+            <span>
+              <IconButton label={t('userManagement.button.clickhere')} size="lg" iconButton={false} textButton={true} onClick={handleRetry} />
+            </span>
+          )
+        })
+      });
     }
-  }, [data?.provisionedInOktaStatus]);
+  }, [userDetails?.provisionedInOktaStatus]);
 
-  useEffect(() => {
-    if (!isSuccess) return;
-    if (!isSystemAdminView) {
-      setIsAlertVisible(true);
-      setAlertDescription(`${location.state.recCount} ${t('messages.accountlinkSuccess')}.`);
+  React.useEffect(() => {
+    const alert = location.state?.alert;
+    if (!isSystemAdminView && alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
     }
-  }, [isSuccess, location.pathname, location.state, navigate]);
+  }, [location.state]);
 
   const handleAlertClose = () => {
-    setIsAlertVisible(false);
+    setAlert(null);
     navigate(location.pathname, {
       replace: true,
       state: { ...location.state, isSuccess: false }
@@ -173,17 +189,6 @@ const UserDetail = () => {
     }
   };
 
-  const onRemoveAccount = useCallback(
-    (item) => {
-      setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
-    },
-    [selectedAccounts, setSelectedAccounts]
-  );
-
-  const handleSearchChange = (inputValue) => {
-    setSearchText(inputValue);
-  };
-
   const handleActivateDeactivateUser = async ({ userId, isActive }) => {
     let res;
     if (isActive) {
@@ -196,19 +201,21 @@ const UserDetail = () => {
 
   const { mutate } = useMutation({
     mutationFn: handleActivateDeactivateUser,
-    onSuccess: (response) => {
+    onSuccess: () => {
       refetch();
       setIsDeactivate(true);
-      setIsAlertVisible(true);
-      setAlertType('success');
-      setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'));
+      setAlert({
+        description: t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'),
+        type: 'success'
+      });
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
-      setIsAlertVisible(true);
-      setAlertType('error');
-      setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'));
+      setAlert({
+        description: t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'),
+        type: 'error'
+      });
     }
   });
 
@@ -244,17 +251,19 @@ const UserDetail = () => {
     return groupedPermissions;
   };
   const handleonBehalfNotifcaiton = async () => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${data?.practiceId}/on-behalf-notification`, httpVerb.POST);
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${userDetails?.practiceId}/on-behalf-notification`, httpVerb.POST);
     return res.data;
   };
 
   const { mutate: OnBehalfNotification } = useMutation({
     mutationFn: handleonBehalfNotifcaiton,
-    onSuccess: (response) => {},
-    onError: (error) => {
-      setIsAlertVisible(true);
-      setAlertType('error');
-      setAlertDescription(t('errors.default'));
+    onSuccess: () => {},
+    onError: () => {
+      setAlert({
+        description: t('errors.default'),
+        type: 'error'
+      });
+
       setIsConsentModalOpen(false);
       setIsConsentError(true);
     }
@@ -278,11 +287,11 @@ const UserDetail = () => {
     }
   };
 
-  const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
-  const userFullName = CommonUtils.getFullName(data?.name); //`${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
+  const groupedPermissions = groupPermissionsByCategory(userDetails?.permissions || [], PERMISSIONS_ENUM);
+  const userFullName = CommonUtils.getFullName(userDetails?.name); //`${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
-  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
+  const prePermissions = userDetails?.isActive && userDetails?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
@@ -293,18 +302,20 @@ const UserDetail = () => {
           {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
-      {(isDeactivate || isProvisioned || isConsentError) && isAlertVisible && (
-        <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} />
-      )}
+      {(isDeactivate || isProvisioned || isConsentError) && alert && <Alert {...alert} onClose={handleAlertClose} />}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
             prePermissions && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-                <Tooltip body={data?.role == null || data?.permissions?.length === 0 ? 'User must have a role and at least one permission.' : ''}>
+                <Tooltip body={userDetails?.role == null || userDetails?.permissions?.length === 0 ? 'User must have a role and at least one permission.' : ''}>
                   <span>
-                    <Button variant="primary" size="md" onClick={(e) => handleClickLogin(e)} disabled={data?.role == null || data?.permissions?.length === 0}>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      onClick={(e) => handleClickLogin(e)}
+                      disabled={userDetails?.role == null || userDetails?.permissions?.length === 0}>
                       {t('button.label.loginAsThisUser')}
                     </Button>
                   </span>
@@ -329,7 +340,7 @@ const UserDetail = () => {
                   variant="secondary"
                   className="button-icon"
                   size="md"
-                  disabled={!data?.isActive || isSelf}
+                  disabled={!userDetails?.isActive || isSelf}
                   onClick={() =>
                     navigate(`../${PATHS.editUser}/${userId}`, {
                       state: { isEdit: true }
@@ -345,10 +356,10 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              {data?.role?.name && (
+              {userDetails?.role?.name && (
                 <Badge
-                  text={data?.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : data?.role?.name}
-                  type={getBackgroundColorByRole(data?.role?.name)}
+                  text={userDetails?.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : userDetails?.role?.name}
+                  type={getBackgroundColorByRole(userDetails?.role?.name)}
                   customStyle={{
                     background: '#DEEBF0',
                     color: '#254E56'
@@ -360,10 +371,10 @@ const UserDetail = () => {
               <span className="view_label">{t('userManagement.userDetails.lastUpdatedOn')}</span>
               <span className="label-text">
                 {' '}
-                {data?.updatedAt
-                  ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM/DD/YYYY')
-                  : data?.createdAt
-                  ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM/DD/YYYY')
+                {userDetails?.updatedAt
+                  ? CommonUtils.convertDateStringFormat(userDetails.updatedAt, 'MM/DD/YYYY')
+                  : userDetails?.createdAt
+                  ? CommonUtils.convertDateStringFormat(userDetails.createdAt, 'MM/DD/YYYY')
                   : 'N/A'}
               </span>
               {!isPhysicianUser && (
@@ -371,18 +382,18 @@ const UserDetail = () => {
                   <Switch
                     handleToggle={() => {
                       setSelectedUserInfo({
-                        userId: data?.id,
-                        isActive: data?.isActive
+                        userId: userDetails?.id,
+                        isActive: userDetails?.isActive
                       });
                       handleActivateDeactivate();
                     }}
                     id="id"
-                    disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive) || isSelf}
-                    label={data?.isActive ? t('userManagement.status.active') : ''}
+                    disabled={(!isSystemAdmin && !userDetails?.isActive) || (isSystemAdmin && isSelf && userDetails?.isActive) || isSelf}
+                    label={userDetails?.isActive ? t('userManagement.status.active') : ''}
                     labelPosition="right"
                     name="Toggle"
                     size="lg"
-                    value={data?.isActive}
+                    value={userDetails?.isActive}
                   />
                 </PermittedComponent>
               )}
@@ -392,37 +403,37 @@ const UserDetail = () => {
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">{t('userManagement.userDetails.userAddress')}</span>
-              <p className="label-text">{formatFields(data?.address, ['address1', 'address2'])}</p>
+              <p className="label-text">{formatFields(userDetails?.address, ['address1', 'address2'])}</p>
             </div>
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.email')}</span>
-              <p className="label-text">{data?.contact.email}</p>
+              <p className="label-text">{userDetails?.contact.email}</p>
             </div>
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.phone_no')}</span>
-              <p className="label-text"> {data?.contact.phone ? CommonUtils.formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
+              <p className="label-text"> {userDetails?.contact.phone ? CommonUtils.formatPhoneNumber(userDetails.contact.phone) : 'N/A'} </p>
             </div>
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
-              <p className="label-text">{data?.contact.fax || '-'}</p>
+              <p className="label-text">{userDetails?.contact.fax || '-'}</p>
             </div>
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.city')}</span>
-              <p className="label-text">{data?.address.city}</p>
+              <p className="label-text">{userDetails?.address.city}</p>
             </div>
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.zip')}</span>
-              <p className="label-text"> {data?.address.zip}</p>
+              <p className="label-text"> {userDetails?.address.zip}</p>
             </div>
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.state')}</span>
-              <p className="label-text">{data?.address.state}</p>
+              <p className="label-text">{userDetails?.address.state}</p>
             </div>
           </div>
         </div>
@@ -438,10 +449,10 @@ const UserDetail = () => {
                       variant="secondary"
                       className="button-icon"
                       size="md"
-                      disabled={!data?.isActive || isSelf}
+                      disabled={!userDetails?.isActive || isSelf}
                       onClick={() =>
                         navigate(`../${PATHS.userPermissions}/${userId}`, {
-                          state: { isEdit: true, permissionsData: data }
+                          state: { isEdit: true, permissionsData: userDetails }
                         })
                       }>
                       {t('userManagement.button.edit')}
@@ -453,7 +464,7 @@ const UserDetail = () => {
           />
         </div>
         <div className="MCP-panel-container grid grid-gap-16">
-          {data?.permissions?.length > 0 ? (
+          {userDetails?.permissions?.length > 0 ? (
             Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
               <div key={categoryKey} className="MCP-module-body permission-category">
                 <div className="subheader-text">{t(categoryKey)}</div>
@@ -502,7 +513,7 @@ const UserDetail = () => {
                         variant="secondary"
                         className="button-icon"
                         size="md"
-                        disabled={!data?.isActive}
+                        disabled={!userDetails?.isActive}
                         onClick={() =>
                           navigate(`../${PATHS.addAccounts}/${userId}`, {
                             state: { isEdit: true }
@@ -515,17 +526,65 @@ const UserDetail = () => {
                 )
               }
             />
-            {isSuccess && isAlertVisible && !isSystemAdminView && <Alert description={alertDescription} onClose={handleAlertClose} type="success" />}
-            {data?.practiceId && (
+            {alert && !isSystemAdminView && alert.pinPoint === 'linked_accounts' && <Alert {...alert} onClose={handleAlertClose} />}
+            {userDetails?.practiceId && (
               <UserAccounts
                 selectableRows={false}
                 omitColumns={['distributionChannel']}
-                practiceId={data?.practiceId}
+                practiceId={userDetails?.practiceId}
                 showSelectedAccounts={false}
                 userId={userId}
                 isPhysicianUser={isPhysicianUser}
               />
             )}
+
+            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
+              <div className="MCP-module-wrapper">
+                <div className="MCP-module-body">
+                  <ModuleHeader
+                    heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
+                    controls={
+                      prePermissions && (
+                        <div className="controls">
+                          <Button
+                            Icon={EditPencil}
+                            variant="secondary"
+                            className="button-icon"
+                            size="md"
+                            onClick={() =>
+                              navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
+                                state: {
+                                  permissions: userDetails.permissions,
+                                  userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
+                                  roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
+                                }
+                              })
+                            }>
+                            {t('userManagement.button.edit')}
+                          </Button>
+                        </div>
+                      )
+                    }
+                  />
+
+                  {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
+
+                  <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
+                    <Form>
+                      <div className="MCP-panel-container">
+                        <NotificationPreferencePanel
+                          readOnly={true}
+                          showLabels={true}
+                          isPreferencesLoaded={isPreferencesLoaded}
+                          isLoadingPreferences={isLoading}
+                          config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
+                        />
+                      </div>
+                    </Form>
+                  </Formik>
+                </div>
+              </div>
+            </PermittedComponent>
           </div>
         )}
       </div>
@@ -555,7 +614,7 @@ const UserDetail = () => {
         }}
       />
       {isConsentModalOpen && (
-        <ConsentModal userFullName={userFullName} onYes={() => handleOnConsentConfirm(data.id)} onNo={() => setIsConsentModalOpen(false)} />
+        <ConsentModal userFullName={userFullName} onYes={() => handleOnConsentConfirm(userDetails.id)} onNo={() => setIsConsentModalOpen(false)} />
       )}
     </div>
   );
