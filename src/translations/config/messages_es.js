@@ -251,14 +251,18 @@ export const ConfigurationMessagesES = {
     'S_Receive follow-up alerts for pending user approvals or incomplete account activations that require attention.',
   'notificationPreferences.orderManagement.title': 'S_Order Management',
   'notificationPreferences.orderManagement.processUpdate.title': 'S_Process Update',
-  'notificationPreferences.orderManagement.processUpdate.subtitle': 'S_Stay informed on perscription or order placement and modification',
+  'notificationPreferences.orderManagement.processUpdate.subtitle':
+    'S_Stay informed about prescription or therapy order creation, submission, and key status updates.',
   'notificationPreferences.orderManagement.reminders.title': 'S_Reminders',
-  'notificationPreferences.orderManagement.reminders.subtitle': 'S_Receive reminders about pending prescription or order or unprocessed updates.',
+  'notificationPreferences.orderManagement.reminders.subtitle':
+    'S_Receive reminders for orders in draft or pending states to ensure timely completion and processing.',
   'notificationPreferences.orderApproval.title': 'S_Order Approval',
   'notificationPreferences.orderApproval.processUpdate.title': 'S_Process Update',
-  'notificationPreferences.orderApproval.processUpdate.subtitle': 'S_Get notified when an order requires your review, approval or rejection.',
+  'notificationPreferences.orderApproval.processUpdate.subtitle':
+    'S_Get notified when an order is submitted for your clinical or administrative approval, or when its approval status changes.',
   'notificationPreferences.orderApproval.reminders.title': 'S_Reminders',
-  'notificationPreferences.orderApproval.reminders.subtitle': 'S_Receive reminders about pending prescription or order or unprocessed updates.',
+  'notificationPreferences.orderApproval.reminders.subtitle':
+    'S_Receive periodic reminders for orders awaiting your review, approval, or decision to maintain workflow efficiency.',
   'notificationPreferences.onBehalfOf.title': 'S_On Behalf of',
   'notificationPreferences.onBehalfOf.subtitle': 'S_Receive a notification whenever an authorized user works on your account on your behalf.',
   'notificationPreferences.optionEmail': 'S_Email',
