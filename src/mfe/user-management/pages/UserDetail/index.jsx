@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
+import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
 import { Badge, Button, Heading, Switch, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
@@ -26,6 +27,8 @@ import NotificationPreferencePanel from '@src/mfe/core-config/notifications-sett
 import { Form, Formik } from 'formik';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
 import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
+import MaterialSelection from '../CreateUser/MaterialSelection';
+import UserMaterial from '../CreateUser/UserMaterial';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -342,7 +345,7 @@ const UserDetail = () => {
                   size="md"
                   disabled={!userDetails?.isActive || isSelf}
                   onClick={() =>
-                    navigate(`../${PATHS.editUser}/${userId}`, {
+                    navigate(`../${PATHS.EDIT}/${userId}`, {
                       state: { isEdit: true }
                     })
                   }>
@@ -451,7 +454,7 @@ const UserDetail = () => {
                       size="md"
                       disabled={!userDetails?.isActive || isSelf}
                       onClick={() =>
-                        navigate(`../${PATHS.userPermissions}/${userId}`, {
+                        navigate(`../${PATHS.PERMISSIONS}/${userId}`, {
                           state: { isEdit: true, permissionsData: userDetails }
                         })
                       }>
@@ -515,7 +518,7 @@ const UserDetail = () => {
                         size="md"
                         disabled={!userDetails?.isActive}
                         onClick={() =>
-                          navigate(`../${PATHS.addAccounts}/${userId}`, {
+                          navigate(`../${PATHS.ADD_ACCOUNTS}/${userId}`, {
                             state: { isEdit: true }
                           })
                         }>
@@ -537,54 +540,82 @@ const UserDetail = () => {
                 isPhysicianUser={isPhysicianUser}
               />
             )}
-
-            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-              <div className="MCP-module-wrapper">
-                <div className="MCP-module-body">
-                  <ModuleHeader
-                    heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
-                    controls={
-                      prePermissions && (
-                        <div className="controls">
-                          <Button
-                            Icon={EditPencil}
-                            variant="secondary"
-                            className="button-icon"
-                            size="md"
-                            onClick={() =>
-                              navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
-                                state: {
-                                  permissions: userDetails.permissions,
-                                  userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
-                                  roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
-                                }
-                              })
-                            }>
-                            {t('userManagement.button.edit')}
-                          </Button>
-                        </div>
-                      )
-                    }
-                  />
-
-                  {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
-
-                  <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
-                    <Form>
-                      <div className="MCP-panel-container">
-                        <NotificationPreferencePanel
-                          readOnly={true}
-                          showLabels={true}
-                          isPreferencesLoaded={isPreferencesLoaded}
-                          isLoadingPreferences={isLoading}
-                          config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
-                        />
+            <React.Fragment>
+              <ModuleHeader
+                heading={<Heading as="h2">{t('userManagement.header.view.linkedMaterials')}</Heading>}
+                controls={
+                  !isPhysicianUser && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                      <div className="controls">
+                        <Button
+                          Icon={AddIcon}
+                          variant="secondary"
+                          className="button-icon"
+                          size="md"
+                          disabled={!userDetails?.isActive}
+                          onClick={() =>
+                            navigate(`../${userId}/${PATHS.MATERIAL}`, {
+                              state: { isEdit: true }
+                            })
+                          }>
+                          {t('userManagement.button.linkMaterials')}
+                        </Button>
                       </div>
-                    </Form>
-                  </Formik>
+                    </PermittedComponent>
+                  )
+                }
+              />
+              <UserMaterial />
+            </React.Fragment>
+            {isSystemAdminView && (
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
+                <div className="MCP-module-wrapper">
+                  <div className="MCP-module-body">
+                    <ModuleHeader
+                      heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
+                      controls={
+                        prePermissions && (
+                          <div className="controls">
+                            <Button
+                              Icon={EditPencil}
+                              variant="secondary"
+                              className="button-icon"
+                              size="md"
+                              onClick={() =>
+                                navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
+                                  state: {
+                                    permissions: userDetails.permissions,
+                                    userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
+                                    roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
+                                  }
+                                })
+                              }>
+                              {t('userManagement.button.edit')}
+                            </Button>
+                          </div>
+                        )
+                      }
+                    />
+
+                    {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
+
+                    <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
+                      <Form>
+                        <div className="MCP-panel-container">
+                          <NotificationPreferencePanel
+                            readOnly={true}
+                            showLabels={true}
+                            isPreferencesLoaded={isPreferencesLoaded}
+                            isLoadingPreferences={isLoading}
+                            config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
+                          />
+                        </div>
+                      </Form>
+                    </Formik>
+                  </div>
                 </div>
-              </div>
-            </PermittedComponent>
+              </PermittedComponent>
+            )}
           </div>
         )}
       </div>

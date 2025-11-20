@@ -1,4 +1,4 @@
-import { Button, Heading, Loader, StepperMui } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -13,15 +13,15 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from '../../routes';
+import UserCreationStepper from '../UserCreationStepper';
 
 const AddAccounts = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
   const { userId } = useParams();
-  const [searchText, setSearchText] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
-  const [alertConfig, setAlertConfig] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
   const { permissionsData, isEdit } = location.state || {};
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
@@ -32,7 +32,7 @@ const AddAccounts = () => {
   };
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`, {
+    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.PERMISSIONS}/${userId}`, {
       state: { isBack: true, permissionsData: permissionsData }
     });
   };
@@ -40,7 +40,8 @@ const AddAccounts = () => {
   const handleSaveAndContinue = () => {
     handleAddAccounts();
     if (selectedAccounts?.length > 0) {
-      navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
+      navigate(`../${userId}/materials`, { state: { isCreate: true } });
+      // navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
     }
   };
 
@@ -56,7 +57,7 @@ const AddAccounts = () => {
 
   const handleAddAccounts = () => {
     if (selectedAccounts?.length <= 0) {
-      setAlertConfig({
+      setAlert({
         isVisible: true,
         description: `Select at least one account`,
         type: 'error'
@@ -94,51 +95,39 @@ const AddAccounts = () => {
           {t(isEdit ? 'userManagement.back_to_user_details' : 'userManagement.user.backmessage')}
         </Button>
       </div>
-      <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
-      {!isEdit && !isSystemAdmin && (
-        <div className="stepper">
-          <StepperMui
-            activeIndex={3}
-            dividerText="of"
-            stepHeaders={[
-              {
-                label: t('userManagement.stepper.option.user_details')
-              },
-              {
-                label: t('userManagement.stepper.option.roles_and_permissions')
-              },
-              {
-                label: t('userManagement.stepper.option.associate_accounts')
-              }
-            ]}
-          />
+      <div className="MCP-module-body">
+        <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
+        {!isEdit && !isSystemAdmin && (
+          <div className="stepper">
+            <UserCreationStepper activeIndex={3} />
+          </div>
+        )}
+        {alert?.isVisible && <Alert type={alert.type} description={alert.description} onClose={() => setAlert(null)} />}
+        <UserAccounts
+          autoFocus={true}
+          selectedRows={selectedAccounts}
+          setSelectedRows={setSelectedAccounts}
+          showSelectedAccounts={true}
+          omitColumns={['action', 'cgatIdentifier', 'address']}
+          practiceId={practiceId}
+          selectableRows={true}
+          allowSelectAll={true}
+        />
+        <div className={'controls'}>
+          <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
+            {t('userManagement.button.back')}
+          </Button>
+          {!isEdit && (
+            <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>
+              {t('userManagement.button.savencontinue')}
+            </Button>
+          )}
+          {isEdit && (
+            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
+              {t('userManagement.button.add_accounts')}
+            </Button>
+          )}
         </div>
-      )}
-      {alertConfig?.isVisible && <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} />}
-      <UserAccounts
-        autoFocus={true}
-        selectedRows={selectedAccounts}
-        setSelectedRows={setSelectedAccounts}
-        showSelectedAccounts={true}
-        omitColumns={['action', 'cgatIdentifier', 'address']}
-        practiceId={practiceId}
-        selectableRows={true}
-        allowSelectAll={true}
-      />
-      <div className={'buttonGroup'}>
-        <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
-          {t('userManagement.button.back')}
-        </Button>
-        {!isEdit && (
-          <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>
-            {t('userManagement.button.adduser')}
-          </Button>
-        )}
-        {isEdit && (
-          <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
-            {t('userManagement.button.add_accounts')}
-          </Button>
-        )}
       </div>
     </div>
   );

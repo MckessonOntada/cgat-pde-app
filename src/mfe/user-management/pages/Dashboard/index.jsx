@@ -14,7 +14,6 @@ import AuthUtils from '@src/util/AuthUtils';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
 import usePermission from '@src/hooks/usePermissions';
-import UploadUsers from './UploadUsers';
 import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 import Alert from '@src/components/cgat-alert/Alert';
 import { USER_TABS } from './constants';
@@ -181,7 +180,7 @@ export default function Dashboard() {
               )}
               {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
                 <div className="upload-userBtn">
-                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.uploadUser}`)}>
+                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.UPLOAD_USER}`)}>
                     <label htmlFor="fileInput">{t('userManagement.button.uploadUsers')}</label>
                   </Button>
                 </div>

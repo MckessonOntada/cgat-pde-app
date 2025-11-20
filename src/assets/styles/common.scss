@@ -1772,3 +1772,16 @@ input[type="checkbox"] + label {
   display: flex;
   flex-direction: column;
 }
+
+.table-selection-container {
+  display: grid;
+  grid-template-columns:
+    calc(66.66% - var(--spacing-04) / 2)
+    calc(33.33% - var(--spacing-04) / 2);
+  gap: var(--spacing-04);
+}
+.list-card-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

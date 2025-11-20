@@ -143,7 +143,7 @@ export const UserManagementES = {
   'userManagement.stepper.option.user_details': 'S_User Details',
   'userManagement.stepper.option.roles_and_permissions': 'S_Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'S_Associate Accounts',
-
+  'userManagement.stepper.option.associate_materials': 'S_Associate Materials',
   'userManagement.header.view.edit_user': 'S_User Details',
 
   'userManagement.header.view.permissions_granted': 'S_Permissions Granted',
@@ -419,5 +419,23 @@ export const UserManagementES = {
   'userManagement.message.resendLinkSuccess': 'S_Activation link has been resent successfully.',
   'userManagement.viewUser': 'S_View User',
   'userManagement.message.updateUser': 'S_User details updated successfully.',
-  'message.communicationPreferencesUpdated': 'S_Communication preferences for user updated successfully.'
+  'message.communicationPreferencesUpdated': 'S_Communication preferences for user updated successfully.',
+  'placeholder.materialTable': 'S_Search by therapy, Generic name, ndc, formulation and ndc',
+  'table.column.caption.therapy': 'S_Therapy',
+  'table.column.caption.genericName': 'S_Generic Name',
+  'table.column.caption.ndc': 'S_NDC',
+  'table.column.caption.manufacturer': 'S_Manufacturer Name',
+  'table.title.selectMaterial': 'S_Select Material',
+  'list.title.selectedMaterials': 'S_Selected Materials',
+  'placeholder.materialTable': 'S_Search by therapy, Generic name, ndc, formulation and ndc',
+  'table.column.caption.therapy': 'S_Therapy',
+  'table.column.caption.genericName': 'S_Generic Name',
+  'table.column.caption.ndc': 'S_NDC',
+  'table.column.caption.manufacturer': 'S_Manufacturer Name',
+  'table.title.selectMaterial': 'S_Select Material',
+  'list.title.selectedMaterials': 'S_Selected Materials',
+  'userManagement.header.view.linkedMaterials': 'S_Linked Materials',
+  'userManagement.button.linkMaterials': 'S_Link Materials',
+  'table.columns.caption.formulation': 'S_Formulation',
+  'userManagement.button.edit_materials': 'S_Edit Materials'
 };

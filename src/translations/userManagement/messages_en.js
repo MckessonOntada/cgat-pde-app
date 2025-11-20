@@ -143,7 +143,7 @@ export const UserManagementEN = {
   'userManagement.stepper.option.user_details': 'User Details',
   'userManagement.stepper.option.roles_and_permissions': 'Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'Associate Accounts',
-
+  'userManagement.stepper.option.associate_materials': 'Associate Materials',
   'userManagement.header.view.edit_user': 'User Details',
 
   'userManagement.header.view.permissions_granted': 'Permissions Granted',
@@ -450,5 +450,16 @@ export const UserManagementEN = {
   'userManagement.message.resendLinkSuccess': 'Activation link has been resent successfully.',
   'userManagement.viewUser': 'View User',
   'userManagement.message.updateUser': 'User details updated successfully.',
-  'message.communicationPreferencesUpdated': 'Communication preferences for user updated successfully.'
+  'message.communicationPreferencesUpdated': 'Communication preferences for user updated successfully.',
+  'placeholder.materialTable': 'Search by therapy, Generic name, ndc, formulation and ndc',
+  'table.column.caption.therapy': 'Therapy',
+  'table.column.caption.genericName': 'Generic Name',
+  'table.column.caption.ndc': 'NDC',
+  'table.column.caption.manufacturer': 'Manufacturer Name',
+  'table.title.selectMaterial': 'Select Material',
+  'list.title.selectedMaterials': 'Selected Materials',
+  'userManagement.header.view.linkedMaterials': 'Linked Materials',
+  'userManagement.button.linkMaterials': 'Link Materials',
+  'table.columns.caption.formulation': 'Formulation',
+  'userManagement.button.edit_materials': 'Edit Materials'
 };
