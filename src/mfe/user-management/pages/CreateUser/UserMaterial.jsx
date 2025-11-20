@@ -15,15 +15,24 @@ function UserMaterial() {
   const { t: translateFn } = useTranslate();
   const [selection, setSelection] = React.useState([]);
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const {
     data,
-    isLoading,
+    isLoading: loading,
     refetch: refreshData
   } = useQuery({
     queryKey: ['unlink-material', userId],
     queryFn: () => MaterialService.getAllMaterials(userId, { listingMode: 'INCLUDED' })
   });
+
+  const filteredData = React.useMemo(() => {
+    if (!data) return [];
+    return data.filter((item) => {
+      const stringifiedItem = JSON.stringify(item);
+      return stringifiedItem.indexOf(searchQuery) > -1 ? true : false;
+    });
+  }, [data, searchQuery]);
 
   const unlinkMaterial = (selection) => {
     MaterialService.unlinkMaterial(userId, selection)
@@ -74,8 +83,8 @@ function UserMaterial() {
       <div className="MCP-panel-container">
         <div className="MCP-panel-container">
           <CommonFilters
-            onApplyFilters={() => {}}
-            onClearFilters={() => {}}
+            onApplyFilters={(filters) => setSearchQuery(filters.searchQuery)}
+            onClearFilters={() => setSearchQuery('')}
             additionalFilters={[]}
             searchPlaceholder={translateFn('placeholder.materialTable')}
           />
@@ -94,7 +103,7 @@ function UserMaterial() {
           columnActions={{
             onUnlink: confirmMaterialUnlink
           }}
-          {...{ data, selection, setSelection }}
+          {...{ data: filteredData, loading, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
         />
       </div>
     </React.Fragment>

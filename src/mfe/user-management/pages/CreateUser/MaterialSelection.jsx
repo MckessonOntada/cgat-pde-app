@@ -1,24 +1,26 @@
 import React from 'react';
 import UserCreationStepper from '../UserCreationStepper';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Button, Heading, Loader, Alert, IconButton } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import CommonFilters from '@src/components/Filters';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { List, ListItem } from '@src/components/list';
-import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
+import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Materials from './Materials';
+import IconButton from '@src/components/IconButton';
 
 export default function MaterialSelection(props) {
   const location = useLocation();
   const isEdit = location.state?.isCreate !== true;
   const { userId } = useParams();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [selection, setSelection] = React.useState([]);
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
@@ -59,7 +61,7 @@ export default function MaterialSelection(props) {
   }, []);
 
   React.useEffect(() => {
-    setIsLoading(false);
+    setLoading(false);
   }, []);
 
   const handleOnAddMaterials = () => {
@@ -75,9 +77,10 @@ export default function MaterialSelection(props) {
     MaterialService.restrictMaterial(userId, restrictedMaterialIds)
       .then((response) => {
         if (isEdit) {
-          navigate(`./../${userId}`, {
+          navigate(`./..`, {
             state: {
               alert: {
+                pinPoint: 'linked_materials',
                 type: 'success',
                 description: 'User material selection updated'
               }
@@ -101,8 +104,27 @@ export default function MaterialSelection(props) {
         });
       });
   };
-  const handleOnBack = () => {};
-  if (isLoading) {
+
+  const removeFromBucket = (id) => {
+    const filteredSelection = selection.filter((item) => item.id !== id);
+    setSelection(filteredSelection);
+  };
+
+  const handleOnBack = () => {
+    navigate(isEdit ? `./..` : `../${PATHS.PERMISSIONS}`, {
+      state: { isBack: true }
+    });
+  };
+
+  const filteredData = React.useMemo(() => {
+    if (!data) return [];
+    return data.filter((item) => {
+      const stringifiedItem = JSON.stringify(item);
+      return stringifiedItem.indexOf(searchQuery) > -1 ? true : false;
+    });
+  }, [data, searchQuery]);
+
+  if (loading) {
     return <Loader type={'screen'} />;
   }
 
@@ -130,15 +152,18 @@ export default function MaterialSelection(props) {
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
-              onApplyFilters={() => {}}
-              onClearFilters={() => {}}
+              onApplyFilters={(filters) => setSearchQuery(filters.searchQuery)}
+              onClearFilters={() => setSearchQuery('')}
               additionalFilters={[]}
               searchPlaceholder={translateFn('placeholder.materialTable')}
             />
           </div>
           <TableHeading heading={translateFn('table.title.selectMaterial')} />
           <div className="table-selection-container">
-            <Materials {...{ data, selection, setSelection }} />
+            <Materials
+              omitColumns={['action', 'formulation', 'dosage']}
+              {...{ data: filteredData, loading, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
+            />
             <List title={translateFn('list.title.selectedMaterials')}>
               {selection.map((item = {}, index) => {
                 const { cellValue, genericName, ndc } = item;
@@ -146,16 +171,11 @@ export default function MaterialSelection(props) {
                 return (
                   <ListItem key={index}>
                     <div className="list-card-with-action">
-                      <label>{`${cellValue}(${genericName})(${ndc})`}</label>
-                      <div className="styled-icon-button error-button">
-                        <IconButton
-                          size="lg"
-                          textButton={true}
-                          color={'error'}
-                          variant={'tertiary'}
-                          Icon={DeleteIcon}
-                          onClick={() => removeFromBucket(item.id)}
-                        />
+                      <div className="card-content">
+                        <label>{`${cellValue}(${genericName})(${ndc})`}</label>
+                      </div>
+                      <div className="card-action">
+                        <IconButton icon={DeleteIcon} color={'error'} onClick={() => removeFromBucket(item.id)} />
                       </div>
                     </div>
                   </ListItem>
@@ -175,7 +195,7 @@ export default function MaterialSelection(props) {
           )}
           {isEdit && (
             <Button variant="primary" type="button" onClick={handleOnAddMaterials} size={'md'}>
-              {translateFn('userManagement.button.add_accounts')}
+              {translateFn('userManagement.button.addMaterials')}
             </Button>
           )}
         </div>

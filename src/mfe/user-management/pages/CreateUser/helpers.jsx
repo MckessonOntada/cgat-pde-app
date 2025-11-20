@@ -158,6 +158,7 @@ export const createColumns = ({
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cardHeader: true,
+      omit: omitColumns.includes('ndc'),
       cell: ({ isExpandable, ndc }) => {
         let toolTip = '',
           cellValue = '';
@@ -181,6 +182,7 @@ export const createColumns = ({
       selector: () => {},
       width: '180px',
       sortable: false,
+      omit: omitColumns.includes('manufacturer'),
       cell: (row) => {
         const { isExpandable, manufacturer, manufacturerName } = row;
         let toolTip = '',
@@ -241,6 +243,7 @@ export const createColumns = ({
       id: 'action',
       center: true,
       name: t('account.action'),
+      omit: omitColumns.includes('action'),
       cell: (row) => {
         let materialIds = [];
         if (row.isExpandable) {

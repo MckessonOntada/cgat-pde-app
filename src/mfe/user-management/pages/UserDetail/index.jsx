@@ -88,6 +88,14 @@ const UserDetail = () => {
     }
   }, [isEdit]);
 
+  React.useEffect(() => {
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state]);
+
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -345,7 +353,7 @@ const UserDetail = () => {
                   size="md"
                   disabled={!userDetails?.isActive || isSelf}
                   onClick={() =>
-                    navigate(`../${PATHS.EDIT}/${userId}`, {
+                    navigate(`${PATHS.EDIT}`, {
                       state: { isEdit: true }
                     })
                   }>
@@ -454,7 +462,7 @@ const UserDetail = () => {
                       size="md"
                       disabled={!userDetails?.isActive || isSelf}
                       onClick={() =>
-                        navigate(`../${PATHS.PERMISSIONS}/${userId}`, {
+                        navigate(`${PATHS.PERMISSIONS}`, {
                           state: { isEdit: true, permissionsData: userDetails }
                         })
                       }>
@@ -518,7 +526,7 @@ const UserDetail = () => {
                         size="md"
                         disabled={!userDetails?.isActive}
                         onClick={() =>
-                          navigate(`../${PATHS.ADD_ACCOUNTS}/${userId}`, {
+                          navigate(`${PATHS.ADD_ACCOUNTS}`, {
                             state: { isEdit: true }
                           })
                         }>
@@ -554,7 +562,7 @@ const UserDetail = () => {
                           size="md"
                           disabled={!userDetails?.isActive}
                           onClick={() =>
-                            navigate(`../${userId}/${PATHS.MATERIAL}`, {
+                            navigate(`${PATHS.MATERIAL}`, {
                               state: { isEdit: true }
                             })
                           }>
@@ -565,6 +573,7 @@ const UserDetail = () => {
                   )
                 }
               />
+              {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
               <UserMaterial />
             </React.Fragment>
             {isSystemAdminView && (

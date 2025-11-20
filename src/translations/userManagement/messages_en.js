@@ -461,5 +461,8 @@ export const UserManagementEN = {
   'userManagement.header.view.linkedMaterials': 'Linked Materials',
   'userManagement.button.linkMaterials': 'Link Materials',
   'table.columns.caption.formulation': 'Formulation',
-  'userManagement.button.edit_materials': 'Edit Materials'
+  'userManagement.button.edit_materials': 'Edit Materials',
+  'userManagement.button.addMaterials': 'Add Materials',
+  'messages.confirmation.unlinkMaterial': 'Unlink Material?',
+  'messages.confirmation.unlinkMaterialDescription': 'Do you want to unlink material?'
 };

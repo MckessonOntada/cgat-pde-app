@@ -19,8 +19,8 @@ function Materials({
   data,
   pagination = {},
   loading,
-  error,
   isFilterApplied,
+  error,
   changePage
 }) {
   const showCardView = useResponsiveView();
