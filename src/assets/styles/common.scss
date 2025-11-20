@@ -1772,3 +1772,9 @@ input[type="checkbox"] + label {
   display: flex;
   flex-direction: column;
 }
+
+.price-column {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+}
