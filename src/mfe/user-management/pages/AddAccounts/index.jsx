@@ -37,14 +37,6 @@ const AddAccounts = () => {
     });
   };
 
-  const handleSaveAndContinue = () => {
-    handleAddAccounts();
-    if (selectedAccounts?.length > 0) {
-      navigate(`../${userId}/materials`, { state: { isCreate: true } });
-      // navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
-    }
-  };
-
   const requestParams = {
     userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   };
@@ -71,15 +63,19 @@ const AddAccounts = () => {
       },
       {
         onSuccess: (response) => {
-          navigate(`../${userId}`, {
-            state: {
-              alert: {
-                pinPoint: 'linked_accounts',
-                type: 'success',
-                description: `${selectedCount} ${t('messages.accountlinkSuccess')}.`
+          if (isEdit) {
+            navigate(`../${userId}`, {
+              state: {
+                alert: {
+                  pinPoint: 'linked_accounts',
+                  type: 'success',
+                  description: `${selectedCount} ${t('messages.accountlinkSuccess')}.`
+                }
               }
-            }
-          });
+            });
+          } else {
+            navigate(`../${userId}/materials`, { state: { isCreate: true } });
+          }
         },
         onError: (error) => {}
       }
@@ -118,7 +114,7 @@ const AddAccounts = () => {
             {t('userManagement.button.back')}
           </Button>
           {!isEdit && (
-            <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>
+            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
               {t('userManagement.button.savencontinue')}
             </Button>
           )}

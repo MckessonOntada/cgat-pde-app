@@ -78,7 +78,7 @@ const UserPermissions = () => {
               state: { isSuccess: true }
             });
           } else {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`, {
+            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`, {
               state: { permissionsData: payload }
             });
           }

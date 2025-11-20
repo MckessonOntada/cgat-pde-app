@@ -14,7 +14,7 @@ import Materials from './Materials';
 
 export default function MaterialSelection(props) {
   const location = useLocation();
-  const isEdit = location.state?.isCreate !== true || true;
+  const isEdit = location.state?.isCreate !== true;
   const { userId } = useParams();
   const [isLoading, setIsLoading] = React.useState(true);
   const navigate = useNavigate();
@@ -24,42 +24,45 @@ export default function MaterialSelection(props) {
   const { t: translateFn } = useTranslate();
 
   React.useEffect(() => {
-    MaterialService.getAllMaterials(userId).then((response) => {
-      const selectedRecords = response.flatMap((trade) => {
-        if (trade.isExpandable) {
-          return trade.therapies;
-        }
-        return [trade];
-      });
-
-      setData(response);
-
-      if (!isEdit) {
-        setSelection(selectedRecords);
-        return null;
-      }
-
-      return MaterialService.getAllMaterials(userId, { listingMode: 'EXCLUDED' }).then((excluded) => {
-        console.log(response === excluded);
-        const flatMapExcluded = excluded.flatMap((trade) => {
+    MaterialService.getAllMaterials(userId)
+      .then((response) => {
+        const selectedRecords = response.flatMap((trade) => {
           if (trade.isExpandable) {
             return trade.therapies;
           }
           return [trade];
         });
-        const filtered = selectedRecords.filter((record) => {
-          return !flatMapExcluded.some((ex) => ex.id === record.id);
+
+        setData(response);
+
+        if (!isEdit) {
+          setSelection(selectedRecords);
+          return null;
+        }
+
+        return MaterialService.getAllMaterials(userId, { listingMode: 'EXCLUDED' }).then((excluded) => {
+          const flatMapExcluded = excluded.flatMap((trade) => {
+            if (trade.isExpandable) {
+              return trade.therapies;
+            }
+            return [trade];
+          });
+          const filtered = selectedRecords.filter((record) => {
+            return !flatMapExcluded.some((ex) => ex.id === record.id);
+          });
+          setSelection(filtered);
         });
-        setSelection(filtered);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    });
   }, []);
 
   React.useEffect(() => {
     setIsLoading(false);
   }, []);
 
-  const handleAddAccounts = () => {
+  const handleOnAddMaterials = () => {
     const flatIds = data.flatMap((trade) => {
       if (trade.isExpandable) {
         return trade.therapies.map((therapy) => therapy.id);
@@ -71,14 +74,25 @@ export default function MaterialSelection(props) {
 
     MaterialService.restrictMaterial(userId, restrictedMaterialIds)
       .then((response) => {
-        navigate('/admin/user', {
-          state: {
-            alert: {
-              type: 'success',
-              description: 'New user added successfully.'
+        if (isEdit) {
+          navigate(`./../${userId}`, {
+            state: {
+              alert: {
+                type: 'success',
+                description: 'User material selection updated'
+              }
             }
-          }
-        });
+          });
+        } else {
+          navigate('/admin/user', {
+            state: {
+              alert: {
+                type: 'success',
+                description: 'New user is created.'
+              }
+            }
+          });
+        }
       })
       .catch((error) => {
         setAlert({
@@ -155,12 +169,12 @@ export default function MaterialSelection(props) {
             {translateFn('userManagement.button.back')}
           </Button>
           {!isEdit && (
-            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
+            <Button variant="primary" type="button" onClick={handleOnAddMaterials} size={'md'}>
               {translateFn('userManagement.button.adduser')}
             </Button>
           )}
           {isEdit && (
-            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
+            <Button variant="primary" type="button" onClick={handleOnAddMaterials} size={'md'}>
               {translateFn('userManagement.button.add_accounts')}
             </Button>
           )}

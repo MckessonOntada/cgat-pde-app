@@ -41,11 +41,9 @@ export default function Dashboard() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const { refreshData, clearFilters, applyFilters, roleList, setPageNumber } = useUser();
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const isSuccess = location.state?.isSuccess || false;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isReject = location.state?.isReject || false;
-  const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
   const [tabList, setTabList] = React.useState(getUserTabs(t));
@@ -62,9 +60,10 @@ export default function Dashboard() {
   }, [location.search]);
 
   const showAlert = (type, message) => {
-    setAlert({ type });
-    setIsAlertVisible(true);
-    setAlertDescription(message);
+    setAlert({
+      type,
+      description: message
+    });
   };
 
   useEffect(() => {
@@ -76,9 +75,19 @@ export default function Dashboard() {
         : isSystemAdminView
         ? t('messages.sysadmin_create_success')
         : t('messages.user_create_success');
-      showAlert('success', message);
+
+      setAlert({ type: 'success', description: message });
     }
   }, [isSuccess, isReject, location.pathname, location.state, navigate]);
+
+  React.useEffect(() => {
+    const { alert } = location.state || {};
+    if (alert) {
+      debugger;
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
 
   useEffect(() => {
     clearFilters();
@@ -86,15 +95,14 @@ export default function Dashboard() {
 
   const handleSuccess = (success, message) => {
     if (success) {
-      setAlert({ type: 'success' });
-      showAlert('success', message);
+      setAlert({ type: 'success', description: message });
     } else {
-      setAlert({ type: 'error', message });
+      setAlert({ type: 'error', description: message });
     }
   };
 
   const handleAlertClose = () => {
-    setIsAlertVisible(false);
+    setAlert(null);
     navigate(location.pathname, {
       replace: true,
       state: { ...location.state, isSuccess: false, isReject: false }
@@ -188,7 +196,7 @@ export default function Dashboard() {
             </div>
           }
         />
-        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} />}
+        {alert && <Alert {...alert} onClose={handleAlertClose} />}
         <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <div className="MCP-CardContainer">
             <CommonFilters
