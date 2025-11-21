@@ -1,4 +1,4 @@
-import { Button, Heading, Loader, StepperMui } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -19,6 +19,7 @@ import * as Yup from 'yup';
 import { PATHS } from '../../routes/constants';
 import './CreateUser.scss';
 import UserDetailsFormSegment from './CreateUserForm';
+import UserCreationStepper from '../UserCreationStepper';
 
 const CreateUser = () => {
   const { t } = useTranslate();
@@ -26,16 +27,11 @@ const CreateUser = () => {
   const { userId } = useParams();
   const location = useLocation();
   const { isEdit = false, isPending = false, isBack = false, permissionsData } = location.state || {};
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-
-  const handleAlertClose = () => {
-    setIsAlertVisible(false);
-  };
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
@@ -43,7 +39,7 @@ const CreateUser = () => {
   const practiceId = AuthUtils.getPracticeId() ?? 1;
 
   const {
-    isLoading: isGetUserdetails,
+    isLoading: isGetUserDetails,
     isError: isGetUserError,
     data: userData
   } = useQuery({
@@ -58,7 +54,7 @@ const CreateUser = () => {
     refetchOnWindowFocus: false
   });
 
-  const { mutate, isLoading, isError, data } = useMutation(async ({ payload, isReject }) => {
+  const { mutate, isLoading } = useMutation(async ({ payload, isReject }) => {
     if (isEdit || isBack) {
       const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
@@ -172,12 +168,10 @@ const CreateUser = () => {
       { values, isReject: true },
       {
         onSuccess: (response) => {
-          console.log('User Reject successfully:', response);
           navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: t('errors.default') });
-          setIsAlertVisible(true);
+          setAlert({ type: 'error', description: t('errors.default') });
         }
       }
     );
@@ -194,23 +188,22 @@ const CreateUser = () => {
       { isLoading, payload, isReject: false },
       {
         onSuccess: (response) => {
-          console.log('User created/updated successfully:', response);
-          navigate(
-            isEdit
-              ? isSystemAdmin
-                ? `/system-admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
-                : `/admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
-              : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`,
-            {
-              state: { permissionsData: permissionsData, isEdit: isEdit }
-            }
-          );
+          const createdId = response?.createUser?.id ?? userId;
+          let targetPath = '';
+
+          if (isEdit) {
+            targetPath = isSystemAdmin ? `/system-admin/user/${createdId}` : `/admin/user/${createdId}`;
+          } else {
+            targetPath = `../${createdId}/${PATHS.PERMISSIONS}`;
+          }
+
+          navigate(targetPath, {
+            state: { permissionsData, isEdit }
+          });
         },
         onError: (error) => {
           const errorKey = handleApiError(error);
-          const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
-          setAlert({ type: 'error', message: t(errorKey) });
-          setIsAlertVisible(true);
+          setAlert({ type: 'error', description: t(errorKey) });
         }
       }
     );
@@ -269,26 +262,11 @@ const CreateUser = () => {
 
         {!isEdit && !isSystemAdminView && (
           <div className="stepper">
-            <StepperMui
-              activeIndex={1}
-              dividerText="of"
-              stepHeaders={[
-                {
-                  label: t('userManagement.stepper.option.user_details')
-                },
-                {
-                  label: t('userManagement.stepper.option.roles_and_permissions')
-                },
-
-                {
-                  label: t('userManagement.stepper.option.associate_accounts')
-                }
-              ]}
-            />
+            <UserCreationStepper activeIndex={1} />
           </div>
         )}
 
-        {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik
           initialValues={initialValues}
@@ -298,7 +276,7 @@ const CreateUser = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid, dirty }) => {
+          {({ dirty }) => {
             React.useEffect(() => {
               setIsDirty(dirty);
             }, [dirty]);

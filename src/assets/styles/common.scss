@@ -1773,6 +1773,28 @@ input[type="checkbox"] + label {
   flex-direction: column;
 }
 
+.table-selection-container {
+  display: grid;
+  grid-template-columns:
+    calc(66.66% - var(--spacing-04) / 2)
+    calc(33.33% - var(--spacing-04) / 2);
+  gap: var(--spacing-04);
+  align-items: start;
+}
+.list-card-with-action {
+  display: flex;
+  gap: var(--spacing-02);
+  align-items: center;
+  justify-content: space-between;
+  .card-content {
+    flex: 1;
+    word-break: break-word;
+  }
+  .card-action {
+    flex-grow: 0;
+  }
+}
+
 .price-column {
   display: flex;
   width: 100%;

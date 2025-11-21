@@ -13,7 +13,7 @@ export default function Actions({ row, showEditButton, showViewButton }) {
   const navigate = useNavigate();
 
   const handleEdit = (userId) => {
-    navigate(`../${PATHS.editUser}/${userId}`, { state: { isPending: true } });
+    navigate(`../${PATHS.EDIT}/${userId}`, { state: { isPending: true } });
   };
 
   const handleView = (userId) => {

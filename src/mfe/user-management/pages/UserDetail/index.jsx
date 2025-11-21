@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
+import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
 import { Badge, Button, Heading, Switch, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
@@ -26,6 +27,8 @@ import NotificationPreferencePanel from '@src/mfe/core-config/notifications-sett
 import { Form, Formik } from 'formik';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
 import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
+import MaterialSelection from '../CreateUser/MaterialSelection';
+import UserMaterial from '../CreateUser/UserMaterial';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -84,6 +87,14 @@ const UserDetail = () => {
       navigate(location.pathname);
     }
   }, [isEdit]);
+
+  React.useEffect(() => {
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state]);
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
@@ -342,7 +353,7 @@ const UserDetail = () => {
                   size="md"
                   disabled={!userDetails?.isActive || isSelf}
                   onClick={() =>
-                    navigate(`../${PATHS.editUser}/${userId}`, {
+                    navigate(`${PATHS.EDIT}`, {
                       state: { isEdit: true }
                     })
                   }>
@@ -451,7 +462,7 @@ const UserDetail = () => {
                       size="md"
                       disabled={!userDetails?.isActive || isSelf}
                       onClick={() =>
-                        navigate(`../${PATHS.userPermissions}/${userId}`, {
+                        navigate(`${PATHS.PERMISSIONS}`, {
                           state: { isEdit: true, permissionsData: userDetails }
                         })
                       }>
@@ -515,7 +526,7 @@ const UserDetail = () => {
                         size="md"
                         disabled={!userDetails?.isActive}
                         onClick={() =>
-                          navigate(`../${PATHS.addAccounts}/${userId}`, {
+                          navigate(`${PATHS.ADD_ACCOUNTS}`, {
                             state: { isEdit: true }
                           })
                         }>
@@ -537,7 +548,34 @@ const UserDetail = () => {
                 isPhysicianUser={isPhysicianUser}
               />
             )}
-
+            <React.Fragment>
+              <ModuleHeader
+                heading={<Heading as="h2">{t('userManagement.header.view.linkedMaterials')}</Heading>}
+                controls={
+                  !isPhysicianUser && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                      <div className="controls">
+                        <Button
+                          Icon={AddIcon}
+                          variant="secondary"
+                          className="button-icon"
+                          size="md"
+                          disabled={!userDetails?.isActive}
+                          onClick={() =>
+                            navigate(`${PATHS.MATERIAL}`, {
+                              state: { isEdit: true }
+                            })
+                          }>
+                          {t('userManagement.button.linkMaterials')}
+                        </Button>
+                      </div>
+                    </PermittedComponent>
+                  )
+                }
+              />
+              {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
+              <UserMaterial />
+            </React.Fragment>
             <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
               <div className="MCP-module-wrapper">
                 <div className="MCP-module-body">

@@ -1,4 +1,4 @@
-import { Button, Heading, Loader, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -16,6 +16,7 @@ import React from 'react';
 import { PATHS } from '../../routes/constants';
 import './index.scss';
 import PermissionForm from './PermissionForm';
+import UserCreationStepper from '../UserCreationStepper';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
@@ -23,17 +24,12 @@ const UserPermissions = () => {
   const { userId } = useParams();
   const location = useLocation();
   const { permissionsData, isEdit = false, isBack = false } = location.state || {};
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
-  };
-
-  const handleAlertClose = () => {
-    setIsAlertVisible(false);
   };
 
   const handleGoBack = () => {
@@ -44,18 +40,17 @@ const UserPermissions = () => {
     if (isEdit) {
       navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
     } else {
-      navigate(`../${PATHS.editUser}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
+      navigate(`../${PATHS.EDIT}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
     }
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
     const isRoleChanged = initialValues.roleId !== currentValues.roleId;
-    const arePermissionsChanged = JSON.stringify(initialValues.permissions) !== JSON.stringify(currentValues.permissions);
     return isRoleChanged;
   };
 
   const {
-    mutate,
+    mutate: savePermissions,
     isLoading: isSavingUserPermission,
     isError: isSaveUserPermissionError,
     data: saveUserPermissionResponse
@@ -74,24 +69,22 @@ const UserPermissions = () => {
       permissions: values.permissions
     };
 
-    mutate(
+    savePermissions(
       { payload },
       {
         onSuccess: (response) => {
-          console.log('User created/updated successfully:', response);
           if (isSystemAdminView) {
             navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathSystemAdminManagement, {
               state: { isSuccess: true }
             });
           } else {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`, {
+            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`, {
               state: { permissionsData: payload }
             });
           }
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: t('errors.default') });
-          setIsAlertVisible(true);
+          setAlert({ type: 'error', description: t('errors.default') });
         }
       }
     );
@@ -110,32 +103,16 @@ const UserPermissions = () => {
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
       {!isEdit && !isSystemAdmin && (
         <div className="stepper">
-          <Stepper
-            activeIndex={2}
-            dividerText="of"
-            stepHeaders={[
-              {
-                label: t('userManagement.stepper.option.user_details')
-              },
-              {
-                label: t('userManagement.stepper.option.roles_and_permissions')
-              },
-              {
-                label: t('userManagement.stepper.option.associate_accounts')
-              }
-            ]}
-          />
+          <UserCreationStepper activeIndex={2} />
         </div>
       )}
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <Formik
         initialValues={{
           permissions: permissionsData?.permissions || [],
           roleId: isBack ? permissionsData.roleid : permissionsData?.role?.id || ''
         }}
-        onSubmit={(values) => {
-          handleSaveAndContinue(values);
-        }}
+        onSubmit={handleSaveAndContinue}
         validateOnChange={false}
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
@@ -146,8 +123,7 @@ const UserPermissions = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 if (!(isDirty && isValid)) {
-                  setAlert({ type: 'error', message: 'Please provide required values.' });
-                  setIsAlertVisible(true);
+                  setAlert({ type: 'error', description: 'Please provide required values.' });
                   return;
                 }
                 handleSubmit();
