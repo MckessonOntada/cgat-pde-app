@@ -576,55 +576,53 @@ const UserDetail = () => {
               {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
               <UserMaterial />
             </React.Fragment>
-            {isSystemAdminView && (
-              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-                <div className="MCP-module-wrapper">
-                  <div className="MCP-module-body">
-                    <ModuleHeader
-                      heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
-                      controls={
-                        prePermissions && (
-                          <div className="controls">
-                            <Button
-                              Icon={EditPencil}
-                              variant="secondary"
-                              className="button-icon"
-                              size="md"
-                              onClick={() =>
-                                navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
-                                  state: {
-                                    permissions: userDetails.permissions,
-                                    userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
-                                    roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
-                                  }
-                                })
-                              }>
-                              {t('userManagement.button.edit')}
-                            </Button>
-                          </div>
-                        )
-                      }
-                    />
-
-                    {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
-
-                    <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
-                      <Form>
-                        <div className="MCP-panel-container">
-                          <NotificationPreferencePanel
-                            readOnly={true}
-                            showLabels={true}
-                            isPreferencesLoaded={isPreferencesLoaded}
-                            isLoadingPreferences={isLoading}
-                            config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
-                          />
+            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
+              <div className="MCP-module-wrapper">
+                <div className="MCP-module-body">
+                  <ModuleHeader
+                    heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
+                    controls={
+                      prePermissions && (
+                        <div className="controls">
+                          <Button
+                            Icon={EditPencil}
+                            variant="secondary"
+                            className="button-icon"
+                            size="md"
+                            onClick={() =>
+                              navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
+                                state: {
+                                  permissions: userDetails.permissions,
+                                  userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
+                                  roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
+                                }
+                              })
+                            }>
+                            {t('userManagement.button.edit')}
+                          </Button>
                         </div>
-                      </Form>
-                    </Formik>
-                  </div>
+                      )
+                    }
+                  />
+
+                  {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
+
+                  <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
+                    <Form>
+                      <div className="MCP-panel-container">
+                        <NotificationPreferencePanel
+                          readOnly={true}
+                          showLabels={true}
+                          isPreferencesLoaded={isPreferencesLoaded}
+                          isLoadingPreferences={isLoading}
+                          config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
+                        />
+                      </div>
+                    </Form>
+                  </Formik>
                 </div>
-              </PermittedComponent>
-            )}
+              </div>
+            </PermittedComponent>
           </div>
         )}
       </div>

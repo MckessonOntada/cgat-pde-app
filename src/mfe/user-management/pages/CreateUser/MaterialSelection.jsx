@@ -87,11 +87,11 @@ export default function MaterialSelection(props) {
             }
           });
         } else {
-          navigate('/admin/user', {
+          navigate('/admin/user?tab=USERS', {
             state: {
               alert: {
                 type: 'success',
-                description: 'New user is created.'
+                description: 'User has been created successfully.'
               }
             }
           });

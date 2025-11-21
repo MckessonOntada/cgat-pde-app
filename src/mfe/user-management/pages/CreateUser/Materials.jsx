@@ -115,8 +115,8 @@ function Materials({
             isLoading={loading}
             isError={error}
             image={EmptyDataImage}
-            heading={isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('table.message.noRecordsFoundDiagnosisCodes')}
-            description={!isFilterApplied && translateFn('table.description.noRecordsFoundDiagnosisCodes')}
+            heading={isFilterApplied ? translateFn('errors.messages.noRecordsFound') : translateFn('emptyTable.title.noRecordsFoundUserMaterials')}
+            description={!isFilterApplied && translateFn('emptyTable.description.noRecordsFoundUserMaterials')}
           />
         }
       />

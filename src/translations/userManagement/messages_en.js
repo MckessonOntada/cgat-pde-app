@@ -464,5 +464,7 @@ export const UserManagementEN = {
   'userManagement.button.edit_materials': 'Edit Materials',
   'userManagement.button.addMaterials': 'Add Materials',
   'messages.confirmation.unlinkMaterial': 'Unlink Material?',
-  'messages.confirmation.unlinkMaterialDescription': 'Do you want to unlink material?'
+  'messages.confirmation.unlinkMaterialDescription': 'Do you want to unlink material?',
+  'emptyTable.title.noRecordsFoundUserMaterials': 'No Assigned Material Found.',
+  'emptyTable.description.noRecordsFoundUserMaterials': 'You need to assign materials to see in this table.'
 };
