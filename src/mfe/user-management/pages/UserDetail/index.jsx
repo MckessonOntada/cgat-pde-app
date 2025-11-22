@@ -692,8 +692,8 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
             </p>
             <div className="checkboxGroup">
               <CheckboxGroup
-                id={'default'}
-                name="order-agreement"
+                id={'login-on-behalf-checkbox'}
+                name="login-on-behalf"
                 items={[
                   {
                     ...consentCheckboxOption,
