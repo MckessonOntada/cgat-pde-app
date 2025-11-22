@@ -62,8 +62,8 @@ export const createColumns = ({
       name:
         data?.length > 0 ? (
           <CheckboxGroup
-            id={'default'}
-            name="order-agreement"
+            id={`material-all-selection-checkbox`}
+            name="material-all-selection"
             items={[
               {
                 label: '',
