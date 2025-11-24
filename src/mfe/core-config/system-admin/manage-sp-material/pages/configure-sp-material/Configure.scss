@@ -1,0 +1,41 @@
+.header-section {
+  gap: 60px;
+  .header-item {
+    min-width: 280px;
+    p {
+      font-size: 14px;
+      padding-bottom: 4px;
+    }
+    span {
+      font-size: 16px;
+      display: flex;
+      gap: 10px;
+      font-weight: 600;
+    }
+  }
+}
+.checkbox-group-config {
+  fieldset {
+    justify-content: space-between;
+  }
+}
+.field-formate-wrapper {
+  align-items: end;
+  div.dropdown-container {
+    margin-bottom: -4px;
+  }
+  button {
+    margin-bottom: 4px;
+  }
+}
+.radio-group-selection {
+  label {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+  }
+  legend {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 16px;
+  }
+}

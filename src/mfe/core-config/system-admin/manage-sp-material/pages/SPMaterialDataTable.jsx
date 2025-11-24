@@ -138,6 +138,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
         state: { therapy: selectedSPMaterial[0] }
       });
   };
+  const handleConfiguration = (selectedSPMaterial) => {
+    if (selectedSPMaterial && Array.isArray(selectedSPMaterial) && selectedSPMaterial[0])
+      navigate(routeConstants.CONFIGURE, {
+        state: { therapy: selectedSPMaterial[0] }
+      });
+  };
 
   return (
     <div>
@@ -197,10 +203,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
               <Button
                 variant="secondary"
                 onClick={() => {
-                  setOpenConfiguration((prev) => ({
-                    ...prev,
-                    config: !prev.config
-                  }));
+                  handleConfiguration(selectedSPMaterial);
                 }}
                 size="sm">
                 {t('manageMaterial.table.header.button.configure')}
