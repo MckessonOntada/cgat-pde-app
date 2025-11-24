@@ -141,7 +141,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   const handleConfiguration = (selectedSPMaterial) => {
     if (selectedSPMaterial && Array.isArray(selectedSPMaterial) && selectedSPMaterial[0])
       navigate(routeConstants.CONFIGURE, {
-        state: { therapy: selectedSPMaterial[0] }
+        state: { therapy: selectedSPMaterial[0], materialType: 'sp' }
       });
   };
 

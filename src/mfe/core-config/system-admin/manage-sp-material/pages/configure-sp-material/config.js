@@ -1,9 +1,9 @@
 export const fieldFormatRegexObj = {
-  Text: "^[A-Za-z0-9s'.,-_/()#&+:]{1,200}$",
-  Alphabetic: '^[A-Za-zs]{1,100}$',
+  Text: "^[A-Za-z0-9'.,-_()#&+:]{1,200}$",
+  Alphabetic: '^[A-Za-z]{1,100}$',
   Alphanumeric: '^[A-Za-z0-9]{1,40}$',
   'Uppercase Alphanumeric': '^[A-Z0-9]{3,20}$',
-  Integer: '^d+$',
+  Integer: '^[1-9][0-9]?$',
   Date_MM_DD_YYYY: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/d{4}$',
   'UUID/Unique ID': '^[A-Za-z0-9-]{8,36}$'
 };
@@ -42,10 +42,14 @@ function getDefaultFieldProperties(fieldName) {
 }
 
 const spMaterialFiles = ['Manufacturer Patient Identifier', 'COI ID', 'MRN'];
+const bnbMaterialFiles = ['Manufacturer Patient Identifier', 'COI ID', 'MRN', 'PO Number', 'Ship to PO Number', 'Date of Administration', 'Date of Apheresis'];
 
-export const config = {
-  triageChannel: '',
-  fields: spMaterialFiles.map((fieldName) => getDefaultFieldProperties(fieldName))
+export const configObj = (materialType) => {
+  const isBnbMaterial = materialType === 'bnb';
+  return {
+    ...(isBnbMaterial ? { patientInformationRequired: '' } : { triageChannel: '' }),
+    fields: (isBnbMaterial ? bnbMaterialFiles : spMaterialFiles).map((fieldName) => getDefaultFieldProperties(fieldName))
+  };
 };
 
 export const regexAttributes = {
@@ -144,10 +148,21 @@ export const regexAttributes = {
 
   'UUID/Unique ID': {
     attributes: {
+      text: [
+        { label: 'Prefix', key: 'prefix' },
+        { label: 'Suffix', key: 'suffix' },
+        { label: 'Minimum Length', key: 'minLength' },
+        { label: 'Maximum Length', key: 'maxLength' },
+        { label: 'Custom Characters', key: 'customChars' }
+      ],
       checkbox: [
-        { isChecked: true, label: 'Allow Dashes (-)', value: 'allowDashes' },
-        { isChecked: true, label: 'Uppercase Hex (A-F)', value: 'allowUpperHex' },
-        { isChecked: true, label: 'Lowercase Hex (a-f)', value: 'allowLowerHex' }
+        { isChecked: false, label: 'Uppercase (A-Z)', value: 'allowUpper' },
+        { isChecked: false, label: 'Lowercase (a-z)', value: 'allowLower' },
+        { isChecked: false, label: 'Numbers (0-9)', value: 'allowNumbers' },
+        { isChecked: false, label: 'Space', value: 'allowSpace' },
+        { isChecked: false, label: 'Hyphen (-)', value: 'allowHyphen' },
+        { isChecked: false, label: 'Underscore (_)', value: 'allowUnderscore' },
+        { isChecked: false, label: 'Dot (.)', value: 'allowDot' }
       ]
     }
   }

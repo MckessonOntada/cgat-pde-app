@@ -7,10 +7,10 @@ import Accordion, { AccordionHeader, AccordionItem, AccordionPanel } from '@src/
 import ConfigurationHeader from './ConfigurationHeader';
 import ConfigurationForm from './ConfigurationForm';
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { config } from './config';
+import { configObj } from './config';
+import { getConfigurationSchema } from './ConfigurationSchema';
 
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
@@ -18,9 +18,10 @@ export default function ConfigurationSpMaterial() {
   const { t } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const [selectedTherapy, setSelectedTherapy] = React.useState(null);
+  const { therapy, materialType } = location.state || {};
+  const isBnbMaterial = materialType === 'bnb';
 
   React.useEffect(() => {
-    const { therapy } = location.state || {};
     if (therapy) {
       setSelectedTherapy({
         id: therapy.materialNumber,
@@ -28,13 +29,25 @@ export default function ConfigurationSpMaterial() {
         description: therapy.materialDescription
       });
     }
-  }, [location.state]);
+  }, [therapy]);
+
+  const config = configObj(materialType);
+  const fieldNameForChannel = isBnbMaterial ? 'patientInformationRequired' : 'triageChannel';
+
+  const channelOptions = isBnbMaterial
+    ? [
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.yes'), value: 'yes' },
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.no'), value: 'no' }
+      ]
+    : [
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'sp' },
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'hub' }
+      ];
 
   const initialValues = {
-    triageChannel: config.triageChannel || '',
+    [fieldNameForChannel]: config.triageChannel || '',
     fields: config.fields.map((field) => ({
       fieldName: field.fieldName,
-      format: field.format,
       displayOnForm: !!field.properties.displayOnForm,
       mandatoryField: !!field.properties.mandatoryField,
       showHelpIcon: !!field.properties.showHelpIcon,
@@ -48,51 +61,7 @@ export default function ConfigurationSpMaterial() {
     }))
   };
 
-  const validationSchema = Yup.object({
-    triageChannel: Yup.string().oneOf(['sp', 'hub']).required(t('manageSPMaterial.configuration.validation.triageChannelRequired')),
-    fields: Yup.array().of(
-      Yup.object({
-        fieldName: Yup.string().required(),
-        format: Yup.string().required(),
-        displayOnForm: Yup.boolean(),
-        mandatoryField: Yup.boolean(),
-        showHelpIcon: Yup.boolean(),
-        displayName: Yup.string().when('displayOnForm', {
-          is: true,
-          then: (schema) =>
-            schema.when('mandatoryField', {
-              is: true,
-              then: (s) => s.required(t('manageSPMaterial.configuration.validation.displayNameRequiredMandatory')),
-              otherwise: (s) => s.required(t('manageSPMaterial.configuration.validation.displayNameRequired'))
-            }),
-          otherwise: (schema) => schema.notRequired().nullable()
-        }),
-        errorMessage: Yup.string().when('displayOnForm', {
-          is: true,
-          then: (s) => s.required(t('manageSPMaterial.configuration.validation.errorMessageRequired')),
-          otherwise: (s) => s.notRequired().nullable()
-        }),
-        helpInfoMessage: Yup.string().when(['displayOnForm', 'showHelpIcon'], {
-          is: (displayOnForm, showHelpIcon) => displayOnForm === true && showHelpIcon === true,
-          then: (s) => s.required(t('manageSPMaterial.configuration.validation.helpInfoRequired')),
-          otherwise: (s) => s.notRequired().nullable()
-        }),
-        fieldFormat: Yup.object({
-          formatType: Yup.string().when('displayOnForm', {
-            is: true,
-            then: (s) => s.required(t('manageSPMaterial.configuration.validation.formatTypeRequired')),
-            otherwise: (s) => s.notRequired().nullable()
-          }),
-          validationRegex: Yup.string().when('displayOnForm', {
-            is: true,
-            then: (s) => s.required(t('manageSPMaterial.configuration.validation.regexRequired')),
-            otherwise: (s) => s.notRequired().nullable()
-          })
-        })
-      })
-    )
-  });
-
+  const validationSchema = getConfigurationSchema(t, channelOptions, fieldNameForChannel, isBnbMaterial);
   const handleSubmit = (values) => {
     console.log('Submit payload', values);
     setAlert({ type: 'success', description: t('manageSPMaterial.configuration.alert.saveSuccess') });
@@ -125,27 +94,53 @@ export default function ConfigurationSpMaterial() {
             }
           />
 
-          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} validateOnChange={false} validateOnBlur={false}>
             {({ values, setFieldValue, errors, touched }) => (
               <Form>
+                {console.log('value', values)}
+                {console.log('err', errors)}
                 <div className="MCP-module-body">
                   <div className="radio-group-selection">
                     <RadioGroup
-                      caption={t('manageSPMaterial.configuration.label.triageChannel')}
+                      caption={t(
+                        isBnbMaterial ? 'manageSPMaterial.configuration.label.patientInformationRequired' : 'manageSPMaterial.configuration.label.triageChannel'
+                      )}
                       direction="row"
-                      id="triageChannel"
-                      items={[
-                        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'sp' },
-                        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'hub' }
-                      ]}
+                      id={fieldNameForChannel}
+                      items={channelOptions}
                       onChangeValue={(value) => {
-                        setFieldValue('triageChannel', value);
+                        setFieldValue(fieldNameForChannel, value);
+
+                        if (isBnbMaterial && value === 'no') {
+                          const updatedFields = values.fields.map((field) => {
+                            if (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID') {
+                              console.log('test');
+                              return {
+                                ...field,
+                                displayOnForm: false,
+                                mandatoryField: false,
+                                showHelpIcon: false,
+                                displayName: '',
+                                errorMessage: '',
+                                helpInfoMessage: '',
+                                fieldFormat: {
+                                  formatType: '',
+                                  validationRegex: '',
+                                  customValidationRegex: ''
+                                }
+                              };
+                            }
+                            return field;
+                          });
+
+                          setFieldValue('fields', updatedFields);
+                        }
                       }}
                       radioBtnWidth="auto"
-                      value={values.triageChannel}
+                      value={values[fieldNameForChannel]}
                       isRequired
-                      error={touched.triageChannel && Boolean(errors.triageChannel)}
-                      errorMessage={touched.triageChannel && errors.triageChannel}
+                      error={touched[fieldNameForChannel] && Boolean(errors[fieldNameForChannel])}
+                      errorMessage={touched[fieldNameForChannel] && errors[fieldNameForChannel]}
                     />
                   </div>
 
@@ -158,9 +153,11 @@ export default function ConfigurationSpMaterial() {
                     }
                   />
                   <Accordion>
-                    {values.fields.map((field, idx) => (
-                      <>
-                        {console.log(field)}
+                    {values.fields.map((field, idx) => {
+                      if (values[fieldNameForChannel] === 'no' && (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID')) {
+                        return null;
+                      }
+                      return (
                         <AccordionItem key={field.fieldName || idx} itemKey={`field-${idx}`}>
                           <AccordionHeader>
                             <ConfigurationHeader fieldName={field.fieldName} format={field.fieldFormat.formatType} properties={field} />
@@ -169,15 +166,15 @@ export default function ConfigurationSpMaterial() {
                             <ConfigurationForm index={idx} />
                           </AccordionPanel>
                         </AccordionItem>
-                      </>
-                    ))}
+                      );
+                    })}
                   </Accordion>
 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
                     <Button variant="secondary" size="md" onClick={() => navigate('../')}>
                       {t('manageSPMaterial.configuration.button.cancel')}
                     </Button>
-                    <div style={{ width: 12 }} />
+
                     <Button variant="primary" size="md" type="submit">
                       {t('manageSPMaterial.configuration.button.save')}
                     </Button>

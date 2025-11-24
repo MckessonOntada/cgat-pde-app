@@ -10,8 +10,8 @@ import { regexAttributes } from './config';
 function CustomRegex({ onClose, path, initialValue, type }) {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
-  const [errors, setErrors] = useState({ minLength: '', maxLength: '' });
-  const config = regexAttributes[type]?.attributes || { text: [], checkbox: [] };
+  const [errors, setErrors] = useState({});
+  const config = regexAttributes[type]?.attributes || { text: [], checkbox: [], date: [] };
 
   const [alert, setAlert] = useState(null);
 
@@ -29,7 +29,9 @@ function CustomRegex({ onClose, path, initialValue, type }) {
     allowDot: false,
     customChars: '',
     minDate: '',
-    maxDate: ''
+    maxDate: '',
+    minValue: '',
+    maxValue: ''
   });
 
   useEffect(() => {
@@ -37,125 +39,167 @@ function CustomRegex({ onClose, path, initialValue, type }) {
       const parsed = parseRegex(initialValue);
       if (parsed) setRegexState((prev) => ({ ...prev, ...parsed }));
     }
-  }, []);
+  }, [initialValue]);
+
+  function buildRegex() {
+    const {
+      prefix,
+      suffix,
+      minLength,
+      maxLength,
+      allowUpper,
+      allowLower,
+      allowNumbers,
+      allowSpace,
+      allowHyphen,
+      allowUnderscore,
+      allowDot,
+      customChars,
+      minValue,
+      maxValue,
+      allowNegative,
+      minDate,
+      maxDate
+    } = regexState;
+
+    let pattern = '';
+
+    switch (type) {
+      case 'Text':
+      case 'Alphabetic':
+      case 'Alphanumeric':
+      case 'Uppercase Alphanumeric':
+      case 'UUID/Unique ID': {
+        let charSet = '';
+
+        if (allowUpper) charSet += 'A-Z';
+        if (allowLower) charSet += 'a-z';
+        if (allowNumbers) charSet += '0-9';
+        if (allowSpace) charSet += 's';
+        if (allowHyphen) charSet += '-';
+        if (allowUnderscore) charSet += '_';
+        if (allowDot) charSet += '.';
+
+        if (customChars) {
+          const escapedCustom = customChars.replace(/[\]\\]/g, '\\$&');
+          charSet += escapedCustom;
+        }
+
+        const min = minLength || 1;
+        const max = maxLength || 200;
+
+        pattern = `${prefix || ''}[${charSet}]{${min},${max}}${suffix || ''}`;
+        break;
+      }
+
+      case 'Integer': {
+        pattern = buildIntegerRegex(minValue, maxValue, allowNegative);
+        break;
+      }
+      case 'Date_MM_DD_YYYY': {
+        pattern = '(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}';
+        break;
+      }
+
+      default:
+        pattern = '';
+    }
+
+    return `^${pattern}$`;
+  }
+
+  function buildIntegerRegex(minValue, maxValue, allowNegative = false) {
+    let pattern = '';
+
+    if (allowNegative) pattern += '-?';
+
+    if (minValue != null && maxValue != null) {
+      const min = parseInt(minValue, 10);
+      const max = parseInt(maxValue, 10);
+
+      // Simple ranges (1–99, 23–78 etc.)
+      if (min >= 0 && max < 100) {
+        const firstPart = `${Math.floor(min / 10)}[${min % 10}-9]`; // e.g., 2[3-9] for 23
+        const middlePart = Math.floor(min / 10) + 1 <= Math.floor(max / 10) - 1 ? `[${Math.floor(min / 10) + 1}-${Math.floor(max / 10) - 1}][0-9]` : '';
+        const lastPart = `${Math.floor(max / 10)}[0-${max % 10}]`; // e.g., 7[0-8] for 78
+        pattern += `(${firstPart}${middlePart ? '|' + middlePart : ''}|${lastPart})`;
+      } else {
+        // Fallback for large ranges
+        pattern += '\\d+';
+      }
+    } else {
+      pattern += '\\d+';
+    }
+
+    return pattern;
+  }
 
   function parseRegex(regex) {
     if (!regex) return null;
 
-    // DATE CASE
-    if (type === 'Date_MM_DD_YYYY') {
-      const yr = regex.match(/\/(\d{4})(?:-(\d{4}))?\$/);
-      if (yr) {
-        return {
-          minDate: new Date(yr[1], 0, 1),
-          maxDate: new Date(yr[2] || yr[1], 11, 31)
-        };
+    const newState = {};
+
+    if (['Text', 'Alphabetic', 'Alphanumeric', 'Uppercase Alphanumeric', 'UUID/Unique ID'].includes(type)) {
+      const match = regex.match(/^\^?(.*?)\[(.*?)]\{(\d+),(\d+)}(.*?)\$?$/);
+      if (match) {
+        const [, prefix, charSet, minLen, maxLen, suffix] = match;
+        newState.prefix = prefix || '';
+        newState.suffix = suffix || '';
+        newState.minLength = minLen || '';
+        newState.maxLength = maxLen || '';
+
+        newState.allowUpper = /A-Z/.test(charSet);
+        newState.allowLower = /a-z/.test(charSet);
+        newState.allowNumbers = /0-9/.test(charSet);
+        newState.allowSpace = /s/.test(charSet);
+        newState.allowHyphen = /-/.test(charSet);
+        newState.allowUnderscore = /_/.test(charSet);
+        newState.allowDot = /\./.test(charSet);
+
+        const custom = charSet.replace(/[A-Za-z0-9s\-_.]/g, '');
+        newState.customChars = custom || '';
       }
-      return { minDate: '', maxDate: '' };
-    }
+    } else if (type === 'Integer') {
+      newState.allowNegative = /^-?/.test(regex);
 
-    const matches = regex.match(/^\^(.*)?\[(.+?)\]\{(\d+),(\d+)\}(.*)?\$/);
-    if (!matches) return null;
+      // Remove ^, $, and optional negative sign for easier parsing
+      let cleaned = regex.replace(/^\^|-?\$?$/g, '');
 
-    const [, prefix = '', charSet, min, max, suffix = ''] = matches;
+      // Match patterns like (2[3-9]|[3-6][0-9]|7[0-8])
+      const rangeMatch = cleaned.match(/\(?(\d+)\[?\d*-\d*\]?\|?(\d*\[?\d*-\d*\]?)?\)?/);
 
-    const flags = {
-      allowUpper: false,
-      allowLower: false,
-      allowNumbers: false,
-      allowSpace: false,
-      allowHyphen: false,
-      allowUnderscore: false,
-      allowDot: false
-    };
+      if (rangeMatch) {
+        // For simplicity, we try to detect the first and last number from the pattern
+        // Split by '|' to find min and max
+        const parts = cleaned.replace(/[()]/g, '').split('|');
 
-    let customChars = '';
+        // Convert parts like "2[3-9]" -> min=23, "7[0-8]" -> max=78
+        const numbers = parts.map((part) => {
+          const match = part.match(/(\d)(?:\[(\d)-(\d)\])?/);
+          if (match) {
+            const [, firstDigit, startRange, endRange] = match;
+            if (startRange && endRange) {
+              return [parseInt(firstDigit + startRange, 10), parseInt(firstDigit + endRange, 10)];
+            } else {
+              return [parseInt(firstDigit, 10), parseInt(firstDigit, 10)];
+            }
+          }
+          return [];
+        });
 
-    for (let i = 0; i < charSet.length; i++) {
-      const c = charSet[i];
-
-      if (i < charSet.length - 2 && charSet[i + 1] === '-' && charSet[i + 2]) {
-        const range = `${c}-${charSet[i + 2]}`;
-        if (range === 'A-Z') flags.allowUpper = true;
-        else if (range === 'a-z') flags.allowLower = true;
-        else if (range === '0-9') flags.allowNumbers = true;
-
-        i += 2;
-        continue;
+        if (numbers.length > 0) {
+          newState.minValue = numbers[0][0];
+          newState.maxValue = numbers[numbers.length - 1][1];
+        }
+      } else {
+        newState.minValue = '';
+        newState.maxValue = '';
       }
-
-      if (c === '\\') {
-        const next = charSet[i + 1];
-        if (next === 's') flags.allowSpace = true;
-        else if (next === '-') flags.allowHyphen = true;
-        else if (next === '.') flags.allowDot = true;
-        else customChars += '\\' + next;
-        i++;
-        continue;
-      }
-
-      if (c === '_') flags.allowUnderscore = true;
-      else customChars += c;
+    } else if (type === 'Date_MM_DD_YYYY') {
+      // leave min/max empty
     }
 
-    return {
-      prefix,
-      suffix,
-      minLength: Number(min),
-      maxLength: Number(max),
-      ...flags,
-      customChars
-    };
-  }
-
-  function buildDateRegex(minDate, maxDate) {
-    if (!minDate || !maxDate) return '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}$';
-
-    const min = new Date(minDate);
-    const max = new Date(maxDate);
-
-    if (isNaN(min) || isNaN(max)) {
-      return '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}$';
-    }
-
-    const y1 = min.getFullYear();
-    const y2 = max.getFullYear();
-
-    const yearPattern = y1 === y2 ? `${y1}` : `${y1}-${y2}`;
-
-    return `^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(${yearPattern})$`;
-  }
-
-  function escapeCharForSet(c) {
-    if (c === '\\' || c === '^' || c === '-' || c === ']') {
-      return '\\' + c;
-    }
-    return c;
-  }
-
-  function buildRegex() {
-    if (type === 'Date_MM_DD_YYYY') {
-      return buildDateRegex(regexState.minDate, regexState.maxDate);
-    }
-
-    let allowed = '';
-
-    if (regexState.allowUpper) allowed += 'A-Z';
-    if (regexState.allowLower) allowed += 'a-z';
-    if (regexState.allowNumbers) allowed += '0-9';
-    if (regexState.allowSpace) allowed += '\\s';
-    if (regexState.allowHyphen) allowed += '\\-';
-    if (regexState.allowUnderscore) allowed += '_';
-    if (regexState.allowDot) allowed += '\\.';
-
-    const custom = (regexState.customChars || '')
-      .split('')
-      .map((c) => escapeCharForSet(c))
-      .join('');
-
-    allowed += custom;
-
-    return `^${regexState.prefix}[${allowed}]{${regexState.minLength},${regexState.maxLength}}${regexState.suffix}$`;
+    return newState;
   }
 
   const handleApply = () => {
@@ -192,7 +236,7 @@ function CustomRegex({ onClose, path, initialValue, type }) {
             onChange={(e) => {
               const val = e.target.value;
 
-              if (item.key === 'minLength' || item.key === 'maxLength') {
+              if (item.key === 'minLength' || item.key === 'maxLength' || item.key === 'minValue' || item.key === 'maxValue') {
                 if (!/^[0-9]*$/.test(val)) {
                   setErrors((prev) => ({
                     ...prev,

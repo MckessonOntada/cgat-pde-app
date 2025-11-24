@@ -163,5 +163,9 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.configuration.header.badge.mandatory': 'Mandatory',
   'manageSPMaterial.configuration.customRegex.generatedRegex': 'Regex Pattern',
   'manageSPMaterial.configuration.customRegex.builder': 'Regex Builder',
-  'manageSPMaterial.configuration.header.badge.hidden': 'Hidden'
+  'manageSPMaterial.configuration.header.badge.hidden': 'Hidden',
+  'manageSPMaterial.configuration.label.patientInformationRequired': 'Patient Information Required',
+  'manageSPMaterial.configuration.radio.yes': 'Yes',
+  'manageSPMaterial.configuration.radio.no': 'No',
+  'manageSPMaterial.configuration.validation.patientInformationRequired': 'Patient Information is required.'
 };

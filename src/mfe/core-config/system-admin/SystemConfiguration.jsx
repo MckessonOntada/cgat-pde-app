@@ -16,6 +16,7 @@ import ManageSPMaterialRoute from './manage-sp-material/routes/Routes';
 import ManageSPAccountRoute from './manage-sp-account/routes/Routes';
 import { SystemConfigDashboard } from './SystemConfigDashboard';
 import NotFound from '@src/pages/error-pages/NotFound';
+import ManageMaterialRoute from './manage-material/routes/Routes';
 
 export default function SystemConfiguration() {
   return (
@@ -43,7 +44,7 @@ export default function SystemConfiguration() {
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
             <ManageMaterialProvider>
-              <ManageMaterial />
+              <ManageMaterialRoute />
             </ManageMaterialProvider>
           </ProtectedRoute>
         }
