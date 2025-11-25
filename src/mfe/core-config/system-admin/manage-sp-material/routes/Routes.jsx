@@ -7,7 +7,7 @@ import AssociatedSPAccount from '../pages/AssociatedSPAccount';
 import AddDiagnosisCode from '../pages/diagnosis-code-config/AddDiagnosisCode';
 import DiagnosisConfiguration from '../pages/diagnosis-code-config/DiagnosisConfiguration';
 import { routeConstants } from './constants';
-import ConfigurationSpMaterial from '../pages/configure-sp-material/ConfigurationSpMaterial';
+import ConfigurationSpMaterial from '../pages/configure-material/ConfigurationSpMaterial';
 
 function ManageSPMaterialRoute() {
   return (

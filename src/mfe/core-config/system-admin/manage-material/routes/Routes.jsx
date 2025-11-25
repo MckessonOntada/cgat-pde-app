@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import React from 'react';
 import { routeConstants } from './constants';
 import ManageMaterial from '../ManageMaterial';
-import ConfigurationSpMaterial from '../../manage-sp-material/pages/configure-sp-material/ConfigurationSpMaterial';
+import ConfigurationSpMaterial from '../../manage-sp-material/pages/configure-material/ConfigurationSpMaterial';
 
 function ManageMaterialRoute() {
   return (
