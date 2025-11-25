@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, RadioGroup } from '@mckesson/mcp-component-library';
+import { Button, Heading, RadioGroup, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
@@ -11,72 +11,112 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { configObj } from './config';
 import { getConfigurationSchema } from './ConfigurationSchema';
+import MaterialService from '@src/api/commonService/MaterialService';
+import { useMutation, useQuery } from 'react-query';
 
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslate();
   const [alert, setAlert] = React.useState(null);
-  const [selectedTherapy, setSelectedTherapy] = React.useState(null);
   const { therapy, materialType } = location.state || {};
   const isBnbMaterial = materialType === 'bnb';
 
-  React.useEffect(() => {
-    if (therapy) {
-      setSelectedTherapy({
-        id: therapy.materialNumber,
-        name: therapy.tradeName,
-        description: therapy.materialDescription
-      });
-    }
-  }, [therapy]);
-
-  const config = configObj(materialType);
   const fieldNameForChannel = isBnbMaterial ? 'patientInformationRequired' : 'triageChannel';
 
   const channelOptions = isBnbMaterial
     ? [
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.yes'), value: 'yes' },
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.no'), value: 'no' }
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.yes'), value: true },
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.no'), value: false }
       ]
     : [
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'sp' },
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'hub' }
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'SP' },
+        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'HUB' }
       ];
+  const { data: materialDetails, isLoading } = useQuery({
+    queryKey: ['MaterialDetails'],
+    queryFn: async () => {
+      const result = await MaterialService.getMaterialConfigByNdc(
+        isBnbMaterial ? 'BUY_AND_BILL' : 'SPECIALITY_PHARMA',
+        isBnbMaterial ? therapy?.[0]?.ndc : therapy?.[0]?.ndcNumber
+      );
+      return isBnbMaterial ? result?.materialConfig.config : result?.spTherapyConfig.config;
+    },
+    enabled: Array.isArray(therapy) && therapy.length === 1,
+    refetchOnWindowFocus: false
+  });
+  const ndcDetails = materialDetails || configObj(materialType);
 
   const initialValues = {
-    [fieldNameForChannel]: config.triageChannel || '',
-    fields: config.fields.map((field) => ({
-      fieldName: field.fieldName,
-      displayOnForm: !!field.properties.displayOnForm,
-      mandatoryField: !!field.properties.mandatoryField,
-      showHelpIcon: !!field.properties.showHelpIcon,
-      displayName: field.properties.displayName || '',
-      errorMessage: field.properties.errorMessage || '',
-      helpInfoMessage: field.properties.helpInfoMessage || '',
-      fieldFormat: {
-        formatType: field.properties.fieldFormat?.formatType || '',
-        validationRegex: field.properties.fieldFormat?.validationRegex || ''
+    [fieldNameForChannel]: isBnbMaterial ? ndcDetails?.patientInformationRequired : ndcDetails?.triageChannel,
+    fields: ndcDetails?.fields?.map((field) => ({
+      fieldName: field?.fieldName,
+      properties: {
+        displayOnForm: !!field?.properties?.displayOnForm,
+        mandatoryField: !!field?.properties?.mandatoryField,
+        showHelpIcon: !!field?.properties?.showHelpIcon,
+        displayName: field?.properties?.displayName || '',
+        errorMessage: field?.properties?.errorMessage || '',
+        helpInfoMessage: field?.properties?.helpInfoMessage || '',
+        fieldFormat: {
+          formatType: field?.properties?.fieldFormat?.formatType || '',
+          validationRegex: field?.properties?.fieldFormat?.validationRegex || ''
+        }
       }
     }))
   };
 
   const validationSchema = getConfigurationSchema(t, channelOptions, fieldNameForChannel, isBnbMaterial);
+
   const handleSubmit = (values) => {
-    console.log('Submit payload', values);
-    setAlert({ type: 'success', description: t('manageSPMaterial.configuration.alert.saveSuccess') });
+    const therapyList = Array.isArray(therapy) ? therapy : [therapy];
+
+    const payload = {
+      [isBnbMaterial ? 'ndcNumbers' : 'spProductIds']: therapyList.map((item) => (isBnbMaterial ? item.ndc : item.ndcNumber)),
+      ...(isBnbMaterial && { channelType: 'BUY_AND_BILL' }),
+      config: values
+    };
+    updateMaterial.mutate(payload);
   };
+
+  const updateMaterial = useMutation({
+    mutationFn: (payload) => {
+      return isBnbMaterial ? MaterialService.updateMaterialConfigBnb(payload) : MaterialService.updateSPMaterialConfig(payload);
+    },
+    onSuccess: () => {
+      navigate('../', {
+        state: {
+          alert: {
+            type: 'success',
+            description: t('manageMaterial.drawer.controls.apply.success')
+          }
+        }
+      });
+    },
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+
+      if (!(statusCode >= 400 && statusCode < 600)) {
+        description = CommonUtils.getAxiosErrorMessage(error);
+      }
+
+      setAlert({
+        description,
+        type: 'error'
+      });
+    }
+  });
+
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
 
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={() => navigate('../', { state: { selectedTherapies: selectedTherapy } })}
-          size="md">
-          {t('button.caption.backToSpMaterial')}
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('../')} size="md">
+          {t(isBnbMaterial ? 'button.caption.backToMaterialMaster' : 'button.caption.backToSpMaterial')}
         </Button>
       </div>
 
@@ -93,12 +133,9 @@ export default function ConfigurationSpMaterial() {
               </p>
             }
           />
-
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} validateOnChange={false} validateOnBlur={false}>
             {({ values, setFieldValue, errors, touched }) => (
               <Form>
-                {console.log('value', values)}
-                {console.log('err', errors)}
                 <div className="MCP-module-body">
                   <div className="radio-group-selection">
                     <RadioGroup
@@ -109,24 +146,27 @@ export default function ConfigurationSpMaterial() {
                       id={fieldNameForChannel}
                       items={channelOptions}
                       onChangeValue={(value) => {
-                        setFieldValue(fieldNameForChannel, value);
+                        const finalValue = value === 'true' ? true : value === 'false' ? false : value;
 
-                        if (isBnbMaterial && value === 'no') {
+                        setFieldValue(fieldNameForChannel, finalValue);
+
+                        if (isBnbMaterial && finalValue === false) {
                           const updatedFields = values.fields.map((field) => {
                             if (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID') {
-                              console.log('test');
                               return {
                                 ...field,
-                                displayOnForm: false,
-                                mandatoryField: false,
-                                showHelpIcon: false,
-                                displayName: '',
-                                errorMessage: '',
-                                helpInfoMessage: '',
-                                fieldFormat: {
-                                  formatType: '',
-                                  validationRegex: '',
-                                  customValidationRegex: ''
+                                properties: {
+                                  displayOnForm: false,
+                                  mandatoryField: false,
+                                  showHelpIcon: false,
+                                  displayName: '',
+                                  errorMessage: '',
+                                  helpInfoMessage: '',
+                                  fieldFormat: {
+                                    formatType: '',
+                                    validationRegex: '',
+                                    customValidationRegex: ''
+                                  }
                                 }
                               };
                             }
@@ -143,7 +183,6 @@ export default function ConfigurationSpMaterial() {
                       errorMessage={touched[fieldNameForChannel] && errors[fieldNameForChannel]}
                     />
                   </div>
-
                   <ModuleHeader
                     heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
                     controls={
@@ -153,14 +192,14 @@ export default function ConfigurationSpMaterial() {
                     }
                   />
                   <Accordion>
-                    {values.fields.map((field, idx) => {
-                      if (values[fieldNameForChannel] === 'no' && (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID')) {
+                    {values?.fields?.map((field, idx) => {
+                      if (values[fieldNameForChannel] === false && (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID')) {
                         return null;
                       }
                       return (
                         <AccordionItem key={field.fieldName || idx} itemKey={`field-${idx}`}>
                           <AccordionHeader>
-                            <ConfigurationHeader fieldName={field.fieldName} format={field.fieldFormat.formatType} properties={field} />
+                            <ConfigurationHeader fieldName={field.fieldName} format={field.properties.fieldFormat.formatType} properties={field.properties} />
                           </AccordionHeader>
                           <AccordionPanel>
                             <ConfigurationForm index={idx} />
@@ -170,7 +209,7 @@ export default function ConfigurationSpMaterial() {
                     })}
                   </Accordion>
 
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+                  <div className="controls">
                     <Button variant="secondary" size="md" onClick={() => navigate('../')}>
                       {t('manageSPMaterial.configuration.button.cancel')}
                     </Button>

@@ -20,7 +20,6 @@ export const fieldFormatOptions = [
 function getDefaultFieldProperties(fieldName) {
   return {
     fieldName,
-    format: '',
     properties: {
       displayOnForm: false,
       mandatoryField: false,
@@ -31,8 +30,7 @@ function getDefaultFieldProperties(fieldName) {
       fieldFormat: {
         formatType: '',
         validationRegex: '',
-        customValidationRegex: '',
-
+        validationFormate: '',
         get options() {
           return fieldFormatOptions;
         }

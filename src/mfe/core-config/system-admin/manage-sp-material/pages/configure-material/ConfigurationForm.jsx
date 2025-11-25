@@ -12,12 +12,13 @@ import CustomRegex from './CustomRegex';
 const ConfigurationForm = ({ index }) => {
   const { t } = useTranslate();
   const [customRegex, setCustomRegex] = React.useState(false);
-  const { values, setFieldValue, setErrors, setTouched, errors } = useFormikContext();
+  const { values, setFieldValue, errors } = useFormikContext();
 
-  const path = (name) => `fields[${index}].${name}`;
-  const fieldEntry = values.fields[index] || {};
+  const path = (name) => `fields[${index}].properties.${name}`;
 
-  const displayOnForm = !!fieldEntry.displayOnForm;
+  const fieldEntry = values.fields[index]?.properties || {};
+
+  const displayOnForm = !!fieldEntry?.displayOnForm;
   const showHelpIcon = !!fieldEntry.showHelpIcon;
   const formatType = fieldEntry.fieldFormat.formatType;
 

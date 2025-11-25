@@ -107,6 +107,56 @@ function CustomRegex({ onClose, path, initialValue, type }) {
 
     return `^${pattern}$`;
   }
+  function buildValidationFormat(finalRegex) {
+    const {
+      prefix,
+      suffix,
+      minLength,
+      maxLength,
+      allowUpper,
+      allowLower,
+      allowNumbers,
+      allowSpace,
+      allowHyphen,
+      allowUnderscore,
+      allowDot,
+      customChars,
+      minValue,
+      maxValue,
+      allowNegative,
+      minDate,
+      maxDate
+    } = regexState;
+
+    let details = [];
+
+    if (prefix) details.push(`prefix('${prefix}')`);
+    if (suffix) details.push(`suffix('${suffix}')`);
+
+    if (minLength) details.push(`minLength('${minLength}')`);
+    if (maxLength) details.push(`maxLength('${maxLength}')`);
+
+    if (minValue) details.push(`minValue('${minValue}')`);
+    if (maxValue) details.push(`maxValue('${maxValue}')`);
+
+    if (minDate) details.push(`minDate('${minDate}')`);
+    if (maxDate) details.push(`maxDate('${maxDate}')`);
+
+    if (allowUpper) details.push(`allowedUpper`);
+    if (allowLower) details.push(`allowedLower`);
+    if (allowNumbers) details.push(`allowedNumbers`);
+    if (allowSpace) details.push(`allowedSpace`);
+    if (allowHyphen) details.push(`allowedHyphen`);
+    if (allowUnderscore) details.push(`allowedUnderscore`);
+    if (allowDot) details.push(`allowedDot`);
+    if (allowNegative) details.push(`allowNegative`);
+
+    if (customChars) details.push(`customChars('${customChars}')`);
+
+    const joined = details.join(',');
+
+    return `${type}:"${finalRegex}"::${joined}`;
+  }
 
   function buildIntegerRegex(minValue, maxValue, allowNegative = false) {
     let pattern = '';
@@ -117,14 +167,12 @@ function CustomRegex({ onClose, path, initialValue, type }) {
       const min = parseInt(minValue, 10);
       const max = parseInt(maxValue, 10);
 
-      // Simple ranges (1–99, 23–78 etc.)
       if (min >= 0 && max < 100) {
         const firstPart = `${Math.floor(min / 10)}[${min % 10}-9]`; // e.g., 2[3-9] for 23
         const middlePart = Math.floor(min / 10) + 1 <= Math.floor(max / 10) - 1 ? `[${Math.floor(min / 10) + 1}-${Math.floor(max / 10) - 1}][0-9]` : '';
         const lastPart = `${Math.floor(max / 10)}[0-${max % 10}]`; // e.g., 7[0-8] for 78
         pattern += `(${firstPart}${middlePart ? '|' + middlePart : ''}|${lastPart})`;
       } else {
-        // Fallback for large ranges
         pattern += '\\d+';
       }
     } else {
@@ -201,10 +249,13 @@ function CustomRegex({ onClose, path, initialValue, type }) {
 
     return newState;
   }
-
   const handleApply = () => {
     const finalRegex = buildRegex();
-    setFieldValue(path('fieldFormat.validationRegex'), finalRegex);
+    const validationFormat = buildValidationFormat(finalRegex);
+
+    setFieldValue(path('properties.fieldFormat.validationRegex'), finalRegex);
+    setFieldValue(path('properties.fieldFormat.validationObj'), validationFormat);
+
     onClose();
   };
 

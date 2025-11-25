@@ -119,6 +119,47 @@ async function deleteSPMaterialConfig(id) {
   return [];
 }
 
+async function updateMaterialConfigBnb(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid payload. A valid JSON object is required.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/config/update`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  if (res?.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function getMaterialConfigByNdc(channelType, ndc) {
+  if (!ndc) {
+    throw new Error('Invalid NDC no.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/config/ndc/${ndc}?channelType=${channelType}`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function updateSPMaterialConfig(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid payload. A valid JSON object is required.');
+  }
+
+  const url = `${ApiRoutes.THERAPIES()}/sp/config/update`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+
+  if (res?.data) {
+    return res.data;
+  }
+  return {};
+}
+
 const MaterialService = Object.freeze({
   getMaterialById,
   getMaterialConfigById,
@@ -131,7 +172,10 @@ const MaterialService = Object.freeze({
   getUnassignedDiagnosisCodes,
   getAssignedDiagnosisCodes,
   removeAssignedDiagnosisCode,
-  addDiagnosisCode
+  addDiagnosisCode,
+  updateMaterialConfigBnb,
+  updateSPMaterialConfig,
+  getMaterialConfigByNdc
 });
 
 export default MaterialService;
