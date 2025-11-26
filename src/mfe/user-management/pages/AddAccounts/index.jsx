@@ -22,26 +22,25 @@ const AddAccounts = () => {
   const { userId } = useParams();
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alert, setAlert] = React.useState(null);
-  const { permissionsData, isEdit } = location.state || {};
+  const { isEdit } = location.state || {};
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const requestParams = {
+    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
+  };
 
   const handleGoBack = () => {
     navigate(isEdit ? -1 : RoutePaths.pathUserManagement);
   };
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.PERMISSIONS}/${userId}`, {
-      state: { isBack: true, permissionsData: permissionsData }
+    navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.PERMISSIONS}`, {
+      state: { isBack: true }
     });
   };
 
-  const requestParams = {
-    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
-  };
-
-  const { mutate, isLoading } = useMutation(async ({ payload }) => {
+  const { mutate, isLoading: isSavingAccounts } = useMutation(async ({ payload }) => {
     const url = `${ApiRoutes.USERS()}/${userId}/accounts?${serializeParams(requestParams)}`;
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     return res.data;
@@ -81,7 +80,7 @@ const AddAccounts = () => {
       }
     );
   };
-  if (isLoading) {
+  if (isSavingAccounts) {
     return <Loader type={'screen'} />;
   }
   return (
@@ -93,7 +92,7 @@ const AddAccounts = () => {
       </div>
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
-        {!isEdit && !isSystemAdmin && (
+        {!isEdit && (
           <div className="stepper">
             <UserCreationStepper activeIndex={3} />
           </div>

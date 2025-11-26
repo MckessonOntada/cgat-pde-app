@@ -17,30 +17,30 @@ import { PATHS } from '../../routes/constants';
 import './index.scss';
 import PermissionForm from './PermissionForm';
 import UserCreationStepper from '../UserCreationStepper';
+import useUser from '../../useUser';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { permissionsData, isEdit = false, isBack = false } = location.state || {};
+  const { isEdit = false, isBack = false } = location.state || {};
   const [alert, setAlert] = useState(null);
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
+  const { isLoading, data: userDetails = {}, refetch } = useUser(userId, requestParams);
   const handleGoBack = () => {
     navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const handleBack = () => {
     if (isEdit) {
-      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
+      navigate(`../${userId}`);
     } else {
-      navigate(`../${PATHS.EDIT}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
+      navigate(`../${userId}/${PATHS.EDIT}`, { state: { isBack: true } });
     }
   };
 
@@ -65,7 +65,7 @@ const UserPermissions = () => {
 
   const handleSaveAndContinue = (values) => {
     const payload = {
-      roleId: permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
+      roleId: userDetails?.roleId ? userDetails?.roleId : values.roleId,
       permissions: values.permissions
     };
 
@@ -74,13 +74,11 @@ const UserPermissions = () => {
       {
         onSuccess: (response) => {
           if (isSystemAdminView) {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathSystemAdminManagement, {
+            navigate(isEdit ? `../${userId}` : RoutePaths.pathSystemAdminManagement, {
               state: { isSuccess: true }
             });
           } else {
-            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`, {
-              state: { permissionsData: payload }
-            });
+            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`);
           }
         },
         onError: (error) => {
@@ -89,7 +87,8 @@ const UserPermissions = () => {
       }
     );
   };
-  if (isSavingUserPermission) {
+
+  if (isLoading || isSavingUserPermission) {
     return <Loader type={'screen'} />;
   }
 
@@ -101,7 +100,7 @@ const UserPermissions = () => {
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
-      {!isEdit && !isSystemAdmin && (
+      {!isEdit && (
         <div className="stepper">
           <UserCreationStepper activeIndex={2} />
         </div>
@@ -109,31 +108,22 @@ const UserPermissions = () => {
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <Formik
         initialValues={{
-          permissions: permissionsData?.permissions || [],
-          roleId: isBack ? permissionsData.roleid : permissionsData?.role?.id || ''
+          permissions: userDetails.permissions || [],
+          roleId: userDetails.role?.id
         }}
+        enableReinitialize={true}
         onSubmit={handleSaveAndContinue}
         validateOnChange={false}
         validateOnBlur={true}>
-        {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
-          const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
-          let defaultRole = permissionsData ? permissionsData.role : null;
+        {({ values, setFieldValue, initialValues, isValid, handleSubmit, isDirty }) => {
           return (
-            <Form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!(isDirty && isValid)) {
-                  setAlert({ type: 'error', description: 'Please provide required values.' });
-                  return;
-                }
-                handleSubmit();
-              }}>
+            <Form>
               <PermissionForm
                 enabledPermissions={values.permissions}
                 setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)}
                 handleRoleSelect={(value) => setFieldValue('roleId', value)}
-                editRoleId={values.roleId ? values.roleId : permissionsData?.roleId}
-                defaultRole={defaultRole}
+                editRoleId={values.roleId}
+                defaultRole={userDetails.role}
               />
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>
