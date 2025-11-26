@@ -9,7 +9,8 @@ import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
-function UserMaterial() {
+function UserMaterial(props) {
+  const { searchPlaceholder } = props;
   const [alert, setAlert] = React.useState(null);
   const { userId } = useParams();
   const { t: translateFn } = useTranslate();
@@ -86,7 +87,7 @@ function UserMaterial() {
             onApplyFilters={(filters) => setSearchQuery(filters.searchQuery)}
             onClearFilters={() => setSearchQuery('')}
             additionalFilters={[]}
-            searchPlaceholder={translateFn('placeholder.materialTable')}
+            searchPlaceholder={searchPlaceholder}
           />
         </div>
         {selection.length > 0 ? (
