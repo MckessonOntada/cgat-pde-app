@@ -872,6 +872,24 @@ async function unlinkMaterial(userId, materialIds) {
   return res;
 }
 
+//demo service method for notification group
+export const getTherapies = async (requestParams) => {
+  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+};
+export const getUsers = async (requestParams) => {
+  const url = `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+};
+
 const MaterialService = Object.freeze({
   getMaterialById,
   getMaterialConfigById,
@@ -887,7 +905,9 @@ const MaterialService = Object.freeze({
   addDiagnosisCode,
   getAllMaterials,
   restrictMaterial,
-  unlinkMaterial
+  unlinkMaterial,
+  getTherapies,
+  getUsers
 });
 
 export default MaterialService;

@@ -1,0 +1,63 @@
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04);
+  }
+}
+.ruleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+
+  .ruleKeyword {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: var(--brand-font-weight-600);
+    text-transform: uppercase;
+    font-style: italic;
+
+    &.joinKeyword {
+      justify-content: center;
+    }
+  }
+
+  .ruleSeparator {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--spacing-04);
+    hr {
+      flex-grow: 1;
+    }
+  }
+}
+.ruleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+
+  .rule {
+    display: grid;
+    grid-template-columns: 1fr 8fr 4fr 19fr;
+    gap: 12px;
+    align-items: center;
+
+    .inputControls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-direction: row;
+
+      .control {
+        flex-grow: 1;
+      }
+    }
+  }
+}

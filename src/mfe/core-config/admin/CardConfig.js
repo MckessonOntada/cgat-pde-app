@@ -40,6 +40,14 @@ const cardList = [
     permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
   },
   {
+    name: 'ManageNotificationGroups',
+    label: 'manage_notification_groups',
+    icon: ApproverGroupIcon,
+    details: 'approver_management_description',
+    path: AppRoutes.pathNotificationManagement,
+    permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
+  },
+  {
     name: 'ManageProviders',
     label: 'manage_providers',
     icon: ProviderIcon,
