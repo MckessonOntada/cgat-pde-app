@@ -71,7 +71,8 @@ div.disable-all {
   }
 }
 
-.MCP-modal-body {
+.MCP-modal-body,
+.stack {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);

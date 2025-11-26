@@ -1,12 +1,27 @@
+import { ReactComponent as AddIcon } from '@src/assets/image/add_circle_bold.svg';
+import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
-import { Heading, Alert } from '@mckesson/mcp-component-library';
-import ModuleHeader from '@src/components/module-header';
-import React from 'react';
 import { useTranslate } from '@src/translations/useTranslation';
+import ModuleHeader from '@src/components/module-header';
+import CommonFilters from '@src/components/Filters';
+import React from 'react';
+import { ROUTE_PATH } from './config';
+import TableHeading from '@src/components/tableHeading/TableHeading';
+import { usePagination, useTable } from '@src/context/TableContext';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import CommonUtils from '@src/util/CommonUtils';
+import FlatButton from '@src/components/button';
 
 function NotificationList() {
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
+  const showCardView = useResponsiveView();
+  const { data, loading, error, isFilterApplied } = useTable();
+  const { changePage, pagination } = usePagination();
   const breadcrumbItems = [
     {
       label: translateFn('userManagement.breadcrumb.admin'),
@@ -16,16 +31,117 @@ function NotificationList() {
       label: translateFn('Manage Notification Group')
     }
   ];
+  const columns = React.useMemo(() => {
+    return [
+      {
+        id: 'group-name',
+        name: translateFn('table.column.caption.groupName'),
+        wrap: true,
+        maxWidth: '320px',
+        cell: (props) => (
+          <div>
+            <EclipsesTextcss str={props.groupName} maxWidth={310} />
+          </div>
+        )
+      },
+      {
+        id: 'created-by',
+        name: translateFn('table.column.caption.createdBy'),
+        wrap: true,
+        minWidth: '260px',
+        cell: (props) => (
+          <div>
+            <EclipsesTextcss str={props.createdBy} maxWidth={250} />
+          </div>
+        )
+      },
+      {
+        id: 'created-on',
+        name: translateFn('table.column.caption.createdOn'),
+        wrap: true,
+        maxWidth: '260px',
+        cell: (props) => (
+          <div>
+            <EclipsesTextcss str={CommonUtils.convertDateStringFormat(props.createdOn)} maxWidth={250} />
+          </div>
+        )
+      },
+      {
+        id: 'action',
+        name: translateFn('table.column.caption.action'),
+        wrap: true,
+        maxWidth: '120px',
+        cell: () => (
+          <FlatButton style={{ paddingLeft: 0, paddingRight: 0 }} variant="text">
+            View
+          </FlatButton>
+        )
+      }
+    ];
+  }, [pagination.pageNo]);
+
   return (
     <div className="MCP-module-wrapper">
-      <div className="MCP-module-header">
+      <div className="stack">
         <Breadcrumbs items={breadcrumbItems} />
-
-        <div className="MCP-module-body">
-          <ModuleHeader heading={<Heading as="h1">{translateFn('Manage Notification Group')}</Heading>} />
+        <ModuleHeader
+          heading={<Heading as="h2">{translateFn('Manage Notification Group')}</Heading>}
+          controls={
+            <div className="controls">
+              <Button Icon={AddIcon} className="button-icon" variant="primary" size="md" onClick={() => navigate(ROUTE_PATH.CREATE)}>
+                {translateFn('Add New Group')}
+              </Button>
+            </div>
+          }
+        />
+      </div>
+      <div className="MCP-module-body">
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        <div className="MCP-panel-container">
+          <div className="MCP-CardContainer">
+            <CommonFilters
+              autoFocus={true}
+              onApplyFilters={() => {}}
+              onClearFilters={() => {}}
+              additionalFilters={[]}
+              searchPlaceholder={translateFn('Search By Group')}
+            />
+          </div>
+          <div className="stack">
+            <TableHeading heading={translateFn('Notification Group Listing')} />
+            <CustomDataTable
+              id={'notification-group'}
+              type={'normal'}
+              columns={columns}
+              data={data}
+              onSortIconClick={() => {}}
+              handleChangePage={(_event, newPageIndex) => changePage(newPageIndex)}
+              currentPage={pagination.pageNo}
+              totalPageCount={pagination.totalPages}
+              totalRocords={pagination.totalElements}
+              recordsPerPage={pagination.pageSize}
+              paginationTotalRecorsMessage={translateFn('table.pagination.result')}
+              paginationRecordsPerPageMessage={translateFn('table.pagination.perPage')}
+              stickyHeader
+              responsive
+              pagination={true}
+              showCardView={showCardView}
+              defaultExpandedCardView={true}
+              noDataComponent={
+                <EmptyDataTable
+                  isLoading={loading}
+                  isError={error}
+                  image={EmptyDataImage}
+                  heading={
+                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('table.message.noRecordsFoundNotificationGroup')
+                  }
+                  description={!isFilterApplied && translateFn('table.description.noRecordsFoundDiagnosisCodes')}
+                />
+              }
+            />
+          </div>
         </div>
       </div>
-      <div className="MCP-module-body">{alert && <Alert {...alert} onClose={() => setAlert(null)} />}</div>
       <div className="MCP-module-footer"></div>
     </div>
   );
