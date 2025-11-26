@@ -15,11 +15,13 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import FlatButton from '@src/components/button';
+import { useNavigate } from 'react-router-dom';
 
 function NotificationList() {
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const showCardView = useResponsiveView();
+  const navigate = useNavigate();
   const { data, loading, error, isFilterApplied } = useTable();
   const { changePage, pagination } = usePagination();
   const breadcrumbItems = [
@@ -71,8 +73,8 @@ function NotificationList() {
         name: translateFn('table.column.caption.action'),
         wrap: true,
         maxWidth: '120px',
-        cell: () => (
-          <FlatButton style={{ paddingLeft: 0, paddingRight: 0 }} variant="text">
+        cell: (props) => (
+          <FlatButton size="small" style={{ paddingLeft: 0, paddingRight: 0 }} variant="text" onClick={() => navigate(`${props.id}`)}>
             View
           </FlatButton>
         )
