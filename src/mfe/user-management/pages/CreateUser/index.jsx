@@ -26,7 +26,7 @@ const CreateUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isPending = false, isBack = false, permissionsData } = location.state || {};
+  const { isEdit = false, isPending = false, isBack = false } = location.state || {};
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
@@ -198,7 +198,7 @@ const CreateUser = () => {
           }
 
           navigate(targetPath, {
-            state: { permissionsData, isEdit }
+            state: { isEdit }
           });
         },
         onError: (error) => {
@@ -218,7 +218,7 @@ const CreateUser = () => {
       }
     } else {
       if (isEdit) {
-        navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
+        navigate(`../${userId}`);
       } else {
         navigate(RoutePaths.pathUserManagement);
       }
@@ -229,7 +229,7 @@ const CreateUser = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathUserManagement);
     } else if (modalSuccessCallback === 'details') {
-      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
+      navigate(`../${userId}`);
     }
   };
   if (isLoading) {
@@ -260,7 +260,7 @@ const CreateUser = () => {
           }
         />
 
-        {!isEdit && !isSystemAdminView && (
+        {!isEdit && (
           <div className="stepper">
             <UserCreationStepper activeIndex={1} />
           </div>

@@ -27,8 +27,8 @@ import NotificationPreferencePanel from '@src/mfe/core-config/notifications-sett
 import { Form, Formik } from 'formik';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
 import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
-import MaterialSelection from '../CreateUser/MaterialSelection';
 import UserMaterial from '../CreateUser/UserMaterial';
+import UserService from '@src/api/commonService/UserService';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -59,7 +59,7 @@ const UserDetail = () => {
   const [alert, setAlert] = useState(null);
   const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
-  const { isSuccess = false, isPending = false, isEdit = false } = location.state || {};
+  const { isPending = false, isEdit = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +75,32 @@ const UserDetail = () => {
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
+  });
+
+  const {
+    isLoading,
+    data: userDetails,
+    refetch
+  } = useQuery({
+    queryKey: [`users/${userId}`],
+    queryFn: () => UserService.getUserDetails(userId, requestParams, isPending),
+    enabled: Boolean(userId),
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      const u = data?.userCommunicationPreferences?.preferences;
+      const r = data?.role?.communicationPreferences?.preferences;
+      const updated = getMergedPreferences(preferencesConfig, u, r);
+
+      setPreferenceConfig(updated);
+      setIsPreferencesLoaded(true);
+
+      const role = data?.role;
+      setIsPhysicianUser(AuthUtils.isPhysician(role?.name, role?.id));
+    },
+    select: (data) => {
+      if (!data.communicationPreferences) data.communicationPreferences = {};
+      return data;
+    }
   });
 
   useEffect(() => {
@@ -107,33 +133,6 @@ const UserDetail = () => {
       disablePay.current = null;
     }, 500);
   };
-
-  const {
-    isLoading,
-    data: userDetails,
-    refetch
-  } = useQuery({
-    queryKey: [`users/${userId}`],
-    queryFn: async () => {
-      const url = isPending ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}` : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      return res.data;
-    },
-    enabled: !!userId,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      const userCommunicationPreferences = data?.userCommunicationPreferences || {};
-      const roleCommunicationPreferences = data?.role?.communicationPreferences?.preferences || {};
-      const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
-      setPreferenceConfig(updatedConfig);
-      setIsPreferencesLoaded(true);
-      setIsPhysicianUser(AuthUtils.isPhysician(data?.role?.name, data?.role?.id));
-    },
-    select: (data) => {
-      if (!data.communicationPreferences) data.communicationPreferences = {};
-      return data;
-    }
-  });
 
   const mutation = useMutation(
     async () => {
@@ -186,7 +185,7 @@ const UserDetail = () => {
     setAlert(null);
     navigate(location.pathname, {
       replace: true,
-      state: { ...location.state, isSuccess: false }
+      state: { isSuccess: false }
     });
   };
 
@@ -261,13 +260,13 @@ const UserDetail = () => {
 
     return groupedPermissions;
   };
-  const handleonBehalfNotifcaiton = async () => {
+  const handleOnBehalfNotification = async () => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${userDetails?.practiceId}/on-behalf-notification`, httpVerb.POST);
     return res.data;
   };
 
   const { mutate: OnBehalfNotification } = useMutation({
-    mutationFn: handleonBehalfNotifcaiton,
+    mutationFn: handleOnBehalfNotification,
     onSuccess: () => {},
     onError: () => {
       setAlert({
@@ -463,7 +462,7 @@ const UserDetail = () => {
                       disabled={!userDetails?.isActive || isSelf}
                       onClick={() =>
                         navigate(`${PATHS.PERMISSIONS}`, {
-                          state: { isEdit: true, permissionsData: userDetails }
+                          state: { isEdit: true }
                         })
                       }>
                       {translateFn('userManagement.button.edit')}
@@ -582,32 +581,24 @@ const UserDetail = () => {
                   <ModuleHeader
                     heading={<Heading as="h2">{translateFn('Notification Preferences')}</Heading>}
                     controls={
-                      prePermissions && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                         <div className="controls">
                           <Button
                             Icon={EditPencil}
                             variant="secondary"
                             className="button-icon"
                             size="md"
-                            onClick={() =>
-                              navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
-                                state: {
-                                  permissions: userDetails.permissions,
-                                  userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
-                                  roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
-                                }
-                              })
-                            }>
+                            onClick={() => navigate(`${PATHS.NOTIFICATION_PREFERENCES}`)}>
                             {translateFn('userManagement.button.edit')}
                           </Button>
                         </div>
-                      )
+                      </PermittedComponent>
                     }
                   />
 
                   {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
 
-                  <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
+                  <Formik initialValues={preferencesConfig} enableReinitialize={true}>
                     <Form>
                       <div className="MCP-panel-container">
                         <NotificationPreferencePanel

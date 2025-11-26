@@ -12,6 +12,8 @@ import MaterialService from '@src/api/commonService/MaterialService';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Materials from './Materials';
 import IconButton from '@src/components/IconButton';
+import AuthUtils from '@src/util/AuthUtils';
+import { PATHS } from '../../routes';
 
 export default function MaterialSelection(props) {
   const location = useLocation();
@@ -24,6 +26,7 @@ export default function MaterialSelection(props) {
   const [selection, setSelection] = React.useState([]);
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
 
   React.useEffect(() => {
     MaterialService.getAllMaterials(userId)
@@ -111,7 +114,7 @@ export default function MaterialSelection(props) {
   };
 
   const handleOnBack = () => {
-    navigate(isEdit ? `./..` : `../${PATHS.PERMISSIONS}`, {
+    navigate(isEdit ? `./..` : `../${userId}/${PATHS.ADD_ACCOUNTS}`, {
       state: { isBack: true }
     });
   };
