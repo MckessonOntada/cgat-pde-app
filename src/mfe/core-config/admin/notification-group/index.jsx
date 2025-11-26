@@ -1,29 +1,16 @@
-import DynamicRuleGroup from '@src/components/rule-group';
-import config from './config.js';
 import React from 'react';
-import { Formik, Form } from 'formik';
-import { NotificationGroupSchema } from './validation.schema.js';
+import { Route, Routes } from 'react-router-dom';
+import CreateNotificationGroup from './CreateNotificationGroup';
+import NotificationList from './NotificationList';
 
 function NotificationGroup() {
-  const handleOnSubmit = (...args) => {
-    console.log(args);
-  };
   return (
-    <React.Fragment>
-      <Formik
-        onSubmit={handleOnSubmit}
-        validationSchema={NotificationGroupSchema}
-        initialValues={{
-          groupName: '',
-          participants: [],
-          rules: []
-        }}
-        enableReinitialize>
-        <Form>
-          <DynamicRuleGroup config={config} />
-        </Form>
-      </Formik>
-    </React.Fragment>
+    <Routes>
+      <Route index element={<NotificationList />} />
+      {/* <Route path={'create'} element={<CreateNotificationGroup />} />
+      <Route path={':id'} element={<div>View</div>} />
+      <Route path={':id/edit'} element={<div>Edit</div>} /> */}
+    </Routes>
   );
 }
 
