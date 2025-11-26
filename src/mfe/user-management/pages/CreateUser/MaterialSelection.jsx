@@ -155,7 +155,7 @@ export default function MaterialSelection(props) {
               onApplyFilters={(filters) => setSearchQuery(filters.searchQuery)}
               onClearFilters={() => setSearchQuery('')}
               additionalFilters={[]}
-              searchPlaceholder={translateFn('placeholder.materialTable')}
+              searchPlaceholder={translateFn('placeholder.materialTable1')}
             />
           </div>
           <TableHeading heading={translateFn('table.title.selectMaterial')} />
