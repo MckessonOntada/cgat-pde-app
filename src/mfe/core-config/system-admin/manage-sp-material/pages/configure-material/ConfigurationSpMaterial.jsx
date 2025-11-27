@@ -13,6 +13,7 @@ import { configObj } from './config';
 import { getConfigurationSchema } from './ConfigurationSchema';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
+import { ChannelType } from '../../../manage-sp-account/util';
 
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
@@ -36,12 +37,12 @@ export default function ConfigurationSpMaterial() {
   const { data: materialDetails, isLoading } = useQuery({
     queryKey: ['MaterialDetails'],
     queryFn: async () => {
-      const result = await MaterialService.getMaterialConfigByNdc(
-        isBnbMaterial ? 'BUY_AND_BILL' : 'SPECIALITY_PHARMA',
-        isBnbMaterial ? therapy?.[0]?.ndc : therapy?.[0]?.ndcNumber
-      );
-      return isBnbMaterial ? result?.materialConfig.config : result?.spTherapyConfig.config;
+      const result = await (isBnbMaterial
+        ? MaterialService.getMaterialConfigByNdc(ChannelType.BUY_AND_BILL, therapy?.[0]?.ndc)
+        : MaterialService.getSpMaterialConfigByMaterialNumber(ChannelType.SPECIALITY_PHARMA, therapy?.[0]?.materialNumber));
+      return isBnbMaterial ? result?.materialConfig?.config : result?.spTherapyConfig?.config;
     },
+
     enabled: Array.isArray(therapy) && therapy.length === 1,
     refetchOnWindowFocus: false
   });
@@ -60,7 +61,8 @@ export default function ConfigurationSpMaterial() {
         helpInfoMessage: field?.properties?.helpInfoMessage || '',
         fieldFormat: {
           formatType: field?.properties?.fieldFormat?.formatType || '',
-          validationRegex: field?.properties?.fieldFormat?.validationRegex || ''
+          validationRegex: field?.properties?.fieldFormat?.validationRegex || '',
+          validationFormat: field?.properties?.fieldFormat?.validationFormat || ''
         }
       }
     }))
@@ -72,8 +74,8 @@ export default function ConfigurationSpMaterial() {
     const therapyList = Array.isArray(therapy) ? therapy : [therapy];
 
     const payload = {
-      [isBnbMaterial ? 'ndcNumbers' : 'spProductIds']: therapyList.map((item) => (isBnbMaterial ? item.ndc : item.ndcNumber)),
-      ...(isBnbMaterial && { channelType: 'BUY_AND_BILL' }),
+      [isBnbMaterial ? 'ndcNumbers' : 'spProductIds']: therapyList.map((item) => (isBnbMaterial ? item.ndc : item.materialNumber)),
+      ...(isBnbMaterial && { channelType: ChannelType.BUY_AND_BILL }),
       config: values
     };
     updateMaterial.mutate(payload);
@@ -152,7 +154,7 @@ export default function ConfigurationSpMaterial() {
 
                         if (isBnbMaterial && finalValue === false) {
                           const updatedFields = values.fields.map((field) => {
-                            if (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID') {
+                            if (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId') {
                               return {
                                 ...field,
                                 properties: {
@@ -165,7 +167,7 @@ export default function ConfigurationSpMaterial() {
                                   fieldFormat: {
                                     formatType: '',
                                     validationRegex: '',
-                                    customValidationRegex: ''
+                                    validationFormat: ''
                                   }
                                 }
                               };

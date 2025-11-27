@@ -159,6 +159,19 @@ async function updateSPMaterialConfig(payload) {
   }
   return {};
 }
+async function getSpMaterialConfigByMaterialNumber(channelType, materialNo) {
+  if (!materialNo) {
+    throw new Error('Invalid Material no.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/sp/config/${materialNo}?channelType=${channelType}`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 
 const MaterialService = Object.freeze({
   getMaterialById,
@@ -175,7 +188,8 @@ const MaterialService = Object.freeze({
   addDiagnosisCode,
   updateMaterialConfigBnb,
   updateSPMaterialConfig,
-  getMaterialConfigByNdc
+  getMaterialConfigByNdc,
+  getSpMaterialConfigByMaterialNumber
 });
 
 export default MaterialService;

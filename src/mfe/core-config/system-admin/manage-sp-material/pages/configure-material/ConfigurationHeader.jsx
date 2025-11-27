@@ -14,7 +14,7 @@ function ConfigurationHeader({ fieldName, format, properties = {} }) {
       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 header-section">
         <div className="header-item">
           <p>{t('manageSPMaterial.configuration.header.fieldName')}</p>
-          <span>{fieldName}</span>
+          <span>{t(`manageSPMaterial.configuration.header.${fieldName}`)}</span>
         </div>
 
         <div className="header-item">

@@ -172,63 +172,26 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         })
       );
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-      schema = schema.concat(
-        Yup.object({
-          dateOfAdministration: Yup.date()
-            .typeError(t('labels.enterValidDateOfAdministration'))
-            .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+      const dynamicFields = {};
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
+          dynamicFields[field.fieldName] = Yup.string()
+            .matches(field.properties.fieldFormat.validationRegex, t('manageSPMaterial.configuration.validInput'))
             .when([], {
-              is: () => therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          dateOfApheresis: Yup.date()
-            .typeError(t('labels.enterValidDateOfApheresis'))
-            .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
-            .when([], {
-              is: () => therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          coiId: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-            .max(10, t('labels.COI_IdExceedDigits'))
-            .when([], {
-              is: () => therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.COIIdRequired')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          orderQuantity: Yup.number()
-            .typeError(t('labels.OrderQuantityShouldPositive'))
-            .min(1, t('labels.OrderQuantityMin', { min: 1 }))
-            .max(99, t('labels.OrderQuantityMax', { max: 99 }))
-            .required(t('labels.orderQuantityRequired'))
-            .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-            .integer(t('labels.OrderQuantityMustBeInteger')),
-          poNumber: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
-            .max(35, t('labels.PONumberLengthError'))
-            .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-            .when([], {
-              is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.PONumberRequired')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          shipToPONumber: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('labels.shipToPONumberMustValid'))
-            .max(35, t('labels.shipToPONumberLengthError'))
-            .test(
-              'no-leading-trailing-spaces',
-              t('labels.shipToPONumberExtraSpaceError'),
-              (value) => value === undefined || value.trim().length === value.length
-            )
-            .when([], {
-              is: () => therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.shipToPONumberRequired')),
-              otherwise: (schema) => schema.notRequired()
-            })
-        })
-      );
+              is: () => field.properties.mandatoryField,
+              then: (s) => s.required(field.properties.errorMessage),
+              otherwise: (s) => s.notRequired()
+            });
+        }
+      });
+      dynamicFields.orderQuantity = Yup.number()
+        .typeError(t('labels.OrderQuantityShouldPositive'))
+        .min(1, t('labels.OrderQuantityMin', { min: 1 }))
+        .max(99, t('labels.OrderQuantityMax', { max: 99 }))
+        .required(t('labels.orderQuantityRequired'))
+        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+        .integer(t('labels.OrderQuantityMustBeInteger'));
+      schema = schema.concat(Yup.object().shape(dynamicFields));
     }
 
     return schema;

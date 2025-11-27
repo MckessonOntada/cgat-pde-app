@@ -128,11 +128,11 @@ const ConfigurationForm = ({ index }) => {
             size="md"
             variant="secondary"
             onClick={() => setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[fieldEntry?.fieldFormat?.formatType])}
-            disabled={!formatType}>
+            disabled={!displayOnForm || !formatType}>
             {t('manageSPMaterial.configuration.button.reset')}
           </Button>
 
-          <Button size="md" buttonWidth="100%" variant="secondary" onClick={() => setCustomRegex(true)} disabled={!formatType}>
+          <Button size="md" buttonWidth="100%" variant="secondary" onClick={() => setCustomRegex(true)} disabled={!displayOnForm || !formatType}>
             {t('manageSPMaterial.configuration.button.editRegex')}
           </Button>
         </div>

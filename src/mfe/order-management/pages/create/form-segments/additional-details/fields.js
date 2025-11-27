@@ -13,21 +13,20 @@ const getBinaryOptions = (keyPrefix = '', readOnly) => {
 };
 
 export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType }) => {
-  const fields = [];
-
+  const dynamic_fields = [];
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    if (therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'coiId',
-        label: translationFn('labels.coiId'),
-        placeholder: ' ',
-        isRequired: therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
-        component: Components['input'],
-        maxLength: 10
-      });
-    }
-
-    fields.push({
+    therapyConfig?.config?.fields?.forEach((field) => {
+      if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+        dynamic_fields.push({
+          name: field?.fieldName,
+          label: field?.properties?.displayName || field?.fieldName,
+          isRequired: field?.properties?.mandatoryField,
+          component: Components[field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
+          infoText: field?.properties.helpInfoMessage
+        });
+      }
+    });
+    dynamic_fields.push({
       name: 'orderQuantity',
       label: translationFn('labels.orderQuantity'),
       placeholder: ' ',
@@ -35,55 +34,8 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       component: Components['input'],
       maxLength: 2
     });
-
-    if (therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'dateOfAdministration',
-        label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
-        placeholder: ' ',
-        isRequired: therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
-        component: Components['datePicker'],
-        disableDateTill: new Date(),
-        disablePast: true
-      });
-    }
-
-    if (therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'dateOfApheresis',
-        label: translationFn('orderManagement.patientDetails.inputLabel.dateOfApheresis'),
-        placeholder: ' ',
-        isRequired: therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
-        component: Components['datePicker'],
-        disableDateTill: new Date(),
-        disablePast: true
-      });
-    }
-
-    if (therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'poNumber',
-        label: translationFn('labels.providePONumber'),
-        placeholder: ' ',
-        isRequired: therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
-        component: Components['input'],
-        maxLength: 35
-      });
-    }
-    if (therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'shipToPONumber',
-        label: translationFn('labels.shipToPONumber'),
-        placeholder: ' ',
-        isRequired: therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
-        component: Components['input'],
-        maxLength: 35
-      });
-    }
-  } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
   }
-
-  return fields;
+  return dynamic_fields;
 };
 
 export const getClinicalDetailFields = ({ translationFn, formValues, setFieldValue, onDiagnosisCodeSearch, diagnosisCode }) => {

@@ -167,5 +167,14 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.configuration.label.patientInformationRequired': 'Patient Information Required',
   'manageSPMaterial.configuration.radio.yes': 'Yes',
   'manageSPMaterial.configuration.radio.no': 'No',
-  'manageSPMaterial.configuration.validation.patientInformationRequired': 'Patient Information is required.'
+  'manageSPMaterial.configuration.validation.patientInformationRequired': 'Patient Information is required.',
+  'manageSPMaterial.configuration.header.patientIdentifier': 'Manufacturer Patient Identifier',
+  'manageSPMaterial.configuration.header.coiId': 'COI ID',
+  'manageSPMaterial.configuration.header.medicalRecordNumber': 'MRN',
+  'manageSPMaterial.configuration.header.poNumber': 'PO Number',
+  'manageSPMaterial.configuration.header.shipToPONumber': 'Ship To PO Number',
+  'manageSPMaterial.configuration.header.dateOfAdministration': 'Date of Administration',
+  'manageSPMaterial.configuration.header.dateOfApheresis': 'Date of Apheresis',
+  'button.caption.backToMaterialMaster': 'back to material Master',
+  'manageSPMaterial.configuration.validInput': 'Please fill valid input'
 };

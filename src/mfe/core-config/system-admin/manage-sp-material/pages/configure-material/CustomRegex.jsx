@@ -97,7 +97,7 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         break;
       }
       case 'Date_MM_DD_YYYY': {
-        pattern = '(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}';
+        pattern = '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$';
         break;
       }
 
@@ -244,7 +244,6 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         newState.maxValue = '';
       }
     } else if (type === 'Date_MM_DD_YYYY') {
-      // leave min/max empty
     }
 
     return newState;
@@ -252,9 +251,8 @@ function CustomRegex({ onClose, path, initialValue, type }) {
   const handleApply = () => {
     const finalRegex = buildRegex();
     const validationFormat = buildValidationFormat(finalRegex);
-
-    setFieldValue(path('properties.fieldFormat.validationRegex'), finalRegex);
-    setFieldValue(path('properties.fieldFormat.validationObj'), validationFormat);
+    setFieldValue(path('fieldFormat.validationRegex'), finalRegex);
+    setFieldValue(path('fieldFormat.validationFormat'), validationFormat);
 
     onClose();
   };
