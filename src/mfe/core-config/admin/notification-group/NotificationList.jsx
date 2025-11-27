@@ -15,12 +15,13 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import FlatButton from '@src/components/button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function NotificationList() {
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const showCardView = useResponsiveView();
+  const location = useLocation();
   const navigate = useNavigate();
   const { data, loading, error, isFilterApplied } = useTable();
   const { changePage, pagination } = usePagination();
@@ -42,7 +43,7 @@ function NotificationList() {
         maxWidth: '320px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.groupName} maxWidth={310} />
+            <EclipsesTextcss str={props.name} maxWidth={310} />
           </div>
         )
       },
@@ -53,7 +54,7 @@ function NotificationList() {
         minWidth: '260px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.createdBy} maxWidth={250} />
+            <EclipsesTextcss str={props.createdBy.name} maxWidth={250} />
           </div>
         )
       },
@@ -64,7 +65,7 @@ function NotificationList() {
         maxWidth: '260px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={CommonUtils.convertDateStringFormat(props.createdOn)} maxWidth={250} />
+            <EclipsesTextcss str={CommonUtils.convertDateStringFormat(props.createdAt)} maxWidth={250} />
           </div>
         )
       },
@@ -74,7 +75,7 @@ function NotificationList() {
         wrap: true,
         maxWidth: '120px',
         cell: (props) => (
-          <FlatButton size="small" style={{ paddingLeft: 0, paddingRight: 0 }} variant="text" onClick={() => navigate(`${props.id}`)}>
+          <FlatButton size="small" style={{ paddingLeft: 0, paddingRight: 0 }} variant="text" onClick={() => navigate(`${props.id}/edit`)}>
             View
           </FlatButton>
         )
@@ -82,9 +83,25 @@ function NotificationList() {
     ];
   }, [pagination.pageNo]);
 
+  React.useEffect(() => {
+    if (error)
+      setAlert({
+        type: 'error',
+        description: CommonUtils.getAxiosErrorMessage(error)
+      });
+  }, [error]);
+
+  React.useEffect(() => {
+    const { alert = null } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location]);
+
   return (
     <div className="MCP-module-wrapper">
-      <div className="stack">
+      <div className="MCP-module-header">
         <Breadcrumbs items={breadcrumbItems} />
         <ModuleHeader
           heading={<Heading as="h2">{translateFn('Manage Notification Group')}</Heading>}
@@ -100,16 +117,16 @@ function NotificationList() {
       <div className="MCP-module-body">
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="MCP-panel-container">
-          <div className="MCP-CardContainer">
-            <CommonFilters
-              autoFocus={true}
-              onApplyFilters={() => {}}
-              onClearFilters={() => {}}
-              additionalFilters={[]}
-              searchPlaceholder={translateFn('Search By Group')}
-            />
-          </div>
           <div className="stack">
+            <div className="MCP-CardContainer">
+              <CommonFilters
+                autoFocus={true}
+                onApplyFilters={() => {}}
+                onClearFilters={() => {}}
+                additionalFilters={[]}
+                searchPlaceholder={translateFn('Search By Group')}
+              />
+            </div>
             <TableHeading heading={translateFn('Notification Group Listing')} />
             <CustomDataTable
               id={'notification-group'}

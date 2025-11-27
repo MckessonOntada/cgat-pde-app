@@ -50,16 +50,18 @@ export default function RuleRow({ index, rule, attributes }) {
             placeholder=" "
             component={Components['dropdown']}
             isRequired={selectedAttribute && (selectedAttribute.isRequired || selectedAttribute.isMandatory)}
-            isDisabled={selectedAttribute && selectedAttribute.isMandatory}
+            isDisabled={selectedAttribute?.isMandatory}
           />
-          <div className="control-helper-text">
-            {(selectedAttribute && selectedAttribute.helperText) || 'Please select a criteria to apply the approval rules on.'}
-          </div>
+          <div className="control-helper-text">{selectedAttribute?.helperText || 'Please select a criteria to apply the approval rules on.'}</div>
         </div>
         <div className={`${style.ruleKeyword} ${style.joinKeyword}`}>{rule.attribute && selectedAttribute.joinBy}</div>
         <div className={style.inputControls}>
           <div className={style.control}>{rule.attribute && targetField && <DynamicValueInput index={index} {...targetField} />}</div>
-          {values.rules.length > 1 && <IconButton icon={<DeleteIcon />} variant="tertiary" size="md" className="btnRemove" onClick={onRemove} />}
+          {values.rules.length > 1 && !selectedAttribute?.isMandatory && (
+            <div className={style.iconButton}>
+              <IconButton icon={<DeleteIcon />} variant="tertiary" size="md" onClick={onRemove} />
+            </div>
+          )}
         </div>
       </div>
     </div>

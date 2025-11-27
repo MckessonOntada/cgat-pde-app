@@ -21,8 +21,10 @@
     font-weight: var(--brand-font-weight-600);
     text-transform: uppercase;
     font-style: italic;
+    margin-top: var(--spacing-05);
 
     &.joinKeyword {
+      text-align: center;
       justify-content: center;
     }
   }
@@ -46,15 +48,17 @@
     display: grid;
     grid-template-columns: 1fr 8fr 4fr 19fr;
     gap: 12px;
-    align-items: center;
+    align-items: start;
 
     .inputControls {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
       flex-direction: row;
-
+      .iconButton {
+        margin-top: var(--spacing-04);
+      }
       .control {
         flex-grow: 1;
       }

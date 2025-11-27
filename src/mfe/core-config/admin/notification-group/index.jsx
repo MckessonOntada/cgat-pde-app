@@ -19,8 +19,8 @@ function NotificationGroup() {
         index
       />
       <Route path={ROUTE_PATH.CREATE} element={<CreateNotificationGroup />} />
-      <Route path={ROUTE_PATH.VIEW} element={<div>View</div>} />
-      <Route path={ROUTE_PATH.EDIT} element={<div>Edit</div>} />
+      <Route path={ROUTE_PATH.VIEW} element={<CreateNotificationGroup />} />
+      <Route path={ROUTE_PATH.EDIT} element={<CreateNotificationGroup mode={'edit'} />} />
     </Routes>
   );
 }

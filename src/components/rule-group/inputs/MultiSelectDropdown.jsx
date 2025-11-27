@@ -80,7 +80,7 @@ const MultiSelectDropdown = (props) => {
 
       lastSelectedRef.current = values.filter((v) => v.isChecked);
 
-      const mapped = values.filter((v) => v.isChecked).map((v) => ({ label: v.label, value: v.value, isChecked: true }));
+      const mapped = values.filter((v) => v.isChecked).map((v) => ({ ...v, label: v.label, value: v.value, isChecked: true }));
 
       setFieldValue(name, mapped);
     },

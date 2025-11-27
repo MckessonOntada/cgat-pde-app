@@ -19,7 +19,7 @@ export default function RuleList({ title, attributes }) {
 
   return (
     <div className={style.section}>
-      <Heading as="h2">{title}</Heading>
+      <Heading as="h3">{title}</Heading>
 
       <div className={style.ruleList}>
         {rules.map((rule, index) => (
