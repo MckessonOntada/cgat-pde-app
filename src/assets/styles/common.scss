@@ -71,7 +71,16 @@ div.disable-all {
   }
 }
 
-.MCP-modal-body {
+.MCP-module-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-05);
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+.MCP-modal-body,
+.stack {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
@@ -83,7 +92,7 @@ div.disable-all {
 .MCP-module-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-05);
+  gap: var(--spacing-03);
 
   @media only screen and (max-width: 576px) {
     gap: var(--spacing-04);
