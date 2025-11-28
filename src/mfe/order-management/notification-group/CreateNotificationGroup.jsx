@@ -11,6 +11,7 @@ import CommonUtils from '@src/util/CommonUtils.js';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useTranslate } from '@src/translations/useTranslation.js';
 import ModuleHeader from '@src/components/module-header/index.jsx';
+import FlatButton from '@src/components/button';
 
 function CreateNotificationGroup({ mode }) {
   const isEdit = mode === 'edit';
@@ -135,8 +136,8 @@ function CreateNotificationGroup({ mode }) {
       curdPromise
         .then((response) => {
           let message = '';
-          if (isEdit) message = translateFn('notificationGroup.save.success', { groupName });
-          else message = translateFn('notificationGroup.update.success', { groupName });
+          if (isEdit) message = translateFn('notificationGroup.update.success', { groupName });
+          else message = translateFn('notificationGroup.save.success', { groupName });
           navigate('../', {
             state: {
               alert: {
@@ -169,10 +170,11 @@ function CreateNotificationGroup({ mode }) {
           <div className="MCP-module-wrapper">
             <div className="MCP-module-header">
               <div>
-                <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('../')} size="md">
+                <FlatButton style={{ padding: '0px' }} variant="text" startIcon={<IconArrowLeft />} onClick={() => navigate('../')} size="small">
                   {translateFn('button.caption.backToNotificationGroup')}
-                </Button>
+                </FlatButton>
               </div>
+
               <ModuleHeader heading={<Heading as="h2">{config.moduleTitle}</Heading>} />
             </div>
             {alert && <Alert {...alert} onClose={() => setAlert(null)} />}

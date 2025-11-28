@@ -16,17 +16,17 @@
 /* SIZES */
 .small {
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: var(--brand-font-size--small);
 }
 
 .medium {
   padding: 6px 16px;
-  font-size: 14px;
+  font-size: var(--brand-font-size--default);
 }
 
 .large {
   padding: 8px 22px;
-  font-size: 16px;
+  font-size: var(--brand-font-size--large);
 }
 
 /* FULL WIDTH */
@@ -50,13 +50,13 @@
 
 /* COLORS */
 .primary {
-  background: #1976d2;
+  background: var(--brand-color-primary);
   color: #fff;
 }
 
 .primary.outlined,
 .primary.text {
-  color: #1976d2;
+  color: var(--brand-color-primary);
   background: transparent;
 }
 
@@ -103,6 +103,4 @@
 .icon {
   display: flex;
   align-items: center;
-  width: 8px;
-  height: 8px;
 }

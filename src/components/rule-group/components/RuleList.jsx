@@ -36,7 +36,13 @@ export default function RuleList({ title, attributes }) {
       </div>
 
       <div className="styled-icon-button">
-        <Button style={{ padding: 0 }} disabled={rules.length === attributes.length} variant="text" size="medium" startIcon={<PlusIcon />} onClick={addRule}>
+        <Button
+          style={{ padding: 0 }}
+          disabled={rules.length === attributes.length}
+          variant="text"
+          size="medium"
+          startIcon={<PlusIcon width="10" height="10" />}
+          onClick={addRule}>
           Add Attribute
         </Button>
       </div>
