@@ -73,6 +73,7 @@ export const UserManagementES = {
   'userManagement.button.edit': 'S_Edit',
   'userManagement.button.adduser': 'S_Add User',
   'userManagement.button.addNewGroup': 'S_Add New Group',
+  'userManagement.button.editGroup': 'Edit Group',
   'userManagement.button.uploadUsers': 'S_Upload Users',
   'userManagement.button.uploadingUsers': 'S_Uploading...',
   'userManagement.button.downloadTemplateDescription': 'S_Download sample template for uploading bulk users.',
@@ -451,6 +452,7 @@ export const UserManagementES = {
   'notificationGroup.validation.valueIsRequired': 'S_Value is required',
   'notificationGroup.validation.leastOneRuleRequired': 'S_At least one rule is required',
   'notificationGroup.validation.leastOneParticipantRequired': 'S_Select at least one participant',
+  'notificationGroup.validation.provideCorrectPrice': 'Please provide a valid price greater than 0',
 
   'notificationGroup.save.success': 'S_New notification group {groupName} is created successfully.',
   'notificationGroup.update.success': 'S_Notification group {groupName} updated successfully.',

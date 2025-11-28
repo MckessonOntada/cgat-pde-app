@@ -175,7 +175,7 @@ function CreateNotificationGroup({ mode }) {
                 </FlatButton>
               </div>
 
-              <ModuleHeader heading={<Heading as="h2">{config.moduleTitle}</Heading>} />
+              <ModuleHeader heading={<Heading as="h2">{isEdit ? config.moduleTitle.edit : config.moduleTitle.create}</Heading>} />
             </div>
             {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
             <DynamicRuleGroup config={config} />
