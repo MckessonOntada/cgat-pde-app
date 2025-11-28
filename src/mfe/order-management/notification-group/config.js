@@ -11,7 +11,10 @@ const ROUTE_PATH = {
 };
 
 const getUIConfig = (translateFn) => ({
-  moduleTitle: translateFn('userManagement.button.addNewGroup'),
+  moduleTitle: {
+    create: translateFn('userManagement.button.addNewGroup'),
+    edit: translateFn('userManagement.button.editGroup')
+  },
   metaSection: {
     title: translateFn('notificationGroup.groupDetails'),
     field: {
@@ -76,7 +79,6 @@ const getUIConfig = (translateFn) => ({
               params.query = query;
             }
             const accounts = await AccountService.getAllAccounts(params);
-            debugger;
 
             const options = accounts.content.map((account) => ({
               label: account.accountName,

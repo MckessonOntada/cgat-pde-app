@@ -431,6 +431,7 @@ export const UserManagementEN = {
   'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
   'userManagement.button.addUsers': 'Add Users',
   'userManagement.button.addNewGroup': 'Add New Group',
+  'userManagement.button.editGroup': 'Edit Group',
   'userManagement.upload-info': 'For filling up the user’s template, please refer to the instruction file.',
   'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
@@ -479,6 +480,7 @@ export const UserManagementEN = {
   'notificationGroup.validation.valueIsRequired': 'Value is required',
   'notificationGroup.validation.leastOneRuleRequired': 'At least one rule is required',
   'notificationGroup.validation.leastOneParticipantRequired': 'Select at least one participant',
+  'notificationGroup.validation.provideCorrectPrice': 'Please provide a valid price greater than 0',
 
   'notificationGroup.save.success': 'New notification group {groupName} is created successfully.',
   'notificationGroup.update.success': 'Notification group {groupName} updated successfully.',

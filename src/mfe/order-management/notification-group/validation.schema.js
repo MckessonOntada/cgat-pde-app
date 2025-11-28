@@ -19,6 +19,14 @@ export const getNotificationGroupSchema = (translateFn) =>
 
               return true;
             })
+            .test('price-must-be-whole-number', translateFn('notificationGroup.validation.provideCorrectPrice'), function (value) {
+              const { attribute } = this.parent;
+
+              if (attribute !== 'price') return true;
+              if (value === undefined || value === null) return false;
+
+              return /^[0-9]+$/.test(String(value));
+            })
         })
       )
       .min(1, translateFn('notificationGroup.validation.leastOneRuleRequired')),
