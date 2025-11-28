@@ -72,6 +72,7 @@ export const UserManagementES = {
   'userManagement.button.savencontinue': 'S_Save And Continue',
   'userManagement.button.edit': 'S_Edit',
   'userManagement.button.adduser': 'S_Add User',
+  'userManagement.button.addNewGroup': 'S_Add New Group',
   'userManagement.button.uploadUsers': 'S_Upload Users',
   'userManagement.button.uploadingUsers': 'S_Uploading...',
   'userManagement.button.downloadTemplateDescription': 'S_Download sample template for uploading bulk users.',
@@ -366,6 +367,7 @@ export const UserManagementES = {
   'labels.updatedDateFrom': 'S_Date Updated (From)',
   'labels.updatedDateTo': 'S_Date Updated (To)',
   'placeholders.search': 'S_Search',
+  'placeholders.searchByGroup': 'S_Search by Group',
   'button.label.loginAsThisUser': 'S_Login as this user',
   'popup.title.alert': 'S_Alert!',
   'popup.message.wishToContinueLoginAsThisUserQuestion': 'S_Do you wish to continue?',
@@ -426,6 +428,7 @@ export const UserManagementES = {
   'table.column.caption.ndc': 'S_NDC',
   'table.column.caption.manufacturer': 'S_Manufacturer Name',
   'table.title.selectMaterial': 'S_Select Material',
+  'table.title.notificationGroupListing': 'S_Notification Group Listing',
   'list.title.selectedMaterials': 'S_Selected Materials',
   'placeholder.materialTable': 'S_Search by therapy, Generic name, ndc, formulation and ndc',
   'table.column.caption.therapy': 'S_Therapy',
@@ -437,5 +440,57 @@ export const UserManagementES = {
   'userManagement.header.view.linkedMaterials': 'S_Linked Materials',
   'userManagement.button.linkMaterials': 'S_Link Materials',
   'table.columns.caption.formulation': 'S_Formulation',
-  'userManagement.button.edit_materials': 'S_Edit Materials'
+  'userManagement.button.edit_materials': 'S_Edit Materials',
+  'emptyTable.title.noRecordsFoundUserMaterials': 'S_No Assigned Material Found.',
+  'emptyTable.description.noRecordsFoundUserMaterials': 'S_You need to assign materials to see in this table.',
+  'emptyTable.title.noRecordsFoundNotification Group': 'S_No Notification Group Found.',
+  'emptyTable.description.noRecordsFoundNotificationGroup': 'S_You need to add notification group to see in this table.',
+
+  'notificationGroup.validation.groupNameIsRequired': 'S_Group name is required',
+  'notificationGroup.validation.attributeIsRequired': 'S_Attribute is required',
+  'notificationGroup.validation.valueIsRequired': 'S_Value is required',
+  'notificationGroup.validation.leastOneRuleRequired': 'S_At least one rule is required',
+  'notificationGroup.validation.leastOneParticipantRequired': 'S_Select at least one participant',
+
+  'notificationGroup.save.success': 'S_New notification group {groupName} is created successfully.',
+  'notificationGroup.update.success': 'S_Notification group {groupName} updated successfully.',
+  'notificationGroup.error.conflict': 'S_Notification group with name {groupName} already exists. Please choose a different name.',
+
+  'button.caption.backToNotificationGroup': 'S_Back To Notification Group',
+  'button.caption.createGroup': 'S_Create Group',
+  'button.caption.updateGroup': 'S_Update Group',
+
+  'notificationGroup.groupDetails': 'S_Group Details',
+  'notificationGroup.notificationGroupName.label': 'S_Notification Group Name',
+  'notificationGroup.notificationGroupName.helperText': 'S_Please enter a unique notification group name.',
+  'notificationGroup.participantsSection.title': 'S_Notification user list',
+  'notificationGroup.participantsSection.label': 'S_Participants',
+  'notificationGroup.participantsSection.helperText': 'S_Select the users who will receive notifications for the selected triggers.',
+  'notificationGroup.participantsSection.placeholder': 'S_Search participants',
+
+  'notificationGroup.ruleNotificationTriggers.title': 'S_Notification Triggers',
+  'notificationGroup.ruleNotificationTriggers.helperText': 'S_Please select a criteria to apply the notification rules on.',
+  'notificationGroup.ruleNotificationTriggers.targetField.label': 'S_Select Notification(s)',
+  'notificationGroup.ruleNotificationTriggers.targetField.helperText': 'S_Please select the therapy(s) for the notification group.',
+
+  'notificationGroup.ruleAccount.title': 'S_Account',
+  'notificationGroup.ruleAccount.helperText': 'S_Please select a criteria to apply the notification rules on.',
+  'notificationGroup.ruleAccount.targetField.label': 'S_Select account(s)',
+  'notificationGroup.ruleAccount.targetField.helperText': 'S_Please select account for the notification group.',
+
+  'notificationGroup.ruleMaterial.title': 'S_Material',
+  'notificationGroup.ruleMaterial.helperText': 'S_Please select a criteria to apply the notification rules on.',
+  'notificationGroup.ruleMaterial.targetField.label': 'S_Select Therapy',
+  'notificationGroup.ruleMaterial.targetField.helperText': 'S_Please select the therapy(s) for the notification group.',
+
+  'notificationGroup.rulePrice.title': 'S_Price',
+  'notificationGroup.rulePrice.helperText': 'S_Please select a criteria to apply the notification rules on.',
+  'notificationGroup.rulePrice.targetField.label': 'S_Amount',
+  'notificationGroup.rulePrice.targetField.helperText': 'S_Please enter the amount greater than for the notification group.',
+
+  'dynamicRuleGroup.rules': 'S_Rules',
+  'dynamicRuleGroup.joinBy.anyOf': 'S_Any Of',
+  'dynamicRuleGroup.joinBy.selectAnyOf': 'S_Selected Any Of',
+  'dynamicRuleGroup.joinBy.orderedAnyOf': 'S_Ordered Any Of',
+  'dynamicRuleGroup.joinBy.greaterThan': 'S_Greater than'
 };

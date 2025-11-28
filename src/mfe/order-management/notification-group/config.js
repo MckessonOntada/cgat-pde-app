@@ -10,36 +10,36 @@ const ROUTE_PATH = {
   EDIT: ':groupId/edit'
 };
 
-const config = {
-  moduleTitle: 'Add New Group',
+const getUIConfig = (translateFn) => ({
+  moduleTitle: translateFn('userManagement.button.addNewGroup'),
   metaSection: {
-    title: 'Group Details',
+    title: translateFn('notificationGroup.groupDetails'),
     field: {
       id: 'group-name',
       name: 'groupName',
-      label: 'Notification Group Name',
+      label: translateFn('notificationGroup.notificationGroupName.label'),
       type: 'text',
       isRequired: true,
-      helper: 'Please enter a unique notification group name.'
+      helper: translateFn('notificationGroup.notificationGroupName.helperText')
     }
   },
 
   ruleSection: {
-    title: 'Rules',
+    title: translateFn('dynamicRuleGroup.rules'),
     attributes: [
       {
         name: 'notification-trigger',
-        label: 'Notification Triggers',
+        label: translateFn('notificationGroup.ruleNotificationTriggers.title'),
         isMandatory: true,
-        joinBy: 'Any Of',
-        helperText: 'Please select a criteria to apply the notification rules on.',
+        joinBy: translateFn('dynamicRuleGroup.joinBy.anyOf'),
+        helperText: translateFn('notificationGroup.ruleNotificationTriggers.helperText'),
         targetField: {
           type: 'search',
-          label: 'Select Notification(s)',
+          label: translateFn('notificationGroup.ruleNotificationTriggers.targetField.label'),
           isMultiSelect: true,
           pillsCount: 5,
           isPillsVisible: true,
-          helperText: 'Please select the therapy(s) for the notification group.',
+          helperText: translateFn('notificationGroup.ruleNotificationTriggers.targetField.helperText'),
           pillListerFn: (item) => ({ id: item.value, labelText: item.label }),
           searchFn: async (query) => {
             const params = {};
@@ -59,13 +59,13 @@ const config = {
       },
       {
         name: 'account',
-        label: 'Account',
-        joinBy: 'Selected Any Of',
-        helperText: 'Please select a criteria to apply the notification rules on.',
+        label: translateFn('notificationGroup.ruleAccount.title'),
+        joinBy: translateFn('dynamicRuleGroup.joinBy.selectAnyOf'),
+        helperText: translateFn('notificationGroup.ruleAccount.helperText'),
         targetField: {
           type: 'search',
-          label: 'Select account',
-          helperText: 'Please select account for the notification group.',
+          label: translateFn('notificationGroup.ruleAccount.targetField.label'),
+          helperText: translateFn('notificationGroup.ruleAccount.targetField.helperText'),
           isMultiSelect: true,
           pillsCount: 5,
           isPillsVisible: true,
@@ -92,16 +92,16 @@ const config = {
       },
       {
         name: 'material',
-        label: 'Material',
-        joinBy: 'Ordered Any Of',
-        helperText: 'Please select a criteria to apply the notification rules on.',
+        label: translateFn('notificationGroup.ruleMaterial.title'),
+        joinBy: translateFn('dynamicRuleGroup.joinBy.orderedAnyOf'),
+        helperText: translateFn('notificationGroup.ruleMaterial.helperText'),
         targetField: {
           type: 'search',
-          label: 'Select Therapy',
+          label: translateFn('notificationGroup.ruleMaterial.targetField.label'),
           isMultiSelect: true,
           pillsCount: 5,
           isPillsVisible: true,
-          helperText: 'Please select the therapy(s) for the notification group.',
+          helperText: translateFn('notificationGroup.ruleMaterial.targetField.helperText'),
           pillListerFn: (item) => ({ id: item.value, labelText: item.label }),
           searchFn: async (query) => {
             const params = {};
@@ -120,31 +120,31 @@ const config = {
       },
       {
         name: 'price',
-        label: 'Price',
-        joinBy: 'Greater than',
-        helperText: 'Please select a criteria to apply the notification rules on.',
+        label: translateFn('notificationGroup.rulePrice.title'),
+        joinBy: translateFn('dynamicRuleGroup.joinBy.greaterThan'),
+        helperText: translateFn('notificationGroup.rulePrice.helperText'),
         targetField: {
           type: 'number',
-          label: 'Amount',
-          helperText: 'Please enter the amount greater than for the notification group.'
+          label: translateFn('notificationGroup.rulePrice.targetField.label'),
+          helperText: translateFn('notificationGroup.rulePrice.targetField.helperText')
         }
       }
     ]
   },
 
   participantsSection: {
-    title: 'Notification user list',
+    title: translateFn('notificationGroup.participantsSection.title'),
     field: {
       id: 'participants',
       name: 'participants',
-      label: 'Participants',
+      label: translateFn('notificationGroup.participantsSection.label'),
       type: 'search',
-      placeholder: 'Search participants',
+      placeholder: translateFn('notificationGroup.participantsSection.placeholder'),
       isMultiSelect: true,
       isRequired: true,
       pillsCount: 5,
       isPillsVisible: true,
-      helperText: 'Select the users who will receive notifications for the selected triggers.',
+      helperText: translateFn('notificationGroup.participantsSection.helperText'),
       pillListerFn: (item) => ({ id: item.value, labelText: item.label }),
       searchFn: async (query) => {
         const params = {
@@ -165,7 +165,7 @@ const config = {
       }
     }
   }
-};
+});
 
-export default config;
+export default getUIConfig;
 export { ROUTE_PATH };

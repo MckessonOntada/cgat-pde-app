@@ -1,9 +1,9 @@
 import DynamicRuleGroup from '@src/components/rule-group';
-import config from './config.js';
+import getUIConfig from './config.js';
 import React from 'react';
 import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
 import { Formik, Form } from 'formik';
-import { NotificationGroupSchema } from './validation.schema.js';
+import { getNotificationGroupSchema } from './validation.schema.js';
 import { useNavigate, useParams } from 'react-router-dom';
 import NotificationService from '@src/api/commonService/NotificationService.js';
 import AuthUtils from '@src/util/AuthUtils.js';
@@ -15,6 +15,7 @@ import ModuleHeader from '@src/components/module-header/index.jsx';
 function CreateNotificationGroup({ mode }) {
   const isEdit = mode === 'edit';
   const { t: translateFn } = useTranslate();
+  const config = getUIConfig(translateFn);
   const { groupId } = useParams();
   const [alert, setAlert] = React.useState(null);
   const navigate = useNavigate();
@@ -134,8 +135,8 @@ function CreateNotificationGroup({ mode }) {
       curdPromise
         .then((response) => {
           let message = '';
-          if (isEdit) message = `Notification group ${groupName} updated successfully.`;
-          else message = `New notification group ${groupName} is created successfully.`;
+          if (isEdit) message = translateFn('notificationGroup.save.success', { groupName });
+          else message = translateFn('notificationGroup.update.success', { groupName });
           navigate('../', {
             state: {
               alert: {
@@ -146,7 +147,13 @@ function CreateNotificationGroup({ mode }) {
           });
         })
         .catch((error) => {
-          const errorMessage = CommonUtils.getAxiosErrorMessage(error);
+          let errorMessage = '';
+          if (error.status === 409) {
+            errorMessage = translateFn('notificationGroup.error.conflict', { groupName });
+          } else {
+            errorMessage = CommonUtils.getAxiosErrorMessage(error);
+          }
+
           setAlert({
             type: 'error',
             description: errorMessage
@@ -157,7 +164,7 @@ function CreateNotificationGroup({ mode }) {
 
   return (
     <React.Fragment>
-      <Formik onSubmit={handleOnSubmit} validationSchema={NotificationGroupSchema} initialValues={initialState} enableReinitialize>
+      <Formik onSubmit={handleOnSubmit} validationSchema={getNotificationGroupSchema(translateFn)} initialValues={initialState} enableReinitialize>
         <Form>
           <div className="MCP-module-wrapper">
             <div className="MCP-module-header">
@@ -168,14 +175,14 @@ function CreateNotificationGroup({ mode }) {
               </div>
               <ModuleHeader heading={<Heading as="h2">{config.moduleTitle}</Heading>} />
             </div>
-            {alert && <Alert {...alert} onClick={() => setAlert(null)} />}
+            {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
             <DynamicRuleGroup config={config} />
             <div className="controls">
-              <Button variant="secondary" type="button" onClick={() => {}} size={'md'}>
-                Cancel
+              <Button variant="secondary" type="button" onClick={() => navigate('..')} size={'md'}>
+                {translateFn('userManagement.label.cancel')}
               </Button>
               <Button type="submit" size="md">
-                {isEdit ? 'Update Group' : 'Create Group'}
+                {translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
               </Button>
             </div>
           </div>

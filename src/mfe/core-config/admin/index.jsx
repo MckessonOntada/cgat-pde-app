@@ -9,7 +9,7 @@ import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import AdminLayout from '@src/mfe/core-config/admin/AdminIndex';
 import NotFound from '@src/pages/error-pages/NotFound';
 import ManagedLinkedAccounts from './manage-linked-accounts/routes/Routes';
-import NotificationGroup from './notification-group';
+import NotificationGroup from '../../order-management/notification-group';
 const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
 
 function AdminRoutes() {
@@ -49,14 +49,7 @@ function AdminRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path={`notification-group/*`}
-        element={
-          <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
-            <NotificationGroup />
-          </ProtectedRoute>
-        }
-      />
+      <Route path={`notification-group/*`} element={<NotificationGroup />} />
       <Route
         path={`linked-accounts/*`}
         element={

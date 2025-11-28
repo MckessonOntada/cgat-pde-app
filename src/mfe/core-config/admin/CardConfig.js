@@ -41,9 +41,9 @@ const cardList = [
   },
   {
     name: 'ManageNotificationGroups',
-    label: 'manage_notification_groups',
+    label: 'notificationGroup.title',
     icon: ApproverGroupIcon,
-    details: 'approver_management_description',
+    details: 'notificationGroup.description',
     path: AppRoutes.pathNotificationManagement,
     permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
   },

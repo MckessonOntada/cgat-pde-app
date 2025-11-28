@@ -31,7 +31,7 @@ function NotificationList() {
       url: '/admin'
     },
     {
-      label: translateFn('Manage Notification Group')
+      label: translateFn('dashboard.card.notificationGroup.title')
     }
   ];
   const columns = React.useMemo(() => {
@@ -104,11 +104,11 @@ function NotificationList() {
       <div className="MCP-module-header">
         <Breadcrumbs items={breadcrumbItems} />
         <ModuleHeader
-          heading={<Heading as="h2">{translateFn('Manage Notification Group')}</Heading>}
+          heading={<Heading as="h2">{translateFn('dashboard.card.notificationGroup.title')}</Heading>}
           controls={
             <div className="controls">
               <Button Icon={AddIcon} className="button-icon" variant="primary" size="md" onClick={() => navigate(ROUTE_PATH.CREATE)}>
-                {translateFn('Add New Group')}
+                {translateFn('userManagement.button.addNewGroup')}
               </Button>
             </div>
           }
@@ -124,10 +124,10 @@ function NotificationList() {
                 onApplyFilters={() => {}}
                 onClearFilters={() => {}}
                 additionalFilters={[]}
-                searchPlaceholder={translateFn('Search By Group')}
+                searchPlaceholder={translateFn('placeholders.searchByGroup')}
               />
             </div>
-            <TableHeading heading={translateFn('Notification Group Listing')} />
+            <TableHeading heading={translateFn('table.title.notificationGroupListing')} />
             <CustomDataTable
               id={'notification-group'}
               type={'normal'}
@@ -152,9 +152,9 @@ function NotificationList() {
                   isError={error}
                   image={EmptyDataImage}
                   heading={
-                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('table.message.noRecordsFoundNotificationGroup')
+                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('empty.table.title.noRecordsFoundNotificationGroup')
                   }
-                  description={!isFilterApplied && translateFn('table.description.noRecordsFoundDiagnosisCodes')}
+                  description={!isFilterApplied && translateFn('empty.table.description.noRecordsFoundNotificationGroup')}
                 />
               }
             />
