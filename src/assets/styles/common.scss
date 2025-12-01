@@ -1772,7 +1772,21 @@ input[type="checkbox"] + label {
   display: flex;
   flex-direction: column;
 }
+.table-selection-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-04);
+  align-items: stretch;
+  width: 100%;
 
+  .table {
+    flex-grow: 1;
+  }
+  .list {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
 .table-selection-container {
   display: grid;
   grid-template-columns:
