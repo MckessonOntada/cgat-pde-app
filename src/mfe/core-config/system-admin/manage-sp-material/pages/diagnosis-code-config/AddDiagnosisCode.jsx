@@ -107,30 +107,34 @@ function AddDiagnosisCode() {
           <React.Fragment>
             <ModuleHeader heading={<TableHeading heading={translateFn('table.title.selectDiagnosisCodes')} />} />
           </React.Fragment>
-          <div className={style['diagnosis-code-bucket-wrapper']}>
-            <DiagnosisCodeTable {...{ selectedCodes, setSelectedCodes }} omitColumns={['last-updated-on', 'action']} />
-            <List title={translateFn('list.title.selectedCodes')}>
-              {selectedCodes.map((item = {}, index) => {
-                const { code, longDescription } = item;
-                return (
-                  <ListItem key={index}>
-                    <div className={style['dx-code-card-with-action']}>
-                      <label>{`${code}(${longDescription})`}</label>
-                      <div className="styled-icon-button error-button">
-                        <IconButton
-                          size="lg"
-                          textButton={true}
-                          color={'error'}
-                          variant={'tertiary'}
-                          Icon={DeleteIcon}
-                          onClick={() => removeFromBucket(item.id)}
-                        />
+          <div className={'table-selection-wrapper'}>
+            <div className="table">
+              <DiagnosisCodeTable {...{ selectedCodes, setSelectedCodes }} omitColumns={['last-updated-on', 'action']} />
+            </div>
+            <div className="list">
+              <List title={translateFn('list.title.selectedCodes')}>
+                {selectedCodes.map((item = {}, index) => {
+                  const { code, longDescription } = item;
+                  return (
+                    <ListItem key={index}>
+                      <div className={style['dx-code-card-with-action']}>
+                        <label>{`${code}(${longDescription})`}</label>
+                        <div className="styled-icon-button error-button">
+                          <IconButton
+                            size="lg"
+                            textButton={true}
+                            color={'error'}
+                            variant={'tertiary'}
+                            Icon={DeleteIcon}
+                            onClick={() => removeFromBucket(item.id)}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </ListItem>
-                );
-              })}
-            </List>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </div>
           </div>
         </div>
         <div className="footer-wrapper" ref={controlRef}>
