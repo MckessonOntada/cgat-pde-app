@@ -4,7 +4,7 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.breadcrumbs.systemAdministrator': 'S_System Administrator',
   'manageSPMaterial.breadcrumbs.systemConfiguration': 'S_System Configuration',
   'manageSPMaterial.breadcrumbs.manageSPMaterial': 'S_Manage SP Material',
-  'manageSPMaterial.filters.searchPlaceholder': 'S_Search by Product Name, ID, NDC...',
+  'manageSPMaterial.filters.searchPlaceholder': 'S_Search by Therapy, Manufacturer, NDC...',
   'manageSPMaterial.table.spproductId': 'S_SP Product ID',
   'manageSPMaterial.table.productname': 'S_S_Product Name',
   'manageSPMaterial.table.ndc': 'S_NDC',
