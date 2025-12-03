@@ -68,6 +68,53 @@ const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
 export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig) => {
+  const buildDynamicFieldValidators = (config, t) => {
+    const dynamicFields = {};
+
+    config?.config?.fields?.forEach((field) => {
+      if (!field.properties.displayOnForm) return;
+
+      let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please enter valid input'));
+
+      if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+        const vf = field.properties.fieldFormat.validationFormat;
+
+        const minMatch = vf.match(/minDate\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+
+        const minDate = minMatch ? minMatch[1] : null;
+        const maxDate = maxMatch ? maxMatch[1] : null;
+
+        validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
+          if (!value) return true;
+
+          const toDate = (d) => {
+            const [m, day, y] = d.split('/');
+            return new Date(`${y}-${m}-${day}`);
+          };
+
+          const inputDate = toDate(value);
+          if (minDate && inputDate < toDate(minDate)) return false;
+          if (maxDate && inputDate > toDate(maxDate)) return false;
+
+          return true;
+        });
+      }
+
+      validator = validator.when([], {
+        is: () => field.properties.mandatoryField,
+        then: (s) => s.required(field.properties.errorMessage),
+        otherwise: (s) => s.notRequired()
+      });
+
+      dynamicFields[field.fieldName] = validator;
+    });
+
+    return dynamicFields;
+  };
+
+  const configToUse = isSpOrder ? spMaterialConfig : therapyConfig;
+
   return Yup.object().shape({
     patient: Yup.object().shape({
       patientInfo: Yup.object()
@@ -75,14 +122,12 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
         .shape({
           firstName: CommonUtils.getNameValidation(t, {
             field: 'first_name',
-            required: isSpOrder ? true : false
+            required: isSpOrder
           }),
-          middleName: CommonUtils.getNameValidation(t, {
-            field: 'middle_name'
-          }),
+          middleName: CommonUtils.getNameValidation(t, { field: 'middle_name' }),
           lastName: CommonUtils.getNameValidation(t, {
             field: 'last_name',
-            required: isSpOrder ? true : false
+            required: isSpOrder
           }),
           dateOfBirth: Yup.date()
             .max(yesterday, t('labels.invalidDateOfBirth'))
@@ -153,43 +198,8 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
             state: Yup.string().nullable().required(t('orderManagement.patientDetails.validation.state'))
           })
       }),
-      patientIdentifier: Yup.string()
-        .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
-        .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
-        .when([], {
-          is: () => !isSpOrder && therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
-          then: (schema) =>
-            schema
-              .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
-              .test(
-                'no-leading-trailing-spaces',
-                t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
-                (value) => value === undefined || value.trim().length === value.length
-              ),
-          otherwise: (schema) => schema.notRequired()
-        }),
-      medicalRecordNumber: Yup.string()
-        .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
-        .when([], {
-          is: () => (isSpOrder && spMaterialConfig?.mrnRequirement === REQUIREMENT.MANDATORY) || therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY,
-          then: (schema) =>
-            schema
-              .required(t('orderManagement.patientDetails.validation.mrn_required'))
-              .test(
-                'no-leading-trailing-spaces',
-                t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-                (value) => value === undefined || value.trim().length === value.length
-              ),
-          otherwise: (schema) => schema.notRequired()
-        }),
-      coiId: Yup.string()
-        .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-        .max(10, t('labels.COI_IdExceedDigits'))
-        .when([], {
-          is: () => isSpOrder && spMaterialConfig?.coiIdRequirement === REQUIREMENT.MANDATORY,
-          then: (schema) => schema.required(t('labels.COIIdRequired')),
-          otherwise: (schema) => schema.notRequired()
-        })
+
+      ...buildDynamicFieldValidators(configToUse, t)
     }),
     providerId: Yup.string().when([], {
       is: () => isSpOrder,

@@ -19,7 +19,7 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
         dynamic_fields.push({
           name: field?.fieldName,
-          label: field?.properties?.displayName || field?.fieldName,
+          label: field?.properties?.displayName,
           isRequired: field?.properties?.mandatoryField,
           component: Components[field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
           infoText: field?.properties.helpInfoMessage
