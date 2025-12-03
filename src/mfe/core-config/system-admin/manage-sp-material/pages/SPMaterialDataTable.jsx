@@ -58,7 +58,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
         description: location.state.alert.messages
       });
     }
-  }, [location, setAlert]);
+    setSelectedSPMaterial([]);
+  }, [location]);
   const columns = getSPMaterialColumns({
     t,
     paginationConfig,

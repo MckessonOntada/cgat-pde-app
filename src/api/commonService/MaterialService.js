@@ -173,6 +173,18 @@ async function getSpMaterialConfigByMaterialNumber(channelType, materialNo) {
   return [];
 }
 
+async function getManufacturers(channelType) {
+  if (!channelType) {
+    throw new Error('Invalid channel type.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/manufacturer?channelType=${channelType}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 const MaterialService = Object.freeze({
   getMaterialById,
   getMaterialConfigById,
@@ -189,7 +201,8 @@ const MaterialService = Object.freeze({
   updateMaterialConfigBnb,
   updateSPMaterialConfig,
   getMaterialConfigByNdc,
-  getSpMaterialConfigByMaterialNumber
+  getSpMaterialConfigByMaterialNumber,
+  getManufacturers
 });
 
 export default MaterialService;

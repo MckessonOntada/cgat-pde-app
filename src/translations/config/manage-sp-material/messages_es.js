@@ -173,5 +173,7 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.configuration.header.dateOfAdministration': 'S_Date of Administration',
   'manageSPMaterial.configuration.header.dateOfApheresis': 'S_Date of Apheresis',
   'button.caption.backToMaterialMaster': 'S_back to material Master',
+  'manageSPMaterial.configuration.heading.manufacturerConfiguration': 'Manufacturer Configuration',
+  'label.selectManufacturer': 'Select Manufacturer',
   'manageSPMaterial.configuration.validInput': 'S_Please fill valid input'
 };
