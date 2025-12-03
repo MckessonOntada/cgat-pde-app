@@ -1781,6 +1781,7 @@ input[type="checkbox"] + label {
 
   .table {
     flex-grow: 1;
+    min-width: 0;
   }
   .list {
     width: 320px;
