@@ -100,7 +100,7 @@ const UserPermissions = () => {
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
-      {!isEdit && (
+      {!isEdit && !isSystemAdminView && (
         <div className="stepper">
           <UserCreationStepper activeIndex={2} />
         </div>
@@ -130,7 +130,9 @@ const UserPermissions = () => {
                   {t('userManagement.button.back')}
                 </Button>
                 <Button variant="primary" type="submit" size={'md'}>
-                  {t(isSystemAdminView ? 'userManagement.label.save' : 'userManagement.button.savencontinue')}
+                  {isEdit
+                    ? t('userManagement.label.save')
+                    : t(isSystemAdminView ? 'userManagement.label.createSystemAdmin' : 'userManagement.button.savencontinue')}
                 </Button>
               </div>
             </Form>

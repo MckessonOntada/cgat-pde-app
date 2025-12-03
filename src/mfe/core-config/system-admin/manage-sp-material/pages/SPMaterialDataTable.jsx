@@ -52,13 +52,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   };
 
   useEffect(() => {
-    if (location.state?.alert?.type && location.state?.alert?.messages) {
-      setAlert({
-        type: location.state.alert.type,
-        description: location.state.alert.messages
-      });
+    if (location.state?.alert) {
+      setAlert(location.state.alert);
+      navigate(location.pathname);
     }
-  }, [location, setAlert]);
+    setSelectedSPMaterial([]);
+  }, [location]);
 
   const columns = getSPMaterialColumns({
     t,
