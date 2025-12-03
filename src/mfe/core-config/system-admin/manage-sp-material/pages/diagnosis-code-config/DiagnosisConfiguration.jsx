@@ -26,13 +26,20 @@ function DiagnosisConfiguration() {
 
   React.useEffect(() => {
     const { therapy } = location.state || {};
-
     setSelectedTherapy({
       id: therapy.materialNumber,
       name: therapy.tradeName,
       description: therapy.materialDescription
     });
   }, []);
+
+  React.useEffect(() => {
+    const { alert, ...rest } = location.state || {};
+    if (alert) {
+      setAlert(location.state.alert);
+      navigate(location.pathname, { state: rest });
+    }
+  }, [location]);
 
   const handleOnDelete = (ids) => {
     if (!ids || !Array.isArray(ids)) return;
