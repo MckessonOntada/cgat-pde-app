@@ -50,8 +50,9 @@ function AddDiagnosisCode() {
 
     MaterialService.addDiagnosisCode(selectedTherapy.id, codeIds)
       .then((_response) => {
-        navigate('./../../', {
+        navigate('./..', {
           state: {
+            ...location.state,
             alert: {
               type: 'success',
               description: translateFn('successMessage.nCodesAdded', { n: codeIds.length })
@@ -75,7 +76,7 @@ function AddDiagnosisCode() {
     setSelectedCodes(newList);
   };
   const handleOnCancel = () => {
-    navigate('./../..');
+    navigate(`./..`, { state: location.state });
   };
   return (
     <div className="MCP-module-wrapper">
