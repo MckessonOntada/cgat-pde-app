@@ -260,7 +260,7 @@ const CreateUser = () => {
           }
         />
 
-        {!isEdit && (
+        {!isEdit && !isSystemAdminView && (
           <div className="stepper">
             <UserCreationStepper activeIndex={1} />
           </div>
