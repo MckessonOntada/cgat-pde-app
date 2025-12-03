@@ -716,10 +716,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-      if (orderQuantity < therapyConfig.minQuantity || orderQuantity > therapyConfig.maxQuantity) {
+      const minQty = therapyConfig?.minQuantity ?? 1;
+      const maxQty = therapyConfig?.maxQuantity ?? 99;
+
+      if (orderQuantity < minQty || orderQuantity > maxQty) {
         setAlert({
           type: 'error',
-          description: `${t('additional.details.order.quantity.error')} ${therapyConfig.minQuantity} and ${therapyConfig.maxQuantity}.`
+          description: `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
         });
 
         return;

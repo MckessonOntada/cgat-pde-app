@@ -50,6 +50,7 @@ const ApiRoutes = Object.freeze({
   PAYMENT_HISTORY_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/history`),
   PAYMENT_METHODS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/method`),
   ORDERS: () => constructOrderManagementServiceUrl('orders'),
+  BASE_ORDER_SERVICE: () => constructOrderManagementServiceUrl(''),
   APPROVER_GROUP: () => constructOrderManagementServiceUrl('approver-group'),
   GET_OPEN_INVOICE_BALANCES: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/balances`),
   GET_PAY_AMOUNT_URL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/review/pay`),

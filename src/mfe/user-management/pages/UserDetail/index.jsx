@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
+import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
 import { Badge, Button, Heading, Switch, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
@@ -26,6 +27,8 @@ import NotificationPreferencePanel from '@src/mfe/core-config/notifications-sett
 import { Form, Formik } from 'formik';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
 import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
+import UserMaterial from '../CreateUser/UserMaterial';
+import UserService from '@src/api/commonService/UserService';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -50,13 +53,13 @@ const impersonatePromise = (selectedUserId) => {
 };
 
 const UserDetail = () => {
-  const { t } = useTranslate();
+  const { t: translateFn } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
   const [alert, setAlert] = useState(null);
   const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
-  const { isSuccess = false, isPending = false, isEdit = false } = location.state || {};
+  const { isPending = false, isEdit = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
@@ -74,16 +77,50 @@ const UserDetail = () => {
     isActive: false
   });
 
+  const {
+    isLoading,
+    data: userDetails,
+    refetch
+  } = useQuery({
+    queryKey: [`users/${userId}`],
+    queryFn: () => UserService.getUserDetails(userId, requestParams, isPending),
+    enabled: Boolean(userId),
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      const u = data?.userCommunicationPreferences?.preferences;
+      const r = data?.role?.communicationPreferences?.preferences;
+      const updated = getMergedPreferences(preferencesConfig, u, r);
+
+      setPreferenceConfig(updated);
+      setIsPreferencesLoaded(true);
+
+      const role = data?.role;
+      setIsPhysicianUser(AuthUtils.isPhysician(role?.name, role?.id));
+    },
+    select: (data) => {
+      if (!data.communicationPreferences) data.communicationPreferences = {};
+      return data;
+    }
+  });
+
   useEffect(() => {
     if (isEdit) {
       setIsProvisioned(true);
       setAlert({
-        description: t('userManagement.message.updateUser'),
+        description: translateFn('userManagement.message.updateUser'),
         type: 'success'
       });
       navigate(location.pathname);
     }
   }, [isEdit]);
+
+  React.useEffect(() => {
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state]);
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
@@ -97,33 +134,6 @@ const UserDetail = () => {
     }, 500);
   };
 
-  const {
-    isLoading,
-    data: userDetails,
-    refetch
-  } = useQuery({
-    queryKey: [`users/${userId}`],
-    queryFn: async () => {
-      const url = isPending ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}` : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      return res.data;
-    },
-    enabled: !!userId,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      const userCommunicationPreferences = data?.userCommunicationPreferences || {};
-      const roleCommunicationPreferences = data?.role?.communicationPreferences?.preferences || {};
-      const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
-      setPreferenceConfig(updatedConfig);
-      setIsPreferencesLoaded(true);
-      setIsPhysicianUser(AuthUtils.isPhysician(data?.role?.name, data?.role?.id));
-    },
-    select: (data) => {
-      if (!data.communicationPreferences) data.communicationPreferences = {};
-      return data;
-    }
-  });
-
   const mutation = useMutation(
     async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/retry-okta-provisioning`, httpVerb.POST, null);
@@ -133,14 +143,14 @@ const UserDetail = () => {
       onSuccess: () => {
         setIsProvisioned(true);
         setAlert({
-          description: t('messages.provisionedsuccess'),
+          description: translateFn('messages.provisionedsuccess'),
           type: 'success'
         });
       },
       onError: () => {
         setIsProvisioned(true);
         setAlert({
-          description: t('messages.provisionederrror'),
+          description: translateFn('messages.provisionederrror'),
           type: 'error'
         });
       }
@@ -152,10 +162,10 @@ const UserDetail = () => {
       setIsProvisioned(true);
       setAlert({
         type: 'error',
-        description: t('userManagement.provision.message', {
+        description: translateFn('userManagement.provision.message', {
           click: (
             <span>
-              <IconButton label={t('userManagement.button.clickhere')} size="lg" iconButton={false} textButton={true} onClick={handleRetry} />
+              <IconButton label={translateFn('userManagement.button.clickhere')} size="lg" iconButton={false} textButton={true} onClick={handleRetry} />
             </span>
           )
         })
@@ -175,7 +185,7 @@ const UserDetail = () => {
     setAlert(null);
     navigate(location.pathname, {
       replace: true,
-      state: { ...location.state, isSuccess: false }
+      state: { isSuccess: false }
     });
   };
 
@@ -205,7 +215,7 @@ const UserDetail = () => {
       refetch();
       setIsDeactivate(true);
       setAlert({
-        description: t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'),
+        description: translateFn(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'),
         type: 'success'
       });
     },
@@ -213,7 +223,7 @@ const UserDetail = () => {
       console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
       setAlert({
-        description: t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'),
+        description: translateFn(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'),
         type: 'error'
       });
     }
@@ -250,17 +260,17 @@ const UserDetail = () => {
 
     return groupedPermissions;
   };
-  const handleonBehalfNotifcaiton = async () => {
+  const handleOnBehalfNotification = async () => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${userDetails?.practiceId}/on-behalf-notification`, httpVerb.POST);
     return res.data;
   };
 
   const { mutate: OnBehalfNotification } = useMutation({
-    mutationFn: handleonBehalfNotifcaiton,
+    mutationFn: handleOnBehalfNotification,
     onSuccess: () => {},
     onError: () => {
       setAlert({
-        description: t('errors.default'),
+        description: translateFn('errors.default'),
         type: 'error'
       });
 
@@ -299,13 +309,13 @@ const UserDetail = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
-          {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
+          {translateFn(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
       {(isDeactivate || isProvisioned || isConsentError) && alert && <Alert {...alert} onClose={handleAlertClose} />}
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
+          heading={<Heading as="h1">{translateFn('userManagement.header.view.edit_user')}</Heading>}
           controls={
             prePermissions && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
@@ -316,7 +326,7 @@ const UserDetail = () => {
                       size="md"
                       onClick={(e) => handleClickLogin(e)}
                       disabled={userDetails?.role == null || userDetails?.permissions?.length === 0}>
-                      {t('button.label.loginAsThisUser')}
+                      {translateFn('button.label.loginAsThisUser')}
                     </Button>
                   </span>
                 </Tooltip>
@@ -342,11 +352,11 @@ const UserDetail = () => {
                   size="md"
                   disabled={!userDetails?.isActive || isSelf}
                   onClick={() =>
-                    navigate(`../${PATHS.editUser}/${userId}`, {
+                    navigate(`${PATHS.EDIT}`, {
                       state: { isEdit: true }
                     })
                   }>
-                  {t('userManagement.button.edit')}
+                  {translateFn('userManagement.button.edit')}
                 </Button>
               </PermittedComponent>
             )
@@ -368,7 +378,7 @@ const UserDetail = () => {
               )}
             </div>
             <div className="user-status">
-              <span className="view_label">{t('userManagement.userDetails.lastUpdatedOn')}</span>
+              <span className="view_label">{translateFn('userManagement.userDetails.lastUpdatedOn')}</span>
               <span className="label-text">
                 {' '}
                 {userDetails?.updatedAt
@@ -389,7 +399,7 @@ const UserDetail = () => {
                     }}
                     id="id"
                     disabled={(!isSystemAdmin && !userDetails?.isActive) || (isSystemAdmin && isSelf && userDetails?.isActive) || isSelf}
-                    label={userDetails?.isActive ? t('userManagement.status.active') : ''}
+                    label={userDetails?.isActive ? translateFn('userManagement.status.active') : ''}
                     labelPosition="right"
                     name="Toggle"
                     size="lg"
@@ -402,44 +412,44 @@ const UserDetail = () => {
 
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
-              <span className="view_label">{t('userManagement.userDetails.userAddress')}</span>
+              <span className="view_label">{translateFn('userManagement.userDetails.userAddress')}</span>
               <p className="label-text">{formatFields(userDetails?.address, ['address1', 'address2'])}</p>
             </div>
 
             <div>
-              <span className="view_label">{t('userManagement.create_user.inputLabel.email')}</span>
+              <span className="view_label">{translateFn('userManagement.create_user.inputLabel.email')}</span>
               <p className="label-text">{userDetails?.contact.email}</p>
             </div>
 
             <div>
-              <span className="view_label">{t('userManagement.create_user.inputLabel.phone_no')}</span>
+              <span className="view_label">{translateFn('userManagement.create_user.inputLabel.phone_no')}</span>
               <p className="label-text"> {userDetails?.contact.phone ? CommonUtils.formatPhoneNumber(userDetails.contact.phone) : 'N/A'} </p>
             </div>
 
             <div>
-              <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
+              <span className="view_label">{translateFn('userManagement.create_user.inputLabel.fax')}</span>
               <p className="label-text">{userDetails?.contact.fax || '-'}</p>
             </div>
 
             <div>
-              <span className="view_label">{t('userManagement.create_user.inputLabel.city')}</span>
+              <span className="view_label">{translateFn('userManagement.create_user.inputLabel.city')}</span>
               <p className="label-text">{userDetails?.address.city}</p>
             </div>
 
             <div>
-              <span className="view_label">{t('userManagement.create_user.inputLabel.zip')}</span>
+              <span className="view_label">{translateFn('userManagement.create_user.inputLabel.zip')}</span>
               <p className="label-text"> {userDetails?.address.zip}</p>
             </div>
 
             <div>
-              <span className="view_label">{t('userManagement.create_user.inputLabel.state')}</span>
+              <span className="view_label">{translateFn('userManagement.create_user.inputLabel.state')}</span>
               <p className="label-text">{userDetails?.address.state}</p>
             </div>
           </div>
         </div>
         <div className="secondryTitle">
           <ModuleHeader
-            heading={<Heading as="h2">{t('userManagement.header.view.permissions_granted')}</Heading>}
+            heading={<Heading as="h2">{translateFn('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
               !isPhysicianUser && (
                 <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
@@ -451,11 +461,11 @@ const UserDetail = () => {
                       size="md"
                       disabled={!userDetails?.isActive || isSelf}
                       onClick={() =>
-                        navigate(`../${PATHS.userPermissions}/${userId}`, {
-                          state: { isEdit: true, permissionsData: userDetails }
+                        navigate(`${PATHS.PERMISSIONS}`, {
+                          state: { isEdit: true }
                         })
                       }>
-                      {t('userManagement.button.edit')}
+                      {translateFn('userManagement.button.edit')}
                     </Button>
                   </div>
                 </PermittedComponent>
@@ -467,7 +477,7 @@ const UserDetail = () => {
           {userDetails?.permissions?.length > 0 ? (
             Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
               <div key={categoryKey} className="MCP-module-body permission-category">
-                <div className="subheader-text">{t(categoryKey)}</div>
+                <div className="subheader-text">{translateFn(categoryKey)}</div>
                 <div className="permission-category">
                   <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
                     {permissions.map((permissionKey, idx) => {
@@ -477,8 +487,8 @@ const UserDetail = () => {
                         <React.Fragment key={idx}>
                           <div className="flex items-center justify-between permission-item">
                             <div className="permission-info">
-                              <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
-                              <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                              <h4>{translateFn(`${categoryKey}.${permissionKey}`)}</h4>
+                              <p>{translateFn(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
                             </div>
                           </div>
                           {/* Add a divider dynamically */}
@@ -494,8 +504,8 @@ const UserDetail = () => {
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t('userManagement.message.userPermissionEmptyTableTitle')}
-              description={t('userManagement.messages.emptysubtitle')}
+              heading={translateFn('userManagement.message.userPermissionEmptyTableTitle')}
+              description={translateFn('userManagement.messages.emptysubtitle')}
             />
           )}
         </div>
@@ -503,7 +513,7 @@ const UserDetail = () => {
         {!isSystemAdminView && (
           <div className="MCP-module-body">
             <ModuleHeader
-              heading={<Heading as="h2">{t('userManagement.header.view.linked_accounts')}</Heading>}
+              heading={<Heading as="h2">{translateFn('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
                 !isPhysicianUser && (
                   <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
@@ -515,11 +525,11 @@ const UserDetail = () => {
                         size="md"
                         disabled={!userDetails?.isActive}
                         onClick={() =>
-                          navigate(`../${PATHS.addAccounts}/${userId}`, {
+                          navigate(`${PATHS.ADD_ACCOUNTS}`, {
                             state: { isEdit: true }
                           })
                         }>
-                        {t('userManagement.button.edit')}
+                        {translateFn('userManagement.button.edit')}
                       </Button>
                     </div>
                   </PermittedComponent>
@@ -537,39 +547,58 @@ const UserDetail = () => {
                 isPhysicianUser={isPhysicianUser}
               />
             )}
-
+            <React.Fragment>
+              <ModuleHeader
+                heading={<Heading as="h2">{translateFn('userManagement.header.view.linkedMaterials')}</Heading>}
+                controls={
+                  !isPhysicianUser && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                      <div className="controls">
+                        <Button
+                          Icon={AddIcon}
+                          variant="secondary"
+                          className="button-icon"
+                          size="md"
+                          disabled={!userDetails?.isActive}
+                          onClick={() =>
+                            navigate(`${PATHS.MATERIAL}`, {
+                              state: { isEdit: true }
+                            })
+                          }>
+                          {translateFn('userManagement.button.linkMaterials')}
+                        </Button>
+                      </div>
+                    </PermittedComponent>
+                  )
+                }
+              />
+              {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
+              <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+            </React.Fragment>
             <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
               <div className="MCP-module-wrapper">
                 <div className="MCP-module-body">
                   <ModuleHeader
-                    heading={<Heading as="h2">{t('Notification Preferences')}</Heading>}
+                    heading={<Heading as="h2">{translateFn('Notification Preferences')}</Heading>}
                     controls={
-                      prePermissions && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                         <div className="controls">
                           <Button
                             Icon={EditPencil}
                             variant="secondary"
                             className="button-icon"
                             size="md"
-                            onClick={() =>
-                              navigate(`${PATHS.NOTIFICATION_PREFERENCES}`, {
-                                state: {
-                                  permissions: userDetails.permissions,
-                                  userCommunicationPreferences: userDetails.userCommunicationPreferences ?? {},
-                                  roleCommunicationPreferences: userDetails.role?.communicationPreferences?.preferences
-                                }
-                              })
-                            }>
-                            {t('userManagement.button.edit')}
+                            onClick={() => navigate(`${PATHS.NOTIFICATION_PREFERENCES}`)}>
+                            {translateFn('userManagement.button.edit')}
                           </Button>
                         </div>
-                      )
+                      </PermittedComponent>
                     }
                   />
 
                   {alert && alert.pinPoint === 'notification_preferences' && <Alert {...alert} onClose={handleAlertClose} />}
 
-                  <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={() => {}}>
+                  <Formik initialValues={preferencesConfig} enableReinitialize={true}>
                     <Form>
                       <div className="MCP-panel-container">
                         <NotificationPreferencePanel
@@ -594,19 +623,19 @@ const UserDetail = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: t('userManagement.confirmationMessage'),
+          modalTitle: translateFn('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>{t(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
+              <p>{translateFn(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
             </div>
           ),
           modalFooter: (
             <React.Fragment>
               <Button size="md" onClick={handleConfirmCancel} variant="secondary">
-                {t('userManagement.label.cancel')}
+                {translateFn('userManagement.label.cancel')}
               </Button>
               <Button size="md" onClick={handleConfirmActivateDeactivate}>
-                {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
+                {translateFn(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
               </Button>
             </React.Fragment>
           ),
@@ -654,8 +683,8 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
             </p>
             <div className="checkboxGroup">
               <CheckboxGroup
-                id={'default'}
-                name="order-agreement"
+                id={'login-on-behalf-checkbox'}
+                name="login-on-behalf"
                 items={[
                   {
                     ...consentCheckboxOption,

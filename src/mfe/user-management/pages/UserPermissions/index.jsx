@@ -1,4 +1,4 @@
-import { Button, Heading, Loader, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -16,46 +16,41 @@ import React from 'react';
 import { PATHS } from '../../routes/constants';
 import './index.scss';
 import PermissionForm from './PermissionForm';
+import UserCreationStepper from '../UserCreationStepper';
+import useUser from '../../useUser';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { permissionsData, isEdit = false, isBack = false } = location.state || {};
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const { isEdit = false, isBack = false } = location.state || {};
   const [alert, setAlert] = useState(null);
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-  const handleAlertClose = () => {
-    setIsAlertVisible(false);
-  };
-
+  const { isLoading, data: userDetails = {}, refetch } = useUser(userId, requestParams);
   const handleGoBack = () => {
     navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const handleBack = () => {
     if (isEdit) {
-      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
+      navigate(`../${userId}`);
     } else {
-      navigate(`../${PATHS.editUser}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
+      navigate(`../${userId}/${PATHS.EDIT}`, { state: { isBack: true } });
     }
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
     const isRoleChanged = initialValues.roleId !== currentValues.roleId;
-    const arePermissionsChanged = JSON.stringify(initialValues.permissions) !== JSON.stringify(currentValues.permissions);
     return isRoleChanged;
   };
 
   const {
-    mutate,
+    mutate: savePermissions,
     isLoading: isSavingUserPermission,
     isError: isSaveUserPermissionError,
     data: saveUserPermissionResponse
@@ -70,33 +65,30 @@ const UserPermissions = () => {
 
   const handleSaveAndContinue = (values) => {
     const payload = {
-      roleId: permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
+      roleId: userDetails?.roleId ? userDetails?.roleId : values.roleId,
       permissions: values.permissions
     };
 
-    mutate(
+    savePermissions(
       { payload },
       {
         onSuccess: (response) => {
-          console.log('User created/updated successfully:', response);
           if (isSystemAdminView) {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathSystemAdminManagement, {
+            navigate(isEdit ? `../${userId}` : RoutePaths.pathSystemAdminManagement, {
               state: { isSuccess: true }
             });
           } else {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`, {
-              state: { permissionsData: payload }
-            });
+            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`);
           }
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: t('errors.default') });
-          setIsAlertVisible(true);
+          setAlert({ type: 'error', description: t('errors.default') });
         }
       }
     );
   };
-  if (isSavingUserPermission) {
+
+  if (isLoading || isSavingUserPermission) {
     return <Loader type={'screen'} />;
   }
 
@@ -108,56 +100,30 @@ const UserPermissions = () => {
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
-      {!isEdit && !isSystemAdmin && (
+      {!isEdit && (
         <div className="stepper">
-          <Stepper
-            activeIndex={2}
-            dividerText="of"
-            stepHeaders={[
-              {
-                label: t('userManagement.stepper.option.user_details')
-              },
-              {
-                label: t('userManagement.stepper.option.roles_and_permissions')
-              },
-              {
-                label: t('userManagement.stepper.option.associate_accounts')
-              }
-            ]}
-          />
+          <UserCreationStepper activeIndex={2} />
         </div>
       )}
-      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <Formik
         initialValues={{
-          permissions: permissionsData?.permissions || [],
-          roleId: isBack ? permissionsData.roleid : permissionsData?.role?.id || ''
+          permissions: userDetails.permissions || [],
+          roleId: userDetails.role?.id
         }}
-        onSubmit={(values) => {
-          handleSaveAndContinue(values);
-        }}
+        enableReinitialize={true}
+        onSubmit={handleSaveAndContinue}
         validateOnChange={false}
         validateOnBlur={true}>
-        {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
-          const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
-          let defaultRole = permissionsData ? permissionsData.role : null;
+        {({ values, setFieldValue, initialValues, isValid, handleSubmit, isDirty }) => {
           return (
-            <Form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!(isDirty && isValid)) {
-                  setAlert({ type: 'error', message: 'Please provide required values.' });
-                  setIsAlertVisible(true);
-                  return;
-                }
-                handleSubmit();
-              }}>
+            <Form>
               <PermissionForm
                 enabledPermissions={values.permissions}
                 setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)}
                 handleRoleSelect={(value) => setFieldValue('roleId', value)}
-                editRoleId={values.roleId ? values.roleId : permissionsData?.roleId}
-                defaultRole={defaultRole}
+                editRoleId={values.roleId}
+                defaultRole={userDetails.role}
               />
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>
