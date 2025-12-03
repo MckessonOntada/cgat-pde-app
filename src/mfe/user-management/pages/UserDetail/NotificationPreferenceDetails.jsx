@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import SMSConfigurationPanel from '@src/mfe/core-config/notifications-setting/co
 import UserService from '@src/api/commonService/UserService';
 import AuthUtils from '@src/util/AuthUtils';
 import Alert from '@src/components/alert/Alert';
+import useUser from '../../useUser';
 
 function NotificationPreferenceConfiguration() {
   const { t: translateFn } = useTranslate();
@@ -20,10 +21,16 @@ function NotificationPreferenceConfiguration() {
   const navigate = useNavigate();
   const [alert, setAlert] = React.useState(null);
   const [verificationStatus, setVerificationStatus] = React.useState({});
-  const { permissions: userPermissions, userCommunicationPreferences = {}, roleCommunicationPreferences = {} } = location.state || {};
+
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const requestParams = {
+    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
+  };
+
+  const { isLoading, data: userDetails, refetch } = useUser(userId, requestParams);
   const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
   const [isPreferencesLoaded, setIsPreferencesLoaded] = React.useState(false);
-
+  console.log(userDetails);
   React.useEffect(() => {
     UserService.getSubscriptionDetails(userId)
       .then((data) => {
@@ -42,10 +49,15 @@ function NotificationPreferenceConfiguration() {
   }, []);
 
   React.useEffect(() => {
-    const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
-    setPreferenceConfig(updatedConfig);
-    setIsPreferencesLoaded(true);
-  }, [notificationConfig, userCommunicationPreferences, roleCommunicationPreferences]);
+    if (userDetails) {
+      const userCommunicationPreferences = userDetails.userCommunicationPreferences ?? {};
+      const roleCommunicationPreferences = userDetails.role?.communicationPreferences?.preferences;
+
+      const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
+      setPreferenceConfig(updatedConfig);
+      setIsPreferencesLoaded(true);
+    }
+  }, [notificationConfig, userDetails]);
   const handleOnSubmit = (values) => {
     const payload = extractUserPreferences(values);
     const params = { userId };
@@ -53,7 +65,6 @@ function NotificationPreferenceConfiguration() {
       .then((response) => {
         navigate('./..', {
           state: {
-            ...location.state,
             alert: {
               pinPoint: 'notification_preferences',
               description: translateFn('message.communicationPreferencesUpdated'),
@@ -97,6 +108,9 @@ function NotificationPreferenceConfiguration() {
         });
       });
   };
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -115,7 +129,7 @@ function NotificationPreferenceConfiguration() {
                 showLabels={true}
                 isLoadingPreferences={false}
                 isPreferencesLoaded={isPreferencesLoaded}
-                config={{ ...preferencesConfig, userPermissions }}
+                config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
               />
               <SMSConfigurationPanel
                 onSave={handleOnSaveNumber}

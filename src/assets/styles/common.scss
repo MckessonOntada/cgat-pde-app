@@ -71,7 +71,16 @@ div.disable-all {
   }
 }
 
-.MCP-modal-body {
+.MCP-module-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-05);
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+.MCP-modal-body,
+.stack {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
@@ -83,7 +92,7 @@ div.disable-all {
 .MCP-module-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-05);
+  gap: var(--spacing-03);
 
   @media only screen and (max-width: 576px) {
     gap: var(--spacing-04);
@@ -1771,4 +1780,32 @@ input[type="checkbox"] + label {
 .notification-summary p {
   display: flex;
   flex-direction: column;
+}
+
+.table-selection-container {
+  display: grid;
+  grid-template-columns:
+    calc(66.66% - var(--spacing-04) / 2)
+    calc(33.33% - var(--spacing-04) / 2);
+  gap: var(--spacing-04);
+  align-items: start;
+}
+.list-card-with-action {
+  display: flex;
+  gap: var(--spacing-02);
+  align-items: center;
+  justify-content: space-between;
+  .card-content {
+    flex: 1;
+    word-break: break-word;
+  }
+  .card-action {
+    flex-grow: 0;
+  }
+}
+
+.price-column {
+  display: flex;
+  width: 100%;
+  justify-content: end;
 }

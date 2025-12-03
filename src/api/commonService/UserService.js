@@ -4,6 +4,12 @@ import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
 
+async function getUserDetails(userId, requestParams, isPending) {
+  const url = isPending ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}` : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  return res.data;
+}
+
 async function getTherapyById(id) {
   const url = `${ApiRoutes.THERAPIES_BY_ID(id)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -65,7 +71,8 @@ const UserService = Object.freeze({
   resendInvitation,
   getSubscriptionDetails,
   getCommunicationPreferences,
-  setCommunicationPreferences
+  setCommunicationPreferences,
+  getUserDetails
 });
 
 export default UserService;

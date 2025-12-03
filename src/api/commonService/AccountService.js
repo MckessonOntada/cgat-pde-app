@@ -91,6 +91,15 @@ async function removeLinkedSpAccount(spAccountId, spMaterialId) {
   return res.data || {};
 }
 
+async function getAllAccounts(params) {
+  const url = `${ApiRoutes.CURRENT_USER()}/accounts?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 const AccountService = Object.freeze({
   getAccountList,
   getAccountListById,
@@ -100,7 +109,8 @@ const AccountService = Object.freeze({
   updateSPAccount,
   getAssociatedMaterialSPAccountList,
   removeLinkedSpAccount,
-  uploadAccountData
+  uploadAccountData,
+  getAllAccounts
 });
 
 export default AccountService;

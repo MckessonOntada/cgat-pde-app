@@ -570,11 +570,7 @@ const jsxColumns = () => [
       } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
         displayOrderCost = orderCost;
       }
-      return (
-        <div className="cellEllipse align-items-right">
-          {displayOrderCost >= 0 ? <FormattedNumber value={displayOrderCost} style="currency" currency="USD" /> : ''}
-        </div>
-      );
+      return <div className="price-column">{displayOrderCost >= 0 ? <FormattedNumber value={displayOrderCost} style="currency" currency="USD" /> : ''}</div>;
     }
   },
   {

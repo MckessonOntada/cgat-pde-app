@@ -174,14 +174,43 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
-        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          dynamicFields[field.fieldName] = Yup.string()
-            .matches(field.properties.fieldFormat.validationRegex, t('manageSPMaterial.configuration.validInput'))
-            .when([], {
-              is: () => field.properties.mandatoryField,
-              then: (s) => s.required(field.properties.errorMessage),
-              otherwise: (s) => s.notRequired()
+        if (field.properties.displayOnForm) {
+          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please fill valid input'));
+          if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+            const vf = field.properties.fieldFormat.validationFormat;
+
+            const minMatch = vf.match(/minDate\('([^']+)'\)/);
+            const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+
+            console.log(minMatch, '-', maxMatch);
+
+            const minDate = minMatch ? minMatch[1] : null;
+            const maxDate = maxMatch ? maxMatch[1] : null;
+
+            validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
+              if (!value) return true;
+
+              const toDate = (d) => {
+                const [m, day, y] = d.split('/');
+                return new Date(`${y}-${m}-${day}`);
+              };
+
+              const inputDate = toDate(value);
+
+              if (minDate && inputDate < toDate(minDate)) return false;
+              if (maxDate && inputDate > toDate(maxDate)) return false;
+
+              return true;
             });
+          }
+
+          validator = validator.when([], {
+            is: () => field.properties.mandatoryField,
+            then: (s) => s.required(field.properties.errorMessage),
+            otherwise: (s) => s.notRequired()
+          });
+
+          dynamicFields[field.fieldName] = validator;
         }
       });
       dynamicFields.orderQuantity = Yup.number()
@@ -196,7 +225,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return schema;
   };
-
   const { data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
@@ -688,10 +716,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-      if (orderQuantity < therapyConfig.minQuantity || orderQuantity > therapyConfig.maxQuantity) {
+      const minQty = therapyConfig?.minQuantity ?? 1;
+      const maxQty = therapyConfig?.maxQuantity ?? 99;
+
+      if (orderQuantity < minQty || orderQuantity > maxQty) {
         setAlert({
           type: 'error',
-          description: `${t('additional.details.order.quantity.error')} ${therapyConfig.minQuantity} and ${therapyConfig.maxQuantity}.`
+          description: `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
         });
 
         return;
@@ -870,7 +901,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       }
-      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.triageChannel)) {
+      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.config?.triageChannel)) {
         setIsAllowedToProceed(false);
         setTriageAlert({
           description: t('message.triageChannelConfigMissing'),
