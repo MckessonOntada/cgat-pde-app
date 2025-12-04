@@ -7,12 +7,14 @@ import AssociatedSPAccount from '../pages/AssociatedSPAccount';
 import AddDiagnosisCode from '../pages/diagnosis-code-config/AddDiagnosisCode';
 import DiagnosisConfiguration from '../pages/diagnosis-code-config/DiagnosisConfiguration';
 import { routeConstants } from './constants';
+import ConfigurationSpMaterial from '../pages/configure-material/ConfigurationSpMaterial';
 
 function ManageSPMaterialRoute() {
   return (
     <Routes>
       <Route path={routeConstants.MANAGE_SP_MATERIAL} element={<ManageSPMaterial />} />
       <Route path={routeConstants.DIAGNOSIS_CODE} element={<DiagnosisConfiguration />} />
+      <Route path={routeConstants.CONFIGURE} element={<ConfigurationSpMaterial />} />
       <Route path={`${routeConstants.DIAGNOSIS_CODE}/${routeConstants.ADD_DIAGNOSIS_CODES}`} element={<AddDiagnosisCode />} />
       <Route
         path={routeConstants.ASSOCIATED_ACCOUNT}

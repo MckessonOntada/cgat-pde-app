@@ -70,35 +70,17 @@ export const PatientSections = (channelType, therapyConfig) => [
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
-            ? [
-                ...(therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED
-                  ? [
-                      {
-                        id: 'patient-info-identifier',
-                        name: 'patient.patientIdentifier',
-                        label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
-                        placeholder: ' ',
-                        type: 'input',
-                        maxLength: 20,
-                        isRequired: therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY
-                      }
-                    ]
-                  : []),
-                ...(therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
-                  ? [
-                      {
-                        id: 'patient-info-medicalRecordNumber',
-                        name: 'patient.medicalRecordNumber',
-                        label: 'orderManagement.patientDetails.inputLabel.mrn',
-                        placeholder: ' ',
-                        type: 'input',
-                        maxLength: 20,
-                        maxLength: 11,
-                        isRequired: therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY
-                      }
-                    ]
-                  : [])
-              ]
+            ? therapyConfig?.config?.fields
+                ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
+                ?.map((field) => ({
+                  id: `patient-info-${field.fieldName}`,
+                  name: `patient.${field.fieldName}`,
+                  label: field.properties.displayName,
+                  type: 'input',
+                  maxLength: 20,
+                  isRequired: field.properties.mandatoryField,
+                  infoText: field?.properties.helpInfoMessage
+                })) || []
             : [])
         ]
       }
@@ -215,44 +197,21 @@ export const AddressSections = (channelType) => [
 ];
 
 export const IdentifierSections = (channelType, spTherapyConfig) => {
-  const controls = [
-    {
-      id: 'patient-info-identifier',
-      name: 'patient.patientIdentifier',
-      label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
-      placeholder: ' ',
-      type: 'input',
-      maxLength: 20,
-      isRequired: spTherapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-    },
-    {
-      id: 'coiId',
-      name: 'patient.coiId',
-      label: 'labels.coiId',
-      placeholder: ' ',
-      type: 'input',
-      maxLength: 10,
-      isRequired: spTherapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED
-    },
-    {
-      id: 'patient-info-medicalRecordNumber',
-      name: 'patient.medicalRecordNumber',
-      label: 'orderManagement.patientDetails.inputLabel.mrn',
-      placeholder: ' ',
-      type: 'input',
-      maxLength: 20,
-      isRequired: spTherapyConfig.mrnRequirement === REQUIREMENT.MANDATORY && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
+  const controls = [];
+  spTherapyConfig?.config?.fields?.forEach((field) => {
+    if (field?.properties?.displayOnForm) {
+      controls.push({
+        id: `patient-info-${field.fieldName}`,
+        name: `patient.${field.fieldName}`,
+        label: field.properties.displayName,
+        isRequired: field.properties.mandatoryField,
+        infoText: field?.properties.helpInfoMessage,
+        type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'
+      });
     }
-  ];
+  });
 
-  // only include if isRequired true
-  const filteredControls = controls.filter((c) => c.show);
-
-  // if nothing is required, do not render the section
-  if (filteredControls.length === 0) {
+  if (controls.length === 0) {
     return [];
   }
 
@@ -261,7 +220,7 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       rows: [
         {
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
-          controls: filteredControls
+          controls: controls
         }
       ]
     }

@@ -141,7 +141,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       });
     }
 
-    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.triageChannel)) {
+    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && !['SP', 'HUB'].includes(orderDetails.spTherapyConfig?.config?.triageChannel)) {
       setIsAllowedToProceed(false);
       setAlert({
         description: t('message.triageChannelConfigMissing'),
@@ -425,6 +425,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             setAlert={setAlert}
           />
         )}
+
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik

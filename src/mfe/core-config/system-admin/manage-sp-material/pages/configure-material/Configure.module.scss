@@ -1,0 +1,41 @@
+.headerSection {
+  gap: var(--spacing-09);
+  .headerItem {
+    min-width: 280px;
+    p {
+      font-size: 14px;
+      padding-bottom: 4px;
+    }
+    span {
+      font-size: 16px;
+      display: flex;
+      gap: 10px;
+      font-weight: 600;
+    }
+  }
+}
+.checkboxGroupConfig {
+  fieldset {
+    justify-content: space-between;
+  }
+}
+.fieldFormateWrapper {
+  align-items: end;
+  .dropdown {
+    margin-bottom: -4px;
+  }
+  button {
+    margin-bottom: 4px;
+  }
+}
+.radioGroupSelection {
+  label {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+  }
+  legend {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 16px;
+  }
+}

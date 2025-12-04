@@ -3,6 +3,9 @@
   font-size: var(--brand-font-size--small);
   line-height: var(--brand-line-height--large);
   letter-spacing: normal;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-01);
 }
 
 .align-PhoneInput {
