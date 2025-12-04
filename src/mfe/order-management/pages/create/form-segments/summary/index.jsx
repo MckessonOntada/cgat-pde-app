@@ -555,6 +555,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             coiId: additionalDetails.coiId || '',
             dateOfAdministration: additionalDetails.dateOfAdministration || '',
             poNumber: additionalDetails.poNumber || '',
+            shipToPoNumber: additionalDetails.shipToPoNumber || '',
             dateOfApheresis: additionalDetails.dateOfApheresis || ''
           };
         }
@@ -1293,6 +1294,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             [
                               therapyConfig.coiIdRequirement,
                               therapyConfig.poNumberRequirement,
+                              therapyConfig.shipToPoNumberRequirement,
                               therapyConfig.dateOfAdministrationRequirement,
                               therapyConfig.dateOfApheresisRequirement
                             ].every((val) => val === REQUIREMENT.NOT_REQUIRED)
@@ -1316,6 +1318,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
                         {therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED && (
                           <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
+                        )}
+                        {therapyConfig.shipToPoNumberRequirement !== REQUIREMENT.NOT_REQUIRED && (
+                          <DetailSegment label={t('labels.shipToPONumber')} value={draftChanges?.additionalDetailsRequestDTO?.shipToPONumber || '-'} />
                         )}
                         {therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED && (
                           <DetailSegment
