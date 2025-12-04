@@ -181,6 +181,16 @@ function getLoggedInUserId() {
   return getUserId();
 }
 
+function getOrgName() {
+  const selectedOrg = sessionStorage.getItem('selectedOrganization');
+  try {
+    const parsedOrgDetails = JSON.parse(selectedOrg);
+    if (parsedOrgDetails.name) return parsedOrgDetails.name;
+  } catch (error) {
+    throw new Error('No organization found');
+  }
+}
+
 const AuthUtils = Object.freeze({
   userHasRole,
   userHasPermission,
@@ -205,7 +215,8 @@ const AuthUtils = Object.freeze({
   isReservedUserRole,
   isPhysician,
   getLoggedInUserId,
-  isRootAdmin
+  isRootAdmin,
+  getOrgName
 });
 
 export default AuthUtils;

@@ -394,6 +394,7 @@ export const UserManagementEN = {
   'labels.updatedDateTo': 'Date Updated (To)',
   'labels.endDate': 'Created Date (End)',
   'placeholders.search': 'Search',
+  'placeholders.searchByGroup': 'Search by Group',
   'button.label.loginAsThisUser': 'Login as this user',
   'popup.title.alert': 'Alert!',
   'popup.message.wishToContinueLoginAsThisUserQuestion': 'Do you wish to continue?',
@@ -429,6 +430,8 @@ export const UserManagementEN = {
   'userManagement.uploadUsers': 'Upload Users',
   'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
   'userManagement.button.addUsers': 'Add Users',
+  'userManagement.button.addNewGroup': 'Add New Group',
+  'userManagement.button.editGroup': 'Edit Group',
   'userManagement.upload-info': 'For filling up the user’s template, please refer to the instruction file.',
   'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
@@ -459,6 +462,7 @@ export const UserManagementEN = {
   'table.column.caption.manufacturer': 'Manufacturer Name',
   'table.title.selectMaterial': 'Select Material',
   'list.title.selectedMaterials': 'Selected Materials',
+  'table.title.notificationGroupListing': 'Notification Group Listing',
   'userManagement.header.view.linkedMaterials': 'Linked Materials',
   'userManagement.button.linkMaterials': 'Link Materials',
   'table.columns.caption.formulation': 'Formulation',
@@ -467,5 +471,56 @@ export const UserManagementEN = {
   'messages.confirmation.unlinkMaterial': 'Unlink Material?',
   'messages.confirmation.unlinkMaterialDescription': 'Do you want to unlink material?',
   'emptyTable.title.noRecordsFoundUserMaterials': 'No Assigned Material Found.',
-  'emptyTable.description.noRecordsFoundUserMaterials': 'You need to assign materials to see in this table.'
+  'emptyTable.description.noRecordsFoundUserMaterials': 'You need to assign materials to see in this table.',
+  'emptyTable.title.noRecordsFoundNotification Group': 'No Notification Group Found.',
+  'emptyTable.description.noRecordsFoundNotificationGroup': 'You need to add notification group to see in this table.',
+
+  'notificationGroup.validation.groupNameIsRequired': 'Group name is required',
+  'notificationGroup.validation.attributeIsRequired': 'Attribute is required',
+  'notificationGroup.validation.valueIsRequired': 'Value is required',
+  'notificationGroup.validation.leastOneRuleRequired': 'At least one rule is required',
+  'notificationGroup.validation.leastOneParticipantRequired': 'Select at least one participant',
+  'notificationGroup.validation.provideCorrectPrice': 'Please provide a valid price greater than 0',
+
+  'notificationGroup.save.success': 'New notification group {groupName} is created successfully.',
+  'notificationGroup.update.success': 'Notification group {groupName} updated successfully.',
+  'notificationGroup.error.conflict': 'Notification group with name {groupName} already exists. Please choose a different name.',
+
+  'button.caption.backToNotificationGroup': 'Back To Notification Group',
+  'button.caption.createGroup': 'Create Group',
+  'button.caption.updateGroup': 'Update Group',
+
+  'notificationGroup.groupDetails': 'Group Details',
+  'notificationGroup.notificationGroupName.label': 'Notification Group Name',
+  'notificationGroup.notificationGroupName.helperText': 'Please enter a unique notification group name.',
+  'notificationGroup.participantsSection.title': 'Notification user list',
+  'notificationGroup.participantsSection.label': 'Participants',
+  'notificationGroup.participantsSection.helperText': 'Select the users who will receive notifications for the selected triggers.',
+  'notificationGroup.participantsSection.placeholder': 'Search participants',
+
+  'notificationGroup.ruleNotificationTriggers.title': 'Notification Triggers',
+  'notificationGroup.ruleNotificationTriggers.helperText': 'Please select a criteria to apply the notification rules on.',
+  'notificationGroup.ruleNotificationTriggers.targetField.label': 'Select Notification(s)',
+  'notificationGroup.ruleNotificationTriggers.targetField.helperText': 'Please select the therapy(s) for the notification group.',
+
+  'notificationGroup.ruleAccount.title': 'Account',
+  'notificationGroup.ruleAccount.helperText': 'Please select a criteria to apply the notification rules on.',
+  'notificationGroup.ruleAccount.targetField.label': 'Select account(s)',
+  'notificationGroup.ruleAccount.targetField.helperText': 'Please select account for the notification group.',
+
+  'notificationGroup.ruleMaterial.title': 'Material',
+  'notificationGroup.ruleMaterial.helperText': 'Please select a criteria to apply the notification rules on.',
+  'notificationGroup.ruleMaterial.targetField.label': 'Select Therapy',
+  'notificationGroup.ruleMaterial.targetField.helperText': 'Please select the therapy(s) for the notification group.',
+
+  'notificationGroup.rulePrice.title': 'Price',
+  'notificationGroup.rulePrice.helperText': 'Please select a criteria to apply the notification rules on.',
+  'notificationGroup.rulePrice.targetField.label': 'Amount',
+  'notificationGroup.rulePrice.targetField.helperText': 'Please enter the amount greater than for the notification group.',
+
+  'dynamicRuleGroup.rules': 'Rules',
+  'dynamicRuleGroup.joinBy.anyOf': 'Any Of',
+  'dynamicRuleGroup.joinBy.selectAnyOf': 'Selected Any Of',
+  'dynamicRuleGroup.joinBy.orderedAnyOf': 'Ordered Any Of',
+  'dynamicRuleGroup.joinBy.greaterThan': 'Greater than'
 };

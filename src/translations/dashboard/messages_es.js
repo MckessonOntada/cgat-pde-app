@@ -17,6 +17,8 @@ export const DashboardES = {
   'dashboard.card.systemAdministrator': 'S_System Administrator',
   'dashboard.card.role_card_description': 'S_Streamline role assignments and permissions, allowing you to define, edit, and review user roles efficiently.',
   'dashboard.card.manage_approver_groups': 'S_Manage Approver Groups',
+  'dashboard.card.notificationGroup.title': 'S_Manage Notification Groups',
+  'dashboard.card.notificationGroup.description': 'S_Enables you to efficiently manage notification groups for streamlined alerts and updates.',
   'dashboard.card.manage_providers': 'S_Manage Providers',
   'dashboard.card.approver_management_description': 'S_Enables you to efficiently create, review and manage approver groups.',
   'dashboard.card.manage_provider_description': 'Enables you to efficiently create, review and manage providers.',

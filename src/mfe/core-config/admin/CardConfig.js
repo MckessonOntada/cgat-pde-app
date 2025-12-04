@@ -1,5 +1,6 @@
 import { ReactComponent as ChecklistIcon } from '@src/assets/svg/checklist-circle.svg';
 import { ReactComponent as ApproverGroupIcon } from '@src/assets/svg/approvergroup_icon.svg';
+import { ReactComponent as NotificationGroupIcon } from '@src/assets/svg/notification-group.svg';
 import { ReactComponent as UserIcon } from '@src/assets/svg/user-circle.svg';
 import { ReactComponent as ProviderIcon } from '@src/assets/svg/ProviderEmblem.svg';
 import AppRoutes from '../../../routes/AppRoutes';
@@ -37,6 +38,14 @@ const cardList = [
     icon: ApproverGroupIcon,
     details: 'approver_management_description',
     path: AppRoutes.pathApproverManagement,
+    permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
+  },
+  {
+    name: 'ManageNotificationGroups',
+    label: 'notificationGroup.title',
+    icon: NotificationGroupIcon,
+    details: 'notificationGroup.description',
+    path: AppRoutes.pathNotificationManagement,
     permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
   },
   {
