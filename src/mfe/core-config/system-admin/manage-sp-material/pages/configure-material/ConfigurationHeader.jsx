@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import './Configure.scss';
+import styles from './Configure.module.scss';
 
 function ConfigurationHeader({ fieldName, format, properties = {} }) {
   const { t } = useTranslate();
@@ -11,13 +11,13 @@ function ConfigurationHeader({ fieldName, format, properties = {} }) {
 
   return (
     <div>
-      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 header-section">
-        <div className="header-item">
+      <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 ${styles['headerSection']}`}>
+        <div className={styles.headerItem}>
           <p>{t('manageSPMaterial.configuration.header.fieldName')}</p>
           <span>{t(`manageSPMaterial.configuration.header.${fieldName}`)}</span>
         </div>
 
-        <div className="header-item">
+        <div className={styles.headerItem}>
           <p>{t('manageSPMaterial.configuration.header.status')}</p>
           <span>
             {displayed ? (
@@ -29,7 +29,7 @@ function ConfigurationHeader({ fieldName, format, properties = {} }) {
           </span>
         </div>
 
-        <div className="header-item">
+        <div className={styles.headerItem}>
           <p>{t('manageSPMaterial.configuration.header.format')}</p>
           <span>{format || '-'}</span>
         </div>

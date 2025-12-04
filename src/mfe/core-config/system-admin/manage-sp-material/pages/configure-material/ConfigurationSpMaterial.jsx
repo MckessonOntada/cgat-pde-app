@@ -15,7 +15,7 @@ import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
 import { ChannelType } from '../../../manage-sp-account/util';
 import Components from '@src/components/form/Components';
-
+import styles from './Configure.module.scss';
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -187,7 +187,7 @@ export default function ConfigurationSpMaterial() {
                         </p>
                       }
                     />
-                    <div className="radio-group-selection">
+                    <div className={styles.radioGroupSelection}>
                       <RadioGroup
                         caption={t(labelTranslation.channelOptionsLabel)}
                         direction="row"

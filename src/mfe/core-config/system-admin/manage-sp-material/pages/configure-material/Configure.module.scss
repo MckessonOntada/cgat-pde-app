@@ -1,6 +1,6 @@
-.header-section {
-  gap: 60px;
-  .header-item {
+.headerSection {
+  gap: var(--spacing-09);
+  .headerItem {
     min-width: 280px;
     p {
       font-size: 14px;
@@ -14,21 +14,21 @@
     }
   }
 }
-.checkbox-group-config {
+.checkboxGroupConfig {
   fieldset {
     justify-content: space-between;
   }
 }
-.field-formate-wrapper {
+.fieldFormateWrapper {
   align-items: end;
-  div.dropdown-container {
+  .dropdown {
     margin-bottom: -4px;
   }
   button {
     margin-bottom: 4px;
   }
 }
-.radio-group-selection {
+.radioGroupSelection {
   label {
     font-size: 16px !important;
     font-weight: 600 !important;

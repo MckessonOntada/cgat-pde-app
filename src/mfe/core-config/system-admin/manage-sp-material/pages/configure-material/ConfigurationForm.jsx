@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckboxGroup, Heading, Button, RadioGroup } from '@mckesson/mcp-component-library';
 import { Field } from 'formik';
-import './Configure.scss';
+import styles from './Configure.module.scss';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
@@ -50,7 +50,7 @@ const ConfigurationForm = ({ index }) => {
 
   return (
     <div className="MCP-module-body">
-      <div className="checkbox-group-config">
+      <div className={styles.checkboxGroupConfig}>
         <Field name={path('displayOnForm')}>
           {() => (
             <CheckboxGroup
@@ -98,20 +98,22 @@ const ConfigurationForm = ({ index }) => {
 
       <ModuleHeader heading={<Heading as="h2">{t('manageSPMaterial.configuration.label.fieldFormat')}</Heading>} />
 
-      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 field-formate-wrapper">
-        <Field
-          id="fieldFormat.formatType"
-          name={path('fieldFormat.formatType')}
-          fieldlabel={t('manageSPMaterial.configuration.label.formatType')}
-          component={Components['dropdown']}
-          isRequired={displayOnForm}
-          options={fieldFormatOptions}
-          isReadOnly={!displayOnForm}
-          onChangeHandler={(value) => {
-            setFieldValue(path('fieldFormat.formatType'), value);
-            setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[value]);
-          }}
-        />
+      <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 ${styles.fieldFormateWrapper}`}>
+        <div className={styles.dropdown}>
+          <Field
+            id="fieldFormat.formatType"
+            name={path('fieldFormat.formatType')}
+            fieldlabel={t('manageSPMaterial.configuration.label.formatType')}
+            component={Components['dropdown']}
+            isRequired={displayOnForm}
+            options={fieldFormatOptions}
+            isReadOnly={!displayOnForm}
+            onChangeHandler={(value) => {
+              setFieldValue(path('fieldFormat.formatType'), value);
+              setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[value]);
+            }}
+          />
+        </div>
 
         <Field
           name={path('fieldFormat.validationRegex')}
