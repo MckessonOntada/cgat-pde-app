@@ -1,3 +1,5 @@
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+
 export const fieldFormatRegexObj = {
   Text: "^[A-Za-z0-9'.,-_()#&+:]{1,200}$",
   Alphabetic: '^[A-Za-z]{1,100}$',
@@ -43,7 +45,7 @@ const spMaterialFiles = ['patientIdentifier', 'coiId', 'medicalRecordNumber'];
 const bnbMaterialFiles = ['patientIdentifier', 'coiId', 'medicalRecordNumber', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis'];
 
 export const configObj = (materialType) => {
-  const isBnbMaterial = materialType === 'bnb';
+  const isBnbMaterial = materialType === CHANNEL_TYPE.BUY_AND_BILL;
   return {
     ...(isBnbMaterial ? { patientInformationRequired: '' } : { triageChannel: '' }),
     fields: (isBnbMaterial ? bnbMaterialFiles : spMaterialFiles).map((fieldName) => getDefaultFieldProperties(fieldName))

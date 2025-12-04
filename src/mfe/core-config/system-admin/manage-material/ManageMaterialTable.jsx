@@ -291,7 +291,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const handleConfiguration = (selectedMaterial) => {
     if (selectedMaterial && Array.isArray(selectedMaterial))
       navigate(routeConstants.CONFIGURE, {
-        state: { therapy: selectedMaterial, materialType: 'bnb' }
+        state: { therapy: selectedMaterial, materialType: CHANNEL_TYPE.BUY_AND_BILL }
       });
   };
   return (

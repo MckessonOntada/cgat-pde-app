@@ -16,6 +16,7 @@ import ConfigureSPMaterials from './ConfigureSPMaterials';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
 import SPMaterialDetails from './SPMaterialDetails';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();
@@ -141,7 +142,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   const handleConfiguration = (selectedSPMaterial) => {
     if (selectedSPMaterial && Array.isArray(selectedSPMaterial) && selectedSPMaterial[0])
       navigate(routeConstants.CONFIGURE, {
-        state: { therapy: selectedSPMaterial, materialType: 'sp' }
+        state: { therapy: selectedSPMaterial, materialType: CHANNEL_TYPE.SPECIALTY_PHARMA }
       });
   };
 

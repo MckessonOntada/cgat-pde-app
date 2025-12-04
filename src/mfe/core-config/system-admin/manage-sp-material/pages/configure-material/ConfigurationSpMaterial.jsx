@@ -22,11 +22,11 @@ export default function ConfigurationSpMaterial() {
   const { t } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const { therapy, materialType } = location.state || {};
-  const isBnbMaterial = materialType === 'bnb';
+  const isBnbMaterial = materialType === ChannelType.BUY_AND_BILL;
   const [manufacturer, setManufacturer] = React.useState([]);
 
   React.useEffect(() => {
-    MaterialService.getManufacturers(materialType === 'bnb' ? ChannelType.BUY_AND_BILL : ChannelType.SPECIALITY_PHARMA).then((manufacturer) => {
+    MaterialService.getManufacturers(materialType).then((manufacturer) => {
       setManufacturer(
         manufacturer.map((item) => ({
           label: item,
@@ -59,7 +59,7 @@ export default function ConfigurationSpMaterial() {
     enabled: Array.isArray(therapy) && therapy.length === 1,
     refetchOnWindowFocus: false
   });
-  const ndcDetails = materialDetails || configObj(materialType);
+  const ndcDetails = materialDetails && materialDetails?.config?.fields ? materialDetails : configObj(materialType);
 
   const initialValues = {
     manufacturerName: ndcDetails?.manufacturerName || null,
@@ -124,10 +124,6 @@ export default function ConfigurationSpMaterial() {
     updateMaterial(payload);
   };
 
-  if (isLoading) {
-    return <Loader type={'screen'} />;
-  }
-
   const labelTranslation = React.useMemo(() => {
     const _translations = {};
     if (isBnbMaterial) {
@@ -137,7 +133,12 @@ export default function ConfigurationSpMaterial() {
       _translations.backButton = 'button.caption.backToSpMaterial';
       _translations.channelOptionsLabel = 'manageSPMaterial.configuration.label.triageChannel';
     }
+    return _translations;
   }, [isBnbMaterial]);
+
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
 
   return (
     <div className="MCP-module-wrapper">
@@ -180,15 +181,13 @@ export default function ConfigurationSpMaterial() {
                     />
                     <div className="radio-group-selection">
                       <RadioGroup
-                        caption={t(translation.channelOptionsLabel)}
+                        caption={t(labelTranslation.channelOptionsLabel)}
                         direction="row"
                         id={fieldNameForChannel}
                         items={channelOptions}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
-
                           setFieldValue(fieldNameForChannel, finalValue);
-
                           if (isBnbMaterial && finalValue === false) {
                             const updatedFields = values.fields.map((field) => {
                               if (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId') {
@@ -211,7 +210,6 @@ export default function ConfigurationSpMaterial() {
                               }
                               return field;
                             });
-
                             setFieldValue('fields', updatedFields);
                           }
                         }}
@@ -233,7 +231,7 @@ export default function ConfigurationSpMaterial() {
                   />
                   <Accordion>
                     {values?.fields?.map((field, idx) => {
-                      if (values[fieldNameForChannel] === false && (field.fieldName === 'Manufacturer Patient Identifier' || field.fieldName === 'COI ID')) {
+                      if (values[fieldNameForChannel] === false && (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId')) {
                         return null;
                       }
                       return (
