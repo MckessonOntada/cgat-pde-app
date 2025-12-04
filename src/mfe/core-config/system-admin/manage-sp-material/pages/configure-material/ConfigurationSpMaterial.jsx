@@ -59,7 +59,10 @@ export default function ConfigurationSpMaterial() {
     enabled: Array.isArray(therapy) && therapy.length === 1,
     refetchOnWindowFocus: false
   });
-  const ndcDetails = materialDetails && materialDetails?.config?.fields ? materialDetails : configObj(materialType);
+
+  const ndcDetails = React.useMemo(() => {
+    return materialDetails?.fields ? materialDetails : configObj(materialType);
+  }, [materialDetails, materialType]);
 
   const initialValues = {
     manufacturerName: ndcDetails?.manufacturerName || null,
@@ -84,7 +87,7 @@ export default function ConfigurationSpMaterial() {
 
   const validationSchema = getConfigurationSchema(t, channelOptions, fieldNameForChannel, isBnbMaterial);
 
-  const { updateMaterial } = useMutation({
+  const { mutate: updateMaterial } = useMutation({
     mutationFn: (payload) => {
       return isBnbMaterial ? MaterialService.updateMaterialConfigBnb(payload) : MaterialService.updateSPMaterialConfig(payload);
     },
@@ -112,7 +115,6 @@ export default function ConfigurationSpMaterial() {
       });
     }
   });
-
   const handleSubmit = (values) => {
     const therapyList = Array.isArray(therapy) ? therapy : [therapy];
 
@@ -153,7 +155,13 @@ export default function ConfigurationSpMaterial() {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <div className="MCP-panel-container">
-          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} validateOnChange={false} validateOnBlur={false}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            validateOnChange={false}
+            validateOnBlur={false}
+            enableReinitialize={true}>
             {({ values, setFieldValue, errors, touched }) => (
               <Form>
                 <div className="MCP-module-body">

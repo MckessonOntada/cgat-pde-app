@@ -174,15 +174,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
-        if (field.properties.displayOnForm) {
+        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
           let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please fill valid input'));
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
             const minMatch = vf.match(/minDate\('([^']+)'\)/);
             const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
-
-            console.log(minMatch, '-', maxMatch);
 
             const minDate = minMatch ? minMatch[1] : null;
             const maxDate = maxMatch ? maxMatch[1] : null;
@@ -1080,6 +1078,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           </p>
                         }
                       />
+
                       <div className="form-segment-list">
                         <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
                         <VariantDetails

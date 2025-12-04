@@ -20,7 +20,7 @@ import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segmen
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
+  const { paginationConfig, data, setPageNumber, isLoading, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters, refreshData } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState({
@@ -54,11 +54,13 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
 
   useEffect(() => {
     if (location.state?.alert?.type && location.state?.alert?.messages) {
+      refreshData();
       setAlert({
         type: location.state.alert.type,
         description: location.state.alert.messages
       });
     }
+
     setSelectedSPMaterial([]);
   }, [location]);
   const columns = getSPMaterialColumns({

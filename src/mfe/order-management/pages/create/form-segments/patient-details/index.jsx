@@ -425,6 +425,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             setAlert={setAlert}
           />
         )}
+
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik

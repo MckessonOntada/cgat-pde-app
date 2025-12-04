@@ -70,44 +70,47 @@ yesterday.setDate(yesterday.getDate() - 1);
 export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
-
+    const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    if (isSpOrder) allowedFields.add('coiId');
     config?.config?.fields?.forEach((field) => {
-      if (!field.properties.displayOnForm) return;
+      if (allowedFields.has(field.fieldName) && field.properties.displayOnForm) {
+        if (!field.properties.displayOnForm) return;
 
-      let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please enter valid input'));
+        let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please enter valid input'));
 
-      if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
-        const vf = field.properties.fieldFormat.validationFormat;
+        if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+          const vf = field.properties.fieldFormat.validationFormat;
 
-        const minMatch = vf.match(/minDate\('([^']+)'\)/);
-        const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+          const minMatch = vf.match(/minDate\('([^']+)'\)/);
+          const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
 
-        const minDate = minMatch ? minMatch[1] : null;
-        const maxDate = maxMatch ? maxMatch[1] : null;
+          const minDate = minMatch ? minMatch[1] : null;
+          const maxDate = maxMatch ? maxMatch[1] : null;
 
-        validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
-          if (!value) return true;
+          validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
+            if (!value) return true;
 
-          const toDate = (d) => {
-            const [m, day, y] = d.split('/');
-            return new Date(`${y}-${m}-${day}`);
-          };
+            const toDate = (d) => {
+              const [m, day, y] = d.split('/');
+              return new Date(`${y}-${m}-${day}`);
+            };
 
-          const inputDate = toDate(value);
-          if (minDate && inputDate < toDate(minDate)) return false;
-          if (maxDate && inputDate > toDate(maxDate)) return false;
+            const inputDate = toDate(value);
+            if (minDate && inputDate < toDate(minDate)) return false;
+            if (maxDate && inputDate > toDate(maxDate)) return false;
 
-          return true;
+            return true;
+          });
+        }
+
+        validator = validator.when([], {
+          is: () => field.properties.mandatoryField,
+          then: (s) => s.required(field.properties.errorMessage),
+          otherwise: (s) => s.notRequired()
         });
+
+        dynamicFields[field.fieldName] = validator;
       }
-
-      validator = validator.when([], {
-        is: () => field.properties.mandatoryField,
-        then: (s) => s.required(field.properties.errorMessage),
-        otherwise: (s) => s.notRequired()
-      });
-
-      dynamicFields[field.fieldName] = validator;
     });
 
     return dynamicFields;
