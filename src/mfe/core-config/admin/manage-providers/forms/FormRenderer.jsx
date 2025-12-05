@@ -129,7 +129,8 @@ const FormRenderer = ({
                         isReadOnly: control.isReadOnly,
                         fieldlabel: control.fieldLabel,
                         readOnly: readOnly,
-                        isDisabled: readOnly
+                        isDisabled: readOnly,
+                        ...(control.onBlur && { onBlur: control.onBlur })
                       };
 
                       return <Field {...fieldProps} />;

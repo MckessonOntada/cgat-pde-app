@@ -383,6 +383,35 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     setFieldValue('providerId', formattedProvider.id);
     setShowAddProviderForm(false);
   };
+  const { mutate: identifierValidation } = useMutation(
+    async ({ patientId }) => {
+      const res = await OrderService.regeneronPatientIdVerification(patientId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setAlert(null);
+        } else {
+          setAlert({
+            description:
+              'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+            type: 'warning'
+          });
+        }
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
+
+  const handlePatientIdVerification = (e) => {
+    if (e.target.value) identifierValidation({ patientId: e.target.value });
+  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -458,7 +487,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                           }
                         />
 
-                        <FormRenderer sections={PatientSections(channelType, therapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
+                        <FormRenderer
+                          sections={PatientSections(channelType, therapyConfig, handlePatientIdVerification)}
+                          readOnly={readOnly || !isAllowedToProceed}
+                        />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>
                             <hr className="form-section-separator" />
@@ -495,7 +527,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 )
                               }
                             />
-                            <FormRenderer sections={IdentifierSections(channelType, spTherapyConfig)} readOnly={readOnly || !isAllowedToProceed} />
+                            <FormRenderer
+                              sections={IdentifierSections(channelType, spTherapyConfig, handlePatientIdVerification)}
+                              readOnly={readOnly || !isAllowedToProceed}
+                            />
                           </>
                         )}
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (

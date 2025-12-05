@@ -494,7 +494,13 @@ async function getOrderStagesRoles(orderId) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
-
+async function regeneronPatientIdVerification(patientId) {
+  if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
+  let url = `${ApiRoutes.USER_BASE}regeneron/validate/${patientId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  console.log(res.data);
+  if (res) return res;
+}
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -538,7 +544,10 @@ const OrderService = Object.freeze({
   finalizeOrder,
   notifyUser,
   getPrescriptionDetailsByTherapy,
-  getOrderStagesRoles
+  getOrderStagesRoles,
+  regeneronPatientIdVerification
 });
 
 export default OrderService;
+// https://cgat-pde-dev.mckesson.com/user-management-service/api/practices/1882/regeneron/validate/123
+// https://cgat-pde-dev.mckesson.com/user-management-service/api/practices/1882/regeneron/validate/3413412
