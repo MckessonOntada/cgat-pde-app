@@ -29,7 +29,7 @@ export default function MaterialSelection(props) {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
 
   React.useEffect(() => {
-    MaterialService.getAllMaterials(userId)
+    MaterialService.getAllMaterials(userId, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' })
       .then((response) => {
         const selectedRecords = response.flatMap((trade) => {
           if (trade.isExpandable) {
@@ -44,19 +44,6 @@ export default function MaterialSelection(props) {
           setSelection(selectedRecords);
           return null;
         }
-
-        return MaterialService.getAllMaterials(userId, { listingMode: 'EXCLUDED' }).then((excluded) => {
-          const flatMapExcluded = excluded.flatMap((trade) => {
-            if (trade.isExpandable) {
-              return trade.therapies;
-            }
-            return [trade];
-          });
-          const filtered = selectedRecords.filter((record) => {
-            return !flatMapExcluded.some((ex) => ex.id === record.id);
-          });
-          setSelection(filtered);
-        });
       })
       .catch((error) => {
         console.log(error);
