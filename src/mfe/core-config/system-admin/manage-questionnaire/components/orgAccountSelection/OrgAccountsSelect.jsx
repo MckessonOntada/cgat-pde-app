@@ -27,6 +27,8 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
       _selected = { label: 'All', value: 'all' };
     } else {
       _selected = organizationOptions.find((ele) => ele.id == selectedValue);
+      _selected.label = _selected.name;
+      _selected.value = _selected.id.toString();
     }
     setSelectedOrganization(_selected);
     setCheckedAccounts([]);
