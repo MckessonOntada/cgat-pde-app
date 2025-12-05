@@ -5,5 +5,6 @@ export const routeConstants = {
   EDIT_SP_MATERIAL: 'edit',
   ASSOCIATED_ACCOUNT: 'associted-accounts',
   DIAGNOSIS_CODE: 'diagnosis-code',
-  ADD_DIAGNOSIS_CODES: 'add'
+  ADD_DIAGNOSIS_CODES: 'add',
+  CONFIGURE: 'configure'
 };
