@@ -162,7 +162,7 @@ export default function ConfigurationSpMaterial() {
             validateOnChange={false}
             validateOnBlur={false}
             enableReinitialize={true}>
-            {({ values, setFieldValue, errors, touched }) => (
+            {({ values, setFieldValue, errors, touched, setFieldError }) => (
               <Form>
                 <div className="MCP-module-body">
                   <React.Fragment>
@@ -195,6 +195,7 @@ export default function ConfigurationSpMaterial() {
                         items={channelOptions}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
+                          setFieldError(fieldNameForChannel, '');
                           setFieldValue(fieldNameForChannel, finalValue);
                           if (isBnbMaterial && finalValue === false) {
                             const updatedFields = values.fields.map((field) => {
@@ -229,6 +230,7 @@ export default function ConfigurationSpMaterial() {
                       />
                     </div>
                   </React.Fragment>
+                  {console.log('-------------', errors)}
                   <ModuleHeader
                     heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
                     controls={
@@ -248,7 +250,7 @@ export default function ConfigurationSpMaterial() {
                             <ConfigurationHeader fieldName={field.fieldName} format={field.properties.fieldFormat.formatType} properties={field.properties} />
                           </AccordionHeader>
                           <AccordionPanel>
-                            <ConfigurationForm index={idx} />
+                            <ConfigurationForm index={idx} setFieldError={setFieldError} />
                           </AccordionPanel>
                         </AccordionItem>
                       );
