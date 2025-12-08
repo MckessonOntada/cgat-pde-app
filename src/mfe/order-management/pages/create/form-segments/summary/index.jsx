@@ -48,6 +48,7 @@ import ProviderDetailsSegment from './Segments/ProviderDetailsSegment';
 import styles from './Summary.module.scss';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
+import TrackingDetails from './TrackingDetails';
 
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
@@ -996,6 +997,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       </div>
                     </div>
                   )}
+
+                <TrackingDetails />
 
                 <div className="MCP-CardContainer">
                   <ModuleHeader
