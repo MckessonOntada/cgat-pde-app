@@ -3,7 +3,20 @@ import { InputField as BaseInputField, Label, TextError, Tooltip } from '@mckess
 import { highlightFieldOnLabelClick } from './util';
 import { ReactComponent as IconInfo } from '@src/assets/svg/info-2.svg';
 export default function InputField(props) {
-  const { name, labelControls, value = '', label, placeholder, onChange, error, onBlur = () => {}, infoText = null, isRequired, ...rest } = props;
+  const {
+    name,
+    labelControls,
+    value = '',
+    label,
+    placeholder,
+    onChange,
+    error,
+    onBlur = () => {},
+    infoText = null,
+    isRequired,
+    helpText = null,
+    ...rest
+  } = props;
   const fieldContainerRef = useRef(null);
   return (
     <div className="grid" onClick={(e) => highlightFieldOnLabelClick(e, fieldContainerRef)} ref={fieldContainerRef}>
@@ -37,6 +50,7 @@ export default function InputField(props) {
         showError={!!error}
         {...rest}
       />
+      {helpText && <span className="help-text">{helpText}</span>}
       {error && <TextError errorMessage={error} />}
     </div>
   );

@@ -230,7 +230,6 @@ export default function ConfigurationSpMaterial() {
                       />
                     </div>
                   </React.Fragment>
-                  {console.log('-------------', errors)}
                   <ModuleHeader
                     heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
                     controls={

@@ -123,11 +123,10 @@ const ConfigurationForm = ({ index, setFieldError }) => {
         <Field
           name={path('fieldFormat.validationRegex')}
           label={t('manageSPMaterial.configuration.label.validationRegex')}
-          isRequired={displayOnForm}
           component={Components['input']}
           maxLength={200}
           isReadOnly={true}
-          infoText={t('manageSPMaterial.configuration.label.tooltip.selectFieldFormat')}
+          infoText={t('manageSPMaterial.configuration.label.tooltip.helpText')}
         />
 
         <div className="controls">
