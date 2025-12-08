@@ -12,7 +12,7 @@ const getBinaryOptions = (keyPrefix = '', readOnly) => {
   }));
 };
 
-export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType }) => {
+export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType, handleCoiIdValidation }) => {
   const dynamic_fields = [];
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     therapyConfig?.config?.fields?.forEach((field) => {
@@ -22,7 +22,8 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
           label: field?.properties?.displayName,
           isRequired: field?.properties?.mandatoryField,
           component: Components[field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
-          infoText: field?.properties.helpInfoMessage
+          infoText: field?.properties.helpInfoMessage,
+          ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
         });
       }
     });

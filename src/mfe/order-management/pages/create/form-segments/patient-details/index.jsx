@@ -394,8 +394,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           setAlert(null);
         } else {
           setAlert({
-            description:
-              'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+            description: t('orderManagement.patientID.verification'),
             type: 'warning'
           });
         }
