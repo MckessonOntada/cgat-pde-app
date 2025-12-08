@@ -558,5 +558,3 @@ const OrderService = Object.freeze({
 });
 
 export default OrderService;
-// https://cgat-pde-dev.mckesson.com/user-management-service/api/practices/1882/regeneron/validate/123
-// https://cgat-pde-dev.mckesson.com/user-management-service/api/practices/1882/regeneron/validate/3413412
