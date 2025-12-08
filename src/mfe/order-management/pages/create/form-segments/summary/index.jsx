@@ -48,7 +48,7 @@ import ProviderDetailsSegment from './Segments/ProviderDetailsSegment';
 import styles from './Summary.module.scss';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
-import TrackingDetails from './TrackingDetails';
+import { TrackingDetails } from './tracking-details';
 
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
@@ -115,7 +115,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   }, [isError]);
 
   React.useEffect(() => {
-    const { changeOnPreviousStep = false } = location.state;
+    const { changeOnPreviousStep = false } = location.state || {};
     if (changeOnPreviousStep && !hasPermission) {
       const { changeOnPreviousStep, ...newState } = location.state;
       navigate(location.pathname, { state: newState });
@@ -970,6 +970,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           <React.Fragment>
             <div className={'MCP-module-wrapper'}>
               <div className={'MCP-module-body'}>
+                <TrackingDetails trackingNumber={93729572028644} orderId={8397398594} />
+
                 {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.APPROVAL_PENDING) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
                     (!isSpOrder && (orderDetails?.approver || orderDetails?.submittedOn))) && (
@@ -997,8 +999,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       </div>
                     </div>
                   )}
-
-                <TrackingDetails />
 
                 <div className="MCP-CardContainer">
                   <ModuleHeader

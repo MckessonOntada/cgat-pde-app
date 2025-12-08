@@ -1,0 +1,10 @@
+.wrapper {
+  border: 1px solid red;
+}
+
+.section {
+  .heading {
+    font-size: var(--brand-font-size--18);
+    font-weight: 700;
+  }
+}

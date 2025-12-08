@@ -1056,5 +1056,13 @@ export const MessageEn = {
   'labels.shipToPONumberLengthError': 'Ship to PO Number should not exceed 35 characters',
   'labels.shipToPONumberMustValid': 'Ship to PO Number should only contain letters and numbers.',
   'labels.shipToPONumberExtraSpaceError': 'Ship to PO Number must not contain leading or trailing spaces',
-  'labels.shipToPONumberRequired': 'Ship to PO Number is required'
+  'labels.shipToPONumberRequired': 'Ship to PO Number is required',
+  'labels.trackingDetails': 'Tracking Details',
+  'labels.trackingNumber': 'Tracking Number',
+  'orderTracking.stepper.orderPlaced': 'Order Placed',
+  'orderTracking.stepper.orderProcessing': 'Order Processing',
+  'orderTracking.stepper.onTheWay': 'On The Way',
+  'orderTracking.stepper.delivered': 'Delivered',
+  'labels.shippingAddress': 'Shipping Address',
+  'labels.shippingStatus': 'Shipping Status'
 };
