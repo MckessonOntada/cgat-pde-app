@@ -208,7 +208,7 @@ export const IdentifierSections = (spTherapyConfig, identifierValidation) => {
         isRequired: field.properties.mandatoryField,
         infoText: field?.properties.helpInfoMessage,
         type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
-        ...(field.fieldName === 'patientIdentifier' && { onBlur: identifierValidation })
+        ...(['patientIdentifier', 'coiId'].includes(field.fieldName) && { onBlur: identifierValidation })
       });
     }
   });

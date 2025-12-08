@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Tooltip, Loader, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -58,7 +58,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const dispatch = useDispatch();
-
+  const formikRef = useRef();
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
@@ -407,9 +407,45 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       }
     }
   );
+  const { mutate: coiIdValidation } = useMutation(
+    async ({ patientId, coiId }) => {
+      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setAlert(null);
+        } else {
+          setAlert({
+            description: t('orderManagement.coiId.verification'),
+            type: 'warning'
+          });
+        }
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
 
   const handlePatientIdVerification = (e) => {
-    if (e.target.value) identifierValidation({ patientId: e.target.value });
+    const { id, value } = e.target;
+    if (!value) return;
+
+    if (id === 'input-patient.patientIdentifier') {
+      identifierValidation({ patientId: value });
+    }
+
+    if (id === 'input-patient.coiId') {
+      const patientId = formikRef.current?.values?.patient?.patientIdentifier;
+      if (patientId) {
+        coiIdValidation({ patientId, coiId: value });
+      }
+    }
   };
 
   return (
@@ -460,6 +496,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           initialValues={initialValues}
           validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig)}
           enableReinitialize={true}
+          innerRef={formikRef}
           onSubmit={(values) => handleSubmit(values)}>
           {({ values, errors, touched, dirty, setFieldValue, setTouched, setErrors }) => {
             React.useEffect(() => {
@@ -527,7 +564,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                               }
                             />
                             <FormRenderer
-                              sections={IdentifierSections(channelType, spTherapyConfig, handlePatientIdVerification)}
+                              sections={IdentifierSections(spTherapyConfig, handlePatientIdVerification)}
                               readOnly={readOnly || !isAllowedToProceed}
                             />
                           </>
