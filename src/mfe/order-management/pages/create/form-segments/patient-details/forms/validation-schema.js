@@ -76,7 +76,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
       if (allowedFields.has(field.fieldName) && field.properties.displayOnForm) {
         if (!field.properties.displayOnForm) return;
 
-        let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please enter valid input'));
+        let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
 
         if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
           const vf = field.properties.fieldFormat.validationFormat;
@@ -105,7 +105,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
         validator = validator.when([], {
           is: () => field.properties.mandatoryField,
-          then: (s) => s.required(field.properties.errorMessage),
+          then: (s) => s.required(`${field.properties.displayName} is required`),
           otherwise: (s) => s.notRequired()
         });
 

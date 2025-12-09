@@ -175,5 +175,9 @@ export const ManageSPMaterialMessagesES = {
   'button.caption.backToMaterialMaster': 'S_back to material Master',
   'manageSPMaterial.configuration.heading.manufacturerConfiguration': 'Manufacturer Configuration',
   'label.selectManufacturer': 'Select Manufacturer',
-  'manageSPMaterial.configuration.validInput': 'S_Please fill valid input'
+  'manageSPMaterial.configuration.validInput': 'S_Please fill valid input',
+  'manageSPMaterial.configuration.label.tooltip.helpText': 'S_Use a regex pattern to validate this field (e.g. ^[0-9]{6}$)',
+  'manageSPMaterial.configuration.helpText.customChar': 'S_Add any additional characters (e.g., @#$%)',
+  'manageSPMaterial.configuration.helpText.suffix': 'S_Text that must appear at the end',
+  'manageSPMaterial.configuration.helpText.prefix': 'S_Text that must appear at the start'
 };
