@@ -175,7 +175,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please fill valid input'));
+          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
@@ -204,7 +204,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
           validator = validator.when([], {
             is: () => field.properties.mandatoryField,
-            then: (s) => s.required(field.properties.errorMessage),
+            then: (s) => s.required(`${field.properties.displayName} is required`),
             otherwise: (s) => s.notRequired()
           });
 

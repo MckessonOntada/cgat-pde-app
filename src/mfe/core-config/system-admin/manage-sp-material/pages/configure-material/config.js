@@ -56,11 +56,11 @@ export const regexAttributes = {
   Text: {
     attributes: {
       text: [
-        { label: 'Prefix', key: 'prefix' },
-        { label: 'Suffix', key: 'suffix' },
+        { label: 'Prefix', key: 'prefix', helpText: 'manageSPMaterial.configuration.helpText.prefix' },
+        { label: 'Suffix', key: 'suffix', helpText: 'manageSPMaterial.configuration.helpText.suffix' },
         { label: 'Minimum Length', key: 'minLength' },
         { label: 'Maximum Length', key: 'maxLength' },
-        { label: 'Custom Characters', key: 'customChars' }
+        { label: 'Custom Characters', key: 'customChars', helpText: 'manageSPMaterial.configuration.helpText.customChar' }
       ],
       checkbox: [
         { isChecked: false, label: 'Uppercase (A-Z)', value: 'allowUpper' },

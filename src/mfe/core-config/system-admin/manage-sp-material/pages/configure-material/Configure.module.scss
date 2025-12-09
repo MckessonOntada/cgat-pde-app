@@ -39,3 +39,14 @@
     margin-bottom: 16px;
   }
 }
+.checkboxGroup {
+  fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-03);
+    width: 100%;
+    div[class*="CheckboxGroup-module"] {
+      width: var(--spacing-21);
+    }
+  }
+}

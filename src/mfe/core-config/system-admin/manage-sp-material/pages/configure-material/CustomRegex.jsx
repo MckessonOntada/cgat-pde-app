@@ -6,6 +6,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useFormikContext } from 'formik';
 import InputField from '@src/components/form/InputField';
 import { regexAttributes } from './config';
+import styles from './Configure.module.scss';
 
 function CustomRegex({ onClose, path, initialValue, type }) {
   const { t } = useTranslate();
@@ -282,6 +283,7 @@ function CustomRegex({ onClose, path, initialValue, type }) {
             label={item.label}
             value={regexState[item.key]}
             error={errors[item.key]}
+            helpText={t(item.helpText)}
             onChange={(e) => {
               const val = e.target.value;
 
@@ -313,15 +315,17 @@ function CustomRegex({ onClose, path, initialValue, type }) {
             onChangeFn={(selectedDate) => setRegexState((prev) => ({ ...prev, [dateItem.key]: selectedDate }))}
           />
         ))}
-
-        <CheckboxGroup
-          direction="column"
-          items={config.checkbox?.map((c) => ({
-            ...c,
-            isChecked: regexState[c.value],
-            onChange: () => setRegexState((prev) => ({ ...prev, [c.value]: !prev[c.value] }))
-          }))}
-        />
+        <div className={styles.checkboxGroup}>
+          <CheckboxGroup
+            direction="row"
+            showFlexWrap={true}
+            items={config.checkbox?.map((c) => ({
+              ...c,
+              isChecked: regexState[c.value],
+              onChange: () => setRegexState((prev) => ({ ...prev, [c.value]: !prev[c.value] }))
+            }))}
+          />
+        </div>
       </div>
     </FloatingDrawer>
   );
