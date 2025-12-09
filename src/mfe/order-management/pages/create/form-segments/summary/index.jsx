@@ -829,8 +829,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const unitAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice);
   const netAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.totalNetPrice);
-  const TaxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
-  const TotalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
+  const taxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
+  const totalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -970,7 +970,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           <React.Fragment>
             <div className={'MCP-module-wrapper'}>
               <div className={'MCP-module-body'}>
-                <TrackingDetails trackingNumber={93729572028644} orderId={8397398594} />
+                <TrackingDetails orderDetails={orderDetails} />
 
                 {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.APPROVAL_PENDING) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
@@ -1091,7 +1091,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                                 ) : (
                                   <>
                                     <span>$</span>
-                                    {TaxAmount}
+                                    {taxAmount}
                                   </>
                                 )}
                               </span>
@@ -1108,7 +1108,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                                 ) : (
                                   <>
                                     <span>$</span>
-                                    {TotalCost}
+                                    {totalCost}
                                   </>
                                 )}
                               </span>

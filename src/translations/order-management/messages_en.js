@@ -1064,5 +1064,9 @@ export const MessageEn = {
   'orderTracking.stepper.onTheWay': 'On The Way',
   'orderTracking.stepper.delivered': 'Delivered',
   'labels.shippingAddress': 'Shipping Address',
-  'labels.shippingStatus': 'Shipping Status'
+  'labels.shippingStatus': 'Shipping Status',
+  'labels.orderNumber': 'Order Number',
+  'labels.orderDate': 'Order Date',
+  'labels.orderCost': 'Order Cost',
+  'labels.therapy': 'Therapy'
 };

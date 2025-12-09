@@ -6,9 +6,13 @@ import { Stepper, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { Link } from 'react-router-dom';
+import OrderService from '@src/api/commonService/OrderService';
+import CommonUtils, { getAddress } from '@src/util/CommonUtils';
+import dayjs from 'dayjs';
+import { CHANNEL_TYPE } from '../../Constants';
 
 function TrackingDetails(props) {
-  const { trackingNumber = '-', orderId } = props;
+  const { orderDetails } = props;
   const { t: translateFn } = useTranslate();
   const [detailsPanelOpen, setDetailsPanelOpen] = React.useState(true);
 
@@ -23,9 +27,9 @@ function TrackingDetails(props) {
               noTooltip={true}
               value={
                 <div className="overflowing">
-                  <Tooltip body={trackingNumber}>
+                  <Tooltip body={orderDetails.trackingNumber}>
                     <Link className="MCP-table-link" onClick={() => setDetailsPanelOpen(true)}>
-                      {trackingNumber}
+                      {orderDetails.trackingNumber}
                     </Link>
                   </Tooltip>
                 </div>
@@ -34,34 +38,82 @@ function TrackingDetails(props) {
           </div>
         </div>
       </div>
-      {detailsPanelOpen && <DetailsPanel trackingNumber={trackingNumber} onClose={() => setDetailsPanelOpen(false)} />}
+      {detailsPanelOpen && <DetailsPanel orderDetails={orderDetails} onClose={() => setDetailsPanelOpen(false)} />}
     </React.Fragment>
   );
 }
 
-function DetailsPanel({ trackingNumber, onClose }) {
+const eventCodes = {
+  1: [],
+  2: [0, 1],
+  3: [10, 40, 27, 26, 39, 4, 19, 16, 15, 22],
+  4: [],
+  5: [3]
+};
+
+function DetailsPanel({ orderDetails, onClose }) {
   const { t: translateFn } = useTranslate();
+  const [activeStep, setActiveStep] = React.useState(0);
+  React.useEffect(() => {
+    if (orderDetails.trackingNumber)
+      OrderService.getTrackingDetails(orderDetails.accountDetails.shipToAccount.accountNumber, '7C1E52252A5E1FE0968742EEC9989854')
+        .then((response) => {
+          console.log(response);
+          if (Array.isArray(response.orders) && response.orders[0]) {
+            setActiveStep(2);
+          }
+        })
+        .catch((exception) => {
+          console.log(exception);
+        });
+  }, [orderDetails]);
+
+  const orderSummary = React.useMemo(() => {
+    if (CommonUtils.isNonEmptyObject(orderDetails) && orderDetails.id) {
+      return {
+        orderNumber: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : orderDetails.backendOrderId,
+        orderDate: dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY'),
+        therapy: orderDetails.therapy?.tradeName,
+        orderCost: CommonUtils.formatNumberWithoutSymbol(orderDetails.cost)
+      };
+    }
+
+    return {};
+  }, [orderDetails]);
   return (
     <FloatingDrawer open={true} anchor="right" onClose={onClose} heading={translateFn('labels.trackingDetails')}>
-      <div className={style.section}>
-        <div className="stack">
-          <p className={style.heading}>{translateFn('labels.expectedTomorrow')}</p>
-          <OrderTrackingStepper />
+      <div className="stack">
+        <div className={style.section}>
+          <div className="stack">
+            <p className={style.heading}>{translateFn('labels.expectedTomorrow')}</p>
+            <OrderTrackingStepper activeIndex={2} />
+          </div>
         </div>
-      </div>
-      <div className={style.section}>
-        <div className="stack">
-          <p className={style.heading}>{translateFn('labels.shippingAddress')}</p>
+        <div className={style.section}>
+          <div className="stack">
+            <p className={style.heading}>{translateFn('labels.shippingAddress')}</p>
+            <p>{getAddress(orderDetails?.accountDetails?.shipToAccount?.address)}</p>
+          </div>
         </div>
-      </div>
-      <div className={style.section}>
-        <div className="stack">
-          <p className={style.heading}>{translateFn('labels.orderDetails')}</p>
+        <div className={style.section}>
+          <div className="stack">
+            <p className={style.heading}>{translateFn('labels.orderDetails')}</p>
+            <div className={style.summary}>
+              {Object.entries(orderSummary).map(([key, value]) => {
+                return (
+                  <div data-direction={'row'} className={style.summaryItem}>
+                    <label>{translateFn(`labels.${key}`)}</label>
+                    <span>{value}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className={style.section}>
-        <div className="stack">
-          <p className={style.heading}>{translateFn('labels.shippingStatus')}</p>
+        <div className={style.section}>
+          <div className="stack">
+            <p className={style.heading}>{translateFn('labels.shippingStatus')}</p>
+          </div>
         </div>
       </div>
     </FloatingDrawer>

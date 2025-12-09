@@ -495,6 +495,15 @@ async function getOrderStagesRoles(orderId) {
   if (res.data) return res.data;
 }
 
+async function getTrackingDetails(accountId, trackingNumber) {
+  if (!accountId) throw new Error('Account number is missing. Account Number is required to fetch details');
+  if (!trackingNumber) throw new Error('Tracking number is missing. Tracking Number is required to fetch details');
+
+  const url = `${ApiRoutes.SHIPMENT(accountId)}/status-history?${serializeParams({ orderNumber: trackingNumber })}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -538,7 +547,8 @@ const OrderService = Object.freeze({
   finalizeOrder,
   notifyUser,
   getPrescriptionDetailsByTherapy,
-  getOrderStagesRoles
+  getOrderStagesRoles,
+  getTrackingDetails
 });
 
 export default OrderService;
