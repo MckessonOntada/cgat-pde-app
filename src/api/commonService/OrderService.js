@@ -501,7 +501,113 @@ async function getTrackingDetails(accountId, trackingNumber) {
 
   const url = `${ApiRoutes.SHIPMENT(accountId)}/status-history?${serializeParams({ orderNumber: trackingNumber })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-  if (res.data) return res.data;
+  if (res.data)
+    return {
+      clientId: 'client1',
+      requestId: 'string',
+      orderState: 3,
+      orderNumber: 'ORD001',
+      waybillNumber: 'WB005',
+      orderPlaced: '2020-01-21T02:25:02.0000000+00:00',
+      transactionId: '123e4567-e89b-12d3-a456-426614174000',
+      transactionTime: '1615300272',
+      updates: [
+        {
+          eventCode: 0,
+          message: 'The order was successfully placed.',
+          additionalInformation: "An optional field containing information on any error that might've happened.",
+          messageDate: '2025-02-10T08:12:35Z'
+        },
+        {
+          eventCode: 1,
+          message: 'The booking has been successfully created.',
+          additionalInformation: 'Additional information, should an error have occurred.',
+          messageDate: '2025-02-10T08:18:42Z'
+        },
+
+        {
+          eventCode: 4,
+          collectionWindow: '02:00:00',
+          collectionDate: '2025-02-10T11:00:00Z',
+          message: 'The collection has been scheduled.',
+          messageDate: '2025-02-10T09:10:05Z'
+        },
+        {
+          eventCode: 19,
+          message: 'The shipment has been collected.',
+          messageDate: '2025-02-10T11:22:13Z'
+        },
+
+        {
+          eventCode: 16,
+          message: 'Verification is On Hold.',
+          additionalInformation: "It's on fire",
+          messageDate: '2025-02-10T12:05:12Z'
+        },
+        {
+          eventCode: 15,
+          message: 'Verification is OK.',
+          additionalInformation: 'Fire extinguished',
+          messageDate: '2025-02-10T12:40:55Z'
+        },
+
+        {
+          eventCode: 22,
+          message: 'Dry ice has been replenished.',
+          additionalInformation: '100 Kgs',
+          messageDate: '2025-02-10T13:20:34Z'
+        },
+
+        {
+          eventCode: 26,
+          location: 'London Heathrow Apt',
+          message: 'The shipment has departed.',
+          messageDate: '2025-02-10T16:42:10Z'
+        },
+        {
+          eventCode: 40,
+          location: 'London Heathrow Apt',
+          message: 'The shipment has cleared customs.',
+          messageDate: '2025-02-11T02:15:48Z'
+        },
+        {
+          eventCode: 27,
+          location: 'London Heathrow Apt',
+          additionalInformation: 'London Heathrow Apt',
+          delayDuration: '04:00:00',
+          deliveryDate: '2025-02-11T18:00:00Z',
+          message: 'The shipment has been delayed.',
+          messageDate: '2025-02-11T05:22:30Z'
+        },
+        {
+          eventCode: 39,
+          location: 'London Heathrow Apt',
+          message: 'The shipment has arrived.',
+          messageDate: '2025-02-11T10:48:02Z'
+        },
+
+        {
+          eventCode: 10,
+          deliveryWindow: '02:00:00',
+          deliveryDate: '2025-02-12T14:00:00Z',
+          message: 'The delivery has been scheduled.',
+          messageDate: '2025-12-09T09:15:40Z'
+        }
+        // ,{
+        //   eventCode: 3,
+        //   signatory: 'Blinded Data',
+        //   message: 'The shipment has been delivered.',
+        //   messageDate: '2025-02-12T14:25:51Z'
+        // }
+        // ,{
+        //   eventCode: 21,
+        //   message: 'The shipment has been cancelled',
+        //   messageDate: '2025-02-13T07:35:11Z'
+        // }
+      ]
+    };
+
+  // return res.data;
 }
 
 const OrderService = Object.freeze({

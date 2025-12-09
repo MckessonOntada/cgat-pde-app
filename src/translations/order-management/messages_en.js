@@ -1068,5 +1068,6 @@ export const MessageEn = {
   'labels.orderNumber': 'Order Number',
   'labels.orderDate': 'Order Date',
   'labels.orderCost': 'Order Cost',
-  'labels.therapy': 'Therapy'
+  'labels.therapy': 'Therapy',
+  'labels.orderCancelled': 'The shipment has been cancelled'
 };
