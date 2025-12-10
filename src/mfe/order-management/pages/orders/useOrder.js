@@ -63,7 +63,6 @@ const useOrder = (orderId) => {
         if (therapy.strength && therapy.dosage) {
           spTherapyConfig.strength = `${therapy.strength} ${therapy.dosage}`;
         }
-        result.trackingNumber = '7C1E52252A5E1FE0968742EEC9989854';
       }
 
       return result;

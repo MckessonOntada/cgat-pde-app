@@ -1069,5 +1069,11 @@ export const MessageEn = {
   'labels.orderDate': 'Order Date',
   'labels.orderCost': 'Order Cost',
   'labels.therapy': 'Therapy',
-  'labels.orderCancelled': 'The shipment has been cancelled'
+  'labels.orderCancelled': 'The shipment has been cancelled',
+  'labels.orderIsInProgress': 'Order is in process',
+  'labels.shipmentCancelled': 'The shipment has been cancelled.',
+  'labels.orderDelivered': 'Order Delivered',
+  'labels.expectedToday': 'Expected today',
+  'labels.expectedTomorrow': 'Expected tomorrow',
+  'labels.expectedDeliveryDate': 'Expected delivery date {deliveryDate}'
 };

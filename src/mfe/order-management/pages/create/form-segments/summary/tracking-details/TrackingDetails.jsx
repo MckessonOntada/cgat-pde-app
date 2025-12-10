@@ -2,7 +2,7 @@ import React from 'react';
 import style from './style.module.scss';
 import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
-import { Stepper, Heading, Tooltip, Loader } from '@mckesson/mcp-component-library';
+import { Alert, Stepper, Heading, Tooltip, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { Link } from 'react-router-dom';
@@ -14,8 +14,10 @@ import { CHANNEL_TYPE } from '../../Constants';
 function TrackingDetails(props) {
   const { orderDetails } = props;
   const { t: translateFn } = useTranslate();
-  const [detailsPanelOpen, setDetailsPanelOpen] = React.useState(true);
-
+  const [detailsPanelOpen, setDetailsPanelOpen] = React.useState(false);
+  if (!orderDetails.requestId || !orderDetails.wayBillNumber) {
+    return <Alert type="error" description="Tracking details are missing for this order." />;
+  }
   return (
     <React.Fragment>
       <div className={style.wrapper}>
@@ -27,9 +29,9 @@ function TrackingDetails(props) {
               noTooltip={true}
               value={
                 <div className="overflowing">
-                  <Tooltip body={orderDetails.trackingNumber}>
+                  <Tooltip body={orderDetails.wayBillNumber}>
                     <Link className="MCP-table-link" onClick={() => setDetailsPanelOpen(true)}>
-                      {orderDetails.trackingNumber}
+                      {orderDetails.wayBillNumber}
                     </Link>
                   </Tooltip>
                 </div>
@@ -57,33 +59,59 @@ function DetailsPanel({ orderDetails, onClose }) {
   const [trackingEvents, setTrackingEvents] = React.useState([]);
   const [recentEvent, setRecentEvent] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+  const [deliveryTitle, setDeliveryTitle] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
   React.useEffect(() => {
-    if (orderDetails.trackingNumber)
-      OrderService.getTrackingDetails(orderDetails.accountDetails.shipToAccount.accountNumber, '7C1E52252A5E1FE0968742EEC9989854')
+    if (orderDetails.requestId)
+      OrderService.getTrackingDetails(orderDetails.accountDetails.shipToAccount.accountNumber, orderDetails.requestId)
         .then((response) => {
           const updates = response.updates || [];
-          const sorted = [...updates].sort((a, b) => new Date(b.messageDate) - new Date(a.messageDate));
-          const recentEvent = sorted[0];
-          setRecentEvent(recentEvent);
-          function getStepIndex(recentEventCode) {
-            for (const [step, codes] of Object.entries(eventCodes)) {
-              if (codes.includes(recentEventCode)) return Number(step);
-            }
-            return null;
+          if (!updates.length) {
+            setRecentEvent(null);
+            setActiveStep(null);
+            setDeliveryTitle(translateFn('labels.orderIsInProgress'));
+            setTrackingEvents({});
+            return;
           }
 
-          const stepIndex = getStepIndex(recentEvent.eventCode);
+          const sorted = [...updates].sort((a, b) => new Date(b.messageDate) - new Date(a.messageDate));
+
+          const recentEvent = sorted[0];
+          setRecentEvent(recentEvent);
+
+          const eventCode = recentEvent.eventCode;
+          const stepIndex = Number(Object.entries(eventCodes).find(([_, codes]) => codes.includes(eventCode))?.[0]) || null;
+
           setActiveStep(stepIndex);
-          const groupedEvents = updates.reduce((acc, ev) => {
-            const d = ev.messageDate.split('T')[0];
-            if (!acc[d]) acc[d] = [];
-            acc[d].push(ev);
+
+          const deliveryEvent = updates.filter((ev) => ev.deliveryDate).sort((a, b) => new Date(b.deliveryDate) - new Date(a.deliveryDate))[0];
+
+          const deliveryDate = deliveryEvent?.deliveryDate || null;
+
+          let caption = translateFn('labels.orderIsInProgress');
+
+          if (eventCode === 21) caption = translateFn('labels.shipmentCancelled');
+          else if (eventCode === 3) caption = translateFn('labels.orderDelivered');
+          else if (deliveryDate) {
+            const today = dayjs().startOf('day');
+            const expected = dayjs(deliveryDate).startOf('day');
+
+            if (expected.isSame(today)) caption = translateFn('labels.expectedToday');
+            else if (expected.diff(today, 'day') === 1) caption = translateFn('expectedTomorrow');
+            else caption = translateFn('labels.expectedDeliveryDate', { deliveryDate: dayjs(deliveryDate).format('ddd, MMM DD') });
+          }
+
+          setDeliveryTitle(caption);
+
+          const groupedEvents = sorted.reduce((acc, ev) => {
+            const dateKey = ev.messageDate.split('T')[0];
+            if (!acc[dateKey]) acc[dateKey] = [];
+            acc[dateKey].push(ev);
             return acc;
           }, {});
 
           setTrackingEvents(groupedEvents);
         })
-
         .catch((exception) => {
           console.log(exception);
         })
@@ -91,32 +119,6 @@ function DetailsPanel({ orderDetails, onClose }) {
           setLoading(false);
         });
   }, [orderDetails]);
-
-  const caption = React.useMemo(() => {
-    if (!recentEvent) return 'Order is in process';
-
-    const { eventCode, messageDate } = recentEvent;
-
-    if (eventCode === 21) return 'The shipment has been cancelled.';
-    if (eventCode === 3) return 'Order Delivered.';
-
-    if (activeStep === 3 && messageDate) {
-      const today = dayjs().startOf('day');
-      const expected = dayjs(messageDate).startOf('day');
-
-      if (expected.isSame(today)) return 'Expected today';
-      if (expected.diff(today, 'day') === 1) return 'Expected tomorrow';
-      return 'On the way';
-    }
-    if (activeStep === 1) {
-      return 'Order Placed';
-    }
-    if (activeStep === 2) {
-      return 'Order Processing';
-    }
-
-    return 'Order is in process';
-  }, [recentEvent]);
 
   const orderSummary = React.useMemo(() => {
     if (CommonUtils.isNonEmptyObject(orderDetails) && orderDetails.id) {
@@ -130,6 +132,7 @@ function DetailsPanel({ orderDetails, onClose }) {
 
     return {};
   }, [orderDetails]);
+
   return (
     <FloatingDrawer open={true} anchor="right" onClose={onClose} heading={translateFn('labels.trackingDetails')}>
       {loading ? (
@@ -142,7 +145,7 @@ function DetailsPanel({ orderDetails, onClose }) {
                 <p className={`${style.heading} ${style.error}`}>{translateFn('labels.orderCancelled')}</p>
               ) : (
                 <React.Fragment>
-                  <p className={style.heading}>{caption}</p>
+                  <p className={style.heading}>{deliveryTitle}</p>
                   <OrderTrackingStepper activeIndex={activeStep} />
                 </React.Fragment>
               )}

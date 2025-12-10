@@ -970,7 +970,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           <React.Fragment>
             <div className={'MCP-module-wrapper'}>
               <div className={'MCP-module-body'}>
-                <TrackingDetails orderDetails={orderDetails} />
+                {isSubmitted && <TrackingDetails orderDetails={orderDetails} />}
 
                 {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.APPROVAL_PENDING) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
