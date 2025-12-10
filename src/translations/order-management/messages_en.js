@@ -1060,5 +1060,25 @@ export const MessageEn = {
   'orderManagement.patientID.verification':
     'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'orderManagement.coiId.verification':
-    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
+    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'labels.shipToPONumberRequired': 'Ship to PO Number is required',
+  'labels.trackingDetails': 'Tracking Details',
+  'labels.trackingNumber': 'Tracking Number',
+  'orderTracking.stepper.orderPlaced': 'Order Placed',
+  'orderTracking.stepper.orderProcessing': 'Order Processing',
+  'orderTracking.stepper.onTheWay': 'On The Way',
+  'orderTracking.stepper.delivered': 'Delivered',
+  'labels.shippingAddress': 'Shipping Address',
+  'labels.shippingStatus': 'Shipping Status',
+  'labels.orderNumber': 'Order Number',
+  'labels.orderDate': 'Order Date',
+  'labels.orderCost': 'Order Cost',
+  'labels.therapy': 'Therapy',
+  'labels.orderCancelled': 'The shipment has been cancelled',
+  'labels.orderIsInProgress': 'Order is in process',
+  'labels.shipmentCancelled': 'The shipment has been cancelled.',
+  'labels.orderDelivered': 'Order Delivered',
+  'labels.expectedToday': 'Expected today',
+  'labels.expectedTomorrow': 'Expected tomorrow',
+  'labels.expectedDeliveryDate': 'Expected delivery date {deliveryDate}'
 };

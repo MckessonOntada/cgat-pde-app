@@ -699,12 +699,31 @@ export const MessageEs = {
   'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'S_Minimum quantity must be less than maximum quantity',
   'additional.details.order.quantity.error': 'S_The entered quantity is outside the permitted range for this material. Please enter a value between',
   'labels.shipToPONumber': 'S_Ship to PO Number',
+  'orderManagement.patientID.verification':
+    'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'orderManagement.coiId.verification':
+    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'labels.shipToPONumberLengthError': 'S_Ship to PO Number should not exceed 35 characters',
   'labels.shipToPONumberMustValid': 'S_Ship to PO Number should only contain letters and numbers.',
   'labels.shipToPONumberExtraSpaceError': 'S_Ship to PO Number must not contain leading or trailing spaces',
   'labels.shipToPONumberRequired': 'S_Ship to PO Number is required',
-  'orderManagement.patientID.verification':
-    'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
-  'orderManagement.coiId.verification':
-    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
+  'labels.trackingDetails': 'S_Tracking Details',
+  'labels.trackingNumber': 'S_Tracking Number',
+  'orderTracking.stepper.orderPlaced': 'S_Order Placed',
+  'orderTracking.stepper.orderProcessing': 'S_Order Processing',
+  'orderTracking.stepper.onTheWay': 'S_On The Way',
+  'orderTracking.stepper.delivered': 'S_Delivered',
+  'labels.shippingAddress': 'S_Shipping Address',
+  'labels.shippingStatus': 'S_Shipping Status',
+  'labels.orderNumber': 'S_Order Number',
+  'labels.orderDate': 'S_Order Date',
+  'labels.orderCost': 'S_Order Cost',
+  'labels.therapy': 'S_Therapy',
+  'labels.orderCancelled': 'S_The shipment has been cancelled',
+  'labels.orderIsInProgress': 'S_Order is in process',
+  'labels.shipmentCancelled': 'S_The shipment has been cancelled.',
+  'labels.orderDelivered': 'S_Order Delivered',
+  'labels.expectedToday': 'S_Expected today',
+  'labels.expectedTomorrow': 'S_Expected tomorrow',
+  'labels.expectedDeliveryDate': 'S_Expected delivery date {deliveryDate}'
 };

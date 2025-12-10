@@ -494,6 +494,16 @@ async function getOrderStagesRoles(orderId) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
+
+async function getTrackingDetails(accountId, trackingNumber) {
+  if (!accountId) throw new Error('Account number is missing. Account Number is required to fetch details');
+  if (!trackingNumber) throw new Error('Tracking number is missing. Tracking Number is required to fetch details');
+
+  const url = `${ApiRoutes.SHIPMENT(accountId)}/status-history?${serializeParams({ orderNumber: trackingNumber })}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+  return {};
+}
 async function regeneronPatientIdVerification(patientId) {
   if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
   let url = `${ApiRoutes.USER_BASE}regeneron/validate/${patientId}`;
@@ -553,6 +563,7 @@ const OrderService = Object.freeze({
   notifyUser,
   getPrescriptionDetailsByTherapy,
   getOrderStagesRoles,
+  getTrackingDetails,
   regeneronPatientIdVerification,
   regeneronCoiIdVerification
 });
