@@ -1060,7 +1060,7 @@ export const MessageEn = {
   'orderManagement.patientID.verification':
     'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'orderManagement.coiId.verification':
-    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
+    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'labels.shipToPONumberRequired': 'Ship to PO Number is required',
   'labels.trackingDetails': 'Tracking Details',
   'labels.trackingNumber': 'Tracking Number',
