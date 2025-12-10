@@ -33,7 +33,7 @@ import * as Yup from 'yup';
 import { ORDER_STATUS } from '../../../orders/config';
 import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
-import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
@@ -98,6 +98,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
+  const manufacturer = orderDetails?.therapyConfig?.config?.manufacturerName;
 
   const dispatch = useDispatch();
 
@@ -1007,7 +1008,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   );
 
   const handleCoiIdValidation = (e) => {
-    if (!e.target.value) return;
+    const { id, value } = e.target;
+    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
 
     coiIdValidation({
       patientId: orderDetails?.patient?.patientIdentifier,
