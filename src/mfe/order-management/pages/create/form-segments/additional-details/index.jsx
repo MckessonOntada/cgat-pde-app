@@ -981,7 +981,39 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return allValid;
   };
+  const { mutate: coiIdValidation } = useMutation(
+    async ({ patientId, coiId }) => {
+      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setAlert(null);
+        } else {
+          setAlert({
+            description: t('orderManagement.coiId.verification'),
+            type: 'warning'
+          });
+        }
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
 
+  const handleCoiIdValidation = (e) => {
+    if (!e.target.value) return;
+
+    coiIdValidation({
+      patientId: orderDetails?.patient?.patientIdentifier,
+      coiId: e.target.value
+    });
+  };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
     setIsOrderInDraft(true);
     const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
@@ -1080,7 +1112,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       />
 
                       <div className="form-segment-list">
-                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
+                        <AdditionalDetailsDefaultFields
+                          therapyConfig={therapyConfig}
+                          channelType={channelType}
+                          readOnly={readOnly || !isAllowedToProceed}
+                          handleCoiIdValidation={handleCoiIdValidation}
+                        />
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
                           handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
@@ -1258,10 +1295,10 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
-  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue });
+  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue, handleCoiIdValidation });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;
 
