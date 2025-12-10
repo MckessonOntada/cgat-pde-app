@@ -76,7 +76,7 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         if (allowUpper) charSet += 'A-Z';
         if (allowLower) charSet += 'a-z';
         if (allowNumbers) charSet += '0-9';
-        if (allowSpace) charSet += 's';
+        if (allowSpace) charSet += '\\s';
         if (allowHyphen) charSet += '-';
         if (allowUnderscore) charSet += '_';
         if (allowDot) charSet += '.';

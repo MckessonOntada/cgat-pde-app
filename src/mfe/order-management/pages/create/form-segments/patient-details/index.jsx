@@ -19,7 +19,7 @@ import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { getInitialValues, getValidationSchema, normalizePatient } from './forms/validation-schema';
-import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
@@ -59,6 +59,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const dispatch = useDispatch();
   const formikRef = useRef();
+  const manufacturer = orderDetails?.therapyConfig?.config?.manufacturerName;
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
@@ -434,17 +435,23 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const handlePatientIdVerification = (e) => {
     const { id, value } = e.target;
-    if (!value) return;
+    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
 
-    if (id === 'input-patient.patientIdentifier') {
-      identifierValidation({ patientId: value });
-    }
+    const patientId = formikRef.current?.values?.patient?.patientIdentifier;
 
-    if (id === 'input-patient.coiId') {
-      const patientId = formikRef.current?.values?.patient?.patientIdentifier;
-      if (patientId) {
-        coiIdValidation({ patientId, coiId: value });
-      }
+    switch (id) {
+      case 'input-patient.patientIdentifier':
+        identifierValidation({ patientId: value });
+        break;
+
+      case 'input-patient.coiId':
+        if (patientId) {
+          coiIdValidation({ patientId, coiId: value });
+        }
+        break;
+
+      default:
+        break;
     }
   };
 
