@@ -27,12 +27,13 @@ export default function ConfigurationSpMaterial() {
 
   React.useEffect(() => {
     MaterialService.getManufacturers(materialType).then((manufacturer) => {
-      setManufacturer(
-        manufacturer.map((item) => ({
+      setManufacturer([
+        { label: 'Select Manufacturer', value: '' },
+        ...manufacturer.map((item) => ({
           label: item,
           value: item
         }))
-      );
+      ]);
     });
   }, []);
 
@@ -121,7 +122,10 @@ export default function ConfigurationSpMaterial() {
     const payload = {
       [isBnbMaterial ? 'ndcNumbers' : 'spProductIds']: therapyList.map((item) => (isBnbMaterial ? item.ndc : item.materialNumber)),
       ...(isBnbMaterial && { channelType: ChannelType.BUY_AND_BILL }),
-      config: values
+      config: {
+        ...values,
+        manufacturerName: values.manufacturerName || null
+      }
     };
     updateMaterial(payload);
   };
