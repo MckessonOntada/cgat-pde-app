@@ -42,6 +42,7 @@ const getUIConfig = (translateFn) => ({
           isMultiSelect: true,
           pillsCount: 5,
           isPillsVisible: true,
+          isRequired: true,
           helperText: translateFn('notificationGroup.ruleNotificationTriggers.targetField.helperText'),
           pillListerFn: (item) => ({ id: item.value, labelText: item.label }),
           searchFn: async (query) => {
@@ -146,7 +147,7 @@ const getUIConfig = (translateFn) => ({
       isRequired: true,
       pillsCount: 5,
       isPillsVisible: true,
-      helperText: translateFn('notificationGroup.participantsSection.helperText'),
+      // helperText: translateFn('notificationGroup.participantsSection.helperText'),
       pillListerFn: (item) => ({ id: item.value, labelText: item.label }),
       searchFn: async (query) => {
         const params = {
