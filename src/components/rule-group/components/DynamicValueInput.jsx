@@ -4,7 +4,7 @@ import Components from '@src/components/form/Components';
 import MultiSelectDropdown from '../inputs/MultiSelectDropdown';
 
 export default function DynamicValueInput(props) {
-  const { index, label, type, helperText, searchFn, pillListerFn } = props;
+  const { index, label, isRequired, type, helperText, searchFn, pillListerFn } = props;
   const { values, setFieldValue } = useFormikContext();
   const selectedValues = values.rules[index].value || [];
 
@@ -14,7 +14,8 @@ export default function DynamicValueInput(props) {
     const fp = {
       id: `rules[${index}].value`,
       name: `rules[${index}].value`,
-      label
+      label,
+      isRequired
     };
 
     if (type === 'text' || type === 'number') {

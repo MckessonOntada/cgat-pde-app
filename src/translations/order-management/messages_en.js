@@ -1057,6 +1057,11 @@ export const MessageEn = {
   'labels.shipToPONumberMustValid': 'Ship to PO Number should only contain letters and numbers.',
   'labels.shipToPONumberExtraSpaceError': 'Ship to PO Number must not contain leading or trailing spaces',
   'labels.shipToPONumberRequired': 'Ship to PO Number is required',
+  'orderManagement.patientID.verification':
+    'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'orderManagement.coiId.verification':
+    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
+  'labels.shipToPONumberRequired': 'Ship to PO Number is required',
   'labels.trackingDetails': 'Tracking Details',
   'labels.trackingNumber': 'Tracking Number',
   'orderTracking.stepper.orderPlaced': 'Order Placed',

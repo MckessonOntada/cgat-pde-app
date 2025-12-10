@@ -9,7 +9,7 @@ import { useFormikContext, getIn } from 'formik';
 import { fieldFormatOptions, fieldFormatRegexObj } from './config';
 import CustomRegex from './CustomRegex';
 
-const ConfigurationForm = ({ index }) => {
+const ConfigurationForm = ({ index, setFieldError }) => {
   const { t } = useTranslate();
   const [customRegex, setCustomRegex] = React.useState(false);
   const { values, setFieldValue, errors } = useFormikContext();
@@ -46,6 +46,11 @@ const ConfigurationForm = ({ index }) => {
   const handleCheckboxToggle = (value) => {
     const current = !!getIn(values, path(value));
     setFieldValue(path(value), !current);
+    if (value === 'displayOnForm') {
+      setFieldError(`fields[${index}]`, '');
+    } else if (value === 'showHelpIcon') {
+      setFieldError(path('helpInfoMessage'), '');
+    }
   };
 
   return (
@@ -118,11 +123,10 @@ const ConfigurationForm = ({ index }) => {
         <Field
           name={path('fieldFormat.validationRegex')}
           label={t('manageSPMaterial.configuration.label.validationRegex')}
-          isRequired={displayOnForm}
           component={Components['input']}
           maxLength={200}
           isReadOnly={true}
-          tooltipText={t('manageSPMaterial.configuration.label.tooltip.selectFieldFormat')}
+          infoText={t('manageSPMaterial.configuration.label.tooltip.helpText')}
         />
 
         <div className="controls">

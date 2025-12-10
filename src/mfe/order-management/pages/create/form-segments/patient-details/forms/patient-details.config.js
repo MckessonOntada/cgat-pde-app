@@ -11,7 +11,7 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = (channelType, therapyConfig) => [
+export const PatientSections = (channelType, therapyConfig, identifierValidation) => [
   {
     rows: [
       {
@@ -79,7 +79,8 @@ export const PatientSections = (channelType, therapyConfig) => [
                   type: 'input',
                   maxLength: 20,
                   isRequired: field.properties.mandatoryField,
-                  infoText: field?.properties.helpInfoMessage
+                  infoText: field?.properties.helpInfoMessage,
+                  ...(field.fieldName === 'patientIdentifier' && { onBlur: identifierValidation })
                 })) || []
             : [])
         ]
@@ -196,7 +197,7 @@ export const AddressSections = (channelType) => [
   }
 ];
 
-export const IdentifierSections = (channelType, spTherapyConfig) => {
+export const IdentifierSections = (spTherapyConfig, identifierValidation) => {
   const controls = [];
   spTherapyConfig?.config?.fields?.forEach((field) => {
     if (field?.properties?.displayOnForm) {
@@ -206,7 +207,8 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
         label: field.properties.displayName,
         isRequired: field.properties.mandatoryField,
         infoText: field?.properties.helpInfoMessage,
-        type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'
+        type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+        ...(['patientIdentifier', 'coiId'].includes(field.fieldName) && { onBlur: identifierValidation })
       });
     }
   });

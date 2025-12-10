@@ -175,7 +175,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, t('Please fill valid input'));
+          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
@@ -204,7 +204,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
           validator = validator.when([], {
             is: () => field.properties.mandatoryField,
-            then: (s) => s.required(field.properties.errorMessage),
+            then: (s) => s.required(`${field.properties.displayName} is required`),
             otherwise: (s) => s.notRequired()
           });
 
@@ -981,7 +981,39 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return allValid;
   };
+  const { mutate: coiIdValidation } = useMutation(
+    async ({ patientId, coiId }) => {
+      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setAlert(null);
+        } else {
+          setAlert({
+            description: t('orderManagement.coiId.verification'),
+            type: 'warning'
+          });
+        }
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
 
+  const handleCoiIdValidation = (e) => {
+    if (!e.target.value) return;
+
+    coiIdValidation({
+      patientId: orderDetails?.patient?.patientIdentifier,
+      coiId: e.target.value
+    });
+  };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
     setIsOrderInDraft(true);
     const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
@@ -1080,7 +1112,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       />
 
                       <div className="form-segment-list">
-                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
+                        <AdditionalDetailsDefaultFields
+                          therapyConfig={therapyConfig}
+                          channelType={channelType}
+                          readOnly={readOnly || !isAllowedToProceed}
+                          handleCoiIdValidation={handleCoiIdValidation}
+                        />
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
                           handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
@@ -1258,10 +1295,10 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
-  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue });
+  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue, handleCoiIdValidation });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;
 
