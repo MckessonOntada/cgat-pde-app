@@ -452,7 +452,7 @@ export const UserManagementES = {
   'notificationGroup.validation.attributeIsRequired': 'S_Attribute is required',
   'notificationGroup.validation.valueIsRequired': 'S_Value is required',
   'notificationGroup.validation.leastOneRuleRequired': 'S_At least one rule is required',
-  'notificationGroup.validation.leastOneParticipantRequired': 'S_Select at least one participant',
+  'notificationGroup.validation.leastOneParticipantRequired': 'S_Select at least one user',
   'notificationGroup.validation.provideCorrectPrice': 'Please provide a valid price greater than 0',
 
   'notificationGroup.save.success': 'S_New notification group {groupName} is created successfully.',
@@ -467,14 +467,14 @@ export const UserManagementES = {
   'notificationGroup.notificationGroupName.label': 'S_Notification Group Name',
   'notificationGroup.notificationGroupName.helperText': 'S_Please enter a unique notification group name.',
   'notificationGroup.participantsSection.title': 'S_Notification user list',
-  'notificationGroup.participantsSection.label': 'S_Participants',
+  'notificationGroup.participantsSection.label': 'S_Users',
   'notificationGroup.participantsSection.helperText': 'S_Select the users who will receive notifications for the selected triggers.',
-  'notificationGroup.participantsSection.placeholder': 'S_Search participants',
+  'notificationGroup.participantsSection.placeholder': 'S_Search Users',
 
   'notificationGroup.ruleNotificationTriggers.title': 'S_Notification Triggers',
   'notificationGroup.ruleNotificationTriggers.helperText': 'S_Please select a criteria to apply the notification rules on.',
   'notificationGroup.ruleNotificationTriggers.targetField.label': 'S_Select Notification(s)',
-  'notificationGroup.ruleNotificationTriggers.targetField.helperText': 'S_Please select the therapy(s) for the notification group.',
+  'notificationGroup.ruleNotificationTriggers.targetField.helperText': 'S_Please select the notification(s) for the notification group.',
 
   'notificationGroup.ruleAccount.title': 'S_Account',
   'notificationGroup.ruleAccount.helperText': 'S_Please select a criteria to apply the notification rules on.',

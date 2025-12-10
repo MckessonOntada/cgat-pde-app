@@ -479,7 +479,7 @@ export const UserManagementEN = {
   'notificationGroup.validation.attributeIsRequired': 'Attribute is required',
   'notificationGroup.validation.valueIsRequired': 'Value is required',
   'notificationGroup.validation.leastOneRuleRequired': 'At least one rule is required',
-  'notificationGroup.validation.leastOneParticipantRequired': 'Select at least one participant',
+  'notificationGroup.validation.leastOneParticipantRequired': 'Select at least one user',
   'notificationGroup.validation.provideCorrectPrice': 'Please provide a valid price greater than 0',
 
   'notificationGroup.save.success': 'New notification group {groupName} is created successfully.',
@@ -494,14 +494,14 @@ export const UserManagementEN = {
   'notificationGroup.notificationGroupName.label': 'Notification Group Name',
   'notificationGroup.notificationGroupName.helperText': 'Please enter a unique notification group name.',
   'notificationGroup.participantsSection.title': 'Notification user list',
-  'notificationGroup.participantsSection.label': 'Participants',
+  'notificationGroup.participantsSection.label': 'Select Users',
   'notificationGroup.participantsSection.helperText': 'Select the users who will receive notifications for the selected triggers.',
-  'notificationGroup.participantsSection.placeholder': 'Search participants',
+  'notificationGroup.participantsSection.placeholder': 'Search Users',
 
   'notificationGroup.ruleNotificationTriggers.title': 'Notification Triggers',
   'notificationGroup.ruleNotificationTriggers.helperText': 'Please select a criteria to apply the notification rules on.',
   'notificationGroup.ruleNotificationTriggers.targetField.label': 'Select Notification(s)',
-  'notificationGroup.ruleNotificationTriggers.targetField.helperText': 'Please select the therapy(s) for the notification group.',
+  'notificationGroup.ruleNotificationTriggers.targetField.helperText': 'Please select the notifications(s) for the notification group.',
 
   'notificationGroup.ruleAccount.title': 'Account',
   'notificationGroup.ruleAccount.helperText': 'Please select a criteria to apply the notification rules on.',
