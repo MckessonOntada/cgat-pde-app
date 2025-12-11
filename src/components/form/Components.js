@@ -10,9 +10,11 @@ import RadioGroup from './RadioGroup';
 import ToggleButtonFieldFormik from './formik/ToggleButtonFormik';
 import InputFileFormik from './formik/InputFileFormik';
 import StateDropdown from './StateDropdown';
+import InputTextFormik from './formik/InputTextFormik';
 
 const Components = {
   input: InputFieldFormik,
+  inputText: InputTextFormik,
   textarea: TextareaFormik,
   dropdown: DropdownFormik,
   phoneInput: PhoneInputFormik,
