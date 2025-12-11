@@ -31,8 +31,14 @@ const UserDetailsFormSegment = ({ comment, isEdit }) => {
             label={t('userManagement.create_user.inputLabel.first_name')}
             placeholder=" "
             isRequired
-            component={Components['input']}
+            component={Components['inputText']}
+            suffix={<span>SUFFIX</span>}
+            prefix={<span>PREFIX</span>}
             maxLength={50}
+            adornment={{
+              start: 'Prefix',
+              end: 'Suffix'
+            }}
           />
           <Field
             id="name.middleName"
