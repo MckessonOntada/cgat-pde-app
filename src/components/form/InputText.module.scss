@@ -24,7 +24,7 @@
 
 .inputFieldContainer {
   display: flex;
-  max-width: 100%;
+  width: 100%;
 }
 
 .inputFlex {
@@ -32,9 +32,9 @@
   flex-direction: row;
   gap: var(--spacing-01);
   align-items: center;
-  max-width: 100%;
+  width: 100%;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 0 8px;
   background-color: #fff;
   height: 3.8rem;
