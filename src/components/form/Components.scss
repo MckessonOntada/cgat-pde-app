@@ -62,15 +62,3 @@ div[data-testid^="date-range-component"] {
   margin-top: var(--spacing-01);
   color: var(--brand-color-black);
 }
-
-.input-field-wrapper {
-  position: relative;
-  display: inline-block;
-  display: flex;
-  align-items: center;
-  font-size: var(--brand-font-size--default);
-  gap: var(--spacing-02);
-  div {
-    flex-grow: 1;
-  }
-}
