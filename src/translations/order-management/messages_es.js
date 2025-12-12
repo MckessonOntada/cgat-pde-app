@@ -725,5 +725,6 @@ export const MessageEs = {
   'labels.orderDelivered': 'S_Order Delivered',
   'labels.expectedToday': 'S_Expected today',
   'labels.expectedTomorrow': 'S_Expected tomorrow',
-  'labels.expectedDeliveryDate': 'S_Expected delivery date {deliveryDate}'
+  'labels.expectedDeliveryDate': 'S_Expected delivery date {deliveryDate}',
+  'labels.PatientID': 'S_Patient ID'
 };
