@@ -1,6 +1,7 @@
 import { US_STATES } from '@src/components/form/util';
 import { CHANNEL_TYPE } from '../../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { extractPrefixSuffix } from '../../OrderUtil';
 
 const getStates = () => {
   const options = US_STATES();
@@ -72,16 +73,22 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
             ? therapyConfig?.config?.fields
                 ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
-                ?.map((field) => ({
-                  id: `patient-info-${field.fieldName}`,
-                  name: `patient.${field.fieldName}`,
-                  label: field.properties.displayName,
-                  type: 'input',
-                  maxLength: 20,
-                  isRequired: field.properties.mandatoryField,
-                  infoText: field?.properties.helpInfoMessage,
-                  ...(field.fieldName === 'patientIdentifier' && { onBlur: identifierValidation })
-                })) || []
+                ?.map((field) => {
+                  const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+                  return {
+                    id: `patient-info-${field.fieldName}`,
+                    name: `patient.${field.fieldName}`,
+                    label: field.properties.displayName,
+                    type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+                    prefix,
+                    suffix,
+                    isRequired: field.properties.mandatoryField,
+                    infoText: field?.properties.helpInfoMessage,
+                    ...(field.fieldName === 'patientIdentifier' && {
+                      onBlur: identifierValidation
+                    })
+                  };
+                }) || []
             : [])
         ]
       }
@@ -201,13 +208,16 @@ export const IdentifierSections = (spTherapyConfig, identifierValidation) => {
   const controls = [];
   spTherapyConfig?.config?.fields?.forEach((field) => {
     if (field?.properties?.displayOnForm) {
+      const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
       controls.push({
         id: `patient-info-${field.fieldName}`,
         name: `patient.${field.fieldName}`,
         label: field.properties.displayName,
         isRequired: field.properties.mandatoryField,
         infoText: field?.properties.helpInfoMessage,
-        type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+        type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+        prefix,
+        suffix,
         ...(['patientIdentifier', 'coiId'].includes(field.fieldName) && { onBlur: identifierValidation })
       });
     }

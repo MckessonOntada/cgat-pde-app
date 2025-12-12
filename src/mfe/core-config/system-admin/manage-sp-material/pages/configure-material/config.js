@@ -1,13 +1,32 @@
-import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
-
 export const fieldFormatRegexObj = {
-  Text: "^[A-Za-z0-9'.,-_()#&+:]{1,200}$",
-  Alphabetic: '^[A-Za-z]{1,100}$',
-  Alphanumeric: '^[A-Za-z0-9]{1,40}$',
-  'Uppercase Alphanumeric': '^[A-Z0-9]{3,20}$',
-  Integer: '^[1-9][0-9]?$',
-  Date_MM_DD_YYYY: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
-  'UUID/Unique ID': '^[A-Za-z0-9-]{8,36}$'
+  Text: {
+    regex: "^[A-Za-z0-9'.,-_()#&+:]{1,200}$",
+    errorMessage: "Only letters, numbers, and allowed special characters ('. , - _ () # & + :) are permitted, max 200 characters."
+  },
+  Alphabetic: {
+    regex: '^[A-Za-z]{1,100}$',
+    errorMessage: 'Only alphabetic characters (A-Z) are allowed, max 100 characters.'
+  },
+  Alphanumeric: {
+    regex: '^[A-Za-z0-9]{1,40}$',
+    errorMessage: 'Only letters and numbers are allowed, max 40 characters.'
+  },
+  'Uppercase Alphanumeric': {
+    regex: '^[A-Z0-9]{3,20}$',
+    errorMessage: 'Use only uppercase letters (A-Z) and numbers, 3-20 characters.'
+  },
+  Integer: {
+    regex: '^[1-9][0-9]?$',
+    errorMessage: 'Enter a valid integer between 1 and 99.'
+  },
+  Date_MM_DD_YYYY: {
+    regex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
+    errorMessage: 'Enter a valid date in MM/DD/YYYY format.'
+  },
+  'UUID/Unique ID': {
+    regex: '^[A-Za-z0-9-]{8,36}$',
+    errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), length 8 to 36 characters.'
+  }
 };
 export const fieldFormatOptions = [
   { label: 'Text', value: 'Text' },
@@ -19,38 +38,208 @@ export const fieldFormatOptions = [
   { label: 'UUID/Unique ID', value: 'UUID/Unique ID' }
 ];
 
-function getDefaultFieldProperties(fieldName) {
-  return {
-    fieldName,
-    properties: {
-      displayOnForm: false,
-      mandatoryField: false,
-      showHelpIcon: false,
-      displayName: '',
-      errorMessage: '',
-      helpInfoMessage: '',
-      fieldFormat: {
-        formatType: '',
-        validationRegex: '',
-        validationFormat: '',
-        get options() {
-          return fieldFormatOptions;
+export const defaultFieldFormatBnb = () => ({
+  patientInformationRequired: null,
+  manufacturerName: null,
+  fields: [
+    {
+      fieldName: 'patientIdentifier',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Manufacturer Patient Identifier',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'coiId',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'COI ID',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'medicalRecordNumber',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'MRN',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'poNumber',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'PO Number',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'shipToPONumber',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Ship to PO  Number',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'dateOfAdministration',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Date of Administration',
+        errorMessage: 'Invalid date format. Use MM/DD/YYYY (e.g., 05/21/2024).',
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Date_MM_DD_YYYY',
+          validationRegex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'dateOfApheresis',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Date of Apheresis',
+        errorMessage: 'Invalid date format. Use MM/DD/YYYY (e.g., 05/21/2024).',
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Date_MM_DD_YYYY',
+          validationRegex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
         }
       }
     }
-  };
-}
-
-const spMaterialFiles = ['patientIdentifier', 'coiId', 'medicalRecordNumber'];
-const bnbMaterialFiles = ['patientIdentifier', 'coiId', 'medicalRecordNumber', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis'];
-
-export const configObj = (materialType) => {
-  const isBnbMaterial = materialType === CHANNEL_TYPE.BUY_AND_BILL;
-  return {
-    ...(isBnbMaterial ? { patientInformationRequired: '' } : { triageChannel: '' }),
-    fields: (isBnbMaterial ? bnbMaterialFiles : spMaterialFiles).map((fieldName) => getDefaultFieldProperties(fieldName))
-  };
-};
+  ]
+});
+export const defaultFieldFormatSp = () => ({
+  triageChannel: '',
+  manufacturerName: null,
+  fields: [
+    {
+      fieldName: 'patientIdentifier',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Manufacturer Patient Identifier',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'coiId',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'COI ID',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'medicalRecordNumber',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'MRN',
+        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return fieldFormatOptions;
+          }
+        }
+      }
+    }
+  ]
+});
 
 export const regexAttributes = {
   Text: {
