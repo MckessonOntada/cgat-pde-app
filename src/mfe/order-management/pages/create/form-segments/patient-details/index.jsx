@@ -443,14 +443,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const handlePatientIdVerification = (e) => {
     const { id, value } = e.target;
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
-
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     switch (id) {
       case 'patient.patientIdentifier':
         identifierValidation({ patientId: value });
         break;
 
-      case 'patient.coiId':
+      case 'input-patient.coiId':
         if (patientId) {
           coiIdValidation({ patientId, coiId: value });
         }
