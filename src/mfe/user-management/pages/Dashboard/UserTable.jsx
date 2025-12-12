@@ -344,21 +344,32 @@ function UserTable({ onActionSuccess, showAlert }) {
             menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
             handleSelect={(value) => handleOnOptionSelection(value, row)}
             options={
-              tab === USER_TABS.PENDING_REQUESTS
-                ? [
-                    {
-                      label: t('userManagement.table.action.review'),
-                      value: 'review'
-                    },
-                    ...(row.status !== 'REJECTED'
-                      ? [
-                          {
-                            label: t('userManagement.button.rejectrequest'),
-                            value: 'reject'
-                          }
-                        ]
-                      : [])
-                  ]
+              isSystemAdminView
+                ? tab === USER_TABS.PENDING_REQUESTS
+                  ? [
+                      {
+                        label: t('userManagement.table.action.review'),
+                        value: 'review'
+                      },
+                      ...(row.status !== 'REJECTED'
+                        ? [
+                            {
+                              label: t('userManagement.button.rejectrequest'),
+                              value: 'reject'
+                            }
+                          ]
+                        : [])
+                    ]
+                  : [
+                      {
+                        label: t('userManagement.button.resendLink'),
+                        value: 'resendLink'
+                      },
+                      {
+                        label: t('userManagement.viewUser'),
+                        value: 'edit'
+                      }
+                    ]
                 : [
                     {
                       label: t('userManagement.button.resendLink'),
@@ -374,7 +385,6 @@ function UserTable({ onActionSuccess, showAlert }) {
             size="md"
           />
         ),
-        omit: isSystemAdminView,
         isAction: true
       }
     ];
