@@ -1,7 +1,7 @@
 import Alert from '@src/components/cgat-alert/Alert';
 import { renderModal } from '@src/util/ModalUtil';
 import React, { useState } from 'react';
-import { NOTIFY_ALERT, NOTIFY_USER_EVENT_TYPE } from './Constants';
+import { CHANNEL_TYPE, NOTIFY_ALERT, NOTIFY_USER_EVENT_TYPE } from './Constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import { useMutation } from 'react-query';
@@ -123,3 +123,105 @@ export const isValidToSaveAsDraft = (values, errors, touched, setTouched, setErr
 
   return allValid;
 };
+export const getManufacturer = (details) =>
+  details?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? details?.therapyConfig?.config?.manufacturerName : details?.spTherapyConfig?.config?.manufacturerName;
+
+export const extractPrefixSuffix = (regexStr) => {
+  if (!regexStr) return { prefix: '', suffix: '' };
+
+  let prefix = '';
+  let suffix = '';
+  const prefixMatch = regexStr.match(/^\^([A-Za-z0-9]+)/);
+  if (prefixMatch) prefix = prefixMatch[1];
+
+  const suffixMatch = regexStr.match(/([A-Za-z0-9]+)\$$/);
+  if (suffixMatch) suffix = suffixMatch[1];
+
+  return { prefix, suffix };
+};
+export function removePrefixSuffix(regexStr) {
+  const prefixRemoved = regexStr.replace(/^\^([^(\[\{]+)(?=[({[])/, '^');
+  const suffixRemoved = prefixRemoved.replace(/([^)\]\}]+)\$$/, '$');
+  return suffixRemoved;
+}
+export function updatePatientValues(values, fieldConfigs) {
+  if (!values?.patient) return values;
+
+  fieldConfigs.forEach((config) => {
+    const field = config.fieldName;
+    const value = values.patient[field];
+
+    if (value === undefined || value === null || value === '') return;
+
+    const regex = config.properties?.fieldFormat?.validationRegex;
+    if (!regex) return;
+
+    const { prefix, suffix } = extractPrefixSuffix(regex);
+    if (prefix || suffix) {
+      values.patient[field] = `${prefix}${value}${suffix}`;
+    } else {
+      return values;
+    }
+
+    if (!prefix && !suffix) return;
+
+    values.patient[field] = `${prefix}${value}${suffix}`;
+  });
+
+  return values;
+}
+
+export function updateAdditionalDetailsValues(values, fieldConfigs) {
+  fieldConfigs.forEach((config) => {
+    const field = config.fieldName;
+    const value = values[field];
+
+    if (value === undefined || value === null || value === '') return;
+
+    const regex = config.properties?.fieldFormat?.validationRegex;
+    if (!regex) return;
+
+    const { prefix, suffix } = extractPrefixSuffix(regex);
+    if (prefix || suffix) {
+      values[field] = `${prefix}${value}${suffix}`;
+    } else {
+      return values;
+    }
+
+    if (!prefix && !suffix) return;
+
+    values[field] = `${prefix}${value}${suffix}`;
+  });
+
+  return values;
+}
+
+export function removePrefixSuffixFromValues(values, fieldConfigs) {
+  if (!values) return values;
+
+  fieldConfigs.forEach((config) => {
+    const field = config.fieldName;
+    const value = values[field];
+
+    if (value === undefined || value === null || value === '') return;
+
+    const regex = config.properties?.fieldFormat?.validationRegex;
+    if (!regex) return;
+
+    const { prefix, suffix } = extractPrefixSuffix(regex);
+
+    let newValue = value;
+
+    if (prefix && newValue.startsWith(prefix)) {
+      newValue = newValue.slice(prefix.length);
+    }
+
+    if (suffix && newValue.endsWith(suffix)) {
+      newValue = newValue.slice(0, newValue.length - suffix.length);
+    }
+
+    values[field] = newValue;
+  });
+
+  return values;
+}

@@ -32,7 +32,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { isValidToSaveAsDraft, NotifyAlert } from '../OrderUtil';
+import { getManufacturer, isValidToSaveAsDraft, NotifyAlert, removePrefixSuffixFromValues, updatePatientValues } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
@@ -59,7 +59,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const dispatch = useDispatch();
   const formikRef = useRef();
-  const manufacturer = orderDetails?.therapyConfig?.config?.manufacturerName;
+  const manufacturer = getManufacturer(orderDetails);
+
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
@@ -136,8 +137,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           ...orderDetails.provider
         });
       }
+      const config =
+        orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+      const patientDetails = removePrefixSuffixFromValues(orderDetails.patient, config || []);
       setInitialValues({
-        patient: CommonUtils.normalizeFormData(normalizePatient(orderDetails.patient)),
+        patient: CommonUtils.normalizeFormData(normalizePatient(patientDetails)),
         providerId: orderDetails.provider?.id
       });
     }
@@ -278,7 +282,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
 
   const handleSubmit = (form, skipDuplicateCheck = false) => {
-    const payload = CommonUtils.cleanObject(form);
+    const formValue = CommonUtils.cleanObject(form);
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const payload = updatePatientValues(formValue, config || []);
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
     }
@@ -438,13 +445,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
 
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
-
     switch (id) {
-      case 'input-patient.patientIdentifier':
+      case 'patient.patientIdentifier':
         identifierValidation({ patientId: value });
         break;
 
-      case 'input-patient.coiId':
+      case 'patient.coiId':
         if (patientId) {
           coiIdValidation({ patientId, coiId: value });
         }

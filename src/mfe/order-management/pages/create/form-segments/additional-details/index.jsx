@@ -37,7 +37,7 @@ import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { NotifyAlert } from '../OrderUtil';
+import { getManufacturer, NotifyAlert, removePrefixSuffix, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -98,7 +98,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
-  const manufacturer = orderDetails?.therapyConfig?.config?.manufacturerName;
+  const manufacturer = getManufacturer(orderDetails);
 
   const dispatch = useDispatch();
 
@@ -176,7 +176,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
+          let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
@@ -658,7 +658,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }));
       }
     }
-
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      removePrefixSuffixFromValues(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
+    }
     setInitialFormValues((prev) => ({
       ...prev,
       ...initialValues
@@ -782,6 +784,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       payload.shipToPONumber = shipToPONumber;
       payload.dateOfAdministration = dateOfAdministration;
       payload.dateOfApheresis = dateOfApheresis;
+    }
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      updateAdditionalDetailsValues(payload, orderDetails?.therapyConfig?.config?.fields || []);
     }
     if (skipTerms && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       if (isStageInDraft) {

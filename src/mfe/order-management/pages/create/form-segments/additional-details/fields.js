@@ -2,6 +2,7 @@ import Components from '@src/components/form/Components';
 import CommonUtils from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { extractPrefixSuffix } from '../OrderUtil';
 
 const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -17,11 +18,14 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     therapyConfig?.config?.fields?.forEach((field) => {
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+        const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
         dynamic_fields.push({
           name: field?.fieldName,
           label: field?.properties?.displayName,
           isRequired: field?.properties?.mandatoryField,
-          component: Components[field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
+          component: Components[prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
+          prefix,
+          suffix,
           infoText: field?.properties.helpInfoMessage,
           ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
         });

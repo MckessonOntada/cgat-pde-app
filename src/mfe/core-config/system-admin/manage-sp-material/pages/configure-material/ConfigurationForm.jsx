@@ -84,15 +84,6 @@ const ConfigurationForm = ({ index, setFieldError }) => {
       />
 
       <Field
-        name={path('errorMessage')}
-        label={t('manageSPMaterial.configuration.label.errorMessage')}
-        isRequired={displayOnForm}
-        component={Components['input']}
-        maxLength={50}
-        isReadOnly={!displayOnForm}
-      />
-
-      <Field
         name={path('helpInfoMessage')}
         label={t('manageSPMaterial.configuration.label.helpInfoMessage')}
         isRequired={displayOnForm && showHelpIcon}
@@ -115,7 +106,8 @@ const ConfigurationForm = ({ index, setFieldError }) => {
             isReadOnly={!displayOnForm}
             onChangeHandler={(value) => {
               setFieldValue(path('fieldFormat.formatType'), value);
-              setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[value]);
+              setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[value].regex);
+              setFieldValue(path('errorMessage'), fieldFormatRegexObj[value].errorMessage);
             }}
           />
         </div>
@@ -143,6 +135,14 @@ const ConfigurationForm = ({ index, setFieldError }) => {
           </Button>
         </div>
       </div>
+      <Field
+        name={path('errorMessage')}
+        label={t('manageSPMaterial.configuration.label.errorMessage')}
+        isRequired={displayOnForm}
+        component={Components['input']}
+        maxLength={50}
+        isReadOnly={!displayOnForm}
+      />
 
       {customRegex && (
         <CustomRegex

@@ -9,13 +9,14 @@ import ConfigurationForm from './ConfigurationForm';
 import { Formik, Form, Field } from 'formik';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { configObj } from './config';
+import { configObj, defaultFieldFormatBnb, defaultFieldFormatSp } from './config';
 import { getConfigurationSchema } from './ConfigurationSchema';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
 import { ChannelType } from '../../../manage-sp-account/util';
 import Components from '@src/components/form/Components';
 import styles from './Configure.module.scss';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,7 +63,7 @@ export default function ConfigurationSpMaterial() {
   });
 
   const ndcDetails = React.useMemo(() => {
-    return materialDetails?.fields ? materialDetails : configObj(materialType);
+    return materialDetails?.fields ? materialDetails : materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
   }, [materialDetails, materialType]);
 
   const initialValues = {
@@ -207,17 +208,10 @@ export default function ConfigurationSpMaterial() {
                                 return {
                                   ...field,
                                   properties: {
+                                    ...field.properties,
                                     displayOnForm: false,
                                     mandatoryField: false,
-                                    showHelpIcon: false,
-                                    displayName: '',
-                                    errorMessage: '',
-                                    helpInfoMessage: '',
-                                    fieldFormat: {
-                                      formatType: '',
-                                      validationRegex: '',
-                                      validationFormat: ''
-                                    }
+                                    showHelpIcon: false
                                   }
                                 };
                               }
