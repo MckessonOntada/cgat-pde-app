@@ -278,6 +278,7 @@ const UserDetail = () => {
       setIsConsentError(true);
     }
   });
+
   const handleOnConsentConfirm = async (selectedUserId) => {
     try {
       await impersonatePromise(selectedUserId);
@@ -617,7 +618,6 @@ const UserDetail = () => {
           </div>
         )}
       </div>
-
       <Modal
         {...{
           id: 'xxxs-modal',
@@ -651,12 +651,23 @@ const UserDetail = () => {
 
 const ConsentModal = ({ userFullName, onYes, onNo }) => {
   const { t } = useTranslate();
+  const [isLoading, setIsLoading] = React.useState(false);
   const [consentCheckboxOption, setConsentCheckboxOption] = React.useState({
-    isDisabled: false,
+    isDisabled: isLoading,
     isChecked: false,
     label: t('popup.message.wishToContinueLoginAsThisUserCheckBoxConsent'),
     value: false
   });
+
+  const handleOnYes = (...args) => {
+    setIsLoading(true);
+    const updatedOptions = {
+      ...consentCheckboxOption,
+      isDisabled: true
+    };
+    setConsentCheckboxOption({ ...updatedOptions });
+    onYes && onYes(args);
+  };
 
   const handleOnLoginAsConsentChange = (args) => {
     const updatedOptions = {
@@ -701,8 +712,8 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
             <Button variant="secondary" size="md" onClick={onNo}>
               {t('label.no')}
             </Button>
-            <Button variant="primary" size="md" onClick={onYes} disabled={!consentCheckboxOption.isChecked}>
-              {t('label.yes')}
+            <Button variant="primary" size="md" onClick={handleOnYes} disabled={!consentCheckboxOption.isChecked || isLoading}>
+              {isLoading ? 'Loading' : t('label.yes')}
             </Button>
           </div>
         ),
