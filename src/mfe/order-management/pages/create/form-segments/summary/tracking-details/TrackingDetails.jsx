@@ -16,18 +16,13 @@ function TrackingDetails(props) {
   const { t: translateFn } = useTranslate();
   const [detailsPanelOpen, setDetailsPanelOpen] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
-  const [alert, setAlert] = React.useState(null);
   React.useEffect(() => {
     if (!orderDetails.requestId || !orderDetails.wayBillNumber) {
       setHasError(true);
-      setAlert({
-        type: 'error',
-        description: 'Tracking details are missing for this order.'
-      });
     }
   }, []);
   if (hasError) {
-    return <React.Fragment>{alert && <Alert {...alert} onClose={() => setAlert(null)} />}</React.Fragment>;
+    return null;
   }
   return (
     <React.Fragment>
