@@ -27,7 +27,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   }, [defaultRole]);
 
   const getParams = () => {
-    let payload = { status: 'active', query: searchKey };
+    let payload = { status: 'active', isPhysicianRequired: false, query: searchKey };
     return payload;
   };
 
