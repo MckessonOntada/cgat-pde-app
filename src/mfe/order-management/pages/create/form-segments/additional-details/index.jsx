@@ -987,7 +987,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return allValid;
   };
-  const { mutate: coiIdValidation } = useMutation(
+  const { mutate: coiIdValidation, isLoading: isCoiIdValidationLoading } = useMutation(
     async ({ patientId, coiId }) => {
       const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
       return res.data;
@@ -1031,9 +1031,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     handleOnSubmit(values);
   };
 
-  if (isSaving || isFetching) return <Loader type={'screen'} />;
   return (
     <div className="MCP-module-wrapper">
+      {(isSaving || isFetching || isCoiIdValidationLoading) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}

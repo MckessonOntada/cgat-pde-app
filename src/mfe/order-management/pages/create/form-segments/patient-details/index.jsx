@@ -391,7 +391,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     setFieldValue('providerId', formattedProvider.id);
     setShowAddProviderForm(false);
   };
-  const { mutate: identifierValidation } = useMutation(
+  const { mutate: identifierValidation, isLoading: isIdentifierValidationLoading } = useMutation(
     async ({ patientId }) => {
       const res = await OrderService.regeneronPatientIdVerification(patientId);
       return res.data;
@@ -415,7 +415,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       }
     }
   );
-  const { mutate: coiIdValidation } = useMutation(
+  const { mutate: coiIdValidation, isLoading: isCoiIdValidationLoading } = useMutation(
     async ({ patientId, coiId }) => {
       const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
       return res.data;
@@ -445,7 +445,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     switch (id) {
-      case 'patient.patientIdentifier':
+      case 'input-patient.patientIdentifier':
         identifierValidation({ patientId: value });
         break;
 
@@ -459,10 +459,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         break;
     }
   };
-
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isFetching) && <Loader type={'screen'} />}
+      {(isSaving || isFetching || isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
