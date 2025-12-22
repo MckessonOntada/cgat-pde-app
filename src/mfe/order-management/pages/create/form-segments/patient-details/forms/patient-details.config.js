@@ -12,7 +12,7 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = (channelType, therapyConfig, identifierValidation) => [
+export const PatientSections = (channelType, therapyConfig, validateOnBlur, manufacturerVerified = false) => [
   {
     rows: [
       {
@@ -25,6 +25,7 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
+            isReadOnly: manufacturerVerified,
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -33,7 +34,8 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
             label: 'orderManagement.patientDetails.inputLabel.middle_name',
             placeholder: ' ',
             type: 'input',
-            maxLength: 50
+            maxLength: 50,
+            isReadOnly: manufacturerVerified
           },
           {
             id: 'patient-info-lastName',
@@ -42,6 +44,7 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
+            isReadOnly: manufacturerVerified,
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }
         ]
@@ -59,6 +62,7 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
               label: item,
               value: item
             })),
+            isReadOnly: manufacturerVerified,
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -68,6 +72,7 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
             placeholder: ' ',
             type: 'datePicker',
             disableFuture: true,
+            isReadOnly: manufacturerVerified,
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
@@ -84,9 +89,7 @@ export const PatientSections = (channelType, therapyConfig, identifierValidation
                     suffix,
                     isRequired: field.properties.mandatoryField,
                     infoText: field?.properties.helpInfoMessage,
-                    ...(field.fieldName === 'patientIdentifier' && {
-                      onBlur: identifierValidation
-                    })
+                    onBlur: validateOnBlur
                   };
                 }) || []
             : [])
@@ -204,7 +207,7 @@ export const AddressSections = (channelType) => [
   }
 ];
 
-export const IdentifierSections = (spTherapyConfig, identifierValidation) => {
+export const IdentifierSections = (spTherapyConfig, validateOnBlur) => {
   const controls = [];
   spTherapyConfig?.config?.fields?.forEach((field) => {
     if (field?.properties?.displayOnForm) {
@@ -218,7 +221,7 @@ export const IdentifierSections = (spTherapyConfig, identifierValidation) => {
         type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
         prefix,
         suffix,
-        ...(['patientIdentifier', 'coiId'].includes(field.fieldName) && { onBlur: identifierValidation })
+        ...(['patientIdentifier', 'coiId'].includes(field.fieldName) && { onBlur: validateOnBlur })
       });
     }
   });

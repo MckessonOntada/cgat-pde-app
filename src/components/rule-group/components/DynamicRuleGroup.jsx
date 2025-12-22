@@ -2,13 +2,11 @@ import React from 'react';
 import MetaSection from './MetaSection';
 import RuleList from './RuleList';
 import ParticipantSelector from './ParticipantSelector';
-import ModuleHeader from '@src/components/module-header';
-import { Heading } from '@mckesson/mcp-component-library';
 import { useFormikContext } from 'formik';
 import style from './style.module.scss';
 
-export default function DynamicRuleEngine({ config, onCancel }) {
-  const { moduleTitle, metaSection, ruleSection, participantsSection } = config;
+export default function DynamicRuleEngine({ config }) {
+  const { metaSection, ruleSection, participantsSection } = config;
   const { values, setFieldValue } = useFormikContext();
 
   React.useEffect(() => {
