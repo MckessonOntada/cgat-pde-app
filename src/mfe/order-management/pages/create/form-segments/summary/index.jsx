@@ -1322,9 +1322,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         {therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED && (
                           <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
                         )}
-                        {therapyConfig.shipToPoNumberRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment label={t('labels.shipToPONumber')} value={draftChanges?.additionalDetailsRequestDTO?.shipToPONumber || '-'} />
-                        )}
                         {therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED && (
                           <DetailSegment
                             label={t('labels.dateOfAdministration')}
