@@ -519,6 +519,13 @@ async function regeneronCoiIdVerification(patientId, coiId) {
   console.log(res.data);
   if (res) return res;
 }
+
+async function verifyOrcaDetails(payload) {
+  let url = `${ApiRoutes.USER_BASE}orca/patients?${serializeParams(payload)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -565,7 +572,8 @@ const OrderService = Object.freeze({
   getOrderStagesRoles,
   getTrackingDetails,
   regeneronPatientIdVerification,
-  regeneronCoiIdVerification
+  regeneronCoiIdVerification,
+  verifyOrcaDetails
 });
 
 export default OrderService;

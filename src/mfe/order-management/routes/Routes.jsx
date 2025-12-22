@@ -16,6 +16,7 @@ import ProtectedRoute from '@src/routes/ProtectedRoute';
 import UploadOrderDocument from '../pages/create/form-segments/upload-document';
 import Payer from '../pages/create/form-segments/payers-details';
 import FinalizeOrder from '../pages/create/form-segments/finalize-order';
+import OrcaPatientDetails from '../pages/create/form-segments/summary/orca-patient-details/OrcaPatientDetails';
 
 function OrderManagementRoutes() {
   const orderPermissions = [
@@ -93,6 +94,14 @@ function OrderManagementRoutes() {
         element={
           <ProtectedRoute permissions={[]}>
             <Summary />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={`:orderId/orca-patient-details`}
+        element={
+          <ProtectedRoute permissions={[]}>
+            <OrcaPatientDetails />
           </ProtectedRoute>
         }
       />

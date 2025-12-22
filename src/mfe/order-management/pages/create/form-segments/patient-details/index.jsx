@@ -40,6 +40,7 @@ import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import OrcaPatientVerificationPanel from '../orca-patient-verification-panel/OrcaPatientVerificationPanel';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -57,6 +58,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
+  const [isOrcaValidationPanelOpen, setIsOrcaValidationPanelOpen] = React.useState(false);
+  const [orcaPatientList, setOrcaPatientList] = React.useState([]);
+  const [orcaVerifiedPatient, setOrcaVerifiedPatient] = React.useState(null);
   const dispatch = useDispatch();
   const formikRef = useRef();
   const manufacturer = getManufacturer(orderDetails);
@@ -92,6 +96,42 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   }, [orderDetails]);
 
+  React.useEffect(() => {
+    if (orcaVerifiedPatient) {
+      let type, description;
+      if (orcaVerifiedPatient.id > 0) {
+        setInitialValues({
+          ...initialValues,
+          patient: {
+            ...initialValues.patient,
+            medicalRecordNumber: orcaVerifiedPatient.medicalRecordNumber,
+            patientIdentifier: orcaVerifiedPatient.patientId,
+            patientInfo: {
+              firstName: orcaVerifiedPatient.firstName,
+              middleName: orcaVerifiedPatient.middleName,
+              lastName: orcaVerifiedPatient.lastName,
+              gender: orcaVerifiedPatient.gender,
+              dateOfBirth: orcaVerifiedPatient.dateOfBirth
+            }
+          }
+        });
+        type = 'success';
+        description = 'Patient id verified';
+      } else {
+        type = 'warning';
+        if (orcaVerifiedPatient.id === -1)
+          description =
+            'The Orca Bio Patient ID or MRN and Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.';
+        else if (orcaVerifiedPatient.id === 0)
+          description = 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.';
+      }
+      setAlert({
+        type,
+        description
+      });
+    }
+  }, [orcaVerifiedPatient]);
+
   const { therapyConfig = {} } = orderDetails;
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -100,6 +140,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [showAddProviderForm, setShowAddProviderForm] = React.useState(false);
   const [portalTarget, setPortalTarget] = React.useState(null);
   const [isEditing, setIsEditing] = React.useState(false);
+
   useEffect(() => {
     if (showAddProviderForm) {
       const providerForm = document.getElementById('provider-form-portal');
@@ -212,6 +253,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       });
     }
   };
+
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
     async ({ payload, skipDuplicateCheck, isSendNotification }) => {
       return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isOrderInDraft, isSendNotification);
@@ -256,6 +298,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     setIsOrderInDraft(true);
     handleSubmit(values);
   };
+
   const handleOnBack = () => {
     if (isDirty) {
       setModalSuccessCallback(isEdit ? 'summary' : 'account');
@@ -336,7 +379,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       });
     }
   };
-  const [providerList, setProviderList] = React.useState(null);
+
+  const [providerList, setProviderList] = React.useState([]);
   const [provider, setProvider] = React.useState(null);
   const [providerQuery, setProviderQuery] = React.useState('');
   const [recentlyAddedProvider, setRecentlyAddedProvider] = React.useState(null);
@@ -352,7 +396,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   });
 
   React.useEffect(() => {
-    setProviderList(providers);
+    if (Array.isArray(providers) && providers.length > 0) setProviderList(providers);
   }, [providers]);
 
   const handleOnSelection = (value, setFieldValue) => {
@@ -440,10 +484,45 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   );
 
-  const handlePatientIdVerification = (e) => {
+  const validateOnBlur = (e) => {
     const { id, value } = e.target;
-    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
+    if (!value) return;
+
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
+    const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
+
+    switch (manufacturer) {
+      case MANUFACTURER.REGENERON: {
+        validateRegeneronDetails(id, patientId, value);
+        break;
+      }
+      case MANUFACTURER.ORCA: {
+        validateOrcaDetails(patientId, medicalRecordNumber);
+        break;
+      }
+      default: {
+        return;
+      }
+    }
+  };
+
+  const validateOrcaDetails = (patientId, medicalRecordNumber) => {
+    const payload = {};
+    if (patientId) payload.patientId = patientId;
+    else if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
+    if (CommonUtils.isNonEmptyObject(payload)) {
+      OrderService.verifyOrcaDetails(payload)
+        .then((response) => {
+          if (response && Array.isArray(response) && response.length > 0) {
+            setOrcaPatientList([...response]);
+            setIsOrcaValidationPanelOpen(true);
+          }
+        })
+        .catch((error) => {});
+    }
+  };
+
+  const validateRegeneronDetails = (id, patientId, value) => {
     switch (id) {
       case 'patient.patientIdentifier':
         identifierValidation({ patientId: value });
@@ -536,7 +615,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         />
 
                         <FormRenderer
-                          sections={PatientSections(channelType, therapyConfig, handlePatientIdVerification)}
+                          sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0)}
                           readOnly={readOnly || !isAllowedToProceed}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -575,10 +654,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                 )
                               }
                             />
-                            <FormRenderer
-                              sections={IdentifierSections(spTherapyConfig, handlePatientIdVerification)}
-                              readOnly={readOnly || !isAllowedToProceed}
-                            />
+                            <FormRenderer sections={IdentifierSections(spTherapyConfig, validateOnBlur)} readOnly={readOnly || !isAllowedToProceed} />
                           </>
                         )}
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -744,6 +820,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         </Formik>
       </div>
 
+      {isOrcaValidationPanelOpen && (
+        <OrcaPatientVerificationPanel
+          patientId={formikRef.current?.values?.patient?.patientIdentifier}
+          medicalRecordNumber={formikRef.current?.values?.patient?.patientIdentifier}
+          patientList={orcaPatientList}
+          onClose={(patient) => {
+            setOrcaVerifiedPatient(patient || { id: 0 });
+            setIsOrcaValidationPanelOpen(false);
+          }}
+        />
+      )}
+
       <DiscardChangesModal
         heading={t('messages.confirmation.discardheader')}
         description={t('messages.confirmation.patient')}
@@ -754,5 +842,5 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     </div>
   );
 };
-// export default PatientDetails;
+
 export default withPermissions(PatientDetails, ORDER_STAGES.PATIENT_DETAILS);

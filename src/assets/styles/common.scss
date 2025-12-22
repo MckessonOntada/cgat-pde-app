@@ -77,6 +77,9 @@ div.disable-all {
   gap: var(--spacing-05);
   align-items: stretch;
   justify-content: space-between;
+  .page-heading {
+    font-size: var(--brand-font-size--22);
+  }
 }
 
 .MCP-modal-body,
@@ -93,6 +96,11 @@ div.disable-all {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
+
+  .section-title {
+    font-size: var(--brand-font-size--20);
+    font-weight: var(--brand-font-weight-600);
+  }
 
   @media only screen and (max-width: 576px) {
     gap: var(--spacing-04);
