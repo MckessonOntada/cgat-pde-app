@@ -1310,27 +1310,16 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
                     {!isSpOrder && (
                       <>
-                        {therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || '-'} />
-                        )}
+                        {therapyConfig?.config?.fields
+                          ?.filter((field) => field?.properties?.displayOnForm && !['medicalRecordNumber', 'patientIdentifier'].includes(field.fieldName))
+                          ?.map((field) => {
+                            const value = draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ?? draftChanges?.patient?.[field.fieldName] ?? '-';
+
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
+                          })}
+
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
-                        )}
-                        {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
-                        {therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
-                        )}
-                        {therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment
-                            label={t('labels.dateOfAdministration')}
-                            value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
-                          />
-                        )}
-                        {therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment
-                            label={t('orderManagement.patientDetails.inputLabel.dateOfApheresis')}
-                            value={draftChanges?.additionalDetailsRequestDTO?.dateOfApheresis || '-'}
-                          />
                         )}
                       </>
                     )}
