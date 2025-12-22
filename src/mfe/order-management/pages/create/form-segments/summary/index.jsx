@@ -559,6 +559,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             coiId: additionalDetails.coiId || '',
             dateOfAdministration: additionalDetails.dateOfAdministration || '',
             poNumber: additionalDetails.poNumber || '',
+            shipToPoNumber: additionalDetails.shipToPoNumber || '',
             dateOfApheresis: additionalDetails.dateOfApheresis || ''
           };
         }
@@ -1299,6 +1300,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             [
                               therapyConfig.coiIdRequirement,
                               therapyConfig.poNumberRequirement,
+                              therapyConfig.shipToPoNumberRequirement,
                               therapyConfig.dateOfAdministrationRequirement,
                               therapyConfig.dateOfApheresisRequirement
                             ].every((val) => val === REQUIREMENT.NOT_REQUIRED)
