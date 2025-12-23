@@ -5,8 +5,13 @@ import { FormattedNumber } from 'react-intl';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
+import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { useAccountContext } from '../../context/AccountContext';
+import { useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 
-const createColumns = (t, type, pageType, paymentInitiationDate) => {
+const createColumns = (t, type, pageType, paymentInitiationDate, handlePdfDownload) => {
   const commonColumns = [
     {
       name: t('paymentInvoices.history.table.invoiceNumber'),
@@ -77,6 +82,27 @@ const createColumns = (t, type, pageType, paymentInitiationDate) => {
           <FormattedNumber value={props?.authAmount || 0} style="currency" currency="USD" />
         </div>
       )
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      width: '150px',
+      wrap: true,
+      isAction: true,
+      cell: (props) => (
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {
+            console.log('handlePdfDownload', props);
+            handlePdfDownload(props);
+          }}
+          size="md"
+          // disabled={!props?.pdfAvailable}
+        >
+          {t('paymentInvoices.CS.table.exportPdf')}
+        </Button>
+      )
     }
   ];
 
@@ -121,10 +147,58 @@ const createColumns = (t, type, pageType, paymentInitiationDate) => {
 
   return type === 'invoice' ? invoiceColumns : creditColumns;
 };
-
 function ConfirmationTable({ invoiceData, creditData, pageType, paymentInitiationDate }) {
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
+  const { selectedAccount } = useAccountContext();
+  console.log('ConfirmationTable component loaded', selectedAccount);
+  const { mutate: handlePdfDownload } = useMutation(
+    async (props) => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, props.billNo)}/details-pdf`;
+      const body = {
+        fiscalYear: props.fiscalYear,
+        companyCode: selectedAccount.companyCode,
+        documentNo: props.billNo
+      };
+      const headers = {
+        accept: 'application/json, text/plain, */*',
+        'content-type': 'application/json;charset=UTF-8'
+      };
+      const response = await HttpResourceService.callRest(url, httpVerb.POST, body, headers, null, null, null, 'blob');
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename = match ? match[1] : 'credit.pdf';
+
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    },
+    {
+      onSuccess: () => {
+        showAlert({
+          description: t('paymentInvoices.table.column.pdfDownload'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      },
+      onError: (error) => {
+        showAlert({
+          description: t('errors.default'),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
+    }
+  );
 
   return (
     <>
@@ -165,7 +239,7 @@ function ConfirmationTable({ invoiceData, creditData, pageType, paymentInitiatio
             <CustomDataTable
               id="credit-data-table"
               type="normal"
-              columns={createColumns(t, 'credit', pageType, paymentInitiationDate)}
+              columns={createColumns(t, 'credit', pageType, paymentInitiationDate, handlePdfDownload)}
               data={creditData || []}
               onSortIconClick={() => {}}
               handleChangePage={() => {}}
