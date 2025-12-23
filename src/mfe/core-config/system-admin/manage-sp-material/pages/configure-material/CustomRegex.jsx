@@ -8,7 +8,7 @@ import InputField from '@src/components/form/InputField';
 import { regexAttributes } from './config';
 import styles from './Configure.module.scss';
 
-function CustomRegex({ onClose, path, initialValue, type }) {
+function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
   const [errors, setErrors] = useState({});
@@ -98,7 +98,7 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         break;
       }
       case 'Date_MM_DD_YYYY': {
-        pattern = '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$';
+        pattern = '(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}';
         break;
       }
 
@@ -245,6 +245,8 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         newState.maxValue = '';
       }
     } else if (type === 'Date_MM_DD_YYYY') {
+      newState.minDate = validationFormat.match(/minDate\('([^']+)'\)/)?.[1] ?? null;
+      newState.maxDate = validationFormat.match(/maxDate\('([^']+)'\)/)?.[1] ?? null;
     }
 
     return newState;

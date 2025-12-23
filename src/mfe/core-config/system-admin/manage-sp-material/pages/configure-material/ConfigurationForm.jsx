@@ -125,7 +125,10 @@ const ConfigurationForm = ({ index, setFieldError }) => {
           <Button
             size="md"
             variant="secondary"
-            onClick={() => setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[fieldEntry?.fieldFormat?.formatType].regex)}
+            onClick={() => {
+              setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[fieldEntry?.fieldFormat?.formatType].regex);
+              setFieldValue(path('fieldFormat.validationFormat'), '');
+            }}
             disabled={!displayOnForm || !formatType}>
             {t('manageSPMaterial.configuration.button.reset')}
           </Button>
@@ -149,6 +152,7 @@ const ConfigurationForm = ({ index, setFieldError }) => {
           path={path}
           onClose={() => setCustomRegex(false)}
           initialValue={fieldEntry?.fieldFormat?.validationRegex}
+          validationFormat={fieldEntry?.fieldFormat?.validationFormat}
           type={fieldEntry?.fieldFormat?.formatType}
         />
       )}
