@@ -103,7 +103,28 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
             return true;
           });
         }
+        if (field.properties.fieldFormat.formatType === 'Integer') {
+          const vf = field.properties.fieldFormat.validationFormat || '';
 
+          const minMatch = vf.match(/minValue\('([^']+)'\)/);
+          const maxMatch = vf.match(/maxValue\('([^']+)'\)/);
+
+          const minValue = minMatch ? Number(minMatch[1]) : null;
+          const maxValue = maxMatch ? Number(maxMatch[1]) : null;
+
+          validator = validator.test('integer-range', field.properties.errorMessage, (value) => {
+            if (value === undefined || value === null || value === '') return true;
+
+            const num = Number(value);
+
+            if (Number.isNaN(num)) return false;
+
+            if (minValue !== null && num < minValue) return false;
+            if (maxValue !== null && num > maxValue) return false;
+
+            return true;
+          });
+        }
         validator = validator.when([], {
           is: () => field.properties.mandatoryField,
           then: (s) => s.required(`${field.properties.displayName} is required`),
