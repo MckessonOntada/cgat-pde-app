@@ -1081,5 +1081,6 @@ export const MessageEn = {
   'labels.expectedToday': 'Expected today',
   'labels.expectedTomorrow': 'Expected tomorrow',
   'labels.expectedDeliveryDate': 'Expected delivery date {deliveryDate}',
+  'labels.PatientID': 'Patient ID',
   'captions.btnBackToSummary': 'Back to Summary'
 };
