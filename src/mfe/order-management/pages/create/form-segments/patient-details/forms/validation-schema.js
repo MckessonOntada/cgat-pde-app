@@ -68,51 +68,58 @@ export const normalizePatient = (patient) => {
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig) => {
+export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
-    if (isSpOrder) allowedFields.add('coiId');
+    const isOrca = manufacturer === 'ORCA';
+
     config?.config?.fields?.forEach((field) => {
-      if (allowedFields.has(field.fieldName) && field.properties.displayOnForm) {
-        if (!field.properties.displayOnForm) return;
+      if (!allowedFields.has(field.fieldName) || !field.properties.displayOnForm) return;
 
-        let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
+      let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
 
-        if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
-          const vf = field.properties.fieldFormat.validationFormat;
+      if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+        const vf = field.properties.fieldFormat.validationFormat;
+        const minMatch = vf.match(/minDate\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+        const minDate = minMatch ? minMatch[1] : null;
+        const maxDate = maxMatch ? maxMatch[1] : null;
 
-          const minMatch = vf.match(/minDate\('([^']+)'\)/);
-          const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+        validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
+          if (!value) return true;
 
-          const minDate = minMatch ? minMatch[1] : null;
-          const maxDate = maxMatch ? maxMatch[1] : null;
+          const toDate = (d) => {
+            const [m, day, y] = d.split('/');
+            return new Date(`${y}-${m}-${day}`);
+          };
 
-          validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
-            if (!value) return true;
+          const inputDate = toDate(value);
+          if (minDate && inputDate < toDate(minDate)) return false;
+          if (maxDate && inputDate > toDate(maxDate)) return false;
+          return true;
+        });
+      }
 
-            const toDate = (d) => {
-              const [m, day, y] = d.split('/');
-              return new Date(`${y}-${m}-${day}`);
-            };
-
-            const inputDate = toDate(value);
-            if (minDate && inputDate < toDate(minDate)) return false;
-            if (maxDate && inputDate > toDate(maxDate)) return false;
-
-            return true;
-          });
-        }
-
+      if (!isOrca) {
         validator = validator.when([], {
           is: () => field.properties.mandatoryField,
           then: (s) => s.required(`${field.properties.displayName} is required`),
           otherwise: (s) => s.notRequired()
         });
-
-        dynamicFields[field.fieldName] = validator;
       }
+
+      dynamicFields[field.fieldName] = validator;
     });
+
+    if (isOrca) {
+      allowedFields.forEach((fieldName) => {
+        dynamicFields[fieldName] = dynamicFields[fieldName].test('orca-atleast-one', 'At least one identifier is required', function () {
+          const values = this.parent;
+          return Array.from(allowedFields).some((f) => values?.[f]);
+        });
+      });
+    }
 
     return dynamicFields;
   };
@@ -149,60 +156,6 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
               otherwise: (schema) => schema.nullable()
             })
         }),
-      ...(isSpOrder && {
-        contact: Yup.object()
-          .nullable()
-          .shape({
-            emailId: Yup.string()
-              .nullable()
-              .trim()
-              .email(t('orderManagement.patientDetails.validation.invalid_email'))
-              .max(50, t('orderManagement.patientDetails.validation.email_max')),
-            phoneNumber: Yup.string()
-              .nullable()
-              .trim()
-              .matches(PHONE_REGEX, t('orderManagement.patientDetails.validation.phone_invalid'))
-              .max(15, t('orderManagement.patientDetails.validation.phone_max'))
-              .required(t('orderManagement.patientDetails.validation.phone_no')),
-            homePhone: Yup.string().nullable(),
-            workPhone: Yup.string().nullable(),
-            preferedMethodOfContact: Yup.string().nullable().oneOf(['Mobile', 'Fax'], 'Select valid method of contact.')
-          })
-      }),
-      ...(isSpOrder && {
-        patientAddress: Yup.object()
-          .nullable()
-          .shape({
-            addressLine1: Yup.string()
-              .nullable()
-              .trim()
-              .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
-              .min(2, t('orgManagement.create_org.validation.address_1_min'))
-              .max(100, t('orgManagement.create_org.validation.address_1_max'))
-              .required(t('orderManagement.patientDetails.validation.address_1')),
-            addressLine2: Yup.string()
-              .nullable()
-              .trim()
-              .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
-              .min(2, t('orgManagement.create_org.validation.address_2_min'))
-              .max(100, t('orgManagement.create_org.validation.address_2_max')),
-            city: Yup.string()
-              .nullable()
-              .trim()
-              .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
-              .min(2, t('orgManagement.create_org.validation.city_min'))
-              .max(15, t('orgManagement.create_org.validation.city_max'))
-              .required(t('orderManagement.patientDetails.validation.city')),
-            zipCode: Yup.string()
-              .nullable()
-              .trim()
-              .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
-              .max(10, t('orgManagement.create_account.validation.zip_max'))
-              .required(t('orderManagement.patientDetails.validation.zip')),
-            state: Yup.string().nullable().required(t('orderManagement.patientDetails.validation.state'))
-          })
-      }),
-
       ...buildDynamicFieldValidators(configToUse, t)
     }),
     providerId: Yup.string().when([], {

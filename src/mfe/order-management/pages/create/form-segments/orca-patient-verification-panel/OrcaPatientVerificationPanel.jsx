@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import styles from './style.module.scss';
 import { CustomDatepicker as DatePicker } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const isSameDate = (d1, d2) => {
   const a = new Date(d1);
@@ -11,22 +12,36 @@ const isSameDate = (d1, d2) => {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 };
 
-const OrcaPatientVerificationPanel = ({ patientList, onClose }) => {
+function maskString(value, mask = '*') {
+  if (!value) return value;
+  return value[0] + mask.repeat(value.length - 1);
+}
+
+const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient, onAlert }) => {
+  const { t: translateFn } = useTranslate();
   const [selectedPatient, setSelectedPatient] = React.useState(null);
+  const [filteredPatient, setFilteredPatient] = React.useState([]);
   const [date, setDate] = React.useState(null);
-  React.useEffect(() => {
-    if (patientList.length === 1) {
-      setSelectedPatient(patientList[0]);
-    }
-  }, []);
+
   const handleOnChange = (value) => {
     setDate(new Date(value));
+    const filteredPatient = patientList.filter((patient) => isSameDate(patient.dateOfBirth, new Date(value)));
+    if (filteredPatient.length === 1) {
+      setSelectedPatient(filteredPatient[0]);
+    }
+    setFilteredPatient(filteredPatient);
   };
   const handleOnSubmit = () => {
-    if (isSameDate(new Date(selectedPatient.dateOfBirth), date)) {
-      onClose(selectedPatient);
+    if (selectedPatient && isSameDate(new Date(selectedPatient.dateOfBirth), date)) {
+      setVerifiedPatient(selectedPatient);
+      onClose();
     } else {
-      onClose({ id: -1 });
+      onAlert({
+        type: 'warning',
+        description: translateFn('message.orcaPatientVerificationFailed')
+      });
+      setVerifiedPatient(null);
+      onClose();
     }
   };
   const handleOnSelection = (id) => {
@@ -39,27 +54,41 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose }) => {
   return (
     <FloatingDrawer
       open={true}
-      onClose={onClose}
+      onClose={() => {
+        onAlert({
+          type: 'warning',
+          description: translateFn('message:orcaPatientVerificationAbrupt')
+        });
+        setVerifiedPatient(null);
+        onClose();
+      }}
       anchor="right"
       heading={'Verify Patient'}
       controls={
         <div className="controls">
-          <Button onClose={onClose} variant="secondary">
-            Cancel
+          <Button
+            onClick={() => {
+              onAlert({
+                type: 'warning',
+                description: translateFn('message:orcaPatientVerificationAbrupt')
+              });
+              setVerifiedPatient(null);
+              onClose();
+            }}
+            variant="secondary">
+            {translateFn('captions.btnCancel')}
           </Button>
-          <Button onClick={handleOnSubmit}>Apply</Button>
+          <Button onClick={handleOnSubmit}>{translateFn('captions.btnApply')}</Button>
         </div>
       }>
       <div className="stack">
         <div>
-          <DatePicker id={'patient-date-of-birth'} name={'patient-date-of-birth'} label={'Date Of Birth'} onChangeFn={handleOnChange} />
-          <div className="control-helper-text">
-            {"Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure."}
-          </div>
+          <DatePicker id={'patient-date-of-birth'} name={'patient-date-of-birth'} label={translateFn('labels.dob')} onChangeFn={handleOnChange} />
+          <div className="control-helper-text">{translateFn('helperText.orcaPatientVerificationDateControl')}</div>
         </div>
-        {patientList.length > 1 && (
+        {date && filteredPatient.length > 1 && (
           <div className={styles.cardContainer}>
-            {patientList.map((patient, index) => {
+            {filteredPatient.map((patient, index) => {
               return (
                 <label
                   key={index}
@@ -74,7 +103,7 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose }) => {
                     style={{ display: 'none' }}
                   />
                   <div className={styles.cardContent}>
-                    <p>{`${patient.firstName} ${patient.lastName}`}</p>
+                    <p>{`${maskString(patient.firstName)} ${maskString(patient.lastName)}`}</p>
                     <p>{patient.id}</p>
                   </div>
                 </label>
