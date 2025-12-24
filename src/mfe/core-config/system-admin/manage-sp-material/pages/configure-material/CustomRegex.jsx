@@ -5,7 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useFormikContext } from 'formik';
 import InputField from '@src/components/form/InputField';
-import { regexAttributes } from './config';
+import { fieldFormatRegexObj, regexAttributes } from './config';
 import styles from './Configure.module.scss';
 
 function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
@@ -89,16 +89,16 @@ function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
         const min = minLength || 1;
         const max = maxLength || 200;
 
-        pattern = `${prefix || ''}[${charSet}]{${min},${max}}${suffix || ''}`;
+        pattern = `^${prefix || ''}[${charSet}]{${min},${max}}${suffix || ''}$`;
         break;
       }
 
       case 'Integer': {
-        pattern = '-?\\d+';
+        pattern = fieldFormatRegexObj['Integer'].regex;
         break;
       }
       case 'Date_MM_DD_YYYY': {
-        pattern = '(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}';
+        pattern = fieldFormatRegexObj['Date_MM_DD_YYYY'].regex;
         break;
       }
 
@@ -106,7 +106,7 @@ function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
         pattern = '';
     }
 
-    return `^${pattern}$`;
+    return `${pattern}`;
   }
   function buildValidationFormat(finalRegex) {
     const {
