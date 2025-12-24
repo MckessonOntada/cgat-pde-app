@@ -98,36 +98,36 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   React.useEffect(() => {
     if (orcaVerifiedPatient) {
-      let type, description;
-      if (orcaVerifiedPatient.id > 0) {
-        setInitialValues({
-          ...initialValues,
-          patient: {
-            ...initialValues.patient,
-            medicalRecordNumber: orcaVerifiedPatient.medicalRecordNumber,
-            patientIdentifier: orcaVerifiedPatient.patientId,
-            patientInfo: {
-              firstName: orcaVerifiedPatient.firstName,
-              middleName: orcaVerifiedPatient.middleName,
-              lastName: orcaVerifiedPatient.lastName,
-              gender: orcaVerifiedPatient.gender,
-              dateOfBirth: orcaVerifiedPatient.dateOfBirth
-            }
+      setInitialValues({
+        ...initialValues,
+        patient: {
+          ...initialValues.patient,
+          medicalRecordNumber: orcaVerifiedPatient.medicalRecordNumber,
+          patientIdentifier: orcaVerifiedPatient.patientId,
+          patientInfo: {
+            firstName: orcaVerifiedPatient.firstName,
+            middleName: orcaVerifiedPatient.middleName,
+            lastName: orcaVerifiedPatient.lastName,
+            gender: orcaVerifiedPatient.gender,
+            dateOfBirth: orcaVerifiedPatient.dateOfBirth
           }
-        });
-        type = 'success';
-        description = 'Patient id verified';
-      } else {
-        type = 'warning';
-        if (orcaVerifiedPatient.id === -1)
-          description =
-            'The Orca Bio Patient ID or MRN and Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.';
-        else if (orcaVerifiedPatient.id === 0)
-          description = 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.';
-      }
-      setAlert({
-        type,
-        description
+        }
+      });
+    } else {
+      setInitialValues({
+        ...initialValues,
+        patient: {
+          ...initialValues.patient,
+          medicalRecordNumber: '',
+          patientIdentifier: '',
+          patientInfo: {
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            gender: '',
+            dateOfBirth: null
+          }
+        }
       });
     }
   }, [orcaVerifiedPatient]);
@@ -178,6 +178,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           ...orderDetails.provider
         });
       }
+      const { patient = {} } = orderDetails;
+
+      setOrcaVerifiedPatient({
+        medicalRecordNumber: patient.medicalRecordNumber,
+        patientId: patient.patientIdentifier,
+        ...patient.patientInfo
+      });
       const config =
         orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
       const patientDetails = removePrefixSuffixFromValues(orderDetails.patient, config || []);
@@ -337,7 +344,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
     setInitialValues(form);
 
-    if (isDirty || isStageInDraft) {
+    if (isDirty || isStageInDraft || orcaVerifiedPatient) {
       savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: isOrderInDraft ? false : true });
     } else if (!isDirty && !isStageInDraft) {
       if (orderDetails?.currentStage === ORDER_STAGES.PATIENT_DETAILS) {
@@ -518,7 +525,28 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             setIsOrcaValidationPanelOpen(true);
           }
         })
-        .catch((error) => {});
+        .catch((error) => {
+          setInitialValues({
+            ...initialValues,
+            patient: {
+              ...initialValues.patient,
+              patientIdentifier: '',
+              medicalRecordNumber: '',
+              patientInfo: {
+                firstName: '',
+                middleName: '',
+                lastName: '',
+                gender: '',
+                dateOfBirth: null
+              }
+            }
+          });
+          setAlert({
+            type: 'warning',
+            description:
+              'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
+          });
+        });
     }
   };
 
@@ -584,7 +612,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig)}
+          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig, manufacturer)}
           enableReinitialize={true}
           innerRef={formikRef}
           onSubmit={(values) => handleSubmit(values)}>
@@ -821,11 +849,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
       {isOrcaValidationPanelOpen && (
         <OrcaPatientVerificationPanel
-          patientId={formikRef.current?.values?.patient?.patientIdentifier}
-          medicalRecordNumber={formikRef.current?.values?.patient?.patientIdentifier}
+          patientId={formikRef.current?.values?.patientIdentifier}
+          medicalRecordNumber={formikRef.current?.values?.patientIdentifier}
           patientList={orcaPatientList}
-          onClose={(patient) => {
-            setOrcaVerifiedPatient(patient || { id: 0 });
+          setVerifiedPatient={setOrcaVerifiedPatient}
+          onAlert={setAlert}
+          onClose={() => {
             setIsOrcaValidationPanelOpen(false);
           }}
         />
