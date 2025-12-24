@@ -81,8 +81,10 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
       if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
         const vf = field.properties.fieldFormat.validationFormat;
+
         const minMatch = vf.match(/minDate\('([^']+)'\)/);
         const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+
         const minDate = minMatch ? minMatch[1] : null;
         const maxDate = maxMatch ? maxMatch[1] : null;
 
@@ -97,10 +99,32 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
           const inputDate = toDate(value);
           if (minDate && inputDate < toDate(minDate)) return false;
           if (maxDate && inputDate > toDate(maxDate)) return false;
+
           return true;
         });
       }
+      if (field.properties.fieldFormat.formatType === 'Integer') {
+        const vf = field.properties.fieldFormat.validationFormat || '';
 
+        const minMatch = vf.match(/minValue\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxValue\('([^']+)'\)/);
+
+        const minValue = minMatch ? Number(minMatch[1]) : null;
+        const maxValue = maxMatch ? Number(maxMatch[1]) : null;
+
+        validator = validator.test('integer-range', field.properties.errorMessage, (value) => {
+          if (value === undefined || value === null || value === '') return true;
+
+          const num = Number(value);
+
+          if (Number.isNaN(num)) return false;
+
+          if (minValue !== null && num < minValue) return false;
+          if (maxValue !== null && num > maxValue) return false;
+
+          return true;
+        });
+      }
       if (!isOrca) {
         validator = validator.when([], {
           is: () => field.properties.mandatoryField,

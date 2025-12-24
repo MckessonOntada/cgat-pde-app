@@ -16,8 +16,8 @@ export const fieldFormatRegexObj = {
     errorMessage: 'Use only uppercase letters (A-Z) and numbers, 3-20 characters.'
   },
   Integer: {
-    regex: '^[1-9][0-9]?$',
-    errorMessage: 'Enter a valid integer between 1 and 99.'
+    regex: '^-?\\d+$',
+    errorMessage: 'Only numbers are allowed.'
   },
   Date_MM_DD_YYYY: {
     regex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
@@ -321,8 +321,7 @@ export const regexAttributes = {
       text: [
         { label: 'Minimum Value', key: 'minValue' },
         { label: 'Maximum Value', key: 'maxValue' }
-      ],
-      checkbox: [{ isChecked: false, label: 'Allow Negative (-)', value: 'allowNegative' }]
+      ]
     }
   },
 

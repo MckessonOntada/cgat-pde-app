@@ -185,5 +185,7 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.configuration.label.tooltip.helpText': 'Use a regex pattern to validate this field (e.g. ^[0-9]{6}$)',
   'manageSPMaterial.configuration.helpText.customChar': 'Add any additional characters (e.g., @#$%)',
   'manageSPMaterial.configuration.helpText.suffix': 'Text that must appear at the end',
-  'manageSPMaterial.configuration.helpText.prefix': 'Text that must appear at the start'
+  'manageSPMaterial.configuration.helpText.prefix': 'Text that must appear at the start',
+  'manageSPMaterial.configuration.customRegex.error.minValueGreaterThanMaxValue': 'Minimum value should not be greater than maximum value',
+  'manageSPMaterial.configuration.customRegex.error.minDateGreaterThanMaxDate': 'Minimum date should not be greater than maximum date'
 };

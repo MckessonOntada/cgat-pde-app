@@ -5,10 +5,10 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useFormikContext } from 'formik';
 import InputField from '@src/components/form/InputField';
-import { regexAttributes } from './config';
+import { fieldFormatRegexObj, regexAttributes } from './config';
 import styles from './Configure.module.scss';
 
-function CustomRegex({ onClose, path, initialValue, type }) {
+function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
   const [errors, setErrors] = useState({});
@@ -89,16 +89,16 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         const min = minLength || 1;
         const max = maxLength || 200;
 
-        pattern = `${prefix || ''}[${charSet}]{${min},${max}}${suffix || ''}`;
+        pattern = `^${prefix || ''}[${charSet}]{${min},${max}}${suffix || ''}$`;
         break;
       }
 
       case 'Integer': {
-        pattern = buildIntegerRegex(minValue, maxValue, allowNegative);
+        pattern = fieldFormatRegexObj['Integer'].regex;
         break;
       }
       case 'Date_MM_DD_YYYY': {
-        pattern = '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$';
+        pattern = fieldFormatRegexObj['Date_MM_DD_YYYY'].regex;
         break;
       }
 
@@ -106,7 +106,7 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         pattern = '';
     }
 
-    return `^${pattern}$`;
+    return `${pattern}`;
   }
   function buildValidationFormat(finalRegex) {
     const {
@@ -159,30 +159,6 @@ function CustomRegex({ onClose, path, initialValue, type }) {
     return `${type}:"${finalRegex}"::${joined}`;
   }
 
-  function buildIntegerRegex(minValue, maxValue, allowNegative = false) {
-    let pattern = '';
-
-    if (allowNegative) pattern += '-?';
-
-    if (minValue != null && maxValue != null) {
-      const min = parseInt(minValue, 10);
-      const max = parseInt(maxValue, 10);
-
-      if (min >= 0 && max < 100) {
-        const firstPart = `${Math.floor(min / 10)}[${min % 10}-9]`; // e.g., 2[3-9] for 23
-        const middlePart = Math.floor(min / 10) + 1 <= Math.floor(max / 10) - 1 ? `[${Math.floor(min / 10) + 1}-${Math.floor(max / 10) - 1}][0-9]` : '';
-        const lastPart = `${Math.floor(max / 10)}[0-${max % 10}]`; // e.g., 7[0-8] for 78
-        pattern += `(${firstPart}${middlePart ? '|' + middlePart : ''}|${lastPart})`;
-      } else {
-        pattern += '\\d+';
-      }
-    } else {
-      pattern += '\\d+';
-    }
-
-    return pattern;
-  }
-
   function parseRegex(regex) {
     if (!regex) return null;
 
@@ -209,47 +185,51 @@ function CustomRegex({ onClose, path, initialValue, type }) {
         newState.customChars = custom || '';
       }
     } else if (type === 'Integer') {
-      newState.allowNegative = /^-?/.test(regex);
-
-      // Remove ^, $, and optional negative sign for easier parsing
-      let cleaned = regex.replace(/^\^|-?\$?$/g, '');
-
-      // Match patterns like (2[3-9]|[3-6][0-9]|7[0-8])
-      const rangeMatch = cleaned.match(/\(?(\d+)\[?\d*-\d*\]?\|?(\d*\[?\d*-\d*\]?)?\)?/);
-
-      if (rangeMatch) {
-        // For simplicity, we try to detect the first and last number from the pattern
-        // Split by '|' to find min and max
-        const parts = cleaned.replace(/[()]/g, '').split('|');
-
-        // Convert parts like "2[3-9]" -> min=23, "7[0-8]" -> max=78
-        const numbers = parts.map((part) => {
-          const match = part.match(/(\d)(?:\[(\d)-(\d)\])?/);
-          if (match) {
-            const [, firstDigit, startRange, endRange] = match;
-            if (startRange && endRange) {
-              return [parseInt(firstDigit + startRange, 10), parseInt(firstDigit + endRange, 10)];
-            } else {
-              return [parseInt(firstDigit, 10), parseInt(firstDigit, 10)];
-            }
-          }
-          return [];
-        });
-
-        if (numbers.length > 0) {
-          newState.minValue = numbers[0][0];
-          newState.maxValue = numbers[numbers.length - 1][1];
-        }
-      } else {
-        newState.minValue = '';
-        newState.maxValue = '';
-      }
+      newState.minValue = validationFormat.match(/minValue\('(\d+)'\)/)?.[1] ?? '';
+      newState.maxValue = validationFormat.match(/maxValue\('(\d+)'\)/)?.[1] ?? '';
     } else if (type === 'Date_MM_DD_YYYY') {
+      newState.minDate = validationFormat.match(/minDate\('([^']+)'\)/)?.[1] ?? null;
+      newState.maxDate = validationFormat.match(/maxDate\('([^']+)'\)/)?.[1] ?? null;
     }
 
     return newState;
   }
   const handleApply = () => {
+    const { minLength, maxLength, minValue, maxValue, minDate, maxDate } = regexState;
+    setAlert(null);
+
+    // ---- minLength vs maxLength ----
+    if (minLength && maxLength && Number(minLength) > Number(maxLength)) {
+      setAlert({
+        type: 'error',
+        description: t('manageSPMaterial.configuration.customRegex.error.minValueGreaterThanMaxValue')
+      });
+      return;
+    }
+
+    // ---- minValue vs maxValue ----
+    if (minValue && maxValue && Number(minValue) > Number(maxValue)) {
+      setAlert({
+        type: 'error',
+        description: t('manageSPMaterial.configuration.customRegex.error.minValueGreaterThanMaxValue')
+      });
+      return;
+    }
+
+    // ---- minDate vs maxDate ----
+    if (minDate && maxDate) {
+      const min = new Date(minDate).getTime();
+      const max = new Date(maxDate).getTime();
+
+      if (min > max) {
+        setAlert({
+          type: 'error',
+          description: t('manageSPMaterial.configuration.customRegex.error.minDateGreaterThanMaxDate')
+        });
+        return;
+      }
+    }
+
     const finalRegex = buildRegex();
     const validationFormat = buildValidationFormat(finalRegex);
     setFieldValue(path('fieldFormat.validationRegex'), finalRegex);
