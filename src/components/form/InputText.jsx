@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { TextError } from '@mckesson/mcp-component-library';
+import { TextError, Tooltip } from '@mckesson/mcp-component-library';
 import PropTypes from 'prop-types';
 import styles from './InputText.module.scss';
+import { ReactComponent as IconInfo } from '@src/assets/svg/info-2.svg';
 
 const InputText = ({
   id,
@@ -38,6 +39,7 @@ const InputText = ({
   translateClass,
   isShowLabel = true,
   labelTemplate = 'default',
+  infoText,
   ...props
 }) => {
   const [value, setValue] = useState(propValue || '');
@@ -76,7 +78,17 @@ const InputText = ({
     <div className={`${styles.wrapper} ${styles[displayType]} ${styles[size]}`}>
       {isShowLabel && label && (
         <label htmlFor={id} className={styles.label}>
-          {label} {isRequired && <span className="required">{requiredLabel}</span>}
+          {label}
+          {infoText && (
+            <span className="info-icon">
+              <Tooltip body={infoText} placement="top">
+                <div type="button" aria-label="information">
+                  <IconInfo />
+                </div>
+              </Tooltip>
+            </span>
+          )}
+          {isRequired && <span className="required">{requiredLabel}</span>}
         </label>
       )}
 
