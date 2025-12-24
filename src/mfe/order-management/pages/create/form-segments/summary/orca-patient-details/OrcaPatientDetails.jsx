@@ -126,8 +126,7 @@ function OrcaPatientDetails() {
           });
           setAlert({
             type: 'warning',
-            description:
-              'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
+            description: translateFn('message.orcaPatientVerificationFailed1')
           });
         });
   };
@@ -201,9 +200,9 @@ function OrcaPatientDetails() {
                 </div>
                 <div className="controls">
                   <Button onClick={handleOnBack} variant="secondary">
-                    Cancel
+                    {translateFn('captions.btnCancel')}
                   </Button>
-                  <Button type="submit">Save Changes</Button>
+                  <Button type="submit">{translateFn('captions.btnSaveChanges')}</Button>
                 </div>
               </div>
             </Form>
