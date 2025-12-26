@@ -94,7 +94,7 @@ function UserMaterial(props) {
           <SelectionRibbon
             header={translateFn('table.ribbon.nItemsSelected', { n: selection.length })}
             controls={
-              <Button variant="secondary" onClick={confirmMaterialUnlink}>
+              <Button variant="secondary" onClick={() => confirmMaterialUnlink(selection.map((item) => item.id))}>
                 Unlink
               </Button>
             }
