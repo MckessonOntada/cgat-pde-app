@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Badge, Button, Loader, MenuList, Tooltip } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { FormattedNumber } from 'react-intl';
@@ -28,7 +28,7 @@ export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig, refetch } = usePaymentInvoices();
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
@@ -37,6 +37,12 @@ export default function InvoicesTable() {
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
+  const isHistory = useLocation().pathname.split('/').includes('history');
+
+  React.useEffect(() => {
+    refetch();
+  }, [isHistory]);
+
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -169,7 +175,7 @@ export default function InvoicesTable() {
       width: '40px',
       showInMobileHeader: true,
       isSelectable: true,
-      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount) || isHistory
     },
     {
       name: t('paymentInvoices.history.table.invoiceNumber'),

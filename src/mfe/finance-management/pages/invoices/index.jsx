@@ -6,12 +6,11 @@ import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useAccountContext } from '../../context/AccountContext';
 
-export default function Invoices(params) {
+export default function Invoices({ type }) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, statusOptions, setStatusOptions } =
-    usePaymentInvoices();
+  const { applyFilters, clearFilters, statusOptions, setStatusOptions } = usePaymentInvoices();
   const { selectedAccount } = useAccountContext();
-
+  const isHistory = type === 'history';
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
@@ -50,7 +49,7 @@ export default function Invoices(params) {
         />
       </div>
       <div className="MCP-table-wrapper table-wrapper">
-        <InvoicesTable />
+        <InvoicesTable isHistory={isHistory} />
       </div>
     </React.Fragment>
   );

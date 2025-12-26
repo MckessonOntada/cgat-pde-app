@@ -1,11 +1,12 @@
 export const PaymentInvoicesES = {
-  'paymentInvoices.tabs.INVOICES': 'S_INVOICES',
-  'paymentInvoices.tabs.CREDITS': 'S_CREDITS',
-  'paymentInvoices.tabs.PENDING PAYMENTS': 'S_PENDING PAYMENTS',
-  'paymentInvoices.tabs.PAYMENT HISTORY': 'S_PAYMENT HISTORY',
-  'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'S_CUSTOMER STATEMENTS',
-  'paymentInvoices.tabs.PAYMENT METHODS': 'S_PAYMENT METHODS',
-
+  'paymentInvoices.tabs.OPEN INVOICES': 'OPEN INVOICES',
+  'paymentInvoices.tabs.CREDITS': 'CREDITS',
+  'paymentInvoices.tabs.PENDING PAYMENTS': 'PENDING PAYMENTS',
+  'paymentInvoices.tabs.PAYMENT HISTORY': 'PAYMENT HISTORY',
+  'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'CUSTOMER STATEMENTS',
+  'paymentInvoices.tabs.PAYMENT METHODS': 'PAYMENT METHODS',
+  'paymentInvoices.header.managePayments': 'Manage Payments & Invoices',
+  'paymentInvoices.tabs.INVOICES HISTORY': 'INVOICES HISTORY',
   // Account Search
   'paymentInvoices.accountSearch.moreRecordsExist': 'S_More records exist.',
   'paymentInvoices.accountSearch.searchToRefine': 'S_Search to refine.',

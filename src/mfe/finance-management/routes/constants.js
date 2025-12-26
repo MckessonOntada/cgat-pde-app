@@ -1,5 +1,6 @@
 export const PATHS = {
   invoices: 'invoices',
+  invoicesHistory: 'history',
   credits: 'credits',
   pendingPayments: 'pending-payments',
   paymentHistory: 'payment-history',
@@ -10,14 +11,13 @@ export const PATHS = {
 export const tabListData = [
   {
     id: 1,
-    configName: 'INVOICES',
+    configName: 'OPEN INVOICES',
     isActive: true,
     isActiveTab: true,
     sequence: 1,
-    labelForMobile: 'INVOICES',
+    labelForMobile: 'OPEN INVOICES',
     path: PATHS.invoices
   },
-  ,
   {
     id: 2,
     configName: 'CREDITS',
@@ -37,29 +37,38 @@ export const tabListData = [
     path: PATHS.pendingPayments
   },
   {
-    id: 4,
+    id: 5,
+    configName: 'INVOICES HISTORY',
+    isActive: true,
+    isActiveTab: false,
+    sequence: 5,
+    labelForMobile: 'INVOICES HISTORY',
+    path: PATHS.invoicesHistory
+  },
+  {
+    id: 6,
     configName: 'PAYMENT HISTORY',
     isActive: true,
     isActiveTab: false,
-    sequence: 4,
+    sequence: 6,
     labelForMobile: 'PAYMENT HISTORY',
     path: PATHS.paymentHistory
   },
   {
-    id: 5,
+    id: 7,
     configName: 'CUSTOMER STATEMENTS',
     isActive: true,
     isActiveTab: false,
-    sequence: 5,
+    sequence: 7,
     labelForMobile: 'CUSTOMER STATEMENTS',
     path: PATHS.customerStatements
   },
   {
-    id: 6,
+    id: 8,
     configName: 'PAYMENT METHODS',
     isActive: true,
     isActiveTab: false,
-    sequence: 6,
+    sequence: 8,
     labelForMobile: 'PAYMENT METHODS',
     path: PATHS.paymentMethods
   }

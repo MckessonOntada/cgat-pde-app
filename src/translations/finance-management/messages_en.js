@@ -1,11 +1,12 @@
 export const PaymentInvoicesEN = {
-  'paymentInvoices.tabs.INVOICES': 'INVOICES',
+  'paymentInvoices.tabs.OPEN INVOICES': 'OPEN INVOICES',
   'paymentInvoices.tabs.CREDITS': 'CREDITS',
   'paymentInvoices.tabs.PENDING PAYMENTS': 'PENDING PAYMENTS',
   'paymentInvoices.tabs.PAYMENT HISTORY': 'PAYMENT HISTORY',
   'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'CUSTOMER STATEMENTS',
   'paymentInvoices.tabs.PAYMENT METHODS': 'PAYMENT METHODS',
   'paymentInvoices.header.managePayments': 'Manage Payments & Invoices',
+  'paymentInvoices.tabs.INVOICES HISTORY': 'INVOICES HISTORY',
 
   // Account Search
   'paymentInvoices.accountSearch.moreRecordsExist': 'More records exist.',

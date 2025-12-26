@@ -9,6 +9,7 @@ import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
 import { DUE_STATUS } from '../pages/invoices/InvoiceConstants';
 import useAlert from '@src/hooks/useAlert';
+import { useLocation } from 'react-router-dom';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -56,6 +57,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [resetFilterData, setResetFilterData] = useState(true);
   const [statusOptions, setStatusOptions] = useState([]);
   const { selectedAccount } = useAccountContext();
+  const isHistory = useLocation().pathname.split('/').includes('history');
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -136,7 +138,8 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       let payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
-        payerAccountNumber: selectedAccount?.accountNumber
+        payerAccountNumber: selectedAccount?.accountNumber,
+        ...(isHistory && { isClearedInvoiceRequired: true })
       };
 
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
@@ -342,7 +345,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     filterConfig,
     paginationConfig,
     sortConfig,
-    // refreshData,
+    refetch,
     applyFilters,
     clearFilters,
     applySort,
