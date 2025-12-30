@@ -27,16 +27,7 @@
   font-size: var(--brand-font-size--default);
 
   p {
-    &.title {
-      font-weight: var(--brand-font-weight-700);
-      color: var(--brand-color-primary-black);
-    }
-
-    &.address {
-      font-size: var(--brand-font-size--small);
-      color: var(--brand-color-primary-slate);
-    }
-
+    font-weight: var(--brand-font-weight-700);
     color: var(--brand-color-primary-slate);
   }
 }

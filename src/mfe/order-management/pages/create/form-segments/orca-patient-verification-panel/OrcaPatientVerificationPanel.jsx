@@ -34,6 +34,10 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
   const handleOnSubmit = () => {
     if (selectedPatient && isSameDate(new Date(selectedPatient.dateOfBirth), date)) {
       setVerifiedPatient(selectedPatient);
+      onAlert({
+        type: 'success',
+        description: translateFn('message.orcaPatientVerificationSuccess')
+      });
       onClose();
     } else {
       onAlert({
@@ -104,7 +108,7 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
                   />
                   <div className={styles.cardContent}>
                     <p>{`${maskString(patient.firstName)} ${maskString(patient.lastName)}`}</p>
-                    <p>{patient.id}</p>
+                    <p>Patient ID - {patient.patientId}</p>
                   </div>
                 </label>
               );

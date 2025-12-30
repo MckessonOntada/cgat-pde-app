@@ -97,38 +97,21 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   }, [orderDetails]);
 
   React.useEffect(() => {
+    const setFieldValue = formikRef.current?.setFieldValue;
     if (orcaVerifiedPatient) {
-      setInitialValues({
-        ...initialValues,
-        patient: {
-          ...initialValues.patient,
-          medicalRecordNumber: orcaVerifiedPatient.medicalRecordNumber,
-          patientIdentifier: orcaVerifiedPatient.patientId,
-          patientInfo: {
-            firstName: orcaVerifiedPatient.firstName,
-            middleName: orcaVerifiedPatient.middleName,
-            lastName: orcaVerifiedPatient.lastName,
-            gender: orcaVerifiedPatient.gender,
-            dateOfBirth: orcaVerifiedPatient.dateOfBirth
-          }
-        }
-      });
+      setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
+      setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
+      setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
+      setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
+      setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
+      setFieldValue('patient.patientInfo.gender', orcaVerifiedPatient.gender);
+      setFieldValue('patient.patientInfo.dateOfBirth', orcaVerifiedPatient.dateOfBirth);
     } else {
-      setInitialValues({
-        ...initialValues,
-        patient: {
-          ...initialValues.patient,
-          medicalRecordNumber: '',
-          patientIdentifier: '',
-          patientInfo: {
-            firstName: '',
-            middleName: '',
-            lastName: '',
-            gender: '',
-            dateOfBirth: null
-          }
-        }
-      });
+      setFieldValue('patient.patientInfo.firstName', '');
+      setFieldValue('patient.patientInfo.middleName', '');
+      setFieldValue('patient.patientInfo.lastName', '');
+      setFieldValue('patient.patientInfo.gender', '');
+      setFieldValue('patient.patientInfo.dateOfBirth', '');
     }
   }, [orcaVerifiedPatient]);
 
@@ -178,13 +161,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           ...orderDetails.provider
         });
       }
-      const { patient = {} } = orderDetails;
 
-      setOrcaVerifiedPatient({
-        medicalRecordNumber: patient.medicalRecordNumber,
-        patientId: patient.patientIdentifier,
-        ...patient.patientInfo
-      });
       const config =
         orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
       const patientDetails = removePrefixSuffixFromValues(orderDetails.patient, config || []);
@@ -504,7 +481,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         break;
       }
       case MANUFACTURER.ORCA: {
-        validateOrcaDetails(patientId, medicalRecordNumber);
+        if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
+        else if (id.includes('medicalRecordNumber')) validateOrcaDetails(null, medicalRecordNumber);
         break;
       }
       default: {
@@ -526,21 +504,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           }
         })
         .catch((error) => {
-          setInitialValues({
-            ...initialValues,
-            patient: {
-              ...initialValues.patient,
-              patientIdentifier: '',
-              medicalRecordNumber: '',
-              patientInfo: {
-                firstName: '',
-                middleName: '',
-                lastName: '',
-                gender: '',
-                dateOfBirth: null
-              }
-            }
-          });
+          const setFieldValue = formikRef.current?.setFieldValue;
+          setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
+          setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+          setFieldValue('patient.patientInfo.firstName', '');
+          setFieldValue('patient.patientInfo.middleName', '');
+          setFieldValue('patient.patientInfo.lastName', '');
+          setFieldValue('patient.patientInfo.gender', '');
+          setFieldValue('patient.patientInfo.dateOfBirth', null);
+
           setAlert({
             type: 'warning',
             description:
@@ -642,7 +614,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         />
 
                         <FormRenderer
-                          sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0)}
+                          sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0, manufacturer)}
                           readOnly={readOnly || !isAllowedToProceed}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (

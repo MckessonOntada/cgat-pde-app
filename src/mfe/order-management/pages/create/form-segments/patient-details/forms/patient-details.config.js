@@ -1,5 +1,5 @@
 import { US_STATES } from '@src/components/form/util';
-import { CHANNEL_TYPE } from '../../Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import { extractPrefixSuffix } from '../../OrderUtil';
 
@@ -12,7 +12,7 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = (channelType, therapyConfig, validateOnBlur, manufacturerVerified = false) => [
+export const PatientSections = (channelType, therapyConfig, validateOnBlur, manufacturerVerified = false, manufacturer) => [
   {
     rows: [
       {
@@ -25,7 +25,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
-            isReadOnly: manufacturerVerified,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -35,7 +35,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
-            isReadOnly: manufacturerVerified
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer)
           },
           {
             id: 'patient-info-lastName',
@@ -44,7 +44,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
-            isReadOnly: manufacturerVerified,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }
         ]
@@ -62,7 +62,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
               label: item,
               value: item
             })),
-            isReadOnly: manufacturerVerified,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -72,7 +72,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'datePicker',
             disableFuture: true,
-            isReadOnly: manufacturerVerified,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL

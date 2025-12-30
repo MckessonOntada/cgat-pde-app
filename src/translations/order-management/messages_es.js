@@ -728,8 +728,9 @@ export const MessageEs = {
   'labels.expectedDeliveryDate': 'S_Expected delivery date {deliveryDate}',
   'labels.PatientID': 'S_Patient ID',
   'captions.btnBackToSummary': 'Back to Summary',
+  'message.orcaPatientVerificationSuccess': 'Patient ID verified',
   'message.orcaPatientVerificationFailed':
-    'The Orca Bio Patient ID or MRN and Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+    'Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
   'message:orcaPatientVerificationAbrupt': 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.',
   'helperText.orcaPatientVerificationDateControl':
     "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
