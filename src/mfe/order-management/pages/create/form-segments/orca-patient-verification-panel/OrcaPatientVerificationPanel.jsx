@@ -82,7 +82,9 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
             variant="secondary">
             {translateFn('captions.btnCancel')}
           </Button>
-          <Button onClick={handleOnSubmit}>{translateFn('captions.btnApply')}</Button>
+          <Button disabled={filteredPatient.length > 1 && !selectedPatient} onClick={handleOnSubmit}>
+            {translateFn('captions.btnApply')}
+          </Button>
         </div>
       }>
       <div className="stack">
