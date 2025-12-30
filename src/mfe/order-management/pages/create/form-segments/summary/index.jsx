@@ -34,7 +34,7 @@ import { ORDER_STATUS } from '../../../orders/config';
 import { SAP_ORDER_STATUS } from '../../../orders/constants';
 import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import { InventoryIndicator } from '../InventoryIndicator';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderStepper from '../OrderStepper';
@@ -90,6 +90,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+  const manufacturer = orderDetails.therapyConfig?.config?.manufacturerName;
 
   React.useEffect(() => {
     if (orderDetails?.additionalDetails) {
@@ -1247,8 +1248,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         />
                       )}
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      {!isSpOrder && therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                      {manufacturer === MANUFACTURER.ORCA ? (
+                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={patient?.medicalRecordNumber || '-'} />
+                      ) : (
+                        <>
+                          {!isSpOrder && therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED && (
+                            <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
