@@ -50,38 +50,23 @@ function OrcaPatientDetails() {
   }, [orderDetails]);
 
   React.useEffect(() => {
-    if (orcaVerifiedPatient) {
-      setInitialValues({
-        ...initialValues,
-        patient: {
-          ...initialValues.patient,
-          medicalRecordNumber: orcaVerifiedPatient.medicalRecordNumber,
-          patientIdentifier: orcaVerifiedPatient.patientId,
-          patientInfo: {
-            firstName: orcaVerifiedPatient.firstName,
-            middleName: orcaVerifiedPatient.middleName,
-            lastName: orcaVerifiedPatient.lastName,
-            gender: orcaVerifiedPatient.gender,
-            dateOfBirth: orcaVerifiedPatient.dateOfBirth
-          }
-        }
-      });
-    } else {
-      setInitialValues({
-        ...initialValues,
-        patient: {
-          ...initialValues.patient,
-          medicalRecordNumber: '',
-          patientIdentifier: '',
-          patientInfo: {
-            firstName: '',
-            middleName: '',
-            lastName: '',
-            gender: '',
-            dateOfBirth: null
-          }
-        }
-      });
+    if (formikRef.current) {
+      const setFieldValue = formikRef.current?.setFieldValue;
+      if (orcaVerifiedPatient) {
+        setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
+        setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
+        setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
+        setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
+        setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
+        setFieldValue('patient.patientInfo.gender', orcaVerifiedPatient.gender);
+        setFieldValue('patient.patientInfo.dateOfBirth', orcaVerifiedPatient.dateOfBirth);
+      } else {
+        setFieldValue('patient.patientInfo.firstName', '');
+        setFieldValue('patient.patientInfo.middleName', '');
+        setFieldValue('patient.patientInfo.lastName', '');
+        setFieldValue('patient.patientInfo.gender', '');
+        setFieldValue('patient.patientInfo.dateOfBirth', '');
+      }
     }
   }, [orcaVerifiedPatient]);
 
@@ -109,21 +94,15 @@ function OrcaPatientDetails() {
           }
         })
         .catch((error) => {
-          setInitialValues({
-            ...initialValues,
-            patient: {
-              ...initialValues.patient,
-              medicalRecordNumber: '',
-              patientIdentifier: '',
-              patientInfo: {
-                firstName: '',
-                middleName: '',
-                lastName: '',
-                gender: '',
-                dateOfBirth: null
-              }
-            }
-          });
+          const setFieldValue = formikRef.current?.setFieldValue;
+          setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
+          setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+          setFieldValue('patient.patientInfo.firstName', '');
+          setFieldValue('patient.patientInfo.middleName', '');
+          setFieldValue('patient.patientInfo.lastName', '');
+          setFieldValue('patient.patientInfo.gender', '');
+          setFieldValue('patient.patientInfo.dateOfBirth', null);
+
           setAlert({
             type: 'warning',
             description: translateFn('message.orcaPatientVerificationFailed1')
@@ -196,7 +175,7 @@ function OrcaPatientDetails() {
               <div className="stack">
                 <div className="MCP-panel-container">
                   <p className="section-title">Patient Details</p>
-                  <FormRenderer sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0)} />
+                  <FormRenderer sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0, manufacturer)} />
                 </div>
                 <div className="controls">
                   <Button onClick={handleOnBack} variant="secondary">
