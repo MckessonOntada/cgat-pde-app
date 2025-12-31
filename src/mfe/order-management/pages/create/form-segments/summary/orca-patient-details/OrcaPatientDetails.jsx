@@ -2,7 +2,7 @@ import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CHANNEL_TYPE } from '../../Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { PatientSections } from '../../patient-details/forms/patient-details.config';
 import OrderService from '@src/api/commonService/OrderService';
@@ -29,6 +29,8 @@ function OrcaPatientDetails() {
   const [alert, setAlert] = React.useState(null);
   const manufacturer = getManufacturer(orderDetails);
   const formikRef = React.useRef();
+  const [lastVerifiedPatientId, setLastVerifiedPatientId] = React.useState(null);
+  const [lastVerifiedMedicalRecordNumber, setLastVerifiedMedicalRecordNumber] = React.useState(null);
 
   React.useEffect(() => {
     if (orderDetails.id) {
@@ -46,6 +48,16 @@ function OrcaPatientDetails() {
         patientId: patient.patientIdentifier,
         ...patient.patientInfo
       });
+
+      if (orderDetails.patient && manufacturer === MANUFACTURER.ORCA) {
+        const patient = orderDetails.patient;
+        if (patient.medicalRecordNumber) {
+          setLastVerifiedMedicalRecordNumber(patient.medicalRecordNumber);
+        }
+        if (patient.patientIdentifier) {
+          setLastVerifiedPatientId(patient.patientIdentifier);
+        }
+      }
     }
   }, [orderDetails]);
 
@@ -53,6 +65,12 @@ function OrcaPatientDetails() {
     if (formikRef.current) {
       const setFieldValue = formikRef.current?.setFieldValue;
       if (orcaVerifiedPatient) {
+        if (orcaVerifiedPatient.medicalRecordNumber) {
+          setLastVerifiedMedicalRecordNumber(orcaVerifiedPatient.medicalRecordNumber);
+        }
+        if (orcaVerifiedPatient.patientId) {
+          setLastVerifiedPatientId(orcaVerifiedPatient.patientId);
+        }
         setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
         setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
         setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
@@ -76,8 +94,8 @@ function OrcaPatientDetails() {
 
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
-
-    validateOrcaDetails(patientId, medicalRecordNumber);
+    if (id.includes('patientIdentifier') && lastVerifiedPatientId !== patientId) validateOrcaDetails(patientId, null);
+    else if (id.includes('medicalRecordNumber') && lastVerifiedMedicalRecordNumber !== medicalRecordNumber) validateOrcaDetails(null, medicalRecordNumber);
   };
 
   const validateOrcaDetails = (patientId, medicalRecordNumber) => {
@@ -107,6 +125,10 @@ function OrcaPatientDetails() {
             type: 'warning',
             description: translateFn('message.orcaPatientVerificationFailed1')
           });
+        })
+        .finally(() => {
+          if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
+          if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
   };
 
