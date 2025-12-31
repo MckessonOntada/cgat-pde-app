@@ -70,6 +70,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const prevSearch = locationState.__prevSearch || '';
     if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+    if (orderDetails.patient && manufacturer === MANUFACTURER.ORCA) {
+      const patient = orderDetails.patient;
+      if (patient.medicalRecordNumber) {
+        setLastVerifiedMedicalRecordNumber(patient.medicalRecordNumber);
+      }
+      if (patient.patientIdentifier) {
+        setLastVerifiedPatientId(patient.patientIdentifier);
+      }
+    }
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -99,6 +108,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   React.useEffect(() => {
     const setFieldValue = formikRef.current?.setFieldValue;
     if (orcaVerifiedPatient) {
+      if (orcaVerifiedPatient.medicalRecordNumber) {
+        setLastVerifiedMedicalRecordNumber(orcaVerifiedPatient.medicalRecordNumber);
+      }
+      if (orcaVerifiedPatient.patientId) {
+        setLastVerifiedPatientId(orcaVerifiedPatient.patientId);
+      }
       setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
       setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
       setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
@@ -123,6 +138,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [showAddProviderForm, setShowAddProviderForm] = React.useState(false);
   const [portalTarget, setPortalTarget] = React.useState(null);
   const [isEditing, setIsEditing] = React.useState(false);
+  const [lastVerifiedPatientId, setLastVerifiedPatientId] = React.useState(null);
+  const [lastVerifiedMedicalRecordNumber, setLastVerifiedMedicalRecordNumber] = React.useState(null);
 
   useEffect(() => {
     if (showAddProviderForm) {
@@ -481,8 +498,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         break;
       }
       case MANUFACTURER.ORCA: {
-        if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
-        else if (id.includes('medicalRecordNumber')) validateOrcaDetails(null, medicalRecordNumber);
+        if (id.includes('patientIdentifier') && lastVerifiedPatientId !== patientId) validateOrcaDetails(patientId, null);
+        else if (id.includes('medicalRecordNumber') && lastVerifiedMedicalRecordNumber !== medicalRecordNumber) validateOrcaDetails(null, medicalRecordNumber);
         break;
       }
       default: {
@@ -518,6 +535,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             description:
               'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
           });
+        })
+        .finally(() => {
+          if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
+          if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
     }
   };
