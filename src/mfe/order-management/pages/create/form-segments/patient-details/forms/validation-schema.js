@@ -138,6 +138,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
     if (isOrca) {
       allowedFields.forEach((fieldName) => {
+        if (!dynamicFields[fieldName]) return;
         dynamicFields[fieldName] = dynamicFields[fieldName].test('orca-atleast-one', 'At least one identifier is required', function () {
           const values = this.parent;
           return Array.from(allowedFields).some((f) => values?.[f]);
