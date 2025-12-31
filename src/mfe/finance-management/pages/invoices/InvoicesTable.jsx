@@ -300,7 +300,8 @@ export default function InvoicesTable() {
             <Badge
               text={DUE_STATUS[props.status]?.label}
               customStyle={{
-                backgroundColor: `${DUE_STATUS[props.status]?.color}`
+                backgroundColor: `${DUE_STATUS[props.status]?.color}`,
+                color: DUE_STATUS[props.status]?.textColor ? DUE_STATUS[props.status]?.textColor : ''
               }}
             />
           ) : (
