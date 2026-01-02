@@ -138,6 +138,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
     if (isOrca) {
       allowedFields.forEach((fieldName) => {
+        if (!dynamicFields[fieldName]) return;
         const customizedFieldDetails = config?.config?.fields?.find((f) => f.fieldName === fieldName);
 
         const displayName = customizedFieldDetails?.properties?.displayName;

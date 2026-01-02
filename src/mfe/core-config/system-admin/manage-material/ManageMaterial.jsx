@@ -11,13 +11,14 @@ import { useLocation } from 'react-router-dom';
 
 function ManageMaterial() {
   const { t } = useTranslate();
-  const { actualData, applyFilters, clearFilters, refetch } = useManageMaterial();
+  const { actualData, applyFilters, clearFilters, refetch, setSelectedMaterials } = useManageMaterial();
   const [alert, setAlert] = useState(null);
   const location = useLocation();
 
   React.useEffect(() => {
     if (location.state?.alert?.type && location.state?.alert?.description) {
       refetch();
+      setSelectedMaterials([]);
       setAlert({
         type: location.state.alert.type,
         description: location.state?.alert?.description
@@ -26,8 +27,6 @@ function ManageMaterial() {
     window.history.replaceState({ ...location.state, alert: undefined }, document.title);
   }, [location, setAlert]);
 
-  console.log(location.state);
-  console.log('location.state', alert);
   const breadcrumbItems = [
     {
       label: t('manageMaterial.breadcrumbs.systemAdministrator'),
