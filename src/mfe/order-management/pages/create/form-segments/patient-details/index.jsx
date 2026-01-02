@@ -508,6 +508,17 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
+  const clearPatientDetails = () => {
+    const setFieldValue = formikRef.current?.setFieldValue;
+    setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
+    setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+    setFieldValue('patient.patientInfo.firstName', '');
+    setFieldValue('patient.patientInfo.middleName', '');
+    setFieldValue('patient.patientInfo.lastName', '');
+    setFieldValue('patient.patientInfo.gender', '');
+    setFieldValue('patient.patientInfo.dateOfBirth', null);
+  };
+
   const validateOrcaDetails = (patientId, medicalRecordNumber) => {
     const payload = {};
     if (patientId) payload.patientId = patientId;
@@ -523,13 +534,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           }
         })
         .catch((error) => {
-          setFieldValue('patient.medicalRecordNumber', '');
-          setFieldValue('patient.patientIdentifier', '');
-          setFieldValue('patient.patientInfo.firstName', '');
-          setFieldValue('patient.patientInfo.middleName', '');
-          setFieldValue('patient.patientInfo.lastName', '');
-          setFieldValue('patient.patientInfo.gender', '');
-          setFieldValue('patient.patientInfo.dateOfBirth', null);
+          clearPatientDetails();
 
           setAlert({
             type: 'warning',
@@ -542,13 +547,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
     } else {
-      setFieldValue('patient.medicalRecordNumber', '');
-      setFieldValue('patient.patientIdentifier', '');
-      setFieldValue('patient.patientInfo.firstName', '');
-      setFieldValue('patient.patientInfo.middleName', '');
-      setFieldValue('patient.patientInfo.lastName', '');
-      setFieldValue('patient.patientInfo.gender', '');
-      setFieldValue('patient.patientInfo.dateOfBirth', null);
+      clearPatientDetails();
     }
   };
 
