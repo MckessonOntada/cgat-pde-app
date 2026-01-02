@@ -139,7 +139,18 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
     if (isOrca) {
       allowedFields.forEach((fieldName) => {
         if (!dynamicFields[fieldName]) return;
-        dynamicFields[fieldName] = dynamicFields[fieldName].test('orca-atleast-one', 'At least one identifier is required', function () {
+        const customizedFieldDetails = config?.config?.fields?.find((f) => f.fieldName === fieldName);
+
+        const displayName = customizedFieldDetails?.properties?.displayName;
+
+        const fallbackMessages = {
+          patientIdentifier: 'Manufacturer Patient Identifier is required',
+          medicalRecordNumber: 'Medical Record Number is required'
+        };
+
+        const message = displayName ? `${displayName} is required` : fallbackMessages[fieldName] || '';
+
+        dynamicFields[fieldName] = dynamicFields[fieldName].test('orca-atleast-one', message, function () {
           const values = this.parent;
           return Array.from(allowedFields).some((f) => values?.[f]);
         });
