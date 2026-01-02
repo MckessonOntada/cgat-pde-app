@@ -487,13 +487,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const validateOnBlur = (e) => {
     const { id, value } = e.target;
-    if (!value) return;
 
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
 
     switch (manufacturer) {
       case MANUFACTURER.REGENERON: {
+        if (!value) break;
         validateRegeneronDetails(id, patientId, value);
         break;
       }
@@ -512,7 +512,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const payload = {};
     if (patientId) payload.patientId = patientId;
     else if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
+    const setFieldValue = formikRef.current?.setFieldValue;
     if (CommonUtils.isNonEmptyObject(payload)) {
+      setAlert(null);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
           if (response && Array.isArray(response) && response.length > 0) {
@@ -521,9 +523,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           }
         })
         .catch((error) => {
-          const setFieldValue = formikRef.current?.setFieldValue;
-          setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
-          setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+          setFieldValue('patient.medicalRecordNumber', '');
+          setFieldValue('patient.patientIdentifier', '');
           setFieldValue('patient.patientInfo.firstName', '');
           setFieldValue('patient.patientInfo.middleName', '');
           setFieldValue('patient.patientInfo.lastName', '');
@@ -540,6 +541,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
           if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
+    } else {
+      setFieldValue('patient.medicalRecordNumber', '');
+      setFieldValue('patient.patientIdentifier', '');
+      setFieldValue('patient.patientInfo.firstName', '');
+      setFieldValue('patient.patientInfo.middleName', '');
+      setFieldValue('patient.patientInfo.lastName', '');
+      setFieldValue('patient.patientInfo.gender', '');
+      setFieldValue('patient.patientInfo.dateOfBirth', null);
     }
   };
 
