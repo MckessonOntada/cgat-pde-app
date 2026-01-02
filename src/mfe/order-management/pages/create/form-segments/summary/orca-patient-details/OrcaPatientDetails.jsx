@@ -79,11 +79,7 @@ function OrcaPatientDetails() {
         setFieldValue('patient.patientInfo.gender', orcaVerifiedPatient.gender);
         setFieldValue('patient.patientInfo.dateOfBirth', orcaVerifiedPatient.dateOfBirth);
       } else {
-        setFieldValue('patient.patientInfo.firstName', '');
-        setFieldValue('patient.patientInfo.middleName', '');
-        setFieldValue('patient.patientInfo.lastName', '');
-        setFieldValue('patient.patientInfo.gender', '');
-        setFieldValue('patient.patientInfo.dateOfBirth', '');
+        clearPatientDetails();
       }
     }
   }, [orcaVerifiedPatient]);
@@ -97,14 +93,23 @@ function OrcaPatientDetails() {
     else if (id.includes('medicalRecordNumber') && lastVerifiedMedicalRecordNumber !== medicalRecordNumber) validateOrcaDetails(null, medicalRecordNumber);
   };
 
+  const clearPatientDetails = () => {
+    const setFieldValue = formikRef.current?.setFieldValue;
+    setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
+    setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+    setFieldValue('patient.patientInfo.firstName', '');
+    setFieldValue('patient.patientInfo.middleName', '');
+    setFieldValue('patient.patientInfo.lastName', '');
+    setFieldValue('patient.patientInfo.gender', '');
+    setFieldValue('patient.patientInfo.dateOfBirth', null);
+  };
+
   const validateOrcaDetails = (patientId, medicalRecordNumber) => {
     const payload = {};
     if (patientId) payload.patientId = patientId;
     else if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
 
-    const setFieldValue = formikRef.current?.setFieldValue;
     if (CommonUtils.isNonEmptyObject(payload)) {
-      setAlert(null);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
           if (response && Array.isArray(response) && response.length > 0) {
@@ -113,14 +118,7 @@ function OrcaPatientDetails() {
           }
         })
         .catch((error) => {
-          setFieldValue('patient.medicalRecordNumber', '');
-          setFieldValue('patient.patientIdentifier', '');
-          setFieldValue('patient.patientInfo.firstName', '');
-          setFieldValue('patient.patientInfo.middleName', '');
-          setFieldValue('patient.patientInfo.lastName', '');
-          setFieldValue('patient.patientInfo.gender', '');
-          setFieldValue('patient.patientInfo.dateOfBirth', null);
-
+          clearPatientDetails();
           setAlert({
             type: 'warning',
             description: translateFn('message.orcaPatientVerificationFailed1')
@@ -131,13 +129,7 @@ function OrcaPatientDetails() {
           if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
     } else {
-      setFieldValue('patient.medicalRecordNumber', '');
-      setFieldValue('patient.patientIdentifier', '');
-      setFieldValue('patient.patientInfo.firstName', '');
-      setFieldValue('patient.patientInfo.middleName', '');
-      setFieldValue('patient.patientInfo.lastName', '');
-      setFieldValue('patient.patientInfo.gender', '');
-      setFieldValue('patient.patientInfo.dateOfBirth', null);
+      clearPatientDetails();
     }
   };
 
