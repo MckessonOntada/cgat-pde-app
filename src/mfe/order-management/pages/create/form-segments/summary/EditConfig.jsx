@@ -82,6 +82,19 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
             }
           ]
         : []),
+      ...(therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED
+        ? [
+            {
+              id: 'patient-info-shipToPONumber',
+              name: 'shipToPONumber',
+              label: 'labels.shipToPONumber',
+              placeholder: ' ',
+              type: 'input',
+              maxLength: 20,
+              isRequired: therapyConfig.shipToPORequirement == REQUIREMENT.MANDATORY
+            }
+          ]
+        : []),
       ...(therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED
         ? [
             {
@@ -156,6 +169,15 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) =>
       .when([], {
         is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
         then: (schema) => schema.required(t('labels.PONumberRequired')),
+        otherwise: (schema) => schema.notRequired()
+      }),
+    shipToPONumber: Yup.string()
+      .matches(ALPHA_NUMERIC_ONLY, t('labels.shipToPONumberMustValid'))
+      .max(35, t('labels.shipToPONumberLengthError'))
+      .test('no-leading-trailing-spaces', t('labels.shipToPONumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
+      .when([], {
+        is: () => therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
+        then: (schema) => schema.required(t('labels.shipToPONumberRequired')),
         otherwise: (schema) => schema.notRequired()
       }),
     dateOfAdministration: Yup.date()

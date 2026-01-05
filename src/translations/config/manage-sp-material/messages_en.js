@@ -5,7 +5,7 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.breadcrumbs.systemAdministrator': 'System Administrator',
   'manageSPMaterial.breadcrumbs.systemConfiguration': 'System Configuration',
   'manageSPMaterial.breadcrumbs.manageSPMaterial': 'Manage SP Material',
-  'manageSPMaterial.filters.searchPlaceholder': 'Search by Product Name, ID, NDC...',
+  'manageSPMaterial.filters.searchPlaceholder': 'Search by Therapy, Manufacturer, NDC...',
   'manageSPMaterial.table.spproductId': 'SP Product ID',
   'manageSPMaterial.table.productname': 'Product Name',
   'manageSPMaterial.table.genericName': 'Generic Name',

@@ -52,6 +52,7 @@ export const UserManagementEN = {
   'userManagement.label.role': 'Role',
   'userManagement.label.cancel': 'Cancel',
   'userManagement.label.save': 'Save',
+  'userManagement.label.createSystemAdmin': 'Add System Admin',
   'userManagement.label.status': 'Status',
   'userManagement.label.description': 'Description',
   'userManagement.label.createdOn': 'Created On',
