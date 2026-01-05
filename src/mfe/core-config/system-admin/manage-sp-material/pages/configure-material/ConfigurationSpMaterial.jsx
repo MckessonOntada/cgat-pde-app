@@ -9,7 +9,7 @@ import ConfigurationForm from './ConfigurationForm';
 import { Formik, Form, Field } from 'formik';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { configObj, defaultFieldFormatBnb, defaultFieldFormatSp } from './config';
+import { configObj, defaultFieldFormatBnb, defaultFieldFormatSp, FIELD_NAMES } from './config';
 import { getConfigurationSchema } from './ConfigurationSchema';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
