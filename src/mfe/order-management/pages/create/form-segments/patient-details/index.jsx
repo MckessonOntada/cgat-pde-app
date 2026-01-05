@@ -554,10 +554,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const validateRegeneronDetails = (id, patientId, value) => {
     switch (id) {
       case 'input-patient.patientIdentifier':
+      case 'patient.patientIdentifier':
         identifierValidation({ patientId: value });
         break;
 
       case 'input-patient.coiId':
+      case 'patient.coiId':
         if (patientId) {
           coiIdValidation({ patientId, coiId: value });
         }
