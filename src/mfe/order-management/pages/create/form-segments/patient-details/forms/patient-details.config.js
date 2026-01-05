@@ -25,7 +25,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
-            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
+            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -35,7 +35,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
-            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer)
+            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer)
           },
           {
             id: 'patient-info-lastName',
@@ -44,7 +44,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
-            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
+            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }
         ]
@@ -62,7 +62,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
               label: item,
               value: item
             })),
-            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
+            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -72,7 +72,7 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             placeholder: ' ',
             type: 'datePicker',
             disableFuture: true,
-            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
+            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
