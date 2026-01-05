@@ -9,7 +9,7 @@ import { useFormikContext, getIn } from 'formik';
 import { fieldFormatOptions, fieldFormatRegexObj } from './config';
 import CustomRegex from './CustomRegex';
 
-const ConfigurationForm = ({ index, setFieldError }) => {
+const ConfigurationForm = ({ field, index, setFieldError }) => {
   const { t } = useTranslate();
   const [customRegex, setCustomRegex] = React.useState(false);
   const { values, setFieldValue, errors } = useFormikContext();
@@ -24,13 +24,18 @@ const ConfigurationForm = ({ index, setFieldError }) => {
 
   const checkboxOptions = [
     {
-      isDisabled: false,
+      isDisabled:
+        (values.manufacturerName === 'ORCA' && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) ||
+        (values.manufacturerName === 'REGENERON' && (field.fieldName === 'coiId' || field.fieldName === 'poNumber')),
       isChecked: displayOnForm,
       label: t('manageSPMaterial.configuration.checkbox.displayOnForm'),
       value: 'displayOnForm'
     },
     {
-      isDisabled: !displayOnForm,
+      isDisabled:
+        !displayOnForm ||
+        (values.manufacturerName === 'ORCA' && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) ||
+        (values.manufacturerName === 'REGENERON' && (field.fieldName === 'coiId' || field.fieldName === 'poNumber')),
       isChecked: !!fieldEntry.mandatoryField,
       label: t('manageSPMaterial.configuration.checkbox.mandatoryField'),
       value: 'mandatoryField'
