@@ -355,3 +355,10 @@ export const regexAttributes = {
     }
   }
 };
+
+export const FIELD_NAMES = Object.freeze({
+  PATIENT_IDENTIFIER: 'patientIdentifier',
+  MEDICAL_RECORD_NUMBER: 'medicalRecordNumber',
+  COI_ID: 'coiId',
+  PO_NUMBER: 'poNumber'
+});

@@ -6,10 +6,11 @@ import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useFormikContext, getIn } from 'formik';
-import { fieldFormatOptions, fieldFormatRegexObj } from './config';
+import { FIELD_NAMES, fieldFormatOptions, fieldFormatRegexObj } from './config';
 import CustomRegex from './CustomRegex';
+import { MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
-const ConfigurationForm = ({ index, setFieldError }) => {
+const ConfigurationForm = ({ field, index, setFieldError }) => {
   const { t } = useTranslate();
   const [customRegex, setCustomRegex] = React.useState(false);
   const { values, setFieldValue, errors } = useFormikContext();
@@ -24,7 +25,9 @@ const ConfigurationForm = ({ index, setFieldError }) => {
 
   const checkboxOptions = [
     {
-      isDisabled: false,
+      isDisabled:
+        (values.manufacturerName === MANUFACTURER.ORCA && [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) ||
+        (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)),
       isChecked: displayOnForm,
       label: t('manageSPMaterial.configuration.checkbox.displayOnForm'),
       value: 'displayOnForm'
