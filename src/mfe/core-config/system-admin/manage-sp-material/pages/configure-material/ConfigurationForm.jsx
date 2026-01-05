@@ -51,6 +51,8 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
     setFieldValue(path(value), !current);
     if (value === 'displayOnForm') {
       setFieldError(`fields[${index}]`, '');
+      setFieldValue(path('showHelpIcon'), false);
+      setFieldValue(path('mandatoryField'), false);
     } else if (value === 'showHelpIcon') {
       setFieldError(path('helpInfoMessage'), '');
     }
