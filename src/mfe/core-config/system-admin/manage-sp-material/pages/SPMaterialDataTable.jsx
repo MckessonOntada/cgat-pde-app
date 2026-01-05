@@ -53,6 +53,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   };
 
   useEffect(() => {
+    refreshData();
     if (location.state?.alert) {
       setAlert(location.state.alert);
       navigate(location.pathname);
@@ -60,8 +61,6 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
     setSelectedSPMaterial([]);
   }, [location]);
 
-    setSelectedSPMaterial([]);
-  }, [location]);
   const columns = getSPMaterialColumns({
     t,
     paginationConfig,
