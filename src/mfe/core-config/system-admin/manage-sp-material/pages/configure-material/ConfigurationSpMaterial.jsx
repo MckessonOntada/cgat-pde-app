@@ -16,7 +16,7 @@ import { useMutation, useQuery } from 'react-query';
 import { ChannelType } from '../../../manage-sp-account/util';
 import Components from '@src/components/form/Components';
 import styles from './Configure.module.scss';
-import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +25,7 @@ export default function ConfigurationSpMaterial() {
   const { therapy, materialType } = location.state || {};
   const isBnbMaterial = materialType === ChannelType.BUY_AND_BILL;
   const [manufacturer, setManufacturer] = React.useState([]);
-
+  const [openTabs, setOpenTabs] = React.useState([]);
   React.useEffect(() => {
     MaterialService.getManufacturers(materialType).then((manufacturer) => {
       setManufacturer([
@@ -63,8 +63,12 @@ export default function ConfigurationSpMaterial() {
   });
 
   const ndcDetails = React.useMemo(() => {
+    if (therapy?.length > 1) {
+      return materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
+    }
+
     return materialDetails?.fields ? materialDetails : materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
-  }, [materialDetails, materialType]);
+  }, [materialDetails, materialType, therapy]);
 
   const initialValues = {
     manufacturerName: ndcDetails?.manufacturerName || null,
@@ -89,7 +93,7 @@ export default function ConfigurationSpMaterial() {
 
   const validationSchema = getConfigurationSchema(t, channelOptions, fieldNameForChannel, isBnbMaterial);
 
-  const { mutate: updateMaterial } = useMutation({
+  const { mutate: updateMaterial, isLoading: isUpdating } = useMutation({
     mutationFn: (payload) => {
       return isBnbMaterial ? MaterialService.updateMaterialConfigBnb(payload) : MaterialService.updateSPMaterialConfig(payload);
     },
@@ -142,8 +146,45 @@ export default function ConfigurationSpMaterial() {
     }
     return _translations;
   }, [isBnbMaterial]);
+  const applyManufacturerRules = (manufacturerName, fields) => {
+    let openTabs = [];
+    const updatedFields = fields.map((field, idx) => {
+      let updatedField = { ...field };
 
-  if (isLoading) {
+      if (manufacturerName === MANUFACTURER.ORCA) {
+        if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) {
+          updatedField = {
+            ...field,
+            properties: {
+              ...field.properties,
+              displayOnForm: true,
+              mandatoryField: true
+            }
+          };
+          openTabs.push(`field-${idx}`);
+        }
+      }
+
+      if (manufacturerName === MANUFACTURER.REGENERON) {
+        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)) {
+          updatedField = {
+            ...field,
+            properties: {
+              ...field.properties,
+              displayOnForm: true,
+              mandatoryField: true
+            }
+          };
+          openTabs.push(`field-${idx}`);
+        }
+      }
+
+      return updatedField;
+    });
+    setOpenTabs(openTabs);
+    return updatedFields;
+  };
+  if (isLoading || isUpdating) {
     return <Loader type={'screen'} />;
   }
 
@@ -180,6 +221,17 @@ export default function ConfigurationSpMaterial() {
                         placeholder="Select Manufacturer"
                         size="lg"
                         options={manufacturer}
+                        onChange={(selectedManufacturer) => {
+                          setFieldValue('manufacturerName', selectedManufacturer);
+                          const updatedFields = applyManufacturerRules(
+                            selectedManufacturer,
+                            materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
+                          );
+                          setFieldValue('fields', updatedFields);
+                          if (isBnbMaterial && selectedManufacturer === MANUFACTURER.ORCA) {
+                            setFieldValue('patientInformationRequired', true);
+                          }
+                        }}
                       />
                     </div>
                   </React.Fragment>
@@ -197,14 +249,17 @@ export default function ConfigurationSpMaterial() {
                         caption={t(labelTranslation.channelOptionsLabel)}
                         direction="row"
                         id={fieldNameForChannel}
-                        items={channelOptions}
+                        items={channelOptions.map((option) => ({
+                          ...option,
+                          isDisabled: values.manufacturerName === MANUFACTURER.ORCA
+                        }))}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
                           setFieldError(fieldNameForChannel, '');
                           setFieldValue(fieldNameForChannel, finalValue);
                           if (isBnbMaterial && finalValue === false) {
                             const updatedFields = values.fields.map((field) => {
-                              if (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId') {
+                              if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.COI_ID].includes(field.fieldName)) {
                                 return {
                                   ...field,
                                   properties: {
@@ -236,7 +291,7 @@ export default function ConfigurationSpMaterial() {
                       </p>
                     }
                   />
-                  <Accordion>
+                  <Accordion multiple value={openTabs} onChange={setOpenTabs}>
                     {values?.fields?.map((field, idx) => {
                       if (values[fieldNameForChannel] === false && (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId')) {
                         return null;
@@ -247,7 +302,7 @@ export default function ConfigurationSpMaterial() {
                             <ConfigurationHeader fieldName={field.fieldName} format={field.properties.fieldFormat.formatType} properties={field.properties} />
                           </AccordionHeader>
                           <AccordionPanel>
-                            <ConfigurationForm index={idx} setFieldError={setFieldError} />
+                            <ConfigurationForm field={field} index={idx} setFieldError={setFieldError} />
                           </AccordionPanel>
                         </AccordionItem>
                       );
