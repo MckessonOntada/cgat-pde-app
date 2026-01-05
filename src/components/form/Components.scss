@@ -3,6 +3,9 @@
   font-size: var(--brand-font-size--small);
   line-height: var(--brand-line-height--large);
   letter-spacing: normal;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-01);
 }
 
 .align-PhoneInput {
@@ -51,4 +54,11 @@ div[data-testid^="date-range-component"] {
 
 [class*="CustomDatepicker-module--labelParentContainer"] [class*="TextError-module--textError--"] {
   display: none;
+}
+.help-text {
+  font-size: var(--brand-font-size--small);
+  font-weight: var(--brand-font-weight-400);
+  font-style: Italic;
+  margin-top: var(--spacing-01);
+  color: var(--brand-color-black);
 }

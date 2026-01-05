@@ -16,10 +16,11 @@ import ConfigureSPMaterials from './ConfigureSPMaterials';
 import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
 import SPMaterialDetails from './SPMaterialDetails';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters } =
+  const { paginationConfig, data, setPageNumber, isLoading, applySort, selectedSPMaterial, setSelectedSPMaterial, filteredData, clearFilters, refreshData } =
     useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState({
@@ -59,6 +60,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
     setSelectedSPMaterial([]);
   }, [location]);
 
+    setSelectedSPMaterial([]);
+  }, [location]);
   const columns = getSPMaterialColumns({
     t,
     paginationConfig,
@@ -137,6 +140,12 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
         state: { therapy: selectedSPMaterial[0] }
       });
   };
+  const handleConfiguration = (selectedSPMaterial) => {
+    if (selectedSPMaterial && Array.isArray(selectedSPMaterial) && selectedSPMaterial[0])
+      navigate(routeConstants.CONFIGURE, {
+        state: { therapy: selectedSPMaterial, materialType: CHANNEL_TYPE.SPECIALTY_PHARMA }
+      });
+  };
 
   return (
     <div>
@@ -196,10 +205,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
               <Button
                 variant="secondary"
                 onClick={() => {
-                  setOpenConfiguration((prev) => ({
-                    ...prev,
-                    config: !prev.config
-                  }));
+                  handleConfiguration(selectedSPMaterial);
                 }}
                 size="sm">
                 {t('manageMaterial.table.header.button.configure')}

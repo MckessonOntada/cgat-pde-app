@@ -1056,5 +1056,39 @@ export const MessageEn = {
   'labels.shipToPONumberLengthError': 'Ship to PO Number should not exceed 35 characters',
   'labels.shipToPONumberMustValid': 'Ship to PO Number should only contain letters and numbers.',
   'labels.shipToPONumberExtraSpaceError': 'Ship to PO Number must not contain leading or trailing spaces',
-  'labels.shipToPONumberRequired': 'Ship to PO Number is required'
+  'labels.shipToPONumberRequired': 'Ship to PO Number is required',
+  'orderManagement.patientID.verification':
+    'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'orderManagement.coiId.verification':
+    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'labels.shipToPONumberRequired': 'Ship to PO Number is required',
+  'labels.trackingDetails': 'Tracking Details',
+  'labels.trackingNumber': 'Tracking Number',
+  'orderTracking.stepper.orderPlaced': 'Order Placed',
+  'orderTracking.stepper.orderProcessing': 'Order Processing',
+  'orderTracking.stepper.onTheWay': 'On The Way',
+  'orderTracking.stepper.delivered': 'Delivered',
+  'labels.shippingAddress': 'Shipping Address',
+  'labels.shippingStatus': 'Shipping Status',
+  'labels.orderNumber': 'Order Number',
+  'labels.orderDate': 'Order Date',
+  'labels.orderCost': 'Order Cost',
+  'labels.therapy': 'Therapy',
+  'labels.orderCancelled': 'The shipment has been cancelled',
+  'labels.orderIsInProgress': 'Order is in process',
+  'labels.shipmentCancelled': 'The shipment has been cancelled.',
+  'labels.orderDelivered': 'Order Delivered',
+  'labels.expectedToday': 'Expected today',
+  'labels.expectedTomorrow': 'Expected tomorrow',
+  'labels.expectedDeliveryDate': 'Expected delivery date {deliveryDate}',
+  'labels.PatientID': 'Patient ID',
+  'captions.btnBackToSummary': 'Back to Summary',
+  'message.orcaPatientVerificationSuccess': 'Patient verified.',
+  'message.orcaPatientVerificationFailed':
+    'Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+  'message:orcaPatientVerificationAbrupt': 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.',
+  'helperText.orcaPatientVerificationDateControl':
+    "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
+  'message.orcaPatientVerificationFailed1':
+    'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
 };

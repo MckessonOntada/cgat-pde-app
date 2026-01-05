@@ -13,6 +13,10 @@ export const CHANNEL_TYPE = {
   SPECIALTY_PHARMA: 'SPECIALITY_PHARMA'
 };
 
+export const MANUFACTURER = {
+  ORCA: 'ORCA',
+  REGENERON: 'REGENERON'
+};
 export const FormList = (t) => [
   {
     name: ORDER_STAGES.THERAPY_SELECTION,

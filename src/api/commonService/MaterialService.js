@@ -120,6 +120,60 @@ async function deleteSPMaterialConfig(id) {
   return [];
 }
 
+async function updateMaterialConfigBnb(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid payload. A valid JSON object is required.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/config/update`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  if (res?.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function getMaterialConfigByNdc(channelType, ndc) {
+  if (!ndc) {
+    throw new Error('Invalid NDC no.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/config/ndc/${ndc}?channelType=${channelType}`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function updateSPMaterialConfig(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid payload. A valid JSON object is required.');
+  }
+
+  const url = `${ApiRoutes.THERAPIES()}/sp/config/update`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+
+  if (res?.data) {
+    return res.data;
+  }
+  return {};
+}
+async function getSpMaterialConfigByMaterialNumber(channelType, materialNo) {
+  if (!materialNo) {
+    throw new Error('Invalid Material no.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/sp/config/${materialNo}?channelType=${channelType}`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 async function getAllMaterials(userId, params = { listingMode: 'ALL' }) {
   const url = `${ApiRoutes.THERAPIES()}/user/${userId}?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
@@ -142,6 +196,36 @@ async function unlinkMaterial(userId, materialIds) {
   return res;
 }
 
+//demo service method for notification group
+export const getTherapies = async (requestParams) => {
+  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+};
+export const getUsers = async (requestParams) => {
+  const url = `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+};
+
+async function getManufacturers(channelType) {
+  if (!channelType) {
+    throw new Error('Invalid channel type.');
+  }
+  const url = `${ApiRoutes.THERAPIES()}/manufacturer?channelType=${channelType}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 const MaterialService = Object.freeze({
   getMaterialById,
   getMaterialConfigById,
@@ -155,9 +239,16 @@ const MaterialService = Object.freeze({
   getAssignedDiagnosisCodes,
   removeAssignedDiagnosisCode,
   addDiagnosisCode,
+  updateMaterialConfigBnb,
+  updateSPMaterialConfig,
+  getMaterialConfigByNdc,
+  getSpMaterialConfigByMaterialNumber,
   getAllMaterials,
   restrictMaterial,
-  unlinkMaterial
+  unlinkMaterial,
+  getTherapies,
+  getUsers,
+  getManufacturers
 });
 
 export default MaterialService;

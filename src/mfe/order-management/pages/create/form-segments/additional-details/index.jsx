@@ -33,11 +33,11 @@ import * as Yup from 'yup';
 import { ORDER_STATUS } from '../../../orders/config';
 import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
-import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { NotifyAlert } from '../OrderUtil';
+import { getManufacturer, NotifyAlert, removePrefixSuffix, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -98,6 +98,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
+  const manufacturer = getManufacturer(orderDetails);
 
   const dispatch = useDispatch();
 
@@ -172,68 +173,80 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         })
       );
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-      schema = schema.concat(
-        Yup.object({
-          dateOfAdministration: Yup.date()
-            .typeError(t('labels.enterValidDateOfAdministration'))
-            .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
-            .when([], {
-              is: () => therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          dateOfApheresis: Yup.date()
-            .typeError(t('labels.enterValidDateOfApheresis'))
-            .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
-            .when([], {
-              is: () => therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          coiId: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-            .max(10, t('labels.COI_IdExceedDigits'))
-            .when([], {
-              is: () => therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.COIIdRequired')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          orderQuantity: Yup.number()
-            .typeError(t('labels.OrderQuantityShouldPositive'))
-            .min(1, t('labels.OrderQuantityMin', { min: 1 }))
-            .max(99, t('labels.OrderQuantityMax', { max: 99 }))
-            .required(t('labels.orderQuantityRequired'))
-            .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-            .integer(t('labels.OrderQuantityMustBeInteger')),
-          poNumber: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
-            .max(35, t('labels.PONumberLengthError'))
-            .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-            .when([], {
-              is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.PONumberRequired')),
-              otherwise: (schema) => schema.notRequired()
-            }),
-          shipToPONumber: Yup.string()
-            .matches(ALPHA_NUMERIC_ONLY, t('labels.shipToPONumberMustValid'))
-            .max(35, t('labels.shipToPONumberLengthError'))
-            .test(
-              'no-leading-trailing-spaces',
-              t('labels.shipToPONumberExtraSpaceError'),
-              (value) => value === undefined || value.trim().length === value.length
-            )
-            .when([], {
-              is: () => therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
-              then: (schema) => schema.required(t('labels.shipToPONumberRequired')),
-              otherwise: (schema) => schema.notRequired()
-            })
-        })
-      );
+      const dynamicFields = {};
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
+          let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
+          if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+            const vf = field.properties.fieldFormat.validationFormat;
+
+            const minMatch = vf.match(/minDate\('([^']+)'\)/);
+            const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+
+            const minDate = minMatch ? minMatch[1] : null;
+            const maxDate = maxMatch ? maxMatch[1] : null;
+
+            validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
+              if (!value) return true;
+
+              const toDate = (d) => {
+                const [m, day, y] = d.split('/');
+                return new Date(`${y}-${m}-${day}`);
+              };
+
+              const inputDate = toDate(value);
+
+              if (minDate && inputDate < toDate(minDate)) return false;
+              if (maxDate && inputDate > toDate(maxDate)) return false;
+
+              return true;
+            });
+          }
+
+          if (field.properties.fieldFormat.formatType === 'Integer') {
+            const vf = field.properties.fieldFormat.validationFormat || '';
+
+            const minMatch = vf.match(/minValue\('([^']+)'\)/);
+            const maxMatch = vf.match(/maxValue\('([^']+)'\)/);
+
+            const minValue = minMatch ? Number(minMatch[1]) : null;
+            const maxValue = maxMatch ? Number(maxMatch[1]) : null;
+
+            validator = validator.test('integer-range', field.properties.errorMessage, (value) => {
+              if (value === undefined || value === null || value === '') return true;
+
+              const num = Number(value);
+
+              if (Number.isNaN(num)) return false;
+
+              if (minValue !== null && num < minValue) return false;
+              if (maxValue !== null && num > maxValue) return false;
+
+              return true;
+            });
+          }
+
+          validator = validator.when([], {
+            is: () => field.properties.mandatoryField,
+            then: (s) => s.required(`${field.properties.displayName} is required`),
+            otherwise: (s) => s.notRequired()
+          });
+
+          dynamicFields[field.fieldName] = validator;
+        }
+      });
+      dynamicFields.orderQuantity = Yup.number()
+        .typeError(t('labels.OrderQuantityShouldPositive'))
+        .min(1, t('labels.OrderQuantityMin', { min: 1 }))
+        .max(99, t('labels.OrderQuantityMax', { max: 99 }))
+        .required(t('labels.orderQuantityRequired'))
+        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+        .integer(t('labels.OrderQuantityMustBeInteger'));
+      schema = schema.concat(Yup.object().shape(dynamicFields));
     }
 
     return schema;
   };
-
   const { data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
@@ -668,7 +681,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }));
       }
     }
-
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      removePrefixSuffixFromValues(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
+    }
     setInitialFormValues((prev) => ({
       ...prev,
       ...initialValues
@@ -793,6 +808,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       payload.dateOfAdministration = dateOfAdministration;
       payload.dateOfApheresis = dateOfApheresis;
     }
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      updateAdditionalDetailsValues(payload, orderDetails?.therapyConfig?.config?.fields || []);
+    }
     if (skipTerms && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       if (isStageInDraft) {
         saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
@@ -910,7 +928,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           description: t('message.additionalDetails.missingPrescriptionDetails')
         });
       }
-      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.triageChannel)) {
+      if (isSPCrossWalked && !['SP', 'HUB'].includes(spTherapyConfig?.config?.triageChannel)) {
         setIsAllowedToProceed(false);
         setTriageAlert({
           description: t('message.triageChannelConfigMissing'),
@@ -992,7 +1010,40 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return allValid;
   };
+  const { mutate: coiIdValidation, isLoading: isCoiIdValidationLoading } = useMutation(
+    async ({ patientId, coiId }) => {
+      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setAlert(null);
+        } else {
+          setAlert({
+            description: t('orderManagement.coiId.verification'),
+            type: 'warning'
+          });
+        }
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
 
+  const handleCoiIdValidation = (e) => {
+    const { id, value } = e.target;
+    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
+
+    coiIdValidation({
+      patientId: orderDetails?.patient?.patientIdentifier,
+      coiId: e.target.value
+    });
+  };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
     setIsOrderInDraft(true);
     const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
@@ -1003,9 +1054,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     handleOnSubmit(values);
   };
 
-  if (isSaving || isFetching) return <Loader type={'screen'} />;
   return (
     <div className="MCP-module-wrapper">
+      {(isSaving || isFetching || isCoiIdValidationLoading) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -1089,8 +1140,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           </p>
                         }
                       />
+
                       <div className="form-segment-list">
-                        <AdditionalDetailsDefaultFields therapyConfig={therapyConfig} channelType={channelType} readOnly={readOnly || !isAllowedToProceed} />
+                        <AdditionalDetailsDefaultFields
+                          therapyConfig={therapyConfig}
+                          channelType={channelType}
+                          readOnly={readOnly || !isAllowedToProceed}
+                          handleCoiIdValidation={handleCoiIdValidation}
+                        />
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
                           handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
@@ -1268,10 +1325,10 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
-  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue });
+  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue, handleCoiIdValidation });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;
 

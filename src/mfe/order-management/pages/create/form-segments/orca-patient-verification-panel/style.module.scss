@@ -1,0 +1,33 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-02);
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--brand-color-grey-scale-cool-1);
+  border-radius: var(--spacing-01, 4px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card.selected {
+  border-color: var(--brand-color-primary-blue);
+  background-color: var(--brand-color-background);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--brand-font-size--default);
+
+  p {
+    font-weight: var(--brand-font-weight-700);
+    color: var(--brand-color-primary-slate);
+  }
+}

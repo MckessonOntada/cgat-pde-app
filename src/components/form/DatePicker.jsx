@@ -30,6 +30,7 @@ export default function DatePicker(props) {
         isShowLabel={isShowLabel}
         showRequiredIcon={isRequired}
         isInvalid={isFieldTouched && errorMessage}
+        clearDate={true}
         {...rest}
       />
       {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}

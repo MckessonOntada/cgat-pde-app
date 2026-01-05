@@ -21,6 +21,8 @@ import {
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import OrderQuantityConfig from './OrderQuantityConfig';
+import ConfigureSPMaterials from '../manage-sp-material/pages/ConfigureSPMaterials';
+import { routeConstants } from './routes/constants';
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
   const { t } = useTranslate();
@@ -286,6 +288,12 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
     );
   };
 
+  const handleConfiguration = (selectedMaterial) => {
+    if (selectedMaterial && Array.isArray(selectedMaterial))
+      navigate(routeConstants.CONFIGURE, {
+        state: { therapy: selectedMaterial, materialType: CHANNEL_TYPE.BUY_AND_BILL }
+      });
+  };
   return (
     <React.Fragment>
       <TableHeading
@@ -308,7 +316,8 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             <Button
               variant="secondary"
               onClick={() => {
-                setOpenConfiguration((prev) => ({ ...prev, config: !prev.config }));
+                // setOpenConfiguration((prev) => ({ ...prev, config: !prev.config }));
+                handleConfiguration(selectedMaterials);
               }}
               size="sm"
               disabled={isBothSelected || isSPSelected}>

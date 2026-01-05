@@ -1,6 +1,7 @@
 import { US_STATES } from '@src/components/form/util';
-import { CHANNEL_TYPE } from '../../Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { extractPrefixSuffix } from '../../OrderUtil';
 
 const getStates = () => {
   const options = US_STATES();
@@ -11,7 +12,7 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = (channelType, therapyConfig) => [
+export const PatientSections = (channelType, therapyConfig, validateOnBlur, manufacturerVerified = false, manufacturer) => [
   {
     rows: [
       {
@@ -24,6 +25,7 @@ export const PatientSections = (channelType, therapyConfig) => [
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -32,7 +34,8 @@ export const PatientSections = (channelType, therapyConfig) => [
             label: 'orderManagement.patientDetails.inputLabel.middle_name',
             placeholder: ' ',
             type: 'input',
-            maxLength: 50
+            maxLength: 50,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer)
           },
           {
             id: 'patient-info-lastName',
@@ -41,6 +44,7 @@ export const PatientSections = (channelType, therapyConfig) => [
             placeholder: ' ',
             type: 'input',
             maxLength: 50,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }
         ]
@@ -58,6 +62,7 @@ export const PatientSections = (channelType, therapyConfig) => [
               label: item,
               value: item
             })),
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
@@ -67,38 +72,26 @@ export const PatientSections = (channelType, therapyConfig) => [
             placeholder: ' ',
             type: 'datePicker',
             disableFuture: true,
+            isReadOnly: Object.values(MANUFACTURER).includes(manufacturer),
             isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
-            ? [
-                ...(therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED
-                  ? [
-                      {
-                        id: 'patient-info-identifier',
-                        name: 'patient.patientIdentifier',
-                        label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
-                        placeholder: ' ',
-                        type: 'input',
-                        maxLength: 20,
-                        isRequired: therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY
-                      }
-                    ]
-                  : []),
-                ...(therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
-                  ? [
-                      {
-                        id: 'patient-info-medicalRecordNumber',
-                        name: 'patient.medicalRecordNumber',
-                        label: 'orderManagement.patientDetails.inputLabel.mrn',
-                        placeholder: ' ',
-                        type: 'input',
-                        maxLength: 20,
-                        maxLength: 11,
-                        isRequired: therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY
-                      }
-                    ]
-                  : [])
-              ]
+            ? therapyConfig?.config?.fields
+                ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
+                ?.map((field) => {
+                  const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+                  return {
+                    id: `patient-info-${field.fieldName}`,
+                    name: `patient.${field.fieldName}`,
+                    label: field.properties.displayName,
+                    type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+                    prefix,
+                    suffix,
+                    isRequired: field.properties.mandatoryField,
+                    infoText: field?.properties.helpInfoMessage,
+                    onBlur: validateOnBlur
+                  };
+                }) || []
             : [])
         ]
       }
@@ -214,45 +207,26 @@ export const AddressSections = (channelType) => [
   }
 ];
 
-export const IdentifierSections = (channelType, spTherapyConfig) => {
-  const controls = [
-    {
-      id: 'patient-info-identifier',
-      name: 'patient.patientIdentifier',
-      label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
-      placeholder: ' ',
-      type: 'input',
-      maxLength: 20,
-      isRequired: spTherapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-    },
-    {
-      id: 'coiId',
-      name: 'patient.coiId',
-      label: 'labels.coiId',
-      placeholder: ' ',
-      type: 'input',
-      maxLength: 10,
-      isRequired: spTherapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig?.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED
-    },
-    {
-      id: 'patient-info-medicalRecordNumber',
-      name: 'patient.medicalRecordNumber',
-      label: 'orderManagement.patientDetails.inputLabel.mrn',
-      placeholder: ' ',
-      type: 'input',
-      maxLength: 20,
-      isRequired: spTherapyConfig.mrnRequirement === REQUIREMENT.MANDATORY && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-      show: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && spTherapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
+export const IdentifierSections = (spTherapyConfig, validateOnBlur) => {
+  const controls = [];
+  spTherapyConfig?.config?.fields?.forEach((field) => {
+    if (field?.properties?.displayOnForm) {
+      const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+      controls.push({
+        id: `patient-info-${field.fieldName}`,
+        name: `patient.${field.fieldName}`,
+        label: field.properties.displayName,
+        isRequired: field.properties.mandatoryField,
+        infoText: field?.properties.helpInfoMessage,
+        type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+        prefix,
+        suffix,
+        ...(['patientIdentifier', 'coiId'].includes(field.fieldName) && { onBlur: validateOnBlur })
+      });
     }
-  ];
+  });
 
-  // only include if isRequired true
-  const filteredControls = controls.filter((c) => c.show);
-
-  // if nothing is required, do not render the section
-  if (filteredControls.length === 0) {
+  if (controls.length === 0) {
     return [];
   }
 
@@ -261,7 +235,7 @@ export const IdentifierSections = (channelType, spTherapyConfig) => {
       rows: [
         {
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
-          controls: filteredControls
+          controls: controls
         }
       ]
     }

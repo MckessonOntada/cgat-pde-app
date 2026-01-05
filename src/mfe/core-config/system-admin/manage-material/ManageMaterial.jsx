@@ -7,11 +7,26 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import ManageMaterialTable from './ManageMaterialTable';
 import Alert from '@src/components/cgat-alert/Alert';
+import { useLocation } from 'react-router-dom';
 
 function ManageMaterial() {
   const { t } = useTranslate();
-  const { actualData, applyFilters, clearFilters } = useManageMaterial();
+  const { actualData, applyFilters, clearFilters, refetch, setSelectedMaterials } = useManageMaterial();
   const [alert, setAlert] = useState(null);
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (location.state?.alert?.type && location.state?.alert?.description) {
+      refetch();
+      setSelectedMaterials([]);
+      setAlert({
+        type: location.state.alert.type,
+        description: location.state?.alert?.description
+      });
+    }
+    window.history.replaceState({ ...location.state, alert: undefined }, document.title);
+  }, [location, setAlert]);
+
   const breadcrumbItems = [
     {
       label: t('manageMaterial.breadcrumbs.systemAdministrator'),
@@ -26,12 +41,8 @@ function ManageMaterial() {
     }
   ];
 
-  const handleAlertClose = () => {
-    setAlert({ type: null, message: null });
-  };
-
-  const showAlert = (type, message) => {
-    setAlert({ type, message });
+  const showAlert = (type, description) => {
+    setAlert({ type, description });
   };
 
   return (
@@ -39,7 +50,7 @@ function ManageMaterial() {
       <Breadcrumbs items={breadcrumbItems} />
       <div className="MCP-module-body">
         <Heading as="h1">{t('manageMaterial.heading')}</Heading>
-        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} />}
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className={`${styles.cardContainer}`}>
           <div className={`${styles.cardContainer}`}>
             <CommonFilters

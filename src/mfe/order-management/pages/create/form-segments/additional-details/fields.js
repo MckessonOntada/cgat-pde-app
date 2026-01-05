@@ -2,6 +2,7 @@ import Components from '@src/components/form/Components';
 import CommonUtils from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { extractPrefixSuffix } from '../OrderUtil';
 
 const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -12,22 +13,25 @@ const getBinaryOptions = (keyPrefix = '', readOnly) => {
   }));
 };
 
-export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType }) => {
-  const fields = [];
-
+export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType, handleCoiIdValidation }) => {
+  const dynamic_fields = [];
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    if (therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'coiId',
-        label: translationFn('labels.coiId'),
-        placeholder: ' ',
-        isRequired: therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
-        component: Components['input'],
-        maxLength: 10
-      });
-    }
-
-    fields.push({
+    therapyConfig?.config?.fields?.forEach((field) => {
+      if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+        const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+        dynamic_fields.push({
+          name: field?.fieldName,
+          label: field?.properties?.displayName,
+          isRequired: field?.properties?.mandatoryField,
+          component: Components[prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
+          prefix,
+          suffix,
+          infoText: field?.properties.helpInfoMessage,
+          ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
+        });
+      }
+    });
+    dynamic_fields.push({
       name: 'orderQuantity',
       label: translationFn('labels.orderQuantity'),
       placeholder: ' ',
@@ -35,55 +39,8 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       component: Components['input'],
       maxLength: 2
     });
-
-    if (therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'dateOfAdministration',
-        label: translationFn('orderManagement.patientDetails.inputLabel.doa'),
-        placeholder: ' ',
-        isRequired: therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
-        component: Components['datePicker'],
-        disableDateTill: new Date(),
-        disablePast: true
-      });
-    }
-
-    if (therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'dateOfApheresis',
-        label: translationFn('orderManagement.patientDetails.inputLabel.dateOfApheresis'),
-        placeholder: ' ',
-        isRequired: therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
-        component: Components['datePicker'],
-        disableDateTill: new Date(),
-        disablePast: true
-      });
-    }
-
-    if (therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'poNumber',
-        label: translationFn('labels.providePONumber'),
-        placeholder: ' ',
-        isRequired: therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
-        component: Components['input'],
-        maxLength: 35
-      });
-    }
-    if (therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED) {
-      fields.push({
-        name: 'shipToPONumber',
-        label: translationFn('labels.shipToPONumber'),
-        placeholder: ' ',
-        isRequired: therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
-        component: Components['input'],
-        maxLength: 35
-      });
-    }
-  } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
   }
-
-  return fields;
+  return dynamic_fields;
 };
 
 export const getClinicalDetailFields = ({ translationFn, formValues, setFieldValue, onDiagnosisCodeSearch, diagnosisCode }) => {

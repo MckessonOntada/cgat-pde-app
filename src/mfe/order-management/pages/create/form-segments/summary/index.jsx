@@ -34,7 +34,7 @@ import { ORDER_STATUS } from '../../../orders/config';
 import { SAP_ORDER_STATUS } from '../../../orders/constants';
 import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import { InventoryIndicator } from '../InventoryIndicator';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderStepper from '../OrderStepper';
@@ -48,6 +48,7 @@ import ProviderDetailsSegment from './Segments/ProviderDetailsSegment';
 import styles from './Summary.module.scss';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
+import { TrackingDetails } from './tracking-details';
 
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
@@ -89,6 +90,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+  const manufacturer = orderDetails.therapyConfig?.config?.manufacturerName;
 
   React.useEffect(() => {
     if (orderDetails?.additionalDetails) {
@@ -114,7 +116,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   }, [isError]);
 
   React.useEffect(() => {
-    const { changeOnPreviousStep = false } = location.state;
+    const { changeOnPreviousStep = false } = location.state || {};
     if (changeOnPreviousStep && !hasPermission) {
       const { changeOnPreviousStep, ...newState } = location.state;
       navigate(location.pathname, { state: newState });
@@ -531,6 +533,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
 
   const handleOnEditSection = (stage) => {
+    if ((orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.therapyConfig?.config?.manufacturerName) === 'ORCA') {
+      navigate('./../orca-patient-details');
+    }
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
       if (!checkEditPermission(stage)) {
@@ -829,8 +834,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const unitAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice);
   const netAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.totalNetPrice);
-  const TaxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
-  const TotalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
+  const taxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
+  const totalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
@@ -970,6 +975,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           <React.Fragment>
             <div className={'MCP-module-wrapper'}>
               <div className={'MCP-module-body'}>
+                {isSubmitted && <TrackingDetails orderDetails={orderDetails} />}
+
                 {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.APPROVAL_PENDING) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
                     (!isSpOrder && (orderDetails?.approver || orderDetails?.submittedOn))) && (
@@ -1089,7 +1096,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                                 ) : (
                                   <>
                                     <span>$</span>
-                                    {TaxAmount}
+                                    {taxAmount}
                                   </>
                                 )}
                               </span>
@@ -1106,7 +1113,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                                 ) : (
                                   <>
                                     <span>$</span>
-                                    {TotalCost}
+                                    {totalCost}
                                   </>
                                 )}
                               </span>
@@ -1241,8 +1248,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         />
                       )}
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      {!isSpOrder && therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                      {manufacturer === MANUFACTURER.ORCA ? (
+                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={patient?.medicalRecordNumber || '-'} />
+                      ) : (
+                        <>
+                          {!isSpOrder && therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED && (
+                            <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -1309,9 +1322,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3`}>
                     {!isSpOrder && (
                       <>
-                        {therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment label={t('labels.coiId')} value={draftChanges?.additionalDetailsRequestDTO?.coiId || '-'} />
-                        )}
+                        {therapyConfig?.config?.fields
+                          ?.filter((field) => field?.properties?.displayOnForm && !['medicalRecordNumber', 'patientIdentifier'].includes(field.fieldName))
+                          ?.map((field) => {
+                            const value = draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ?? draftChanges?.patient?.[field.fieldName] ?? '-';
+
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
+                          })}
+
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}

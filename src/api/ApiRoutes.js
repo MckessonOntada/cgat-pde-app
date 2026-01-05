@@ -39,6 +39,7 @@ const ApiRoutes = Object.freeze({
   ORGANIZATION_BASE: () => constructUserManagementServiceUrl(''),
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
+  SHIPMENT: (accountId) => constructOrderManagementServiceUrl(`accounts/${accountId}/shipment`),
   PAY_TO_ACCOUNTS: () => constructUserManagementServiceUrl('users/current/paytoaccounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
@@ -50,6 +51,7 @@ const ApiRoutes = Object.freeze({
   PAYMENT_HISTORY_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/history`),
   PAYMENT_METHODS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/method`),
   ORDERS: () => constructOrderManagementServiceUrl('orders'),
+  BASE_ORDER_SERVICE: () => constructOrderManagementServiceUrl(''),
   APPROVER_GROUP: () => constructOrderManagementServiceUrl('approver-group'),
   GET_OPEN_INVOICE_BALANCES: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/balances`),
   GET_PAY_AMOUNT_URL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/review/pay`),
@@ -81,7 +83,8 @@ const ApiRoutes = Object.freeze({
   NOTIFICATIONS: () => constructNotificationServiceUrl('in-app-notification/fetch'),
   NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl('in-app-notification/unread/count'),
   NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl('in-app-notification/read/all'),
-  NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`)
+  NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`),
+  USER_BASE: constructUserManagementServiceUrl('')
 });
 
 export default ApiRoutes;
