@@ -16,7 +16,7 @@ import { useMutation, useQuery } from 'react-query';
 import { ChannelType } from '../../../manage-sp-account/util';
 import Components from '@src/components/form/Components';
 import styles from './Configure.module.scss';
-import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -151,8 +151,8 @@ export default function ConfigurationSpMaterial() {
     const updatedFields = fields.map((field, idx) => {
       let updatedField = { ...field };
 
-      if (manufacturerName === 'ORCA') {
-        if (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber') {
+      if (manufacturerName === MANUFACTURER.ORCA) {
+        if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) {
           updatedField = {
             ...field,
             properties: {
@@ -165,8 +165,8 @@ export default function ConfigurationSpMaterial() {
         }
       }
 
-      if (manufacturerName === 'REGENERON') {
-        if (field.fieldName === 'coiId' || field.fieldName === 'poNumber') {
+      if (manufacturerName === MANUFACTURER.REGENERON) {
+        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)) {
           updatedField = {
             ...field,
             properties: {
@@ -228,7 +228,7 @@ export default function ConfigurationSpMaterial() {
                             materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
                           );
                           setFieldValue('fields', updatedFields);
-                          if (isBnbMaterial && selectedManufacturer === 'ORCA') {
+                          if (isBnbMaterial && selectedManufacturer === MANUFACTURER.ORCA) {
                             setFieldValue('patientInformationRequired', true);
                           }
                         }}
@@ -251,7 +251,7 @@ export default function ConfigurationSpMaterial() {
                         id={fieldNameForChannel}
                         items={channelOptions.map((option) => ({
                           ...option,
-                          isDisabled: values.manufacturerName === 'ORCA'
+                          isDisabled: values.manufacturerName === MANUFACTURER.ORCA
                         }))}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
@@ -259,7 +259,7 @@ export default function ConfigurationSpMaterial() {
                           setFieldValue(fieldNameForChannel, finalValue);
                           if (isBnbMaterial && finalValue === false) {
                             const updatedFields = values.fields.map((field) => {
-                              if (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId') {
+                              if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.COI_ID].includes(field.fieldName)) {
                                 return {
                                   ...field,
                                   properties: {
