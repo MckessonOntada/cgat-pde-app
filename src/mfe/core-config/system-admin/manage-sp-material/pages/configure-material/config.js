@@ -62,12 +62,12 @@ export const defaultFieldFormatBnb = () => ({
       }
     },
     {
-      fieldName: 'coiId',
+      fieldName: 'medicalRecordNumber',
       properties: {
         displayOnForm: false,
         mandatoryField: false,
         showHelpIcon: false,
-        displayName: 'COI ID',
+        displayName: 'MRN',
         errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
         helpInfoMessage: '',
         fieldFormat: {
@@ -81,12 +81,12 @@ export const defaultFieldFormatBnb = () => ({
       }
     },
     {
-      fieldName: 'medicalRecordNumber',
+      fieldName: 'coiId',
       properties: {
         displayOnForm: false,
         mandatoryField: false,
         showHelpIcon: false,
-        displayName: 'MRN',
+        displayName: 'COI ID',
         errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
         helpInfoMessage: '',
         fieldFormat: {

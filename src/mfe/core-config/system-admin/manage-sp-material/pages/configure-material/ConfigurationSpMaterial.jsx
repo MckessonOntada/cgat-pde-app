@@ -259,7 +259,7 @@ export default function ConfigurationSpMaterial() {
                           setFieldValue(fieldNameForChannel, finalValue);
                           if (isBnbMaterial && finalValue === false) {
                             const updatedFields = values.fields.map((field) => {
-                              if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.COI_ID].includes(field.fieldName)) {
+                              if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) {
                                 return {
                                   ...field,
                                   properties: {
@@ -293,7 +293,10 @@ export default function ConfigurationSpMaterial() {
                   />
                   <Accordion multiple value={openTabs} onChange={setOpenTabs}>
                     {values?.fields?.map((field, idx) => {
-                      if (values[fieldNameForChannel] === false && (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId')) {
+                      if (
+                        values[fieldNameForChannel] === false &&
+                        [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)
+                      ) {
                         return null;
                       }
                       return (
