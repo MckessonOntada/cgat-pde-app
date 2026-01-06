@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '@src/mfe/core-config/system-admin/manage-material/assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -51,7 +51,7 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
         )
     });
 
-  const { data: MaterialData } = useQuery({
+  const { data: MaterialData, isLoading: isMaterialDataLoading } = useQuery({
     queryKey: ['therapyDetailsByTrade'],
     queryFn: async () => {
       const result = await OrderService.getTherapyDetailsByTradeName2(
@@ -80,7 +80,7 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
     }
   }, [MaterialData, selectedMaterials]);
 
-  const { mutate: applyConfiguration } = useMutation(
+  const { mutate: applyConfiguration, isLoading: isApplyConfigurationLoading } = useMutation(
     async (configValues) => {
       return await HttpResourceService.callRest(`${ApiRoutes.CONFIGURE_SP_MATERIALS_UPDATE_QUANTITY()}`, httpVerb.POST, configValues);
     },
@@ -132,6 +132,10 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
     };
     applyConfiguration(configValues);
   };
+
+  if (isMaterialDataLoading || isApplyConfigurationLoading) {
+    return <Loader type={'circular'} />;
+  }
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchemaforOrderQuantity(t)} enableReinitialize onSubmit={handleApplyConfiguration}>

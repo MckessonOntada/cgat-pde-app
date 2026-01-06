@@ -84,7 +84,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.displayName')}
         isRequired={displayOnForm}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm}
       />
 
@@ -93,7 +92,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.helpInfoMessage')}
         isRequired={displayOnForm && showHelpIcon}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm || !showHelpIcon}
       />
 
@@ -121,7 +119,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
           name={path('fieldFormat.validationRegex')}
           label={t('manageSPMaterial.configuration.label.validationRegex')}
           component={Components['input']}
-          maxLength={200}
           isReadOnly={true}
           infoText={t('manageSPMaterial.configuration.label.tooltip.helpText')}
         />
@@ -148,7 +145,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.errorMessage')}
         isRequired={displayOnForm}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm}
       />
 
