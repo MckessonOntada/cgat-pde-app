@@ -27,7 +27,7 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
     {
       isDisabled:
         (values.manufacturerName === MANUFACTURER.ORCA && [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) ||
-        (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)),
+        (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)),
       isChecked: displayOnForm,
       label: t('manageSPMaterial.configuration.checkbox.displayOnForm'),
       value: 'displayOnForm'
