@@ -1334,24 +1334,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}
                         {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
-                        {therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment label={t('labels.poNo')} value={draftChanges?.additionalDetailsRequestDTO?.poNumber || '-'} />
-                        )}
-                        {therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment label={t('labels.shipToPONumber')} value={draftChanges?.additionalDetailsRequestDTO?.shipToPONumber || '-'} />
-                        )}
-                        {therapyConfig.dateOfAdministrationRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment
-                            label={t('labels.dateOfAdministration')}
-                            value={draftChanges?.additionalDetailsRequestDTO?.dateOfAdministration || '-'}
-                          />
-                        )}
-                        {therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                          <DetailSegment
-                            label={t('orderManagement.patientDetails.inputLabel.dateOfApheresis')}
-                            value={draftChanges?.additionalDetailsRequestDTO?.dateOfApheresis || '-'}
-                          />
-                        )}
                       </>
                     )}
 

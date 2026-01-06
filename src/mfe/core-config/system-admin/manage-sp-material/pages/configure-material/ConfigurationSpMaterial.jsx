@@ -166,7 +166,7 @@ export default function ConfigurationSpMaterial() {
       }
 
       if (manufacturerName === MANUFACTURER.REGENERON) {
-        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)) {
+        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) {
           updatedField = {
             ...field,
             properties: {
@@ -228,7 +228,7 @@ export default function ConfigurationSpMaterial() {
                             materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
                           );
                           setFieldValue('fields', updatedFields);
-                          if (isBnbMaterial && selectedManufacturer === MANUFACTURER.ORCA) {
+                          if (isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(selectedManufacturer)) {
                             setFieldValue('patientInformationRequired', true);
                           }
                         }}
@@ -251,7 +251,7 @@ export default function ConfigurationSpMaterial() {
                         id={fieldNameForChannel}
                         items={channelOptions.map((option) => ({
                           ...option,
-                          isDisabled: values.manufacturerName === MANUFACTURER.ORCA
+                          isDisabled: [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(values.manufacturerName)
                         }))}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
