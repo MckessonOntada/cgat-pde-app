@@ -134,7 +134,7 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
   };
 
   if (isMaterialDataLoading || isApplyConfigurationLoading) {
-    return <Loader type={'screen'} />;
+    return <Loader type={'circular'} />;
   }
 
   return (
