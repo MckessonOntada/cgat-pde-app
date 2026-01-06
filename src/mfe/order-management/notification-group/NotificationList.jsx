@@ -7,7 +7,7 @@ import CommonFilters from '@src/components/Filters';
 import React from 'react';
 import { ROUTE_PATH } from './config';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { usePagination, useTable } from '@src/context/TableContext';
+import { useFilters, usePagination, useTable } from '@src/context/TableContext';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -25,6 +25,7 @@ function NotificationList() {
   const navigate = useNavigate();
   const { data, loading, error, isFilterApplied } = useTable();
   const { changePage, pagination } = usePagination();
+  const { applyFilters } = useFilters();
   const breadcrumbItems = [
     {
       label: translateFn('userManagement.breadcrumb.admin'),
@@ -99,6 +100,13 @@ function NotificationList() {
     }
   }, [location]);
 
+  const handleOnFilter = (filters = {}) => {
+    const { searchQuery: query } = filters;
+    if (query !== undefined) {
+      applyFilters({ query });
+    }
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
@@ -121,7 +129,7 @@ function NotificationList() {
             <div className="MCP-CardContainer">
               <CommonFilters
                 autoFocus={true}
-                onApplyFilters={() => {}}
+                onApplyFilters={handleOnFilter}
                 onClearFilters={() => {}}
                 additionalFilters={[]}
                 searchPlaceholder={translateFn('placeholders.searchByGroup')}

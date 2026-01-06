@@ -27,7 +27,7 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
     {
       isDisabled:
         (values.manufacturerName === MANUFACTURER.ORCA && [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) ||
-        (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)),
+        (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)),
       isChecked: displayOnForm,
       label: t('manageSPMaterial.configuration.checkbox.displayOnForm'),
       value: 'displayOnForm'
@@ -51,6 +51,8 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
     setFieldValue(path(value), !current);
     if (value === 'displayOnForm') {
       setFieldError(`fields[${index}]`, '');
+      setFieldValue(path('showHelpIcon'), false);
+      setFieldValue(path('mandatoryField'), false);
     } else if (value === 'showHelpIcon') {
       setFieldError(path('helpInfoMessage'), '');
     }
@@ -82,7 +84,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.displayName')}
         isRequired={displayOnForm}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm}
       />
 
@@ -91,7 +92,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.helpInfoMessage')}
         isRequired={displayOnForm && showHelpIcon}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm || !showHelpIcon}
       />
 
@@ -119,7 +119,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
           name={path('fieldFormat.validationRegex')}
           label={t('manageSPMaterial.configuration.label.validationRegex')}
           component={Components['input']}
-          maxLength={200}
           isReadOnly={true}
           infoText={t('manageSPMaterial.configuration.label.tooltip.helpText')}
         />
@@ -146,7 +145,6 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.errorMessage')}
         isRequired={displayOnForm}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm}
       />
 

@@ -1,7 +1,7 @@
 import DynamicRuleGroup from '@src/components/rule-group';
 import getUIConfig from './config.js';
 import React from 'react';
-import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { Alert, Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { Formik, Form } from 'formik';
 import { getNotificationGroupSchema } from './validation.schema.js';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,6 +19,7 @@ function CreateNotificationGroup({ mode }) {
   const config = getUIConfig(translateFn);
   const { groupId } = useParams();
   const [alert, setAlert] = React.useState(null);
+  const [isFetching, setIsFetching] = React.useState(true);
   const navigate = useNavigate();
   const [initialState, setInitialState] = React.useState({
     groupName: '',
@@ -83,7 +84,12 @@ function CreateNotificationGroup({ mode }) {
             description: error.message,
             type: 'error'
           });
+        })
+        .finally(() => {
+          setIsFetching(false);
         });
+    } else {
+      setIsFetching(false);
     }
   }, [groupId]);
 
@@ -162,6 +168,10 @@ function CreateNotificationGroup({ mode }) {
         });
     }
   };
+
+  if (isFetching) {
+    return <Loader variant="circular" />;
+  }
 
   return (
     <React.Fragment>

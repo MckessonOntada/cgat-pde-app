@@ -166,7 +166,7 @@ export default function ConfigurationSpMaterial() {
       }
 
       if (manufacturerName === MANUFACTURER.REGENERON) {
-        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PO_NUMBER].includes(field.fieldName)) {
+        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) {
           updatedField = {
             ...field,
             properties: {
@@ -205,8 +205,8 @@ export default function ConfigurationSpMaterial() {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
-            validateOnChange={false}
-            validateOnBlur={false}
+            validateOnChange={true}
+            validateOnBlur={true}
             enableReinitialize={true}>
             {({ values, setFieldValue, errors, touched, setFieldError }) => (
               <Form>
@@ -228,7 +228,7 @@ export default function ConfigurationSpMaterial() {
                             materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
                           );
                           setFieldValue('fields', updatedFields);
-                          if (isBnbMaterial && selectedManufacturer === MANUFACTURER.ORCA) {
+                          if (isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(selectedManufacturer)) {
                             setFieldValue('patientInformationRequired', true);
                           }
                         }}
@@ -251,7 +251,7 @@ export default function ConfigurationSpMaterial() {
                         id={fieldNameForChannel}
                         items={channelOptions.map((option) => ({
                           ...option,
-                          isDisabled: values.manufacturerName === MANUFACTURER.ORCA
+                          isDisabled: [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(values.manufacturerName)
                         }))}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
@@ -259,7 +259,7 @@ export default function ConfigurationSpMaterial() {
                           setFieldValue(fieldNameForChannel, finalValue);
                           if (isBnbMaterial && finalValue === false) {
                             const updatedFields = values.fields.map((field) => {
-                              if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.COI_ID].includes(field.fieldName)) {
+                              if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) {
                                 return {
                                   ...field,
                                   properties: {
@@ -293,7 +293,10 @@ export default function ConfigurationSpMaterial() {
                   />
                   <Accordion multiple value={openTabs} onChange={setOpenTabs}>
                     {values?.fields?.map((field, idx) => {
-                      if (values[fieldNameForChannel] === false && (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId')) {
+                      if (
+                        values[fieldNameForChannel] === false &&
+                        [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)
+                      ) {
                         return null;
                       }
                       return (
