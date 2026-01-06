@@ -73,7 +73,15 @@ const MultiSelectDropdown = (props) => {
     (values) => {
       const newSelected = values.filter((v) => v.isChecked).map((v) => v.value);
       const oldSelected = lastSelectedRef.current.map((v) => v.value);
-      setFieldValue(mergeWithChecked(newSelected, oldSelected));
+
+      const same = newSelected.length === oldSelected.length && newSelected.every((v) => oldSelected.includes(v));
+
+      if (same) return;
+
+      lastSelectedRef.current = values.filter((v) => v.isChecked);
+
+      const mapped = values.filter((v) => v.isChecked).map((v) => ({ ...v, label: v.label, value: v.value, isChecked: true }));
+      if (mapped.length > 0) setFieldValue(name, mapped);
     },
     [name, setFieldValue]
   );
