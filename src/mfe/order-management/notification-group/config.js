@@ -128,6 +128,7 @@ const getUIConfig = (translateFn) => ({
         helperText: translateFn('notificationGroup.rulePrice.helperText'),
         targetField: {
           type: 'number',
+          length: 12,
           label: translateFn('notificationGroup.rulePrice.targetField.label'),
           helperText: translateFn('notificationGroup.rulePrice.targetField.helperText')
         }
