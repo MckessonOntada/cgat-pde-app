@@ -205,8 +205,8 @@ export default function ConfigurationSpMaterial() {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
-            validateOnChange={false}
-            validateOnBlur={false}
+            validateOnChange={true}
+            validateOnBlur={true}
             enableReinitialize={true}>
             {({ values, setFieldValue, errors, touched, setFieldError }) => (
               <Form>
