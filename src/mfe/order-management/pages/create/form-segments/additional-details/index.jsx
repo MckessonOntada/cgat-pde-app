@@ -1035,10 +1035,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   );
 
-  const handleCoiIdValidation = (e) => {
+  const handleCoiIdValidation = (e, setFieldTouched) => {
     const { id, value } = e.target;
+    setFieldTouched('coiId', true);
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
-
     coiIdValidation({
       patientId: orderDetails?.patient?.patientIdentifier,
       coiId: e.target.value
@@ -1114,7 +1114,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors }) => {
+          {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors, setFieldTouched }) => {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
             }, [values, initialFormValues, setFieldValue]);
@@ -1146,7 +1146,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           therapyConfig={therapyConfig}
                           channelType={channelType}
                           readOnly={readOnly || !isAllowedToProceed}
-                          handleCoiIdValidation={handleCoiIdValidation}
+                          handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched)}
                         />
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}

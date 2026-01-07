@@ -6,7 +6,7 @@ import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useFormikContext, getIn } from 'formik';
-import { FIELD_NAMES, fieldFormatOptions, fieldFormatRegexObj } from './config';
+import { FIELD_NAMES, getFieldFormatOptions, fieldFormatRegexObj } from './config';
 import CustomRegex from './CustomRegex';
 import { MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
@@ -105,7 +105,7 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
             fieldlabel={t('manageSPMaterial.configuration.label.formatType')}
             component={Components['dropdown']}
             isRequired={displayOnForm}
-            options={fieldFormatOptions}
+            options={getFieldFormatOptions(field.fieldName)}
             isReadOnly={!displayOnForm}
             onChangeHandler={(value) => {
               setFieldValue(path('fieldFormat.formatType'), value);
