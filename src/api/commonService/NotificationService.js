@@ -66,8 +66,8 @@ async function getAssignedNotificationGroup() {
   return {};
 }
 
-async function getNotificationTriggers() {
-  const url = `${ApiRoutes.BASE_ORDER_SERVICE()}notification-group/triggers`;
+async function getNotificationTriggers(params) {
+  const url = `${ApiRoutes.BASE_ORDER_SERVICE()}notification-group/triggers?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;

@@ -18,6 +18,7 @@ function mergeWithChecked(options = [], selected = []) {
   if (missing.length > 0) changed = true;
 
   const extra = missing.map((m) => ({
+    ...m,
     label: m.label,
     value: m.value,
     isChecked: true
@@ -45,17 +46,21 @@ const MultiSelectDropdown = (props) => {
   const { setFieldValue, errors, touched } = form;
   const errorMessage = getNestedValue(errors, name);
   const isFieldTouched = getNestedValue(touched, name);
-
+  const [searching, setSearching] = React.useState(false);
   const [fetched, setFetched] = React.useState([]);
 
   React.useEffect(() => {
     if (!searchFn) return;
     let mounted = true;
-
-    searchFn().then((res) => {
-      if (!mounted) return;
-      setFetched(res);
-    });
+    setSearching(true);
+    searchFn()
+      .then((res) => {
+        if (!mounted) return;
+        setFetched(res);
+      })
+      .finally(() => {
+        setSearching(false);
+      });
 
     return () => {
       mounted = false;
@@ -95,10 +100,14 @@ const MultiSelectDropdown = (props) => {
     [searchFn]
   );
 
+  const onClearAll = () => {
+    setFieldValue(name, []);
+  };
+
   return (
     <div>
       <BaseMultiSelectDropdown
-        id={name}
+        id={`group-rule-multiselect-${name}`}
         name={name}
         label={fieldLabel}
         isSuccess
@@ -107,6 +116,10 @@ const MultiSelectDropdown = (props) => {
         isRequired={isRequired}
         options={options}
         onSearch={handleSearch}
+        isAsyncLoading={searching}
+        clearAllSelectedValues={onClearAll}
+        recordsCountToEnableSearch={5}
+        size="md"
         {...rest}
       />
 

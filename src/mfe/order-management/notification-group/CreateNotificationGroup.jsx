@@ -12,6 +12,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import { useTranslate } from '@src/translations/useTranslation.js';
 import ModuleHeader from '@src/components/module-header/index.jsx';
 import FlatButton from '@src/components/button';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function CreateNotificationGroup({ mode }) {
   const isEdit = mode === 'edit';
@@ -20,6 +21,7 @@ function CreateNotificationGroup({ mode }) {
   const { groupId } = useParams();
   const [alert, setAlert] = React.useState(null);
   const [isFetching, setIsFetching] = React.useState(true);
+  const [isSaving, setIsSaving] = React.useState(false);
   const navigate = useNavigate();
   const [initialState, setInitialState] = React.useState({
     groupName: '',
@@ -57,9 +59,10 @@ function CreateNotificationGroup({ mode }) {
             initialState.rules.push({ attribute: 'price', value: rules.price });
           }
           if (rules.accounts) {
+            const filteredAccounts = rules.accounts.filter(({ accountId, accountName, channelType }) => accountId && accountName && channelType);
             initialState.rules.push({
               attribute: 'account',
-              value: rules.accounts.map((accounts) => ({
+              value: filteredAccounts.map((accounts) => ({
                 ...accounts,
                 label: accounts.accountName,
                 labelDescription: accounts.accountId,
@@ -139,6 +142,7 @@ function CreateNotificationGroup({ mode }) {
       curdPromise = NotificationService.createNotificationGroup(payload);
     }
     if (curdPromise) {
+      setIsSaving(true);
       curdPromise
         .then((response) => {
           let message = '';
@@ -165,7 +169,16 @@ function CreateNotificationGroup({ mode }) {
             type: 'error',
             description: errorMessage
           });
+        })
+        .finally(() => {
+          isSaving(false);
         });
+    }
+  };
+
+  const handleOnKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
     }
   };
 
@@ -176,7 +189,7 @@ function CreateNotificationGroup({ mode }) {
   return (
     <React.Fragment>
       <Formik onSubmit={handleOnSubmit} validationSchema={getNotificationGroupSchema(translateFn)} initialValues={initialState} enableReinitialize>
-        <Form>
+        <Form onKeyDown={handleOnKeyPress}>
           <div className="MCP-module-wrapper">
             <div className="MCP-module-header">
               <div>
@@ -193,8 +206,10 @@ function CreateNotificationGroup({ mode }) {
               <Button variant="secondary" type="button" onClick={() => navigate('..')} size={'md'}>
                 {translateFn('userManagement.label.cancel')}
               </Button>
-              <Button type="submit" size="md">
-                {translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
+              <Button variant="primary" isLoadingState={isSaving} Icon={isSaving && ButtonLoadingIcon} iconPosition="left" type="submit" size="md">
+                {isSaving
+                  ? translateFn(isEdit ? 'button.caption.updatingGroup' : 'button.caption.creatingGroup')
+                  : translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
               </Button>
             </div>
           </div>

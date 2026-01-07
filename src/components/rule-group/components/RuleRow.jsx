@@ -32,7 +32,6 @@ export default function RuleRow({ index, rule, attributes }) {
   }, [rule.attribute]);
 
   const onRemove = () => {
-    debugger;
     const newRules = values.rules.filter((_, i) => i !== index);
     setFieldValue('rules', newRules);
   };
@@ -54,15 +53,19 @@ export default function RuleRow({ index, rule, attributes }) {
           />
           <div className="control-helper-text">{selectedAttribute?.helperText || 'Please select a criteria to apply the approval rules on.'}</div>
         </div>
-        <div className={`${style.ruleKeyword} ${style.joinKeyword}`}>{rule.attribute && selectedAttribute.joinBy}</div>
-        <div className={style.inputControls}>
-          <div className={style.control}>{rule.attribute && targetField && <DynamicValueInput index={index} {...targetField} />}</div>
-          {values.rules.length > 1 && !selectedAttribute?.isMandatory && (
-            <div className={style.iconButton}>
-              <IconButton icon={<DeleteIcon />} variant="tertiary" size="md" onClick={onRemove} />
+        {selectedAttribute && (
+          <React.Fragment>
+            <div className={`${style.ruleKeyword} ${style.joinKeyword}`}>{rule.attribute && selectedAttribute.joinBy}</div>
+            <div className={style.inputControls}>
+              <div className={style.control}>{rule.attribute && targetField && <DynamicValueInput index={index} {...targetField} />}</div>
+              {values.rules.length > 1 && !selectedAttribute?.isMandatory && (
+                <div className={style.iconButton}>
+                  <IconButton icon={<DeleteIcon />} variant="tertiary" size="md" onClick={onRemove} />
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
