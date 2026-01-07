@@ -490,6 +490,8 @@ export const UserManagementEN = {
   'button.caption.backToNotificationGroup': 'Back To Notification Group',
   'button.caption.createGroup': 'Create Group',
   'button.caption.updateGroup': 'Update Group',
+  'button.caption.creatingGroup': 'Creating Group',
+  'button.caption.updatingGroup': 'Updating Group',
 
   'notificationGroup.groupDetails': 'Group Details',
   'notificationGroup.notificationGroupName.label': 'Notification Group Name',
@@ -523,5 +525,9 @@ export const UserManagementEN = {
   'dynamicRuleGroup.joinBy.anyOf': 'Any Of',
   'dynamicRuleGroup.joinBy.selectAnyOf': 'Selected Any Of',
   'dynamicRuleGroup.joinBy.orderedAnyOf': 'Ordered Any Of',
-  'dynamicRuleGroup.joinBy.greaterThan': 'Greater than'
+  'dynamicRuleGroup.joinBy.greaterThan': 'Greater than',
+
+  'notificationGroup.placeholder.selectNotificationTriggers': 'Select Notification Triggers',
+  'notificationGroup.placeholder.selectAccounts': 'Select Accounts',
+  'notificationGroup.placeholder.selectMaterials': 'Select Materials'
 };
