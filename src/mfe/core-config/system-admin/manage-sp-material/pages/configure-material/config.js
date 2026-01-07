@@ -28,15 +28,19 @@ export const fieldFormatRegexObj = {
     errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), 8–36 characters long.'
   }
 };
-export const fieldFormatOptions = [
-  { label: 'Text', value: 'Text' },
-  { label: 'Alphabetic', value: 'Alphabetic' },
-  { label: 'Alphanumeric', value: 'Alphanumeric' },
-  { label: 'Uppercase Alphanumeric', value: 'Uppercase Alphanumeric' },
-  { label: 'Integer', value: 'Integer' },
-  { label: 'Date_MM_DD_YYYY', value: 'Date_MM_DD_YYYY' },
-  { label: 'UUID/Unique ID', value: 'UUID/Unique ID' }
-];
+export const getFieldFormatOptions = (fieldName) => {
+  if (['dateOfAdministration', 'dateOfApheresis'].includes(fieldName)) {
+    return [{ label: 'Date_MM_DD_YYYY', value: 'Date_MM_DD_YYYY' }];
+  }
+  return [
+    { label: 'Text', value: 'Text' },
+    { label: 'Alphabetic', value: 'Alphabetic' },
+    { label: 'Alphanumeric', value: 'Alphanumeric' },
+    { label: 'Uppercase Alphanumeric', value: 'Uppercase Alphanumeric' },
+    { label: 'Integer', value: 'Integer' },
+    { label: 'UUID/Unique ID', value: 'UUID/Unique ID' }
+  ];
+};
 
 export const defaultFieldFormatBnb = () => ({
   patientInformationRequired: null,
@@ -56,7 +60,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('patientIdentifier');
           }
         }
       }
@@ -75,7 +79,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('medicalRecordNumber');
           }
         }
       }
@@ -94,7 +98,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('coiId');
           }
         }
       }
@@ -113,7 +117,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('poNumber');
           }
         }
       }
@@ -132,7 +136,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('shipToPONumber');
           }
         }
       }
@@ -151,7 +155,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('dateOfAdministration');
           }
         }
       }
@@ -170,7 +174,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('dateOfApheresis');
           }
         }
       }

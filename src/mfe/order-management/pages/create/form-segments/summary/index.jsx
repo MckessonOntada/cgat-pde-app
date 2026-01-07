@@ -1274,14 +1274,18 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         )
                       }
                     />
-                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4`}>
-                      {patient?.patientIdentifier && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
-                      )}
-                      {patient?.coiId && <DetailSegment label={t('labels.coiId')} value={patient?.coiId || '-'} />}
-                      {patient?.medicalRecordNumber && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={patient?.medicalRecordNumber || '-'} />
-                      )}
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+                      {spTherapyConfig?.config?.fields
+                        ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber', 'patientIdentifier', 'coiId'].includes(field.fieldName))
+                        ?.map((field) => {
+                          const value =
+                            draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ??
+                            draftChanges?.patient?.[field.fieldName] ??
+                            patient?.[field.fieldName] ??
+                            '-';
+
+                          return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
+                        })}
                     </div>
                   </div>
                 )}
