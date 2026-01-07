@@ -1,7 +1,7 @@
 export const fieldFormatRegexObj = {
   Text: {
     regex: "^[A-Za-z0-9'.,-_()#&+:]{1,200}$",
-    errorMessage: "Only letters, numbers, and allowed special characters ('. , - _ () # & + :) are permitted, max 200 characters."
+    errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.'
   },
   Alphabetic: {
     regex: '^[A-Za-z]{1,100}$',
@@ -25,7 +25,7 @@ export const fieldFormatRegexObj = {
   },
   'UUID/Unique ID': {
     regex: '^[A-Za-z0-9-]{8,36}$',
-    errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), length 8 to 36 characters.'
+    errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), 8–36 characters long.'
   }
 };
 export const fieldFormatOptions = [

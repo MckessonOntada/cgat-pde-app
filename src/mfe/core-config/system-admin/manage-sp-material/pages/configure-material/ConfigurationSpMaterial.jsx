@@ -213,7 +213,8 @@ export default function ConfigurationSpMaterial() {
                 <div className="MCP-module-body">
                   <React.Fragment>
                     <ModuleHeader heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.manufacturerConfiguration')}</Heading>} />
-                    <div>
+
+                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
                       <Field
                         component={Components['dropdown']}
                         name={'manufacturerName'}
@@ -251,7 +252,7 @@ export default function ConfigurationSpMaterial() {
                         id={fieldNameForChannel}
                         items={channelOptions.map((option) => ({
                           ...option,
-                          isDisabled: [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(values.manufacturerName)
+                          isDisabled: isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(values.manufacturerName)
                         }))}
                         onChangeValue={(value) => {
                           const finalValue = value === 'true' ? true : value === 'false' ? false : value;
