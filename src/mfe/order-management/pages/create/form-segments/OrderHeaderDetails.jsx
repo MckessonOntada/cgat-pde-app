@@ -7,13 +7,26 @@ import './orderHeaderDetails.scss';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import { Tooltip } from '@mckesson/mcp-component-library';
 import { CHANNEL_TYPE } from './Constants';
+import { extractPrefixSuffix } from './OrderUtil';
 
-function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {}, channelType }) {
+function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {}, channelType, page = '' }) {
   const { t } = useTranslate();
   const { therapy = {}, patient = {}, tradeDetails = {} } = orderDetails;
   const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
   const isBuyAndBillOrder = channelType === CHANNEL_TYPE.BUY_AND_BILL;
+  const formatFieldWithPrefixSuffix = (value, fieldName) => {
+    if (!value) return '';
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const regex = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationRegex;
+    if (page !== 'patient-details') {
+      return value;
+    }
+    const { prefix, suffix } = extractPrefixSuffix(regex);
+
+    return `${prefix ?? ''}${value}${suffix ?? ''}`;
+  };
 
   const detailsSegments = [];
   if (tradeDetails.tradeName || therapy.materialDescription) {
@@ -72,8 +85,8 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
         label={t('labels.patientDetails')}
         value={[
           patient?.patientInfo && CommonUtils.getUSFullName(patient.patientInfo),
-          patient?.patientIdentifier && `ID: ${patient.patientIdentifier}`,
-          patient?.medicalRecordNumber && `MRN: ${patient.medicalRecordNumber}`
+          patient?.patientIdentifier && `ID: ${formatFieldWithPrefixSuffix(patient.patientIdentifier, 'patientIdentifier')}`,
+          patient?.medicalRecordNumber && `MRN: ${formatFieldWithPrefixSuffix(patient.medicalRecordNumber, 'medicalRecordNumber')}`
         ]
           .filter(Boolean)
           .join(', ')}

@@ -487,6 +487,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const validateOnBlur = (e) => {
     const { id, value } = e.target;
+    const idValue = id.startsWith('input-') ? id.replace(/^input-/, '') : id;
+    formikRef.current?.setFieldTouched(idValue, true);
 
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
@@ -551,22 +553,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
-  const validateRegeneronDetails = (id, patientId, value) => {
-    switch (id) {
-      case 'input-patient.patientIdentifier':
-      case 'patient.patientIdentifier':
-        identifierValidation({ patientId: value });
-        break;
-
-      case 'input-patient.coiId':
-      case 'patient.coiId':
-        if (patientId) {
-          coiIdValidation({ patientId, coiId: value });
-        }
-        break;
-
-      default:
-        break;
+  const validateRegeneronDetails = async (id, patientId, value) => {
+    if (['input-patient.patientIdentifier', 'patient.patientIdentifier'].includes(id)) {
+      identifierValidation({ patientId: value });
+    } else if (['input-patient.coiId', 'patient.coiId'].includes(id) && patientId) {
+      coiIdValidation({ patientId, coiId: value });
     }
   };
   return (
@@ -611,7 +602,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           />
         )}
 
-        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
+        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} page="patient-details" />
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
