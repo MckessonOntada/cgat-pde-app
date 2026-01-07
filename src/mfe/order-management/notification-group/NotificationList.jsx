@@ -107,6 +107,10 @@ function NotificationList() {
     }
   };
 
+  const handleOnClearFilters = () => {
+    applyFilters({ query: '' });
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
@@ -130,7 +134,7 @@ function NotificationList() {
               <CommonFilters
                 autoFocus={true}
                 onApplyFilters={handleOnFilter}
-                onClearFilters={() => {}}
+                onClearFilters={handleOnClearFilters}
                 additionalFilters={[]}
                 searchPlaceholder={translateFn('placeholders.searchByGroup')}
               />
