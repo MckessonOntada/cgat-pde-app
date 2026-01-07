@@ -47,17 +47,13 @@ export const US_STATES_CITIES = () => {
 };
 
 export const US_STATES = () => {
-  const _options = [];
-
-  for (let state in US_STATE_CITY) {
-    _options.push({
+  return Object.keys(US_STATE_CITY)
+    .sort((a, b) => a.localeCompare(b))
+    .map((state) => ({
       isDisabled: false,
       value: state,
       label: state
-    });
-  }
-
-  return _options;
+    }));
 };
 
 export const US_CITIES_OF_STATE = (state) => {
