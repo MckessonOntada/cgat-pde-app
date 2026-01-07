@@ -30,7 +30,6 @@ export default function DynamicRuleEngine({ config }) {
     }
   }, []);
 
-  //configurable sections
   return (
     <div className="MCP-panel-container">
       <div className={style.sections}>

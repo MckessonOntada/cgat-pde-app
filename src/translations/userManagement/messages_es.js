@@ -446,8 +446,9 @@ export const UserManagementES = {
   'userManagement.button.edit_materials': 'S_Edit Materials',
   'emptyTable.title.noRecordsFoundUserMaterials': 'S_No Assigned Material Found.',
   'emptyTable.description.noRecordsFoundUserMaterials': 'S_You need to assign materials to see in this table.',
-  'emptyTable.title.noRecordsFoundNotification Group': 'S_No Notification Group Found.',
-  'emptyTable.description.noRecordsFoundNotificationGroup': 'S_You need to add notification group to see in this table.',
+  'emptyTable.title.noRecordsFoundNotificationGroup': 'No Notification Group Found.',
+  'emptyTable.description.noRecordsFoundNotificationGroup': 'You need to add notification group to see in this table.',
+  'table.messages.noRecordsFoundWithFilters': 'No records found for the applied filters',
 
   'notificationGroup.validation.groupNameIsRequired': 'S_Group name is required',
   'notificationGroup.validation.attributeIsRequired': 'S_Attribute is required',

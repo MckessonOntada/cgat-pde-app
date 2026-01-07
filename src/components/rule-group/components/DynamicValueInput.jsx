@@ -4,17 +4,7 @@ import Components from '@src/components/form/Components';
 import MultiSelectDropdown from '../inputs/MultiSelectDropdown';
 
 export default function DynamicValueInput(props) {
-  const {
-    index,
-    label,
-    isRequired = true,
-    length: maxLength,
-    type,
-    helperText,
-    searchFn,
-    pillListerFn,
-    noSelectedCountMessage = 'No Selected Count Message'
-  } = props;
+  const { index, label, isRequired = true, length: maxLength, type, helperText, searchFn, pillListerFn, noSelectedCountMessage = '' } = props;
   const { values, setFieldValue } = useFormikContext();
   const selectedValues = values.rules[index].value || [];
 
