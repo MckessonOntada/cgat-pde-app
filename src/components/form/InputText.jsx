@@ -34,7 +34,6 @@ const InputText = ({
   size = 'lg',
   displayType = 'outline',
   requiredLabel = '*',
-  hidePlaceHolder = false,
   errorTextEllipsis = false,
   translateClass,
   isShowLabel = true,
@@ -103,7 +102,7 @@ const InputText = ({
             value={value}
             disabled={isDisabled}
             readOnly={isReadOnly}
-            placeholder={hidePlaceHolder ? '' : placeholder || label}
+            placeholder={placeholder || ''}
             maxLength={maxLength || undefined}
             min={min}
             max={max}
@@ -167,7 +166,6 @@ InputText.propTypes = {
   size: PropTypes.string,
   displayType: PropTypes.string,
   requiredLabel: PropTypes.string,
-  hidePlaceHolder: PropTypes.bool,
   errorTextElipsis: PropTypes.bool,
   translateClass: PropTypes.object,
   isShowLabel: PropTypes.bool,

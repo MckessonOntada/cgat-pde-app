@@ -739,7 +739,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       : null;
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
-    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && !isOrderInDraft) {
       const minQty = therapyConfig?.minQuantity ?? 1;
       const maxQty = therapyConfig?.maxQuantity ?? 99;
 

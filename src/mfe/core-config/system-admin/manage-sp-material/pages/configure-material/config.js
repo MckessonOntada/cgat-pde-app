@@ -128,7 +128,7 @@ export const defaultFieldFormatBnb = () => ({
         displayOnForm: false,
         mandatoryField: false,
         showHelpIcon: false,
-        displayName: 'Ship to PO  Number',
+        displayName: 'Ship to PO Number',
         errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
         helpInfoMessage: '',
         fieldFormat: {
@@ -199,7 +199,7 @@ export const defaultFieldFormatSp = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('patientIdentifier');
           }
         }
       }
@@ -218,7 +218,7 @@ export const defaultFieldFormatSp = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('coiId');
           }
         }
       }
@@ -237,7 +237,7 @@ export const defaultFieldFormatSp = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('medicalRecordNumber');
           }
         }
       }
