@@ -13,6 +13,7 @@ import { useTranslate } from '@src/translations/useTranslation.js';
 import ModuleHeader from '@src/components/module-header/index.jsx';
 import FlatButton from '@src/components/button';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper.jsx';
 
 function CreateNotificationGroup({ mode }) {
   const isEdit = mode === 'edit';
@@ -144,7 +145,7 @@ function CreateNotificationGroup({ mode }) {
     if (curdPromise) {
       setIsSaving(true);
       curdPromise
-        .then((response) => {
+        .then((_response) => {
           let message = '';
           if (isEdit) message = translateFn('notificationGroup.update.success', { groupName });
           else message = translateFn('notificationGroup.save.success', { groupName });
@@ -171,14 +172,8 @@ function CreateNotificationGroup({ mode }) {
           });
         })
         .finally(() => {
-          isSaving(false);
+          setIsSaving(false);
         });
-    }
-  };
-
-  const handleOnKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
     }
   };
 
@@ -189,7 +184,7 @@ function CreateNotificationGroup({ mode }) {
   return (
     <React.Fragment>
       <Formik onSubmit={handleOnSubmit} validationSchema={getNotificationGroupSchema(translateFn)} initialValues={initialState} enableReinitialize>
-        <Form onKeyDown={handleOnKeyPress}>
+        <FormikFormWrapper disabled={isSaving}>
           <div className="MCP-module-wrapper">
             <div className="MCP-module-header">
               <div>
@@ -213,7 +208,7 @@ function CreateNotificationGroup({ mode }) {
               </Button>
             </div>
           </div>
-        </Form>
+        </FormikFormWrapper>
       </Formik>
     </React.Fragment>
   );
