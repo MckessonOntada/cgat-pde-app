@@ -5,8 +5,10 @@ import IconButton from '@src/components/IconButton';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import Components from '@src/components/form/Components';
 import style from './style.module.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 
 export default function RuleRow({ index, rule, attributes }) {
+  const { t: translateFn } = useTranslate();
   const [ruleOptions, setRuleOptions] = React.useState([]);
   const selectedAttribute = attributes.find((a) => a.name === rule.attribute);
   const targetField = selectedAttribute?.targetField;
@@ -51,7 +53,7 @@ export default function RuleRow({ index, rule, attributes }) {
             isRequired={selectedAttribute && (selectedAttribute.isRequired || selectedAttribute.isMandatory)}
             isDisabled={selectedAttribute?.isMandatory}
           />
-          <div className="control-helper-text">{selectedAttribute?.helperText || 'Please select a criteria to apply the approval rules on.'}</div>
+          <div className="control-helper-text">{selectedAttribute?.helperText || translateFn('group.rule.helperText')}</div>
         </div>
         {selectedAttribute && (
           <React.Fragment>

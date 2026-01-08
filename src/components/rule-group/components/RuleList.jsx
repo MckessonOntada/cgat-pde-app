@@ -43,7 +43,7 @@ export default function RuleList({ title, attributes }) {
           size="medium"
           startIcon={<PlusIcon width="10" height="10" />}
           onClick={addRule}>
-          Add Attribute
+          {t('button.caption.addAttribute')}
         </Button>
       </div>
     </div>

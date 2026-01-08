@@ -151,7 +151,6 @@ const getUIConfig = (translateFn) => ({
       isRequired: true,
       pillsCount: 5,
       isPillsVisible: true,
-      // helperText: translateFn('notificationGroup.participantsSection.helperText'),
       pillListerFn: (item) => ({ id: item.value, labelText: item.label }),
       searchFn: async (query) => {
         const params = {

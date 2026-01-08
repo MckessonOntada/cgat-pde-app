@@ -108,7 +108,7 @@ function NotificationList() {
   };
 
   const handleOnClearFilters = () => {
-    applyFilters({ query: '' });
+    applyFilters({});
   };
 
   return (
@@ -141,7 +141,7 @@ function NotificationList() {
             </div>
             <TableHeading heading={translateFn('table.title.notificationGroupListing')} />
             <CustomDataTable
-              id={'notification-group'}
+              id={'notification-group-list'}
               type={'normal'}
               columns={columns}
               data={data}
@@ -164,9 +164,9 @@ function NotificationList() {
                   isError={error}
                   image={EmptyDataImage}
                   heading={
-                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('empty.table.title.noRecordsFoundNotificationGroup')
+                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('emptyTable.title.noRecordsFoundNotificationGroup')
                   }
-                  description={!isFilterApplied && translateFn('empty.table.description.noRecordsFoundNotificationGroup')}
+                  description={!isFilterApplied && translateFn('emptyTable.description.noRecordsFoundNotificationGroup')}
                 />
               }
             />
