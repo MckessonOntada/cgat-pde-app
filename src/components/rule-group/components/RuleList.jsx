@@ -5,9 +5,11 @@ import Button from '@src/components/button';
 import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import style from './style.module.scss';
 import { useFormikContext } from 'formik';
+import { useTranslate } from '@src/translations/useTranslation';
 
 export default function RuleList({ title, attributes }) {
   const { values, setFieldValue } = useFormikContext();
+  const { t: translateFn } = useTranslate();
 
   const rules = values.rules;
 
@@ -43,7 +45,7 @@ export default function RuleList({ title, attributes }) {
           size="medium"
           startIcon={<PlusIcon width="10" height="10" />}
           onClick={addRule}>
-          {t('button.caption.addAttribute')}
+          {translateFn('button.caption.addAttribute')}
         </Button>
       </div>
     </div>
