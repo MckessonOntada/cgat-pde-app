@@ -199,7 +199,7 @@ export const defaultFieldFormatSp = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('patientIdentifier');
           }
         }
       }
@@ -218,7 +218,7 @@ export const defaultFieldFormatSp = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('coiId');
           }
         }
       }
@@ -237,7 +237,7 @@ export const defaultFieldFormatSp = () => ({
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('medicalRecordNumber');
           }
         }
       }
