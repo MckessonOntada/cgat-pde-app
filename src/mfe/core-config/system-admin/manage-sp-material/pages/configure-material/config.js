@@ -128,7 +128,7 @@ export const defaultFieldFormatBnb = () => ({
         displayOnForm: false,
         mandatoryField: false,
         showHelpIcon: false,
-        displayName: 'Ship to PO  Number',
+        displayName: 'Ship to PO Number',
         errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
         helpInfoMessage: '',
         fieldFormat: {

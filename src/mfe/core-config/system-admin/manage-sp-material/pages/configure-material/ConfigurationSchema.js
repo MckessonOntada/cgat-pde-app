@@ -19,9 +19,9 @@ export const getConfigurationSchema = (t, channelOptions, fieldNameForChannel, i
             then: (schema) =>
               schema
                 .max(
-                  100,
+                  30,
                   t('manageSPMaterial.configuration.validation.displayNameMaxLength', {
-                    max: 100
+                    max: 30
                   })
                 )
                 .when('mandatoryField', {
