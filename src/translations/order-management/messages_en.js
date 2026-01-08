@@ -1080,7 +1080,7 @@ export const MessageEn = {
   'labels.orderDelivered': 'Order Delivered',
   'labels.expectedToday': 'Expected today',
   'labels.expectedTomorrow': 'Expected tomorrow',
-  'labels.expectedDeliveryDate': 'Expected delivery date {deliveryDate}',
+  'labels.expectedDeliveryDate': 'Expected Delivery Date {deliveryDate}',
   'labels.PatientID': 'Patient ID',
   'captions.btnBackToSummary': 'Back to Summary',
   'message.orcaPatientVerificationSuccess': 'Patient verified.',

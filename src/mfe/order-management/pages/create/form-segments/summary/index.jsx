@@ -1214,12 +1214,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       }
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
-                      {!isSpOrder && therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                        <DetailSegment
-                          label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
-                          value={!!draftChanges ? draftChanges?.patientIdentifier : '-'}
-                        />
-                      )}
+                      {!isSpOrder &&
+                        therapyConfig?.config?.fields
+                          ?.filter((field) => field?.properties?.displayOnForm && ['patientIdentifier'].includes(field.fieldName))
+                          ?.map((field) => {
+                            console.log(patient);
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                          })}
                       <DetailSegment
                         label={t('labels.patientName')}
                         value={
@@ -1248,15 +1249,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         />
                       )}
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      {manufacturer === MANUFACTURER.ORCA ? (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={patient?.medicalRecordNumber || '-'} />
-                      ) : (
-                        <>
-                          {!isSpOrder && therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                            <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
-                          )}
-                        </>
-                      )}
+                      {!isSpOrder &&
+                        therapyConfig?.config?.fields
+                          ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
+                          ?.map((field) => {
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                          })}
                     </div>
                   </div>
                 )}

@@ -72,6 +72,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    if (isSpOrder) allowedFields.add('coiId');
     const isOrca = manufacturer === 'ORCA';
 
     config?.config?.fields?.forEach((field) => {
