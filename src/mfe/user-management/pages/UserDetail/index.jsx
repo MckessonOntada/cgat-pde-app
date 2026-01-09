@@ -339,7 +339,7 @@ const UserDetail = () => {
         <ModuleHeader
           heading={
             <div className="subheader-text">
-              <Heading as="h2">
+              <Heading as="h2" className="entity-name">
                 <EclipsesTextcss str={userFullName} maxWidth={500} />
               </Heading>
             </div>

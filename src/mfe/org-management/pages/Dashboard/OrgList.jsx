@@ -123,7 +123,7 @@ const OrgList = ({ onActionSuccess }) => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <div>
+        <div className="entity-name">
           {row.isActive ? (
             <Link variant="tertiary" className="MCP-table-link" onClick={(e) => handleClick(e, row)}>
               <EclipsesTextcss str={row.name} maxWidth={200} />
