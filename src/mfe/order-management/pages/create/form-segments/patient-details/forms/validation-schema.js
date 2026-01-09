@@ -2,7 +2,6 @@ import { ADDRESS_REGEX, ALPHA_NUMERIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, 
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import CommonUtils from '@src/util/CommonUtils';
 import * as Yup from 'yup';
-import { removePrefixSuffix } from '../../OrderUtil';
 
 export const getInitialValues = () => ({
   patient: {
@@ -78,7 +77,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
     config?.config?.fields?.forEach((field) => {
       if (!allowedFields.has(field.fieldName) || !field.properties.displayOnForm) return;
 
-      let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
+      let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
 
       if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
         const vf = field.properties.fieldFormat.validationFormat;

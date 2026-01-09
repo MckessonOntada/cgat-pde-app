@@ -37,7 +37,7 @@ import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { getManufacturer, NotifyAlert, removePrefixSuffix, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
+import { getManufacturer, NotifyAlert, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -176,7 +176,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
+          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 

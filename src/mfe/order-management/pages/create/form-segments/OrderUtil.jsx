@@ -126,19 +126,6 @@ export const isValidToSaveAsDraft = (values, errors, touched, setTouched, setErr
 export const getManufacturer = (details) =>
   details?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? details?.therapyConfig?.config?.manufacturerName : details?.spTherapyConfig?.config?.manufacturerName;
 
-export const extractPrefixSuffix = (regexStr) => {
-  if (!regexStr) return { prefix: '', suffix: '' };
-
-  let prefix = '';
-  let suffix = '';
-  const prefixMatch = regexStr.match(/^\^([A-Za-z0-9]+)/);
-  if (prefixMatch) prefix = prefixMatch[1];
-
-  const suffixMatch = regexStr.match(/([A-Za-z0-9]+)\$$/);
-  if (suffixMatch) suffix = suffixMatch[1];
-
-  return { prefix, suffix };
-};
 export function removePrefixSuffix(regexStr) {
   const prefixRemoved = regexStr.replace(/^\^([^(\[\{]+)(?=[({[])/, '^');
   const suffixRemoved = prefixRemoved.replace(/([^)\]\}]+)\$$/, '$');
@@ -156,7 +143,9 @@ export function updatePatientValues(values, fieldConfigs) {
     const regex = config.properties?.fieldFormat?.validationRegex;
     if (!regex) return;
 
-    const { prefix, suffix } = extractPrefixSuffix(regex);
+    const prefix = config.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = config.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+
     if (prefix || suffix) {
       values.patient[field] = `${prefix}${value}${suffix}`;
     } else {
@@ -181,7 +170,9 @@ export function updateAdditionalDetailsValues(values, fieldConfigs) {
     const regex = config.properties?.fieldFormat?.validationRegex;
     if (!regex) return;
 
-    const { prefix, suffix } = extractPrefixSuffix(regex);
+    const prefix = config.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = config.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+
     if (prefix || suffix) {
       values[field] = `${prefix}${value}${suffix}`;
     } else {
@@ -208,7 +199,8 @@ export function removePrefixSuffixFromValues(values, fieldConfigs) {
     const regex = config.properties?.fieldFormat?.validationRegex;
     if (!regex) return;
 
-    const { prefix, suffix } = extractPrefixSuffix(regex);
+    const prefix = config.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = config.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
 
     let newValue = value;
 

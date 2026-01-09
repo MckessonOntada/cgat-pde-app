@@ -1,7 +1,5 @@
 import { US_STATES } from '@src/components/form/util';
 import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
-import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
-import { extractPrefixSuffix } from '../../OrderUtil';
 
 const getStates = () => {
   const options = US_STATES();
@@ -79,7 +77,8 @@ export const PatientSections = (channelType, therapyConfig, validateOnBlur, manu
             ? therapyConfig?.config?.fields
                 ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
                 ?.map((field) => {
-                  const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+                  const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+                  const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
                   return {
                     id: `patient-info-${field.fieldName}`,
                     name: `patient.${field.fieldName}`,
@@ -211,7 +210,8 @@ export const IdentifierSections = (spTherapyConfig, validateOnBlur) => {
   const controls = [];
   spTherapyConfig?.config?.fields?.forEach((field) => {
     if (field?.properties?.displayOnForm) {
-      const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+      const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+      const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
       controls.push({
         id: `patient-info-${field.fieldName}`,
         name: `patient.${field.fieldName}`,

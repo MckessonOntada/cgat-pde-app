@@ -7,7 +7,6 @@ import './orderHeaderDetails.scss';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import { Tooltip } from '@mckesson/mcp-component-library';
 import { CHANNEL_TYPE } from './Constants';
-import { extractPrefixSuffix } from './OrderUtil';
 
 function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, selectedAccount = {}, channelType, page = '' }) {
   const { t } = useTranslate();
@@ -19,11 +18,12 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
     if (!value) return '';
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
-    const regex = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationRegex;
+    const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
     if (page !== 'patient-details') {
       return value;
     }
-    const { prefix, suffix } = extractPrefixSuffix(regex);
+    const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
 
     return `${prefix ?? ''}${value}${suffix ?? ''}`;
   };
