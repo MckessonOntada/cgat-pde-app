@@ -192,6 +192,39 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
               otherwise: (schema) => schema.nullable()
             })
         }),
+      ...(isSpOrder && {
+        patientAddress: Yup.object()
+          .nullable()
+          .shape({
+            addressLine1: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
+              .min(2, t('orgManagement.create_org.validation.address_1_min'))
+              .max(100, t('orgManagement.create_org.validation.address_1_max'))
+              .required(t('orderManagement.patientDetails.validation.address_1')),
+            addressLine2: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
+              .min(2, t('orgManagement.create_org.validation.address_2_min'))
+              .max(100, t('orgManagement.create_org.validation.address_2_max')),
+            city: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
+              .min(2, t('orgManagement.create_org.validation.city_min'))
+              .max(15, t('orgManagement.create_org.validation.city_max'))
+              .required(t('orderManagement.patientDetails.validation.city')),
+            zipCode: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
+              .max(10, t('orgManagement.create_account.validation.zip_max'))
+              .required(t('orderManagement.patientDetails.validation.zip')),
+            state: Yup.string().nullable().required(t('orderManagement.patientDetails.validation.state'))
+          })
+      }),
       ...buildDynamicFieldValidators(configToUse, t)
     }),
     providerId: Yup.string().when([], {

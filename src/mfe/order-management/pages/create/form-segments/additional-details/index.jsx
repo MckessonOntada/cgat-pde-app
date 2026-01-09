@@ -1018,7 +1018,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     {
       onSuccess: (res) => {
         if (res) {
-          setAlert(null);
+          setAlert({
+            description: t('orderManagement.coiId.valid'),
+            type: 'success'
+          });
         } else {
           setAlert({
             description: t('orderManagement.coiId.verification'),
@@ -1035,13 +1038,24 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   );
 
+  const formatFieldWithPrefixSuffix = (value, fieldName) => {
+    if (!value) return '';
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
+    const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+    return `${prefix ?? ''}${value}${suffix ?? ''}`;
+  };
+
   const handleCoiIdValidation = (e, setFieldTouched) => {
     const { id, value } = e.target;
+    const fieldValue = formatFieldWithPrefixSuffix(value, 'coiId');
     setFieldTouched('coiId', true);
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
     coiIdValidation({
       patientId: orderDetails?.patient?.patientIdentifier,
-      coiId: e.target.value
+      coiId: fieldValue
     });
   };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
