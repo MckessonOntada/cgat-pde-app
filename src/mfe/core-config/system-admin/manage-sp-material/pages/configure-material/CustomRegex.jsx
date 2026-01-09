@@ -89,7 +89,7 @@ function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
         const min = minLength || 1;
         const max = maxLength || 200;
 
-        pattern = `^${prefix || ''}[${charSet}]{${min},${max}}${suffix || ''}$`;
+        pattern = `^[${charSet}]{${min},${max}}$`;
         break;
       }
 
@@ -184,6 +184,8 @@ function CustomRegex({ onClose, path, initialValue, type, validationFormat }) {
         const custom = charSet.replace(/[A-Za-z0-9s\-_.]/g, '');
         newState.customChars = custom || '';
       }
+      newState.prefix = validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+      newState.suffix = validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
     } else if (type === 'Integer') {
       newState.minValue = validationFormat.match(/minValue\('(\d+)'\)/)?.[1] ?? '';
       newState.maxValue = validationFormat.match(/maxValue\('(\d+)'\)/)?.[1] ?? '';

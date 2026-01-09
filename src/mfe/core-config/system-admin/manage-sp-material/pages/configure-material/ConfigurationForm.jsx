@@ -10,7 +10,7 @@ import { FIELD_NAMES, getFieldFormatOptions, fieldFormatRegexObj } from './confi
 import CustomRegex from './CustomRegex';
 import { MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
-const ConfigurationForm = ({ field, index, setFieldError }) => {
+const ConfigurationForm = ({ field, index, setFieldError, setFieldTouched }) => {
   const { t } = useTranslate();
   const [customRegex, setCustomRegex] = React.useState(false);
   const { values, setFieldValue, errors } = useFormikContext();
@@ -54,7 +54,9 @@ const ConfigurationForm = ({ field, index, setFieldError }) => {
       setFieldValue(path('showHelpIcon'), false);
       setFieldValue(path('mandatoryField'), false);
     } else if (value === 'showHelpIcon') {
-      setFieldError(path('helpInfoMessage'), '');
+      setFieldValue(path('helpInfoMessage'), '');
+      setFieldError(path('helpInfoMessage'), undefined);
+      setFieldTouched(path('helpInfoMessage'), false);
     }
   };
 
