@@ -735,5 +735,10 @@ export const MessageEs = {
   'helperText.orcaPatientVerificationDateControl':
     "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
-    'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
+    'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+  'orderManagement.patientID.verificationSuccess': 'S_Patient ID Verified.',
+  'orderManagement.coiId.verificationSuccess': 'S_Patient ID and COI ID Verified.',
+  'orderManagement.coiId.valid': 'S_COI ID Verified.',
+  'orderManagement.patientID.CoiId.verificationFailed':
+    'S_Patient ID and COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
 };

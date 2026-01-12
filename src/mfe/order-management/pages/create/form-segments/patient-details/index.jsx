@@ -444,10 +444,19 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     {
       onSuccess: (res) => {
         if (res) {
-          setAlert(null);
+          setAlert({
+            description: t('orderManagement.patientID.verificationSuccess'),
+            type: 'success'
+          });
         } else {
           setAlert({
-            description: t('orderManagement.patientID.verification'),
+            description: t(
+              `${
+                orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                  ? 'orderManagement.patientID.CoiId.verificationFailed'
+                  : 'orderManagement.patientID.verification'
+              }`
+            ),
             type: 'warning'
           });
         }
@@ -468,10 +477,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     {
       onSuccess: (res) => {
         if (res) {
-          setAlert(null);
+          setAlert({
+            description: t('orderManagement.coiId.verificationSuccess'),
+            type: 'success'
+          });
         } else {
           setAlert({
-            description: t('orderManagement.coiId.verification'),
+            description: t('orderManagement.patientID.CoiId.verificationFailed'),
             type: 'warning'
           });
         }
@@ -485,18 +497,31 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   );
 
+  const formatFieldWithPrefixSuffix = (value, fieldName) => {
+    if (!value) return '';
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
+    const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+    return `${prefix ?? ''}${value}${suffix ?? ''}`;
+  };
+
   const validateOnBlur = (e) => {
     const { id, value } = e.target;
     const idValue = id.startsWith('input-') ? id.replace(/^input-/, '') : id;
     formikRef.current?.setFieldTouched(idValue, true);
 
-    const patientId = formikRef.current?.values?.patient?.patientIdentifier;
-    const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
+    const fieldName = id.split('.').pop();
+    const fieldValue = formatFieldWithPrefixSuffix(value, fieldName);
+
+    const patientId = formatFieldWithPrefixSuffix(formikRef.current?.values?.patient?.patientIdentifier, 'patientIdentifier');
+    const medicalRecordNumber = formatFieldWithPrefixSuffix(formikRef.current?.values?.patient?.medicalRecordNumber, 'medicalRecordNumber');
 
     switch (manufacturer) {
       case MANUFACTURER.REGENERON: {
         if (!value) break;
-        validateRegeneronDetails(id, patientId, value);
+        validateRegeneronDetails(id, patientId, fieldValue);
         break;
       }
       case MANUFACTURER.ORCA: {
