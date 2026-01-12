@@ -111,6 +111,7 @@ function OrcaPatientDetails() {
     else if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
 
     if (CommonUtils.isNonEmptyObject(payload)) {
+      setOrcaVerifiedPatient(null);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
           if (response && Array.isArray(response) && response.length > 0) {
@@ -202,10 +203,9 @@ function OrcaPatientDetails() {
                   <FormRenderer sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0, manufacturer)} />
                 </div>
                 <div className="controls">
-                  <Button onClick={handleOnBack} variant="secondary">
+                  <Button onClick={handleOnBack} variant="secondary" size="md">
                     {translateFn('captions.btnCancel')}
                   </Button>
-                  <Button type="submit"></Button>
 
                   <Button
                     disabled={CommonUtils.isNonEmptyObject(orcaVerifiedPatient)}
