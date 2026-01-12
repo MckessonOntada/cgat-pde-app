@@ -1053,6 +1053,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     const fieldValue = formatFieldWithPrefixSuffix(value, 'coiId');
     setFieldTouched('coiId', true);
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
+    if (!orderDetails.patient.patientIdentifier) {
+      setAlert({
+        description: t('orderManagement.coiId.verification'),
+        type: 'warning'
+      });
+      return;
+    }
     coiIdValidation({
       patientId: orderDetails?.patient?.patientIdentifier,
       coiId: fieldValue
