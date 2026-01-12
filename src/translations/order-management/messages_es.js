@@ -739,5 +739,6 @@ export const MessageEs = {
   'orderManagement.patientID.verificationSuccess': 'S_Patient ID Verified.',
   'orderManagement.coiId.verificationSuccess': 'S_Patient ID and COI ID Verified.',
   'orderManagement.coiId.valid': 'S_COI ID Verified.',
-  'orderManagement.patientID.CoiId.verificationFailed': 'S_Patient ID Verified.'
+  'orderManagement.patientID.CoiId.verificationFailed':
+    'S_Patient ID and COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
 };

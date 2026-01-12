@@ -449,13 +449,16 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             type: 'success'
           });
         } else {
-          setAlert(
-            `${
-              orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                ? 'orderManagement.patientID.CoiId.verificationFailed'
-                : 'orderManagement.patientID.verification'
-            }`
-          );
+          setAlert({
+            description: t(
+              `${
+                orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                  ? 'orderManagement.patientID.CoiId.verificationFailed'
+                  : 'orderManagement.patientID.verification'
+              }`
+            ),
+            type: 'warning'
+          });
         }
       },
       onError: () => {
@@ -480,13 +483,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           });
         } else {
           setAlert({
-            description: t(
-              `${
-                orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                  ? 'orderManagement.patientID.CoiId.verificationFailed'
-                  : 'orderManagement.coiId.verification'
-              }`
-            ),
+            description: t('orderManagement.patientID.CoiId.verificationFailed'),
             type: 'warning'
           });
         }

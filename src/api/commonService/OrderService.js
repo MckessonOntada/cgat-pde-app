@@ -506,14 +506,14 @@ async function getTrackingDetails(accountId, trackingNumber) {
 }
 async function regeneronPatientIdVerification(patientId) {
   if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
-  let url = `${ApiRoutes.USER_BASE}regeneron/validate/${patientId}`;
+  let url = `${ApiRoutes.USER_BASE}regeneron/validate?${serializeParams({ patientId: patientId })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
 async function regeneronCoiIdVerification(patientId, coiId) {
   if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
   if (!coiId) throw new Error('COI id is missing. COI id is required to to verify.');
-  let url = `${ApiRoutes.USER_BASE}regeneron/validate/${patientId}?${serializeParams({ clearanceId: coiId })}`;
+  let url = `${ApiRoutes.USER_BASE}regeneron/validate?${serializeParams({ patientId: patientId, clearanceId: coiId })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
