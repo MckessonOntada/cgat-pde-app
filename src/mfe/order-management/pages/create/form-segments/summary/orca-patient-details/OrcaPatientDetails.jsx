@@ -14,6 +14,7 @@ import { useMutation } from 'react-query';
 import { getValidationSchema } from '../../patient-details/forms/validation-schema';
 import { getManufacturer } from '../../OrderUtil';
 import CommonUtils from '@src/util/CommonUtils';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function OrcaPatientDetails() {
   const { orderId } = useParams();
@@ -204,7 +205,18 @@ function OrcaPatientDetails() {
                   <Button onClick={handleOnBack} variant="secondary">
                     {translateFn('captions.btnCancel')}
                   </Button>
-                  <Button type="submit">{translateFn('captions.btnSaveChanges')}</Button>
+                  <Button type="submit"></Button>
+
+                  <Button
+                    disabled={CommonUtils.isNonEmptyObject(orcaVerifiedPatient)}
+                    variant="primary"
+                    isLoadingState={isSaving}
+                    Icon={isSaving && ButtonLoadingIcon}
+                    iconPosition="left"
+                    type="submit"
+                    size="md">
+                    {translateFn('captions.btnSaveChanges')}
+                  </Button>
                 </div>
               </div>
             </Form>

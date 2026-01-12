@@ -150,9 +150,8 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
         const message = displayName ? `${displayName} is required` : fallbackMessages[fieldName] || '';
 
-        dynamicFields[fieldName] = dynamicFields[fieldName].test('orca-atleast-one', message, function () {
-          const values = this.parent;
-          return Array.from(allowedFields).some((f) => values?.[f]);
+        dynamicFields[fieldName] = dynamicFields[fieldName].test('required-field', message, function (value) {
+          return value !== undefined && value !== null && value !== '';
         });
       });
     }

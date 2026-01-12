@@ -533,7 +533,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
 
   const handleOnEditSection = (stage) => {
-    if ((orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.therapyConfig?.config?.manufacturerName) === 'ORCA') {
+    if (
+      (orderDetails.status === ORDER_STATUS.SUBMITTED && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName) ===
+      'ORCA'
+    ) {
       navigate('./../orca-patient-details');
     }
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
