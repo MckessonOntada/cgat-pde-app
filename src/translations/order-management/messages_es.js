@@ -700,9 +700,9 @@ export const MessageEs = {
   'additional.details.order.quantity.error': 'S_The entered quantity is outside the permitted range for this material. Please enter a value between',
   'labels.shipToPONumber': 'S_Ship to PO Number',
   'orderManagement.patientID.verification':
-    'S_{{patientID}} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    'S_{patientID} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'orderManagement.coiId.verification':
-    'S_{{coiId}} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    'S_{coiId} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'labels.shipToPONumberLengthError': 'S_Ship to PO Number should not exceed 35 characters',
   'labels.shipToPONumberMustValid': 'S_Ship to PO Number should only contain letters and numbers.',
   'labels.shipToPONumberExtraSpaceError': 'S_Ship to PO Number must not contain leading or trailing spaces',
@@ -735,11 +735,11 @@ export const MessageEs = {
   'helperText.orcaPatientVerificationDateControl':
     "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
-    'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
-  'orderManagement.patientID.verificationSuccess': 'S_{{patientID}} Verified.',
-  'orderManagement.coiId.verificationSuccess': 'S_{{patientID}} and {{coiId}} Verified.',
-  'orderManagement.coiId.valid': 'S_{{coiId}} Verified.',
+    'S_The {patientId} or {medicalRecordNumber} entered is not valid. Please re-enter {patientId}/{medicalRecordNumber} or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+  'orderManagement.patientID.verificationSuccess': 'S_{patientID} Verified.',
+  'orderManagement.coiId.verificationSuccess': 'S_{patientID} and {coiId} Verified.',
+  'orderManagement.coiId.valid': 'S_{coiId} Verified.',
   'orderManagement.patientID.CoiId.verificationFailed':
-    'S_{{patientID}} and {{coiId}} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    'S_{patientID} and {coiId} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'labels.error.selectFutureDate': 'S_Please select a future date'
 };

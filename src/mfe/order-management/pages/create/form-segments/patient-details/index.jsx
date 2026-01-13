@@ -462,20 +462,20 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       onSuccess: (res) => {
         if (res) {
           setAlert({
-            description: t('orderManagement.patientID.verificationSuccess').replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier')),
+            description: t('orderManagement.patientID.verificationSuccess', { patientID: getDisplayNameByFieldName('patientIdentifier') }),
             type: 'success'
           });
         } else {
           setAlert({
             description: t(
-              `${
-                orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                  ? 'orderManagement.patientID.CoiId.verificationFailed'
-                  : 'orderManagement.patientID.verification'
-              }`
-            )
-              .replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier'))
-              .replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
+              orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+                ? 'orderManagement.patientID.CoiId.verificationFailed'
+                : 'orderManagement.patientID.verification',
+              {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }
+            ),
             type: 'warning'
           });
         }
@@ -497,16 +497,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       onSuccess: (res) => {
         if (res) {
           setAlert({
-            description: t('orderManagement.coiId.verificationSuccess')
-              .replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier'))
-              .replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
+            description: t('orderManagement.coiId.verificationSuccess', {
+              patientID: getDisplayNameByFieldName('patientIdentifier'),
+              coiId: getDisplayNameByFieldName('coiId')
+            }),
             type: 'success'
           });
         } else {
           setAlert({
-            description: t('orderManagement.patientID.CoiId.verificationFailed')
-              .replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier'))
-              .replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
+            description: t('orderManagement.patientID.CoiId.verificationFailed', {
+              patientID: getDisplayNameByFieldName('patientIdentifier'),
+              coiId: getDisplayNameByFieldName('coiId')
+            }),
             type: 'warning'
           });
         }
@@ -593,8 +595,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
           setAlert({
             type: 'warning',
-            description:
-              'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
+            description: t('message.orcaPatientVerificationFailed1', {
+              patientId: getDisplayNameByFieldName('patientIdentifier'),
+              medicalRecordNumber: getDisplayNameByFieldName('medicalRecordNumber')
+            })
           });
         })
         .finally(() => {

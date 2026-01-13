@@ -1019,12 +1019,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       onSuccess: (res) => {
         if (res) {
           setAlert({
-            description: t('orderManagement.coiId.valid').replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
+            description: t('orderManagement.coiId.valid', { coiId: getDisplayNameByFieldName('coiId') }),
             type: 'success'
           });
         } else {
           setAlert({
-            description: t('orderManagement.coiId.verification').replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
+            description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
             type: 'warning'
           });
         }
