@@ -201,17 +201,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
               return true;
             });
-            // validator = validator.test('future-date-only', t('labels.error.selectFutureDate'), (value) => {
-            //   if (!value) return true;
-
-            //   const [m, day, y] = value.split('/');
-            //   const inputDate = new Date(y, m - 1, day);
-
-            //   const today = new Date();
-            //   today.setHours(0, 0, 0, 0);
-
-            //   return inputDate >= today;
-            // });
           }
 
           if (field.properties.fieldFormat.formatType === 'Integer') {
@@ -1060,7 +1049,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const getDisplayNameByFieldName = (fieldName) => {
-    console.log('orderDetails', fieldName, orderDetails);
     const materialConfig =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
