@@ -739,7 +739,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       : null;
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
-    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && !isOrderInDraft) {
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && orderQuantity) {
       const minQty = therapyConfig?.minQuantity ?? 1;
       const maxQty = therapyConfig?.maxQuantity ?? 99;
 
@@ -1019,12 +1019,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       onSuccess: (res) => {
         if (res) {
           setAlert({
-            description: t('orderManagement.coiId.valid'),
+            description: t('orderManagement.coiId.valid').replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
             type: 'success'
           });
         } else {
           setAlert({
-            description: t('orderManagement.coiId.verification'),
+            description: t('orderManagement.coiId.verification').replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
             type: 'warning'
           });
         }
@@ -1048,10 +1048,19 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     return `${prefix ?? ''}${value}${suffix ?? ''}`;
   };
 
-  const handleCoiIdValidation = (e, setFieldTouched) => {
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
+
+  const handleCoiIdValidation = (e, setFieldTouched, errors) => {
     const { id, value } = e.target;
     const fieldValue = formatFieldWithPrefixSuffix(value, 'coiId');
     setFieldTouched('coiId', true);
+
+    if (errors?.coiId) return;
+
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
     if (!orderDetails.patient.patientIdentifier) {
       setAlert({
@@ -1167,7 +1176,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           therapyConfig={therapyConfig}
                           channelType={channelType}
                           readOnly={readOnly || !isAllowedToProceed}
-                          handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched)}
+                          handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors)}
                         />
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}

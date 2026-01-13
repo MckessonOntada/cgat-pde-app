@@ -1058,9 +1058,9 @@ export const MessageEn = {
   'labels.shipToPONumberExtraSpaceError': 'Ship to PO Number must not contain leading or trailing spaces',
   'labels.shipToPONumberRequired': 'Ship to PO Number is required',
   'orderManagement.patientID.verification':
-    'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    '{{patientID}} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'orderManagement.coiId.verification':
-    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    '{{coiId}} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'labels.shipToPONumberRequired': 'Ship to PO Number is required',
   'labels.trackingDetails': 'Tracking Details',
   'labels.trackingNumber': 'Tracking Number',
@@ -1091,9 +1091,10 @@ export const MessageEn = {
     "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
     'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
-  'orderManagement.patientID.verificationSuccess': 'Patient ID Verified.',
-  'orderManagement.coiId.verificationSuccess': 'Patient ID and COI ID Verified.',
-  'orderManagement.coiId.valid': 'COI ID Verified.',
+  'orderManagement.patientID.verificationSuccess': '{{patientID}} Verified.',
+  'orderManagement.coiId.verificationSuccess': '{{patientID}} and {{coiId}} Verified.',
+  'orderManagement.coiId.valid': '{{coiId}} Verified.',
   'orderManagement.patientID.CoiId.verificationFailed':
-    'Patient ID and COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.'
+    '{{patientID}} and {{coiId}} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'labels.error.selectFutureDate': 'Please select a future date'
 };
