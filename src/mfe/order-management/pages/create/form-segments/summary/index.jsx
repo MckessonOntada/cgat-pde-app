@@ -655,6 +655,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
   };
 
+  React.useEffect(() => {
+    const { alert, ...rest } = location.state || {};
+    if (alert) {
+      setAlert({ ...alert });
+      navigate(location.pathname, { ...rest });
+    }
+  }, [location]);
+
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
     navigate(0, { state: { ...locationState } });

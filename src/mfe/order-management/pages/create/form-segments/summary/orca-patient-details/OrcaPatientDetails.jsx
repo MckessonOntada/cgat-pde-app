@@ -66,6 +66,7 @@ function OrcaPatientDetails() {
   React.useEffect(() => {
     if (formikRef.current) {
       const setFieldValue = formikRef.current?.setFieldValue;
+
       if (orcaVerifiedPatient) {
         if (orcaVerifiedPatient.medicalRecordNumber) {
           setLastVerifiedMedicalRecordNumber(orcaVerifiedPatient.medicalRecordNumber);
@@ -152,7 +153,16 @@ function OrcaPatientDetails() {
       return OrderService.savePatientDetails(orderId, payload, true, orderDetails.channelType, false, isSendNotification);
     },
     {
-      onSuccess: (result) => {},
+      onSuccess: (result) => {
+        navigate('./../summary', {
+          state: {
+            alert: {
+              description: 'Patient details updated successfully',
+              type: 'success'
+            }
+          }
+        });
+      },
       onError: ({ err: error, payload }) => {}
     }
   );
@@ -174,7 +184,6 @@ function OrcaPatientDetails() {
   };
 
   if (isLoading) return <Loader type={'circular'} />;
-
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
@@ -190,7 +199,7 @@ function OrcaPatientDetails() {
         </div>
       </div>
       <div className="MCP-module-body">
-        {alert && <Alert {...alert} />}
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="">
           <Formik
             initialValues={initialValues}
@@ -225,7 +234,7 @@ function OrcaPatientDetails() {
                   </Button>
 
                   <Button
-                    disabled={CommonUtils.isNonEmptyObject(orcaVerifiedPatient) || isPatientVerifying}
+                    disabled={!CommonUtils.isNonEmptyObject(orcaVerifiedPatient) || isPatientVerifying}
                     variant="primary"
                     isLoadingState={isSaving}
                     Icon={isSaving && ButtonLoadingIcon}
