@@ -919,6 +919,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           patientList={orcaPatientList}
           setVerifiedPatient={setOrcaVerifiedPatient}
           onAlert={setAlert}
+          orderDetails={orderDetails}
           onClose={() => {
             setIsOrcaValidationPanelOpen(false);
           }}

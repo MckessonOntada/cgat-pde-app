@@ -244,6 +244,7 @@ function OrcaPatientDetails() {
               medicalRecordNumber={formikRef.current?.values?.patientIdentifier}
               patientList={orcaPatientList}
               setVerifiedPatient={setOrcaVerifiedPatient}
+              orderDetails={orderDetails}
               onAlert={setAlert}
               onClose={() => {
                 setIsOrcaValidationPanelOpen(false);

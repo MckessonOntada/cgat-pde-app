@@ -53,7 +53,7 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'Manufacturer Patient Identifier',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -72,7 +72,7 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'MRN',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -91,7 +91,7 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'COI ID',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -110,7 +110,7 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'PO Number',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -129,7 +129,7 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'Ship to PO Number',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -192,7 +192,7 @@ export const defaultFieldFormatSp = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'Manufacturer Patient Identifier',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -211,7 +211,7 @@ export const defaultFieldFormatSp = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'COI ID',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
@@ -230,7 +230,7 @@ export const defaultFieldFormatSp = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'MRN',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',

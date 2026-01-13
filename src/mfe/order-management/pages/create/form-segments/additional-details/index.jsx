@@ -1064,7 +1064,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
     if (!orderDetails.patient.patientIdentifier) {
       setAlert({
-        description: t('orderManagement.coiId.verification'),
+        description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
         type: 'warning'
       });
       return;

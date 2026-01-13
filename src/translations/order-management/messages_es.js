@@ -727,13 +727,14 @@ export const MessageEs = {
   'labels.expectedTomorrow': 'S_Expected tomorrow',
   'labels.expectedDeliveryDate': 'S_Expected Delivery Date {deliveryDate}',
   'labels.PatientID': 'S_Patient ID',
-  'captions.btnBackToSummary': 'Back to Summary',
-  'message.orcaPatientVerificationSuccess': 'Patient verified.',
+  'captions.btnBackToSummary': 'S_Back to Summary',
+  'message.orcaPatientVerificationSuccess': 'S_Patient verified.',
   'message.orcaPatientVerificationFailed':
-    'Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
-  'message:orcaPatientVerificationAbrupt': 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.',
+    'S_Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+  'message:orcaPatientVerificationAbrupt':
+    'S_Verification was not successful. Please re-enter the {patientId} or {medicalRecordNumber} to restart the verification process.',
   'helperText.orcaPatientVerificationDateControl':
-    "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
+    "S_Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
     'S_The {patientId} or {medicalRecordNumber} entered is not valid. Please re-enter {patientId}/{medicalRecordNumber} or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
   'orderManagement.patientID.verificationSuccess': 'S_{patientID} Verified.',
