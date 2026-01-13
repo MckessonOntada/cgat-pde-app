@@ -32,6 +32,7 @@ function OrcaPatientDetails() {
   const formikRef = React.useRef();
   const [lastVerifiedPatientId, setLastVerifiedPatientId] = React.useState(null);
   const [lastVerifiedMedicalRecordNumber, setLastVerifiedMedicalRecordNumber] = React.useState(null);
+  const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
 
   React.useEffect(() => {
     if (orderDetails.id) {
@@ -72,6 +73,10 @@ function OrcaPatientDetails() {
         if (orcaVerifiedPatient.patientId) {
           setLastVerifiedPatientId(orcaVerifiedPatient.patientId);
         }
+
+        formikRef.current?.setTouched({});
+        formikRef.current?.setErrors({});
+
         setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
         setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
         setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
@@ -90,12 +95,13 @@ function OrcaPatientDetails() {
 
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
-    if (id.includes('patientIdentifier') && lastVerifiedPatientId !== patientId) validateOrcaDetails(patientId, null);
-    else if (id.includes('medicalRecordNumber') && lastVerifiedMedicalRecordNumber !== medicalRecordNumber) validateOrcaDetails(null, medicalRecordNumber);
+    if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
+    else if (id.includes('medicalRecordNumber')) validateOrcaDetails(null, medicalRecordNumber);
   };
 
   const clearPatientDetails = () => {
     const setFieldValue = formikRef.current?.setFieldValue;
+    setOrcaVerifiedPatient(null);
     setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
     setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
     setFieldValue('patient.patientInfo.firstName', '');
@@ -112,6 +118,7 @@ function OrcaPatientDetails() {
 
     if (CommonUtils.isNonEmptyObject(payload)) {
       setOrcaVerifiedPatient(null);
+      setIsPatientVerifying(true);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
           if (response && Array.isArray(response) && response.length > 0) {
@@ -127,6 +134,7 @@ function OrcaPatientDetails() {
           });
         })
         .finally(() => {
+          setIsPatientVerifying(false);
           if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
           if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
@@ -200,7 +208,16 @@ function OrcaPatientDetails() {
               <div className="stack">
                 <div className="MCP-panel-container">
                   <p className="section-title">Patient Details</p>
-                  <FormRenderer sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0, manufacturer)} />
+                  <FormRenderer
+                    sections={PatientSections({
+                      channelType,
+                      therapyConfig,
+                      validateOnBlur,
+                      manufacturer,
+                      isPatientVerifying,
+                      isPatientVerified: CommonUtils.isNonEmptyObject(orcaVerifiedPatient)
+                    })}
+                  />
                 </div>
                 <div className="controls">
                   <Button onClick={handleOnBack} variant="secondary" size="md">
@@ -208,7 +225,7 @@ function OrcaPatientDetails() {
                   </Button>
 
                   <Button
-                    disabled={CommonUtils.isNonEmptyObject(orcaVerifiedPatient)}
+                    disabled={CommonUtils.isNonEmptyObject(orcaVerifiedPatient) || isPatientVerifying}
                     variant="primary"
                     isLoadingState={isSaving}
                     Icon={isSaving && ButtonLoadingIcon}

@@ -1,5 +1,14 @@
 import { US_STATES } from '@src/components/form/util';
 import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
+import { ReactComponent as LoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { ReactComponent as SuccessTick } from '@src/assets/svg/tick-circle-success.svg';
+
+import React from 'react';
+
+const getFieldIcon = (fieldName, isPatientVerifying = false, isPatientVerified = false) => {
+  if (isPatientVerifying) return <LoadingIcon />;
+  else if (fieldName === 'patientIdentifier' && isPatientVerified) return <SuccessTick />;
+};
 
 const getStates = () => {
   const options = US_STATES();
@@ -10,93 +19,96 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = (channelType, therapyConfig, validateOnBlur, manufacturerVerified = false, manufacturer) => [
-  {
-    rows: [
-      {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
-        controls: [
-          {
-            id: 'patient-info-firstName',
-            name: 'patient.patientInfo.firstName',
-            label: 'orderManagement.patientDetails.inputLabel.first_name',
-            placeholder: ' ',
-            type: 'input',
-            maxLength: 50,
-            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-          },
-          {
-            id: 'patient-info-middleName',
-            name: 'patient.patientInfo.middleName',
-            label: 'orderManagement.patientDetails.inputLabel.middle_name',
-            placeholder: ' ',
-            type: 'input',
-            maxLength: 50,
-            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer)
-          },
-          {
-            id: 'patient-info-lastName',
-            name: 'patient.patientInfo.lastName',
-            label: 'orderManagement.patientDetails.inputLabel.last_name',
-            placeholder: ' ',
-            type: 'input',
-            maxLength: 50,
-            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-          }
-        ]
-      },
-      {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
-        controls: [
-          {
-            id: 'patient-info-gender',
-            name: 'patient.patientInfo.gender',
-            label: 'orderManagement.patientDetails.inputLabel.gender',
-            placeholder: ' ',
-            type: 'dropdown',
-            options: ['Male', 'Female', 'Other'].map((item) => ({
-              label: item,
-              value: item
-            })),
-            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-          },
-          {
-            id: 'patient-info-dateOfBirth',
-            name: 'patient.patientInfo.dateOfBirth',
-            label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
-            placeholder: ' ',
-            type: 'datePicker',
-            disableFuture: true,
-            isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
-            isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-          },
-          ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
-            ? therapyConfig?.config?.fields
-                ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
-                ?.map((field) => {
-                  const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
-                  const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-                  return {
-                    id: `patient-info-${field.fieldName}`,
-                    name: `patient.${field.fieldName}`,
-                    label: field.properties.displayName,
-                    type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
-                    prefix,
-                    suffix,
-                    isRequired: field.properties.mandatoryField,
-                    infoText: field?.properties.helpInfoMessage,
-                    onBlur: validateOnBlur
-                  };
-                }) || []
-            : [])
-        ]
-      }
-    ]
-  }
-];
+export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, manufacturer, isPatientVerifying, isPatientVerified }) => {
+  return [
+    {
+      rows: [
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
+          controls: [
+            {
+              id: 'patient-info-firstName',
+              name: 'patient.patientInfo.firstName',
+              label: 'orderManagement.patientDetails.inputLabel.first_name',
+              placeholder: ' ',
+              type: 'input',
+              maxLength: 50,
+              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            },
+            {
+              id: 'patient-info-middleName',
+              name: 'patient.patientInfo.middleName',
+              label: 'orderManagement.patientDetails.inputLabel.middle_name',
+              placeholder: ' ',
+              type: 'input',
+              maxLength: 50,
+              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer)
+            },
+            {
+              id: 'patient-info-lastName',
+              name: 'patient.patientInfo.lastName',
+              label: 'orderManagement.patientDetails.inputLabel.last_name',
+              placeholder: ' ',
+              type: 'input',
+              maxLength: 50,
+              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            }
+          ]
+        },
+        {
+          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
+          controls: [
+            {
+              id: 'patient-info-gender',
+              name: 'patient.patientInfo.gender',
+              label: 'orderManagement.patientDetails.inputLabel.gender',
+              placeholder: ' ',
+              type: 'dropdown',
+              options: ['Male', 'Female', 'Other'].map((item) => ({
+                label: item,
+                value: item
+              })),
+              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            },
+            {
+              id: 'patient-info-dateOfBirth',
+              name: 'patient.patientInfo.dateOfBirth',
+              label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
+              placeholder: ' ',
+              type: 'datePicker',
+              disableFuture: true,
+              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            },
+            ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
+              ? therapyConfig?.config?.fields
+                  ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
+                  ?.map((field) => {
+                    const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+                    const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+                    return {
+                      id: `patient-info-${field.fieldName}`,
+                      name: `patient.${field.fieldName}`,
+                      label: field.properties.displayName,
+                      type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'inputText',
+                      prefix,
+                      suffix,
+                      isRequired: field.properties.mandatoryField,
+                      infoText: field?.properties.helpInfoMessage,
+                      endIcon: getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
+                      onBlur: validateOnBlur
+                    };
+                  }) || []
+              : [])
+          ]
+        }
+      ]
+    }
+  ];
+};
 
 export const AddressSections = (channelType) => [
   {

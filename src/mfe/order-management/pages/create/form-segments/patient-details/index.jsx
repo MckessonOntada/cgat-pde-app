@@ -61,6 +61,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isOrcaValidationPanelOpen, setIsOrcaValidationPanelOpen] = React.useState(false);
   const [orcaPatientList, setOrcaPatientList] = React.useState([]);
   const [orcaVerifiedPatient, setOrcaVerifiedPatient] = React.useState(null);
+  const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
   const dispatch = useDispatch();
   const formikRef = useRef();
   const manufacturer = getManufacturer(orderDetails);
@@ -72,12 +73,19 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
     if (orderDetails.patient && manufacturer === MANUFACTURER.ORCA) {
       const patient = orderDetails.patient;
+      const verifiedPatient = {
+        ...patient.patientInfo
+      };
+
       if (patient.medicalRecordNumber) {
+        verifiedPatient.medicalRecordNumber = patient.medicalRecordNumber;
         setLastVerifiedMedicalRecordNumber(patient.medicalRecordNumber);
       }
       if (patient.patientIdentifier) {
+        verifiedPatient.patientId = patient.patientIdentifier;
         setLastVerifiedPatientId(patient.patientIdentifier);
       }
+      setOrcaVerifiedPatient(verifiedPatient);
     }
   }, [orderDetails]);
 
@@ -107,6 +115,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   React.useEffect(() => {
     const setFieldValue = formikRef.current?.setFieldValue;
+    const setErrors = formikRef.current?.setErrors;
+
     if (orcaVerifiedPatient) {
       if (orcaVerifiedPatient.medicalRecordNumber) {
         setLastVerifiedMedicalRecordNumber(orcaVerifiedPatient.medicalRecordNumber);
@@ -114,6 +124,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       if (orcaVerifiedPatient.patientId) {
         setLastVerifiedPatientId(orcaVerifiedPatient.patientId);
       }
+      formikRef.current?.setTouched({});
+      formikRef.current?.setErrors({});
+
       setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
       setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
       setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
@@ -525,8 +538,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         break;
       }
       case MANUFACTURER.ORCA: {
-        if (id.includes('patientIdentifier') && lastVerifiedPatientId !== patientId) validateOrcaDetails(patientId, null);
-        else if (id.includes('medicalRecordNumber') && lastVerifiedMedicalRecordNumber !== medicalRecordNumber) validateOrcaDetails(null, medicalRecordNumber);
+        if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
+        else if (id.includes('medicalRecordNumber')) validateOrcaDetails(null, medicalRecordNumber);
         break;
       }
       default: {
@@ -537,6 +550,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const clearPatientDetails = () => {
     const setFieldValue = formikRef.current?.setFieldValue;
+    setOrcaVerifiedPatient(null);
     setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
     setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
     setFieldValue('patient.patientInfo.firstName', '');
@@ -553,6 +567,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const setFieldValue = formikRef.current?.setFieldValue;
     if (CommonUtils.isNonEmptyObject(payload)) {
       setAlert(null);
+      setOrcaVerifiedPatient(null);
+      setIsPatientVerifying(true);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
           if (response && Array.isArray(response) && response.length > 0) {
@@ -570,6 +586,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           });
         })
         .finally(() => {
+          setIsPatientVerifying(false);
+
           if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
           if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
@@ -661,7 +679,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         />
 
                         <FormRenderer
-                          sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0, manufacturer)}
+                          sections={PatientSections({
+                            channelType,
+                            therapyConfig,
+                            validateOnBlur,
+                            manufacturer,
+                            isPatientVerifying,
+                            isPatientVerified: CommonUtils.isNonEmptyObject(orcaVerifiedPatient)
+                          })}
                           readOnly={readOnly || !isAllowedToProceed}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -854,7 +879,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit" disabled={readOnly || !isAllowedToProceed}>
+                      <Button
+                        size="md"
+                        onClick={() => setIsOrderInDraft(false)}
+                        variant="primary"
+                        type="submit"
+                        disabled={readOnly || !isAllowedToProceed || isPatientVerifying}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>
