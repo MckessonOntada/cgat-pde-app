@@ -5,7 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, getIn } from 'formik';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
@@ -167,7 +167,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     isMRNRequired: false,
     ...(orderDetails?.spTherapyConfig || {})
   };
-
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
   const shouldShowIdentifierSection =
     channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
     [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some(
@@ -458,7 +462,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       onSuccess: (res) => {
         if (res) {
           setAlert({
-            description: t('orderManagement.patientID.verificationSuccess'),
+            description: t('orderManagement.patientID.verificationSuccess').replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier')),
             type: 'success'
           });
         } else {
@@ -469,7 +473,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                   ? 'orderManagement.patientID.CoiId.verificationFailed'
                   : 'orderManagement.patientID.verification'
               }`
-            ),
+            )
+              .replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier'))
+              .replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
             type: 'warning'
           });
         }
@@ -491,12 +497,16 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       onSuccess: (res) => {
         if (res) {
           setAlert({
-            description: t('orderManagement.coiId.verificationSuccess'),
+            description: t('orderManagement.coiId.verificationSuccess')
+              .replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier'))
+              .replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
             type: 'success'
           });
         } else {
           setAlert({
-            description: t('orderManagement.patientID.CoiId.verificationFailed'),
+            description: t('orderManagement.patientID.CoiId.verificationFailed')
+              .replace('{{patientID}}', getDisplayNameByFieldName('patientIdentifier'))
+              .replace('{{coiId}}', getDisplayNameByFieldName('coiId')),
             type: 'warning'
           });
         }
@@ -524,6 +534,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const { id, value } = e.target;
     const idValue = id.startsWith('input-') ? id.replace(/^input-/, '') : id;
     formikRef.current?.setFieldTouched(idValue, true);
+
+    if (getIn(formikRef.current?.errors, idValue)) return;
 
     const fieldName = id.split('.').pop();
     const fieldValue = formatFieldWithPrefixSuffix(value, fieldName);
