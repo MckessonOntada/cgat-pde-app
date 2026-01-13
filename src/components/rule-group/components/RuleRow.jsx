@@ -42,17 +42,23 @@ export default function RuleRow({ index, rule, attributes }) {
       <div className={style.rule} key={index}>
         <div className={style.ruleKeyword}>IF</div>
         <div className="attribute">
-          <Field
-            id={`rules[${index}].attribute`}
-            name={`rules[${index}].attribute`}
-            label={`Attribute ${index + 1}`}
-            options={ruleOptions}
-            fieldlabel={'approvergroup.attribute' + ' ' + (index + 1)}
-            placeholder=" "
-            component={Components['dropdown']}
-            isRequired={selectedAttribute && (selectedAttribute.isRequired || selectedAttribute.isMandatory)}
-            isDisabled={selectedAttribute?.isMandatory}
-          />
+          <Field name={`rules[${index}].attribute`}>
+            {(formikProps) => (
+              <Components.dropdown
+                {...formikProps}
+                id={`rules[${index}].attribute`}
+                name={`rules[${index}].attribute`}
+                label={`Attribute ${index + 1}`}
+                fieldlabel={'approvergroup.attribute' + ' ' + (index + 1)}
+                options={ruleOptions}
+                isRequired={selectedAttribute && (selectedAttribute.isRequired || selectedAttribute.isMandatory)}
+                isDisabled={selectedAttribute?.isMandatory}
+                onChangeHandler={(value) => {
+                  formikProps.form.setFieldValue(`rules[${index}].value`, rule.name === 'price' ? '' : []);
+                }}
+              />
+            )}
+          </Field>
           <div className="control-helper-text">{selectedAttribute?.helperText || translateFn('group.rule.helperText')}</div>
         </div>
         {selectedAttribute && (

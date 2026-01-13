@@ -508,7 +508,7 @@ export const UserManagementEN = {
 
   'notificationGroup.ruleAccount.title': 'Account',
   'notificationGroup.ruleAccount.helperText': 'Please select a criteria to apply the notification rules on.',
-  'notificationGroup.ruleAccount.targetField.label': 'Select account(s)',
+  'notificationGroup.ruleAccount.targetField.label': 'Select Account(s)',
   'notificationGroup.ruleAccount.targetField.helperText': 'Please select account for the notification group.',
 
   'notificationGroup.ruleMaterial.title': 'Material',

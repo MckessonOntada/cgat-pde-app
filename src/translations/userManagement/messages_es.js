@@ -482,7 +482,7 @@ export const UserManagementES = {
 
   'notificationGroup.ruleAccount.title': 'S_Account',
   'notificationGroup.ruleAccount.helperText': 'S_Please select a criteria to apply the notification rules on.',
-  'notificationGroup.ruleAccount.targetField.label': 'S_Select account(s)',
+  'notificationGroup.ruleAccount.targetField.label': 'S_Select Account(s)',
   'notificationGroup.ruleAccount.targetField.helperText': 'S_Please select account for the notification group.',
 
   'notificationGroup.ruleMaterial.title': 'S_Material',
