@@ -224,7 +224,7 @@ function OrcaPatientDetails() {
                       validateOnBlur,
                       manufacturer,
                       isPatientVerifying,
-                      isPatientVerified: CommonUtils.isNonEmptyObject(orcaVerifiedPatient)
+                      isPatientVerified: ['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(orcaVerifiedPatient?.[key]))
                     })}
                   />
                 </div>
