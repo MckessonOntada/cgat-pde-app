@@ -4,121 +4,55 @@ import { ORDER_STAGES } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 export const getUpdateFormConfig = (stage, therapyConfig) => {
+  const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
-    return [
-      {
-        rows: [
-          {
-            grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
-            controls: [
-              ...(therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED
-                ? [
-                    {
-                      id: 'patient-info-identifier',
-                      name: 'patientIdentifier',
-                      label: 'labels.patientIdentifier',
-                      placeholder: ' ',
-                      type: 'input',
-                      maxLength: 20,
-                      isRequired: therapyConfig.patientIdentifierRequirement == REQUIREMENT.MANDATORY
-                    }
-                  ]
-                : []),
-              ...(therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
-                ? [
-                    {
-                      id: 'patient-info-mrn',
-                      name: 'medicalRecordNumber',
-                      label: 'orderManagement.patientDetails.inputLabel.mrn',
-                      placeholder: ' ',
-                      type: 'input',
-                      maxLength: 11,
-                      isRequired: therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY
-                    }
-                  ]
-                : [])
-            ]
-          }
-        ]
+    therapyConfig?.config?.fields?.forEach((field) => {
+      if (field?.properties?.displayOnForm && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) {
+        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+        dynamic_fields.push({
+          id: `patient-info-${field.fieldName}`,
+          name: field?.fieldName,
+          label: field?.properties?.displayName,
+          isRequired: field?.properties?.mandatoryField,
+          type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+          prefix,
+          suffix,
+          infoText: field?.properties.helpInfoMessage
+          // ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
+        });
       }
-    ];
+    });
+    console.log('dynamic_fields', dynamic_fields);
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
-    const controls = [
-      ...(therapyConfig.dateOfAdministrationRequirement != REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-doa',
-              name: 'dateOfAdministration',
-              label: 'orderManagement.patientDetails.inputLabel.doa',
-              placeholder: ' ',
-              type: 'datePicker',
-              isRequired: therapyConfig.dateOfAdministrationRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-coiId',
-              name: 'coiId',
-              label: 'labels.coiId',
-              placeholder: ' ',
-              type: 'input',
-              maxLength: 10,
-              isRequired: therapyConfig.coiIdRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-poNumber',
-              name: 'poNumber',
-              label: 'labels.providePONumber',
-              placeholder: ' ',
-              type: 'input',
-              maxLength: 20,
-              isRequired: therapyConfig.poNumberRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-shipToPONumber',
-              name: 'shipToPONumber',
-              label: 'labels.shipToPONumber',
-              placeholder: ' ',
-              type: 'input',
-              maxLength: 20,
-              isRequired: therapyConfig.shipToPORequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-dateOfApheresis',
-              name: 'dateOfApheresis',
-              label: 'orderManagement.patientDetails.inputLabel.dateOfApheresis',
-              placeholder: ' ',
-              type: 'datePicker',
-              isRequired: therapyConfig.dateOfApheresisRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : [])
-    ];
-    const formattedControls = [
-      {
-        rows: controls.map((control, index) => ({
-          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
-          controls: [control]
-        }))
+    therapyConfig?.config?.fields?.forEach((field) => {
+      if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+        dynamic_fields.push({
+          id: `additional-details-${field.fieldName}`,
+          name: field?.fieldName,
+          label: field?.properties?.displayName,
+          isRequired: field?.properties?.mandatoryField,
+          type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+          prefix,
+          suffix,
+          infoText: field?.properties.helpInfoMessage
+          // ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
+        });
       }
-    ];
-
-    return formattedControls;
+    });
   }
+  const formattedControls = [
+    {
+      rows: dynamic_fields.map((control, index) => ({
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
+        controls: [control]
+      }))
+    }
+  ];
+
+  return formattedControls;
 };
 
 export const patientDetailsValidationSchema = (t, therapyConfig) =>

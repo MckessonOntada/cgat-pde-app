@@ -97,7 +97,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       setDraftChanges({
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
         patientIdentifier: orderDetails.patient?.patientIdentifier,
-        ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+        medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
       });
     }
   }, [orderDetails]);
@@ -521,7 +521,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDraftChanges({
                 additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
                 patientIdentifier: orderDetails.patient?.patientIdentifier,
-                ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+                medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
               });
             }
           }}>
@@ -550,6 +550,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       }
 
       let formConfig = getUpdateFormConfig(stage, therapyConfig);
+      console.log('-----------', formConfig);
       let initialValues = {};
       let validationSchema = null;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
@@ -570,7 +571,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       } else {
         initialValues = {
           patientIdentifier: draftChanges?.patientIdentifier || '',
-          ...(therapyConfig.mrnRequirement && { medicalRecordNumber: draftChanges?.medicalRecordNumber || '' })
+          medicalRecordNumber: draftChanges?.medicalRecordNumber || ''
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -588,7 +589,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDraftChanges((prev) => ({
                 ...prev,
                 patientIdentifier: values.patientIdentifier,
-                ...(therapyConfig.mrnRequirement && { medicalRecordNumber: values.medicalRecordNumber })
+                medicalRecordNumber: values.medicalRecordNumber
               }));
             }
 
@@ -673,7 +674,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
       additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
       patientIdentifier: orderDetails.patient?.patientIdentifier,
-      ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+      medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
     });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
@@ -1229,8 +1230,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['patientIdentifier'].includes(field.fieldName))
                           ?.map((field) => {
-                            console.log(patient);
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
                       <DetailSegment
                         label={t('labels.patientName')}
@@ -1264,7 +1264,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
                           ?.map((field) => {
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName]} />;
                           })}
                     </div>
                   </div>
