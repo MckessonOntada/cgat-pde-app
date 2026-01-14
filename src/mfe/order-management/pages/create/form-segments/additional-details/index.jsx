@@ -273,6 +273,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
+    debugger;
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
 
     let questionnaireValidationSchema = Yup.object();
@@ -1465,6 +1466,7 @@ const VariantDetails = ({
   if (!variantsData?.content || !CommonUtils.isNonEmptyObject(variantsData.content)) return null;
   const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
   const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
+  console.log(touched?.variant, !values.variant, errors);
   return (
     <FormSectionWrapper title={t('labels.selectVariant')} isRequired={true}>
       <div>
