@@ -99,7 +99,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const manufacturer = getManufacturer(orderDetails);
-
   const dispatch = useDispatch();
 
   const variantsApiRequestParam = {
@@ -274,6 +273,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
+    debugger;
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
 
     let questionnaireValidationSchema = Yup.object();
@@ -1132,8 +1132,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           />
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
-        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-        {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
+        <div className="stack">
+          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+          {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
+        </div>
 
         <Formik
           initialValues={initialFormValues}
@@ -1464,6 +1466,7 @@ const VariantDetails = ({
   if (!variantsData?.content || !CommonUtils.isNonEmptyObject(variantsData.content)) return null;
   const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
   const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
+  console.log(touched?.variant, !values.variant, errors);
   return (
     <FormSectionWrapper title={t('labels.selectVariant')} isRequired={true}>
       <div>
@@ -1473,7 +1476,7 @@ const VariantDetails = ({
           data={variantsData.content}
           readOnly={readOnly}
         />
-        {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+        {touched?.variant && values.variant && errors.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
       </div>
       <div className="agreement-checkbox-control">
         <Field name="variant-acknowledgement">
