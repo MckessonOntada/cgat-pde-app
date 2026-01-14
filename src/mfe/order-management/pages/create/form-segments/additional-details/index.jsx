@@ -99,7 +99,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const manufacturer = getManufacturer(orderDetails);
-
   const dispatch = useDispatch();
 
   const variantsApiRequestParam = {
@@ -1132,8 +1131,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           />
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
-        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-        {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
+        <div className="stack">
+          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+          {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
+        </div>
 
         <Formik
           initialValues={initialFormValues}
@@ -1473,7 +1474,7 @@ const VariantDetails = ({
           data={variantsData.content}
           readOnly={readOnly}
         />
-        {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+        {touched?.variant && values.variant && errors.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
       </div>
       <div className="agreement-checkbox-control">
         <Field name="variant-acknowledgement">

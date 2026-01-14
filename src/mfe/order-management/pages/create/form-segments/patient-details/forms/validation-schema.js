@@ -150,9 +150,11 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
         const message = displayName ? `${displayName} is required` : fallbackMessages[fieldName] || '';
 
-        dynamicFields[fieldName] = dynamicFields[fieldName].test('required-field', message, function (value) {
-          return value !== undefined && value !== null && value !== '';
-        });
+        if (customizedFieldDetails?.properties?.mandatoryField) {
+          dynamicFields[fieldName] = dynamicFields[fieldName].test('required-field', message, function (value) {
+            return customizedFieldDetails.properties?.mandatoryField && value !== undefined && value !== null && value !== '';
+          });
+        }
       });
     }
 

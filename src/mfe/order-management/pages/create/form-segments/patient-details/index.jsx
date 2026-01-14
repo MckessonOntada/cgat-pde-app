@@ -86,6 +86,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         setLastVerifiedPatientId(patient.patientIdentifier);
       }
       setOrcaVerifiedPatient(verifiedPatient);
+
+      setInitialValues({
+        ...initialValues,
+        patient: { ...patient }
+      });
     }
   }, [orderDetails]);
 
@@ -115,7 +120,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   React.useEffect(() => {
     const setFieldValue = formikRef.current?.setFieldValue;
-    const setErrors = formikRef.current?.setErrors;
 
     if (orcaVerifiedPatient) {
       if (orcaVerifiedPatient.medicalRecordNumber) {
@@ -273,13 +277,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck, isSendNotification }) => {
-      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isOrderInDraft, isSendNotification);
+    async ({ payload, skipDuplicateCheck, isSendNotification, isSavingDraft }) => {
+      return OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck, orderDetails.channelType, isSavingDraft, isSendNotification);
     },
     {
-      onSuccess: (result) => {
+      onSuccess: (result, variables) => {
         const { id } = result;
-        if (!isOrderInDraft) {
+        if (!variables?.isSavingDraft) {
           navigateToNextStage(id, true);
           setProvider(null);
         } else {
@@ -314,7 +318,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       return;
     }
     setIsOrderInDraft(true);
-    handleSubmit(values);
+    handleSubmit(values, false, true);
   };
 
   const handleOnBack = () => {
@@ -342,7 +346,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
-  const handleSubmit = (form, skipDuplicateCheck = false) => {
+  const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
     const formValue = CommonUtils.cleanObject(form);
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
@@ -354,12 +358,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       skipDuplicateCheck = true;
     }
     setInitialValues(form);
-
     if (isDirty || isStageInDraft || orcaVerifiedPatient) {
-      savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: isOrderInDraft ? false : true });
+      savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: isSavingDraft ? false : true, isSavingDraft });
     } else if (!isDirty && !isStageInDraft) {
       if (orderDetails?.currentStage === ORDER_STAGES.PATIENT_DETAILS) {
-        savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: false });
+        savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: false, isSavingDraft });
       } else {
         navigateToNextStage(orderId);
       }
@@ -701,7 +704,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                             validateOnBlur,
                             manufacturer,
                             isPatientVerifying,
-                            isPatientVerified: CommonUtils.isNonEmptyObject(orcaVerifiedPatient)
+                            isPatientVerified: ['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(orcaVerifiedPatient?.[key]))
                           })}
                           readOnly={readOnly || !isAllowedToProceed}
                         />
