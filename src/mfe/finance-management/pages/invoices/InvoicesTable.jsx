@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as ActionIcon } from '@src/assets/image/actionIcon.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { DUE_STATUS } from './InvoiceConstants';
+import { DUE_STATUS, INVOICE_STATUS } from './InvoiceConstants';
 import { PATHS } from '../../routes';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
@@ -300,7 +300,6 @@ export default function InvoicesTable() {
             <Badge
               text={DUE_STATUS[props.status]?.label}
               customStyle={{
-                backgroundColor: `${DUE_STATUS[props.status]?.color}`,
                 color: DUE_STATUS[props.status]?.textColor ? DUE_STATUS[props.status]?.textColor : ''
               }}
             />
@@ -308,7 +307,35 @@ export default function InvoicesTable() {
             '-'
           )}
         </div>
-      )
+      ),
+      omit: isHistory
+    },
+    {
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
+      selector: (row) => row.clearingStatus,
+      minWidth: '195px',
+      sortable: true,
+      center: true,
+      wrap: true,
+      id: 'clearingStatus',
+      showInMobileHeader: true,
+      cardStatus: true,
+      cell: (props) => (
+        <div className="status-container">
+          {props.clearingStatus ? (
+            <Badge
+              text={INVOICE_STATUS[props.clearingStatus]?.label}
+              customStyle={{
+                backgroundColor: `${INVOICE_STATUS[props.clearingStatus]?.color}`,
+                color: INVOICE_STATUS[props.clearingStatus]?.textColor ? INVOICE_STATUS[props.clearingStatus]?.textColor : ''
+              }}
+            />
+          ) : (
+            '-'
+          )}
+        </div>
+      ),
+      omit: !isHistory
     },
 
     {
