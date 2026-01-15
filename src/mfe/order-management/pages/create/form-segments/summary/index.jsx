@@ -70,6 +70,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [drawerElement, setDrawerElement] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
+  const [allowedSubmission, setAllowedSubmission] = React.useState(true);
   const {
     therapy = {},
     catalog = {},
@@ -596,6 +597,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               }),
               type: 'success'
             });
+            setAllowedSubmission(true);
           } else {
             setAlert({
               description: t('orderManagement.patientID.verificationSuccess', {
@@ -603,6 +605,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               }),
               type: 'success'
             });
+            setAllowedSubmission(false);
           }
         } else {
           if (variables.patientId && variables.coiId) {
@@ -613,6 +616,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               }),
               type: 'error'
             });
+            setAllowedSubmission(false);
           } else {
             setAlert({
               description: t('orderManagement.patientID.verificationFailedSubmitPage', {
@@ -621,6 +625,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               }),
               type: 'error'
             });
+            setAllowedSubmission(false);
           }
         }
       },
@@ -710,6 +715,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   }),
                   type: 'error'
                 });
+                setAllowedSubmission(false);
               }
             }
             setDrawerElement(null);
@@ -829,7 +835,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     const controlReSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} disabled={isResubmitting || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button size={'md'} disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -1334,8 +1340,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             variant="tertiary"
                             disabled={
                               orderDetails.status === ORDER_STATUS.SUBMITTED &&
-                              !isSpOrder &&
-                              [(therapyConfig.mrnRequirement, therapyConfig.patientIdentifierRequirement)].every((val) => val === REQUIREMENT.NOT_REQUIRED)
+                              !(therapyConfig?.config?.fields ?? []).some(
+                                (field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
+                              )
                             }
                             onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
                             Icon={() => <IconEditField />}>
@@ -1436,13 +1443,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           disabled={
                             orderDetails.status === ORDER_STATUS.SUBMITTED &&
                             !isSpOrder &&
-                            [
-                              therapyConfig.coiIdRequirement,
-                              therapyConfig.poNumberRequirement,
-                              therapyConfig.shipToPORequirement,
-                              therapyConfig.dateOfAdministrationRequirement,
-                              therapyConfig.dateOfApheresisRequirement
-                            ].every((val) => val === REQUIREMENT.NOT_REQUIRED)
+                            !(therapyConfig?.config?.fields ?? []).some(
+                              (field) =>
+                                ['coiId', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis'].includes(field?.fieldName) &&
+                                field?.properties?.displayOnForm === true
+                            )
                           }
                           onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
