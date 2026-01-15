@@ -2,7 +2,12 @@ import * as Yup from 'yup';
 
 export const getNotificationGroupSchema = (translateFn) =>
   Yup.object({
-    groupName: Yup.string().trim().required(translateFn('notificationGroup.validation.groupNameIsRequired')),
+    groupName: Yup.string()
+      .test('no-leading-trailing-spaces', translateFn('notificationGroup.validation.noLeadingTrailingSpaces'), (value) => {
+        if (typeof value !== 'string') return true;
+        return value === value.trim();
+      })
+      .required(translateFn('notificationGroup.validation.groupNameIsRequired')),
 
     rules: Yup.array()
       .of(

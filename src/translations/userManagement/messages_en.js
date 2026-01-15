@@ -532,5 +532,6 @@ export const UserManagementEN = {
   'notificationGroup.placeholder.selectMaterials': 'Select Materials',
 
   'button.caption.addAttribute': 'Add Attribute',
-  'group.rule.helperText': 'Please select a criteria to apply the approval rules on.'
+  'group.rule.helperText': 'Please select a criteria to apply the approval rules on.',
+  'notificationGroup.validation.noLeadingTrailingSpaces': 'Group name must not start or end with spaces'
 };
