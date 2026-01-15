@@ -49,6 +49,7 @@ import styles from './Summary.module.scss';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import { TrackingDetails } from './tracking-details';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
@@ -701,12 +702,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                 patientId: tempValue.patientIdentifier,
                 coiId: draftChanges.additionalDetailsRequestDTO.coiId ? draftChanges.additionalDetailsRequestDTO.coiId : ''
               });
+              scrollToTopUtil();
             } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
               if (draftChanges.patientIdentifier) {
                 patientIdCoiIdValidation({
                   patientId: draftChanges.patientIdentifier,
                   coiId: tempValue.coiId
                 });
+                scrollToTopUtil();
               } else {
                 setAlert({
                   description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
@@ -716,6 +719,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   type: 'error'
                 });
                 setAllowedSubmission(false);
+                scrollToTopUtil();
               }
             }
             setDrawerElement(null);
