@@ -53,14 +53,27 @@ function TherapySelection({ readOnly }) {
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`/orders${prevSearch}`);
-    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+    if (!orderDetails?.id) return;
+
+    const { isPapOrder, tradeDetails, therapyDetails = {}, status } = orderDetails;
+
+    if (tradeDetails) {
+      setTradeDetails({ ...tradeDetails, ...therapyDetails });
+    }
+
+    if (isPapOrder) {
+      const prevSearch = locationState?.__prevSearch || '';
+      navigate(`/orders${prevSearch}`);
+      return;
+    }
+
+    if (status === ORDER_STATUS.REVIEW) {
+      navigate(RoutePaths.pathOrderManagement, { replace: true });
+    }
   }, [orderDetails]);
 
   React.useEffect(() => {
-    const isDirty = JSON.stringify(tradeDetails) !== JSON.stringify(orderDetails?.tradeDetails);
+    const isDirty = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
     setIsDirty(isDirty);
     dispatch(hasUnsavedChanges(isDirty));
     return () => dispatch(hasUnsavedChanges(false));
@@ -69,13 +82,6 @@ function TherapySelection({ readOnly }) {
   React.useEffect(() => {
     if (locationState && locationState.__prevSearch) setPrevSearchState(locationState.__prevSearch);
   }, [location.search]);
-
-  React.useEffect(() => {
-    const { tradeDetails, therapyDetails = {} } = orderDetails || {};
-    if (tradeDetails) {
-      setTradeDetails({ ...tradeDetails, ...therapyDetails });
-    }
-  }, [orderDetails]);
 
   const handleOnClose = () => {
     searchParams.delete('trade');
@@ -93,15 +99,12 @@ function TherapySelection({ readOnly }) {
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
       const { id } = result;
-      const isTherapyChanged = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
-
       navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
         state: {
           ...locationState,
           ...(prevSearchState && { __prevSearch: prevSearchState }),
           isEdit: false,
-          isApprover: isApprover,
-          isTherapyChanged: isTherapyChanged
+          isApprover: isApprover
         }
       });
     },
@@ -116,7 +119,6 @@ function TherapySelection({ readOnly }) {
       });
     }
   });
-  const isTherapyChanged = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
   const navigateToNextStage = (id) => {
     navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
       state: {
@@ -124,7 +126,7 @@ function TherapySelection({ readOnly }) {
         ...(prevSearchState && { __prevSearch: prevSearchState }),
         isEdit: false,
         isApprover: isApprover,
-        isTherapyChanged: isTherapyChanged
+        isTherapyChanged: isDirty
       }
     });
   };
@@ -168,7 +170,7 @@ function TherapySelection({ readOnly }) {
       };
 
       if (isEdit || isApprover || isBack) {
-        if (isTherapyChanged) {
+        if (isDirty) {
           updateTherapy({ orderId, payload });
         } else {
           navigateToNextStage(orderId);
