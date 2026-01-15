@@ -90,7 +90,10 @@ function OrcaPatientDetails() {
       }
     }
   }, [orcaVerifiedPatient]);
-
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig = orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
   const validateOnBlur = (e) => {
     const { id } = e.target;
 
@@ -131,7 +134,10 @@ function OrcaPatientDetails() {
           clearPatientDetails();
           setAlert({
             type: 'warning',
-            description: translateFn('message.orcaPatientVerificationFailed1')
+            description: translateFn('message.orcaPatientVerificationFailed1', {
+              patientId: getDisplayNameByFieldName('patientIdentifier'),
+              medicalRecordNumber: getDisplayNameByFieldName('medicalRecordNumber')
+            })
           });
         })
         .finally(() => {
