@@ -19,11 +19,9 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
           prefix,
           suffix,
           infoText: field?.properties.helpInfoMessage
-          // ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
         });
       }
     });
-    console.log('dynamic_fields', dynamic_fields);
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
     therapyConfig?.config?.fields?.forEach((field) => {
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
@@ -38,7 +36,6 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
           prefix,
           suffix,
           infoText: field?.properties.helpInfoMessage
-          // ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
         });
       }
     });
