@@ -557,6 +557,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const newData = { ...data };
     config.forEach(({ fieldName, properties }) => {
       const value = data[fieldName];
+
+      if (value === undefined || value === null || value === '') return;
       const validationFormat = properties?.fieldFormat?.validationFormat;
       if (typeof value === 'string' && validationFormat && (validationFormat.includes('prefix') || validationFormat.includes('suffix'))) {
         let updatedValue = value;
@@ -574,37 +576,59 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     });
     return newData;
   };
-
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig = orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
   const { mutate: patientIdCoiIdValidation, isLoading: patientIdCoiIdValidationLoading } = useMutation(
     async ({ patientId, coiId }) => {
       const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
       return res.data;
     },
     {
-      onSuccess: (res) => {
+      onSuccess: (res, variables) => {
         if (res) {
-          // setAlert({
-          //   description: t('orderManagement.coiId.verificationSuccess', {
-          //     patientID: getDisplayNameByFieldName('patientIdentifier'),
-          //     coiId: getDisplayNameByFieldName('coiId')
-          //   }),
-          //   type: 'success'
-          // });
+          if (variables.patientId && variables.coiId) {
+            setAlert({
+              description: t('orderManagement.coiId.verificationSuccess', {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }),
+              type: 'success'
+            });
+          } else {
+            setAlert({
+              description: t('orderManagement.patientID.verificationSuccess', {
+                patientID: getDisplayNameByFieldName('patientIdentifier')
+              }),
+              type: 'success'
+            });
+          }
         } else {
-          // setAlert({
-          //   description: t('orderManagement.patientID.CoiId.verificationFailed', {
-          //     patientID: getDisplayNameByFieldName('patientIdentifier'),
-          //     coiId: getDisplayNameByFieldName('coiId')
-          //   }),
-          //   type: 'warning'
-          // });
+          if (variables.patientId && variables.coiId) {
+            setAlert({
+              description: t('orderManagement.patientID.CoiId.verificationFailedSubmitPage', {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }),
+              type: 'error'
+            });
+          } else {
+            setAlert({
+              description: t('orderManagement.patientID.verificationFailedSubmitPage', {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }),
+              type: 'error'
+            });
+          }
         }
       },
       onError: () => {
-        // setAlert({
-        //   type: 'error',
-        //   description: t('errors.default')
-        // });
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
       }
     }
   );
@@ -655,24 +679,37 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
+            let tempValue = addPrefixSuffixToData(values, therapyConfig.config.fields);
             if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
               setDraftChanges((prev) => ({
                 ...prev,
-                additionalDetailsRequestDTO: addPrefixSuffixToData(values, therapyConfig.config.fields)
+                additionalDetailsRequestDTO: tempValue
               }));
             } else {
               setDraftChanges((prev) => ({
                 ...prev,
-                ...addPrefixSuffixToData(values, therapyConfig.config.fields)
+                ...tempValue
               }));
             }
-            if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS) {
-              patientIdCoiIdValidation({ patientId: values.patientIdentifier, coiId: values.coiId });
-            } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
-              if (values.patientIdentifier) {
-                patientIdCoiIdValidation({ patientId: values.patientIdentifier, coiId: values.coiId });
+            if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
+              patientIdCoiIdValidation({
+                patientId: tempValue.patientIdentifier,
+                coiId: draftChanges.additionalDetailsRequestDTO.coiId ? draftChanges.additionalDetailsRequestDTO.coiId : ''
+              });
+            } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
+              if (draftChanges.patientIdentifier) {
+                patientIdCoiIdValidation({
+                  patientId: draftChanges.patientIdentifier,
+                  coiId: tempValue.coiId
+                });
               } else {
-                //1st fill patient id
+                setAlert({
+                  description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
+                    patientId: getDisplayNameByFieldName('patientIdentifier'),
+                    coiId: getDisplayNameByFieldName('coiId')
+                  }),
+                  type: 'error'
+                });
               }
             }
             setDrawerElement(null);
@@ -1422,7 +1459,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           ?.map((field) => {
                             const value = draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ?? draftChanges?.patient?.[field.fieldName] ?? '-';
 
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value || '-'} />;
                           })}
 
                         {additionalDetails?.orderQuantity && (
