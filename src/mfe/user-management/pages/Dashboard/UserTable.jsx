@@ -235,7 +235,7 @@ function UserTable({ onActionSuccess, showAlert }) {
         wrap: true,
         minWidth: '150px',
         cell: (props) => (
-          <div>
+          <div className="entity-name">
             {tab === USER_TABS.PENDING_REQUESTS ? (
               <EclipsesTextcss str={CommonUtils.getFullName(props?.name)} maxWidth={140} />
             ) : (

@@ -1,7 +1,7 @@
 export const fieldFormatRegexObj = {
   Text: {
     regex: "^[A-Za-z0-9'.,-_()#&+:]{1,200}$",
-    errorMessage: "Only letters, numbers, and allowed special characters ('. , - _ () # & + :) are permitted, max 200 characters."
+    errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.'
   },
   Alphabetic: {
     regex: '^[A-Za-z]{1,100}$',
@@ -16,8 +16,8 @@ export const fieldFormatRegexObj = {
     errorMessage: 'Use only uppercase letters (A-Z) and numbers, 3-20 characters.'
   },
   Integer: {
-    regex: '^[1-9][0-9]?$',
-    errorMessage: 'Enter a valid integer between 1 and 99.'
+    regex: '^-?\\d+$',
+    errorMessage: 'Only numbers are allowed.'
   },
   Date_MM_DD_YYYY: {
     regex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
@@ -25,18 +25,22 @@ export const fieldFormatRegexObj = {
   },
   'UUID/Unique ID': {
     regex: '^[A-Za-z0-9-]{8,36}$',
-    errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), length 8 to 36 characters.'
+    errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), 8–36 characters long.'
   }
 };
-export const fieldFormatOptions = [
-  { label: 'Text', value: 'Text' },
-  { label: 'Alphabetic', value: 'Alphabetic' },
-  { label: 'Alphanumeric', value: 'Alphanumeric' },
-  { label: 'Uppercase Alphanumeric', value: 'Uppercase Alphanumeric' },
-  { label: 'Integer', value: 'Integer' },
-  { label: 'Date_MM_DD_YYYY', value: 'Date_MM_DD_YYYY' },
-  { label: 'UUID/Unique ID', value: 'UUID/Unique ID' }
-];
+export const getFieldFormatOptions = (fieldName) => {
+  if (['dateOfAdministration', 'dateOfApheresis'].includes(fieldName)) {
+    return [{ label: 'Date_MM_DD_YYYY', value: 'Date_MM_DD_YYYY' }];
+  }
+  return [
+    { label: 'Text', value: 'Text' },
+    { label: 'Alphabetic', value: 'Alphabetic' },
+    { label: 'Alphanumeric', value: 'Alphanumeric' },
+    { label: 'Uppercase Alphanumeric', value: 'Uppercase Alphanumeric' },
+    { label: 'Integer', value: 'Integer' },
+    { label: 'UUID/Unique ID', value: 'UUID/Unique ID' }
+  ];
+};
 
 export const defaultFieldFormatBnb = () => ({
   patientInformationRequired: null,
@@ -49,33 +53,14 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'Manufacturer Patient Identifier',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
-          }
-        }
-      }
-    },
-    {
-      fieldName: 'coiId',
-      properties: {
-        displayOnForm: false,
-        mandatoryField: false,
-        showHelpIcon: false,
-        displayName: 'COI ID',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
-        helpInfoMessage: '',
-        fieldFormat: {
-          formatType: 'Text',
-          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
-          validationFormat: '',
-          get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('patientIdentifier');
           }
         }
       }
@@ -87,14 +72,33 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'MRN',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('medicalRecordNumber');
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'coiId',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'COI ID',
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Text',
+          validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
+          validationFormat: '',
+          get options() {
+            return getFieldFormatOptions('coiId');
           }
         }
       }
@@ -106,14 +110,14 @@ export const defaultFieldFormatBnb = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'PO Number',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('poNumber');
           }
         }
       }
@@ -124,15 +128,15 @@ export const defaultFieldFormatBnb = () => ({
         displayOnForm: false,
         mandatoryField: false,
         showHelpIcon: false,
-        displayName: 'Ship to PO  Number',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        displayName: 'Ship to PO Number',
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('shipToPONumber');
           }
         }
       }
@@ -151,7 +155,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('dateOfAdministration');
           }
         }
       }
@@ -170,7 +174,7 @@ export const defaultFieldFormatBnb = () => ({
           validationRegex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('dateOfApheresis');
           }
         }
       }
@@ -188,14 +192,14 @@ export const defaultFieldFormatSp = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'Manufacturer Patient Identifier',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('patientIdentifier');
           }
         }
       }
@@ -207,14 +211,14 @@ export const defaultFieldFormatSp = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'COI ID',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('coiId');
           }
         }
       }
@@ -226,14 +230,14 @@ export const defaultFieldFormatSp = () => ({
         mandatoryField: false,
         showHelpIcon: false,
         displayName: 'MRN',
-        errorMessage: "Only letters, numbers, and allowed special characters (- _ . ' , ( ) # & + :) are allowed.",
+        errorMessage: 'Allowed: letters, numbers, and (. , - _ () # & + :). Maximum 200 characters.',
         helpInfoMessage: '',
         fieldFormat: {
           formatType: 'Text',
           validationRegex: "^[A-Za-z0-9-_.',()#&+:]{1,200}$",
           validationFormat: '',
           get options() {
-            return fieldFormatOptions;
+            return getFieldFormatOptions('medicalRecordNumber');
           }
         }
       }
@@ -321,8 +325,7 @@ export const regexAttributes = {
       text: [
         { label: 'Minimum Value', key: 'minValue' },
         { label: 'Maximum Value', key: 'maxValue' }
-      ],
-      checkbox: [{ isChecked: false, label: 'Allow Negative (-)', value: 'allowNegative' }]
+      ]
     }
   },
 
@@ -356,3 +359,10 @@ export const regexAttributes = {
     }
   }
 };
+
+export const FIELD_NAMES = Object.freeze({
+  PATIENT_IDENTIFIER: 'patientIdentifier',
+  MEDICAL_RECORD_NUMBER: 'medicalRecordNumber',
+  COI_ID: 'coiId',
+  PO_NUMBER: 'poNumber'
+});

@@ -34,7 +34,7 @@ import { ORDER_STATUS } from '../../../orders/config';
 import { SAP_ORDER_STATUS } from '../../../orders/constants';
 import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
-import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CGAT_IDENTIFIER, CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import { InventoryIndicator } from '../InventoryIndicator';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderStepper from '../OrderStepper';
@@ -90,6 +90,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+  const manufacturer = orderDetails.therapyConfig?.config?.manufacturerName;
 
   React.useEffect(() => {
     if (orderDetails?.additionalDetails) {
@@ -532,7 +533,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
 
   const handleOnEditSection = (stage) => {
-    if ((orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.therapyConfig?.config?.manufacturerName) === 'ORCA') {
+    if (
+      (orderDetails.status === ORDER_STATUS.SUBMITTED && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName) ===
+      'ORCA'
+    ) {
       navigate('./../orca-patient-details');
     }
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
@@ -559,7 +563,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             coiId: additionalDetails.coiId || '',
             dateOfAdministration: additionalDetails.dateOfAdministration || '',
             poNumber: additionalDetails.poNumber || '',
-            shipToPoNumber: additionalDetails.shipToPoNumber || '',
+            shipToPONumber: additionalDetails.shipToPONumber || '',
             dateOfApheresis: additionalDetails.dateOfApheresis || ''
           };
         }
@@ -650,6 +654,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       return;
     }
   };
+
+  React.useEffect(() => {
+    const { alert, ...rest } = location.state || {};
+    if (alert) {
+      setAlert({ ...alert });
+      navigate(location.pathname, { ...rest });
+    }
+  }, [location]);
 
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
@@ -1213,12 +1225,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       }
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ${isSpOrder ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
-                      {!isSpOrder && therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                        <DetailSegment
-                          label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')}
-                          value={!!draftChanges ? draftChanges?.patientIdentifier : '-'}
-                        />
-                      )}
+                      {!isSpOrder &&
+                        therapyConfig?.config?.fields
+                          ?.filter((field) => field?.properties?.displayOnForm && ['patientIdentifier'].includes(field.fieldName))
+                          ?.map((field) => {
+                            console.log(patient);
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                          })}
                       <DetailSegment
                         label={t('labels.patientName')}
                         value={
@@ -1247,9 +1260,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         />
                       )}
                       <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      {!isSpOrder && therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={draftChanges?.medicalRecordNumber || '-'} />
-                      )}
+                      {!isSpOrder &&
+                        therapyConfig?.config?.fields
+                          ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
+                          ?.map((field) => {
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                          })}
                     </div>
                   </div>
                 )}
@@ -1267,14 +1283,18 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         )
                       }
                     />
-                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4`}>
-                      {patient?.patientIdentifier && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
-                      )}
-                      {patient?.coiId && <DetailSegment label={t('labels.coiId')} value={patient?.coiId || '-'} />}
-                      {patient?.medicalRecordNumber && (
-                        <DetailSegment label={t('orderManagement.patientDetails.inputLabel.mrn')} value={patient?.medicalRecordNumber || '-'} />
-                      )}
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+                      {spTherapyConfig?.config?.fields
+                        ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber', 'patientIdentifier', 'coiId'].includes(field.fieldName))
+                        ?.map((field) => {
+                          const value =
+                            draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ??
+                            draftChanges?.patient?.[field.fieldName] ??
+                            patient?.[field.fieldName] ??
+                            '-';
+
+                          return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
+                        })}
                     </div>
                   </div>
                 )}
@@ -1300,7 +1320,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             [
                               therapyConfig.coiIdRequirement,
                               therapyConfig.poNumberRequirement,
-                              therapyConfig.shipToPoNumberRequirement,
+                              therapyConfig.shipToPORequirement,
                               therapyConfig.dateOfAdministrationRequirement,
                               therapyConfig.dateOfApheresisRequirement
                             ].every((val) => val === REQUIREMENT.NOT_REQUIRED)
@@ -1326,6 +1346,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         {additionalDetails?.orderQuantity && (
                           <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
                         )}
+                        {additionalDetails?.slotNumber && <DetailSegment label={t('labels.slotNo')} value={additionalDetails.slotNumber} />}
                       </>
                     )}
 

@@ -175,6 +175,9 @@ div.disable-all {
     padding-right: var(--spacing-03);
   }
 }
+.entity-name {
+  text-transform: capitalize;
+}
 
 .variant-table-cell {
   display: flex;
@@ -1789,7 +1792,23 @@ input[type="checkbox"] + label {
   display: flex;
   flex-direction: column;
 }
+.table-selection-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-04);
+  align-items: stretch;
+  width: 100%;
 
+  .table {
+    flex-grow: 1;
+    min-width: 0;
+  }
+  .list {
+    width: 320px;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
 .table-selection-container {
   display: grid;
   grid-template-columns:

@@ -70,7 +70,7 @@ export default function AccountsList(props) {
           </Link>
         ),
         wrap: true,
-        width: '100px'
+        minWidth: '100px'
       },
       {
         id: 'accountName',

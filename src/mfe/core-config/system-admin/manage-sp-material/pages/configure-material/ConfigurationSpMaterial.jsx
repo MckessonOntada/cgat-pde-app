@@ -9,14 +9,14 @@ import ConfigurationForm from './ConfigurationForm';
 import { Formik, Form, Field } from 'formik';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { configObj, defaultFieldFormatBnb, defaultFieldFormatSp } from './config';
+import { configObj, defaultFieldFormatBnb, defaultFieldFormatSp, FIELD_NAMES } from './config';
 import { getConfigurationSchema } from './ConfigurationSchema';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
 import { ChannelType } from '../../../manage-sp-account/util';
 import Components from '@src/components/form/Components';
 import styles from './Configure.module.scss';
-import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +25,7 @@ export default function ConfigurationSpMaterial() {
   const { therapy, materialType } = location.state || {};
   const isBnbMaterial = materialType === ChannelType.BUY_AND_BILL;
   const [manufacturer, setManufacturer] = React.useState([]);
-
+  const [openTabs, setOpenTabs] = React.useState([]);
   React.useEffect(() => {
     MaterialService.getManufacturers(materialType).then((manufacturer) => {
       setManufacturer([
@@ -63,9 +63,13 @@ export default function ConfigurationSpMaterial() {
   });
 
   const ndcDetails = React.useMemo(() => {
-    return materialDetails?.fields ? materialDetails : materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
-  }, [materialDetails, materialType]);
+    if (therapy?.length > 1) {
+      return materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
+    }
 
+    return materialDetails?.fields ? materialDetails : materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
+  }, [materialDetails, materialType, therapy]);
+  const initialManufacturer = ndcDetails?.manufacturerName || null;
   const initialValues = {
     manufacturerName: ndcDetails?.manufacturerName || null,
     [fieldNameForChannel]: isBnbMaterial ? ndcDetails?.patientInformationRequired : ndcDetails?.triageChannel,
@@ -89,7 +93,7 @@ export default function ConfigurationSpMaterial() {
 
   const validationSchema = getConfigurationSchema(t, channelOptions, fieldNameForChannel, isBnbMaterial);
 
-  const { mutate: updateMaterial } = useMutation({
+  const { mutate: updateMaterial, isLoading: isUpdating } = useMutation({
     mutationFn: (payload) => {
       return isBnbMaterial ? MaterialService.updateMaterialConfigBnb(payload) : MaterialService.updateSPMaterialConfig(payload);
     },
@@ -142,8 +146,45 @@ export default function ConfigurationSpMaterial() {
     }
     return _translations;
   }, [isBnbMaterial]);
+  const applyManufacturerRules = (manufacturerName, fields) => {
+    let openTabs = [];
+    const updatedFields = fields.map((field, idx) => {
+      let updatedField = { ...field };
 
-  if (isLoading) {
+      if (manufacturerName === MANUFACTURER.ORCA) {
+        if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) {
+          updatedField = {
+            ...field,
+            properties: {
+              ...field.properties,
+              displayOnForm: true,
+              mandatoryField: true
+            }
+          };
+          openTabs.push(`field-${idx}`);
+        }
+      }
+
+      if (manufacturerName === MANUFACTURER.REGENERON) {
+        if ([FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) {
+          updatedField = {
+            ...field,
+            properties: {
+              ...field.properties,
+              displayOnForm: true,
+              mandatoryField: true
+            }
+          };
+          openTabs.push(`field-${idx}`);
+        }
+      }
+
+      return updatedField;
+    });
+    setOpenTabs(openTabs);
+    return updatedFields;
+  };
+  if (isLoading || isUpdating) {
     return <Loader type={'screen'} />;
   }
 
@@ -164,108 +205,138 @@ export default function ConfigurationSpMaterial() {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
-            validateOnChange={false}
-            validateOnBlur={false}
+            validateOnChange={true}
+            validateOnBlur={true}
             enableReinitialize={true}>
-            {({ values, setFieldValue, errors, touched, setFieldError }) => (
-              <Form>
-                <div className="MCP-module-body">
-                  <React.Fragment>
-                    <ModuleHeader heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.manufacturerConfiguration')}</Heading>} />
-                    <div>
-                      <Field
-                        component={Components['dropdown']}
-                        name={'manufacturerName'}
-                        fieldlabel={t('label.selectManufacturer')}
-                        placeholder="Select Manufacturer"
-                        size="lg"
-                        options={manufacturer}
+            {({ values, setFieldValue, errors, touched, setFieldError, resetForm, setFieldTouched }) => {
+              console.log('Formik error:', errors);
+              console.log('Formik touched:', touched);
+              return (
+                <Form>
+                  <div className="MCP-module-body">
+                    <React.Fragment>
+                      <ModuleHeader heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.manufacturerConfiguration')}</Heading>} />
+
+                      <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                        <Field
+                          component={Components['dropdown']}
+                          name={'manufacturerName'}
+                          fieldlabel={t('label.selectManufacturer')}
+                          placeholder="Select Manufacturer"
+                          size="lg"
+                          options={manufacturer}
+                          onChange={(selectedManufacturer) => {
+                            if (initialManufacturer === selectedManufacturer) {
+                              resetForm();
+                              setOpenTabs([]);
+                              return;
+                            }
+                            if (selectedManufacturer === '') {
+                              setFieldValue(fieldNameForChannel, '');
+                            }
+                            setFieldValue('manufacturerName', selectedManufacturer);
+                            const updatedFields = applyManufacturerRules(
+                              selectedManufacturer,
+                              materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
+                            );
+                            setFieldValue('fields', updatedFields);
+                            if (isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(selectedManufacturer)) {
+                              setFieldValue('patientInformationRequired', true);
+                            }
+                          }}
+                        />
+                      </div>
+                    </React.Fragment>
+                    <React.Fragment>
+                      <ModuleHeader
+                        heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.channelConfiguration')}</Heading>}
+                        controls={
+                          <p className="form-instruction">
+                            <span className="required">* </span> {t('userManagement.create_user.required')}
+                          </p>
+                        }
                       />
-                    </div>
-                  </React.Fragment>
-                  <React.Fragment>
+                      <div className={styles.radioGroupSelection}>
+                        <RadioGroup
+                          caption={t(labelTranslation.channelOptionsLabel)}
+                          direction="row"
+                          id={fieldNameForChannel}
+                          items={channelOptions.map((option) => ({
+                            ...option,
+                            isDisabled: isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(values.manufacturerName)
+                          }))}
+                          onChangeValue={(value) => {
+                            const finalValue = value === 'true' ? true : value === 'false' ? false : value;
+                            setFieldError(fieldNameForChannel, '');
+                            setFieldValue(fieldNameForChannel, finalValue);
+                            if (isBnbMaterial && finalValue === false) {
+                              const updatedFields = values.fields.map((field) => {
+                                if ([FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) {
+                                  return {
+                                    ...field,
+                                    properties: {
+                                      ...field.properties,
+                                      displayOnForm: false,
+                                      mandatoryField: false,
+                                      showHelpIcon: false
+                                    }
+                                  };
+                                }
+                                return field;
+                              });
+                              setFieldValue('fields', updatedFields);
+                            }
+                          }}
+                          radioBtnWidth="auto"
+                          value={values[fieldNameForChannel]}
+                          isRequired
+                          error={touched[fieldNameForChannel] && Boolean(errors[fieldNameForChannel])}
+                          errorMessage={touched[fieldNameForChannel] && errors[fieldNameForChannel]}
+                        />
+                      </div>
+                    </React.Fragment>
                     <ModuleHeader
-                      heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.channelConfiguration')}</Heading>}
+                      heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
                       controls={
                         <p className="form-instruction">
                           <span className="required">* </span> {t('userManagement.create_user.required')}
                         </p>
                       }
                     />
-                    <div className={styles.radioGroupSelection}>
-                      <RadioGroup
-                        caption={t(labelTranslation.channelOptionsLabel)}
-                        direction="row"
-                        id={fieldNameForChannel}
-                        items={channelOptions}
-                        onChangeValue={(value) => {
-                          const finalValue = value === 'true' ? true : value === 'false' ? false : value;
-                          setFieldError(fieldNameForChannel, '');
-                          setFieldValue(fieldNameForChannel, finalValue);
-                          if (isBnbMaterial && finalValue === false) {
-                            const updatedFields = values.fields.map((field) => {
-                              if (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId') {
-                                return {
-                                  ...field,
-                                  properties: {
-                                    ...field.properties,
-                                    displayOnForm: false,
-                                    mandatoryField: false,
-                                    showHelpIcon: false
-                                  }
-                                };
-                              }
-                              return field;
-                            });
-                            setFieldValue('fields', updatedFields);
-                          }
-                        }}
-                        radioBtnWidth="auto"
-                        value={values[fieldNameForChannel]}
-                        isRequired
-                        error={touched[fieldNameForChannel] && Boolean(errors[fieldNameForChannel])}
-                        errorMessage={touched[fieldNameForChannel] && errors[fieldNameForChannel]}
-                      />
+                    <Accordion multiple value={openTabs} onChange={setOpenTabs}>
+                      {values?.fields?.map((field, idx) => {
+                        if (
+                          values[fieldNameForChannel] === false &&
+                          [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)
+                        ) {
+                          return null;
+                        }
+                        return (
+                          <AccordionItem key={field.fieldName || idx} itemKey={`field-${idx}`}>
+                            <AccordionHeader>
+                              <ConfigurationHeader fieldName={field.fieldName} format={field.properties.fieldFormat.formatType} properties={field.properties} />
+                            </AccordionHeader>
+                            <AccordionPanel>
+                              <ConfigurationForm field={field} index={idx} setFieldError={setFieldError} setFieldTouched={setFieldTouched} />
+                            </AccordionPanel>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+
+                    <div className="controls">
+                      <Button variant="secondary" size="md" onClick={() => navigate('../')}>
+                        {t('manageSPMaterial.configuration.button.cancel')}
+                      </Button>
+
+                      <Button variant="primary" size="md" type="submit">
+                        {t('manageSPMaterial.configuration.button.save')}
+                      </Button>
                     </div>
-                  </React.Fragment>
-                  <ModuleHeader
-                    heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
-                    controls={
-                      <p className="form-instruction">
-                        <span className="required">* </span> {t('userManagement.create_user.required')}
-                      </p>
-                    }
-                  />
-                  <Accordion>
-                    {values?.fields?.map((field, idx) => {
-                      if (values[fieldNameForChannel] === false && (field.fieldName === 'patientIdentifier' || field.fieldName === 'coiId')) {
-                        return null;
-                      }
-                      return (
-                        <AccordionItem key={field.fieldName || idx} itemKey={`field-${idx}`}>
-                          <AccordionHeader>
-                            <ConfigurationHeader fieldName={field.fieldName} format={field.properties.fieldFormat.formatType} properties={field.properties} />
-                          </AccordionHeader>
-                          <AccordionPanel>
-                            <ConfigurationForm index={idx} setFieldError={setFieldError} />
-                          </AccordionPanel>
-                        </AccordionItem>
-                      );
-                    })}
-                  </Accordion>
-
-                  <div className="controls">
-                    <Button variant="secondary" size="md" onClick={() => navigate('../')}>
-                      {t('manageSPMaterial.configuration.button.cancel')}
-                    </Button>
-
-                    <Button variant="primary" size="md" type="submit">
-                      {t('manageSPMaterial.configuration.button.save')}
-                    </Button>
                   </div>
-                </div>
-              </Form>
-            )}
+                </Form>
+              );
+            }}
           </Formik>
         </div>
       </div>

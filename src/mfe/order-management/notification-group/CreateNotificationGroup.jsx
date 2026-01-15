@@ -1,7 +1,7 @@
 import DynamicRuleGroup from '@src/components/rule-group';
 import getUIConfig from './config.js';
 import React from 'react';
-import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { Alert, Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { Formik, Form } from 'formik';
 import { getNotificationGroupSchema } from './validation.schema.js';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +12,8 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import { useTranslate } from '@src/translations/useTranslation.js';
 import ModuleHeader from '@src/components/module-header/index.jsx';
 import FlatButton from '@src/components/button';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper.jsx';
 
 function CreateNotificationGroup({ mode }) {
   const isEdit = mode === 'edit';
@@ -19,6 +21,8 @@ function CreateNotificationGroup({ mode }) {
   const config = getUIConfig(translateFn);
   const { groupId } = useParams();
   const [alert, setAlert] = React.useState(null);
+  const [isFetching, setIsFetching] = React.useState(true);
+  const [isSaving, setIsSaving] = React.useState(false);
   const navigate = useNavigate();
   const [initialState, setInitialState] = React.useState({
     groupName: '',
@@ -56,9 +60,10 @@ function CreateNotificationGroup({ mode }) {
             initialState.rules.push({ attribute: 'price', value: rules.price });
           }
           if (rules.accounts) {
+            const filteredAccounts = rules.accounts.filter(({ accountId, accountName, channelType }) => accountId && accountName && channelType);
             initialState.rules.push({
               attribute: 'account',
-              value: rules.accounts.map((accounts) => ({
+              value: filteredAccounts.map((accounts) => ({
                 ...accounts,
                 label: accounts.accountName,
                 labelDescription: accounts.accountId,
@@ -83,7 +88,12 @@ function CreateNotificationGroup({ mode }) {
             description: error.message,
             type: 'error'
           });
+        })
+        .finally(() => {
+          setIsFetching(false);
         });
+    } else {
+      setIsFetching(false);
     }
   }, [groupId]);
 
@@ -133,8 +143,9 @@ function CreateNotificationGroup({ mode }) {
       curdPromise = NotificationService.createNotificationGroup(payload);
     }
     if (curdPromise) {
+      setIsSaving(true);
       curdPromise
-        .then((response) => {
+        .then((_response) => {
           let message = '';
           if (isEdit) message = translateFn('notificationGroup.update.success', { groupName });
           else message = translateFn('notificationGroup.save.success', { groupName });
@@ -159,14 +170,21 @@ function CreateNotificationGroup({ mode }) {
             type: 'error',
             description: errorMessage
           });
+        })
+        .finally(() => {
+          setIsSaving(false);
         });
     }
   };
 
+  if (isFetching) {
+    return <Loader variant="circular" />;
+  }
+
   return (
     <React.Fragment>
       <Formik onSubmit={handleOnSubmit} validationSchema={getNotificationGroupSchema(translateFn)} initialValues={initialState} enableReinitialize>
-        <Form>
+        <FormikFormWrapper disabled={isSaving}>
           <div className="MCP-module-wrapper">
             <div className="MCP-module-header">
               <div>
@@ -183,12 +201,14 @@ function CreateNotificationGroup({ mode }) {
               <Button variant="secondary" type="button" onClick={() => navigate('..')} size={'md'}>
                 {translateFn('userManagement.label.cancel')}
               </Button>
-              <Button type="submit" size="md">
-                {translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
+              <Button variant="primary" isLoadingState={isSaving} Icon={isSaving && ButtonLoadingIcon} iconPosition="left" type="submit" size="md">
+                {isSaving
+                  ? translateFn(isEdit ? 'button.caption.updatingGroup' : 'button.caption.creatingGroup')
+                  : translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
               </Button>
             </div>
           </div>
-        </Form>
+        </FormikFormWrapper>
       </Formik>
     </React.Fragment>
   );

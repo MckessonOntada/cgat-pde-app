@@ -7,7 +7,7 @@ import CommonFilters from '@src/components/Filters';
 import React from 'react';
 import { ROUTE_PATH } from './config';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { usePagination, useTable } from '@src/context/TableContext';
+import { useFilters, usePagination, useTable } from '@src/context/TableContext';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -25,6 +25,7 @@ function NotificationList() {
   const navigate = useNavigate();
   const { data, loading, error, isFilterApplied } = useTable();
   const { changePage, pagination } = usePagination();
+  const { applyFilters } = useFilters();
   const breadcrumbItems = [
     {
       label: translateFn('userManagement.breadcrumb.admin'),
@@ -99,6 +100,17 @@ function NotificationList() {
     }
   }, [location]);
 
+  const handleOnFilter = (filters = {}) => {
+    const { searchQuery: query } = filters;
+    if (query !== undefined) {
+      applyFilters({ query });
+    }
+  };
+
+  const handleOnClearFilters = () => {
+    applyFilters({});
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
@@ -121,15 +133,15 @@ function NotificationList() {
             <div className="MCP-CardContainer">
               <CommonFilters
                 autoFocus={true}
-                onApplyFilters={() => {}}
-                onClearFilters={() => {}}
+                onApplyFilters={handleOnFilter}
+                onClearFilters={handleOnClearFilters}
                 additionalFilters={[]}
                 searchPlaceholder={translateFn('placeholders.searchByGroup')}
               />
             </div>
             <TableHeading heading={translateFn('table.title.notificationGroupListing')} />
             <CustomDataTable
-              id={'notification-group'}
+              id={'notification-group-list'}
               type={'normal'}
               columns={columns}
               data={data}
@@ -152,9 +164,9 @@ function NotificationList() {
                   isError={error}
                   image={EmptyDataImage}
                   heading={
-                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('empty.table.title.noRecordsFoundNotificationGroup')
+                    isFilterApplied ? translateFn('table.messages.noRecordsFoundWithFilters') : translateFn('emptyTable.title.noRecordsFoundNotificationGroup')
                   }
-                  description={!isFilterApplied && translateFn('empty.table.description.noRecordsFoundNotificationGroup')}
+                  description={!isFilterApplied && translateFn('emptyTable.description.noRecordsFoundNotificationGroup')}
                 />
               }
             />

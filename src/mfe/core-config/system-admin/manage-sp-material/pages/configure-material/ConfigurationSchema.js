@@ -17,21 +17,40 @@ export const getConfigurationSchema = (t, channelOptions, fieldNameForChannel, i
           displayName: Yup.string().when('displayOnForm', {
             is: true,
             then: (schema) =>
-              schema.when('mandatoryField', {
-                is: true,
-                then: (s) => s.required(t('manageSPMaterial.configuration.validation.displayNameRequiredMandatory')),
-                otherwise: (s) => s.required(t('manageSPMaterial.configuration.validation.displayNameRequired'))
-              }),
+              schema
+                .max(
+                  40,
+                  t('manageSPMaterial.configuration.validation.displayNameMaxLength', {
+                    max: 40
+                  })
+                )
+                .when('mandatoryField', {
+                  is: true,
+                  then: (s) => s.required(t('manageSPMaterial.configuration.validation.displayNameRequiredMandatory')),
+                  otherwise: (s) => s.required(t('manageSPMaterial.configuration.validation.displayNameRequired'))
+                }),
             otherwise: (schema) => schema.notRequired().nullable()
           }),
           errorMessage: Yup.string().when('displayOnForm', {
             is: true,
-            then: (s) => s.required(t('manageSPMaterial.configuration.validation.errorMessageRequired')),
+            then: (s) =>
+              s.required(t('manageSPMaterial.configuration.validation.errorMessageRequired')).max(
+                100,
+                t('manageSPMaterial.configuration.validation.errorMessageMaxLength', {
+                  max: 100
+                })
+              ),
             otherwise: (s) => s.notRequired().nullable()
           }),
           helpInfoMessage: Yup.string().when(['displayOnForm', 'showHelpIcon'], {
             is: (displayOnForm, showHelpIcon) => displayOnForm && showHelpIcon,
-            then: (s) => s.required(t('manageSPMaterial.configuration.validation.helpInfoRequired')),
+            then: (s) =>
+              s.required(t('manageSPMaterial.configuration.validation.helpInfoRequired')).max(
+                100,
+                t('manageSPMaterial.configuration.validation.helpInfoMaxLength', {
+                  max: 100
+                })
+              ),
             otherwise: (s) => s.notRequired().nullable()
           }),
           fieldFormat: Yup.object({

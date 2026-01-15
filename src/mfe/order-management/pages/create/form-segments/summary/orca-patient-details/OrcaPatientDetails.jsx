@@ -2,16 +2,19 @@ import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CHANNEL_TYPE } from '../../Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { PatientSections } from '../../patient-details/forms/patient-details.config';
 import OrderService from '@src/api/commonService/OrderService';
 import { Alert, Button, Heading, Loader } from '@mckesson/mcp-component-library';
-import PageHeader from '@src/components/pageHeader';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { OrcaPatientVerificationPanel } from '../../orca-patient-verification-panel';
 import { useMutation } from 'react-query';
+import { getValidationSchema } from '../../patient-details/forms/validation-schema';
+import { getManufacturer } from '../../OrderUtil';
+import CommonUtils from '@src/util/CommonUtils';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function OrcaPatientDetails() {
   const { orderId } = useParams();
@@ -25,68 +28,120 @@ function OrcaPatientDetails() {
   const [orcaPatientList, setOrcaPatientList] = React.useState([]);
   const [orcaVerifiedPatient, setOrcaVerifiedPatient] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
+  const manufacturer = getManufacturer(orderDetails);
   const formikRef = React.useRef();
-
-  console.log(orcaVerifiedPatient?.id > 0);
+  const [lastVerifiedPatientId, setLastVerifiedPatientId] = React.useState(null);
+  const [lastVerifiedMedicalRecordNumber, setLastVerifiedMedicalRecordNumber] = React.useState(null);
+  const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
 
   React.useEffect(() => {
-    if (orcaVerifiedPatient) {
-      let type, description;
-      if (orcaVerifiedPatient.id > 0) {
-        setInitialValues({
-          ...initialValues,
-          patient: {
-            ...initialValues.patient,
-            medicalRecordNumber: orcaVerifiedPatient.medicalRecordNumber,
-            patientIdentifier: orcaVerifiedPatient.patientId,
-            patientInfo: {
-              firstName: orcaVerifiedPatient.firstName,
-              middleName: orcaVerifiedPatient.middleName,
-              lastName: orcaVerifiedPatient.lastName,
-              gender: orcaVerifiedPatient.gender,
-              dateOfBirth: orcaVerifiedPatient.dateOfBirth
-            }
-          }
-        });
-        type = 'success';
-        description = 'Patient id verified';
-      } else {
-        type = 'warning';
-        if (orcaVerifiedPatient.id === -1)
-          description =
-            'The Orca Bio Patient ID or MRN and Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.';
-        else if (orcaVerifiedPatient.id === 0)
-          description = 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.';
-      }
-      setAlert({
-        type,
-        description
+    if (orderDetails.id) {
+      const { patient = {} } = orderDetails;
+      const formValues = {
+        patient: {
+          medicalRecordNumber: patient.medicalRecordNumber,
+          patientIdentifier: patient.patientIdentifier,
+          patientInfo: patient.patientInfo
+        }
+      };
+      setInitialValues(formValues);
+      setOrcaVerifiedPatient({
+        medicalRecordNumber: patient.medicalRecordNumber,
+        patientId: patient.patientIdentifier,
+        ...patient.patientInfo
       });
+
+      if (orderDetails.patient && manufacturer === MANUFACTURER.ORCA) {
+        const patient = orderDetails.patient;
+        if (patient.medicalRecordNumber) {
+          setLastVerifiedMedicalRecordNumber(patient.medicalRecordNumber);
+        }
+        if (patient.patientIdentifier) {
+          setLastVerifiedPatientId(patient.patientIdentifier);
+        }
+      }
+    }
+  }, [orderDetails]);
+
+  React.useEffect(() => {
+    if (formikRef.current) {
+      const setFieldValue = formikRef.current?.setFieldValue;
+
+      if (orcaVerifiedPatient) {
+        if (orcaVerifiedPatient.medicalRecordNumber) {
+          setLastVerifiedMedicalRecordNumber(orcaVerifiedPatient.medicalRecordNumber);
+        }
+        if (orcaVerifiedPatient.patientId) {
+          setLastVerifiedPatientId(orcaVerifiedPatient.patientId);
+        }
+
+        formikRef.current?.setTouched({});
+        formikRef.current?.setErrors({});
+
+        setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
+        setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
+        setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
+        setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
+        setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
+        setFieldValue('patient.patientInfo.gender', orcaVerifiedPatient.gender);
+        setFieldValue('patient.patientInfo.dateOfBirth', orcaVerifiedPatient.dateOfBirth);
+      } else {
+        clearPatientDetails();
+      }
     }
   }, [orcaVerifiedPatient]);
 
   const validateOnBlur = (e) => {
-    const { id, value } = e.target;
-    if (!value) return;
+    const { id } = e.target;
 
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
+    if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
+    else if (id.includes('medicalRecordNumber')) validateOrcaDetails(null, medicalRecordNumber);
+  };
 
-    validateOrcaDetails(patientId, medicalRecordNumber);
+  const clearPatientDetails = () => {
+    const setFieldValue = formikRef.current?.setFieldValue;
+    setOrcaVerifiedPatient(null);
+    setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
+    setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+    setFieldValue('patient.patientInfo.firstName', '');
+    setFieldValue('patient.patientInfo.middleName', '');
+    setFieldValue('patient.patientInfo.lastName', '');
+    setFieldValue('patient.patientInfo.gender', '');
+    setFieldValue('patient.patientInfo.dateOfBirth', null);
   };
 
   const validateOrcaDetails = (patientId, medicalRecordNumber) => {
     const payload = {};
     if (patientId) payload.patientId = patientId;
-    if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
-    OrderService.verifyOrcaDetails(payload)
-      .then((response) => {
-        if (response && Array.isArray(response) && response.length > 0) {
-          setOrcaPatientList([...response]);
-          setIsOrcaValidationPanelOpen(true);
-        }
-      })
-      .catch((error) => {});
+    else if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
+
+    if (CommonUtils.isNonEmptyObject(payload)) {
+      setOrcaVerifiedPatient(null);
+      setIsPatientVerifying(true);
+      OrderService.verifyOrcaDetails(payload)
+        .then((response) => {
+          if (response && Array.isArray(response) && response.length > 0) {
+            setOrcaPatientList([...response]);
+            setIsOrcaValidationPanelOpen(true);
+          }
+        })
+        .catch((error) => {
+          clearPatientDetails();
+          setAlert({
+            type: 'warning',
+            description: translateFn('message.orcaPatientVerificationFailed1')
+          });
+        })
+        .finally(() => {
+          setIsPatientVerifying(false);
+          if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
+          if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
+        });
+    } else {
+      clearPatientDetails();
+    }
   };
 
   const handleOnBack = () => {
@@ -98,7 +153,16 @@ function OrcaPatientDetails() {
       return OrderService.savePatientDetails(orderId, payload, true, orderDetails.channelType, false, isSendNotification);
     },
     {
-      onSuccess: (result) => {},
+      onSuccess: (result) => {
+        navigate('./../summary', {
+          state: {
+            alert: {
+              description: 'Patient details updated successfully',
+              type: 'success'
+            }
+          }
+        });
+      },
       onError: ({ err: error, payload }) => {}
     }
   );
@@ -112,8 +176,14 @@ function OrcaPatientDetails() {
     savePatientDetails({ payload });
   };
 
-  if (isLoading) return <Loader type={'circular'} />;
+  const spTherapyConfig = {
+    isCoiIdRequired: false,
+    isPatientIdentifierRequired: false,
+    isMRNRequired: false,
+    ...(orderDetails?.spTherapyConfig || {})
+  };
 
+  if (isLoading) return <Loader type={'circular'} />;
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
@@ -129,19 +199,51 @@ function OrcaPatientDetails() {
         </div>
       </div>
       <div className="MCP-module-body">
-        {alert && <Alert {...alert} />}
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="">
-          <Formik initialValues={initialValues} onSubmit={handleOnSave} enableReinitialize innerRef={formikRef}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={getValidationSchema(
+              translateFn,
+              orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+              spTherapyConfig,
+              therapyConfig,
+              manufacturer
+            )}
+            onSubmit={handleOnSave}
+            enableReinitialize
+            innerRef={formikRef}>
             <Form>
-              <div className="MCP-panel-container">
-                <p className="section-title">Patient Details</p>
-                <FormRenderer sections={PatientSections(channelType, therapyConfig, validateOnBlur, orcaVerifiedPatient?.id > 0)} />
-              </div>
-              <div className="controls">
-                <Button onClick={handleOnBack} variant="secondary">
-                  Cancel
-                </Button>
-                <Button type="submit">Save Changes</Button>
+              <div className="stack">
+                <div className="MCP-panel-container">
+                  <p className="section-title">Patient Details</p>
+                  <FormRenderer
+                    sections={PatientSections({
+                      channelType,
+                      therapyConfig,
+                      validateOnBlur,
+                      manufacturer,
+                      isPatientVerifying,
+                      isPatientVerified: ['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(orcaVerifiedPatient?.[key]))
+                    })}
+                  />
+                </div>
+                <div className="controls">
+                  <Button onClick={handleOnBack} variant="secondary" size="md">
+                    {translateFn('captions.btnCancel')}
+                  </Button>
+
+                  <Button
+                    disabled={!CommonUtils.isNonEmptyObject(orcaVerifiedPatient) || isPatientVerifying}
+                    variant="primary"
+                    isLoadingState={isSaving}
+                    Icon={isSaving && ButtonLoadingIcon}
+                    iconPosition="left"
+                    type="submit"
+                    size="md">
+                    {translateFn('captions.btnSaveChanges')}
+                  </Button>
+                </div>
               </div>
             </Form>
           </Formik>
@@ -150,8 +252,10 @@ function OrcaPatientDetails() {
               patientId={formikRef.current?.values?.patientIdentifier}
               medicalRecordNumber={formikRef.current?.values?.patientIdentifier}
               patientList={orcaPatientList}
-              onClose={(patient) => {
-                setOrcaVerifiedPatient(patient || { id: 0 });
+              setVerifiedPatient={setOrcaVerifiedPatient}
+              orderDetails={orderDetails}
+              onAlert={setAlert}
+              onClose={() => {
                 setIsOrcaValidationPanelOpen(false);
               }}
             />

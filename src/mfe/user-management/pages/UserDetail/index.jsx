@@ -29,6 +29,7 @@ import notificationConfig from '@src/mfe/core-config/notifications-setting/commu
 import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
 import UserMaterial from '../CreateUser/UserMaterial';
 import UserService from '@src/api/commonService/UserService';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -338,7 +339,7 @@ const UserDetail = () => {
         <ModuleHeader
           heading={
             <div className="subheader-text">
-              <Heading as="h2">
+              <Heading as="h2" className="entity-name">
                 <EclipsesTextcss str={userFullName} maxWidth={500} />
               </Heading>
             </div>
@@ -712,7 +713,14 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
             <Button variant="secondary" size="md" onClick={onNo}>
               {t('label.no')}
             </Button>
-            <Button variant="primary" size="md" onClick={handleOnYes} disabled={!consentCheckboxOption.isChecked || isLoading}>
+            <Button
+              variant="primary"
+              isLoadingState={isLoading}
+              Icon={isLoading && ButtonLoadingIcon}
+              iconPosition="left"
+              size="md"
+              onClick={handleOnYes}
+              disabled={!consentCheckboxOption.isChecked || isLoading}>
               {isLoading ? 'Loading' : t('label.yes')}
             </Button>
           </div>

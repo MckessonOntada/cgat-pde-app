@@ -4,7 +4,7 @@ import Components from '@src/components/form/Components';
 import MultiSelectDropdown from '../inputs/MultiSelectDropdown';
 
 export default function DynamicValueInput(props) {
-  const { index, label, isRequired = true, type, helperText, searchFn, pillListerFn } = props;
+  const { index, label, isRequired = true, length: maxLength, type, helperText, searchFn, pillListerFn, noSelectedCountMessage = '' } = props;
   const { values, setFieldValue } = useFormikContext();
   const selectedValues = values.rules[index].value || [];
 
@@ -15,17 +15,19 @@ export default function DynamicValueInput(props) {
       id: `rules[${index}].value`,
       name: `rules[${index}].value`,
       label,
+      maxLength,
       isRequired
     };
 
     if (type === 'text' || type === 'number') {
       fp.component = Components['input'];
     } else if (isSearch) {
+      fp.noSelectedCountMessage = noSelectedCountMessage;
       fp.component = MultiSelectDropdown;
       fp.variant = 'async';
       fp.isMultiSelect = true;
       fp.searchFn = searchFn;
-      fp.pillsLabels = pillListerFn ? selectedValues.map(pillListerFn) : [];
+      fp.pillsLabels = pillListerFn && selectedValues ? selectedValues.map(pillListerFn) : [];
       fp.pillsCount = 5;
       fp.isPillsVisible = true;
       fp.onRemoveClick = (id) => {
