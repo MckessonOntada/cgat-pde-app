@@ -531,6 +531,83 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     );
     dispatch(openModal(state));
   };
+  const stripPrefixSuffixFromData = (data, config) => {
+    const newData = { ...data };
+    config.forEach(({ fieldName, properties }) => {
+      const value = data[fieldName];
+      if (value === undefined || value === null) return;
+      const validationFormat = properties?.fieldFormat?.validationFormat;
+      if ((typeof value === 'string' && validationFormat && validationFormat.includes('prefix')) || validationFormat.includes('suffix')) {
+        let updatedValue = value;
+        const prefixMatch = validationFormat.match(/prefix\('([^']+)'\)/);
+        if (prefixMatch && updatedValue.startsWith(prefixMatch[1])) {
+          updatedValue = updatedValue.slice(prefixMatch[1].length);
+        }
+        const suffixMatch = validationFormat.match(/suffix\('([^']+)'\)/);
+        if (suffixMatch && updatedValue.endsWith(suffixMatch[1])) {
+          updatedValue = updatedValue.slice(0, -suffixMatch[1].length);
+        }
+        newData[fieldName] = updatedValue;
+      }
+    });
+    return newData;
+  };
+
+  const addPrefixSuffixToData = (data, config) => {
+    const newData = { ...data };
+    config.forEach(({ fieldName, properties }) => {
+      const value = data[fieldName];
+      const validationFormat = properties?.fieldFormat?.validationFormat;
+      if (typeof value === 'string' && validationFormat && (validationFormat.includes('prefix') || validationFormat.includes('suffix'))) {
+        let updatedValue = value;
+        const prefixMatch = validationFormat.match(/prefix\('([^']+)'\)/);
+        if (prefixMatch && !updatedValue.startsWith(prefixMatch[1])) {
+          updatedValue = `${prefixMatch[1]}${updatedValue}`;
+        }
+        const suffixMatch = validationFormat.match(/suffix\('([^']+)'\)/);
+        if (suffixMatch && !updatedValue.endsWith(suffixMatch[1])) {
+          updatedValue = `${updatedValue}${suffixMatch[1]}`;
+        }
+
+        newData[fieldName] = updatedValue;
+      }
+    });
+    return newData;
+  };
+
+  const { mutate: patientIdCoiIdValidation, isLoading: patientIdCoiIdValidationLoading } = useMutation(
+    async ({ patientId, coiId }) => {
+      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          // setAlert({
+          //   description: t('orderManagement.coiId.verificationSuccess', {
+          //     patientID: getDisplayNameByFieldName('patientIdentifier'),
+          //     coiId: getDisplayNameByFieldName('coiId')
+          //   }),
+          //   type: 'success'
+          // });
+        } else {
+          // setAlert({
+          //   description: t('orderManagement.patientID.CoiId.verificationFailed', {
+          //     patientID: getDisplayNameByFieldName('patientIdentifier'),
+          //     coiId: getDisplayNameByFieldName('coiId')
+          //   }),
+          //   type: 'warning'
+          // });
+        }
+      },
+      onError: () => {
+        // setAlert({
+        //   type: 'error',
+        //   description: t('errors.default')
+        // });
+      }
+    }
+  );
 
   const handleOnEditSection = (stage) => {
     if (
@@ -550,14 +627,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       }
 
       let formConfig = getUpdateFormConfig(stage, therapyConfig);
-      console.log('-----------', formConfig);
       let initialValues = {};
       let validationSchema = null;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
         validationSchema = additionalDetailsValidationSchema(t, therapyConfig);
         if (CommonUtils.isNonEmptyObject(draftChanges?.additionalDetailsRequestDTO)) {
           initialValues = {
-            ...draftChanges.additionalDetailsRequestDTO
+            ...stripPrefixSuffixFromData(draftChanges.additionalDetailsRequestDTO, therapyConfig.config.fields)
           };
         } else {
           initialValues = {
@@ -570,8 +646,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         }
       } else {
         initialValues = {
-          patientIdentifier: draftChanges?.patientIdentifier || '',
-          medicalRecordNumber: draftChanges?.medicalRecordNumber || ''
+          ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -583,16 +658,23 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
               setDraftChanges((prev) => ({
                 ...prev,
-                additionalDetailsRequestDTO: values
+                additionalDetailsRequestDTO: addPrefixSuffixToData(values, therapyConfig.config.fields)
               }));
             } else {
               setDraftChanges((prev) => ({
                 ...prev,
-                patientIdentifier: values.patientIdentifier,
-                medicalRecordNumber: values.medicalRecordNumber
+                ...addPrefixSuffixToData(values, therapyConfig.config.fields)
               }));
             }
-
+            if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS) {
+              patientIdCoiIdValidation({ patientId: values.patientIdentifier, coiId: values.coiId });
+            } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
+              if (values.patientIdentifier) {
+                patientIdCoiIdValidation({ patientId: values.patientIdentifier, coiId: values.coiId });
+              } else {
+                //1st fill patient id
+              }
+            }
             setDrawerElement(null);
           }}>
           {({ dirty, values }) => {
@@ -851,7 +933,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
-      {(isSaving || isFetching) && <Loader type={'screen'} />}
+      {(isSaving || isFetching || patientIdCoiIdValidationLoading) && <Loader type={'screen'} />}
 
       {!isError && (
         <React.Fragment>
