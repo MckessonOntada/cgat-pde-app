@@ -6,10 +6,11 @@ import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useFormikContext, getIn } from 'formik';
-import { fieldFormatOptions, fieldFormatRegexObj } from './config';
+import { FIELD_NAMES, getFieldFormatOptions, fieldFormatRegexObj } from './config';
 import CustomRegex from './CustomRegex';
+import { MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
-const ConfigurationForm = ({ index, setFieldError }) => {
+const ConfigurationForm = ({ field, index, setFieldError, setFieldTouched }) => {
   const { t } = useTranslate();
   const [customRegex, setCustomRegex] = React.useState(false);
   const { values, setFieldValue, errors } = useFormikContext();
@@ -24,7 +25,9 @@ const ConfigurationForm = ({ index, setFieldError }) => {
 
   const checkboxOptions = [
     {
-      isDisabled: false,
+      isDisabled:
+        (values.manufacturerName === MANUFACTURER.ORCA && [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) ||
+        (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)),
       isChecked: displayOnForm,
       label: t('manageSPMaterial.configuration.checkbox.displayOnForm'),
       value: 'displayOnForm'
@@ -48,8 +51,12 @@ const ConfigurationForm = ({ index, setFieldError }) => {
     setFieldValue(path(value), !current);
     if (value === 'displayOnForm') {
       setFieldError(`fields[${index}]`, '');
+      setFieldValue(path('showHelpIcon'), false);
+      setFieldValue(path('mandatoryField'), false);
     } else if (value === 'showHelpIcon') {
-      setFieldError(path('helpInfoMessage'), '');
+      setFieldValue(path('helpInfoMessage'), '');
+      setFieldError(path('helpInfoMessage'), undefined);
+      setFieldTouched(path('helpInfoMessage'), false);
     }
   };
 
@@ -79,7 +86,6 @@ const ConfigurationForm = ({ index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.displayName')}
         isRequired={displayOnForm}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm}
       />
 
@@ -88,7 +94,6 @@ const ConfigurationForm = ({ index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.helpInfoMessage')}
         isRequired={displayOnForm && showHelpIcon}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm || !showHelpIcon}
       />
 
@@ -102,7 +107,7 @@ const ConfigurationForm = ({ index, setFieldError }) => {
             fieldlabel={t('manageSPMaterial.configuration.label.formatType')}
             component={Components['dropdown']}
             isRequired={displayOnForm}
-            options={fieldFormatOptions}
+            options={getFieldFormatOptions(field.fieldName)}
             isReadOnly={!displayOnForm}
             onChangeHandler={(value) => {
               setFieldValue(path('fieldFormat.formatType'), value);
@@ -116,7 +121,6 @@ const ConfigurationForm = ({ index, setFieldError }) => {
           name={path('fieldFormat.validationRegex')}
           label={t('manageSPMaterial.configuration.label.validationRegex')}
           component={Components['input']}
-          maxLength={200}
           isReadOnly={true}
           infoText={t('manageSPMaterial.configuration.label.tooltip.helpText')}
         />
@@ -143,7 +147,6 @@ const ConfigurationForm = ({ index, setFieldError }) => {
         label={t('manageSPMaterial.configuration.label.errorMessage')}
         isRequired={displayOnForm}
         component={Components['input']}
-        maxLength={50}
         isReadOnly={!displayOnForm}
       />
 

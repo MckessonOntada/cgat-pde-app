@@ -29,7 +29,7 @@ export default function MaterialSelection(props) {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
 
   React.useEffect(() => {
-    MaterialService.getAllMaterials(userId)
+    MaterialService.getAllMaterials(userId, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' })
       .then((response) => {
         const selectedRecords = response.flatMap((trade) => {
           if (trade.isExpandable) {
@@ -44,19 +44,6 @@ export default function MaterialSelection(props) {
           setSelection(selectedRecords);
           return null;
         }
-
-        return MaterialService.getAllMaterials(userId, { listingMode: 'EXCLUDED' }).then((excluded) => {
-          const flatMapExcluded = excluded.flatMap((trade) => {
-            if (trade.isExpandable) {
-              return trade.therapies;
-            }
-            return [trade];
-          });
-          const filtered = selectedRecords.filter((record) => {
-            return !flatMapExcluded.some((ex) => ex.id === record.id);
-          });
-          setSelection(filtered);
-        });
       })
       .catch((error) => {
         console.log(error);
@@ -162,29 +149,33 @@ export default function MaterialSelection(props) {
             />
           </div>
           <TableHeading heading={translateFn('table.title.selectMaterial')} />
-          <div className="table-selection-container">
-            <Materials
-              omitColumns={['action', 'formulation', 'dosage']}
-              {...{ data: filteredData, loading, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
-            />
-            <List title={translateFn('list.title.selectedMaterials')}>
-              {selection.map((item = {}, index) => {
-                const { cellValue, genericName, ndc } = item;
+          <div className="table-selection-wrapper">
+            <div className="table">
+              <Materials
+                omitColumns={['action', 'formulation', 'dosage']}
+                {...{ data: filteredData, loading, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
+              />
+            </div>
+            <div className="list">
+              <List title={translateFn('list.title.selectedMaterials')}>
+                {selection.map((item = {}, index) => {
+                  const { cellValue, genericName, ndc } = item;
 
-                return (
-                  <ListItem key={index}>
-                    <div className="list-card-with-action">
-                      <div className="card-content">
-                        <label>{`${cellValue}(${genericName})(${ndc})`}</label>
+                  return (
+                    <ListItem key={index}>
+                      <div className="list-card-with-action">
+                        <div className="card-content">
+                          <label>{`${cellValue}(${genericName})(${ndc})`}</label>
+                        </div>
+                        <div className="card-action">
+                          <IconButton icon={DeleteIcon} color={'error'} onClick={() => removeFromBucket(item.id)} />
+                        </div>
                       </div>
-                      <div className="card-action">
-                        <IconButton icon={DeleteIcon} color={'error'} onClick={() => removeFromBucket(item.id)} />
-                      </div>
-                    </div>
-                  </ListItem>
-                );
-              })}
-            </List>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </div>
           </div>
         </div>
         <div className={'controls'}>

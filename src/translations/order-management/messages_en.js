@@ -1058,9 +1058,9 @@ export const MessageEn = {
   'labels.shipToPONumberExtraSpaceError': 'Ship to PO Number must not contain leading or trailing spaces',
   'labels.shipToPONumberRequired': 'Ship to PO Number is required',
   'orderManagement.patientID.verification':
-    'Patient ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    '{patientID} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'orderManagement.coiId.verification':
-    'COI ID do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+    '{coiId} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
   'labels.shipToPONumberRequired': 'Ship to PO Number is required',
   'labels.trackingDetails': 'Tracking Details',
   'labels.trackingNumber': 'Tracking Number',
@@ -1080,14 +1080,22 @@ export const MessageEn = {
   'labels.orderDelivered': 'Order Delivered',
   'labels.expectedToday': 'Expected today',
   'labels.expectedTomorrow': 'Expected tomorrow',
-  'labels.expectedDeliveryDate': 'Expected delivery date {deliveryDate}',
+  'labels.expectedDeliveryDate': 'Expected Delivery Date {deliveryDate}',
   'labels.PatientID': 'Patient ID',
   'captions.btnBackToSummary': 'Back to Summary',
+  'message.orcaPatientVerificationSuccess': 'Patient verified.',
   'message.orcaPatientVerificationFailed':
-    'The Orca Bio Patient ID or MRN and Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
-  'message:orcaPatientVerificationAbrupt': 'Verification was not successful. Please re-enter the Patient ID or MRN to restart the verification process.',
+    'Date of Birth entered is not valid. Please continue entering remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+  'message:orcaPatientVerificationAbrupt':
+    'Verification was not successful. Please re-enter the {patientId} or {medicalRecordNumber} to restart the verification process.',
   'helperText.orcaPatientVerificationDateControl':
     "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
-    'The Orca Bio Patient ID or MRN entered is not valid. Please re-enter Orca Bio Patient ID/MRN or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.'
+    'The {patientId} or {medicalRecordNumber} entered is not valid. Please re-enter {patientId}/{medicalRecordNumber} or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+  'orderManagement.patientID.verificationSuccess': '{patientID} Verified.',
+  'orderManagement.coiId.verificationSuccess': '{patientID} and {coiId} Verified.',
+  'orderManagement.coiId.valid': '{coiId} Verified.',
+  'orderManagement.patientID.CoiId.verificationFailed':
+    '{patientID} and {coiId} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
+  'labels.error.selectFutureDate': 'Please select a future date'
 };

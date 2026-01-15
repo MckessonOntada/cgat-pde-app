@@ -4,7 +4,7 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.breadcrumbs.systemAdministrator': 'S_System Administrator',
   'manageSPMaterial.breadcrumbs.systemConfiguration': 'S_System Configuration',
   'manageSPMaterial.breadcrumbs.manageSPMaterial': 'S_Manage SP Material',
-  'manageSPMaterial.filters.searchPlaceholder': 'S_Search by Product Name, ID, NDC...',
+  'manageSPMaterial.filters.searchPlaceholder': 'S_Search by Therapy, Manufacturer, NDC...',
   'manageSPMaterial.table.spproductId': 'S_SP Product ID',
   'manageSPMaterial.table.productname': 'S_S_Product Name',
   'manageSPMaterial.table.ndc': 'S_NDC',
@@ -181,5 +181,8 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.configuration.helpText.suffix': 'S_Text that must appear at the end',
   'manageSPMaterial.configuration.helpText.prefix': 'S_Text that must appear at the start',
   'manageSPMaterial.configuration.customRegex.error.minValueGreaterThanMaxValue': 'S_Minimum value should not be greater than maximum value',
-  'manageSPMaterial.configuration.customRegex.error.minDateGreaterThanMaxDate': 'S_Minimum date should not be greater than maximum date'
+  'manageSPMaterial.configuration.customRegex.error.minDateGreaterThanMaxDate': 'S_Minimum date should not be greater than maximum date',
+  'manageSPMaterial.configuration.validation.displayNameMaxLength': 'S_Display name must not exceed 40 characters.',
+  'manageSPMaterial.configuration.validation.errorMessageMaxLength': 'S_Error message must not exceed 100 characters.',
+  'manageSPMaterial.configuration.validation.helpInfoMaxLength': 'S_Help information message must not exceed 100 characters.'
 };

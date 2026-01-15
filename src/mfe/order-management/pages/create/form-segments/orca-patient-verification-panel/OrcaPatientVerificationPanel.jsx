@@ -17,7 +17,7 @@ function maskString(value, mask = '*') {
   return value[0] + mask.repeat(value.length - 1);
 }
 
-const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient, onAlert }) => {
+const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient, onAlert, orderDetails }) => {
   const { t: translateFn } = useTranslate();
   const [selectedPatient, setSelectedPatient] = React.useState(null);
   const [filteredPatient, setFilteredPatient] = React.useState([]);
@@ -34,6 +34,10 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
   const handleOnSubmit = () => {
     if (selectedPatient && isSameDate(new Date(selectedPatient.dateOfBirth), date)) {
       setVerifiedPatient(selectedPatient);
+      onAlert({
+        type: 'success',
+        description: translateFn('message.orcaPatientVerificationSuccess')
+      });
       onClose();
     } else {
       onAlert({
@@ -51,13 +55,21 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
     }
   };
 
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig = orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
+
   return (
     <FloatingDrawer
       open={true}
       onClose={() => {
         onAlert({
           type: 'warning',
-          description: translateFn('message:orcaPatientVerificationAbrupt')
+          description: translateFn('message:orcaPatientVerificationAbrupt', {
+            patientId: getDisplayNameByFieldName('patientIdentifier'),
+            medicalRecordNumber: getDisplayNameByFieldName('medicalRecordNumber')
+          })
         });
         setVerifiedPatient(null);
         onClose();
@@ -70,7 +82,10 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
             onClick={() => {
               onAlert({
                 type: 'warning',
-                description: translateFn('message:orcaPatientVerificationAbrupt')
+                description: translateFn('message:orcaPatientVerificationAbrupt', {
+                  patientId: getDisplayNameByFieldName('patientIdentifier'),
+                  medicalRecordNumber: getDisplayNameByFieldName('medicalRecordNumber')
+                })
               });
               setVerifiedPatient(null);
               onClose();
@@ -78,7 +93,9 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
             variant="secondary">
             {translateFn('captions.btnCancel')}
           </Button>
-          <Button onClick={handleOnSubmit}>{translateFn('captions.btnApply')}</Button>
+          <Button disabled={filteredPatient.length > 1 && !selectedPatient} onClick={handleOnSubmit}>
+            {translateFn('captions.btnApply')}
+          </Button>
         </div>
       }>
       <div className="stack">
@@ -104,7 +121,7 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
                   />
                   <div className={styles.cardContent}>
                     <p>{`${maskString(patient.firstName)} ${maskString(patient.lastName)}`}</p>
-                    <p>{patient.id}</p>
+                    <p>Patient ID - {patient.patientId}</p>
                   </div>
                 </label>
               );

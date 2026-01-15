@@ -2,7 +2,6 @@ import Components from '@src/components/form/Components';
 import CommonUtils from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
-import { extractPrefixSuffix } from '../OrderUtil';
 
 const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -18,7 +17,8 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     therapyConfig?.config?.fields?.forEach((field) => {
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
-        const { prefix, suffix } = extractPrefixSuffix(field?.properties?.fieldFormat?.validationRegex);
+        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
         dynamic_fields.push({
           name: field?.fieldName,
           label: field?.properties?.displayName,

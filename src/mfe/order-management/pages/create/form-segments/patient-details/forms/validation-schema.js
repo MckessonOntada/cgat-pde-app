@@ -2,7 +2,6 @@ import { ADDRESS_REGEX, ALPHA_NUMERIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, 
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import CommonUtils from '@src/util/CommonUtils';
 import * as Yup from 'yup';
-import { removePrefixSuffix } from '../../OrderUtil';
 
 export const getInitialValues = () => ({
   patient: {
@@ -72,12 +71,13 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    if (isSpOrder) allowedFields.add('coiId');
     const isOrca = manufacturer === 'ORCA';
 
     config?.config?.fields?.forEach((field) => {
       if (!allowedFields.has(field.fieldName) || !field.properties.displayOnForm) return;
 
-      let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
+      let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
 
       if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
         const vf = field.properties.fieldFormat.validationFormat;
@@ -138,10 +138,23 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
     if (isOrca) {
       allowedFields.forEach((fieldName) => {
-        dynamicFields[fieldName] = dynamicFields[fieldName].test('orca-atleast-one', 'At least one identifier is required', function () {
-          const values = this.parent;
-          return Array.from(allowedFields).some((f) => values?.[f]);
-        });
+        if (!dynamicFields[fieldName]) return;
+        const customizedFieldDetails = config?.config?.fields?.find((f) => f.fieldName === fieldName);
+
+        const displayName = customizedFieldDetails?.properties?.displayName;
+
+        const fallbackMessages = {
+          patientIdentifier: 'Manufacturer Patient Identifier is required',
+          medicalRecordNumber: 'Medical Record Number is required'
+        };
+
+        const message = displayName ? `${displayName} is required` : fallbackMessages[fieldName] || '';
+
+        if (customizedFieldDetails?.properties?.mandatoryField) {
+          dynamicFields[fieldName] = dynamicFields[fieldName].test('required-field', message, function (value) {
+            return customizedFieldDetails.properties?.mandatoryField && value !== undefined && value !== null && value !== '';
+          });
+        }
       });
     }
 
@@ -180,6 +193,39 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
               otherwise: (schema) => schema.nullable()
             })
         }),
+      ...(isSpOrder && {
+        patientAddress: Yup.object()
+          .nullable()
+          .shape({
+            addressLine1: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
+              .min(2, t('orgManagement.create_org.validation.address_1_min'))
+              .max(100, t('orgManagement.create_org.validation.address_1_max'))
+              .required(t('orderManagement.patientDetails.validation.address_1')),
+            addressLine2: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
+              .min(2, t('orgManagement.create_org.validation.address_2_min'))
+              .max(100, t('orgManagement.create_org.validation.address_2_max')),
+            city: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
+              .min(2, t('orgManagement.create_org.validation.city_min'))
+              .max(15, t('orgManagement.create_org.validation.city_max'))
+              .required(t('orderManagement.patientDetails.validation.city')),
+            zipCode: Yup.string()
+              .nullable()
+              .trim()
+              .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
+              .max(10, t('orgManagement.create_account.validation.zip_max'))
+              .required(t('orderManagement.patientDetails.validation.zip')),
+            state: Yup.string().nullable().required(t('orderManagement.patientDetails.validation.state'))
+          })
+      }),
       ...buildDynamicFieldValidators(configToUse, t)
     }),
     providerId: Yup.string().when([], {

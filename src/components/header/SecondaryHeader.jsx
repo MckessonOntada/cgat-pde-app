@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Button, TabList } from '@mckesson/mcp-component-library';
+import { Button, TabList, Modal } from '@mckesson/mcp-component-library';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
@@ -10,6 +10,7 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './assets/styles/Header.module.scss';
 import { navLinks } from './constants';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const impersonateLogout = () => {
   return new Promise(async (resolve, reject) => {
@@ -34,6 +35,8 @@ const SecondaryHeader = () => {
     organization: { removeOrganization }
   } = useSessionFeatures();
   const state = useSelector((state) => state.orderState);
+  const [exitUserViewModalOpen, setExitUserViewModalOpen] = React.useState(false);
+  const [exitingUserView, setExitingUserView] = React.useState(false);
 
   const handleSystemAdminViewClick = () => {
     removeOrganization();
@@ -130,37 +133,21 @@ const SecondaryHeader = () => {
     </div>
   );
 
-  const getImpersonateLoginDetails = () => {
-    const exitUserView = () => {
-      impersonateLogout()
-        .then(() => {
-          navigate('/?expelled=true');
-        })
-        .catch((error) => {
-          console.log(`error: ${error}`);
-        });
-    };
+  const exitUserView = () => {
+    setExitingUserView(true);
+    impersonateLogout()
+      .then(() => {
+        navigate('/?expelled=true');
+      })
+      .catch((error) => {
+        setExitingUserView(false);
+        console.log(`error: ${error}`);
+      });
+  };
 
+  const getImpersonateLoginDetails = () => {
     const handleOnExitUserView = () => {
-      const modalState = {
-        title: `${t('button.captions.exitUserView')}?`,
-        body: (
-          <div className="MCP-modal-body">
-            <p>{`${t('message.exitUserViewConfirmation')} ${impersonatedUsername}?`}</p>
-          </div>
-        ),
-        footer: (
-          <div className="controls">
-            <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-              {t('button.caption.no')}
-            </Button>
-            <Button size="md" variant="primary" onClick={exitUserView}>
-              {t('button.caption.yes')}
-            </Button>
-          </div>
-        )
-      };
-      dispatch(openModal(modalState));
+      setExitUserViewModalOpen(true);
     };
 
     if (impersonatedUsername) {
@@ -202,9 +189,50 @@ const SecondaryHeader = () => {
         <div className={styles.wrapper}>
           <LeftSideView />
           <RightSideView />
+          {exitUserViewModalOpen && (
+            <ExitUserViewConfirmation
+              onClose={() => setExitUserViewModalOpen(false)}
+              title={`${t('button.captions.exitUserView')}?`}
+              body={<p>{`${t('message.exitUserViewConfirmation')} ${impersonatedUsername}?`}</p>}
+              footer={[
+                <Button size="md" variant="secondary" onClick={() => setExitUserViewModalOpen}>
+                  {t('button.caption.no')}
+                </Button>,
+                <Button
+                  variant="primary"
+                  isLoadingState={exitingUserView}
+                  Icon={exitingUserView && ButtonLoadingIcon}
+                  iconPosition="left"
+                  type="submit"
+                  onClick={exitUserView}
+                  size="md">
+                  {exitingUserView ? 'Exiting User View' : t('button.caption.yes')}
+                </Button>
+              ]}
+            />
+          )}
         </div>
       </div>
     </div>
+  );
+};
+
+const ExitUserViewConfirmation = ({ title, body, footer, onClose }) => {
+  return (
+    <Modal
+      isOpen={true}
+      onClose={(e, reason) => {
+        if (reason && reason === 'backdropClick') {
+          return;
+        }
+        onClose && onClose();
+      }}
+      modalTitle={title}
+      modalBody={<div className="MCP-modal-body">{body}</div>}
+      isFooterCenterAlign={false}
+      modalFooter={<div className="controls">{footer}</div>}
+      modalSize={'xxs'}
+    />
   );
 };
 

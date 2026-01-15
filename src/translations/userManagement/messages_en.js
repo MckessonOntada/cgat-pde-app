@@ -52,6 +52,7 @@ export const UserManagementEN = {
   'userManagement.label.role': 'Role',
   'userManagement.label.cancel': 'Cancel',
   'userManagement.label.save': 'Save',
+  'userManagement.label.createSystemAdmin': 'Add System Admin',
   'userManagement.label.status': 'Status',
   'userManagement.label.description': 'Description',
   'userManagement.label.createdOn': 'Created On',
@@ -472,9 +473,9 @@ export const UserManagementEN = {
   'messages.confirmation.unlinkMaterialDescription': 'Do you want to unlink material?',
   'emptyTable.title.noRecordsFoundUserMaterials': 'No Assigned Material Found.',
   'emptyTable.description.noRecordsFoundUserMaterials': 'You need to assign materials to see in this table.',
-  'emptyTable.title.noRecordsFoundNotification Group': 'No Notification Group Found.',
+  'emptyTable.title.noRecordsFoundNotificationGroup': 'No Notification Group Found.',
   'emptyTable.description.noRecordsFoundNotificationGroup': 'You need to add notification group to see in this table.',
-
+  'table.messages.noRecordsFoundWithFilters': 'No records found for the applied filters',
   'notificationGroup.validation.groupNameIsRequired': 'Group name is required',
   'notificationGroup.validation.attributeIsRequired': 'Attribute is required',
   'notificationGroup.validation.valueIsRequired': 'Value is required',
@@ -489,6 +490,8 @@ export const UserManagementEN = {
   'button.caption.backToNotificationGroup': 'Back To Notification Group',
   'button.caption.createGroup': 'Create Group',
   'button.caption.updateGroup': 'Update Group',
+  'button.caption.creatingGroup': 'Creating Group',
+  'button.caption.updatingGroup': 'Updating Group',
 
   'notificationGroup.groupDetails': 'Group Details',
   'notificationGroup.notificationGroupName.label': 'Notification Group Name',
@@ -505,7 +508,7 @@ export const UserManagementEN = {
 
   'notificationGroup.ruleAccount.title': 'Account',
   'notificationGroup.ruleAccount.helperText': 'Please select a criteria to apply the notification rules on.',
-  'notificationGroup.ruleAccount.targetField.label': 'Select account(s)',
+  'notificationGroup.ruleAccount.targetField.label': 'Select Account(s)',
   'notificationGroup.ruleAccount.targetField.helperText': 'Please select account for the notification group.',
 
   'notificationGroup.ruleMaterial.title': 'Material',
@@ -522,5 +525,12 @@ export const UserManagementEN = {
   'dynamicRuleGroup.joinBy.anyOf': 'Any Of',
   'dynamicRuleGroup.joinBy.selectAnyOf': 'Selected Any Of',
   'dynamicRuleGroup.joinBy.orderedAnyOf': 'Ordered Any Of',
-  'dynamicRuleGroup.joinBy.greaterThan': 'Greater than'
+  'dynamicRuleGroup.joinBy.greaterThan': 'Greater than',
+
+  'notificationGroup.placeholder.selectNotificationTriggers': 'Select Notification Triggers',
+  'notificationGroup.placeholder.selectAccounts': 'Select Accounts',
+  'notificationGroup.placeholder.selectMaterials': 'Select Materials',
+
+  'button.caption.addAttribute': 'Add Attribute',
+  'group.rule.helperText': 'Please select a criteria to apply the approval rules on.'
 };

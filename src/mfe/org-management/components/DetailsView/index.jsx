@@ -19,7 +19,7 @@ const DetailsView = ({ data, onEditClick }) => {
       <div className="org-box">
         <div className="org-logo-box">
           {data?.logoUrl && <img src={organizationLogo} alt="Logo" className="logo-img" />}
-          <h2 className="org-label">{data.name}</h2>
+          <h2 className="org-label entity-name">{data.name}</h2>
         </div>
         {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && data?.isActive && (
           <Button Icon={EditPencil} variant="secondary" onClick={onEditClick} size="md">
@@ -32,7 +32,7 @@ const DetailsView = ({ data, onEditClick }) => {
 
       <div className="view-container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
         <div>
-          <p className="contact-heading">{t('orgManagement.org_detail.person_name')}</p>
+          <p className="contact-heading entity-name">{t('orgManagement.org_detail.person_name')}</p>
           <p className="contact-details">{getFullName(data?.contactPerson)}</p>
         </div>
         <div>

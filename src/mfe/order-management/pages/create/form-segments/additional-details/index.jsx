@@ -37,7 +37,7 @@ import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { getManufacturer, NotifyAlert, removePrefixSuffix, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
+import { getManufacturer, NotifyAlert, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -99,7 +99,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const manufacturer = getManufacturer(orderDetails);
-
   const dispatch = useDispatch();
 
   const variantsApiRequestParam = {
@@ -176,7 +175,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(removePrefixSuffix(field.properties.fieldFormat.validationRegex), field.properties.errorMessage);
+          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
@@ -274,6 +273,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
+    debugger;
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
 
     let questionnaireValidationSchema = Yup.object();
@@ -739,7 +739,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       : null;
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
-    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && orderQuantity) {
       const minQty = therapyConfig?.minQuantity ?? 1;
       const maxQty = therapyConfig?.maxQuantity ?? 99;
 
@@ -1018,10 +1018,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     {
       onSuccess: (res) => {
         if (res) {
-          setAlert(null);
+          setAlert({
+            description: t('orderManagement.coiId.valid', { coiId: getDisplayNameByFieldName('coiId') }),
+            type: 'success'
+          });
         } else {
           setAlert({
-            description: t('orderManagement.coiId.verification'),
+            description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
             type: 'warning'
           });
         }
@@ -1035,13 +1038,40 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   );
 
-  const handleCoiIdValidation = (e) => {
-    const { id, value } = e.target;
-    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
+  const formatFieldWithPrefixSuffix = (value, fieldName) => {
+    if (!value) return '';
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
+    const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+    return `${prefix ?? ''}${value}${suffix ?? ''}`;
+  };
 
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
+
+  const handleCoiIdValidation = (e, setFieldTouched, errors) => {
+    const { id, value } = e.target;
+    const fieldValue = formatFieldWithPrefixSuffix(value, 'coiId');
+    setFieldTouched('coiId', true);
+
+    if (errors?.coiId) return;
+
+    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
+    if (!orderDetails.patient.patientIdentifier) {
+      setAlert({
+        description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
+        type: 'warning'
+      });
+      return;
+    }
     coiIdValidation({
       patientId: orderDetails?.patient?.patientIdentifier,
-      coiId: e.target.value
+      coiId: fieldValue
     });
   };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
@@ -1102,8 +1132,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           />
         )}
         <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} channelType={orderDetails.channelType} />
-        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-        {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
+        <div className="stack">
+          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+          {triageAlert && <Alert {...triageAlert} onClose={() => setTriageAlert(null)} />}
+        </div>
 
         <Formik
           initialValues={initialFormValues}
@@ -1114,7 +1146,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           onSubmit={(values) => {
             handleOnSubmit(values);
           }}>
-          {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors }) => {
+          {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors, setFieldTouched }) => {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
             }, [values, initialFormValues, setFieldValue]);
@@ -1146,7 +1178,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           therapyConfig={therapyConfig}
                           channelType={channelType}
                           readOnly={readOnly || !isAllowedToProceed}
-                          handleCoiIdValidation={handleCoiIdValidation}
+                          handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors)}
                         />
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
@@ -1434,6 +1466,7 @@ const VariantDetails = ({
   if (!variantsData?.content || !CommonUtils.isNonEmptyObject(variantsData.content)) return null;
   const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
   const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
+  console.log(touched?.variant, !values.variant, errors);
   return (
     <FormSectionWrapper title={t('labels.selectVariant')} isRequired={true}>
       <div>
@@ -1443,7 +1476,7 @@ const VariantDetails = ({
           data={variantsData.content}
           readOnly={readOnly}
         />
-        {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+        {touched?.variant && values.variant && errors.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
       </div>
       <div className="agreement-checkbox-control">
         <Field name="variant-acknowledgement">
