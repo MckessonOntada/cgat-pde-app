@@ -164,8 +164,12 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     const isDirty =
       selectedSoldToAccount?.accountNumber !== orderDetails.accountDetails?.soldToAccount?.accountNumber ||
       selectedShipToAccount?.id !== orderDetails.accountDetails?.shipToAccount?.id;
-
-    setIsDirty(Boolean(isDirty));
+    debugger;
+    if (isTherapyChanged && !CommonUtils.isNonEmptyObject(selectedShipToAccount) && !CommonUtils.isNonEmptyObject(selectedSoldToAccount)) {
+      setIsDirty(false);
+    } else {
+      setIsDirty(Boolean(isDirty));
+    }
     dispatch(hasUnsavedChanges(isDirty));
     return () => dispatch(hasUnsavedChanges(false));
   }, [selectedSoldToAccount, selectedShipToAccount]);
@@ -215,7 +219,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     const payload = {
       program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
       soldToAccountId: selectedSoldToAccount.id,
-      shipToAccountId: selectedShipToAccount.id
+      shipToAccountId: selectedShipToAccount?.id || ''
     };
     setAlert(null);
     if (isStageInDraft || isDirty) {
@@ -256,8 +260,8 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   };
 
   const handleOnAccountSelection = (selectedAccount, config) => {
-    setSelectedShipToAccount('');
     setSelectedSoldToAccount(selectedAccount);
+    setSelectedShipToAccount(null);
     setAccountConfig(config);
     setOpen(false);
   };
