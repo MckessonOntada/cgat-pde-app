@@ -31,8 +31,8 @@ const PaymentsInvoices = () => {
     const updatedTabs = tabListData.map((item) => {
       return {
         ...item,
-        isActiveTab: location.pathname.includes(item.path),
-        ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false',
+        isActiveTab: location.pathname === `/record/${item.path}`,
+        ariaSelected: location.pathname === `/record/${item.path}` ? 'true' : 'false',
         configName: t('paymentInvoices.tabs.' + item.configName)
       };
     });
