@@ -94,13 +94,11 @@ const createColumns = (t, type, pageType, paymentInitiationDate, handlePdfDownlo
           variant="tertiary"
           Icon={() => <PDFicon />}
           onClick={() => {
-            console.log('handlePdfDownload', props);
             handlePdfDownload(props);
           }}
           size="md"
-          // disabled={!props?.pdfAvailable}
-        >
-          {t('paymentInvoices.CS.table.exportPdf')}
+          disabled={!props?.pdfAvailable}>
+          {t('paymentInvoices.Details.btnDownloadPdf')}
         </Button>
       )
     }
@@ -151,7 +149,6 @@ function ConfirmationTable({ invoiceData, creditData, pageType, paymentInitiatio
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
-  console.log('ConfirmationTable component loaded', selectedAccount);
   const { mutate: handlePdfDownload } = useMutation(
     async (props) => {
       const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, props.billNo)}/details-pdf`;
@@ -209,7 +206,7 @@ function ConfirmationTable({ invoiceData, creditData, pageType, paymentInitiatio
         <CustomDataTable
           id="invoice-data-table"
           type="normal"
-          columns={createColumns(t, 'invoice', pageType, paymentInitiationDate)}
+          columns={createColumns(t, 'invoice', pageType, paymentInitiationDate, handlePdfDownload)}
           data={invoiceData || []}
           onSortIconClick={() => {}}
           handleChangePage={() => {}}
