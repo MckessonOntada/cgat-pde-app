@@ -242,10 +242,10 @@ function Payer({ readOnly, hasPermission }) {
 
   const { isLoading: isSaving, mutate: savePayerDetails } = useMutation({
     queryKey: 'save-payer-details',
-    mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isSendNotification }) =>
-      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isOrderInDraft, isSendNotification),
-    onSuccess: (response, variables) => {
-      if (!isOrderInDraft) {
+    mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isSendNotification, isSavingDraft }) =>
+      OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isSavingDraft, isSendNotification),
+    onSuccess: (_response, variables) => {
+      if (!variables.isSavingDraft) {
         navigateToNextStage(orderId, true);
       } else {
         refreshOrderDetails();
@@ -289,7 +289,7 @@ function Payer({ readOnly, hasPermission }) {
     return result;
   }
 
-  const handleOnSubmit = (values) => {
+  const handleOnSubmit = (values, isSavingDraft) => {
     const { payerDetailsRequired, insuranceDetails = null } = values;
     const isPayerDetailsRequired = payerDetailsRequired === 'yes';
     if (isPayerDetailsRequired) {
@@ -304,10 +304,10 @@ function Payer({ readOnly, hasPermission }) {
     }
 
     if (isDirty || isStageInDraft) {
-      savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: isOrderInDraft ? false : true });
+      savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: isSavingDraft, isSavingDraft });
     } else if (!isDirty && !isStageInDraft) {
       if (orderDetails?.currentStage === ORDER_STAGES.PAYER_DETAILS) {
-        savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: false });
+        savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: isSavingDraft, isSavingDraft });
       } else {
         navigateToNextStage(orderId);
       }
@@ -381,8 +381,10 @@ function Payer({ readOnly, hasPermission }) {
       return;
     }
     setIsOrderInDraft(true);
-    handleOnSubmit(values);
+    handleOnSubmit(values, true);
   };
+
+  const handleOnSaveAndContinue = (values) => handleOnSubmit(values);
 
   const handleOnClosePanel = (key, setFieldValue, currentValues, resetFormFn) => {
     const next = {
@@ -455,7 +457,12 @@ function Payer({ readOnly, hasPermission }) {
 
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
-        <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
+        <Formik
+          initialValues={formValues}
+          validationSchema={validationSchema}
+          enableReinitialize={true}
+          onError={console.log}
+          onSubmit={handleOnSaveAndContinue}>
           {({ setValues, errors, values, touched, setTouched, setErrors, setFieldValue, dirty, resetForm, ...rest }) => {
             console.log(touched);
 

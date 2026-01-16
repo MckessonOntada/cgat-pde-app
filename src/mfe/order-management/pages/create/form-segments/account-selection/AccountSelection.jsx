@@ -164,7 +164,6 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     const isDirty =
       selectedSoldToAccount?.accountNumber !== orderDetails.accountDetails?.soldToAccount?.accountNumber ||
       selectedShipToAccount?.id !== orderDetails.accountDetails?.shipToAccount?.id;
-    debugger;
     if (isTherapyChanged && !CommonUtils.isNonEmptyObject(selectedShipToAccount) && !CommonUtils.isNonEmptyObject(selectedSoldToAccount)) {
       setIsDirty(false);
     } else {

@@ -42,6 +42,7 @@ const useOrder = (orderId) => {
             result[key] = undefined;
           }
         });
+        result.isPapOrder = result.paporder;
         const { accountDetails, provider, payerDetails, therapy = {}, spTherapyConfig } = result;
         if (accountDetails?.soldToAccount?.channelType) {
           result.channelType = accountDetails.soldToAccount.channelType;
