@@ -156,7 +156,7 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) => {
         const minDate = minMatch ? minMatch[1] : null;
         const maxDate = maxMatch ? maxMatch[1] : null;
 
-        validator = validator.test('date-range', field.properties.errorMessage, (value) => {
+        validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
           if (!value) return true;
 
           const toDate = (d) => {
