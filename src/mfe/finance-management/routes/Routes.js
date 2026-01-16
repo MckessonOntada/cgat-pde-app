@@ -41,6 +41,14 @@ const Routes = () => {
         }
       />
       <Route
+        path={PATHS.invoicesHistory}
+        element={
+          <PaymentsInvoiceProvider>
+            <Invoices type="history" />
+          </PaymentsInvoiceProvider>
+        }
+      />
+      <Route
         path={PATHS.credits}
         element={
           <PaymentsCreditsProvider>

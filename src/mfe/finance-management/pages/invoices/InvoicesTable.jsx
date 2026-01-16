@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Badge, Button, Loader, MenuList, Tooltip } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { FormattedNumber } from 'react-intl';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as ActionIcon } from '@src/assets/image/actionIcon.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { DUE_STATUS } from './InvoiceConstants';
+import { DUE_STATUS, INVOICE_STATUS } from './InvoiceConstants';
 import { PATHS } from '../../routes';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
@@ -28,7 +28,7 @@ export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig, refetch } = usePaymentInvoices();
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
@@ -37,6 +37,12 @@ export default function InvoicesTable() {
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
+  const isHistory = useLocation().pathname.split('/').includes('history');
+
+  React.useEffect(() => {
+    refetch();
+  }, [isHistory]);
+
   const { mutate: handleOnClickOrderId } = useMutation(
     async (orderId) => {
       return OrderService.getBackendOrderId(orderId);
@@ -169,7 +175,7 @@ export default function InvoicesTable() {
       width: '40px',
       showInMobileHeader: true,
       isSelectable: true,
-      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount) || isHistory
     },
     {
       name: t('paymentInvoices.history.table.invoiceNumber'),
@@ -294,14 +300,42 @@ export default function InvoicesTable() {
             <Badge
               text={DUE_STATUS[props.status]?.label}
               customStyle={{
-                backgroundColor: `${DUE_STATUS[props.status]?.color}`
+                color: DUE_STATUS[props.status]?.textColor ? DUE_STATUS[props.status]?.textColor : ''
               }}
             />
           ) : (
             '-'
           )}
         </div>
-      )
+      ),
+      omit: isHistory
+    },
+    {
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
+      selector: (row) => row.clearingStatus,
+      minWidth: '195px',
+      sortable: true,
+      center: true,
+      wrap: true,
+      id: 'clearingStatus',
+      showInMobileHeader: true,
+      cardStatus: true,
+      cell: (props) => (
+        <div className="status-container">
+          {props.clearingStatus ? (
+            <Badge
+              text={INVOICE_STATUS[props.clearingStatus]?.label}
+              customStyle={{
+                backgroundColor: `${INVOICE_STATUS[props.clearingStatus]?.color}`,
+                color: INVOICE_STATUS[props.clearingStatus]?.textColor ? INVOICE_STATUS[props.clearingStatus]?.textColor : ''
+              }}
+            />
+          ) : (
+            '-'
+          )}
+        </div>
+      ),
+      omit: !isHistory
     },
 
     {
