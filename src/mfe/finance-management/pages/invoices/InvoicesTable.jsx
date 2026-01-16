@@ -223,15 +223,6 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('labels.providePONumber'),
-      id: 'poNumber',
-      selector: (row) => `${row.poNumber}`,
-      maxWidth: '180px',
-      cell: (props) => <EclipsesTextcss str={props.poNumber || 'N/A'} maxWidth={170} />,
-      omit: !isHistory
-    },
-
-    {
       name: t('labels.PatientID'),
       id: 'patientId',
       selector: (row) => `${row.patientId}`,
