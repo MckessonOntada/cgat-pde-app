@@ -4,196 +4,208 @@ import { ORDER_STAGES } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
 export const getUpdateFormConfig = (stage, therapyConfig) => {
+  const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
-    return [
-      {
-        rows: [
-          {
-            grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
-            controls: [
-              ...(therapyConfig.patientIdentifierRequirement !== REQUIREMENT.NOT_REQUIRED
-                ? [
-                    {
-                      id: 'patient-info-identifier',
-                      name: 'patientIdentifier',
-                      label: 'labels.patientIdentifier',
-                      placeholder: ' ',
-                      type: 'input',
-                      maxLength: 20,
-                      isRequired: therapyConfig.patientIdentifierRequirement == REQUIREMENT.MANDATORY
-                    }
-                  ]
-                : []),
-              ...(therapyConfig.mrnRequirement !== REQUIREMENT.NOT_REQUIRED
-                ? [
-                    {
-                      id: 'patient-info-mrn',
-                      name: 'medicalRecordNumber',
-                      label: 'orderManagement.patientDetails.inputLabel.mrn',
-                      placeholder: ' ',
-                      type: 'input',
-                      maxLength: 11,
-                      isRequired: therapyConfig.mrnRequirement === REQUIREMENT.MANDATORY
-                    }
-                  ]
-                : [])
-            ]
-          }
-        ]
+    therapyConfig?.config?.fields?.forEach((field) => {
+      if (field?.properties?.displayOnForm && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) {
+        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+        dynamic_fields.push({
+          id: `patient-info-${field.fieldName}`,
+          name: field?.fieldName,
+          label: field?.properties?.displayName,
+          isRequired: field?.properties?.mandatoryField,
+          type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+          prefix,
+          suffix,
+          infoText: field?.properties.helpInfoMessage
+        });
       }
-    ];
+    });
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
-    const controls = [
-      ...(therapyConfig.dateOfAdministrationRequirement != REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-doa',
-              name: 'dateOfAdministration',
-              label: 'orderManagement.patientDetails.inputLabel.doa',
-              placeholder: ' ',
-              type: 'datePicker',
-              isRequired: therapyConfig.dateOfAdministrationRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.coiIdRequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-coiId',
-              name: 'coiId',
-              label: 'labels.coiId',
-              placeholder: ' ',
-              type: 'input',
-              maxLength: 10,
-              isRequired: therapyConfig.coiIdRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.poNumberRequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-poNumber',
-              name: 'poNumber',
-              label: 'labels.providePONumber',
-              placeholder: ' ',
-              type: 'input',
-              maxLength: 20,
-              isRequired: therapyConfig.poNumberRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.shipToPORequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-shipToPONumber',
-              name: 'shipToPONumber',
-              label: 'labels.shipToPONumber',
-              placeholder: ' ',
-              type: 'input',
-              maxLength: 20,
-              isRequired: therapyConfig.shipToPORequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : []),
-      ...(therapyConfig.dateOfApheresisRequirement !== REQUIREMENT.NOT_REQUIRED
-        ? [
-            {
-              id: 'patient-info-dateOfApheresis',
-              name: 'dateOfApheresis',
-              label: 'orderManagement.patientDetails.inputLabel.dateOfApheresis',
-              placeholder: ' ',
-              type: 'datePicker',
-              isRequired: therapyConfig.dateOfApheresisRequirement == REQUIREMENT.MANDATORY
-            }
-          ]
-        : [])
-    ];
-    const formattedControls = [
-      {
-        rows: controls.map((control, index) => ({
-          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
-          controls: [control]
-        }))
+    therapyConfig?.config?.fields?.forEach((field) => {
+      if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+        dynamic_fields.push({
+          id: `additional-details-${field.fieldName}`,
+          name: field?.fieldName,
+          label: field?.properties?.displayName,
+          isRequired: field?.properties?.mandatoryField,
+          type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+          prefix,
+          suffix,
+          infoText: field?.properties.helpInfoMessage
+        });
       }
-    ];
-
-    return formattedControls;
+    });
   }
+  const formattedControls = [
+    {
+      rows: dynamic_fields.map((control, index) => ({
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-start',
+        controls: [control]
+      }))
+    }
+  ];
+
+  return formattedControls;
 };
 
-export const patientDetailsValidationSchema = (t, therapyConfig) =>
-  Yup.object().shape({
-    patientIdentifier: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
-      .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
-      .when([], {
-        is: () => therapyConfig.patientIdentifierRequirement === REQUIREMENT.MANDATORY,
-        then: (schema) =>
-          schema
-            .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
-            .test(
-              'no-leading-trailing-spaces',
-              t('orderManagement.patientDetails.validation.patient_identifier_must_number'),
-              (value) => value === undefined || value.trim().length === value.length
-            ),
-        otherwise: (schema) => schema.notRequired()
-      }),
-    medicalRecordNumber: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'))
-      .test(
-        'no-leading-trailing-spaces',
-        t('orderManagement.patientDetails.validation.mrn_must_alphanumeric'),
-        (value) => value === undefined || value === null || value?.trim().length === value.length
-      )
-      .when([], {
-        is: () => therapyConfig?.mrnRequirement === REQUIREMENT.MANDATORY,
-        then: (schema) => schema.required(t('orderManagement.patientDetails.validation.mrn_required')),
-        otherwise: (schema) => schema.notRequired()
-      })
-  });
+export const patientDetailsValidationSchema = (t, therapyConfig) => {
+  const buildDynamicFieldValidators = (config, t) => {
+    const dynamicFields = {};
+    const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
 
-export const additionalDetailsValidationSchema = (t, therapyConfig) =>
-  Yup.object().shape({
-    coiId: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-      .max(10, t('labels.COI_IdExceedDigits'))
-      .when([], {
-        is: () => therapyConfig.coiIdRequirement === REQUIREMENT.MANDATORY,
-        then: (schema) => schema.required(t('labels.COIIdRequired')),
-        otherwise: (schema) => schema.notRequired()
-      }),
-    poNumber: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('labels.poNumberMustValid'))
-      .max(35, t('labels.PONumberLengthError'))
-      .test('no-leading-trailing-spaces', t('labels.poNumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-      .when([], {
-        is: () => therapyConfig.poNumberRequirement === REQUIREMENT.MANDATORY,
-        then: (schema) => schema.required(t('labels.PONumberRequired')),
-        otherwise: (schema) => schema.notRequired()
-      }),
-    shipToPONumber: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('labels.shipToPONumberMustValid'))
-      .max(35, t('labels.shipToPONumberLengthError'))
-      .test('no-leading-trailing-spaces', t('labels.shipToPONumberExtraSpaceError'), (value) => value === undefined || value.trim().length === value.length)
-      .when([], {
-        is: () => therapyConfig.shipToPORequirement === REQUIREMENT.MANDATORY,
-        then: (schema) => schema.required(t('labels.shipToPONumberRequired')),
-        otherwise: (schema) => schema.notRequired()
-      }),
-    dateOfAdministration: Yup.date()
-      .typeError(t('labels.enterValidDateOfAdministration'))
-      .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
-      .when([], {
-        is: () => therapyConfig.dateOfAdministrationRequirement === REQUIREMENT.MANDATORY,
-        then: (schema) => schema.required(t('labels.enterValidDateOfAdministration')),
-        otherwise: (schema) => schema.notRequired()
-      }),
-    dateOfApheresis: Yup.date()
-      .typeError(t('labels.enterValidDateOfApheresis'))
-      .min(new Date(), t('labels.dateOfApheresisFutureDateOnly'))
-      .when([], {
-        is: () => therapyConfig.dateOfApheresisRequirement === REQUIREMENT.MANDATORY,
-        then: (schema) => schema.required(t('labels.enterValidDateOfApheresis')),
-        otherwise: (schema) => schema.notRequired()
-      })
-  });
+    config?.config?.fields?.forEach((field) => {
+      if (!allowedFields.has(field.fieldName) || !field.properties?.displayOnForm) return;
+
+      let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
+
+      validator = validator.test(
+        'no-leading-trailing-spaces',
+        field.properties.errorMessage,
+        (value) => value === undefined || value === null || value.trim().length === value.length
+      );
+
+      if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+        const vf = field.properties.fieldFormat.validationFormat || '';
+
+        const minMatch = vf.match(/minDate\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+
+        const minDate = minMatch ? minMatch[1] : null;
+        const maxDate = maxMatch ? maxMatch[1] : null;
+
+        validator = validator.test('date-range', `Please enter a date between ${minDate} and ${maxDate}.`, (value) => {
+          if (!value) return true;
+
+          const toDate = (d) => {
+            const [m, day, y] = d.split('/');
+            return new Date(`${y}-${m}-${day}`);
+          };
+
+          const inputDate = toDate(value);
+
+          if (minDate && inputDate < toDate(minDate)) return false;
+          if (maxDate && inputDate > toDate(maxDate)) return false;
+
+          return true;
+        });
+      }
+
+      if (field.properties.fieldFormat.formatType === 'Integer') {
+        const vf = field.properties.fieldFormat.validationFormat || '';
+
+        const minMatch = vf.match(/minValue\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxValue\('([^']+)'\)/);
+
+        const minValue = minMatch ? Number(minMatch[1]) : null;
+        const maxValue = maxMatch ? Number(maxMatch[1]) : null;
+
+        validator = validator.test('integer-range', field.properties.errorMessage, (value) => {
+          if (value === undefined || value === null || value === '') return true;
+
+          const num = Number(value);
+          if (Number.isNaN(num)) return false;
+
+          if (minValue !== null && num < minValue) return false;
+          if (maxValue !== null && num > maxValue) return false;
+
+          return true;
+        });
+      }
+
+      validator = validator.when([], {
+        is: () => field.properties.mandatoryField,
+        then: (s) => s.required(`${field.properties.displayName} is required`),
+        otherwise: (s) => s.notRequired()
+      });
+
+      dynamicFields[field.fieldName] = validator;
+    });
+
+    return dynamicFields;
+  };
+
+  return Yup.object().shape(buildDynamicFieldValidators(therapyConfig, t));
+};
+
+export const additionalDetailsValidationSchema = (t, therapyConfig) => {
+  const buildDynamicFieldValidators = (config, t) => {
+    const dynamicFields = {};
+    const allowedFields = new Set(['coiId', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis']);
+
+    config?.config?.fields?.forEach((field) => {
+      if (!allowedFields.has(field.fieldName) || !field.properties?.displayOnForm) return;
+
+      let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
+
+      validator = validator.test(
+        'no-leading-trailing-spaces',
+        field.properties.errorMessage,
+        (value) => value === undefined || value === null || value.trim().length === value.length
+      );
+
+      if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
+        const vf = field.properties.fieldFormat.validationFormat || '';
+
+        const minMatch = vf.match(/minDate\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxDate\('([^']+)'\)/);
+
+        const minDate = minMatch ? minMatch[1] : null;
+        const maxDate = maxMatch ? maxMatch[1] : null;
+
+        validator = validator.test('date-range', field.properties.errorMessage, (value) => {
+          if (!value) return true;
+
+          const toDate = (d) => {
+            const [m, day, y] = d.split('/');
+            return new Date(`${y}-${m}-${day}`);
+          };
+
+          const inputDate = toDate(value);
+
+          if (minDate && inputDate < toDate(minDate)) return false;
+          if (maxDate && inputDate > toDate(maxDate)) return false;
+
+          return true;
+        });
+      }
+
+      if (field.properties.fieldFormat.formatType === 'Integer') {
+        const vf = field.properties.fieldFormat.validationFormat || '';
+
+        const minMatch = vf.match(/minValue\('([^']+)'\)/);
+        const maxMatch = vf.match(/maxValue\('([^']+)'\)/);
+
+        const minValue = minMatch ? Number(minMatch[1]) : null;
+        const maxValue = maxMatch ? Number(maxMatch[1]) : null;
+
+        validator = validator.test('integer-range', field.properties.errorMessage, (value) => {
+          if (value === undefined || value === null || value === '') return true;
+
+          const num = Number(value);
+          if (Number.isNaN(num)) return false;
+
+          if (minValue !== null && num < minValue) return false;
+          if (maxValue !== null && num > maxValue) return false;
+
+          return true;
+        });
+      }
+
+      validator = validator.when([], {
+        is: () => field.properties.mandatoryField,
+        then: (s) => s.required(`${field.properties.displayName} is required`),
+        otherwise: (s) => s.notRequired()
+      });
+
+      dynamicFields[field.fieldName] = validator;
+    });
+
+    return dynamicFields;
+  };
+
+  return Yup.object().shape(buildDynamicFieldValidators(therapyConfig, t));
+};

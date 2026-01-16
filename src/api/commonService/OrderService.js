@@ -512,7 +512,6 @@ async function regeneronPatientIdVerification(patientId) {
 }
 async function regeneronCoiIdVerification(patientId, coiId) {
   if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
-  if (!coiId) throw new Error('COI id is missing. COI id is required to to verify.');
   let url = `${ApiRoutes.USER_BASE}regeneron/validate?${serializeParams({ patientId: patientId, clearanceId: coiId })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;

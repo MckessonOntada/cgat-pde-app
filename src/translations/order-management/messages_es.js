@@ -742,5 +742,10 @@ export const MessageEs = {
   'orderManagement.coiId.valid': 'S_{coiId} Verified.',
   'orderManagement.patientID.CoiId.verificationFailed':
     'S_{patientID} and {coiId} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
-  'labels.error.selectFutureDate': 'S_Please select a future date'
+  'labels.error.selectFutureDate': 'S_Please select a future date',
+  'orderManagement.patientID.CoiId.verificationFailedSubmitPage':
+    'S_{patientID} and {coiId} do not match the master file. Please verify the details before submitting the order.',
+  'orderManagement.patientID.verificationFailedSubmitPage':
+    'S_{patientID} do not match the master file. Please verify the details before submitting the order.',
+  'orderManagement.CoiId.verificationFailedSubmitPage': 'S_Please verify {patientId} first to match {coiId} in the master file.'
 };

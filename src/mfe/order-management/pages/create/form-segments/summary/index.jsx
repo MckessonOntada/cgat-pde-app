@@ -49,6 +49,7 @@ import styles from './Summary.module.scss';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import { TrackingDetails } from './tracking-details';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
@@ -70,6 +71,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [drawerElement, setDrawerElement] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
+  const [allowedSubmission, setAllowedSubmission] = React.useState(true);
   const {
     therapy = {},
     catalog = {},
@@ -97,7 +99,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       setDraftChanges({
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
         patientIdentifier: orderDetails.patient?.patientIdentifier,
-        ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+        medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
       });
     }
   }, [orderDetails]);
@@ -521,7 +523,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDraftChanges({
                 additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
                 patientIdentifier: orderDetails.patient?.patientIdentifier,
-                ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+                medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
               });
             }
           }}>
@@ -531,6 +533,111 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     );
     dispatch(openModal(state));
   };
+  const stripPrefixSuffixFromData = (data, config) => {
+    const newData = { ...data };
+    config.forEach(({ fieldName, properties }) => {
+      const value = data[fieldName];
+      if (value === undefined || value === null) return;
+      const validationFormat = properties?.fieldFormat?.validationFormat;
+      if ((typeof value === 'string' && validationFormat && validationFormat.includes('prefix')) || validationFormat.includes('suffix')) {
+        let updatedValue = value;
+        const prefixMatch = validationFormat.match(/prefix\('([^']+)'\)/);
+        if (prefixMatch && updatedValue.startsWith(prefixMatch[1])) {
+          updatedValue = updatedValue.slice(prefixMatch[1].length);
+        }
+        const suffixMatch = validationFormat.match(/suffix\('([^']+)'\)/);
+        if (suffixMatch && updatedValue.endsWith(suffixMatch[1])) {
+          updatedValue = updatedValue.slice(0, -suffixMatch[1].length);
+        }
+        newData[fieldName] = updatedValue;
+      }
+    });
+    return newData;
+  };
+
+  const addPrefixSuffixToData = (data, config) => {
+    const newData = { ...data };
+    config.forEach(({ fieldName, properties }) => {
+      const value = data[fieldName];
+
+      if (value === undefined || value === null || value === '') return;
+      const validationFormat = properties?.fieldFormat?.validationFormat;
+      if (typeof value === 'string' && validationFormat && (validationFormat.includes('prefix') || validationFormat.includes('suffix'))) {
+        let updatedValue = value;
+        const prefixMatch = validationFormat.match(/prefix\('([^']+)'\)/);
+        if (prefixMatch && !updatedValue.startsWith(prefixMatch[1])) {
+          updatedValue = `${prefixMatch[1]}${updatedValue}`;
+        }
+        const suffixMatch = validationFormat.match(/suffix\('([^']+)'\)/);
+        if (suffixMatch && !updatedValue.endsWith(suffixMatch[1])) {
+          updatedValue = `${updatedValue}${suffixMatch[1]}`;
+        }
+
+        newData[fieldName] = updatedValue;
+      }
+    });
+    return newData;
+  };
+  const getDisplayNameByFieldName = (fieldName) => {
+    const materialConfig = orderDetails.therapyConfig?.config?.fields;
+    return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
+  };
+  const { mutate: patientIdCoiIdValidation, isLoading: patientIdCoiIdValidationLoading } = useMutation(
+    async ({ patientId, coiId }) => {
+      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      return res.data;
+    },
+    {
+      onSuccess: (res, variables) => {
+        if (res) {
+          if (variables.patientId && variables.coiId) {
+            setAlert({
+              description: t('orderManagement.coiId.verificationSuccess', {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }),
+              type: 'success'
+            });
+            setAllowedSubmission(true);
+          } else {
+            setAlert({
+              description: t('orderManagement.patientID.verificationSuccess', {
+                patientID: getDisplayNameByFieldName('patientIdentifier')
+              }),
+              type: 'success'
+            });
+            setAllowedSubmission(false);
+          }
+        } else {
+          if (variables.patientId && variables.coiId) {
+            setAlert({
+              description: t('orderManagement.patientID.CoiId.verificationFailedSubmitPage', {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }),
+              type: 'error'
+            });
+            setAllowedSubmission(false);
+          } else {
+            setAlert({
+              description: t('orderManagement.patientID.verificationFailedSubmitPage', {
+                patientID: getDisplayNameByFieldName('patientIdentifier'),
+                coiId: getDisplayNameByFieldName('coiId')
+              }),
+              type: 'error'
+            });
+            setAllowedSubmission(false);
+          }
+        }
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
 
   const handleOnEditSection = (stage) => {
     if (
@@ -556,7 +663,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         validationSchema = additionalDetailsValidationSchema(t, therapyConfig);
         if (CommonUtils.isNonEmptyObject(draftChanges?.additionalDetailsRequestDTO)) {
           initialValues = {
-            ...draftChanges.additionalDetailsRequestDTO
+            ...stripPrefixSuffixFromData(draftChanges.additionalDetailsRequestDTO, therapyConfig.config.fields)
           };
         } else {
           initialValues = {
@@ -569,8 +676,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         }
       } else {
         initialValues = {
-          patientIdentifier: draftChanges?.patientIdentifier || '',
-          ...(therapyConfig.mrnRequirement && { medicalRecordNumber: draftChanges?.medicalRecordNumber || '' })
+          ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
         };
         validationSchema = patientDetailsValidationSchema(t, therapyConfig);
       }
@@ -579,19 +685,43 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
+            let tempValue = addPrefixSuffixToData(values, therapyConfig.config.fields);
             if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
               setDraftChanges((prev) => ({
                 ...prev,
-                additionalDetailsRequestDTO: values
+                additionalDetailsRequestDTO: tempValue
               }));
             } else {
               setDraftChanges((prev) => ({
                 ...prev,
-                patientIdentifier: values.patientIdentifier,
-                ...(therapyConfig.mrnRequirement && { medicalRecordNumber: values.medicalRecordNumber })
+                ...tempValue
               }));
             }
-
+            if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
+              patientIdCoiIdValidation({
+                patientId: tempValue.patientIdentifier,
+                coiId: draftChanges.additionalDetailsRequestDTO.coiId ? draftChanges.additionalDetailsRequestDTO.coiId : ''
+              });
+              scrollToTopUtil();
+            } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
+              if (draftChanges.patientIdentifier) {
+                patientIdCoiIdValidation({
+                  patientId: draftChanges.patientIdentifier,
+                  coiId: tempValue.coiId
+                });
+                scrollToTopUtil();
+              } else {
+                setAlert({
+                  description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
+                    patientId: getDisplayNameByFieldName('patientIdentifier'),
+                    coiId: getDisplayNameByFieldName('coiId')
+                  }),
+                  type: 'error'
+                });
+                setAllowedSubmission(false);
+                scrollToTopUtil();
+              }
+            }
             setDrawerElement(null);
           }}>
           {({ dirty, values }) => {
@@ -673,7 +803,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
       additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
       patientIdentifier: orderDetails.patient?.patientIdentifier,
-      ...(therapyConfig.mrnRequirement && { medicalRecordNumber: orderDetails.patient?.medicalRecordNumber })
+      medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
     });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
@@ -709,7 +839,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     const controlReSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} disabled={isResubmitting || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button size={'md'} disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -850,7 +980,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
-      {(isSaving || isFetching) && <Loader type={'screen'} />}
+      {(isSaving || isFetching || patientIdCoiIdValidationLoading) && <Loader type={'screen'} />}
 
       {!isError && (
         <React.Fragment>
@@ -1214,8 +1344,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             variant="tertiary"
                             disabled={
                               orderDetails.status === ORDER_STATUS.SUBMITTED &&
-                              !isSpOrder &&
-                              [(therapyConfig.mrnRequirement, therapyConfig.patientIdentifierRequirement)].every((val) => val === REQUIREMENT.NOT_REQUIRED)
+                              !(therapyConfig?.config?.fields ?? []).some(
+                                (field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
+                              )
                             }
                             onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
                             Icon={() => <IconEditField />}>
@@ -1229,8 +1360,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['patientIdentifier'].includes(field.fieldName))
                           ?.map((field) => {
-                            console.log(patient);
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
                       <DetailSegment
                         label={t('labels.patientName')}
@@ -1264,7 +1394,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
                           ?.map((field) => {
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={patient?.[field.fieldName] || '-'} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName]} />;
                           })}
                     </div>
                   </div>
@@ -1317,13 +1447,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           disabled={
                             orderDetails.status === ORDER_STATUS.SUBMITTED &&
                             !isSpOrder &&
-                            [
-                              therapyConfig.coiIdRequirement,
-                              therapyConfig.poNumberRequirement,
-                              therapyConfig.shipToPORequirement,
-                              therapyConfig.dateOfAdministrationRequirement,
-                              therapyConfig.dateOfApheresisRequirement
-                            ].every((val) => val === REQUIREMENT.NOT_REQUIRED)
+                            !(therapyConfig?.config?.fields ?? []).some(
+                              (field) =>
+                                ['coiId', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis'].includes(field?.fieldName) &&
+                                field?.properties?.displayOnForm === true
+                            )
                           }
                           onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
@@ -1340,7 +1468,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           ?.map((field) => {
                             const value = draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ?? draftChanges?.patient?.[field.fieldName] ?? '-';
 
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value || '-'} />;
                           })}
 
                         {additionalDetails?.orderQuantity && (
