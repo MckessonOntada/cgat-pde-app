@@ -84,7 +84,7 @@ const ApiRoutes = Object.freeze({
   NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl('in-app-notification/unread/count'),
   NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl('in-app-notification/read/all'),
   NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`),
-  USER_BASE: constructUserManagementServiceUrl('')
+  USER_BASE: () => constructUserManagementServiceUrl('')
 });
 
 export default ApiRoutes;
