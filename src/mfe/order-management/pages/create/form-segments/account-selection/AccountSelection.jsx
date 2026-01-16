@@ -54,8 +54,9 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   React.useEffect(() => {
     if (!orderDetails?.id) return;
 
-    const { isPapOrder, status, accountDetails } = orderDetails;
+    const { isPapOrder, status, accountDetails = {} } = orderDetails;
     const shipTo = accountDetails?.shipToAccount;
+    const { soldToAccount } = accountDetails;
 
     if (isPapOrder) {
       navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
@@ -67,14 +68,14 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       return;
     }
     if (!isTherapyChanged) {
-      setSelectedSoldToAccount(accountDetails?.soldToAccount);
+      setSelectedSoldToAccount(soldToAccount);
       setSelectedShipToAccount(shipTo);
     }
 
-    if (shipTo) {
+    if (soldToAccount) {
       setAccountConfig({
-        program: CGAT_IDENTIFIER[shipTo.cgatIdentifier],
-        channelType: shipTo.channelType
+        program: CGAT_IDENTIFIER[soldToAccount.cgatIdentifier],
+        channelType: soldToAccount.channelType
       });
     }
   }, [orderDetails]);
