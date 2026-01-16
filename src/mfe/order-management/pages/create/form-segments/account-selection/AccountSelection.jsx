@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
@@ -45,20 +45,37 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const [alert, setAlert] = useState(null);
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const isStageInDraft = orderDetails.isDraft;
-
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
+  const dispatch = useDispatch();
+  const alertContainerId = 'accountSelection-alert-Container';
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
-    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
-  }, [orderDetails]);
+    if (!orderDetails?.id) return;
 
-  React.useEffect(() => {
+    const { isPapOrder, status, accountDetails } = orderDetails;
+    const shipTo = accountDetails?.shipToAccount;
+
+    if (isPapOrder) {
+      navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
+      return;
+    }
+
+    if (status === ORDER_STATUS.REVIEW) {
+      navigate(RoutePaths.pathOrderManagement, { replace: true });
+      return;
+    }
     if (!isTherapyChanged) {
-      setSelectedSoldToAccount(orderDetails.accountDetails?.soldToAccount);
-      setSelectedShipToAccount(orderDetails.accountDetails?.shipToAccount);
+      setSelectedSoldToAccount(accountDetails?.soldToAccount);
+      setSelectedShipToAccount(shipTo);
+    }
+
+    if (shipTo) {
+      setAccountConfig({
+        program: CGAT_IDENTIFIER[shipTo.cgatIdentifier],
+        channelType: shipTo.channelType
+      });
     }
   }, [orderDetails]);
 
@@ -86,76 +103,72 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     channelType: selectedSoldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL
   });
 
-  const alertContainerId = 'accountSelection-alert-Container';
+  const handleSaveSuccess = (result, variables) => {
+    const { id } = result;
 
-  React.useEffect(() => {
-    if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
-      setAccountConfig({
-        program: CGAT_IDENTIFIER[orderDetails.accountDetails.shipToAccount.cgatIdentifier],
-        channelType: orderDetails.accountDetails.shipToAccount.channelType
-      });
+    if (variables.isDraft) {
+      handleDraftSaveSuccess();
+      return;
     }
-  }, [orderDetails]);
-  React.useEffect(() => {
-    if (orderDetails.accountDetails && orderDetails.accountDetails.shipToAccount) {
-      setAccountConfig({
-        program: CGAT_IDENTIFIER[orderDetails.accountDetails.shipToAccount.cgatIdentifier],
-        channelType: orderDetails.accountDetails.shipToAccount.channelType
-      });
-    }
-  }, [orderDetails]);
+
+    navigateToPatient(id);
+  };
+
+  const handleDraftSaveSuccess = () => {
+    refreshOrderDetails();
+    const { isTherapyChanged, ...rest } = location.state || {};
+    setIsDirty(false);
+    setAlert({
+      description: 'Order Saved In Draft Successfully',
+      type: 'success'
+    });
+    navigate(location.pathname, { state: rest });
+  };
+
+  const navigateToPatient = (orderId) => {
+    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+      state: {
+        ...updatedLocationState,
+        alertState,
+        isEdit: false,
+        isApprover,
+        changeOnPreviousStep: true
+      }
+    });
+  };
+
+  const handleSaveError = (error) => {
+    const statusCode = error?.response?.status;
+    const description = statusCode >= 400 && statusCode < 600 ? t('error.default') : CommonUtils.getAxiosErrorMessage(error);
+
+    setAlert({
+      description,
+      type: 'error'
+    });
+  };
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(
-    async ({ isDraft, isSendNotification, ...data }) => OrderService.saveAccount(orderId, data, isDraft, isSendNotification),
+    ({ isDraft, isSendNotification, ...payload }) => OrderService.saveAccount(orderId, payload, isDraft, isSendNotification),
     {
-      onSuccess: async (result, variables) => {
-        const { id } = result;
-        if (!variables.isDraft) {
-          try {
-            navigate(`${RoutePaths.pathOrderManagement}/${id}/patient`, {
-              state: { ...updatedLocationState, alertState, isEdit: false, isApprover: isApprover, changeOnPreviousStep: true }
-            });
-          } catch (err) {
-            console.error(err);
-          }
-        } else {
-          refreshOrderDetails();
-          setIsDirty(false);
-          setAlert({
-            description: 'Order Saved In Draft Successfully',
-            type: 'success'
-          });
-        }
-      },
-      onError: (error) => {
-        const statusCode = error?.response?.status;
-        let description = t('error.default');
-        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
-        setAlert({
-          description,
-          type: 'error'
-        });
-      }
+      onSuccess: handleSaveSuccess,
+      onError: handleSaveError
     }
   );
 
-  const handleOnClose = () => {
-    setOpen(false);
-  };
   const handleOnClick = () => {
     setAlert(null);
     setOpen(true);
   };
-  const [isDirty, setIsDirty] = React.useState(false);
-  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const isDirty =
-      (selectedSoldToAccount &&
-        JSON.stringify(selectedSoldToAccount?.accountNumber) !== JSON.stringify(orderDetails.accountDetails?.soldToAccount?.accountNumber)) ||
-      (selectedShipToAccount && JSON.stringify(selectedShipToAccount?.id) !== JSON.stringify(orderDetails.accountDetails?.shipToAccount?.id));
-    setIsDirty(isDirty);
+      selectedSoldToAccount?.accountNumber !== orderDetails.accountDetails?.soldToAccount?.accountNumber ||
+      selectedShipToAccount?.id !== orderDetails.accountDetails?.shipToAccount?.id;
+    if (isTherapyChanged && !CommonUtils.isNonEmptyObject(selectedShipToAccount) && !CommonUtils.isNonEmptyObject(selectedSoldToAccount)) {
+      setIsDirty(false);
+    } else {
+      setIsDirty(Boolean(isDirty));
+    }
     dispatch(hasUnsavedChanges(isDirty));
     return () => dispatch(hasUnsavedChanges(false));
   }, [selectedSoldToAccount, selectedShipToAccount]);
@@ -176,34 +189,40 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
   };
 
-  const handleOnSubmit = async (isDraft) => {
-    if (!isDraft) {
-      if (!selectedShipToAccount) {
-        setAlert({
-          type: 'error',
-          description: t('messages.selectshippingAddress')
-        });
-        return;
-      }
-      if (!selectedSoldToAccount) {
-        setAlert({
-          type: 'error',
-          description: t('messages.selectAccount'),
-          anchorEl: alertContainerId
-        });
-        return;
-      }
+  const handleOnSaveAsDraft = () => {
+    handleOnSubmit(true);
+  };
+
+  const handleOnSaveAndContinue = () => {
+    if (!selectedShipToAccount) {
+      setAlert({
+        type: 'error',
+        description: t('messages.selectshippingAddress')
+      });
+      return;
     }
+    if (!selectedSoldToAccount) {
+      setAlert({
+        type: 'error',
+        description: t('messages.selectAccount'),
+        anchorEl: alertContainerId
+      });
+      return;
+    }
+    handleOnSubmit();
+  };
+
+  const handleOnSubmit = async (isDraft) => {
     if (isSaving) return;
 
     const payload = {
       program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
       soldToAccountId: selectedSoldToAccount.id,
-      shipToAccountId: selectedShipToAccount.id
+      shipToAccountId: selectedShipToAccount?.id || ''
     };
     setAlert(null);
     if (isStageInDraft || isDirty) {
-      saveAccount({ ...payload, isDraft, isSendNotification: isDraft ? false : true });
+      saveAccount({ ...payload, isDraft, isSendNotification: !isDraft });
     } else {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
         state: { ...updatedLocationState, alertState, isEdit: false, isApprover }
@@ -240,8 +259,8 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   };
 
   const handleOnAccountSelection = (selectedAccount, config) => {
-    setSelectedShipToAccount('');
     setSelectedSoldToAccount(selectedAccount);
+    setSelectedShipToAccount(null);
     setAccountConfig(config);
     setOpen(false);
   };
@@ -358,35 +377,36 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button size="md" onClick={() => handleOnSubmit(true)} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+              <Button size="md" onClick={handleOnSaveAsDraft} variant="primary" type="submit" disabled={readOnly || !isDirty}>
                 {t('button.caption.saveAsDraft')}
               </Button>
-              <Button size="md" onClick={() => handleOnSubmit(false)} variant="primary" type="submit" disabled={readOnly}>
+              <Button size="md" onClick={handleOnSaveAndContinue} variant="primary" type="submit" disabled={readOnly}>
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>
-          {open && (
-            <AccountSelectionUserGuide
-              openDrawer={open}
-              trade={tradeDetails}
-              onSubmit={handleOnAccountSelection}
-              onClose={handleOnClose}
-              channelType={tradeDetails?.channelType}
-            />
-          )}
         </div>
       </div>
-      <DiscardChangesModal
-        heading={t('messages.confirmation.discardheader')}
-        description={t('messages.confirmation.account')}
-        isOpen={Boolean(modalSuccessCallback)}
-        onClose={() => setModalSuccessCallback(null)}
-        onConfirm={handleNavigate}
-      />
+      <React.Fragment>
+        <DiscardChangesModal
+          heading={t('messages.confirmation.discardheader')}
+          description={t('messages.confirmation.account')}
+          isOpen={Boolean(modalSuccessCallback)}
+          onClose={() => setModalSuccessCallback(null)}
+          onConfirm={handleNavigate}
+        />
+        {open && (
+          <AccountSelectionUserGuide
+            openDrawer={open}
+            trade={tradeDetails}
+            onSubmit={handleOnAccountSelection}
+            onClose={() => setOpen(false)}
+            channelType={tradeDetails?.channelType}
+          />
+        )}
+      </React.Fragment>
     </div>
   );
 };
 
-//export default AccountSelection;
 export default withPermissions(AccountSelection, ORDER_STAGES.ACCOUNT_DETAILS);

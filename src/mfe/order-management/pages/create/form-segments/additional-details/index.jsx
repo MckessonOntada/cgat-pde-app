@@ -8,13 +8,11 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Components from '@src/components/form/Components';
-import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
-import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
@@ -100,6 +98,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const manufacturer = getManufacturer(orderDetails);
   const dispatch = useDispatch();
+  const formikRef = React.useRef();
 
   const variantsApiRequestParam = {
     pageNo: 0,
@@ -120,10 +119,11 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   );
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
-    const prevSearch = locationState.__prevSearch || '';
-    if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
-    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+    if (orderDetails.id) {
+      const prevSearch = locationState.__prevSearch || '';
+      if (orderDetails.isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+      if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+    }
   }, [orderDetails]);
 
   const initialValidationSchema = (isVariantRequired, channelType) => {
@@ -246,6 +246,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return schema;
   };
+
   const { data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
@@ -273,7 +274,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
-    debugger;
     const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
 
     let questionnaireValidationSchema = Yup.object();
@@ -286,13 +286,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
 
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
+    setValidationSchema(finalValidationSchema);
 
-    setInitialFormValues((pre) => ({
-      ...pre,
+    setInitialFormValues({
+      ...formikRef.current?.values,
       ...storedValue,
       ...questionnaireFields
-    }));
-    setValidationSchema(finalValidationSchema);
+    });
   }, [variantsData, questionnaireTemplateConfig, channelType]);
 
   const navigateToNextStage = (id, changeOnPreviousStep) => {
@@ -307,14 +307,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
-    async ({ payload, isSendNotification }) => OrderService.saveAdditionalDetails(orderId, payload, isOrderInDraft, isSendNotification),
+    async ({ payload, isSendNotification, isSavingAsDraft }) => OrderService.saveAdditionalDetails(orderId, payload, isSavingAsDraft, isSendNotification),
     {
-      onSuccess: (result) => {
+      onSuccess: (result, variables) => {
         const { id } = result;
-        if (!isOrderInDraft) {
+        if (!variables?.isSavingAsDraft) {
           navigateToNextStage(id, true);
         } else {
-          refreshOrderDetails();
           setIsDirty(false);
           setAlert({
             description: 'Order Saved In Draft Successfully',
@@ -342,10 +341,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     return () => {
       dispatch(hasUnsavedChanges(false));
     };
-  }, []);
+  }, [location]);
 
   const prepareQuestionnaire = (result) => {
-    setQuestionnaireTemplateConfig(result);
     if (!result || !Array.isArray(result)) {
       throw new Error('Not a valid questionnaire config');
     }
@@ -402,7 +400,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     });
 
     return {
-      validationSchema: Yup.object().shape(validationSchemaFields), // Return validation schema
+      validationSchema: Yup.object().shape(validationSchemaFields),
       fields: questionnaireFields
     };
   };
@@ -436,8 +434,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     },
     enabled: false,
     refetchOnWindowFocus: false,
-    onSuccess: (result) => {
-      result && prepareQuestionnaire(result);
+    onSuccess: (result = {}) => {
+      setQuestionnaireTemplateConfig(result);
     },
     onError: (error) => {
       const statusCode = error?.response?.status;
@@ -662,10 +660,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         });
       }
 
-      if (configuredQuestionnaires.length > 0) {
-        prepareQuestionnaire(configuredQuestionnaires);
-      }
-
       setStoredValue((prev) => ({
         ...prev,
         ...initialValues
@@ -725,7 +719,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   };
 
-  const handleOnSubmit = (values) => {
+  const handleOnSubmit = (values, isSavingAsDraft) => {
     const variantDetails = !!variant
       ? {
           variant: variant.variant,
@@ -813,15 +807,15 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
     if (skipTerms && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       if (isStageInDraft) {
-        saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
+        saveAdditionalDetails({ payload, isSendNotification: isSavingAsDraft, isSavingAsDraft });
       } else {
-        saveAdditionalDetails({ payload, isSendNotification: false });
+        saveAdditionalDetails({ payload, isSendNotification: false, isSavingAsDraft });
       }
     } else if (isDirty || isStageInDraft) {
-      saveAdditionalDetails({ payload, isSendNotification: isOrderInDraft ? false : true });
+      saveAdditionalDetails({ payload, isSendNotification: isSavingAsDraft, isSavingAsDraft });
     } else if (!isDirty && !isStageInDraft) {
       if (orderDetails?.currentStage === ORDER_STAGES.ADDITIONAL_DETAILS) {
-        saveAdditionalDetails({ payload, isSendNotification: false });
+        saveAdditionalDetails({ payload, isSendNotification: false, isSavingAsDraft });
       } else {
         navigateToNextStage(orderId);
       }
@@ -870,7 +864,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   };
 
-  const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
+  const handleOnVariantChange = (variant, setFieldValue) => {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       if (variant.diagnosisCodes && variant.diagnosisCodes.length > 0) {
         setDiagnosisCode(
@@ -888,13 +882,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         });
       }
     }
-    if (errors && errors.variant) {
-      const { variant, ...newErrors } = errors;
-      setErrors(newErrors);
-    }
-    setFieldValue('variant', variant);
-    setFieldTouched('variant', true, false);
-    setFieldValue('variantAcknowledgement', false);
+
     setVariantAcknowledgement((prevState) => ({
       ...prevState,
       isChecked: false
@@ -951,10 +939,22 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   React.useEffect(() => {
-    if (orderDetails?.id && !(orderDetails.additionalDetails?.configuredQuestionnaires?.length > 0)) {
-      const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
-      if (soldToAccount && shipToAccount) {
-        if ((isSPCrossWalked && variant) || !isSPCrossWalked) fetchConfiguredQuestions();
+    if (orderDetails.id) {
+      const { additionalDetails, accountDetails } = orderDetails || {};
+      const { soldToAccount, shipToAccount } = accountDetails || {};
+
+      if (!soldToAccount || !shipToAccount) return;
+
+      const canProceed = !isSPCrossWalked || (isSPCrossWalked && variant);
+
+      if (!canProceed) return;
+
+      const configuredQuestionnaires = additionalDetails?.configuredQuestionnaires;
+
+      if (configuredQuestionnaires?.length > 0) {
+        setQuestionnaireTemplateConfig(configuredQuestionnaires);
+      } else {
+        fetchConfiguredQuestions();
       }
     }
   }, [variant, orderDetails, isSPCrossWalked]);
@@ -1010,6 +1010,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     return allValid;
   };
+
   const { mutate: coiIdValidation, isLoading: isCoiIdValidationLoading } = useMutation(
     async ({ patientId, coiId }) => {
       const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
@@ -1039,7 +1040,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   );
 
   const formatFieldWithPrefixSuffix = (value, fieldName) => {
-    if (!value) return '';
+    if (!value) return;
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
@@ -1075,13 +1076,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     });
   };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
-    setIsOrderInDraft(true);
     const isValid = isValidToSaveAsDraft(values, errors, touched, setTouched, setErrors);
-    if (!isValid) {
-      return;
-    }
+    if (!isValid) return;
 
-    handleOnSubmit(values);
+    handleOnSubmit(values, true);
   };
 
   return (
@@ -1138,6 +1136,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         </div>
 
         <Formik
+          innerRef={formikRef}
           initialValues={initialFormValues}
           enableReinitialize={true}
           validationSchema={validationSchema}
@@ -1149,13 +1148,16 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors, setFieldTouched }) => {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
-            }, [values, initialFormValues, setFieldValue]);
+            }, [values, initialFormValues]);
 
-            useEffect(() => {
+            React.useEffect(() => {
               const isReallyDirty = checkReallyDirty(initialFormValues, values);
+
               setSkipTerms(!isReallyDirty);
-              setIsDirty(dirty);
-              setStoredValue(values);
+              setIsDirty(isReallyDirty);
+
+              setStoredValue((prev) => (checkReallyDirty(prev, values) ? values : prev));
+
               dispatch(hasUnsavedChanges(isReallyDirty));
             }, [dirty, values, initialFormValues]);
 
@@ -1264,7 +1266,6 @@ const QuestionnaireDetails = ({ isLoading, questionnaireTemplateConfig, onRemove
       </div>
     );
   if ((!isLoading && !questionnaireTemplateConfig) || !CommonUtils.isNonEmptyArray(questionnaireTemplateConfig)) return null;
-
   return (
     <div className="form-segment configured-questionnaire-form">
       <div className="MCP-module-body">
@@ -1462,21 +1463,30 @@ const VariantDetails = ({
   channelType
 }) => {
   const { t } = useTranslate();
-  const { setErrors, errors, touched, values, setFieldTouched, setFieldValue } = useFormikContext();
+  const { setErrors, errors, touched, values, setFieldValue } = useFormikContext();
   if (!variantsData?.content || !CommonUtils.isNonEmptyObject(variantsData.content)) return null;
   const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
   const allowedFileTypeText = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'PDF' : ALLOWED_FILE_TYPE_TEXT;
-  console.log(touched?.variant, !values.variant, errors);
+
   return (
     <FormSectionWrapper title={t('labels.selectVariant')} isRequired={true}>
       <div>
-        <VariantTable
-          variant={variant}
-          onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
-          data={variantsData.content}
-          readOnly={readOnly}
-        />
-        {touched?.variant && values.variant && errors.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+        <Field name="variant">
+          {({ field, form }) => (
+            <VariantTable
+              variant={field.value}
+              data={variantsData.content}
+              readOnly={readOnly}
+              onChange={(selectedVariant) => {
+                handleOnVariantChange(selectedVariant);
+                form.setFieldValue(field.name, selectedVariant);
+                form.setFieldTouched(field.name, true, false);
+                setFieldValue('variantAcknowledgement', false);
+              }}
+            />
+          )}
+        </Field>
+        {touched?.variant && !values.variant.variant && errors.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={false} />}
       </div>
       <div className="agreement-checkbox-control">
         <Field name="variant-acknowledgement">
