@@ -506,19 +506,19 @@ async function getTrackingDetails(accountId, trackingNumber) {
 }
 async function regeneronPatientIdVerification(patientId) {
   if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
-  let url = `${ApiRoutes.USER_BASE}regeneron/validate?${serializeParams({ patientId: patientId })}`;
+  let url = `${ApiRoutes.USER_BASE()}regeneron/validate?${serializeParams({ patientId: patientId })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
 async function regeneronCoiIdVerification(patientId, coiId) {
   if (!patientId) throw new Error('Patient id is missing. Patient id is required to to verify.');
-  let url = `${ApiRoutes.USER_BASE}regeneron/validate?${serializeParams({ patientId: patientId, clearanceId: coiId })}`;
+  let url = `${ApiRoutes.USER_BASE()}regeneron/validate?${serializeParams({ patientId: patientId, clearanceId: coiId })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
 
 async function verifyOrcaDetails(payload) {
-  let url = `${ApiRoutes.USER_BASE}orca/patients?${serializeParams(payload)}`;
+  let url = `${ApiRoutes.USER_BASE()}orca/patients?${serializeParams(payload)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
