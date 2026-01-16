@@ -7,7 +7,7 @@ import { useAccountContext } from './AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
-import { DUE_STATUS } from '../pages/invoices/InvoiceConstants';
+import { DUE_STATUS, INVOICE_STATUS } from '../pages/invoices/InvoiceConstants';
 import useAlert from '@src/hooks/useAlert';
 import { useLocation } from 'react-router-dom';
 
@@ -87,7 +87,13 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
       const matchesPaymentStatus = filters?.paymentTerm?.length > 0 ? filters.paymentTerm.includes(item.paymentTerm?.toString()) : true;
 
-      const matchesPaymentMethod = filters?.status?.length > 0 ? filters.status.includes(item.status?.toString()) : true;
+      const matchesPaymentMethod = isHistory
+        ? filters?.status?.length > 0
+          ? filters.status.includes(item.clearingStatus?.toString())
+          : true
+        : filters?.status?.length > 0
+        ? filters.status.includes(item.status?.toString())
+        : true;
 
       const matchesBillDate =
         filters?.billDate?.length === 2
@@ -202,13 +208,25 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
   const updateFilterData = (actualData) => {
     let currentFilterData = [...new Set(actualData.map((e) => e.status).filter((e) => e))];
-    let _options = currentFilterData.map((item) => {
-      return {
-        value: item,
-        label: DUE_STATUS[item]?.label || item,
-        isDisabled: false
-      };
-    });
+    let currentFilterDataInvoiceHistory = [...new Set(actualData.map((e) => e.clearingStatus).filter((e) => e))];
+    let _options;
+    if (isHistory) {
+      _options = currentFilterDataInvoiceHistory.map((item) => {
+        return {
+          value: item,
+          label: INVOICE_STATUS[item]?.label || item,
+          isDisabled: false
+        };
+      });
+    } else {
+      _options = currentFilterData.map((item) => {
+        return {
+          value: item,
+          label: DUE_STATUS[item]?.label || item,
+          isDisabled: false
+        };
+      });
+    }
     setStatusOptions([..._options]);
   };
 

@@ -10,6 +10,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import './assets/index.scss';
 
 const createColumns = (t, type, pageType, paymentInitiationDate, handlePdfDownload) => {
   const commonColumns = [
@@ -88,19 +89,21 @@ const createColumns = (t, type, pageType, paymentInitiationDate, handlePdfDownlo
       width: '150px',
       wrap: true,
       isAction: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {
-            handlePdfDownload(props);
-          }}
-          size="md"
-          disabled={!props?.isPdfAvailable}>
-          {t('paymentInvoices.Details.btnDownloadPdf')}
-        </Button>
-      )
+      cell: (props) =>
+        props?.isPdfAvailable ? (
+          <Button
+            className="back-button-control"
+            variant="tertiary"
+            Icon={() => <PDFicon />}
+            onClick={() => {
+              handlePdfDownload(props);
+            }}
+            size="md">
+            {t('paymentInvoices.Details.btnDownloadPdf')}
+          </Button>
+        ) : (
+          '-'
+        )
     }
   ];
 

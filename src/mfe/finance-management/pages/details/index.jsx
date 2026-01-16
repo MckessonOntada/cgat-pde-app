@@ -414,9 +414,9 @@ function Details(props) {
         </div>
         <HistoryAndScheduledPayments billNumber={billNumber} />
       </div>
-      {INVOICES_SCREEN && <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>}
+      {INVOICES_SCREEN && !locationParams.state.isInvoiceHistory && <div className="finance-label">{t('paymentInvoices.Details.financeCharges')}</div>}
 
-      {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && !pageType && (
+      {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && !pageType && !locationParams.state.isInvoiceHistory && (
         <React.Fragment>
           {CommonUtils.enableReviewAndPay(selectedAccount) && (
             <div className="footer-wrapper" ref={controlRef}>
