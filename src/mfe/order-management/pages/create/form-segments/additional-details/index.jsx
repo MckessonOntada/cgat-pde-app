@@ -200,6 +200,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
               return true;
             });
+            validator = validator.test('future-date-only', t('labels.error.selectFutureDate'), (value) => {
+              if (!value) return true;
+
+              const [m, d, y] = value.split('/');
+              const selectedDate = new Date(y, m - 1, d);
+
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+
+              return selectedDate >= today;
+            });
           }
 
           if (field.properties.fieldFormat.formatType === 'Integer') {

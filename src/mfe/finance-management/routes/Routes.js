@@ -35,7 +35,7 @@ const Routes = () => {
       <Route
         path={PATHS.invoices}
         element={
-          <PaymentsInvoiceProvider>
+          <PaymentsInvoiceProvider key={'payment-invoices'}>
             <Invoices />
           </PaymentsInvoiceProvider>
         }
@@ -43,7 +43,7 @@ const Routes = () => {
       <Route
         path={PATHS.invoicesHistory}
         element={
-          <PaymentsInvoiceProvider>
+          <PaymentsInvoiceProvider key={'payment-invoices-history'}>
             <Invoices type="history" />
           </PaymentsInvoiceProvider>
         }

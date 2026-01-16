@@ -57,8 +57,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [resetFilterData, setResetFilterData] = useState(true);
   const [statusOptions, setStatusOptions] = useState([]);
   const { selectedAccount } = useAccountContext();
-  const isHistory = useLocation().pathname.split('/').includes('history');
-
+  const isHistory = useLocation().pathname === '/record/invoices-history';
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
@@ -139,7 +138,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        ...(isHistory && { isClearedInvoiceRequired: true })
+        ...(isHistory && { clearedItems: 'X' })
       };
 
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);

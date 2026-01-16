@@ -37,7 +37,7 @@ export default function InvoicesTable() {
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
-  const isHistory = useLocation().pathname.split('/').includes('history');
+  const isHistory = useLocation().pathname.split('/').includes('invoices-history');
 
   React.useEffect(() => {
     refetch();
