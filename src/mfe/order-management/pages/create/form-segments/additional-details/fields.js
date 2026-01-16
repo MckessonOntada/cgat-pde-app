@@ -23,9 +23,10 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
           name: field?.fieldName,
           label: field?.properties?.displayName,
           isRequired: field?.properties?.mandatoryField,
-          component: Components[prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
+          component: Components[prefix || suffix ? 'inputText' : field?.properties?.fieldFormat?.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
           prefix,
           suffix,
+          ...(field?.properties?.fieldFormat?.formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
           infoText: field?.properties.helpInfoMessage,
           ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
         });

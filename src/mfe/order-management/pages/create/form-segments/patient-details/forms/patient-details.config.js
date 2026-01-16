@@ -26,6 +26,26 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
         {
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
           controls: [
+            ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
+              ? therapyConfig?.config?.fields
+                  ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
+                  ?.map((field) => {
+                    const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+                    const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+                    return {
+                      id: `patient-info-${field.fieldName}`,
+                      name: `patient.${field.fieldName}`,
+                      label: field.properties.displayName,
+                      type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'inputText',
+                      prefix,
+                      suffix,
+                      isRequired: field.properties.mandatoryField,
+                      infoText: field?.properties.helpInfoMessage,
+                      endIcon: getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
+                      onBlur: validateOnBlur
+                    };
+                  }) || []
+              : []),
             {
               id: 'patient-info-firstName',
               name: 'patient.patientInfo.firstName',
@@ -54,12 +74,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
               maxLength: 50,
               isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-            }
-          ]
-        },
-        {
-          grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
-          controls: [
+            },
             {
               id: 'patient-info-gender',
               name: 'patient.patientInfo.gender',
@@ -82,27 +97,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
               disableFuture: true,
               isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-            },
-            ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
-              ? therapyConfig?.config?.fields
-                  ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
-                  ?.map((field) => {
-                    const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
-                    const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-                    return {
-                      id: `patient-info-${field.fieldName}`,
-                      name: `patient.${field.fieldName}`,
-                      label: field.properties.displayName,
-                      type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'inputText',
-                      prefix,
-                      suffix,
-                      isRequired: field.properties.mandatoryField,
-                      infoText: field?.properties.helpInfoMessage,
-                      endIcon: getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
-                      onBlur: validateOnBlur
-                    };
-                  }) || []
-              : [])
+            }
           ]
         }
       ]

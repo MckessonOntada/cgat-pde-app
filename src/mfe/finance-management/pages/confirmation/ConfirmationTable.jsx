@@ -97,7 +97,7 @@ const createColumns = (t, type, pageType, paymentInitiationDate, handlePdfDownlo
             handlePdfDownload(props);
           }}
           size="md"
-          disabled={!props?.pdfAvailable}>
+          disabled={!props?.isPdfAvailable}>
           {t('paymentInvoices.Details.btnDownloadPdf')}
         </Button>
       )
