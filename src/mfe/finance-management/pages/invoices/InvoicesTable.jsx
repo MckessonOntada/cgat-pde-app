@@ -197,7 +197,8 @@ export default function InvoicesTable() {
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
             state={{
               invoices: [...[], props],
-              selectedPayToAcc: selectedAccount
+              selectedPayToAcc: selectedAccount,
+              isInvoiceHistory: isHistory
             }}>{`${props?.billNumber || ''}`}</Link>
           {props?.scheduled === 'X' ? <span className="scheduled-icon">S</span> : ''}
         </div>
@@ -222,13 +223,6 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('labels.providePONumber'),
-      id: 'poNumber',
-      selector: (row) => `${row.poNumber}`,
-      maxWidth: '180px',
-      cell: (props) => <EclipsesTextcss str={props.poNumber || 'N/A'} maxWidth={170} />
-    },
-    {
       name: t('labels.PatientID'),
       id: 'patientId',
       selector: (row) => `${row.patientId}`,
@@ -241,6 +235,33 @@ export default function InvoicesTable() {
       selector: (row) => `${row.soldToName}`,
       maxWidth: '180px',
       cell: (props) => <EclipsesTextcss str={props.soldToName} maxWidth={170} />
+    },
+    {
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
+      selector: (row) => row.clearingStatus,
+      minWidth: '195px',
+      sortable: true,
+      center: true,
+      wrap: true,
+      id: 'clearingStatus',
+      showInMobileHeader: true,
+      cardStatus: true,
+      cell: (props) => (
+        <div className="status-container">
+          {props.clearingStatus ? (
+            <Badge
+              text={INVOICE_STATUS[props.clearingStatus]?.label}
+              customStyle={{
+                backgroundColor: `${INVOICE_STATUS[props.clearingStatus]?.color}`,
+                color: INVOICE_STATUS[props.clearingStatus]?.textColor ? INVOICE_STATUS[props.clearingStatus]?.textColor : ''
+              }}
+            />
+          ) : (
+            '-'
+          )}
+        </div>
+      ),
+      omit: !isHistory
     },
     {
       name: t('paymentInvoices.history.table.invoiceDate'),
@@ -311,34 +332,6 @@ export default function InvoicesTable() {
       omit: isHistory
     },
     {
-      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
-      selector: (row) => row.clearingStatus,
-      minWidth: '195px',
-      sortable: true,
-      center: true,
-      wrap: true,
-      id: 'clearingStatus',
-      showInMobileHeader: true,
-      cardStatus: true,
-      cell: (props) => (
-        <div className="status-container">
-          {props.clearingStatus ? (
-            <Badge
-              text={INVOICE_STATUS[props.clearingStatus]?.label}
-              customStyle={{
-                backgroundColor: `${INVOICE_STATUS[props.clearingStatus]?.color}`,
-                color: INVOICE_STATUS[props.clearingStatus]?.textColor ? INVOICE_STATUS[props.clearingStatus]?.textColor : ''
-              }}
-            />
-          ) : (
-            '-'
-          )}
-        </div>
-      ),
-      omit: !isHistory
-    },
-
-    {
       name: t('paymentInvoices.history.table.Actions'),
       width: '100px',
 
@@ -369,7 +362,7 @@ export default function InvoicesTable() {
           size="md"
         />
       ),
-      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount) || isHistory
     }
   ];
 
