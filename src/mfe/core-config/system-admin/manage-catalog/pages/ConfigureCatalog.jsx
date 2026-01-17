@@ -215,7 +215,7 @@ function ConfigureCatalog({
                               size="medium"
                               label="Tertiary"
                               onClick={() => push({ stepName: '', description: '' })}>
-                              {t('ManageCatalog.ADDSTEP')}
+                              {t('ManageCatalog.addStep')}
                             </IconButton>
                           </div>
                         </div>
