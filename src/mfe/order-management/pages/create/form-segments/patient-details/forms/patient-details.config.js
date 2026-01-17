@@ -7,7 +7,8 @@ import React from 'react';
 
 const getFieldIcon = (fieldName, isPatientVerifying = false, isPatientVerified = false) => {
   if (isPatientVerifying) return <LoadingIcon />;
-  else if (fieldName === 'patientIdentifier' && isPatientVerified) return <SuccessTick />;
+  else if (isPatientVerified) return <SuccessTick />;
+  return null;
 };
 
 const getStates = () => {
