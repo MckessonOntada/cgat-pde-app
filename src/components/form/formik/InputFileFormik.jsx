@@ -202,7 +202,7 @@ function InputFileFormik(props) {
             </div>
           </div>
         )}
-        {(errorFile || isFieldTouched) && errorMessage && (
+        {(errorFile || isFieldTouched) && errorMessage && typeof errorMessage === 'string' && (
           <div className={styles['error-container']}>
             <p>{t('file.browsInput.error.uploading')}</p>
             <label>{errorMessage}</label>
