@@ -51,11 +51,7 @@ function CatalogDataTable(props) {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{
-              color: '#007bff',
-              fontWeight: '600',
-              textDecoration: 'none'
-            }}
+            className={'MCP-table-link'}
             onClick={() => {
               setViewCatalog(props.catalogPrice);
               setOpenCatalogDetails(true);
