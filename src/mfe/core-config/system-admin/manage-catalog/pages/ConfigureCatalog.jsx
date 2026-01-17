@@ -4,6 +4,7 @@ import { Field, FieldArray, Form, Formik } from 'formik';
 import Components from '@src/components/form/Components';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
+import IconButton from '@src/components/button';
 import '../manageCatalog.scss';
 import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -154,65 +155,74 @@ function ConfigureCatalog({
                     </Button>
                   </div>
                 }>
-                <div>
-                  <FieldArray name="steps">
-                    {({ insert, remove, push }) => (
-                      <div className="step-main-container">
-                        <div className="styled-heading">
-                          <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
-                        </div>
-                        {values.steps.length > 0 &&
-                          values.steps.map((step, index) => (
-                            <div className="step-container" key={index}>
-                              <div className="stepName-container">
-                                <div className="stepName">
-                                  <Field
-                                    name={`steps.${index}.stepName`}
-                                    label={`Step ${index + 1}`}
-                                    placeholder=" "
-                                    isRequired
-                                    component={Components['input']}
-                                    maxLength={100}
-                                  />
+                {isConfigLoading ? (
+                  <Loader variant="circular" />
+                ) : (
+                  <div>
+                    <FieldArray name="steps">
+                      {({ insert, remove, push }) => (
+                        <div className="step-main-container">
+                          <div className="styled-heading">
+                            <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
+                          </div>
+                          {values.steps.length > 0 &&
+                            values.steps.map((step, index) => (
+                              <div className="step-container" key={index}>
+                                <div className="stepName-container">
+                                  <div className="stepName">
+                                    <Field
+                                      name={`steps.${index}.stepName`}
+                                      label={`Step ${index + 1}`}
+                                      placeholder=" "
+                                      isRequired
+                                      component={Components['input']}
+                                      maxLength={100}
+                                    />
+                                  </div>
+                                  <div className="styled-icon-button error-button remove-icon">
+                                    <Button
+                                      Icon={DeleteIcon}
+                                      iconButton
+                                      textButton
+                                      size="lg"
+                                      variant="tertiary"
+                                      color="error"
+                                      type="button"
+                                      disabled={values.steps.length === 1}
+                                      onClick={() => remove(index)}
+                                    />
+                                  </div>
                                 </div>
-                                <div className="styled-icon-button error-button remove-icon">
-                                  <Button
-                                    Icon={DeleteIcon}
-                                    iconButton
-                                    textButton
-                                    size="lg"
-                                    variant="tertiary"
-                                    color="error"
-                                    type="button"
-                                    disabled={values.steps.length === 1}
-                                    onClick={() => remove(index)}
-                                  />
-                                </div>
-                              </div>
 
-                              <div>
-                                <Field
-                                  name={`steps.${index}.description`}
-                                  fieldlabel={`Description`}
-                                  placeholder=" "
-                                  isRequired={false}
-                                  component={Components['textarea']}
-                                  maxCharHelperText={t('ManageCatalog.input.validation.text')}
-                                  maxCharLimit={5000}
-                                  maxCharWarningLimit={4900}
-                                />
+                                <div>
+                                  <Field
+                                    name={`steps.${index}.description`}
+                                    fieldlabel={`Description`}
+                                    placeholder=" "
+                                    isRequired={false}
+                                    component={Components['textarea']}
+                                    maxCharHelperText={t('ManageCatalog.input.validation.text')}
+                                    maxCharLimit={5000}
+                                    maxCharWarningLimit={4900}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        <div className="add-step">
-                          <Button label="Tertiary" onClick={() => push({ stepName: '', description: '' })} variant="tertiary">
-                            {t('ManageCatalog.ADDSTEP')}
-                          </Button>
+                            ))}
+                          <div className="add-step">
+                            <IconButton
+                              style={{ padding: 0 }}
+                              variant="text"
+                              size="medium"
+                              label="Tertiary"
+                              onClick={() => push({ stepName: '', description: '' })}>
+                              {t('ManageCatalog.ADDSTEP')}
+                            </IconButton>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </FieldArray>
-                </div>
+                      )}
+                    </FieldArray>
+                  </div>
+                )}
               </FloatingDrawer>
             </Form>
           )}
