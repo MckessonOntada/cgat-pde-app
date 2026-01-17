@@ -48,15 +48,14 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
+  const [tradeDetails, setTradeDetails] = React.useState(null);
   const dispatch = useDispatch();
   const alertContainerId = 'accountSelection-alert-Container';
 
   React.useEffect(() => {
     if (!orderDetails?.id) return;
 
-    const { isPapOrder, status, accountDetails = {} } = orderDetails;
-    const shipTo = accountDetails?.shipToAccount;
-    const { soldToAccount } = accountDetails;
+    const { isPapOrder, status, tradeDetails, accountDetails: { soldToAccount, shipToAccount } = {} } = orderDetails;
 
     if (isPapOrder) {
       navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
@@ -67,17 +66,19 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       navigate(RoutePaths.pathOrderManagement, { replace: true });
       return;
     }
+
     if (!isTherapyChanged) {
       setSelectedSoldToAccount(soldToAccount);
-      setSelectedShipToAccount(shipTo);
+      setSelectedShipToAccount(shipToAccount);
     }
+    if (tradeDetails) setTradeDetails(tradeDetails);
 
-    if (soldToAccount) {
-      setAccountConfig({
-        program: CGAT_IDENTIFIER[soldToAccount.cgatIdentifier],
-        channelType: soldToAccount.channelType
-      });
-    }
+    if (!soldToAccount) return;
+
+    setAccountConfig({
+      program: CGAT_IDENTIFIER[soldToAccount.cgatIdentifier],
+      channelType: soldToAccount.channelType
+    });
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -94,8 +95,6 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       dispatch(openModal(state));
     }
   }, []);
-
-  const tradeDetails = orderDetails.tradeDetails;
 
   const { data: priceDetails } = useOrderPrice({
     trade: tradeDetails,
