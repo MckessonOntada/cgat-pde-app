@@ -85,7 +85,7 @@ const OrderStatus = () => {
         heading={
           <div className={styles.flex}>
             <div className={styles.emblem}>
-              <IconTick />
+              <IconTick width={'64px'} height={'64px'} />
             </div>
             <div className={styles.content}>
               {orderStatus && (

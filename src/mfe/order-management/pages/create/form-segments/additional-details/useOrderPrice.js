@@ -5,7 +5,7 @@ import { CHANNEL_TYPE } from '../Constants';
 
 export function useOrderPrice(payload, error, callback) {
   const { trade = {}, soldToAccountId, shipToAccountId, variant, channelType } = payload;
-  const isEnabled = !!trade.ndc && !!soldToAccountId && !!shipToAccountId && channelType === CHANNEL_TYPE.BUY_AND_BILL;
+  const isEnabled = Boolean(trade?.ndc && soldToAccountId && shipToAccountId && channelType === CHANNEL_TYPE.BUY_AND_BILL);
 
   return useQuery({
     queryKey: ['order', 'orderHeaderDetails', 'price', trade.ndc, soldToAccountId, shipToAccountId, variant || 'default-variant'],

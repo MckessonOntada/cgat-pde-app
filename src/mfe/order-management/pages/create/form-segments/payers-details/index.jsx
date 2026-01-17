@@ -2,7 +2,7 @@ import PageHeader from '@src/components/pageHeader';
 import React, { useContext } from 'react';
 import OrderStepper from '../OrderStepper';
 import OrderHeaderDetails from '../OrderHeaderDetails';
-import { Button, IconButton, Heading, Loader, RadioGroup } from '@mckesson/mcp-component-library';
+import { Button, IconButton, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -51,13 +51,14 @@ function Payer({ readOnly, hasPermission }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const locationState = location?.state ?? {};
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
   const { isEdit = false, isApprover = false } = locationState || {};
-  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
-  const isStageInDraft = orderDetails.isDraft;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const { isDraft } = orderDetails;
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
@@ -67,38 +68,29 @@ function Payer({ readOnly, hasPermission }) {
     shipToAccountId
   });
 
-  const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
-  const dispatch = useDispatch();
   React.useEffect(() => {
-    return () => dispatch(hasUnsavedChanges(false));
-  }, []);
-
-  React.useEffect(() => {
-    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
-  }, [orderDetails]);
-
-  React.useEffect(() => {
-    const { isPayerDetailsRequired, payerDetails } = orderDetails;
-    if (isPayerDetailsRequired === true) {
-      const formValues = {
-        payerDetailsRequired: 'yes'
-      };
-      if (payerDetails) {
-        const { secondaryMedicalInsurance, secondaryPharmacyInsurance } = orderDetails.payerDetails;
-        if (secondaryMedicalInsurance) setIsSecondaryMedicalInsuranceOpen(true);
-        if (secondaryPharmacyInsurance) setIsSecondaryPharmacyInsuranceOpen(true);
-        formValues.insuranceDetails = { ...orderDetails.payerDetails };
-      }
-      setFormValues(formValues);
-      setIsPayerDetailsRequired('yes');
-    } else if (isPayerDetailsRequired === false) {
-      const formValues = {
-        payerDetailsRequired: 'no',
-        insuranceDetails: null
-      };
-      setFormValues(formValues);
-      setIsPayerDetailsRequired('no');
+    if (!orderDetails) return;
+    if (orderDetails.status === ORDER_STATUS.REVIEW) {
+      navigate(RoutePaths.pathOrderManagement, { replace: true });
+      return;
     }
+
+    const { isPayerDetailsRequired, payerDetails } = orderDetails;
+
+    if (isPayerDetailsRequired == null) return;
+
+    const requiredValue = isPayerDetailsRequired ? 'yes' : 'no';
+
+    setIsPayerDetailsRequired(requiredValue);
+    setFormValues({
+      payerDetailsRequired: requiredValue,
+      insuranceDetails: isPayerDetailsRequired ? payerDetails ?? null : null
+    });
+
+    if (!isPayerDetailsRequired || !payerDetails) return;
+
+    setIsSecondaryMedicalInsuranceOpen(!!payerDetails.secondaryMedicalInsurance);
+    setIsSecondaryPharmacyInsuranceOpen(!!payerDetails.secondaryPharmacyInsurance);
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -116,6 +108,7 @@ function Payer({ readOnly, hasPermission }) {
       );
       dispatch(openModal(state));
     }
+    return () => dispatch(hasUnsavedChanges(false));
   }, []);
 
   const validationSchema = React.useMemo(() => {
@@ -303,14 +296,10 @@ function Payer({ readOnly, hasPermission }) {
       });
     }
 
-    if (isDirty || isStageInDraft) {
+    if (isDirty || isDraft || orderDetails?.currentStage === ORDER_STAGES.PAYER_DETAILS) {
       savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: isSavingDraft, isSavingDraft });
-    } else if (!isDirty && !isStageInDraft) {
-      if (orderDetails?.currentStage === ORDER_STAGES.PAYER_DETAILS) {
-        savePayerDetails({ isPayerDetailsRequired, insuranceDetails, isSendNotification: isSavingDraft, isSavingDraft });
-      } else {
-        navigateToNextStage(orderId);
-      }
+    } else {
+      navigateToNextStage(orderId);
     }
   };
 
@@ -380,7 +369,6 @@ function Payer({ readOnly, hasPermission }) {
       setAlert({ type: 'error', description: 'Some filled fields have errors. Please fix them before saving as draft.' });
       return;
     }
-    setIsOrderInDraft(true);
     handleOnSubmit(values, true);
   };
 
@@ -464,8 +452,6 @@ function Payer({ readOnly, hasPermission }) {
           onError={console.log}
           onSubmit={handleOnSaveAndContinue}>
           {({ setValues, errors, values, touched, setTouched, setErrors, setFieldValue, dirty, resetForm, ...rest }) => {
-            console.log(touched);
-
             React.useEffect(() => {
               dispatch(hasUnsavedChanges(dirty));
               setIsDirty(dirty);
@@ -698,7 +684,7 @@ function Payer({ readOnly, hasPermission }) {
                         disabled={readOnly || !isDirty}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button size="md" variant="primary" onClick={() => setIsOrderInDraft(false)} type="submit" disabled={readOnly}>
+                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
                         {t('captions.btnSaveAndContinue')}
                       </Button>
                     </div>

@@ -5,7 +5,7 @@ import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { TableProvider, useFilters, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider, useFilters, useTable, usePagination } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React from 'react';
@@ -19,6 +19,7 @@ function DiagnosisConfiguration() {
   const location = useLocation();
   const { filters, applyFilters, clearFilters } = useFilters();
   const { refreshTable } = useTable();
+  const { changePage } = usePagination();
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const [selectedCodes, setSelectedCodes] = React.useState([]);
@@ -51,7 +52,7 @@ function DiagnosisConfiguration() {
           type: 'success'
         });
         setSelectedCodes([]);
-        refreshTable();
+        changePage(1);
       })
       .catch((error) => {
         const statusCode = error?.response?.status;

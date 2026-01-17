@@ -1,6 +1,6 @@
 import FloatingDrawer from '@src/components/floating-drawer';
 import React from 'react';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Tooltip } from '@mckesson/mcp-component-library';
 import styles from './style.module.scss';
 import { CustomDatepicker as DatePicker } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -121,7 +121,9 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
                   />
                   <div className={styles.cardContent}>
                     <p>{`${maskString(patient.firstName)} ${maskString(patient.lastName)}`}</p>
-                    <p>Patient ID - {patient.patientId}</p>
+                    <Tooltip body={patient.patientId}>
+                      <p>Patient ID - {patient.patientId}</p>
+                    </Tooltip>
                   </div>
                 </label>
               );
