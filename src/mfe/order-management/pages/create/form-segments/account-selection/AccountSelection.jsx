@@ -48,7 +48,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const [tradeDetails, setTradeDetails] = React.useState(null);
+  const [tradeDetails, setTradeDetails] = React.useState();
   const dispatch = useDispatch();
   const alertContainerId = 'accountSelection-alert-Container';
 
