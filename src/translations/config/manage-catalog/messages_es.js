@@ -15,7 +15,7 @@ export const ManageCatalogMessagesES = {
   'ManageCatalog.Button.Cancel': 'S_CANCEL',
   'ManageCatalog.Button.save': 'S_SAVE CHANGES',
   'ManageCatalog.WhatToExpectNext': 'S_What to expect next ?',
-  'ManageCatalog.ADDSTEP': 'S_+ ADD STEP',
+  'ManageCatalog.addStep': 'S_+ ADD STEP',
   'ManageCatalog.configure.success': 'S_Catalog configuration deleted successfully',
   'ManageCatalog.configure.error': 'S_Error while deleting catalog configuration',
   'ManageCatalog.Configurations': 'S_Configurations',

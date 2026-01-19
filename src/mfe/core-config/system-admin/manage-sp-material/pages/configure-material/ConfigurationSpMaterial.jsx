@@ -9,7 +9,7 @@ import ConfigurationForm from './ConfigurationForm';
 import { Formik, Form, Field } from 'formik';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { configObj, defaultFieldFormatBnb, defaultFieldFormatSp, FIELD_NAMES } from './config';
+import { defaultFieldFormatBnb, defaultFieldFormatSp, FIELD_NAMES } from './config';
 import { getConfigurationSchema } from './ConfigurationSchema';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
@@ -17,6 +17,7 @@ import { ChannelType } from '../../../manage-sp-account/util';
 import Components from '@src/components/form/Components';
 import styles from './Configure.module.scss';
 import { CHANNEL_TYPE, MANUFACTURER } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import { useManageMaterial } from '../../../manage-material/context/ManageMaterialContext';
 export default function ConfigurationSpMaterial() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,6 +27,8 @@ export default function ConfigurationSpMaterial() {
   const isBnbMaterial = materialType === ChannelType.BUY_AND_BILL;
   const [manufacturer, setManufacturer] = React.useState([]);
   const [openTabs, setOpenTabs] = React.useState([]);
+  const { setSelectedMaterials } = useManageMaterial();
+
   React.useEffect(() => {
     MaterialService.getManufacturers(materialType).then((manufacturer) => {
       setManufacturer([
@@ -49,6 +52,7 @@ export default function ConfigurationSpMaterial() {
         { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'SP' },
         { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'HUB' }
       ];
+
   const { data: materialDetails, isLoading } = useQuery({
     queryKey: ['MaterialDetails'],
     queryFn: async () => {
@@ -69,7 +73,9 @@ export default function ConfigurationSpMaterial() {
 
     return materialDetails?.fields ? materialDetails : materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb() : defaultFieldFormatSp();
   }, [materialDetails, materialType, therapy]);
+
   const initialManufacturer = ndcDetails?.manufacturerName || null;
+
   const initialValues = {
     manufacturerName: ndcDetails?.manufacturerName || null,
     [fieldNameForChannel]: isBnbMaterial ? ndcDetails?.patientInformationRequired : ndcDetails?.triageChannel,
@@ -121,6 +127,7 @@ export default function ConfigurationSpMaterial() {
       });
     }
   });
+
   const handleSubmit = (values) => {
     const therapyList = Array.isArray(therapy) ? therapy : [therapy];
 
@@ -146,6 +153,7 @@ export default function ConfigurationSpMaterial() {
     }
     return _translations;
   }, [isBnbMaterial]);
+
   const applyManufacturerRules = (manufacturerName, fields) => {
     let openTabs = [];
     const updatedFields = fields.map((field, idx) => {
@@ -184,6 +192,12 @@ export default function ConfigurationSpMaterial() {
     setOpenTabs(openTabs);
     return updatedFields;
   };
+
+  const handleOnCancel = () => {
+    setSelectedMaterials([]);
+    navigate('../');
+  };
+
   if (isLoading || isUpdating) {
     return <Loader type={'screen'} />;
   }
@@ -325,7 +339,7 @@ export default function ConfigurationSpMaterial() {
                     </Accordion>
 
                     <div className="controls">
-                      <Button variant="secondary" size="md" onClick={() => navigate('../')}>
+                      <Button variant="secondary" size="md" onClick={handleOnCancel}>
                         {t('manageSPMaterial.configuration.button.cancel')}
                       </Button>
 
