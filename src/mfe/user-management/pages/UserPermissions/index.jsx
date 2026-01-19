@@ -99,7 +99,21 @@ const UserPermissions = () => {
           {t(isEdit ? 'userManagement.back_to_user_details' : isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
-      <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
+      <ModuleHeader
+        heading={
+          <Heading as="h1">
+            {t(
+              isEdit
+                ? isSystemAdminView
+                  ? 'userManagement.edit_sysadmin'
+                  : 'userManagement.edit_organization_user'
+                : isSystemAdminView
+                ? 'userManagement.create_sysadmin'
+                : 'userManagement.create_organization_user'
+            )}
+          </Heading>
+        }
+      />
       {!isEdit && !isSystemAdminView && (
         <div className="stepper">
           <UserCreationStepper activeIndex={2} />

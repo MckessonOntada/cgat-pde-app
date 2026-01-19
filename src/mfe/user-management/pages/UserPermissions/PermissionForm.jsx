@@ -78,100 +78,15 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
         MANAGE_LINKED_ACCOUNTS: {}
       };
 
-      //filter the data according to group
       rawPermissions.forEach((permission) => {
-        if (['THERAPY_SELECTION', 'ACCOUNT_SELECTION', 'UPDATE_PATIENTS_DETAILS', 'UPDATE_ADDITIONAL_DETAILS', 'SUBMIT_ORDER'].includes(permission)) {
-          groupedPermissions.CREATE_NEW_ORDER[permission] = permission;
-        } else if (
-          [
-            'MANAGE_USERS_SCREEN',
-            'ADD_USERS',
-            'EDIT_USERS',
-            'VIEW_USERS',
-            'UPLOAD_USERS',
-            'CREATE_USER_FOR_PENDING_USER_REQUEST',
-            'MANAGE_ROLES_SCREEN',
-            'ADD_ROLES',
-            'VIEW_ROLES',
-            'EDIT_ROLES',
-            'ON_BEHALF_OF_USER'
-          ].includes(permission)
-        ) {
-          groupedPermissions.USER_MANAGEMENT[permission] = permission;
-        } else if (
-          ['MANAGE_SYSTEM_ADMINISTRATOR_SCREEN', 'ADD_SYSTEM_ADMINISTRATOR', 'VIEW_SYSTEM_ADMINISTRATOR', 'EDIT_SYSTEM_ADMINISTRATOR'].includes(permission)
-        ) {
-          groupedPermissions.ADMIN_MANAGEMENT[permission] = permission;
-        } else if (['MANAGE_ORGANIZATION_SCREEN', 'ADD_ORGANIZATION', 'EDIT_ORGANIZATION', 'VIEW_ORGANIZATION'].includes(permission)) {
-          groupedPermissions.ORGANIZATION_MANAGEMENT[permission] = permission;
-        } else if (
-          [
-            'UPLOAD_ORDER_DOCUMENTS',
-            'VIEW_ORDERS',
-            'APPROVE_ORDERS',
-            'CANCEL_ORDER',
-            'REJECT_ORDER',
-            'VIEW_PENDING_ORDERS',
-            'MANAGE_APPROVER_GROUP',
-            'VIEW_APPROVER_GROUP',
-            'ADD_APPROVER_GROUP',
-            'EDIT_APPROVER_GROUP',
-            'DISCARD_ORDER'
-          ].includes(permission)
-        ) {
-          groupedPermissions.ORDER_MANAGEMENT[permission] = permission;
-        } else if (
-          [
-            'ADD_QUESTIONNAIRE',
-            'VIEW_QUESTIONNAIRE',
-            'CONFIGURE_QUESTIONNAIRE',
-            'DEACTIVATE_QUESTIONNAIRE',
-            'MANAGE_MATERIAL',
-            'VIEW_MATERIAL',
-            'MANAGE_CATALOG',
-            'VIEW_CATALOG',
-            'MANAGE_CATALOG',
-            'VIEW_CATALOG',
-            'VIEW_SP_MATERIAL',
-            'VIEW_CROSSWALK',
-            'ADD_CROSSWALK',
-            'UPLOAD_CROSSWALK',
-            'MANAGE_SP_ACCOUNT',
-            'ADD_SP_ACCOUNT',
-            'MANAGE_SP_CATALOG',
-            'VIEW_SP_CATALOG'
-          ].includes(permission)
-        ) {
-          groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;
-        } else if (
-          [
-            'PAY_INVOICES',
-            'MANAGE_CUSTOMER_STATEMENT',
-            'VIEW_INVOICES',
-            'MANAGE_INVOICES',
-            'VIEW_PAYMENT_HISTORY',
-            'VIEW_CUSTOMER_STATEMENT',
-            'VIEW_PAYMENT_METHOD_CARD',
-            'ADD_PAYMENT_METHOD_CARD',
-            'MANAGE_PAYMENT_METHOD_CARD',
-            'DELETE_PAYMENT_METHOD_CARD',
-            'ADD_PAYMENT_METHOD_BANK',
-            'VIEW_PAYMENT_METHOD_BANK',
-            'CANCEL_PAYMENT',
-            'VIEW_CREDIT_LISTING'
-          ].includes(permission)
-        ) {
-          groupedPermissions.PAYMENT_INVOICING[permission] = permission;
-        } else if (['MANAGE_PROVIDERS_SCREEN', 'VIEW_PROVIDER', 'ADD_PROVIDER', 'EDIT_PROVIDER', 'UPLOAD_PROVIDER'].includes(permission)) {
-          groupedPermissions.MANAGE_PROVIDERS[permission] = permission;
-        } else if (['MANAGE_LINKED_ACCOUNTS'].includes(permission)) {
-          groupedPermissions.MANAGE_LINKED_ACCOUNTS[permission] = permission;
-        }
+        Object.entries(PERMISSIONS_ENUM).forEach(([key, value]) => {
+          if (Object.values(value).includes(permission)) {
+            groupedPermissions[key][permission] = permission;
+          }
+        });
       });
-
       // remove empty data
       const filteredPermissions = Object.fromEntries(Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0));
-
       return filteredPermissions;
     },
     enabled: true,
@@ -230,7 +145,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                 id={'select-role-search'}
                 label={t('userManagement.user_permissions.select_role')}
                 isMultiSelect={false}
-                placeholder={'select role'}
+                placeholder={'Select Role'}
                 onChange={handleRoleChange}
                 options={roleData || []}
                 variant={'async'}
