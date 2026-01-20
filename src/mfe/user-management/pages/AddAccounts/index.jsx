@@ -11,18 +11,17 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes';
-import UserCreationStepper from '../UserCreationStepper';
+import UserCreationStepper from '../CreateUser/UserCreationStepper';
+import useRouteMode from '../../routes/useRouteMode';
 
 const AddAccounts = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { userId } = useParams();
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alert, setAlert] = React.useState(null);
-  const { isEdit } = location.state || {};
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -35,13 +34,13 @@ const AddAccounts = () => {
   };
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.PERMISSIONS}`, {
+    navigate(isEdit ? `../${id}` : `../${id}/${PATHS.PERMISSIONS}`, {
       state: { isBack: true }
     });
   };
 
   const { mutate, isLoading: isSavingAccounts } = useMutation(async ({ payload }) => {
-    const url = `${ApiRoutes.USERS()}/${userId}/accounts?${serializeParams(requestParams)}`;
+    const url = `${ApiRoutes.USERS()}/${id}/accounts?${serializeParams(requestParams)}`;
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     return res.data;
   });
@@ -63,7 +62,7 @@ const AddAccounts = () => {
       {
         onSuccess: (response) => {
           if (isEdit) {
-            navigate(`../${userId}`, {
+            navigate(`../${id}`, {
               state: {
                 alert: {
                   pinPoint: 'linked_accounts',
@@ -73,7 +72,7 @@ const AddAccounts = () => {
               }
             });
           } else {
-            navigate(`../${userId}/materials`, { state: { isCreate: true } });
+            navigate(`../${id}/materials`, { state: { isCreate: true } });
           }
         },
         onError: (error) => {}

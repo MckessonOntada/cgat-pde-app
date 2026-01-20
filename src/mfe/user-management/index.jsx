@@ -1,12 +1,15 @@
-import React from "react";
-import { Routes } from "./routes";
-import { UserProvider } from './context/UserContext';
+import React from 'react';
+import { Routes } from './routes';
+import { WidgetProvider } from '@src/context/WidgetContext';
 
+const INITIAL_STATE = {
+  selectedRole: ''
+};
 const UserManagement = () => {
   return (
-    <UserProvider>
+    <WidgetProvider initialState={INITIAL_STATE}>
       <Routes />
-    </UserProvider>
+    </WidgetProvider>
   );
 };
 

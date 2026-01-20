@@ -12,6 +12,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage, defaultRole }) => {
   const { t } = useTranslate();
@@ -19,6 +20,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [searchKey, setSearchKey] = useState('');
   const [selectedRoleData, setSelectedRoleData] = useState(null);
+  const { setValue } = useWidgetContext();
 
   useEffect(() => {
     if (defaultRole) {
@@ -44,8 +46,8 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       if (res.data?.content) {
         const roles = res.data?.content?.map((role) => ({
           ...role,
-          label: role.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : role.name, //  `role.name` for the label
-          value: role.id //  `role.id` for the value
+          label: role.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : role.name,
+          value: role.id
         }));
         return roles;
       }
@@ -65,7 +67,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
       const rawPermissions = res.data || [];
-      // grouped format
+
       const groupedPermissions = {
         CREATE_NEW_ORDER: {},
         USER_MANAGEMENT: {},
@@ -108,18 +110,18 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     setEnabledPermissions([]);
   };
 
-  const handleRoleChange = (value) => {
-    const selected = value;
-    const roleId = roleData?.find((item) => item.id == value);
-    setSelectedRoleData(roleId);
+  const handleRoleChange = (selectedRole) => {
+    const roleDetails = roleData?.find((item) => item.id == selectedRole);
 
-    // Get permissions for the selected role
-    let permissions = roleId?.permissions ?? [];
+    setSelectedRoleData(roleDetails);
+    setValue('selectedRole', roleDetails.name);
 
-    if (selected) {
-      setSelectedRole(selected);
+    let permissions = roleDetails?.permissions ?? [];
+
+    if (selectedRole) {
+      setSelectedRole(selectedRole);
       setEnabledPermissions(permissions);
-      handleRoleSelect(selected);
+      handleRoleSelect(selectedRole);
     }
   };
 

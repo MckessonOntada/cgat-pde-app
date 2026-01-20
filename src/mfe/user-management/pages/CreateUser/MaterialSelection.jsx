@@ -1,5 +1,5 @@
 import React from 'react';
-import UserCreationStepper from '../UserCreationStepper';
+import UserCreationStepper from './UserCreationStepper';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -9,16 +9,14 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import { List, ListItem } from '@src/components/list';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import MaterialService from '@src/api/commonService/MaterialService';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Materials from './Materials';
 import IconButton from '@src/components/IconButton';
-import AuthUtils from '@src/util/AuthUtils';
 import { PATHS } from '../../routes';
+import useRouteMode from '../../routes/useRouteMode';
 
-export default function MaterialSelection(props) {
-  const location = useLocation();
-  const isEdit = location.state?.isCreate !== true;
-  const { userId } = useParams();
+export default function MaterialSelection() {
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
@@ -26,10 +24,9 @@ export default function MaterialSelection(props) {
   const [selection, setSelection] = React.useState([]);
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
 
   React.useEffect(() => {
-    MaterialService.getAllMaterials(userId, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' })
+    MaterialService.getAllMaterials(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' })
       .then((response) => {
         const selectedRecords = response.flatMap((trade) => {
           if (trade.isExpandable) {
@@ -64,7 +61,7 @@ export default function MaterialSelection(props) {
     const selectedMaterialIds = selection.map((item) => item.id);
     const restrictedMaterialIds = flatIds.filter((id) => !selectedMaterialIds.includes(id));
 
-    MaterialService.restrictMaterial(userId, restrictedMaterialIds)
+    MaterialService.restrictMaterial(id, restrictedMaterialIds)
       .then((response) => {
         if (isEdit) {
           navigate(`./..`, {
@@ -101,7 +98,7 @@ export default function MaterialSelection(props) {
   };
 
   const handleOnBack = () => {
-    navigate(isEdit ? `./..` : `../${userId}/${PATHS.ADD_ACCOUNTS}`, {
+    navigate(isEdit ? `./..` : `../${id}/${PATHS.ACCOUNTS}`, {
       state: { isBack: true }
     });
   };

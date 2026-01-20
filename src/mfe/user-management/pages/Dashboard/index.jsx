@@ -182,7 +182,7 @@ export default function Dashboard() {
           controls={
             <div className="controls">
               {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
-                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
+                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.CREATE_USER}`)}>
                   {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
                 </Button>
               )}

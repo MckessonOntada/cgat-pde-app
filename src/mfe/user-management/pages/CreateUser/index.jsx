@@ -19,14 +19,15 @@ import * as Yup from 'yup';
 import { PATHS } from '../../routes/constants';
 import './CreateUser.scss';
 import UserDetailsFormSegment from './CreateUserForm';
-import UserCreationStepper from '../UserCreationStepper';
+import UserCreationStepper from './UserCreationStepper';
+import useRouteMode from '../../routes/useRouteMode';
 
 const CreateUser = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isPending = false, isBack = false } = location.state || {};
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+  const { isPending = false, isBack = false } = location.state || {};
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
@@ -43,9 +44,9 @@ const CreateUser = () => {
     isError: isGetUserError,
     data: userData
   } = useQuery({
-    queryKey: [`users/${userId}`],
+    queryKey: [`users/${id}`],
     queryFn: async () => {
-      const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
+      const url = !isPending ? `${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${id}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
 
       return res.data;
@@ -56,7 +57,7 @@ const CreateUser = () => {
 
   const { mutate, isLoading } = useMutation(async ({ payload, isReject }) => {
     if (isEdit || isBack) {
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
     } else if (isPending) {
       const reqParams = {
@@ -67,7 +68,7 @@ const CreateUser = () => {
         const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
         // Then, approve the user
         const approveResponse = await HttpResourceService.callRest(
-          `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+          `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(reqParams)}`,
           httpVerb.PATCH,
           payload
         );
@@ -79,7 +80,7 @@ const CreateUser = () => {
       }
       // For rejection,
       const rejectResponse = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+        `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(reqParams)}`,
         httpVerb.PATCH,
         payload
       );
@@ -188,7 +189,7 @@ const CreateUser = () => {
       { isLoading, payload, isReject: false },
       {
         onSuccess: (response) => {
-          const createdId = response?.createUser?.id ?? userId;
+          const createdId = response?.createUser?.id ?? id;
           let targetPath = '';
 
           if (isEdit) {
@@ -198,7 +199,7 @@ const CreateUser = () => {
           }
 
           navigate(targetPath, {
-            state: { isEdit }
+            state: { isEdit: isEdit }
           });
         },
         onError: (error) => {
@@ -218,7 +219,7 @@ const CreateUser = () => {
       }
     } else {
       if (isEdit) {
-        navigate(`../${userId}`);
+        navigate(`../${id}`);
       } else {
         navigate(RoutePaths.pathUserManagement);
       }
@@ -229,7 +230,7 @@ const CreateUser = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathUserManagement);
     } else if (modalSuccessCallback === 'details') {
-      navigate(`../${userId}`);
+      navigate(`../${id}`);
     }
   };
   if (isLoading) {
