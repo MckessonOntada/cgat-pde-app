@@ -80,8 +80,10 @@ const UserDetail = () => {
 
   const {
     isLoading,
-    data: userDetails,
-    refetch
+    data: userDetails = {},
+    refetch,
+    isError,
+    error
   } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: () => UserService.getUserDetails(userId, requestParams, isPending),
@@ -306,6 +308,13 @@ const UserDetail = () => {
   const prePermissions = userDetails?.isActive && userDetails?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
   if (isLoading) {
     return <Loader type={'screen'} />;
+  }
+  if (isError) {
+    const statusCode = error?.response?.status;
+    let description = translateFn('error.default');
+    if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+    return <Alert type="error" description={description} />;
   }
   return (
     <div className="MCP-module-wrapper">
