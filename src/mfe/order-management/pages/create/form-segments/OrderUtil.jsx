@@ -217,3 +217,27 @@ export function removePrefixSuffixFromValues(values, fieldConfigs) {
 
   return values;
 }
+
+export const removeFieldPrefixSuffix = (value, fieldName, orderDetails) => {
+  if (!value) return '';
+
+  const config =
+    orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+
+  const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
+
+  const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+  const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+
+  let cleanedValue = value;
+
+  if (prefix && cleanedValue.startsWith(prefix)) {
+    cleanedValue = cleanedValue.slice(prefix.length);
+  }
+
+  if (suffix && cleanedValue.endsWith(suffix)) {
+    cleanedValue = cleanedValue.slice(0, -suffix.length);
+  }
+
+  return cleanedValue;
+};
