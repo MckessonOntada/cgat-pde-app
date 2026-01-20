@@ -169,7 +169,7 @@ function UserTable({ onActionSuccess, showAlert }) {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
-      navigate(row.status == 'PENDING' ? `../${PATHS.EDIT}/${row.id}` : `../${PATHS.REVIEW_USER}/${row.id}`, {
+      navigate(row.status == 'PENDING' ? `../${row.id}/${PATHS.EDIT}` : `../${row.id}/${PATHS.REVIEW_USER}`, {
         state: { isPending: true }
       });
     } else if (value === 'resendLink') {
@@ -344,7 +344,7 @@ function UserTable({ onActionSuccess, showAlert }) {
             menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
             handleSelect={(value) => handleOnOptionSelection(value, row)}
             options={
-              isSystemAdminView
+              !isSystemAdminView
                 ? tab === USER_TABS.PENDING_REQUESTS
                   ? [
                       {
