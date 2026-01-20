@@ -19,14 +19,41 @@ import * as Yup from 'yup';
 import { PATHS } from '../../routes/constants';
 import './CreateUser.scss';
 import UserDetailsFormSegment from './CreateUserForm';
-import UserCreationStepper from '../UserCreationStepper';
+import UserCreationStepper from './UserCreationStepper';
+import useRouteMode from '../../routes/useRouteMode';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
+import { useWidgetContext } from '@src/context/WidgetContext';
+
+const INITIAL_VALUES = {
+  name: {
+    firstName: '',
+    middleName: '',
+    lastName: ''
+  },
+  contact: {
+    email: '',
+    phone: '',
+    fax: '',
+    countryCode: '91'
+  },
+  address: {
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: ''
+  }
+};
 
 const CreateUser = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isPending = false, isBack = false } = location.state || {};
+  const { setValue, value } = useWidgetContext();
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+  const { isPending = false, isBack = false } = location.state || {};
+  const [initialFormValue, setInitialFormValue] = React.useState(INITIAL_VALUES);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
@@ -43,20 +70,46 @@ const CreateUser = () => {
     isError: isGetUserError,
     data: userData
   } = useQuery({
-    queryKey: [`users/${userId}`],
+    queryKey: [`users/${id}`],
     queryFn: async () => {
-      const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
+      const url = !isPending ? `${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${id}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
 
       return res.data;
+    },
+    onSuccess: (response) => {
+      const sanitized = CommonUtils.sanitizeValue(response.address);
+      const { name, contact } = response;
+      const initialValues = {
+        name: {
+          firstName: name.firstName,
+          middleName: name.middleName,
+          lastName: name.lastName
+        },
+        contact: {
+          email: contact.email,
+          phone: contact.phone,
+          countryCode: '91',
+          fax: contact.fax
+        },
+        address: {
+          address1: sanitized.address1,
+          address2: sanitized.address2,
+          city: sanitized.city,
+          state: sanitized.state,
+          zip: sanitized.zip
+        }
+      };
+      setInitialFormValue(initialValues);
+      setValue('isLoading', false);
     },
     enabled: isEdit || isPending || isBack,
     refetchOnWindowFocus: false
   });
 
-  const { mutate, isLoading } = useMutation(async ({ payload, isReject }) => {
+  const { mutate, isLoading: isSaving } = useMutation(async ({ payload, isReject }) => {
     if (isEdit || isBack) {
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
     } else if (isPending) {
       const reqParams = {
@@ -67,7 +120,7 @@ const CreateUser = () => {
         const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
         // Then, approve the user
         const approveResponse = await HttpResourceService.callRest(
-          `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+          `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(reqParams)}`,
           httpVerb.PATCH,
           payload
         );
@@ -79,7 +132,7 @@ const CreateUser = () => {
       }
       // For rejection,
       const rejectResponse = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+        `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(reqParams)}`,
         httpVerb.PATCH,
         payload
       );
@@ -94,27 +147,6 @@ const CreateUser = () => {
 
   const handleGoBack = () => {
     navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
-  };
-  const sanitized = CommonUtils.sanitizeValue(userData?.address);
-  const initialValues = {
-    name: {
-      firstName: userData?.name?.firstName || '',
-      middleName: userData?.name?.middleName || '',
-      lastName: userData?.name?.lastName || ''
-    },
-    contact: {
-      email: userData?.contact?.email || '',
-      phone: userData?.contact?.phone || '',
-      countryCode: '91',
-      fax: userData?.contact?.fax || ''
-    },
-    address: {
-      address1: sanitized.address1 || '',
-      address2: sanitized.address2 || '',
-      city: sanitized.city || '',
-      state: sanitized.state || '',
-      zip: sanitized.zip || ''
-    }
   };
 
   const validationSchema = Yup.object({
@@ -185,10 +217,10 @@ const CreateUser = () => {
     };
 
     mutate(
-      { isLoading, payload, isReject: false },
+      { isLoading: isSaving, payload, isReject: false },
       {
         onSuccess: (response) => {
-          const createdId = response?.createUser?.id ?? userId;
+          const createdId = response?.createUser?.id ?? id;
           let targetPath = '';
 
           if (isEdit) {
@@ -198,7 +230,7 @@ const CreateUser = () => {
           }
 
           navigate(targetPath, {
-            state: { isEdit }
+            state: { isEdit: isEdit }
           });
         },
         onError: (error) => {
@@ -218,7 +250,7 @@ const CreateUser = () => {
       }
     } else {
       if (isEdit) {
-        navigate(`../${userId}`);
+        navigate(`../${id}`);
       } else {
         navigate(RoutePaths.pathUserManagement);
       }
@@ -229,12 +261,9 @@ const CreateUser = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathUserManagement);
     } else if (modalSuccessCallback === 'details') {
-      navigate(`../${userId}`);
+      navigate(`../${id}`);
     }
   };
-  if (isLoading) {
-    return <Loader type={'screen'} />;
-  }
 
   return (
     <div className="MCP-module-wrapper">
@@ -269,7 +298,7 @@ const CreateUser = () => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik
-          initialValues={initialValues}
+          initialValues={initialFormValue}
           validationSchema={validationSchema}
           enableReinitialize
           onSubmit={(values, actions) => {
@@ -282,7 +311,7 @@ const CreateUser = () => {
             }, [dirty]);
 
             return (
-              <Form>
+              <FormikFormWrapper disabled={isSaving}>
                 <div className="MCP-panel-container">
                   <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
                 </div>
@@ -295,11 +324,18 @@ const CreateUser = () => {
                       {t('userManagement.button.rejectrequest')}
                     </Button>
                   )}
-                  <Button type="submit" size={'md'}>
-                    {t('userManagement.button.savencontinue')}
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    isLoadingState={isSaving}
+                    Icon={isSaving && ButtonLoadingIcon}
+                    iconPosition="left"
+                    size="md"
+                    disabled={!isDirty}>
+                    {t(isSaving ? 'Saving' : 'userManagement.button.savencontinue')}
                   </Button>
                 </div>
-              </Form>
+              </FormikFormWrapper>
             );
           }}
         </Formik>

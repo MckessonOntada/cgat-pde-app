@@ -16,37 +16,33 @@ import React from 'react';
 import { PATHS } from '../../routes/constants';
 import './index.scss';
 import PermissionForm from './PermissionForm';
-import UserCreationStepper from '../UserCreationStepper';
+import UserCreationStepper from '../CreateUser/UserCreationStepper';
 import useUser from '../../useUser';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import useRouteMode from '../../routes/useRouteMode';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const location = useLocation();
-  const { isEdit = false, isBack = false } = location.state || {};
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+  const { getValue } = useWidgetContext();
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
-
-  const { isLoading, data: userDetails = {}, refetch } = useUser(userId, requestParams);
+  const selectedRole = getValue('selectedRole');
+  const { isLoading, data: userDetails = {}, refetch } = useUser(id, requestParams);
   const handleGoBack = () => {
     navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const handleBack = () => {
     if (isEdit) {
-      navigate(`../${userId}`);
+      navigate(`../${id}`);
     } else {
-      navigate(`../${userId}/${PATHS.EDIT}`, { state: { isBack: true } });
+      navigate(`../${id}/${PATHS.EDIT}`, { state: { isBack: true } });
     }
-  };
-
-  const isFormValuesChanged = (initialValues, currentValues) => {
-    const isRoleChanged = initialValues.roleId !== currentValues.roleId;
-    return isRoleChanged;
   };
 
   const {
@@ -55,15 +51,11 @@ const UserPermissions = () => {
     isError: isSaveUserPermissionError,
     data: saveUserPermissionResponse
   } = useMutation(async ({ payload }) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS()}/${userId}/roles-permissions?${serializeParams(requestParams)}`,
-      httpVerb.PATCH,
-      payload
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${id}/roles-permissions?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
     return res.data;
   });
 
-  const handleSaveAndContinue = (values) => {
+  const handleOnSubmit = (values) => {
     const payload = {
       roleId: userDetails?.roleId ? userDetails?.roleId : values.roleId,
       permissions: values.permissions
@@ -74,11 +66,15 @@ const UserPermissions = () => {
       {
         onSuccess: (response) => {
           if (isSystemAdminView) {
-            navigate(isEdit ? `../${userId}` : RoutePaths.pathSystemAdminManagement, {
-              state: { isSuccess: true }
-            });
+            if (selectedRole === 'Customer Centre') {
+              navigate(isEdit ? `../${id}` : `../${id}/${PATHS.MATERIAL}`);
+            } else {
+              navigate(isEdit ? `../${id}` : RoutePaths.pathSystemAdminManagement, {
+                state: { isSuccess: true }
+              });
+            }
           } else {
-            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`);
+            navigate(isEdit ? `../${id}` : `../${id}/${PATHS.ACCOUNTS}`);
           }
         },
         onError: (error) => {
@@ -88,6 +84,39 @@ const UserPermissions = () => {
     );
   };
 
+  const translationConfig = React.useMemo(() => {
+    const config = {};
+
+    if (isEdit) {
+      if (isSystemAdminView) {
+        config.heading = t('userManagement.edit_sysadmin');
+      } else {
+        config.heading = t('userManagement.edit_organization_user');
+      }
+
+      config.saveButtonLabel = t('userManagement.label.save');
+      config.backButtonLabel = t('userManagement.back_to_user_details');
+    } else {
+      if (isSystemAdminView) {
+        config.heading = t('userManagement.create_sysadmin');
+
+        if (selectedRole === 'Customer Centre') {
+          config.saveButtonLabel = t('userManagement.button.savencontinue');
+        } else {
+          config.saveButtonLabel = t('userManagement.label.createSystemAdmin');
+        }
+
+        config.backButtonLabel = t('userManagement.sysadmin.backmessage');
+      } else {
+        config.heading = t('userManagement.create_organization_user');
+        config.saveButtonLabel = t('userManagement.button.savencontinue');
+        config.backButtonLabel = t('userManagement.user.backmessage');
+      }
+    }
+
+    return config;
+  }, [isEdit, isSystemAdminView, selectedRole]);
+
   if (isLoading || isSavingUserPermission) {
     return <Loader type={'screen'} />;
   }
@@ -96,25 +125,11 @@ const UserPermissions = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isEdit ? 'userManagement.back_to_user_details' : isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
+          {translationConfig.backButtonLabel}
         </Button>
       </div>
-      <ModuleHeader
-        heading={
-          <Heading as="h1">
-            {t(
-              isEdit
-                ? isSystemAdminView
-                  ? 'userManagement.edit_sysadmin'
-                  : 'userManagement.edit_organization_user'
-                : isSystemAdminView
-                ? 'userManagement.create_sysadmin'
-                : 'userManagement.create_organization_user'
-            )}
-          </Heading>
-        }
-      />
-      {!isEdit && !isSystemAdminView && (
+      <ModuleHeader heading={<Heading as="h1">{translationConfig.heading}</Heading>} />
+      {!isEdit && (
         <div className="stepper">
           <UserCreationStepper activeIndex={2} />
         </div>
@@ -126,10 +141,10 @@ const UserPermissions = () => {
           roleId: userDetails.role?.id
         }}
         enableReinitialize={true}
-        onSubmit={handleSaveAndContinue}
+        onSubmit={handleOnSubmit}
         validateOnChange={false}
         validateOnBlur={true}>
-        {({ values, setFieldValue, initialValues, isValid, handleSubmit, isDirty }) => {
+        {({ values, setFieldValue }) => {
           return (
             <Form>
               <PermissionForm
@@ -144,9 +159,7 @@ const UserPermissions = () => {
                   {t('userManagement.button.back')}
                 </Button>
                 <Button variant="primary" type="submit" size={'md'}>
-                  {isEdit
-                    ? t('userManagement.label.save')
-                    : t(isSystemAdminView ? 'userManagement.label.createSystemAdmin' : 'userManagement.button.savencontinue')}
+                  {translationConfig.saveButtonLabel}
                 </Button>
               </div>
             </Form>

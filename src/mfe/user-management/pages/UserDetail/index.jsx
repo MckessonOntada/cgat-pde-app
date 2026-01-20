@@ -80,8 +80,10 @@ const UserDetail = () => {
 
   const {
     isLoading,
-    data: userDetails,
-    refetch
+    data: userDetails = {},
+    refetch,
+    isError,
+    error
   } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: () => UserService.getUserDetails(userId, requestParams, isPending),
@@ -462,11 +464,7 @@ const UserDetail = () => {
                       className="button-icon"
                       size="md"
                       disabled={!userDetails?.isActive || isSelf}
-                      onClick={() =>
-                        navigate(`${PATHS.PERMISSIONS}`, {
-                          state: { isEdit: true }
-                        })
-                      }>
+                      onClick={() => navigate(`edit/${PATHS.PERMISSIONS}`)}>
                       {translateFn('userManagement.button.edit')}
                     </Button>
                   </div>
@@ -526,11 +524,7 @@ const UserDetail = () => {
                         className="button-icon"
                         size="md"
                         disabled={!userDetails?.isActive}
-                        onClick={() =>
-                          navigate(`${PATHS.ADD_ACCOUNTS}`, {
-                            state: { isEdit: true }
-                          })
-                        }>
+                        onClick={() => navigate(`edit/${PATHS.ACCOUNTS}`)}>
                         {translateFn('userManagement.button.edit')}
                       </Button>
                     </div>
@@ -562,11 +556,7 @@ const UserDetail = () => {
                           className="button-icon"
                           size="md"
                           disabled={!userDetails?.isActive}
-                          onClick={() =>
-                            navigate(`${PATHS.MATERIAL}`, {
-                              state: { isEdit: true }
-                            })
-                          }>
+                          onClick={() => navigate(`edit/${PATHS.MATERIAL}`)}>
                           {translateFn('userManagement.button.linkMaterials')}
                         </Button>
                       </div>
