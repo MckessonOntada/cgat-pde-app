@@ -747,5 +747,6 @@ export const MessageEs = {
     'S_{patientID} and {coiId} do not match the master file. Please verify the details before submitting the order.',
   'orderManagement.patientID.verificationFailedSubmitPage':
     'S_{patientID} do not match the master file. Please verify the details before submitting the order.',
-  'orderManagement.CoiId.verificationFailedSubmitPage': 'S_Please verify {patientId} first to match {coiId} in the master file.'
+  'orderManagement.CoiId.verificationFailedSubmitPage': 'S_Please verify {patientId} first to match {coiId} in the master file.',
+  'labels.selectProcurementOptions': 'S_Select Procurement Options'
 };
