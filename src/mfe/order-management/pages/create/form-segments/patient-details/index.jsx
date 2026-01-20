@@ -533,7 +533,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const idValue = id.startsWith('input-') ? id.replace(/^input-/, '') : id;
     formikRef.current?.setFieldTouched(idValue, true);
 
-    if (getIn(formikRef.current?.errors, idValue)) return;
+    if (getIn(formikRef.current?.errors, idValue)) {
+      setAlert(null);
+      if (manufacturer === MANUFACTURER.ORCA) {
+        setPatientVerified(false);
+        clearPatientDetails();
+      }
+      return;
+    }
 
     const fieldName = id.split('.').pop();
     const fieldValue = formatFieldWithPrefixSuffix(value, fieldName);
@@ -598,6 +605,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           setIsPatientVerifying(false);
         });
     } else {
+      setPatientVerified(false);
       clearPatientDetails();
     }
   };

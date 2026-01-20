@@ -1,5 +1,5 @@
 import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
-import { Form, Formik } from 'formik';
+import { Form, Formik, getIn } from 'formik';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
@@ -96,7 +96,12 @@ function OrcaPatientDetails() {
   };
   const validateOnBlur = (e) => {
     const { id } = e.target;
-
+    formikRef.current?.setFieldTouched(id, true);
+    if (getIn(formikRef.current?.errors, id)) {
+      setAlert(null);
+      clearPatientDetails();
+      return;
+    }
     const patientId = formikRef.current?.values?.patient?.patientIdentifier;
     const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
     if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
