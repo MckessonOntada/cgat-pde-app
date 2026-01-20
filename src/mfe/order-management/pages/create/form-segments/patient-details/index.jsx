@@ -605,6 +605,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           setIsPatientVerifying(false);
         });
     } else {
+      setAlert(null);
       setPatientVerified(false);
       clearPatientDetails();
     }
