@@ -177,6 +177,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { data: priceDetails } = useOrderPrice({
+    channelType: orderDetails?.therapy?.channelType,
+    trade: {
+      ndc: orderDetails?.therapy?.ndcNumber
+    },
     therapyId,
     soldToAccountId,
     shipToAccountId

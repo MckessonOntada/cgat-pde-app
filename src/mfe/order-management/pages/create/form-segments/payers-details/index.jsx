@@ -63,6 +63,10 @@ function Payer({ readOnly, hasPermission }) {
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const { data: priceDetails } = useOrderPrice({
+    channelType: orderDetails?.therapy?.channelType,
+    trade: {
+      ndc: orderDetails?.therapy?.ndcNumber
+    },
     therapyId,
     soldToAccountId,
     shipToAccountId

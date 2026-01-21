@@ -106,17 +106,16 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     channelType
   };
 
-  const { data: priceDetails = {} } = useOrderPrice(
-    {
-      therapyId,
-      soldToAccountId,
-      shipToAccountId,
-      ...(variant && { variant: variant.variant }),
-      channelType
-    },
-    null,
-    null
-  );
+  const { data: priceDetails = {} } = useOrderPrice({
+    therapyId,
+    soldToAccountId,
+    shipToAccountId,
+    ...(variant && { variant: variant.variant }),
+    channelType: orderDetails?.therapy?.channelType,
+    trade: {
+      ndc: orderDetails?.therapy?.ndcNumber
+    }
+  });
 
   React.useEffect(() => {
     if (orderDetails.id) {
