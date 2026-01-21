@@ -11,19 +11,19 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { PATHS } from '../../routes/constants';
 import './CreateUser.scss';
 import UserDetailsFormSegment from './CreateUserForm';
-import UserCreationStepper from './UserCreationStepper';
 import useRouteMode from '../../routes/useRouteMode';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import UserService from '@src/api/commonService/UserService';
 
 const INITIAL_VALUES = {
   name: {
@@ -50,36 +50,26 @@ const CreateUser = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { setValue, value } = useWidgetContext();
-  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
-  const { isPending = false, isBack = false } = location.state || {};
+  const { setValue, state } = useWidgetContext();
+  const { isEdit, id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+  const provision = params.provision === 'true';
+  const { isPending = true, isBack = false } = location.state || {};
   const [initialFormValue, setInitialFormValue] = React.useState(INITIAL_VALUES);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const practiceId = AuthUtils.getPracticeId() ?? 1;
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
-  const practiceId = AuthUtils.getPracticeId() ?? 1;
 
-  const {
-    isLoading: isGetUserDetails,
-    isError: isGetUserError,
-    data: userData
-  } = useQuery({
-    queryKey: [`users/${id}`],
-    queryFn: async () => {
-      const url = !isPending ? `${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${id}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-
-      return res.data;
-    },
-    onSuccess: (response) => {
-      const sanitized = CommonUtils.sanitizeValue(response.address);
-      const { name, contact } = response;
+  React.useEffect(() => {
+    if (isEdit && userDetails.id) {
+      const sanitized = CommonUtils.sanitizeValue(userDetails.address);
+      const { name, contact } = userDetails;
       const initialValues = {
         name: {
           firstName: name.firstName,
@@ -101,24 +91,73 @@ const CreateUser = () => {
         }
       };
       setInitialFormValue(initialValues);
-      setValue('isLoading', false);
+    }
+  }, [state.userDetails]);
+
+  const onSuccess = (response) => {
+    const createdId = response?.id;
+    let targetPath = '';
+    if (provision) {
+      navigate(`../../${createdId}/create/${PATHS.PERMISSIONS}`);
+      return;
+    } else if (isEdit) {
+      targetPath = `../../${id}`;
+    } else {
+      targetPath = `../${createdId}/${PATHS.PERMISSIONS}`;
+    }
+    navigate(`${targetPath}${location.search}`, {
+      state: {
+        alert: {
+          type: 'success',
+          description: 'User details updated successfully.'
+        }
+      }
+    });
+  };
+
+  const onError = (error) => {
+    const errorKey = handleApiError(error);
+    setAlert({ type: 'error', description: t(errorKey) });
+  };
+
+  const { mutate: rejectUserRequest } = useMutation({
+    mutationFn: (params) => UserService.rejectUserRequest(id, params),
+    onSuccess: (response) => {
+      navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
     },
-    enabled: isEdit || isPending || isBack,
-    refetchOnWindowFocus: false
+    onError
+  });
+
+  const { mutate: approveUserRequest } = useMutation({
+    mutationFn: async ({ payload, params }) => {
+      return UserService.createUser(payload, params).then(async (createRes) => {
+        const approveRes = await UserService.approveUserRequest(id, payload, params);
+        return createRes;
+      });
+    },
+    onSuccess,
+    onError
+  });
+
+  const { mutate: createUser } = useMutation({
+    mutationFn: ({ payload, params }) => UserService.createUser(payload, params),
+    onSuccess,
+    onError
+  });
+
+  const { mutate: updateUser } = useMutation({
+    mutationFn: ({ payload, params }) => UserService.updateUser(id, payload, params),
+    onSuccess,
+    onError
   });
 
   const { mutate, isLoading: isSaving } = useMutation(async ({ payload, isReject }) => {
-    if (isEdit || isBack) {
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
-      return updateUser.data;
-    } else if (isPending) {
+    if (provision) {
       const reqParams = {
         status: isReject ? 'REJECTED' : 'APPROVED'
       };
       if (!isReject) {
-        // For approval, first create the user
         const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
-        // Then, approve the user
         const approveResponse = await HttpResourceService.callRest(
           `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(reqParams)}`,
           httpVerb.PATCH,
@@ -137,6 +176,9 @@ const CreateUser = () => {
         payload
       );
       return rejectResponse.data;
+    } else if (isEdit || isBack) {
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${id}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
+      return updateUser.data;
     } else {
       const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
       return {
@@ -195,50 +237,27 @@ const CreateUser = () => {
     })
   });
 
-  const handleRejectRequest = (values) => {
-    mutate(
-      { values, isReject: true },
-      {
-        onSuccess: (response) => {
-          navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
-        },
-        onError: (error) => {
-          setAlert({ type: 'error', description: t('errors.default') });
-        }
-      }
-    );
+  const handleRejectRequest = () => {
+    rejectUserRequest({ status: true });
   };
 
   const handleSubmit = (values) => {
     const payload = {
-      practiceId, // Append the practiceId
-      ...values, // Spread the existing form values
+      ...values,
+      practiceId,
       isActive: true
     };
-
-    mutate(
-      { isLoading: isSaving, payload, isReject: false },
-      {
-        onSuccess: (response) => {
-          const createdId = response?.createUser?.id ?? id;
-          let targetPath = '';
-
-          if (isEdit) {
-            targetPath = isSystemAdmin ? `/system-admin/user/${createdId}` : `/admin/user/${createdId}`;
-          } else {
-            targetPath = `../${createdId}/${PATHS.PERMISSIONS}`;
-          }
-
-          navigate(targetPath, {
-            state: { isEdit: isEdit }
-          });
-        },
-        onError: (error) => {
-          const errorKey = handleApiError(error);
-          setAlert({ type: 'error', description: t(errorKey) });
-        }
-      }
-    );
+    const params = {
+      userType: isSystemAdminView ? 'ADMIN' : 'GENERAL',
+      status: 'APPROVED'
+    };
+    if (provision && isEdit) {
+      approveUserRequest({ payload, params });
+    } else if (isEdit) {
+      updateUser({ payload, params });
+    } else {
+      createUser({ payload, params });
+    }
   };
 
   const handleCancel = () => {
@@ -264,37 +283,10 @@ const CreateUser = () => {
       navigate(`../${id}`);
     }
   };
-
+  const userDetails = state.userDetails || {};
   return (
     <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isEdit ? 'userManagement.back_to_user_details' : isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
-        </Button>
-      </div>
       <div className="MCP-module-body">
-        <ModuleHeader
-          heading={
-            <Heading as="h1">
-              {t(
-                isEdit
-                  ? isSystemAdminView
-                    ? 'userManagement.edit_sysadmin'
-                    : 'userManagement.edit_organization_user'
-                  : isSystemAdminView
-                  ? 'userManagement.create_sysadmin'
-                  : 'userManagement.create_organization_user'
-              )}
-            </Heading>
-          }
-        />
-
-        {!isEdit && !isSystemAdminView && (
-          <div className="stepper">
-            <UserCreationStepper activeIndex={1} />
-          </div>
-        )}
-
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik
@@ -313,13 +305,13 @@ const CreateUser = () => {
             return (
               <FormikFormWrapper disabled={isSaving}>
                 <div className="MCP-panel-container">
-                  <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
+                  <UserDetailsFormSegment comment={userDetails?.comment} isEdit={isEdit} />
                 </div>
                 <div className={'buttonGroup'}>
                   <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
                     {t('userManagement.button.back')}
                   </Button>
-                  {isPending && (
+                  {provision && (
                     <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
                       {t('userManagement.button.rejectrequest')}
                     </Button>
@@ -331,8 +323,8 @@ const CreateUser = () => {
                     Icon={isSaving && ButtonLoadingIcon}
                     iconPosition="left"
                     size="md"
-                    disabled={!isDirty}>
-                    {t(isSaving ? 'Saving' : 'userManagement.button.savencontinue')}
+                    disabled={!provision && !isDirty}>
+                    {t(isSaving ? 'Saving' : isEdit ? 'Save' : 'userManagement.button.savencontinue')}
                   </Button>
                 </div>
               </FormikFormWrapper>

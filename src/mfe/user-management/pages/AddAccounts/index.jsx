@@ -1,10 +1,8 @@
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import Alert from '@src/components/cgat-alert/Alert';
-import ModuleHeader from '@src/components/module-header';
 import { RoutePaths } from '@src/routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { serializeParams } from '@src/util/ApiUtils';
@@ -13,7 +11,6 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes';
-import UserCreationStepper from '../CreateUser/UserCreationStepper';
 import useRouteMode from '../../routes/useRouteMode';
 
 const AddAccounts = () => {
@@ -79,23 +76,9 @@ const AddAccounts = () => {
       }
     );
   };
-  if (isSavingAccounts) {
-    return <Loader type={'screen'} />;
-  }
   return (
     <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isEdit ? 'userManagement.back_to_user_details' : 'userManagement.user.backmessage')}
-        </Button>
-      </div>
       <div className="MCP-module-body">
-        <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
-        {!isEdit && (
-          <div className="stepper">
-            <UserCreationStepper activeIndex={3} />
-          </div>
-        )}
         {alert?.isVisible && <Alert type={alert.type} description={alert.description} onClose={() => setAlert(null)} />}
         <UserAccounts
           autoFocus={true}

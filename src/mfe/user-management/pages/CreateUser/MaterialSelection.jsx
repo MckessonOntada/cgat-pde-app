@@ -1,9 +1,6 @@
 import React from 'react';
-import UserCreationStepper from './UserCreationStepper';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
-import ModuleHeader from '@src/components/module-header';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { Button, Loader, Alert } from '@mckesson/mcp-component-library';
 import CommonFilters from '@src/components/Filters';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { List, ListItem } from '@src/components/list';
@@ -111,30 +108,9 @@ export default function MaterialSelection() {
     });
   }, [data, searchQuery]);
 
-  if (loading) {
-    return <Loader type={'screen'} />;
-  }
-
   return (
     <div className="MCP-module-wrapper">
-      {isEdit && (
-        <div>
-          <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('./..')} size="md">
-            {translateFn('userManagement.back_to_user_details')}
-          </Button>
-        </div>
-      )}
       <div className="MCP-module-body">
-        <ModuleHeader
-          heading={<Heading as="h1">{isEdit ? translateFn('userManagement.button.edit_materials') : translateFn('userManagement.create_user')}</Heading>}
-        />
-
-        {!isEdit && (
-          <div className="stepper">
-            <UserCreationStepper activeIndex={4} />
-          </div>
-        )}
-
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
@@ -179,16 +155,9 @@ export default function MaterialSelection() {
           <Button variant="secondary" type="button" onClick={handleOnBack} size={'md'}>
             {translateFn('userManagement.button.back')}
           </Button>
-          {!isEdit && (
-            <Button variant="primary" type="button" onClick={handleOnAddMaterials} size={'md'}>
-              {translateFn('userManagement.button.adduser')}
-            </Button>
-          )}
-          {isEdit && (
-            <Button variant="primary" type="button" onClick={handleOnAddMaterials} size={'md'}>
-              {translateFn('userManagement.button.addMaterials')}
-            </Button>
-          )}
+          <Button variant="primary" type="button" onClick={handleOnAddMaterials} size="md">
+            {translateFn(isEdit ? 'userManagement.button.addMaterials' : 'userManagement.button.adduser')}
+          </Button>
         </div>
       </div>
     </div>

@@ -64,7 +64,6 @@ const UserDetail = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
-  const [isDeactivate, setIsDeactivate] = useState(false);
   const [isProvisioned, setIsProvisioned] = useState(false);
   const [isConsentError, setIsConsentError] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
@@ -121,7 +120,7 @@ const UserDetail = () => {
     const { alert } = location.state || {};
     if (alert) {
       setAlert(alert);
-      navigate(location.pathname, { replace: true });
+      navigate(`${location.pathname}${location.search}`, { replace: true });
     }
   }, [location.state]);
 
@@ -216,15 +215,12 @@ const UserDetail = () => {
     mutationFn: handleActivateDeactivateUser,
     onSuccess: () => {
       refetch();
-      setIsDeactivate(true);
       setAlert({
         description: translateFn(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'),
         type: 'success'
       });
     },
     onError: (error) => {
-      console.error(`Failed to deactivate user:`, error);
-      setIsDeactivate(true);
       setAlert({
         description: translateFn(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'),
         type: 'error'
@@ -323,7 +319,6 @@ const UserDetail = () => {
           {translateFn(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
-      {(isDeactivate || isProvisioned || isConsentError) && alert && <Alert {...alert} onClose={handleAlertClose} />}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{translateFn('userManagement.header.view.edit_user')}</Heading>}
@@ -345,6 +340,8 @@ const UserDetail = () => {
             )
           }
         />
+        {isProvisioned || isConsentError || (alert && <Alert {...alert} onClose={handleAlertClose} />)}
+
         <ModuleHeader
           heading={
             <div className="subheader-text">

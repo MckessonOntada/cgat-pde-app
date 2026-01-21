@@ -13,9 +13,9 @@ const STEPS = {
 
 function UserCreationStepper({ activeIndex }) {
   const { t } = useTranslate();
-  const { getValue } = useWidgetContext();
+  const { state } = useWidgetContext();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const selectedRole = getValue('selectedRole');
+  const selectedRole = state.selectedRole;
   const steps = React.useMemo(() => {
     const userCreationSteps = [STEPS.USER_DETAILS, STEPS.ROLE_AND_PERMISSIONS];
     if (isSystemAdminView) {
@@ -27,7 +27,7 @@ function UserCreationStepper({ activeIndex }) {
     return userCreationSteps;
   }, [selectedRole]);
 
-  if (isSystemAdminView && steps.length <= 2) return null;
+  if (isSystemAdminView && steps.length <= 2 && selectedRole !== 'Customer Centre') return null;
   return <Stepper activeIndex={activeIndex} dividerText="of" stepHeaders={steps.map((x) => ({ label: t(x) }))} />;
 }
 

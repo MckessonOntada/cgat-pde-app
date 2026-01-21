@@ -64,6 +64,30 @@ async function setCommunicationPreferences(payload, params = {}) {
   return res.data ?? null;
 }
 
+async function createUser(payload, params) {
+  const url = `${ApiRoutes.USERS()}?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  return res.data ?? null;
+}
+
+async function updateUser(id, payload, params) {
+  const url = `${ApiRoutes.USERS()}/${id}?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  return res.data ?? null;
+}
+
+async function approveUserRequest(id, payload, params) {
+  const url = `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+  return res.data ?? null;
+}
+
+async function rejectUserRequest(id, params) {
+  const url = `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+  return res.data ?? null;
+}
+
 const UserService = Object.freeze({
   getTherapyById,
   getAssignee,
@@ -72,7 +96,11 @@ const UserService = Object.freeze({
   getSubscriptionDetails,
   getCommunicationPreferences,
   setCommunicationPreferences,
-  getUserDetails
+  getUserDetails,
+  createUser,
+  updateUser,
+  approveUserRequest,
+  rejectUserRequest
 });
 
 export default UserService;
