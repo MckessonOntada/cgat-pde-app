@@ -28,6 +28,7 @@ const SecondaryHeader = () => {
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isCustomerCenter = AuthUtils.isCustomerCenterView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -46,21 +47,30 @@ const SecondaryHeader = () => {
       navigate('/?expelled=true');
     }
   };
-
   const tabs = useMemo(() => {
-    if (isSystemAdminView) {
+    if (isSystemAdminView || isCustomerCenter) {
       const isOrdersPath = location.pathname.includes('orders');
-      const updatedTabs = systemAdminTab.map((item) => {
-        const isActiveTab = (item.configName === 'orders' && isOrdersPath) || (item.configName === 'systemAdministrator' && !isOrdersPath);
+
+      const filteredTabs = systemAdminTab.filter((item) => {
+        if (isSystemAdminView && !isCustomerCenter) {
+          return item.configName === 'systemAdministrator';
+        }
+        if (isCustomerCenter) {
+          return true;
+        }
+        return false;
+      });
+
+      return filteredTabs.map((item) => {
+        const isActiveTab = item.configName === 'orders' ? isOrdersPath : !isOrdersPath;
+
         return {
           ...item,
           isActiveTab,
-          ariaSelected: isActiveTab ? 'true' : 'false',
-          configName: t('dashboard.card.' + item.configName)
+          ariaSelected: String(isActiveTab),
+          configName: t(`dashboard.card.${item.configName}`)
         };
       });
-
-      return updatedTabs;
     }
 
     if (!Array.isArray(navLinks) || navLinks.length === 0) return [];

@@ -356,7 +356,7 @@ const getState = (props) => {
   return { ...state, __prevSearch: search };
 };
 
-const jsxColumns = () => [
+const jsxColumns = (isCSReviewOrdersPage) => [
   {
     id: COLUMNS.SAP_ID,
     name: 'labels.orderId',
@@ -451,6 +451,19 @@ const jsxColumns = () => [
     cell: function (props) {
       return <EclipsesTextCss str={props.therapy?.materialDescription || props.tradeDetails?.tradeName} maxWidth={280} className={'MCP-table-cell'} />;
     }
+  },
+  {
+    id: COLUMNS.ORGANIZATION,
+    name: 'labels.organization',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'organization.name',
+    maxWidth: '170px',
+    minWidth: '150px',
+    cell: function (props) {
+      return <EclipsesTextCss str={props.practiceName || props.practiceName} maxWidth={150} className={'MCP-table-cell'} />;
+    },
+    omit: !isCSReviewOrdersPage
   },
   {
     id: COLUMNS.AUTHOR,
@@ -586,18 +599,19 @@ const jsxColumns = () => [
   }
 ];
 
-export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId) => {
+export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId, isCSReviewOrdersPage) => {
   if (!tab) throw new Error('table type is missing');
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
   const columns = TABLE_COLUMNS[tab];
-  const getJsxColumns = jsxColumns();
+  const getJsxColumns = jsxColumns(isCSReviewOrdersPage);
   const tableColumns = columns.map((col) => getJsxColumns.find((item) => item.id === col)).filter(Boolean);
 
   const protoObject = {
     translate,
     tab,
-    alertContainerId
+    alertContainerId,
+    isCSReviewOrdersPage
   };
 
   tableColumns.map((column) => {

@@ -172,7 +172,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     }
   };
 
-  const columns = getTableColumns(config.tab, t, alertContainerId);
+  const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage);
 
   const handleOnViewChange = (view) => {
     params.set('view', view);
@@ -315,7 +315,8 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         <ModuleHeader
           heading={<Heading as="h1">{t(isPhysician ? 'headings.prescription' : 'headings.orders')}</Heading>}
           controls={
-            !isPhysician && (
+            !isPhysician &&
+            !isCSReviewOrdersPage && (
               <div className="controls">
                 <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnCreateNewOrder} size="lg" aria-label={t('controls.createNewOrder')}>
                   {t('controls.ariaLabels.createNewOrder')}

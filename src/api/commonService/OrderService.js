@@ -522,6 +522,14 @@ async function verifyOrcaDetails(payload) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
+async function getCSReviewOrders(requestParams) {
+  const url = `${ApiRoutes.ORDERS()}/customer-review?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 
 const OrderService = Object.freeze({
   createOrder,
@@ -570,7 +578,8 @@ const OrderService = Object.freeze({
   getTrackingDetails,
   regeneronPatientIdVerification,
   regeneronCoiIdVerification,
-  verifyOrcaDetails
+  verifyOrcaDetails,
+  getCSReviewOrders
 });
 
 export default OrderService;
