@@ -12,7 +12,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { OrcaPatientVerificationPanel } from '../../orca-patient-verification-panel';
 import { useMutation } from 'react-query';
 import { getValidationSchema } from '../../patient-details/forms/validation-schema';
-import { getManufacturer } from '../../OrderUtil';
+import { getManufacturer, removeFieldPrefixSuffix, updatePatientValues } from '../../OrderUtil';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
@@ -39,8 +39,8 @@ function OrcaPatientDetails() {
       const { patient = {} } = orderDetails;
       const formValues = {
         patient: {
-          medicalRecordNumber: patient.medicalRecordNumber,
-          patientIdentifier: patient.patientIdentifier,
+          medicalRecordNumber: removeFieldPrefixSuffix(patient.medicalRecordNumber, 'medicalRecordNumber', orderDetails),
+          patientIdentifier: removeFieldPrefixSuffix(patient.patientIdentifier, 'patientIdentifier', orderDetails),
           patientInfo: patient.patientInfo
         }
       };
@@ -78,8 +78,8 @@ function OrcaPatientDetails() {
         formikRef.current?.setTouched({});
         formikRef.current?.setErrors({});
 
-        setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
-        setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
+        setFieldValue('patient.medicalRecordNumber', removeFieldPrefixSuffix(orcaVerifiedPatient.medicalRecordNumber, 'medicalRecordNumber', orderDetails));
+        setFieldValue('patient.patientIdentifier', removeFieldPrefixSuffix(orcaVerifiedPatient.patientId, 'patientIdentifier', orderDetails));
         setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
         setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
         setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
@@ -94,6 +94,27 @@ function OrcaPatientDetails() {
     const materialConfig = orderDetails.therapyConfig?.config?.fields;
     return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
   };
+
+  const formatFieldWithPrefixSuffix = (value, fieldName) => {
+    if (!value) return '';
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
+    const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+    const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+
+    let formattedValue = value;
+
+    if (prefix && !formattedValue.startsWith(prefix)) {
+      formattedValue = `${prefix}${formattedValue}`;
+    }
+
+    if (suffix && !formattedValue.endsWith(suffix)) {
+      formattedValue = `${formattedValue}${suffix}`;
+    }
+
+    return formattedValue;
+  };
   const validateOnBlur = (e) => {
     const { id } = e.target;
     formikRef.current?.setFieldTouched(id, true);
@@ -102,8 +123,8 @@ function OrcaPatientDetails() {
       clearPatientDetails();
       return;
     }
-    const patientId = formikRef.current?.values?.patient?.patientIdentifier;
-    const medicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
+    const patientId = formatFieldWithPrefixSuffix(formikRef.current?.values?.patient?.patientIdentifier, 'patientIdentifier');
+    const medicalRecordNumber = formatFieldWithPrefixSuffix(formikRef.current?.values?.patient?.medicalRecordNumber, 'medicalRecordNumber');
     if (id.includes('patientIdentifier')) validateOrcaDetails(patientId, null);
     else if (id.includes('medicalRecordNumber')) validateOrcaDetails(null, medicalRecordNumber);
   };
@@ -111,8 +132,14 @@ function OrcaPatientDetails() {
   const clearPatientDetails = () => {
     const setFieldValue = formikRef.current?.setFieldValue;
     setOrcaVerifiedPatient(null);
-    setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
-    setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+    setFieldValue(
+      'patient.medicalRecordNumber',
+      removeFieldPrefixSuffix(formikRef.current?.values?.patient?.medicalRecordNumber, 'medicalRecordNumber', orderDetails)
+    );
+    setFieldValue(
+      'patient.patientIdentifier',
+      removeFieldPrefixSuffix(formikRef.current?.values?.patient?.patientIdentifier, 'patientIdentifier', orderDetails)
+    );
     setFieldValue('patient.patientInfo.firstName', '');
     setFieldValue('patient.patientInfo.middleName', '');
     setFieldValue('patient.patientInfo.lastName', '');
@@ -151,6 +178,7 @@ function OrcaPatientDetails() {
           if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
     } else {
+      setAlert(null);
       clearPatientDetails();
     }
   };
@@ -179,7 +207,10 @@ function OrcaPatientDetails() {
   );
 
   const handleOnSave = (values) => {
-    const { patient } = values;
+    const config =
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
+    const updatedValue = updatePatientValues(values, config || []);
+    const { patient } = updatedValue;
     if (!patient) return;
     const payload = {
       patient
