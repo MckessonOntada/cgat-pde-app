@@ -9,7 +9,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './assets/styles/Header.module.scss';
-import { navLinks } from './constants';
+import { navLinks, systemAdminTab } from './constants';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const impersonateLogout = () => {
@@ -49,19 +49,18 @@ const SecondaryHeader = () => {
 
   const tabs = useMemo(() => {
     if (isSystemAdminView) {
-      return [
-        {
-          label: 'System Administrator',
-          path: '/',
-          id: 1,
-          configName: t('dashboard.card.systemAdministrator'),
-          isActive: true,
-          isActiveTab: true,
-          labelForMobile: 'System Administrator',
-          sequence: 1,
-          ariaSelected: true
-        }
-      ];
+      const isOrdersPath = location.pathname.includes('orders');
+      const updatedTabs = systemAdminTab.map((item) => {
+        const isActiveTab = (item.configName === 'orders' && isOrdersPath) || (item.configName === 'systemAdministrator' && !isOrdersPath);
+        return {
+          ...item,
+          isActiveTab,
+          ariaSelected: isActiveTab ? 'true' : 'false',
+          configName: t('dashboard.card.' + item.configName)
+        };
+      });
+
+      return updatedTabs;
     }
 
     if (!Array.isArray(navLinks) || navLinks.length === 0) return [];

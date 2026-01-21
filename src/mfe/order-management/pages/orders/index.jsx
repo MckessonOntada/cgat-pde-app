@@ -24,7 +24,7 @@ import { routesConfig } from './../../routes/constants';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import { getTableColumns } from './TableColumns';
 
-const OrderIndex = () => {
+const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -35,7 +35,7 @@ const OrderIndex = () => {
   const hasCreatePermissions = hasPermission(PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION);
 
   const [tabList, setTabList] = useState(() => {
-    const allTabs = getTabs();
+    const allTabs = getTabs(isCSReviewOrdersPage);
     allTabs.forEach((tab) => {
       tab.configName = t(tab.configName);
       tab.labelForMobile = t(tab.labelForMobile);
@@ -362,6 +362,7 @@ const OrderIndex = () => {
                   />
                 }
                 controls={
+                  !isCSReviewOrdersPage &&
                   CommonUtils.isNonEmptyArray(toggleFilters) && (
                     <div>
                       <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>

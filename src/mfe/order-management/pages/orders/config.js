@@ -123,7 +123,7 @@ export const ORDER_ENTITY_ACTION = Object.freeze({
   UPLOAD_DOCUMENT: 'UPLOADED_DOCUMENT'
 });
 
-export const getTabs = () => {
+export const getTabs = (isCSReviewOrdersPage) => {
   const isPhysician = AuthUtils.isPhysician();
   if (isPhysician) {
     return [
@@ -140,6 +140,23 @@ export const getTabs = () => {
         isActiveTab: false,
         sequence: 1,
         labelForMobile: 'labels.tabs.submitted'
+      }
+    ];
+  } else if (isCSReviewOrdersPage) {
+    return [
+      {
+        id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+        configName: 'labels.tabs.submittedBuyAndBill',
+        isActiveTab: false,
+        sequence: 1,
+        labelForMobile: 'labels.tabs.submittedBuyAndBill'
+      },
+      {
+        id: ORDER_TABS.SUBMITTED_SP,
+        configName: 'labels.tabs.submittedSp',
+        isActiveTab: false,
+        sequence: 2,
+        labelForMobile: 'labels.tabs.submittedSp'
       }
     ];
   } else {
