@@ -309,6 +309,13 @@ const UserDetail = () => {
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
+  if (isError) {
+    const statusCode = error?.response?.status;
+    let description = translateFn('error.default');
+    if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+    return <Alert type="error" description={description} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
