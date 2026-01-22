@@ -580,11 +580,19 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
-  const clearPatientDetails = () => {
+  const clearPatientDetails = (lastUpdatedField) => {
     const setFieldValue = formikRef.current?.setFieldValue;
     setOrcaVerifiedPatient(null);
-    setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
-    setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+    let newPatientIdentifier = formikRef.current?.values?.patient?.patientIdentifier,
+      newMedicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
+    if (isPatientVerified && lastUpdatedField === 'patientIdentifier') {
+      newMedicalRecordNumber = '';
+    }
+    if (isPatientVerified && lastUpdatedField === 'medicalRecordNumber') {
+      newPatientIdentifier = '';
+    }
+    setFieldValue('patient.medicalRecordNumber', newMedicalRecordNumber);
+    setFieldValue('patient.patientIdentifier', newPatientIdentifier);
     setFieldValue('patient.patientInfo', {});
   };
 
@@ -606,7 +614,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           }
         })
         .catch((error) => {
-          clearPatientDetails();
+          clearPatientDetails(patientId ? 'patientIdentifier' : 'medicalRecordNumber');
           setPatientVerified(false);
           setAlert({
             type: 'warning',
