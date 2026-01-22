@@ -1394,7 +1394,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
                           ?.map((field) => {
-                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName]} />;
+                            return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
                     </div>
                   </div>
