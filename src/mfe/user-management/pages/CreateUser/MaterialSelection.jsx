@@ -11,6 +11,8 @@ import Materials from './Materials';
 import IconButton from '@src/components/IconButton';
 import { PATHS } from '../../routes';
 import useRouteMode from '../../routes/useRouteMode';
+import AuthUtils from '@src/util/AuthUtils';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 export default function MaterialSelection() {
   const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
@@ -21,9 +23,18 @@ export default function MaterialSelection() {
   const [selection, setSelection] = React.useState([]);
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const { state } = useWidgetContext();
 
   React.useEffect(() => {
-    MaterialService.getAllMaterials(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' })
+    let materialPromise = null;
+    if (isSystemAdmin && state.selectedRole === 'Customer Centre') {
+      materialPromise = MaterialService.getAllMaterialsForCustomerCentre(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' });
+    } else {
+      materialPromise = MaterialService.getAllMaterials(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' });
+    }
+    materialPromise
       .then((response) => {
         const selectedRecords = response.flatMap((trade) => {
           if (trade.isExpandable) {
