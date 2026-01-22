@@ -70,10 +70,12 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       searchParams.orderDate = filters.orderDate;
       searchParams.startDate = filters.dateRange?.[0];
       searchParams.endDate = filters.dateRange?.[1];
+      searchParams.status = filters.status;
     } else if (config.tab === ORDER_TABS.SUBMITTED_SP) {
       searchParams.orderDate = filters.orderDate;
       searchParams.startDate = filters.dateRange?.[0];
       searchParams.endDate = filters.dateRange?.[1];
+      searchParams.status = filters.status;
     } else if (config.tab === ORDER_TABS.PENDING_SUBMISSION) {
       searchParams.orderType = filters.orderType;
       searchParams.orderDate = filters.orderDate;
@@ -274,6 +276,20 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
                 }
               ]
             : []
+      });
+    }
+
+    if (isCSReviewOrdersPage && (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || config.tab === ORDER_TABS.SUBMITTED_SP)) {
+      const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW];
+
+      filters.push({
+        type: 'dropdown',
+        name: 'status',
+        label: t('userManagement.table.status'),
+        options: statusOptions.map((opt) => ({
+          label: t(`labels.caption.${opt}`),
+          value: opt
+        }))
       });
     }
 

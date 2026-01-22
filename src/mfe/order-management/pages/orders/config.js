@@ -18,7 +18,8 @@ export const ORDER_STATUS = Object.freeze({
   REJECTED: 'REJECTED',
   CANCELLED: 'CANCELLED',
   ALL: 'ALL',
-  REVIEW: 'REVIEW'
+  REVIEW: 'REVIEW',
+  CS_REVIEW: 'CS_REVIEW'
 });
 
 export const TAB_FILTERS = Object.freeze({

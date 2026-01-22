@@ -31,10 +31,11 @@ const getColorByStatus = (status) => {
   return statusColors[status] || 'info';
 };
 
-function getOptionsByStatus(props) {
+function getOptionsByStatus(props, isCSReviewOrdersPage = false) {
   const { t: translate } = useTranslate();
   const { id, status } = props || {};
-  const { tab, alertContainerId } = this.__meta__;
+  const { __meta__ } = props || {};
+  const { tab, alertContainerId } = __meta__ || {};
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
@@ -258,26 +259,26 @@ function getOptionsByStatus(props) {
       ),
       value: ORDER_ENTITY_ACTION.REVIEW
     });
-  } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || tab === ORDER_TABS.SUBMITTED_SP) {
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
+  } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || tab === ORDER_TABS.SUBMITTED_SP || isCSReviewOrdersPage) {
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS) || isCSReviewOrdersPage) {
       options.push({
         label: translate(`labels.orderActions.view`),
         value: ORDER_ENTITY_ACTION.VIEW
       });
     }
-    if (hasEditPermission) {
+    if (hasEditPermission || isCSReviewOrdersPage) {
       options.push({
         label: translate(`labels.orderActions.edit`),
         value: ORDER_ENTITY_ACTION.EDIT
       });
     }
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage) {
       options.push({
         label: translate(`labels.orderActions.cancel`),
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
-    if (status === ORDER_STATUS.SUBMITTED && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS)) {
+    if (status === ORDER_STATUS.SUBMITTED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS) || isCSReviewOrdersPage)) {
       options.push({
         label: translate(`labels.orderActions.uploadDocument`),
         value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
@@ -595,7 +596,9 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     width: '100px',
     isAction: true,
     isContextMenu: true,
-    cell: getOptionsByStatus
+    cell: (row) => {
+      return getOptionsByStatus(row, isCSReviewOrdersPage);
+    }
   }
 ];
 
