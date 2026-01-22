@@ -32,5 +32,9 @@
   p {
     font-weight: var(--brand-font-weight-700);
     color: var(--brand-color-primary-slate);
+    &.patientId {
+      white-space: normal;
+      word-break: break-all;
+    }
   }
 }

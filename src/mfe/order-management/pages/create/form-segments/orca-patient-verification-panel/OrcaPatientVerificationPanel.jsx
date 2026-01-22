@@ -122,7 +122,7 @@ const OrcaPatientVerificationPanel = ({ patientList, onClose, setVerifiedPatient
                   <div className={styles.cardContent}>
                     <p>{`${maskString(patient.firstName)} ${maskString(patient.lastName)}`}</p>
                     <Tooltip body={patient.patientId}>
-                      <p>Patient ID - {patient.patientId}</p>
+                      <p className={styles.patientId}>Patient ID - {patient.patientId}</p>
                     </Tooltip>
                   </div>
                 </label>
