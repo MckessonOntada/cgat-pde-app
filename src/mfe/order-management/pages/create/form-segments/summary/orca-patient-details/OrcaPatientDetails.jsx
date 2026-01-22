@@ -21,6 +21,7 @@ function OrcaPatientDetails() {
   const { t: translateFn } = useTranslate();
   const navigate = useNavigate();
   const [initialValues, setInitialValues] = React.useState({});
+  const [isDirty, setIsDirty] = React.useState(false);
   const { data: orderDetails = {}, isLoading } = useOrder(orderId);
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const { therapyConfig = {} } = orderDetails;
@@ -32,8 +33,6 @@ function OrcaPatientDetails() {
   const formikRef = React.useRef();
   const [isPatientVerified, setPatientVerified] = React.useState(false);
 
-  const [lastVerifiedPatientId, setLastVerifiedPatientId] = React.useState(null);
-  const [lastVerifiedMedicalRecordNumber, setLastVerifiedMedicalRecordNumber] = React.useState(null);
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
 
   React.useEffect(() => {
@@ -64,13 +63,6 @@ function OrcaPatientDetails() {
       const setFieldValue = formikRef.current?.setFieldValue;
 
       if (orcaVerifiedPatient) {
-        if (orcaVerifiedPatient.medicalRecordNumber) {
-          setLastVerifiedMedicalRecordNumber(orcaVerifiedPatient.medicalRecordNumber);
-        }
-        if (orcaVerifiedPatient.patientId) {
-          setLastVerifiedPatientId(orcaVerifiedPatient.patientId);
-        }
-
         formikRef.current?.setTouched({});
         formikRef.current?.setErrors({});
 
@@ -153,6 +145,7 @@ function OrcaPatientDetails() {
   const clearPatientDetails = (lastUpdatedField) => {
     const setFieldValue = formikRef.current?.setFieldValue;
     setOrcaVerifiedPatient(null);
+    setPatientVerified(false);
     let newPatientIdentifier = formikRef.current?.values?.patient?.patientIdentifier,
       newMedicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
     if (isPatientVerified && lastUpdatedField === 'patientIdentifier') {
@@ -198,8 +191,6 @@ function OrcaPatientDetails() {
         })
         .finally(() => {
           setIsPatientVerifying(false);
-          if (payload.patientId) setLastVerifiedPatientId(payload.patientId);
-          if (payload.medicalRecordNumber) setLastVerifiedMedicalRecordNumber(payload.medicalRecordNumber);
         });
     } else {
       setAlert(null);
@@ -279,39 +270,46 @@ function OrcaPatientDetails() {
             onSubmit={handleOnSave}
             enableReinitialize
             innerRef={formikRef}>
-            <Form>
-              <div className="stack">
-                <div className="MCP-panel-container">
-                  <p className="section-title">Patient Details</p>
-                  <FormRenderer
-                    sections={PatientSections({
-                      channelType,
-                      therapyConfig,
-                      validateOnBlur,
-                      manufacturer,
-                      isPatientVerifying,
-                      isPatientVerified: ['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(orcaVerifiedPatient?.[key]))
-                    })}
-                  />
-                </div>
-                <div className="controls">
-                  <Button onClick={handleOnBack} variant="secondary" size="md">
-                    {translateFn('captions.btnCancel')}
-                  </Button>
+            {({ dirty }) => {
+              React.useEffect(() => {
+                setIsDirty(dirty);
+              }, [dirty]);
+              return (
+                <Form>
+                  <div className="stack">
+                    <div className="MCP-panel-container">
+                      <p className="section-title">Patient Details</p>
+                      <FormRenderer
+                        sections={PatientSections({
+                          channelType,
+                          therapyConfig,
+                          validateOnBlur,
+                          manufacturer,
+                          isPatientVerifying,
+                          isPatientVerified: isPatientVerified
+                        })}
+                      />
+                    </div>
+                    <div className="controls">
+                      <Button onClick={handleOnBack} variant="secondary" size="md">
+                        {translateFn('captions.btnCancel')}
+                      </Button>
 
-                  <Button
-                    disabled={!CommonUtils.isNonEmptyObject(orcaVerifiedPatient) || isPatientVerifying}
-                    variant="primary"
-                    isLoadingState={isSaving}
-                    Icon={isSaving && ButtonLoadingIcon}
-                    iconPosition="left"
-                    type="submit"
-                    size="md">
-                    {translateFn('captions.btnSaveChanges')}
-                  </Button>
-                </div>
-              </div>
-            </Form>
+                      <Button
+                        disabled={!isPatientVerified || !isDirty}
+                        variant="primary"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left"
+                        type="submit"
+                        size="md">
+                        {translateFn('captions.btnSaveChanges')}
+                      </Button>
+                    </div>
+                  </div>
+                </Form>
+              );
+            }}
           </Formik>
           {isOrcaValidationPanelOpen && (
             <OrcaPatientVerificationPanel
