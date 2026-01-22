@@ -156,7 +156,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                 <div className="configure-li">
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>
                   <div className="details-value">
-                    <div onClick={() => navigate('../../manage-catalog/view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW</div>
+                    <div onClick={() => navigate('../../../view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW</div>
                     {!isCustomerCenter && (
                       <div onClick={() => OnDeleteClick(data?.catalogConfiguration.id, 'config')}>
                         <DeleteIcon />
