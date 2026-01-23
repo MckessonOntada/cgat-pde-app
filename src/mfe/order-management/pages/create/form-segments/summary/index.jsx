@@ -29,7 +29,7 @@ import { Form, Formik } from 'formik';
 import React, { useContext, useRef } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ORDER_STATUS } from '../../../orders/config';
 import { SAP_ORDER_STATUS } from '../../../orders/constants';
 import useOrder from '../../../orders/useOrder';
@@ -58,9 +58,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const dispatch = useDispatch();
   const locationState = location?.state ?? {};
   const { orderId } = useParams();
+  const [searchParams] = useSearchParams();
+  const orgId = searchParams.get('orgId');
+  const isCustomerCentreUser = AuthUtils.isCustomerCenterView();
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { data: orderDetails = {}, isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId, orgId);
   const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
@@ -489,7 +492,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     } else {
       if (!isDirty) {
         const prevSearch = locationState?.__prevSearch || '';
-        navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
+        navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}${prevSearch}`);
       } else {
         handleOnDiscardChanges('back');
       }
@@ -644,11 +647,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       (orderDetails.status === ORDER_STATUS.SUBMITTED && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName) ===
       'ORCA'
     ) {
-      navigate('./../orca-patient-details');
+      navigate(`./../orca-patient-details?orgId=${orgId}`);
     }
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
-      if (!checkEditPermission(stage)) {
+      if (!isCustomerCentreUser && !checkEditPermission(stage)) {
         setAlert({
           description: t('labels.summaryEditMessage'),
           type: 'error'

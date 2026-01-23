@@ -30,6 +30,7 @@ const getColorByStatus = (status) => {
   };
   return statusColors[status] || 'info';
 };
+const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 
 function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
@@ -41,7 +42,6 @@ function getOptionsByStatus(props) {
   const { refreshData, assignedGroupsData, orderView } = useOrders();
   const { hasPermission, hasAnyPermission } = usePermission();
   const { search } = useLocation();
-  const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
   const hasEditPermission = hasAnyPermission([
     PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION,
     PERMISSIONS_ENUM.CREATE_NEW_ORDER.ACCOUNT_SELECTION,
@@ -315,7 +315,7 @@ function getOrderProcessingStatus(orderProcessingStatus) {
   return map[key] || null;
 }
 
-const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
+const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired, practiceId }) => {
   switch (currentStage) {
     case ORDER_STAGES.ACCOUNT_DETAILS:
       return `${id}/accounts`;
@@ -326,7 +326,11 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
     case ORDER_STAGES.ADDITIONAL_DETAILS:
       return `${id}/additional-details`;
     case ORDER_STAGES.ORDER_SUMMARY:
-      return `${id}/summary`;
+      if (isCSReviewOrdersPage) {
+        return `${id}/summary?orgId=${practiceId}`;
+      } else {
+        return `${id}/summary`;
+      }
     default:
       return `${id}/accounts`;
   }

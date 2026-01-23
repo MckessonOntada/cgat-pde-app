@@ -531,6 +531,16 @@ async function getCSReviewOrders(requestParams) {
   return [];
 }
 
+async function getOrderByIdCsUser(orderId, userId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  const url = `${ApiRoutes.ORDER_SERVICE_SYSTEM_ADMIN()}${orderId}?currentOrgId=${userId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -579,7 +589,8 @@ const OrderService = Object.freeze({
   regeneronPatientIdVerification,
   regeneronCoiIdVerification,
   verifyOrcaDetails,
-  getCSReviewOrders
+  getCSReviewOrders,
+  getOrderByIdCsUser
 });
 
 export default OrderService;
