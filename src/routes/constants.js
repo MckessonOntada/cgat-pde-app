@@ -13,6 +13,7 @@ export const RoutePaths = {
   pathNotificationManagement: '/admin/notification-group',
   pathOrganizationRoles: '/admin/organization/roles',
   pathSystemAdminManagement: '/system-admin/user',
+  pathCSUserOrder: '/system-admin/orders',
   pathManageProviders: '/admin/providers',
   pathManageLinkAccount: '/admin/linked-accounts',
   pathFaq: '/faq',
