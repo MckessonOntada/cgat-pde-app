@@ -139,7 +139,7 @@ export const OrderProvider = ({ children, isCSReviewOrdersPage = false }) => {
       if (isCSReviewOrdersPage) {
         return OrderService.getCSReviewOrders({
           ...requestParams,
-          userId: '17735' // Temporary userId until backend gets the current user from the session
+          userId: AuthUtils.getUserId()
         });
       }
 

@@ -359,24 +359,33 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     retry: false
   });
 
-  const { isLoading: isResubmitting, mutate: reSubmitOrder } = useMutation(async (draftChanges) => await OrderService.reSubmitOrder(orderId, draftChanges), {
-    onSuccess: (_result) => {
-      navigate(`${RoutePaths.pathOrderManagement}`, {
-        state: { ...locationState, isApproved: true, alert: { type: 'success', description: 'Order has been Resubmitted Successfully.' } }
-      });
+  const { isLoading: isResubmitting, mutate: reSubmitOrder } = useMutation(
+    async (draftChanges) => {
+      if (isCustomerCentreUser) {
+        await OrderService.reSubmitOrderCsUser(orderId, draftChanges, orgId);
+      } else {
+        await OrderService.reSubmitOrder(orderId, draftChanges);
+      }
     },
-    onError: (error) => {
-      const statusCode = error?.response?.status;
-      let description = t('error.default');
-      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+    {
+      onSuccess: (_result) => {
+        navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}`, {
+          state: { ...locationState, isApproved: true, alert: { type: 'success', description: 'Order has been Resubmitted Successfully.' } }
+        });
+      },
+      onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      setAlert({
-        description,
-        type: 'error'
-      });
-    },
-    retry: false
-  });
+        setAlert({
+          description,
+          type: 'error'
+        });
+      },
+      retry: false
+    }
+  );
 
   const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
     isDisabled: false,
@@ -840,9 +849,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       </PermittedComponent>
     );
 
-    const controlReSubmitOrder = (
+    const controlReSubmitOrder = isCustomerCentreUser ? (
+      <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        {t('captions.btnSubmitOrder')}
+      </Button>
+    ) : (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>

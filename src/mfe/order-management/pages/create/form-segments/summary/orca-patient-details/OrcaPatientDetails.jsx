@@ -1,7 +1,7 @@
 import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { Form, Formik, getIn } from 'formik';
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { PatientSections } from '../../patient-details/forms/patient-details.config';
@@ -15,6 +15,7 @@ import { getValidationSchema } from '../../patient-details/forms/validation-sche
 import { getManufacturer, removeFieldPrefixSuffix, updatePatientValues } from '../../OrderUtil';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import AuthUtils from '@src/util/AuthUtils';
 
 function OrcaPatientDetails() {
   const { orderId } = useParams();
@@ -22,7 +23,10 @@ function OrcaPatientDetails() {
   const navigate = useNavigate();
   const [initialValues, setInitialValues] = React.useState({});
   const [isDirty, setIsDirty] = React.useState(false);
-  const { data: orderDetails = {}, isLoading } = useOrder(orderId);
+  const [searchParams] = useSearchParams();
+  const orgId = searchParams.get('orgId');
+  const isCustomerCentreUser = AuthUtils.isCustomerCenterView();
+  const { data: orderDetails = {}, isLoading } = useOrder(orderId, orgId);
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const { therapyConfig = {} } = orderDetails;
   const [isOrcaValidationPanelOpen, setIsOrcaValidationPanelOpen] = React.useState(false);
@@ -199,16 +203,19 @@ function OrcaPatientDetails() {
   };
 
   const handleOnBack = () => {
-    navigate('./../summary');
+    navigate(-1);
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
     async ({ payload, skipDuplicateCheck, isSendNotification }) => {
+      if (isCustomerCentreUser) {
+        return OrderService.savePatientDetailsCsUser(orderId, payload, true, orderDetails.channelType, false, isSendNotification, orgId);
+      }
       return OrderService.savePatientDetails(orderId, payload, true, orderDetails.channelType, false, isSendNotification);
     },
     {
       onSuccess: (result) => {
-        navigate('./../summary', {
+        navigate(-1, {
           state: {
             alert: {
               description: 'Patient details updated successfully',
