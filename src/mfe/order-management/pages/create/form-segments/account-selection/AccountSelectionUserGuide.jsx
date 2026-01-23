@@ -201,7 +201,7 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
       open={openDrawer}
       anchor="right"
       onClose={onClose}
-      heading={t('labels.needAssistanceSelectingAccount')}
+      heading={t('labels.selectProcurementOptions')}
       width={'520px'}
       controls={
         <div className="controls">

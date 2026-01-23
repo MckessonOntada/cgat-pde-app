@@ -32,7 +32,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { getManufacturer, isValidToSaveAsDraft, NotifyAlert, removePrefixSuffixFromValues, updatePatientValues } from '../OrderUtil';
+import { getManufacturer, isValidToSaveAsDraft, NotifyAlert, removePrefixSuffixFromValues, updatePatientValues, removeFieldPrefixSuffix } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
@@ -125,8 +125,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       formikRef.current?.setTouched({});
       formikRef.current?.setErrors({});
       setPatientVerified(true);
-      setFieldValue('patient.medicalRecordNumber', orcaVerifiedPatient.medicalRecordNumber);
-      setFieldValue('patient.patientIdentifier', orcaVerifiedPatient.patientId);
+      setFieldValue('patient.medicalRecordNumber', removeFieldPrefixSuffix(orcaVerifiedPatient.medicalRecordNumber, 'medicalRecordNumber', orderDetails));
+      setFieldValue('patient.patientIdentifier', removeFieldPrefixSuffix(orcaVerifiedPatient.patientId, 'patientIdentifier', orderDetails));
       setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
       setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
       setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
@@ -177,6 +177,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { data: priceDetails } = useOrderPrice({
+    channelType: orderDetails?.therapy?.channelType,
+    trade: {
+      ndc: orderDetails?.therapy?.ndcNumber
+    },
     therapyId,
     soldToAccountId,
     shipToAccountId
@@ -525,7 +529,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const regexFormat = config?.find((f) => f.fieldName === fieldName)?.properties?.fieldFormat?.validationFormat;
     const prefix = regexFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
     const suffix = regexFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-    return `${prefix ?? ''}${value}${suffix ?? ''}`;
+
+    let formattedValue = value;
+
+    if (prefix && !formattedValue.startsWith(prefix)) {
+      formattedValue = `${prefix}${formattedValue}`;
+    }
+
+    if (suffix && !formattedValue.endsWith(suffix)) {
+      formattedValue = `${formattedValue}${suffix}`;
+    }
+
+    return formattedValue;
   };
 
   const validateOnBlur = (e) => {
@@ -533,7 +548,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const idValue = id.startsWith('input-') ? id.replace(/^input-/, '') : id;
     formikRef.current?.setFieldTouched(idValue, true);
 
-    if (getIn(formikRef.current?.errors, idValue)) return;
+    if (getIn(formikRef.current?.errors, idValue)) {
+      setAlert(null);
+      if (manufacturer === MANUFACTURER.ORCA) {
+        setPatientVerified(false);
+        clearPatientDetails();
+      }
+      return;
+    }
 
     const fieldName = id.split('.').pop();
     const fieldValue = formatFieldWithPrefixSuffix(value, fieldName);
@@ -558,11 +580,19 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
-  const clearPatientDetails = () => {
+  const clearPatientDetails = (lastUpdatedField) => {
     const setFieldValue = formikRef.current?.setFieldValue;
     setOrcaVerifiedPatient(null);
-    setFieldValue('patient.medicalRecordNumber', formikRef.current?.values?.patient?.medicalRecordNumber);
-    setFieldValue('patient.patientIdentifier', formikRef.current?.values?.patient?.patientIdentifier);
+    let newPatientIdentifier = formikRef.current?.values?.patient?.patientIdentifier,
+      newMedicalRecordNumber = formikRef.current?.values?.patient?.medicalRecordNumber;
+    if (isPatientVerified && lastUpdatedField === 'patientIdentifier') {
+      newMedicalRecordNumber = '';
+    }
+    if (isPatientVerified && lastUpdatedField === 'medicalRecordNumber') {
+      newPatientIdentifier = '';
+    }
+    setFieldValue('patient.medicalRecordNumber', newMedicalRecordNumber);
+    setFieldValue('patient.patientIdentifier', newPatientIdentifier);
     setFieldValue('patient.patientInfo', {});
   };
 
@@ -584,7 +614,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           }
         })
         .catch((error) => {
-          clearPatientDetails();
+          clearPatientDetails(patientId ? 'patientIdentifier' : 'medicalRecordNumber');
           setPatientVerified(false);
           setAlert({
             type: 'warning',
@@ -598,6 +628,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           setIsPatientVerifying(false);
         });
     } else {
+      setAlert(null);
+      setPatientVerified(false);
       clearPatientDetails();
     }
   };
