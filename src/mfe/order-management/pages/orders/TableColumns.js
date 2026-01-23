@@ -31,17 +31,17 @@ const getColorByStatus = (status) => {
   return statusColors[status] || 'info';
 };
 
-function getOptionsByStatus(props, isCSReviewOrdersPage = false) {
+function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
   const { id, status } = props || {};
-  const { __meta__ } = props || {};
-  const { tab, alertContainerId } = __meta__ || {};
+  const { tab, alertContainerId } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
   const { refreshData, assignedGroupsData, orderView } = useOrders();
   const { hasPermission, hasAnyPermission } = usePermission();
   const { search } = useLocation();
+  const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
   const hasEditPermission = hasAnyPermission([
     PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION,
     PERMISSIONS_ENUM.CREATE_NEW_ORDER.ACCOUNT_SELECTION,
@@ -59,7 +59,6 @@ function getOptionsByStatus(props, isCSReviewOrdersPage = false) {
         anchorEl: alertContainerId
       })
   });
-
   const { mutate: unassignFromMe } = useMutation(({ preservedState }) => OrderService.setOrderUnassignToMe(id), {
     onSuccess: (_, variables) => {
       refreshData();
@@ -596,9 +595,7 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     width: '100px',
     isAction: true,
     isContextMenu: true,
-    cell: (row) => {
-      return getOptionsByStatus(row, isCSReviewOrdersPage);
-    }
+    cell: getOptionsByStatus
   }
 ];
 
