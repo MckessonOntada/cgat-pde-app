@@ -42,7 +42,7 @@ const UserLoader = () => {
   }, [id]);
 
   if (state.isLoading) return <Loader variant="circular" />;
-  console.log(state);
+
   return (
     <div>
       <Outlet />

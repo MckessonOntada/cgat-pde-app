@@ -56,11 +56,7 @@ function CreateUserWrapper() {
             </Button>
           </div>
           <ModuleHeader heading={<Heading as="h1">{translateFn(translationConfig.heading)}</Heading>} />
-          {!isEdit && (
-            <div className="stepper">
-              <UserCreationStepper activeIndex={currentStep + 1} />
-            </div>
-          )}
+          {!isEdit && <UserCreationStepper activeIndex={currentStep + 1} />}
         </div>
       </div>
       <Outlet />

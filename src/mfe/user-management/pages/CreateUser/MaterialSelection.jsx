@@ -24,7 +24,7 @@ const getSubmitCaption = ({ isSystemAdminView, isEdit, isSaving }) => {
   if (isSaving && isEdit) return 'Updating';
   if (isSaving && !isEdit) return 'Saving';
   if (!isSaving && isEdit) return 'Update';
-  debugger;
+
   return submitTranslationConfig[isSystemAdminView ? 'systemAdmin' : 'user'];
 };
 
@@ -98,7 +98,7 @@ export default function MaterialSelection() {
             navigate(`./../..`, {
               state: {
                 alert: {
-                  pinPoint: 'linked_materials',
+                  pinPoint: 'materials',
                   type: 'success',
                   description: 'User material selection updated'
                 }
@@ -137,13 +137,9 @@ export default function MaterialSelection() {
     const userDetails = state.userDetails;
     const selectedRole = userDetails.role?.name;
     if (selectedRole === 'Customer Centre') {
-      navigate(isEdit ? `./../..` : `../${id}/${PATHS.PERMISSIONS}`, {
-        state: { isBack: true }
-      });
+      navigate(isEdit ? `./../..` : `../${id}/${PATHS.PERMISSIONS}`);
     } else {
-      navigate(isEdit ? `./..` : `../${id}/${PATHS.ACCOUNTS}`, {
-        state: { isBack: true }
-      });
+      navigate(isEdit ? `./..` : `../${id}/${PATHS.ACCOUNTS}`);
     }
   };
 

@@ -73,7 +73,7 @@ const UserDetail = () => {
   const [preferencesConfig, setPreferenceConfig] = useState(notificationConfig);
   const [isPreferencesLoaded, setIsPreferencesLoaded] = useState(false);
   const disablePay = useRef(false);
-  const { setValue } = useWidgetContext();
+  const { state, setValue } = useWidgetContext();
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
@@ -123,7 +123,7 @@ const UserDetail = () => {
     const { alert } = location.state || {};
     if (alert) {
       setAlert(alert);
-      navigate(`${location.pathname}${location.search}`, { replace: true });
+      navigate(`${location.pathname}${location.search}#${alert.pinPoint}`, { replace: true });
     }
   }, [location.state]);
 
@@ -295,9 +295,7 @@ const UserDetail = () => {
           }
         });
       });
-    } catch (error) {
-      console.log('Something went wrong. Missing user identifier or invalid permission list.');
-    }
+    } catch (error) {}
   };
 
   const groupedPermissions = groupPermissionsByCategory(userDetails?.permissions || [], PERMISSIONS_ENUM);
@@ -343,7 +341,7 @@ const UserDetail = () => {
             )
           }
         />
-        {isProvisioned || isConsentError || (alert && <Alert {...alert} onClose={handleAlertClose} />)}
+        {alert && !alert.pinPoint && <Alert {...alert} onClose={handleAlertClose} />}
 
         <ModuleHeader
           heading={
@@ -426,17 +424,14 @@ const UserDetail = () => {
               <span className="view_label">{translateFn('userManagement.userDetails.userAddress')}</span>
               <p className="label-text">{formatFields(userDetails?.address, ['address1', 'address2'])}</p>
             </div>
-
             <div>
               <span className="view_label">{translateFn('userManagement.create_user.inputLabel.email')}</span>
               <p className="label-text">{userDetails?.contact.email}</p>
             </div>
-
             <div>
               <span className="view_label">{translateFn('userManagement.create_user.inputLabel.phone_no')}</span>
               <p className="label-text"> {userDetails?.contact.phone ? CommonUtils.formatPhoneNumber(userDetails.contact.phone) : 'N/A'} </p>
             </div>
-
             <div>
               <span className="view_label">{translateFn('userManagement.create_user.inputLabel.fax')}</span>
               <p className="label-text">{userDetails?.contact.fax || '-'}</p>
@@ -540,47 +535,52 @@ const UserDetail = () => {
                   )
                 }
               />
-              {alert && !isSystemAdminView && alert.pinPoint === 'linked_accounts' && <Alert {...alert} onClose={handleAlertClose} />}
+              {alert && !isSystemAdminView && alert.pinPoint === 'accounts' && <Alert {...alert} onClose={handleAlertClose} />}
               {userDetails?.practiceId && (
-                <UserAccounts
-                  selectableRows={false}
-                  omitColumns={['distributionChannel']}
-                  practiceId={userDetails?.practiceId}
-                  showSelectedAccounts={false}
-                  userId={userId}
-                  isPhysicianUser={isPhysicianUser}
-                />
+                <div id="accounts">
+                  <UserAccounts
+                    selectableRows={false}
+                    omitColumns={['distributionChannel']}
+                    practiceId={userDetails?.practiceId}
+                    showSelectedAccounts={false}
+                    userId={userId}
+                    isPhysicianUser={isPhysicianUser}
+                  />
+                </div>
               )}
             </React.Fragment>
           )}
-
-          <React.Fragment>
-            <ModuleHeader
-              heading={<Heading as="h2">{translateFn('userManagement.header.view.linkedMaterials')}</Heading>}
-              controls={
-                !isPhysicianUser && (
-                  <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                    <div className="controls">
-                      <Button
-                        Icon={AddIcon}
-                        variant="secondary"
-                        className="button-icon"
-                        size="md"
-                        disabled={!userDetails?.isActive}
-                        onClick={() => navigate(`edit/${PATHS.MATERIAL}`)}>
-                        {translateFn('userManagement.button.linkMaterials')}
-                      </Button>
-                    </div>
-                  </PermittedComponent>
-                )
-              }
-            />
-            {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
-            <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
-          </React.Fragment>
+          {state.selectedRole === 'Customer Centre' && (
+            <React.Fragment>
+              <ModuleHeader
+                heading={<Heading as="h2">{translateFn('userManagement.header.view.linkedMaterials')}</Heading>}
+                controls={
+                  !isPhysicianUser && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                      <div className="controls">
+                        <Button
+                          Icon={AddIcon}
+                          variant="secondary"
+                          className="button-icon"
+                          size="md"
+                          disabled={!userDetails?.isActive}
+                          onClick={() => navigate(`edit/${PATHS.MATERIAL}`)}>
+                          {translateFn('userManagement.button.linkMaterials')}
+                        </Button>
+                      </div>
+                    </PermittedComponent>
+                  )
+                }
+              />
+              {alert && alert.pinPoint === 'materials' && <Alert {...alert} onClose={handleAlertClose} />}
+              <div id="materials">
+                <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+              </div>
+            </React.Fragment>
+          )}
           {!isSystemAdminView && (
             <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-              <div className="MCP-module-wrapper">
+              <div id="notification-preferences" className="MCP-module-wrapper">
                 <div className="MCP-module-body">
                   <ModuleHeader
                     heading={<Heading as="h2">{translateFn('Notification Preferences')}</Heading>}

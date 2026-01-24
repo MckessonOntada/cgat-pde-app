@@ -94,7 +94,6 @@ async function getSPMaterialById(spMaterialId, requestParams) {
 }
 
 async function getSPMaterial(requestParams) {
-  console.log('Calling this method');
   const url = `${ApiRoutes.THERAPIES()}/type/speciality-pharma?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {

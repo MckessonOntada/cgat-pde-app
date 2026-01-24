@@ -43,7 +43,6 @@ const Dashboard = () => {
 
   React.useEffect(() => {
     if (isExpelled) {
-      console.log('read updated storage');
       navigate('/');
       window.location.reload();
     }

@@ -257,8 +257,6 @@ const CreateUser = () => {
     }
   };
 
-  console.log(isDirty);
-
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">

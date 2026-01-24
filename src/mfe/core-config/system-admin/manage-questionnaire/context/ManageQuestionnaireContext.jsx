@@ -162,7 +162,6 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     enabled: !!selectedOrganization && entityType === MasterEntityType.Account
   });
 
-  console.log();
   React.useEffect(() => {
     getRefetch(entityType);
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, entityType]);

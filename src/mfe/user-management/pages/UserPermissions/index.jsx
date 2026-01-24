@@ -213,7 +213,7 @@ const UserPermissions = () => {
           React.useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);
-          console.log(values);
+
           return (
             <FormikFormWrapper disabled={isSaving}>
               <PermissionForm permissions={permissions} />

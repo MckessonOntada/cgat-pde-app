@@ -105,8 +105,7 @@ const PermissionForm = ({ permissions, isRolePage }) => {
                       size="lg"
                       isSortEnable={false}
                       value={field.value && field.value?.id}
-                      fieldDisplayValue={{ ...field.value }}
-                      defaultSelectedLabel={{ ...field.value }}
+                      defaultSelectedLabel={field.value?.label}
                     />
                   );
                 }}

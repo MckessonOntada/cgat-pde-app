@@ -30,7 +30,7 @@ function NotificationPreferenceConfiguration() {
   const { isLoading, data: userDetails, refetch } = useUser(userId, requestParams);
   const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
   const [isPreferencesLoaded, setIsPreferencesLoaded] = React.useState(false);
-  console.log(userDetails);
+
   React.useEffect(() => {
     UserService.getSubscriptionDetails(userId)
       .then((data) => {

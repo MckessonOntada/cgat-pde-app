@@ -1,5 +1,9 @@
 @use "abstracts/mixins";
 
+html {
+  scroll-behavior: smooth;
+}
+
 .MCP-CardContainer {
   display: flex;
   flex-direction: column;

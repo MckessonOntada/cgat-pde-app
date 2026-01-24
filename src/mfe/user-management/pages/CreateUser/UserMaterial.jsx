@@ -67,7 +67,6 @@ function UserMaterial(props) {
           });
         })
         .catch((error) => {
-          debugger;
           setAlert({
             type: 'error',
             description: 'Failed  to unlink material. Please try again.'
