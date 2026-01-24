@@ -15,19 +15,12 @@ import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import { useWidgetContext } from '@src/context/WidgetContext';
 
-const PermissionForm = ({ permissions, isRolePage, defaultRole }) => {
+const PermissionForm = ({ permissions, isRolePage }) => {
   const { t } = useTranslate();
   const { setFieldValue, values } = useFormikContext();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [searchKey, setSearchKey] = useState('');
-  const [selectedRoleData, setSelectedRoleData] = useState(null);
   const { setValue } = useWidgetContext();
-
-  useEffect(() => {
-    if (defaultRole) {
-      setSelectedRoleData({ label: defaultRole.name, value: defaultRole.id });
-    }
-  }, [defaultRole]);
 
   const getParams = () => {
     let payload = { status: 'active', isPhysicianRequired: false, query: searchKey };
@@ -37,7 +30,7 @@ const PermissionForm = ({ permissions, isRolePage, defaultRole }) => {
   const {
     isLoading,
     isError,
-    data: roleData,
+    data: roleData = [],
     refetch
   } = useQuery({
     queryKey: [`roles/getAll}`],
@@ -66,34 +59,25 @@ const PermissionForm = ({ permissions, isRolePage, defaultRole }) => {
     : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
 
   const enableAllPermissions = () => {
-    const permissions = values.permissions;
-    Object.keys(permissions).forEach((k) => {
-      permissions[k] = true;
-    });
-    setFieldValue(permissions);
+    const newPermissions = Object.fromEntries(Object.keys(values.permissions).map((k) => [k, true]));
+    setFieldValue('permissions', newPermissions);
+  };
+
+  const resetPermissions = () => {
+    const newPermissions = Object.fromEntries(Object.keys(values.permissions).map((k) => [k, false]));
+    setFieldValue('permissions', newPermissions);
   };
 
   const handleOnChange = (value) => {
     const selectedRoleDetails = roleData.find((x) => x.id === value);
     if (selectedRoleDetails) {
       const newRolePermissions = selectedRoleDetails.permissions || [];
-      const _permissions = {};
+      const _permissions = Object.fromEntries(Object.keys(values.permissions).map((key) => [key, newRolePermissions.includes(key)]));
 
-      newRolePermissions.forEach((key) => {
-        _permissions[key] = true;
-      });
       setFieldValue('permissions', _permissions);
       setFieldValue('role', selectedRoleDetails);
       setValue('selectedRole', selectedRoleDetails.name);
     }
-  };
-
-  const resetPermissions = () => {
-    const permissions = values.permissions;
-    Object.keys(permissions).forEach((k) => {
-      permissions[k] = false;
-    });
-    setFieldValue(permissions);
   };
 
   return (
@@ -113,15 +97,16 @@ const PermissionForm = ({ permissions, isRolePage, defaultRole }) => {
                       isMultiSelect={false}
                       placeholder={'Select Role'}
                       onChange={handleOnChange}
-                      options={roleData || []}
+                      options={roleData}
                       variant={'async'}
                       onSearch={(event) => setSearchKey(event)}
                       recordsCountToEnableSearch={5}
                       isRequired={!isRolePage}
                       size="lg"
                       isSortEnable={false}
-                      value={(field.value && field.value?.id?.toString()) || ''}
-                      fieldDisplayValue={selectedRoleData}
+                      value={field.value && field.value?.id}
+                      fieldDisplayValue={{ ...field.value }}
+                      defaultSelectedLabel={{ ...field.value }}
                     />
                   );
                 }}

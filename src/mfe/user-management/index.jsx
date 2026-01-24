@@ -5,7 +5,13 @@ import { WidgetProvider } from '@src/context/WidgetContext';
 const INITIAL_STATE = {
   selectedRole: '',
   isLoading: true,
-  userDetails: null
+  userDetails: null,
+  createWizardSteps: {
+    personalDetails: false,
+    rolePermissions: false,
+    accountsSelection: false,
+    materialSelection: false
+  }
 };
 const UserManagement = () => {
   return (

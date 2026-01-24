@@ -30,6 +30,7 @@ import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting
 import UserMaterial from '../CreateUser/UserMaterial';
 import UserService from '@src/api/commonService/UserService';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -72,6 +73,7 @@ const UserDetail = () => {
   const [preferencesConfig, setPreferenceConfig] = useState(notificationConfig);
   const [isPreferencesLoaded, setIsPreferencesLoaded] = useState(false);
   const disablePay = useRef(false);
+  const { setValue } = useWidgetContext();
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
@@ -89,6 +91,7 @@ const UserDetail = () => {
     enabled: Boolean(userId),
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
+      setValue('userDetails', data);
       const u = data?.userCommunicationPreferences?.preferences;
       const r = data?.role?.communicationPreferences?.preferences;
       const updated = getMergedPreferences(preferencesConfig, u, r);
@@ -514,63 +517,68 @@ const UserDetail = () => {
           )}
         </div>
 
-        {!isSystemAdminView && (
-          <div className="MCP-module-body">
-            <ModuleHeader
-              heading={<Heading as="h2">{translateFn('userManagement.header.view.linked_accounts')}</Heading>}
-              controls={
-                !isPhysicianUser && (
-                  <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                    <div className="controls">
-                      <Button
-                        Icon={EditPencil}
-                        variant="secondary"
-                        className="button-icon"
-                        size="md"
-                        disabled={!userDetails?.isActive}
-                        onClick={() => navigate(`edit/${PATHS.ACCOUNTS}`)}>
-                        {translateFn('userManagement.button.edit')}
-                      </Button>
-                    </div>
-                  </PermittedComponent>
-                )
-              }
-            />
-            {alert && !isSystemAdminView && alert.pinPoint === 'linked_accounts' && <Alert {...alert} onClose={handleAlertClose} />}
-            {userDetails?.practiceId && (
-              <UserAccounts
-                selectableRows={false}
-                omitColumns={['distributionChannel']}
-                practiceId={userDetails?.practiceId}
-                showSelectedAccounts={false}
-                userId={userId}
-                isPhysicianUser={isPhysicianUser}
-              />
-            )}
+        <div className="MCP-module-body">
+          {!isSystemAdminView && (
             <React.Fragment>
               <ModuleHeader
-                heading={<Heading as="h2">{translateFn('userManagement.header.view.linkedMaterials')}</Heading>}
+                heading={<Heading as="h2">{translateFn('userManagement.header.view.linked_accounts')}</Heading>}
                 controls={
                   !isPhysicianUser && (
                     <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                       <div className="controls">
                         <Button
-                          Icon={AddIcon}
+                          Icon={EditPencil}
                           variant="secondary"
                           className="button-icon"
                           size="md"
                           disabled={!userDetails?.isActive}
-                          onClick={() => navigate(`edit/${PATHS.MATERIAL}`)}>
-                          {translateFn('userManagement.button.linkMaterials')}
+                          onClick={() => navigate(`edit/${PATHS.ACCOUNTS}`)}>
+                          {translateFn('userManagement.button.edit')}
                         </Button>
                       </div>
                     </PermittedComponent>
                   )
                 }
               />
-              {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
-              <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+              {alert && !isSystemAdminView && alert.pinPoint === 'linked_accounts' && <Alert {...alert} onClose={handleAlertClose} />}
+              {userDetails?.practiceId && (
+                <UserAccounts
+                  selectableRows={false}
+                  omitColumns={['distributionChannel']}
+                  practiceId={userDetails?.practiceId}
+                  showSelectedAccounts={false}
+                  userId={userId}
+                  isPhysicianUser={isPhysicianUser}
+                />
+              )}
             </React.Fragment>
+          )}
+
+          <React.Fragment>
+            <ModuleHeader
+              heading={<Heading as="h2">{translateFn('userManagement.header.view.linkedMaterials')}</Heading>}
+              controls={
+                !isPhysicianUser && (
+                  <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                    <div className="controls">
+                      <Button
+                        Icon={AddIcon}
+                        variant="secondary"
+                        className="button-icon"
+                        size="md"
+                        disabled={!userDetails?.isActive}
+                        onClick={() => navigate(`edit/${PATHS.MATERIAL}`)}>
+                        {translateFn('userManagement.button.linkMaterials')}
+                      </Button>
+                    </div>
+                  </PermittedComponent>
+                )
+              }
+            />
+            {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
+            <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+          </React.Fragment>
+          {!isSystemAdminView && (
             <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
               <div className="MCP-module-wrapper">
                 <div className="MCP-module-body">
@@ -584,7 +592,7 @@ const UserDetail = () => {
                             variant="secondary"
                             className="button-icon"
                             size="md"
-                            onClick={() => navigate(`${PATHS.NOTIFICATION_PREFERENCES}`)}>
+                            onClick={() => navigate(`${`./edit/${PATHS.NOTIFICATION_PREFERENCES}`}`)}>
                             {translateFn('userManagement.button.edit')}
                           </Button>
                         </div>
@@ -610,8 +618,8 @@ const UserDetail = () => {
                 </div>
               </div>
             </PermittedComponent>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <Modal
         {...{

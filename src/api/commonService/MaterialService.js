@@ -200,9 +200,21 @@ async function restrictMaterial(userId, materialIds) {
   return res;
 }
 
+async function addMaterial(userId, materialIds) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}user/${userId}/link-materials`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, materialIds);
+  return res;
+}
+
 async function unlinkMaterial(userId, materialIds) {
   const url = `${ApiRoutes.ORDER(userId)}/restrict-materials`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, materialIds);
+  return res;
+}
+
+async function unlinkCustomerCentreMaterials(userId, materialIds) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}user/${userId}/unlink-materials`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, materialIds);
   return res;
 }
 
@@ -259,7 +271,9 @@ const MaterialService = Object.freeze({
   unlinkMaterial,
   getTherapies,
   getUsers,
-  getManufacturers
+  getManufacturers,
+  addMaterial,
+  unlinkCustomerCentreMaterials
 });
 
 export default MaterialService;

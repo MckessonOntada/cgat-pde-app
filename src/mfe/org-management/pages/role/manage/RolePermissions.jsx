@@ -142,8 +142,6 @@ const RolePermissions = () => {
     updatePermissions(payload);
   };
 
-  let defaultRole = row ? row : null;
-
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -164,7 +162,7 @@ const RolePermissions = () => {
               }, [dirty]);
               return (
                 <FormikFormWrapper disabled={isUpdating}>
-                  <PermissionForm permissions={permissions} isRolePage={true} defaultRole={defaultRole} />
+                  <PermissionForm permissions={permissions} isRolePage={true} />
                   <div className={'buttonGroup'}>
                     <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
                       {t('orgManagement.button.cancel')}

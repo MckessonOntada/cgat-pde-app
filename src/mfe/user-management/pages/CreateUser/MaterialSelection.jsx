@@ -13,21 +13,36 @@ import { PATHS } from '../../routes';
 import useRouteMode from '../../routes/useRouteMode';
 import AuthUtils from '@src/util/AuthUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+
+const submitTranslationConfig = {
+  systemAdmin: 'Add System Admin',
+  user: 'Add User'
+};
+
+const getSubmitCaption = ({ isSystemAdminView, isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Saving';
+  if (!isSaving && isEdit) return 'Update';
+  debugger;
+  return submitTranslationConfig[isSystemAdminView ? 'systemAdmin' : 'user'];
+};
 
 export default function MaterialSelection() {
   const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
-  const [loading, setLoading] = React.useState(true);
+  const [isSaving, setIsSaving] = React.useState(false);
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selection, setSelection] = React.useState([]);
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
-  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
-  const { state } = useWidgetContext();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const { state, setValue } = useWidgetContext();
 
   React.useEffect(() => {
+    const userDetails = state.userDetails;
     let materialPromise = null;
     if (isSystemAdmin && state.selectedRole === 'Customer Centre') {
       materialPromise = MaterialService.getAllMaterialsForCustomerCentre(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' });
@@ -44,8 +59,8 @@ export default function MaterialSelection() {
         });
 
         setData(response);
-
-        if (!isEdit) {
+        const selectedRole = userDetails.role?.name;
+        if (!isEdit && selectedRole !== 'Customer Centre') {
           setSelection(selectedRecords);
           return null;
         }
@@ -55,49 +70,62 @@ export default function MaterialSelection() {
       });
   }, []);
 
-  React.useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  const handleOnAddMaterials = () => {
-    const flatIds = data.flatMap((trade) => {
-      if (trade.isExpandable) {
-        return trade.therapies.map((therapy) => therapy.id);
-      }
-      return [trade.id];
-    });
-    const selectedMaterialIds = selection.map((item) => item.id);
-    const restrictedMaterialIds = flatIds.filter((id) => !selectedMaterialIds.includes(id));
-
-    MaterialService.restrictMaterial(id, restrictedMaterialIds)
-      .then((response) => {
-        if (isEdit) {
-          navigate(`./..`, {
-            state: {
-              alert: {
-                pinPoint: 'linked_materials',
-                type: 'success',
-                description: 'User material selection updated'
-              }
-            }
-          });
-        } else {
-          navigate('/admin/user?tab=USERS', {
-            state: {
-              alert: {
-                type: 'success',
-                description: 'User has been created successfully.'
-              }
-            }
-          });
+  const handleOnSubmit = () => {
+    const userDetails = state.userDetails;
+    const selectedRole = userDetails.role?.name;
+    let addMaterialPromise = null;
+    if (selectedRole === 'Customer Centre') {
+      const selectedMaterialIds = selection.map((item) => item.id);
+      addMaterialPromise = MaterialService.addMaterial(id, selectedMaterialIds);
+    } else {
+      const flatIds = data.flatMap((trade) => {
+        if (trade.isExpandable) {
+          return trade.therapies.map((therapy) => therapy.id);
         }
-      })
-      .catch((error) => {
-        setAlert({
-          type: 'error',
-          description: 'Something went wrong'
-        });
+        return [trade.id];
       });
+      const selectedMaterialIds = selection.map((item) => item.id);
+      const restrictedMaterialIds = flatIds.filter((id) => !selectedMaterialIds.includes(id));
+      addMaterialPromise = MaterialService.restrictMaterial(id, restrictedMaterialIds);
+    }
+
+    if (addMaterialPromise) {
+      setIsSaving(true);
+      addMaterialPromise
+        .then((response) => {
+          setValue('createWizardSteps', {});
+          if (isEdit) {
+            navigate(`./../..`, {
+              state: {
+                alert: {
+                  pinPoint: 'linked_materials',
+                  type: 'success',
+                  description: 'User material selection updated'
+                }
+              }
+            });
+          } else {
+            navigate('./../../..', {
+              search: `?tab=USERS`,
+              state: {
+                alert: {
+                  type: 'success',
+                  description: 'User has been created successfully.'
+                }
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          setAlert({
+            type: 'error',
+            description: 'Something went wrong'
+          });
+        })
+        .finally(() => {
+          setIsSaving(false);
+        });
+    }
   };
 
   const removeFromBucket = (id) => {
@@ -106,9 +134,17 @@ export default function MaterialSelection() {
   };
 
   const handleOnBack = () => {
-    navigate(isEdit ? `./..` : `../${id}/${PATHS.ACCOUNTS}`, {
-      state: { isBack: true }
-    });
+    const userDetails = state.userDetails;
+    const selectedRole = userDetails.role?.name;
+    if (selectedRole === 'Customer Centre') {
+      navigate(isEdit ? `./../..` : `../${id}/${PATHS.PERMISSIONS}`, {
+        state: { isBack: true }
+      });
+    } else {
+      navigate(isEdit ? `./..` : `../${id}/${PATHS.ACCOUNTS}`, {
+        state: { isBack: true }
+      });
+    }
   };
 
   const filteredData = React.useMemo(() => {
@@ -137,7 +173,7 @@ export default function MaterialSelection() {
             <div className="table">
               <Materials
                 omitColumns={['action', 'formulation', 'dosage']}
-                {...{ data: filteredData, loading, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
+                {...{ data: filteredData, loading: false, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
               />
             </div>
             <div className="list">
@@ -166,8 +202,16 @@ export default function MaterialSelection() {
           <Button variant="secondary" type="button" onClick={handleOnBack} size={'md'}>
             {translateFn('userManagement.button.back')}
           </Button>
-          <Button variant="primary" type="button" onClick={handleOnAddMaterials} size="md">
-            {translateFn(isEdit ? 'userManagement.button.addMaterials' : 'userManagement.button.adduser')}
+          <Button
+            variant="primary"
+            disabled={selection.length <= 0}
+            onClick={handleOnSubmit}
+            isLoadingState={isSaving}
+            Icon={isSaving && ButtonLoadingIcon}
+            iconPosition="left"
+            type="button"
+            size="md">
+            {getSubmitCaption({ isSystemAdminView, isEdit, isSaving })}
           </Button>
         </div>
       </div>

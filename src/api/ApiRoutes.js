@@ -20,6 +20,7 @@ const constructNotificationServiceUrl = (uri) => `${NOTIFICATION_SERVICE_BASE_UR
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),
   USERS: () => constructUserManagementServiceUrl('users'),
+  USER: (id) => constructUserManagementServiceUrl(`user/${id}`),
   CURRENT_USER: () => `${constructUserManagementServiceUrl('users')}/${AuthUtils.getUserId()}`,
   LOGO: `${USERMANAGEMENT_SERVICE_BASE_URL}api/practice`,
   POST_SIGNUP_USER: `${USERMANAGEMENT_SERVICE_BASE_URL}api/users-provisioning-requests`,

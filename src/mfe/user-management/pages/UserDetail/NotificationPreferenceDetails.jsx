@@ -109,47 +109,39 @@ function NotificationPreferenceConfiguration() {
       });
   };
   if (isLoading) {
-    return <Loader type={'screen'} />;
+    return <Loader variant={'circular'} />;
   }
   return (
-    <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('./../')} size="md">
-          {translateFn('Back to User Details')}
-        </Button>
-      </div>
-      <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={handleOnSubmit}>
-        <Form>
-          <div className="MCP-module-body">
-            <ModuleHeader heading={<Heading as="h2">{translateFn('Edit Communication Preferences')}</Heading>} />
-            {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-            <div className="MCP-CardContainer">
-              <NotificationPreferencePanel
-                readOnly={false}
-                showLabels={true}
-                isLoadingPreferences={false}
-                isPreferencesLoaded={isPreferencesLoaded}
-                config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
-              />
-              <SMSConfigurationPanel
-                onSave={handleOnSaveNumber}
-                isLoadingVerification={false}
-                linkedContactNumber={verificationStatus.number}
-                setAlert={setAlert}
-              />
-            </div>
-            <div className="controls">
-              <Button size="md" variant="secondary" onClick={() => navigate('./../')}>
-                {translateFn('captions.btnBack')}
-              </Button>{' '}
-              <Button size="md" variant="primary" type="submit">
-                {translateFn('button.caption.saveChanges')}
-              </Button>
-            </div>
+    <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={handleOnSubmit}>
+      <Form>
+        <div className="MCP-module-body">
+          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+          <div className="MCP-CardContainer">
+            <NotificationPreferencePanel
+              readOnly={false}
+              showLabels={true}
+              isLoadingPreferences={false}
+              isPreferencesLoaded={isPreferencesLoaded}
+              config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
+            />
+            <SMSConfigurationPanel
+              onSave={handleOnSaveNumber}
+              isLoadingVerification={false}
+              linkedContactNumber={verificationStatus.number}
+              setAlert={setAlert}
+            />
           </div>
-        </Form>
-      </Formik>
-    </div>
+          <div className="controls">
+            <Button size="md" variant="secondary" onClick={() => navigate('./../')}>
+              {translateFn('captions.btnBack')}
+            </Button>{' '}
+            <Button size="md" variant="primary" type="submit">
+              {translateFn('button.caption.saveChanges')}
+            </Button>
+          </div>
+        </div>
+      </Form>
+    </Formik>
   );
 }
 

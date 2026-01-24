@@ -17,7 +17,7 @@ export default function Actions({ row, showEditButton, showViewButton }) {
   };
 
   const handleView = (userId) => {
-    const path = PATHS.USER_DETAILS.replace(':userId', userId);
+    const path = PATHS.DETAILS.replace(':userId', userId);
     navigate(path);
   };
 

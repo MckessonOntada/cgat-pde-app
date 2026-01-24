@@ -12,6 +12,15 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes';
 import useRouteMode from '../../routes/useRouteMode';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+
+const getSubmitCaption = ({ isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Saving';
+  if (!isSaving && isEdit) return 'Update';
+  return 'Save and Continue';
+};
 
 const AddAccounts = () => {
   const { t } = useTranslate();
@@ -20,15 +29,11 @@ const AddAccounts = () => {
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alert, setAlert] = React.useState(null);
   const practiceId = AuthUtils.getPracticeId() ?? 1;
-  const selectedCount = selectedAccounts?.length || 0;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
-
-  const handleGoBack = () => {
-    navigate(isEdit ? -1 : RoutePaths.pathUserManagement);
-  };
+  const { setValue } = useWidgetContext();
 
   const handleBackButton = () => {
     navigate(isEdit ? `../${id}` : `../${id}/${PATHS.PERMISSIONS}`, {
@@ -36,46 +41,36 @@ const AddAccounts = () => {
     });
   };
 
-  const { mutate, isLoading: isSavingAccounts } = useMutation(async ({ payload }) => {
-    const url = `${ApiRoutes.USERS()}/${id}/accounts?${serializeParams(requestParams)}`;
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
-    return res.data;
+  const { mutate: addAccounts, isLoading: isSaving } = useMutation({
+    mutationFn: async (payload) => {
+      const url = `${ApiRoutes.USERS()}/${id}/accounts?${serializeParams(requestParams)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+      return res.data;
+    },
+    onSuccess: (response) => {
+      setValue('userDetails', response);
+      if (isEdit) {
+        navigate(`./../..`, {
+          state: {
+            alert: {
+              pinPoint: 'linked_accounts',
+              type: 'success',
+              description: `${selectedAccounts.length} ${t('messages.accountlinkSuccess')}.`
+            }
+          }
+        });
+      } else {
+        navigate(`./../materials`);
+      }
+    },
+    onError: (error) => {}
   });
 
-  const handleAddAccounts = () => {
-    if (selectedAccounts?.length <= 0) {
-      setAlert({
-        isVisible: true,
-        description: `Select at least one account`,
-        type: 'error'
-      });
-      return;
-    }
+  const handleOnSubmit = () => {
     const payload = selectedAccounts?.map((account) => account.id);
-    mutate(
-      {
-        payload
-      },
-      {
-        onSuccess: (response) => {
-          if (isEdit) {
-            navigate(`../${id}`, {
-              state: {
-                alert: {
-                  pinPoint: 'linked_accounts',
-                  type: 'success',
-                  description: `${selectedCount} ${t('messages.accountlinkSuccess')}.`
-                }
-              }
-            });
-          } else {
-            navigate(`../${id}/materials`, { state: { isCreate: true } });
-          }
-        },
-        onError: (error) => {}
-      }
-    );
+    addAccounts(payload);
   };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -94,16 +89,17 @@ const AddAccounts = () => {
           <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
             {t('userManagement.button.back')}
           </Button>
-          {!isEdit && (
-            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
-              {t('userManagement.button.savencontinue')}
-            </Button>
-          )}
-          {isEdit && (
-            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
-              {t('userManagement.button.add_accounts')}
-            </Button>
-          )}
+          <Button
+            variant="primary"
+            disabled={selectedAccounts.length <= 0}
+            onClick={handleOnSubmit}
+            isLoadingState={isSaving}
+            Icon={isSaving && ButtonLoadingIcon}
+            iconPosition="left"
+            type="button"
+            size="md">
+            {getSubmitCaption({ isEdit, isSaving })}
+          </Button>
         </div>
       </div>
     </div>
