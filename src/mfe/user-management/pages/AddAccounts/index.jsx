@@ -53,7 +53,7 @@ const AddAccounts = () => {
         navigate(`./../..`, {
           state: {
             alert: {
-              pinPoint: 'linked_accounts',
+              pinPoint: 'accounts',
               type: 'success',
               description: `${selectedAccounts.length} ${t('messages.accountlinkSuccess')}.`
             }

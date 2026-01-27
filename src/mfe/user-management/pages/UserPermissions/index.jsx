@@ -137,6 +137,7 @@ const UserPermissions = () => {
           navigate(`./../..`, {
             state: {
               alert: {
+                pinPoint: 'permissions',
                 type: 'success',
                 description: 'User role/permissions updated successfully.'
               }
@@ -209,7 +210,7 @@ const UserPermissions = () => {
     <div className="MCP-module-wrapper">
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <Formik initialValues={initialFormValues} enableReinitialize={true} onSubmit={handleOnSubmit} validateOnChange={false} validateOnBlur={true}>
-        {({ values, dirty }) => {
+        {({ dirty }) => {
           React.useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);

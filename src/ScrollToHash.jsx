@@ -7,12 +7,22 @@ const ScrollToHash = () => {
   useEffect(() => {
     if (!hash) return;
 
-    const id = hash.replace('#', '');
+    const id = hash.slice(1);
+    let rafId;
 
-    requestAnimationFrame(() => {
+    const scrollWhenReady = () => {
       const el = document.getElementById(id);
-      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        rafId = requestAnimationFrame(scrollWhenReady);
+      }
+    };
+
+    scrollWhenReady();
+
+    return () => cancelAnimationFrame(rafId);
   }, [hash]);
 
   return null;
