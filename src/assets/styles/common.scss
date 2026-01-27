@@ -1,5 +1,9 @@
 @use "abstracts/mixins";
 
+html {
+  scroll-behavior: smooth;
+}
+
 .MCP-CardContainer {
   display: flex;
   flex-direction: column;
@@ -89,6 +93,9 @@ div.disable-all {
   gap: var(--spacing-03);
   align-items: stretch;
   justify-content: space-between;
+  // font-size: var(--brand-font-size--default);
+}
+.MCP-modal-body {
   font-size: var(--brand-font-size--default);
 }
 

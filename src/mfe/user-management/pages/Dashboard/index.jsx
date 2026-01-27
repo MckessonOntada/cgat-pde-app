@@ -40,65 +40,50 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const { refreshData, clearFilters, applyFilters, roleList, setPageNumber } = useUser();
-  const isSuccess = location.state?.isSuccess || false;
+  const { clearFilters, applyFilters, roleList, setPageNumber } = useUser();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const isReject = location.state?.isReject || false;
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
   const [tabList, setTabList] = React.useState(getUserTabs(t));
 
   const tab = params.get('tab');
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let shouldReplace = false;
+    const nextParams = new URLSearchParams(location.search);
+
     if (!tab) {
-      params.set('tab', USER_TABS.USERS);
-      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+      nextParams.set('tab', USER_TABS.USERS);
+      shouldReplace = true;
+    }
+
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      shouldReplace = true;
+    }
+
+    if (shouldReplace) {
+      navigate(`${location.pathname}?${nextParams.toString()}`, { replace: true, state: null });
     } else {
       setTabList(tabList.map((t) => ({ ...t, isActiveTab: t.id === tab })));
     }
-  }, [location.search]);
+  }, [location.search, location.state]);
 
-  const showAlert = (type, message) => {
+  const showAlert = (type, description) => {
     setAlert({
       type,
-      description: message
+      description
     });
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      refreshData();
-      setPageNumber(1);
-      let message = isReject
-        ? t('messages.pending_user_reject_success')
-        : isSystemAdminView
-        ? t('messages.sysadmin_create_success')
-        : t('messages.user_create_success');
-
-      setAlert({ type: 'success', description: message });
-    }
-  }, [isSuccess, isReject, location.pathname, location.state, navigate]);
-
-  React.useEffect(() => {
-    const { alert } = location.state || {};
-    if (alert) {
-      debugger;
-      setAlert(alert);
-      navigate(location.pathname, { replace: true });
-    }
-  }, []);
 
   useEffect(() => {
     clearFilters();
   }, []);
 
-  const handleSuccess = (success, message) => {
-    if (success) {
-      setAlert({ type: 'success', description: message });
-    } else {
-      setAlert({ type: 'error', description: message });
-    }
+  const handleSuccess = (isSuccess, description) => {
+    const type = isSuccess ? 'success' : 'error';
+    setAlert({ type, description });
   };
 
   const handleAlertClose = () => {
@@ -114,6 +99,10 @@ export default function Dashboard() {
     clearFilters();
     params.set('tab', tab.id);
     navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+  };
+
+  const handleOnCreate = () => {
+    navigate(PATHS.CREATE);
   };
 
   const breadcrumbItems = [
@@ -182,13 +171,13 @@ export default function Dashboard() {
           controls={
             <div className="controls">
               {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
-                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
+                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={handleOnCreate}>
                   {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
                 </Button>
               )}
               {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
                 <div className="upload-userBtn">
-                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.UPLOAD_USER}`)}>
+                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.UPLOAD}`)}>
                     <label htmlFor="fileInput">{t('userManagement.button.uploadUsers')}</label>
                   </Button>
                 </div>

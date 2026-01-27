@@ -4,21 +4,7 @@ import { Label, TextError } from '@mckesson/mcp-component-library';
 import { highlightFieldOnLabelClick } from './util';
 
 const MultiSelectDropdown = (props) => {
-  const {
-    id,
-    label,
-    value,
-    isRequired,
-    onChange,
-    onSearch,
-    error,
-    variant,
-    options,
-    recordsCountToEnableSearch,
-    forcedValue,
-    placeholder,
-    ...rest
-  } = props;
+  const { id, label, value, isRequired, onChange, onSearch, error, variant, options, recordsCountToEnableSearch, forcedValue, placeholder, ...rest } = props;
   const [startSearchStringTimer, setStartSearchStringTimer] = useState(null);
   const [searchString, setSearchString] = useState('');
 

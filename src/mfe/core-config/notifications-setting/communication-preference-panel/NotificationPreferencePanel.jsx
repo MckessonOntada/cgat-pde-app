@@ -11,7 +11,8 @@ const NotificationPreferencePanel = ({
   readOnly = true,
   showLabel = true,
   isLoadingPreferences,
-  isPreferencesLoaded
+  isPreferencesLoaded,
+  emptyData
 }) => {
   const { t: translateFn } = useTranslate();
   const { moduleName, options, sections, userPermissions } = config;
@@ -170,7 +171,7 @@ const NotificationPreferencePanel = ({
     );
   });
 
-  if (preferenceSections.filter((key) => Boolean(key)).length <= 0) return null;
+  if (preferenceSections.filter((key) => Boolean(key)).length <= 0) return emptyData;
 
   return (
     <div className={style['notification-setting']}>

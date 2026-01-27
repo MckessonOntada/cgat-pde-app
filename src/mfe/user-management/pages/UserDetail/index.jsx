@@ -30,6 +30,7 @@ import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting
 import UserMaterial from '../CreateUser/UserMaterial';
 import UserService from '@src/api/commonService/UserService';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -64,7 +65,6 @@ const UserDetail = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
-  const [isDeactivate, setIsDeactivate] = useState(false);
   const [isProvisioned, setIsProvisioned] = useState(false);
   const [isConsentError, setIsConsentError] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
@@ -73,6 +73,7 @@ const UserDetail = () => {
   const [preferencesConfig, setPreferenceConfig] = useState(notificationConfig);
   const [isPreferencesLoaded, setIsPreferencesLoaded] = useState(false);
   const disablePay = useRef(false);
+  const { state, setValue } = useWidgetContext();
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
@@ -90,6 +91,7 @@ const UserDetail = () => {
     enabled: Boolean(userId),
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
+      setValue('userDetails', data);
       const u = data?.userCommunicationPreferences?.preferences;
       const r = data?.role?.communicationPreferences?.preferences;
       const updated = getMergedPreferences(preferencesConfig, u, r);
@@ -121,7 +123,7 @@ const UserDetail = () => {
     const { alert } = location.state || {};
     if (alert) {
       setAlert(alert);
-      navigate(location.pathname, { replace: true });
+      navigate(`${location.pathname}${location.search}#${alert.pinPoint}`, { replace: true });
     }
   }, [location.state]);
 
@@ -216,15 +218,12 @@ const UserDetail = () => {
     mutationFn: handleActivateDeactivateUser,
     onSuccess: () => {
       refetch();
-      setIsDeactivate(true);
       setAlert({
         description: translateFn(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'),
         type: 'success'
       });
     },
     onError: (error) => {
-      console.error(`Failed to deactivate user:`, error);
-      setIsDeactivate(true);
       setAlert({
         description: translateFn(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'),
         type: 'error'
@@ -296,9 +295,7 @@ const UserDetail = () => {
           }
         });
       });
-    } catch (error) {
-      console.log('Something went wrong. Missing user identifier or invalid permission list.');
-    }
+    } catch (error) {}
   };
 
   const groupedPermissions = groupPermissionsByCategory(userDetails?.permissions || [], PERMISSIONS_ENUM);
@@ -323,7 +320,6 @@ const UserDetail = () => {
           {translateFn(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
-      {(isDeactivate || isProvisioned || isConsentError) && alert && <Alert {...alert} onClose={handleAlertClose} />}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{translateFn('userManagement.header.view.edit_user')}</Heading>}
@@ -345,6 +341,8 @@ const UserDetail = () => {
             )
           }
         />
+        {alert && !alert.pinPoint && <Alert {...alert} onClose={handleAlertClose} />}
+
         <ModuleHeader
           heading={
             <div className="subheader-text">
@@ -426,17 +424,14 @@ const UserDetail = () => {
               <span className="view_label">{translateFn('userManagement.userDetails.userAddress')}</span>
               <p className="label-text">{formatFields(userDetails?.address, ['address1', 'address2'])}</p>
             </div>
-
             <div>
               <span className="view_label">{translateFn('userManagement.create_user.inputLabel.email')}</span>
               <p className="label-text">{userDetails?.contact.email}</p>
             </div>
-
             <div>
               <span className="view_label">{translateFn('userManagement.create_user.inputLabel.phone_no')}</span>
               <p className="label-text"> {userDetails?.contact.phone ? CommonUtils.formatPhoneNumber(userDetails.contact.phone) : 'N/A'} </p>
             </div>
-
             <div>
               <span className="view_label">{translateFn('userManagement.create_user.inputLabel.fax')}</span>
               <p className="label-text">{userDetails?.contact.fax || '-'}</p>
@@ -458,107 +453,107 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-        <div className="secondryTitle">
-          <ModuleHeader
-            heading={<Heading as="h2">{translateFn('userManagement.header.view.permissions_granted')}</Heading>}
-            controls={
-              !isPhysicianUser && (
-                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                  <div className="controls">
-                    <Button
-                      Icon={EditPencil}
-                      variant="secondary"
-                      className="button-icon"
-                      size="md"
-                      disabled={!userDetails?.isActive || isSelf}
-                      onClick={() =>
-                        navigate(`${PATHS.PERMISSIONS}`, {
-                          state: { isEdit: true }
-                        })
-                      }>
-                      {translateFn('userManagement.button.edit')}
-                    </Button>
-                  </div>
-                </PermittedComponent>
-              )
-            }
-          />
-        </div>
-        <div className="MCP-panel-container grid grid-gap-16">
-          {userDetails?.permissions?.length > 0 ? (
-            Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
-              <div key={categoryKey} className="MCP-module-body permission-category">
-                <div className="subheader-text">{translateFn(categoryKey)}</div>
-                <div className="permission-category">
-                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
-                    {permissions.map((permissionKey, idx) => {
-                      if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
 
-                      return (
-                        <React.Fragment key={idx}>
-                          <div className="flex items-center justify-between permission-item">
-                            <div className="permission-info">
-                              <h4>{translateFn(`${categoryKey}.${permissionKey}`)}</h4>
-                              <p>{translateFn(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
-                            </div>
-                          </div>
-                          {/* Add a divider dynamically */}
-                          {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <EmptyDataTable
-              isLoading={isLoading}
-              image={EmptyDataImage}
-              heading={translateFn('userManagement.message.userPermissionEmptyTableTitle')}
-              description={translateFn('userManagement.messages.emptysubtitle')}
-            />
-          )}
-        </div>
-
-        {!isSystemAdminView && (
-          <div className="MCP-module-body">
-            <ModuleHeader
-              heading={<Heading as="h2">{translateFn('userManagement.header.view.linked_accounts')}</Heading>}
-              controls={
-                !isPhysicianUser && (
-                  <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
-                    <div className="controls">
-                      <Button
-                        Icon={EditPencil}
-                        variant="secondary"
-                        className="button-icon"
-                        size="md"
-                        disabled={!userDetails?.isActive}
-                        onClick={() =>
-                          navigate(`${PATHS.ADD_ACCOUNTS}`, {
-                            state: { isEdit: true }
-                          })
-                        }>
-                        {translateFn('userManagement.button.edit')}
-                      </Button>
-                    </div>
-                  </PermittedComponent>
-                )
-              }
-            />
-            {alert && !isSystemAdminView && alert.pinPoint === 'linked_accounts' && <Alert {...alert} onClose={handleAlertClose} />}
-            {userDetails?.practiceId && (
-              <UserAccounts
-                selectableRows={false}
-                omitColumns={['distributionChannel']}
-                practiceId={userDetails?.practiceId}
-                showSelectedAccounts={false}
-                userId={userId}
-                isPhysicianUser={isPhysicianUser}
+        <div className="MCP-module-body">
+          <div id="permissions" className="stack">
+            <div className="secondryTitle">
+              <ModuleHeader
+                heading={<Heading as="h2">{translateFn('userManagement.header.view.permissions_granted')}</Heading>}
+                controls={
+                  !isPhysicianUser && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                      <div className="controls">
+                        <Button
+                          Icon={EditPencil}
+                          variant="secondary"
+                          className="button-icon"
+                          size="md"
+                          disabled={!userDetails?.isActive || isSelf}
+                          onClick={() => navigate(`edit/${PATHS.PERMISSIONS}`)}>
+                          {translateFn('userManagement.button.edit')}
+                        </Button>
+                      </div>
+                    </PermittedComponent>
+                  )
+                }
               />
-            )}
-            <React.Fragment>
+            </div>
+            {alert && alert.pinPoint === 'permissions' && <Alert {...alert} onClose={handleAlertClose} />}
+            <div className="MCP-panel-container grid grid-gap-16">
+              {userDetails?.permissions?.length > 0 ? (
+                Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
+                  <div key={categoryKey} className="MCP-module-body permission-category">
+                    <div className="subheader-text">{translateFn(categoryKey)}</div>
+                    <div className="permission-category">
+                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                        {permissions.map((permissionKey, idx) => {
+                          if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
+
+                          return (
+                            <React.Fragment key={idx}>
+                              <div className="flex items-center justify-between permission-item">
+                                <div className="permission-info">
+                                  <h4>{translateFn(`${categoryKey}.${permissionKey}`)}</h4>
+                                  <p>{translateFn(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                                </div>
+                              </div>
+                              {/* Add a divider dynamically */}
+                              {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <EmptyDataTable
+                  isLoading={isLoading}
+                  image={EmptyDataImage}
+                  heading={translateFn('userManagement.message.userPermissionEmptyTableTitle')}
+                  description={translateFn('userManagement.messages.emptysubtitle')}
+                />
+              )}
+            </div>
+          </div>
+
+          {!isSystemAdminView && (
+            <div id="accounts" className="stack">
+              <ModuleHeader
+                heading={<Heading as="h2">{translateFn('userManagement.header.view.linked_accounts')}</Heading>}
+                controls={
+                  !isPhysicianUser && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                      <div className="controls">
+                        <Button
+                          Icon={EditPencil}
+                          variant="secondary"
+                          className="button-icon"
+                          size="md"
+                          disabled={!userDetails?.isActive}
+                          onClick={() => navigate(`edit/${PATHS.ACCOUNTS}`)}>
+                          {translateFn('userManagement.button.edit')}
+                        </Button>
+                      </div>
+                    </PermittedComponent>
+                  )
+                }
+              />
+              {alert && alert.pinPoint === 'accounts' && <Alert {...alert} onClose={handleAlertClose} />}
+              {userDetails?.practiceId && (
+                <UserAccounts
+                  selectableRows={false}
+                  omitColumns={['distributionChannel']}
+                  practiceId={userDetails?.practiceId}
+                  showSelectedAccounts={false}
+                  userId={userId}
+                  isPhysicianUser={isPhysicianUser}
+                />
+              )}
+            </div>
+          )}
+          {(state.selectedRole === 'Customer Centre' || !isSystemAdminView) && (
+            <div id="materials" className="stack">
               <ModuleHeader
                 heading={<Heading as="h2">{translateFn('userManagement.header.view.linkedMaterials')}</Heading>}
                 controls={
@@ -571,11 +566,7 @@ const UserDetail = () => {
                           className="button-icon"
                           size="md"
                           disabled={!userDetails?.isActive}
-                          onClick={() =>
-                            navigate(`${PATHS.MATERIAL}`, {
-                              state: { isEdit: true }
-                            })
-                          }>
+                          onClick={() => navigate(`edit/${PATHS.MATERIAL}`)}>
                           {translateFn('userManagement.button.linkMaterials')}
                         </Button>
                       </div>
@@ -583,11 +574,15 @@ const UserDetail = () => {
                   )
                 }
               />
-              {alert && !isSystemAdminView && alert.pinPoint === 'linked_materials' && <Alert {...alert} onClose={handleAlertClose} />}
-              <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
-            </React.Fragment>
+              {alert && alert.pinPoint === 'materials' && <Alert {...alert} onClose={handleAlertClose} />}
+              <div>
+                <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+              </div>
+            </div>
+          )}
+          {!isSystemAdminView && (
             <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-              <div className="MCP-module-wrapper">
+              <div id="notification-preferences" className="MCP-module-wrapper">
                 <div className="MCP-module-body">
                   <ModuleHeader
                     heading={<Heading as="h2">{translateFn('Notification Preferences')}</Heading>}
@@ -599,7 +594,7 @@ const UserDetail = () => {
                             variant="secondary"
                             className="button-icon"
                             size="md"
-                            onClick={() => navigate(`${PATHS.NOTIFICATION_PREFERENCES}`)}>
+                            onClick={() => navigate(`${`./edit/${PATHS.NOTIFICATION_PREFERENCES}`}`)}>
                             {translateFn('userManagement.button.edit')}
                           </Button>
                         </div>
@@ -625,8 +620,8 @@ const UserDetail = () => {
                 </div>
               </div>
             </PermittedComponent>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <Modal
         {...{

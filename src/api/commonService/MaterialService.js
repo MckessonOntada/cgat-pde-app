@@ -94,7 +94,6 @@ async function getSPMaterialById(spMaterialId, requestParams) {
 }
 
 async function getSPMaterial(requestParams) {
-  console.log('Calling this method');
   const url = `${ApiRoutes.THERAPIES()}/type/speciality-pharma?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
@@ -184,15 +183,37 @@ async function getAllMaterials(userId, params = { listingMode: 'ALL' }) {
   return [];
 }
 
+async function getAllMaterialsForCustomerCentre(userId, params = { listingMode: 'ALL' }) {
+  const url = `${ApiRoutes.THERAPIES()}/customer-user/${userId}?${serializeParams(params)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+
+  if (res.data) {
+    return ServiceUtil.transformTherapies(res.data.content || []);
+  }
+  return [];
+}
+
 async function restrictMaterial(userId, materialIds) {
   const url = `${ApiRoutes.ORDER(userId)}/restrict-materials`;
   const res = await HttpResourceService.callRest(url, httpVerb.PUT, materialIds);
   return res;
 }
 
+async function addMaterial(userId, materialIds) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}user/${userId}/link-materials`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, materialIds);
+  return res;
+}
+
 async function unlinkMaterial(userId, materialIds) {
   const url = `${ApiRoutes.ORDER(userId)}/restrict-materials`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, materialIds);
+  return res;
+}
+
+async function unlinkCustomerCentreMaterials(userId, materialIds) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}user/${userId}/unlink-materials`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, materialIds);
   return res;
 }
 
@@ -244,11 +265,14 @@ const MaterialService = Object.freeze({
   getMaterialConfigByNdc,
   getSpMaterialConfigByMaterialNumber,
   getAllMaterials,
+  getAllMaterialsForCustomerCentre,
   restrictMaterial,
   unlinkMaterial,
   getTherapies,
   getUsers,
-  getManufacturers
+  getManufacturers,
+  addMaterial,
+  unlinkCustomerCentreMaterials
 });
 
 export default MaterialService;

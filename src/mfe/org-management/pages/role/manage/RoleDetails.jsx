@@ -1,4 +1,4 @@
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -33,27 +33,22 @@ const RoleDetails = () => {
   const navigate = useNavigate();
   const { roleId } = useParams();
   const { refreshData } = useRole();
-
+  const [alert, setAlert] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
   const location = useLocation();
   const row = location.state ?? {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const isEdit = !!roleId;
 
-  const [initialData, setInitialData] = React.useState({
+  const [initialFormValues, setInitialFormValues] = React.useState({
     roleName: '',
     roleDescription: ''
   });
 
-  const [formData, setFormData] = React.useState({ ...initialData });
-
   React.useEffect(() => {
     if (roleId && row) {
       const { name, description } = row;
-      setFormData({
-        roleName: name,
-        roleDescription: description
-      });
-      setInitialData({
+      setInitialFormValues({
         roleName: name,
         roleDescription: description
       });
@@ -61,7 +56,7 @@ const RoleDetails = () => {
   }, [roleId]);
 
   const handleOnBackButtonClick = () => {
-    if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
+    if (isDirty) {
       setModalSuccessCallback('list');
     } else {
       navigate(isEdit ? `${moduleBasePath}/${roleId}` : moduleBasePath);
@@ -88,20 +83,26 @@ const RoleDetails = () => {
     },
     {
       onSuccess: (res) => {
-        const data = res?.data;
-        if (data) {
-          const id = (data && data.id) || roleId;
-          console.log(data);
-          const { name, description } = data;
-
-          refreshData();
-          navigate(isEdit ? `${moduleBasePath}/${roleId}` : `${moduleBasePath}/${id}/permissions`, {
-            state: isEdit ? { ...row, name, description } : { data: data }
+        if (isEdit) {
+          navigate(`${moduleBasePath}/${roleId}`, {
+            state: {
+              alert: {
+                type: 'success',
+                description: 'Role details updated successfully.'
+              }
+            }
+          });
+        } else {
+          navigate(`${moduleBasePath}/${id}/permissions`, {
+            state: { data: data }
           });
         }
       },
       onError: (error) => {
-        console.error('Error posting data:', error);
+        setAlert({
+          type: 'error',
+          description: error.message
+        });
       }
     }
   );
@@ -123,19 +124,6 @@ const RoleDetails = () => {
     }
   };
 
-  const forms = React.useMemo(
-    () => [
-      {
-        name: 'roleDetails',
-        label: t('orgManagement.role.labelRolesDetails')
-      },
-      {
-        name: 'addPermissions',
-        label: t('orgManagement.role.labelAddPermissions')
-      }
-    ],
-    [t]
-  );
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
@@ -147,24 +135,15 @@ const RoleDetails = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
-
+      <ModuleHeader heading={<PageHeader heading={t(isEdit ? 'orgManagement.role.labelEditRole' : 'orgManagement.role.labelAddRole')} />} />
+      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <div className="MCP-module-body">
-        {/* {!isEdit && (
-          <StepperMui
-            activeIndex={1}
-            dividerText="of"
-            mobileLabel={t('orgManagement.role.labelStep')}
-            stepHeaders={forms.map((f) => ({ label: f.label }))}
-          />
-        )} */}
-
         <div>
-          <Formik initialValues={formData} validationSchema={roleValidationSchema} onSubmit={handleOnSubmit} enableReinitialize>
-            {({ values, isValid }) => {
+          <Formik initialValues={initialFormValues} validationSchema={roleValidationSchema} onSubmit={handleOnSubmit} enableReinitialize>
+            {({ dirty }) => {
               React.useEffect(() => {
-                setFormData({ ...values });
-              }, [values]);
+                setIsDirty(dirty);
+              }, [dirty]);
 
               return (
                 <Form>
@@ -200,7 +179,7 @@ const RoleDetails = () => {
                       <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                         {t('orgManagement.button.cancel')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit">
+                      <Button disabled={!isDirty} size="md" variant="primary" type="submit">
                         {t('orgManagement.role.captionsBtnSaveAndCancel')}
                       </Button>
                     </div>

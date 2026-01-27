@@ -14,6 +14,7 @@ import { messages } from './translations/messages';
 import { currentLocale } from './translations/i18n';
 import store from './store/store';
 import AppRoutes from './routes/AppRoutes';
+import ScrollToHash from './ScrollToHash';
 
 function App() {
   const queryClient = new QueryClient({
@@ -36,6 +37,7 @@ function App() {
         <IntlProvider messages={messages[currentLocale]} locale={currentLocale}>
           <BrowserRouter basename={AppRoutes.pathAppBase}>
             <OktaConfigLoader>
+              <ScrollToHash />
               <Snackbar />
               <Alert />
               <Modal />

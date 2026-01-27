@@ -169,7 +169,7 @@ function UserTable({ onActionSuccess, showAlert }) {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
-      navigate(row.status == 'PENDING' ? `../${row.id}/${PATHS.EDIT}` : `../${row.id}/${PATHS.REVIEW_USER}`, {
+      navigate(row.status !== 'PENDING' ? `../${row.id}/${PATHS.EDIT}?provision=true` : `../${row.id}/${PATHS.REVIEW}?provision=true`, {
         state: { isPending: true }
       });
     } else if (value === 'resendLink') {

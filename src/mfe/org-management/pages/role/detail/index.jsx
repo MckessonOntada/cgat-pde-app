@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import { Button, Heading, Switch } from '@mckesson/mcp-component-library';
@@ -27,14 +27,19 @@ import { getMergedPreferences } from '@src/mfe/core-config/notifications-setting
 const roleDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
   const { roleId } = useParams();
   const dispatch = useDispatch();
+  const [alert, setAlert] = React.useState(null);
   const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
 
-  const [messageConfig, setMessageConfig] = useState({
-    type: '',
-    message: ''
-  });
+  React.useEffect(() => {
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state]);
 
   const {
     isLoading,
@@ -80,15 +85,15 @@ const roleDetail = () => {
       return response.data;
     },
     onError: (error, variables, context) => {
-      setMessageConfig({
+      setAlert({
         type: 'error',
-        message: t('errors.default')
+        description: t('errors.default')
       });
     },
     onSuccess: (data, variables, context) => {
-      setMessageConfig({
+      setAlert({
         type: 'success',
-        message: t('orgManagement.messages.deleteRoleSuccess')
+        description: t('orgManagement.messages.deleteRoleSuccess')
       });
       refetch();
     }
@@ -120,12 +125,8 @@ const roleDetail = () => {
     );
     dispatch(openModal(state));
   };
-  const clearMessage = () => {
-    setMessageConfig({
-      type: '',
-      message: ''
-    });
-  };
+
+  console.log(roleDetails?.communicationPreferences?.preferences);
   const groupPermissionsByCategory = (rolePermissions, permissionsEnum) => {
     const groupedPermissions = {};
 
@@ -154,9 +155,7 @@ const roleDetail = () => {
             {t('orgManagement.role.captionsBtnBackToManageRoles')}
           </Button>
         </div>
-        {messageConfig && messageConfig.type && messageConfig.message && (
-          <Alert onClose={clearMessage} description={messageConfig.message} type={messageConfig.type} />
-        )}
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <div className="MCP-module-body">
           <ModuleHeader heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>} />
           <ModuleHeader
@@ -238,7 +237,6 @@ const roleDetail = () => {
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
                       {permissions.map((permissionKey, idx) => {
                         if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
-
                         return (
                           <React.Fragment key={idx}>
                             <div className="flex items-center justify-between permission-item">
@@ -301,6 +299,14 @@ const roleDetail = () => {
                       readOnly={true}
                       showLabels={true}
                       isLoadingPreferences={false}
+                      emptyData={
+                        <EmptyDataTable
+                          isLoading={false}
+                          image={EmptyDataImage}
+                          heading={t('empty.role.No_communication_preferences_available')}
+                          description={t('empty.role.Please_assign_communication_preference_to_see_it_here')}
+                        />
+                      }
                       config={{ ...preferencesConfig, userPermissions: roleDetails.permissions }}
                     />
                   </div>

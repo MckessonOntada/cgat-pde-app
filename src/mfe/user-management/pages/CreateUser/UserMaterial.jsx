@@ -8,6 +8,8 @@ import CommonFilters from '@src/components/Filters';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import AuthUtils from '@src/util/AuthUtils';
 
 function UserMaterial(props) {
   const { searchPlaceholder } = props;
@@ -17,6 +19,8 @@ function UserMaterial(props) {
   const [selection, setSelection] = React.useState([]);
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = React.useState('');
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const { state } = useWidgetContext();
 
   const {
     data,
@@ -24,7 +28,15 @@ function UserMaterial(props) {
     refetch: refreshData
   } = useQuery({
     queryKey: ['unlink-material', userId],
-    queryFn: () => MaterialService.getAllMaterials(userId, { listingMode: 'INCLUDED' })
+    queryFn: () => {
+      const userDetails = state.userDetails || {};
+      const roleName = userDetails.role?.name;
+      if (roleName === 'Customer Centre') {
+        return MaterialService.getAllMaterialsForCustomerCentre(userId, { listingMode: 'INCLUDED' });
+      } else {
+        return MaterialService.getAllMaterials(userId, { listingMode: 'INCLUDED' });
+      }
+    }
   });
 
   const filteredData = React.useMemo(() => {
@@ -36,24 +48,33 @@ function UserMaterial(props) {
   }, [data, searchQuery]);
 
   const unlinkMaterial = (selection) => {
-    MaterialService.unlinkMaterial(userId, selection)
-      .then((response) => {
-        refreshData();
-        setSelection([]);
-        setAlert({
-          type: 'success',
-          description: 'Material unlinked successfully.'
+    const userDetails = state.userDetails;
+    const selectedRole = userDetails.role.name;
+    let unlinkPromise = null;
+    if (isSystemAdmin && selectedRole === 'Customer Centre') {
+      unlinkPromise = MaterialService.unlinkCustomerCentreMaterials(userId, selection);
+    } else {
+      unlinkPromise = MaterialService.unlinkMaterial(userId, selection);
+    }
+    if (unlinkPromise)
+      unlinkPromise
+        .then((response) => {
+          refreshData();
+          setSelection([]);
+          setAlert({
+            type: 'success',
+            description: 'Material unlinked successfully.'
+          });
+        })
+        .catch((error) => {
+          setAlert({
+            type: 'error',
+            description: 'Failed  to unlink material. Please try again.'
+          });
+        })
+        .finally(() => {
+          dispatch(closeModal());
         });
-      })
-      .catch((error) => {
-        setAlert({
-          type: 'error',
-          description: 'Failed  to unlink material.'
-        });
-      })
-      .finally(() => {
-        dispatch(closeModal());
-      });
   };
 
   const confirmMaterialUnlink = (selection) => {

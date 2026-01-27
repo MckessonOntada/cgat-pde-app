@@ -476,7 +476,6 @@ async function notifyUser(orderId, eventType) {
   if (!eventType) throw new Error('Event type is missing. Event type is required to Notify User.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/notify/${eventType}`;
-  console.log(url);
   const res = await HttpResourceService.callRest(url, httpVerb.POST);
   if (res.data) return res.data;
 }

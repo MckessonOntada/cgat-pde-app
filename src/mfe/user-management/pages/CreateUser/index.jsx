@@ -1,121 +1,166 @@
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
-import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { Button } from '@mckesson/mcp-component-library';
 import Alert from '@src/components/cgat-alert/Alert';
 import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, FAX_REGEX, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
-import ModuleHeader from '@src/components/module-header';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { RoutePaths } from '@src/routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
-import { handleApiError, serializeParams } from '@src/util/ApiUtils';
+import { handleApiError } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { PATHS } from '../../routes/constants';
 import './CreateUser.scss';
 import UserDetailsFormSegment from './CreateUserForm';
-import UserCreationStepper from '../UserCreationStepper';
+import useRouteMode from '../../routes/useRouteMode';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import UserService from '@src/api/commonService/UserService';
+
+const getSubmitCaption = ({ isEdit, isCreating, isUpdating }) => {
+  if (isUpdating) return 'Updating';
+  if (isCreating) return 'Saving';
+  if (isEdit) return 'Update';
+  return 'Save and Continue';
+};
+
+const INITIAL_VALUES = {
+  name: {
+    firstName: '',
+    middleName: '',
+    lastName: ''
+  },
+  contact: {
+    email: '',
+    phone: '',
+    fax: '',
+    countryCode: '91'
+  },
+  address: {
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: ''
+  }
+};
 
 const CreateUser = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isPending = false, isBack = false } = location.state || {};
+  const { setValue, state } = useWidgetContext();
+  const { isEdit, id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+  const provision = params.provision === 'true';
+  const [initialFormValue, setInitialFormValue] = React.useState(INITIAL_VALUES);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isDirty, setIsDirty] = React.useState(false);
-  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-
-  const requestParams = {
-    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
-  };
+  const [isDiscardChangesModalVisible, setIsDiscardChangesModalVisible] = React.useState(false);
   const practiceId = AuthUtils.getPracticeId() ?? 1;
+  const userDetails = state.userDetails || {};
+  const { createWizardSteps = {} } = state;
 
-  const {
-    isLoading: isGetUserDetails,
-    isError: isGetUserError,
-    data: userData
-  } = useQuery({
-    queryKey: [`users/${userId}`],
-    queryFn: async () => {
-      const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-
-      return res.data;
-    },
-    enabled: isEdit || isPending || isBack,
-    refetchOnWindowFocus: false
-  });
-
-  const { mutate, isLoading } = useMutation(async ({ payload, isReject }) => {
-    if (isEdit || isBack) {
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
-      return updateUser.data;
-    } else if (isPending) {
-      const reqParams = {
-        status: isReject ? 'REJECTED' : 'APPROVED'
+  React.useEffect(() => {
+    const userDetails = state.userDetails || {};
+    if (id && userDetails.id) {
+      const sanitized = CommonUtils.sanitizeValue(userDetails.address);
+      const { name, contact } = userDetails;
+      const initialValues = {
+        name: {
+          firstName: name.firstName,
+          middleName: name.middleName,
+          lastName: name.lastName
+        },
+        contact: {
+          email: contact.email,
+          phone: contact.phone,
+          countryCode: '91',
+          fax: contact.fax
+        },
+        address: {
+          address1: sanitized.address1,
+          address2: sanitized.address2,
+          city: sanitized.city,
+          state: sanitized.state,
+          zip: sanitized.zip
+        }
       };
-      if (!isReject) {
-        // For approval, first create the user
-        const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
-        // Then, approve the user
-        const approveResponse = await HttpResourceService.callRest(
-          `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
-          httpVerb.PATCH,
-          payload
-        );
-        // Return both responses for the approval
-        return {
-          createUser: createUserResponse.data,
-          approve: approveResponse.data
-        };
-      }
-      // For rejection,
-      const rejectResponse = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
-        httpVerb.PATCH,
-        payload
-      );
-      return rejectResponse.data;
+      setInitialFormValue(initialValues);
+    }
+  }, [state.userDetails]);
+
+  const onSuccess = (response) => {
+    const createdId = response?.id;
+    let targetPath = '';
+    if (provision) {
+      navigate(`./../../${createdId}/create/${PATHS.PERMISSIONS}`);
+      return;
+    } else if (isEdit) {
+      targetPath = `./../..`;
     } else {
-      const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
-      return {
-        createUser: createUserResponse.data
-      };
+      targetPath = `./../${createdId}/${PATHS.PERMISSIONS}`;
     }
+    navigate(`${targetPath}${location.search}`, {
+      state: {
+        alert: {
+          type: 'success',
+          description: 'User details updated successfully.'
+        }
+      }
+    });
+  };
+
+  const onError = (error) => {
+    const errorKey = handleApiError(error);
+    setAlert({ type: 'error', description: t(errorKey) });
+  };
+
+  const { mutate: rejectUserRequest } = useMutation({
+    mutationFn: (params) => UserService.rejectUserRequest(id, params),
+    onSuccess: (_response) => {
+      navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
+    },
+    onError
   });
 
-  const handleGoBack = () => {
-    navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
-  };
-  const sanitized = CommonUtils.sanitizeValue(userData?.address);
-  const initialValues = {
-    name: {
-      firstName: userData?.name?.firstName || '',
-      middleName: userData?.name?.middleName || '',
-      lastName: userData?.name?.lastName || ''
+  const { mutate: approveUserRequest } = useMutation({
+    mutationFn: async ({ payload, params }) => {
+      return UserService.createUser(payload, params).then(async (createRes) => {
+        await UserService.approveUserRequest(id, payload, params);
+        return createRes;
+      });
     },
-    contact: {
-      email: userData?.contact?.email || '',
-      phone: userData?.contact?.phone || '',
-      countryCode: '91',
-      fax: userData?.contact?.fax || ''
+    onSuccess,
+    onError
+  });
+
+  const { mutate: createUser, isLoading: isCreating } = useMutation({
+    mutationFn: ({ payload, params }) => UserService.createUser(payload, params),
+    onSuccess: (response) => {
+      setValue('userDetails', response);
+      const { createWizardSteps = {} } = state;
+      setValue('createWizardSteps', {
+        ...createWizardSteps,
+        personalDetails: true
+      });
+      onSuccess(response);
     },
-    address: {
-      address1: sanitized.address1 || '',
-      address2: sanitized.address2 || '',
-      city: sanitized.city || '',
-      state: sanitized.state || '',
-      zip: sanitized.zip || ''
-    }
-  };
+    onError
+  });
+
+  const { mutate: updateUser, isLoading: isUpdating } = useMutation({
+    mutationFn: ({ payload, params }) => UserService.updateUser(id, payload, params),
+    onSuccess: (response) => {
+      setValue('userDetails', response);
+      onSuccess(response);
+    },
+    onError
+  });
 
   const validationSchema = Yup.object({
     name: Yup.object({
@@ -163,113 +208,62 @@ const CreateUser = () => {
     })
   });
 
-  const handleRejectRequest = (values) => {
-    mutate(
-      { values, isReject: true },
-      {
-        onSuccess: (response) => {
-          navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
-        },
-        onError: (error) => {
-          setAlert({ type: 'error', description: t('errors.default') });
-        }
-      }
-    );
+  const handleRejectRequest = () => {
+    rejectUserRequest({ status: true });
   };
 
   const handleSubmit = (values) => {
     const payload = {
-      practiceId, // Append the practiceId
-      ...values, // Spread the existing form values
+      ...values,
+      practiceId,
       isActive: true
     };
-
-    mutate(
-      { isLoading, payload, isReject: false },
-      {
-        onSuccess: (response) => {
-          const createdId = response?.createUser?.id ?? userId;
-          let targetPath = '';
-
-          if (isEdit) {
-            targetPath = isSystemAdmin ? `/system-admin/user/${createdId}` : `/admin/user/${createdId}`;
-          } else {
-            targetPath = `../${createdId}/${PATHS.PERMISSIONS}`;
-          }
-
-          navigate(targetPath, {
-            state: { isEdit }
-          });
-        },
-        onError: (error) => {
-          const errorKey = handleApiError(error);
-          setAlert({ type: 'error', description: t(errorKey) });
-        }
+    const params = {
+      userType: isSystemAdminView ? 'ADMIN' : 'GENERAL',
+      status: 'APPROVED'
+    };
+    if (createWizardSteps.personalDetails) {
+      if (!isDirty) {
+        navigate(`../${id}/permissions`);
+      } else {
+        updateUser({ payload, params });
       }
-    );
+    } else if (provision && isEdit) {
+      approveUserRequest({ payload, params });
+    } else if (isEdit) {
+      updateUser({ payload, params });
+    } else {
+      createUser({ payload, params });
+    }
   };
 
   const handleCancel = () => {
     if (isDirty) {
-      if (isEdit) {
-        setModalSuccessCallback('details');
-      } else {
-        setModalSuccessCallback('list');
-      }
+      setIsDiscardChangesModalVisible(true);
     } else {
       if (isEdit) {
-        navigate(`../${userId}`);
+        navigate(`./../..`);
       } else {
-        navigate(RoutePaths.pathUserManagement);
+        navigate(`./../../..`);
       }
     }
   };
 
   const handleNavigate = () => {
-    if (modalSuccessCallback === 'list') {
+    if (isEdit) {
+      navigate(`./../..`);
+    } else {
       navigate(RoutePaths.pathUserManagement);
-    } else if (modalSuccessCallback === 'details') {
-      navigate(`../${userId}`);
     }
   };
-  if (isLoading) {
-    return <Loader type={'screen'} />;
-  }
 
   return (
     <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isEdit ? 'userManagement.back_to_user_details' : isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
-        </Button>
-      </div>
       <div className="MCP-module-body">
-        <ModuleHeader
-          heading={
-            <Heading as="h1">
-              {t(
-                isEdit
-                  ? isSystemAdminView
-                    ? 'userManagement.edit_sysadmin'
-                    : 'userManagement.edit_organization_user'
-                  : isSystemAdminView
-                  ? 'userManagement.create_sysadmin'
-                  : 'userManagement.create_organization_user'
-              )}
-            </Heading>
-          }
-        />
-
-        {!isEdit && !isSystemAdminView && (
-          <div className="stepper">
-            <UserCreationStepper activeIndex={1} />
-          </div>
-        )}
-
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <Formik
-          initialValues={initialValues}
+          initialValues={initialFormValue}
           validationSchema={validationSchema}
           enableReinitialize
           onSubmit={(values, actions) => {
@@ -282,24 +276,31 @@ const CreateUser = () => {
             }, [dirty]);
 
             return (
-              <Form>
+              <FormikFormWrapper disabled={isCreating || isUpdating}>
                 <div className="MCP-panel-container">
-                  <UserDetailsFormSegment comment={userData?.comment} isEdit={isEdit} />
+                  <UserDetailsFormSegment comment={userDetails?.comment} isEdit={isEdit} />
                 </div>
                 <div className={'buttonGroup'}>
                   <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
                     {t('userManagement.button.back')}
                   </Button>
-                  {isPending && (
+                  {provision && (
                     <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
                       {t('userManagement.button.rejectrequest')}
                     </Button>
                   )}
-                  <Button type="submit" size={'md'}>
-                    {t('userManagement.button.savencontinue')}
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    isLoadingState={isCreating || isUpdating}
+                    Icon={isCreating || (isUpdating && ButtonLoadingIcon)}
+                    iconPosition="left"
+                    size="md"
+                    disabled={!(isDirty || provision || (!isEdit && createWizardSteps.personalDetails))}>
+                    {getSubmitCaption({ isEdit, isCreating, isUpdating })}
                   </Button>
                 </div>
-              </Form>
+              </FormikFormWrapper>
             );
           }}
         </Formik>
@@ -307,8 +308,8 @@ const CreateUser = () => {
       <DiscardChangesModal
         heading="Discard Changes"
         description="You have changed user details. Do you still want to go back? Your changes will be discarded!"
-        isOpen={Boolean(modalSuccessCallback)}
-        onClose={() => setModalSuccessCallback(null)}
+        isOpen={isDiscardChangesModalVisible}
+        onClose={() => setIsDiscardChangesModalVisible(false)}
         onConfirm={handleNavigate}
       />
     </div>

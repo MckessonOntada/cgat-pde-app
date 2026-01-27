@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Modal } from '@mckesson/mcp-component-library';
+import { Modal } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as DeleteIcon } from '@src/assets/image/delete.svg';
+import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
+import Button from '@src/components/button';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -19,11 +20,16 @@ export default function Actions({ row, userId, practiceId, refetch }) {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-  const { mutate, isLoading, isError, data } = useMutation(
-    async ({ accid }) => {
+  const {
+    mutate: unlinkAccounts,
+    isLoading,
+    isError,
+    data
+  } = useMutation(
+    async ({ accountId }) => {
       const apiUrl = userId
-        ? `${ApiRoutes.USERS()}/${userId}/accounts/${accid}?${serializeParams(requestParams)}`
-        : `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/${accid}?${serializeParams(requestParams)}`;
+        ? `${ApiRoutes.USERS()}/${userId}/accounts/${accountId}?${serializeParams(requestParams)}`
+        : `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/${accountId}?${serializeParams(requestParams)}`;
 
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
       return res;
@@ -53,14 +59,14 @@ export default function Actions({ row, userId, practiceId, refetch }) {
 
   const handleConfirmUnlink = () => {
     if (selectedAccountId) {
-      mutate({ accid: selectedAccountId });
+      unlinkAccounts({ accountId: selectedAccountId });
     }
   };
 
   return (
-    <>
-      <Button Icon={DeleteIcon} variant="tertiary" size="sm" onClick={() => handleOpenPopup(row.id)}>
-        {t('account.btn.unlink')}
+    <React.Fragment>
+      <Button style={{ padding: 0 }} variant="text" size="small" startIcon={<LinkIcon width="14" height="14" />} onClick={() => handleOpenPopup(row.id)}>
+        Unlink
       </Button>
       <Modal
         {...{
@@ -82,6 +88,6 @@ export default function Actions({ row, userId, practiceId, refetch }) {
           modalSize: 'xxxs'
         }}
       />
-    </>
+    </React.Fragment>
   );
 }

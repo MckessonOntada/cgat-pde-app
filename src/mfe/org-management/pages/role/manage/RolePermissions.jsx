@@ -1,32 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Formik, Form } from 'formik';
-import { useMutation } from 'react-query';
+import { Formik } from 'formik';
+import { useMutation, useQuery } from 'react-query';
 import PermissionForm from '../../../../user-management/pages/UserPermissions/PermissionForm';
 import HttpResourceService, { httpVerb } from '../../../../../api/HttpResourceService';
 import ApiRoutes from '../../../../../api/ApiRoutes';
 import { PATHS } from '../../../routes/constants';
-import { useRole } from '../../../context/RoleContext';
 import DiscardChangesModal from './DiscardChangesModel';
 import Alert from '@src/components/cgat-alert/Alert';
-
-function arePermissionsEqual(arr1, arr2) {
-  if ((Array.isArray(arr1) && !arr2) || (Array.isArray(arr2) && !arr1)) return false;
-
-  if (arr1.length !== arr2.length) {
-    return false;
-  }
-
-  const sortedArr1 = [...arr1].sort();
-  const sortedArr2 = [...arr2].sort();
-
-  return sortedArr1.every((value, index) => value === sortedArr2[index]);
-}
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import AuthUtils from '@src/util/AuthUtils';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const RolePermissions = () => {
   const { t } = useTranslate();
@@ -34,52 +24,101 @@ const RolePermissions = () => {
   const { roleId } = useParams();
   const location = useLocation();
   const row = location.state.data || null;
-  const { setMessage, messageConfig, clearMessage } = useRole();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const [initialFormValues, setInitialFormValue] = React.useState({});
   const [alert, setAlert] = useState(null);
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
-  const [inheritedRole, setInheritedRole] = React.useState(null);
-  const { refreshData } = useRole();
+  const [isDirty, setIsDirty] = React.useState(false);
   const { isEdit } = location.state || {};
+  const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
+
+  const { data: permissions } = useQuery({
+    queryKey: ['users/permissions'],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
+      return res.data || [];
+    },
+    select: (data) => {
+      const groupedPermissions = {
+        CREATE_NEW_ORDER: {},
+        USER_MANAGEMENT: {},
+        ADMIN_MANAGEMENT: {},
+        ORGANIZATION_MANAGEMENT: {},
+        ORDER_MANAGEMENT: {},
+        SYSTEM_CONFIGURATION: {},
+        PAYMENT_INVOICING: {},
+        MANAGE_PROVIDERS: {},
+        MANAGE_LINKED_ACCOUNTS: {}
+      };
+
+      data.forEach((permission) => {
+        Object.entries(PERMISSIONS_ENUM).forEach(([key, value]) => {
+          if (Object.values(value).includes(permission)) {
+            groupedPermissions[key][permission] = permission;
+          }
+        });
+      });
+
+      const filteredPermissions = Object.fromEntries(Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0));
+      return filteredPermissions;
+    },
+    enabled: true,
+    refetchOnWindowFocus: false
+  });
+
+  React.useEffect(() => {
+    if (permissions) {
+      const filteredPermissionsEnum = isSystemAdminView
+        ? permissions || {}
+        : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
+
+      const { permissions: existingPermissions, communicationPreferences, ...rest } = row;
+      const _permissions = {};
+      Object.entries(filteredPermissionsEnum).map(([_category, permissions]) => {
+        Object.entries(permissions).map(([key, _permission]) => {
+          _permissions[key] = existingPermissions.includes(key);
+        });
+      });
+
+      setInitialFormValue({
+        permissions: _permissions,
+        role: {
+          ...rest
+        }
+      });
+    }
+  }, [permissions, location.state]);
 
   const handleOnCancelButtonClick = () => {
-    if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
+    if (isDirty) {
       setModalSuccessCallback('list');
     } else navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`);
   };
 
-  const { mutate, isLoading } = useMutation(
-    async (data) => {
+  const { mutate: updatePermissions, isLoading: isUpdating } = useMutation({
+    mutationFn: async (data) => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`, httpVerb.PATCH, data);
-
       return res;
     },
-    {
-      onSuccess: (res) => {
-        const data = res?.data;
-        refreshData();
-        if (data) {
-          refreshData();
-          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles/${roleId}/notification-permissions`, {
-            state: { data: { ...location.state.data, permissions: enabledPermissions } }
-          });
-        }
-      },
-      onError: (error) => {
-        console.error('Error posting data:', error);
-
-        setAlert({
-          type: 'error',
-          description: t('errors.default')
+    onSuccess: (_response) => {
+      if (isEdit) {
+        navigate(`/admin/organization/roles/${roleId}`, {
+          state: { alert: { type: 'success', description: 'Role permissions updated successfully.' } }
         });
-        setIsAlertVisible(true);
+      } else {
+        navigate(`/admin/organization/roles/${roleId}/notification-permissions`);
       }
+    },
+    onError: (_error) => {
+      setAlert({
+        type: 'error',
+        description: t('errors.default')
+      });
     }
-  );
+  });
 
   const handleGoBack = () => {
-    if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
+    if (isDirty) {
       setModalSuccessCallback('mainlist');
     } else {
       navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
@@ -95,16 +134,14 @@ const RolePermissions = () => {
     }
   };
 
-  const handleSaveAndContinue = (values) => {
+  const handleOnSubmit = (values) => {
+    const { permissions = [] } = values;
     const payload = {
-      permissions: enabledPermissions
+      permissions: Object.keys(permissions).filter((k) => permissions[k])
     };
-    const permissions = Object.values(payload).flat();
-    mutate(payload);
+    updatePermissions(payload);
   };
-  if (isLoading) {
-    return <Loader type={'screen'} />;
-  }
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -114,40 +151,34 @@ const RolePermissions = () => {
       </div>
 
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
-      {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
+      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
       <div className="MCP-module-body">
         <div>
-          <Formik
-            initialValues={{}}
-            onSubmit={(values, actions) => {
-              handleSaveAndContinue(values);
-            }}
-            validateOnChange={false}
-            validateOnBlur={true}>
-            {({ values }) => {
-              let defaultRole = row ? row : null;
+          <Formik initialValues={initialFormValues} onSubmit={handleOnSubmit} enableReinitialize validateOnChange={false} validateOnBlur={true}>
+            {({ dirty }) => {
+              React.useEffect(() => {
+                setIsDirty(dirty);
+              }, [dirty]);
               return (
-                <Form>
-                  <PermissionForm
-                    enabledPermissions={enabledPermissions}
-                    setEnabledPermissions={setEnabledPermissions}
-                    onRoleChange={setInheritedRole}
-                    handleRoleSelect={() => {}}
-                    editRoleId={roleId}
-                    isRolePage={true}
-                    defaultRole={defaultRole}
-                  />
-
+                <FormikFormWrapper disabled={isUpdating}>
+                  <PermissionForm permissions={permissions} isRolePage={true} />
                   <div className={'buttonGroup'}>
                     <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
                       {t('orgManagement.button.cancel')}
                     </Button>
-                    <Button variant="primary" type="submit" size={'md'}>
+                    <Button
+                      disabled={isUpdating || !isDirty}
+                      variant="primary"
+                      isLoadingState={isUpdating}
+                      Icon={isUpdating && ButtonLoadingIcon}
+                      iconPosition="left"
+                      type="submit"
+                      size="md">
                       {t('orgManagement.role.captionsBtnSaveAndCancel')}
                     </Button>
                   </div>
-                </Form>
+                </FormikFormWrapper>
               );
             }}
           </Formik>
