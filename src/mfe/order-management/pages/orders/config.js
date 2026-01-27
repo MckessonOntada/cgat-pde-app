@@ -18,8 +18,7 @@ export const ORDER_STATUS = Object.freeze({
   REJECTED: 'REJECTED',
   CANCELLED: 'CANCELLED',
   ALL: 'ALL',
-  REVIEW: 'REVIEW',
-  CS_REVIEW: 'CS_REVIEW'
+  REVIEW: 'REVIEW'
 });
 
 export const TAB_FILTERS = Object.freeze({
@@ -55,7 +54,6 @@ export const COLUMNS = {
   ORDER_ID_SP: 'ORDER_ID_SP',
   PATIENT_NAME: 'PATIENT_NAME',
   THERAPY: 'THERAPY',
-  ORGANIZATION: 'ORGANIZATION',
   AUTHOR: 'AUTHOR',
   ASSIGNEE: 'ASSIGNEE',
   SUBMITTED_BY: 'SUBMITTED_BY',
@@ -74,7 +72,6 @@ export const TABLE_COLUMNS = {
     COLUMNS.PDE_ID,
     COLUMNS.PATIENT_NAME,
     COLUMNS.THERAPY,
-    COLUMNS.ORGANIZATION,
     COLUMNS.SUBMITTED_BY,
     COLUMNS.SUBMITTED_ON,
     COLUMNS.STATUS,
@@ -85,7 +82,6 @@ export const TABLE_COLUMNS = {
     COLUMNS.ORDER_ID_SP,
     COLUMNS.PATIENT_NAME,
     COLUMNS.THERAPY,
-    COLUMNS.ORGANIZATION,
     COLUMNS.SUBMITTED_BY,
     COLUMNS.SUBMITTED_ON,
     COLUMNS.STATUS,
@@ -127,7 +123,7 @@ export const ORDER_ENTITY_ACTION = Object.freeze({
   UPLOAD_DOCUMENT: 'UPLOADED_DOCUMENT'
 });
 
-export const getTabs = (isCSReviewOrdersPage) => {
+export const getTabs = () => {
   const isPhysician = AuthUtils.isPhysician();
   if (isPhysician) {
     return [
@@ -144,23 +140,6 @@ export const getTabs = (isCSReviewOrdersPage) => {
         isActiveTab: false,
         sequence: 1,
         labelForMobile: 'labels.tabs.submitted'
-      }
-    ];
-  } else if (isCSReviewOrdersPage) {
-    return [
-      {
-        id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
-        configName: 'labels.tabs.submittedBuyAndBill',
-        isActiveTab: false,
-        sequence: 1,
-        labelForMobile: 'labels.tabs.submittedBuyAndBill'
-      },
-      {
-        id: ORDER_TABS.SUBMITTED_SP,
-        configName: 'labels.tabs.submittedSp',
-        isActiveTab: false,
-        sequence: 2,
-        labelForMobile: 'labels.tabs.submittedSp'
       }
     ];
   } else {

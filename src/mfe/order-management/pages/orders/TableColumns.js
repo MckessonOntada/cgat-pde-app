@@ -30,7 +30,6 @@ const getColorByStatus = (status) => {
   };
   return statusColors[status] || 'info';
 };
-const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 
 function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
@@ -59,6 +58,7 @@ function getOptionsByStatus(props) {
         anchorEl: alertContainerId
       })
   });
+
   const { mutate: unassignFromMe } = useMutation(({ preservedState }) => OrderService.setOrderUnassignToMe(id), {
     onSuccess: (_, variables) => {
       refreshData();
@@ -258,26 +258,26 @@ function getOptionsByStatus(props) {
       ),
       value: ORDER_ENTITY_ACTION.REVIEW
     });
-  } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || tab === ORDER_TABS.SUBMITTED_SP || isCSReviewOrdersPage) {
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS) || isCSReviewOrdersPage) {
+  } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || tab === ORDER_TABS.SUBMITTED_SP) {
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
       options.push({
         label: translate(`labels.orderActions.view`),
         value: ORDER_ENTITY_ACTION.VIEW
       });
     }
-    if (hasEditPermission || isCSReviewOrdersPage) {
+    if (hasEditPermission) {
       options.push({
         label: translate(`labels.orderActions.edit`),
         value: ORDER_ENTITY_ACTION.EDIT
       });
     }
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage) {
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
       options.push({
         label: translate(`labels.orderActions.cancel`),
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
-    if (status === ORDER_STATUS.SUBMITTED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS) || isCSReviewOrdersPage)) {
+    if (status === ORDER_STATUS.SUBMITTED && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS)) {
       options.push({
         label: translate(`labels.orderActions.uploadDocument`),
         value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
@@ -315,7 +315,7 @@ function getOrderProcessingStatus(orderProcessingStatus) {
   return map[key] || null;
 }
 
-const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired, practiceId }) => {
+const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
   switch (currentStage) {
     case ORDER_STAGES.ACCOUNT_DETAILS:
       return `${id}/accounts`;
@@ -326,11 +326,7 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired, practic
     case ORDER_STAGES.ADDITIONAL_DETAILS:
       return `${id}/additional-details`;
     case ORDER_STAGES.ORDER_SUMMARY:
-      if (isCSReviewOrdersPage) {
-        return `${id}/summary?orgId=${practiceId}`;
-      } else {
-        return `${id}/summary`;
-      }
+      return `${id}/summary`;
     default:
       return `${id}/accounts`;
   }
@@ -360,7 +356,7 @@ const getState = (props) => {
   return { ...state, __prevSearch: search };
 };
 
-const jsxColumns = (isCSReviewOrdersPage) => [
+const jsxColumns = () => [
   {
     id: COLUMNS.SAP_ID,
     name: 'labels.orderId',
@@ -455,19 +451,6 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     cell: function (props) {
       return <EclipsesTextCss str={props.therapy?.materialDescription || props.tradeDetails?.tradeName} maxWidth={280} className={'MCP-table-cell'} />;
     }
-  },
-  {
-    id: COLUMNS.ORGANIZATION,
-    name: 'labels.organization',
-    selector: () => {},
-    sortable: true,
-    sortKey: 'organization.name',
-    maxWidth: '170px',
-    minWidth: '150px',
-    cell: function (props) {
-      return <EclipsesTextCss str={props.practiceName || props.practiceName} maxWidth={150} className={'MCP-table-cell'} />;
-    },
-    omit: !isCSReviewOrdersPage
   },
   {
     id: COLUMNS.AUTHOR,
@@ -603,19 +586,18 @@ const jsxColumns = (isCSReviewOrdersPage) => [
   }
 ];
 
-export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId, isCSReviewOrdersPage) => {
+export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId) => {
   if (!tab) throw new Error('table type is missing');
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
   const columns = TABLE_COLUMNS[tab];
-  const getJsxColumns = jsxColumns(isCSReviewOrdersPage);
+  const getJsxColumns = jsxColumns();
   const tableColumns = columns.map((col) => getJsxColumns.find((item) => item.id === col)).filter(Boolean);
 
   const protoObject = {
     translate,
     tab,
-    alertContainerId,
-    isCSReviewOrdersPage
+    alertContainerId
   };
 
   tableColumns.map((column) => {
