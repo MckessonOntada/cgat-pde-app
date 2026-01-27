@@ -1,27 +1,49 @@
 import * as Yup from 'yup';
 import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
-import { ORDER_STAGES } from '../Constants';
+import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
-export const getUpdateFormConfig = (stage, therapyConfig) => {
+export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, channelType) => {
   const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
-    therapyConfig?.config?.fields?.forEach((field) => {
-      if (field?.properties?.displayOnForm && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) {
-        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
-        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-        dynamic_fields.push({
-          id: `patient-info-${field.fieldName}`,
-          name: field?.fieldName,
-          label: field?.properties?.displayName,
-          isRequired: field?.properties?.mandatoryField,
-          type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
-          prefix,
-          suffix,
-          infoText: field?.properties.helpInfoMessage
-        });
-      }
-    });
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field?.properties?.displayOnForm && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          dynamic_fields.push({
+            id: `patient-info-${field.fieldName}`,
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+            prefix,
+            suffix,
+            infoText: field?.properties.helpInfoMessage
+          });
+        }
+      });
+    } else {
+      spTherapyConfig?.config?.fields?.forEach((field) => {
+        if (
+          field?.properties?.displayOnForm &&
+          (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber' || field.fieldName === 'coiId')
+        ) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          dynamic_fields.push({
+            id: `patient-info-${field.fieldName}`,
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+            prefix,
+            suffix,
+            infoText: field?.properties.helpInfoMessage
+          });
+        }
+      });
+    }
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
     therapyConfig?.config?.fields?.forEach((field) => {
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
@@ -52,10 +74,11 @@ export const getUpdateFormConfig = (stage, therapyConfig) => {
   return formattedControls;
 };
 
-export const patientDetailsValidationSchema = (t, therapyConfig) => {
+export const patientDetailsValidationSchema = (t, therapyConfig, channelType) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) allowedFields.add('coiId');
 
     config?.config?.fields?.forEach((field) => {
       if (!allowedFields.has(field.fieldName) || !field.properties?.displayOnForm) return;

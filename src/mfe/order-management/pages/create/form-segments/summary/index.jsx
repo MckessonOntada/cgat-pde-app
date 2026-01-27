@@ -95,8 +95,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
-  const manufacturer = orderDetails.therapyConfig?.config?.manufacturerName;
-
+  const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+  const manufacturer = isSpOrder ? orderDetails.spTherapyConfig?.config?.manufacturerName : orderDetails.therapyConfig?.config?.manufacturerName;
   React.useEffect(() => {
     if (orderDetails?.additionalDetails) {
       setDraftChanges({
@@ -137,12 +137,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   }, []);
 
   const [openDetails, setOpenDetails] = React.useState(false);
-  const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
-
   const shouldShowIdentifierSection =
     isSpOrder &&
-    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some(
-      (key) => key !== REQUIREMENT.NOT_REQUIRED
+    (spTherapyConfig?.config?.fields ?? []).some(
+      (field) => ['patientIdentifier', 'medicalRecordNumber', 'coiId'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
     );
 
   const {
@@ -499,7 +497,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     if (backToInvoiceListing || backToInvoiceDetails) {
       navigate(-1);
     } else {
-      if (!isDirty) {
+      if (!isDirty || isCustomerCentreUser) {
         const prevSearch = locationState?.__prevSearch || '';
         navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}${prevSearch}`);
       } else {
@@ -591,7 +589,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return newData;
   };
   const getDisplayNameByFieldName = (fieldName) => {
-    const materialConfig = orderDetails.therapyConfig?.config?.fields;
+    const materialConfig = isSpOrder ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
   };
   const { mutate: patientIdCoiIdValidation, isLoading: patientIdCoiIdValidationLoading } = useMutation(
@@ -653,12 +651,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const handleOnEditSection = (stage) => {
     if (
-      (orderDetails.status === ORDER_STATUS.SUBMITTED && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName) ===
-      'ORCA'
+      (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) &&
+      stage === ORDER_STAGES.PATIENT_DETAILS &&
+      orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA'
     ) {
       navigate(`./../orca-patient-details?orgId=${orgId}`);
     }
-    if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+    if (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
       if (!isCustomerCentreUser && !checkEditPermission(stage)) {
         setAlert({
@@ -668,7 +667,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         return;
       }
 
-      let formConfig = getUpdateFormConfig(stage, therapyConfig);
+      let formConfig = getUpdateFormConfig(stage, therapyConfig, spTherapyConfig, orderDetails.channelType);
       let initialValues = {};
       let validationSchema = null;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
@@ -686,33 +685,50 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             dateOfApheresis: additionalDetails.dateOfApheresis || ''
           };
         }
-      } else {
-        initialValues = {
-          ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
-        };
-        validationSchema = patientDetailsValidationSchema(t, therapyConfig);
+      } else if (stage === ORDER_STAGES.PATIENT_DETAILS) {
+        if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+          initialValues = {
+            ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
+          };
+          validationSchema = patientDetailsValidationSchema(t, therapyConfig, orderDetails.channelType);
+        } else {
+          initialValues = {
+            ...stripPrefixSuffixFromData(draftChanges, spTherapyConfig.config.fields),
+            coiId: draftChanges.additionalDetailsRequestDTO.coiId
+          };
+          validationSchema = patientDetailsValidationSchema(t, spTherapyConfig, orderDetails.channelType);
+        }
       }
       setDrawerElement(
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            let tempValue = addPrefixSuffixToData(values, therapyConfig.config.fields);
+            let tempValue = addPrefixSuffixToData(values, isSpOrder ? spTherapyConfig.config.fields : therapyConfig.config.fields);
             if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
               setDraftChanges((prev) => ({
                 ...prev,
                 additionalDetailsRequestDTO: tempValue
               }));
             } else {
-              setDraftChanges((prev) => ({
-                ...prev,
-                ...tempValue
-              }));
+              isSpOrder
+                ? setDraftChanges((prev) => ({
+                    ...prev,
+                    ...tempValue,
+                    additionalDetailsRequestDTO: {
+                      ...prev.additionalDetailsRequestDTO,
+                      coiId: tempValue.coiId
+                    }
+                  }))
+                : setDraftChanges((prev) => ({
+                    ...prev,
+                    ...tempValue
+                  }));
             }
             if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
               patientIdCoiIdValidation({
                 patientId: tempValue.patientIdentifier,
-                coiId: draftChanges.additionalDetailsRequestDTO.coiId ? draftChanges.additionalDetailsRequestDTO.coiId : ''
+                coiId: !isSpOrder ? draftChanges.additionalDetailsRequestDTO.coiId || '' : tempValue?.coiId || ''
               });
               scrollToTopUtil();
             } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
@@ -888,7 +904,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
-    } else if (!isApprover && status !== ORDER_STATUS.SUBMITTED && status !== ORDER_STATUS.APPROVAL_PENDING && status !== ORDER_STATUS.REVIEW) {
+    } else if (
+      !isApprover &&
+      status !== ORDER_STATUS.SUBMITTED &&
+      status !== ORDER_STATUS.CS_REVIEW &&
+      status !== ORDER_STATUS.APPROVAL_PENDING &&
+      status !== ORDER_STATUS.REVIEW
+    ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if ((allowUpdateBnBAfterSubmit && isPhysician) || CommonUtils.isNonEmptyObject(draftChanges)) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
@@ -902,7 +924,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted) return false;
-    else if (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.REVIEW) return false;
+    else if (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW || status === ORDER_STATUS.REVIEW) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && orderDetails.approver && !isApprover) return false;
@@ -912,7 +934,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return true;
   }, [isRejected, isDeleted, isApprover, status, sapStatus]);
   const allowUpdateBnBAfterSubmit =
-    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && status === ORDER_STATUS.SUBMITTED && sapStatus === SAP_ORDER_STATUS.OPEN;
+    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL &&
+    (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW) &&
+    sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
@@ -1024,7 +1048,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     }
                   />
                 )}
-                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted) ? (
+                {!isApprover &&
+                (isPhysician ||
+                  isSubmitted ||
+                  isApprovalPending ||
+                  isRejected ||
+                  orderDetails?.status === ORDER_STATUS.REVIEW ||
+                  isDeleted ||
+                  orderDetails?.status === ORDER_STATUS.CS_REVIEW) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t(isSpOrder ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
                     {showPapBadge}
@@ -1044,7 +1075,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   </div>
                 )}
 
-                {isSubmitted && !isSpOrder && (
+                {(isSubmitted || orderDetails?.status === ORDER_STATUS.CS_REVIEW) && !isSpOrder && (
                   <div className="row-space-between-center">
                     <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
 
@@ -1134,7 +1165,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               <div className={'MCP-module-body'}>
                 {isSubmitted && <TrackingDetails orderDetails={orderDetails} />}
 
-                {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.APPROVAL_PENDING) &&
+                {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW || status === ORDER_STATUS.APPROVAL_PENDING) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
                     (!isSpOrder && (orderDetails?.approver || orderDetails?.submittedOn))) && (
                     <div className="MCP-CardContainer">
@@ -1169,14 +1200,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   />
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
-                      status === ORDER_STATUS.SUBMITTED
+                      status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW
                         ? !isSpOrder
                           ? 'lg:grid-cols-6 xl:grid-cols-6'
                           : 'lg:grid-cols-2 xl:grid-cols-2'
                         : 'lg:grid-cols-5 xl:grid-cols-5'
                     }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
-                      (status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
+                      ((status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW) && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
                       <DetailSegment label={t('labels.orderId')} value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId} />
                     )}
                     <DetailSegment
@@ -1354,12 +1385,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
-                        (showControls || allowUpdateBnBAfterSubmit) && (
+                        (showControls || allowUpdateBnBAfterSubmit || (!isSpOrder && isCustomerCentreUser)) && (
                           <Button
                             size="md"
                             variant="tertiary"
                             disabled={
-                              orderDetails.status === ORDER_STATUS.SUBMITTED &&
+                              (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) &&
                               !(therapyConfig?.config?.fields ?? []).some(
                                 (field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
                               )
@@ -1422,22 +1453,19 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{t('orderManagement.patientDetails.identifier_details')}</Heading>}
                       controls={
-                        showControls && (
+                        showControls ||
+                        (isCustomerCentreUser && (
                           <Button size="md" variant="tertiary" onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
                           </Button>
-                        )
+                        ))
                       }
                     />
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
                       {spTherapyConfig?.config?.fields
                         ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber', 'patientIdentifier', 'coiId'].includes(field.fieldName))
                         ?.map((field) => {
-                          const value =
-                            draftChanges?.additionalDetailsRequestDTO?.[field.fieldName] ??
-                            draftChanges?.patient?.[field.fieldName] ??
-                            patient?.[field.fieldName] ??
-                            '-';
+                          const value = draftChanges?.[field.fieldName] ?? patient?.[field.fieldName] ?? '-';
 
                           return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
                         })}
@@ -1461,7 +1489,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           size="md"
                           variant="tertiary"
                           disabled={
-                            orderDetails.status === ORDER_STATUS.SUBMITTED &&
+                            (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) &&
                             !isSpOrder &&
                             !(therapyConfig?.config?.fields ?? []).some(
                               (field) =>
@@ -1556,7 +1584,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                         <DetailSegment label={'Variant'} value={additionalDetails?.variantDetails?.variant} />
                         {variantAttachment && (
-                          <AttachmentCard url={variantAttachment.url} fileName={variantAttachment.name} fileSize={variantAttachment.size} />
+                          <AttachmentCard
+                            url={variantAttachment.url}
+                            fileName={variantAttachment.name}
+                            fileSize={variantAttachment.size}
+                            isCustomerCentreUser={isCustomerCentreUser}
+                          />
                         )}
                       </div>
                     </div>
@@ -1616,7 +1649,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                                     />
 
                                     {question.document && (
-                                      <AttachmentCard url={question.document.url} fileName={question.document.name} fileSize={question.document.size} />
+                                      <AttachmentCard
+                                        url={question.document.url}
+                                        fileName={question.document.name}
+                                        fileSize={question.document.size}
+                                        isCustomerCentreUser={isCustomerCentreUser}
+                                      />
                                     )}
                                   </div>
                                 ))}
@@ -1653,7 +1691,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                                 </div>
                               </div>
                               {documentSegment.name && documentSegment.url && (
-                                <AttachmentCard url={documentSegment?.url} fileName={documentSegment.name} fileSize={documentSegment.size} />
+                                <AttachmentCard
+                                  url={documentSegment?.url}
+                                  fileName={documentSegment.name}
+                                  fileSize={documentSegment.size}
+                                  isCustomerCentreUser={isCustomerCentreUser}
+                                />
                               )}
                             </div>
                           );
@@ -1727,6 +1770,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           showFooter={false}
           onClose={() => setOpenDetails(!openDetails)}
           hideTab={true}
+          isCustomerCentreUser={isCustomerCentreUser}
+          createdById={orderDetails?.createdBy?.id}
         />
       )}
     </div>

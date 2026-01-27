@@ -575,6 +575,28 @@ async function savePatientDetailsCsUser(orderId, payload, skipDuplicateCheck = f
   }
 }
 
+async function getTherapyDetailsByTradeNameCsUser(tradeName, channelType, userId) {
+  if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
+  const url = `${ApiRoutes.USERS()}/current/therapies/details/tradeName/${tradeName}?channelType=${channelType}&userId=${'10742'}`;
+
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+}
+
+async function downloadDocumentCsUser(url) {
+  if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
+
+  try {
+    const documentUrl = `${ApiRoutes.ORDER_SERVICE_SYSTEM_ADMIN()}documents/download?documentPath=${url}`;
+    const res = await HttpResourceService.callRest(documentUrl, httpVerb.GET);
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -626,7 +648,9 @@ const OrderService = Object.freeze({
   getCSReviewOrders,
   getOrderByIdCsUser,
   reSubmitOrderCsUser,
-  savePatientDetailsCsUser
+  savePatientDetailsCsUser,
+  getTherapyDetailsByTradeNameCsUser,
+  downloadDocumentCsUser
 });
 
 export default OrderService;

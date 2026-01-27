@@ -29,12 +29,12 @@ function getFileIcon(extension) {
 }
 
 function AttachmentCard(props) {
-  const { fileName, fileSize, url } = props;
+  const { fileName, fileSize, url, isCustomerCentreUser } = props;
   const fileType = fileName.split('.').pop();
   const fileIcon = getFileIcon(fileType);
   const shouldShowSize = typeof fileSize === 'number' && !Number.isNaN(fileSize);
   const handleOnClick = async () => {
-    const response = await OrderService.downloadDocument(url); //Prio1
+    const response = isCustomerCentreUser ? await OrderService.downloadDocumentCsUser(url) : await OrderService.downloadDocument(url);
 
     const arrayBuffer = await response.data;
 
