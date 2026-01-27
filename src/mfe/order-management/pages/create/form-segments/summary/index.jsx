@@ -252,6 +252,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isDeleted = status === 'DELETED';
   const isSubmitted = status === ORDER_STATUS.SUBMITTED;
   const isApprovalPending = status === ORDER_STATUS.APPROVAL_PENDING;
+  const isCSReview = status === ORDER_STATUS.CS_REVIEW;
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -298,7 +299,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: isSpOrder || readOnly ? false : !status ? false : !(status === ORDER_STATUS.REJECTED || status === ORDER_STATUS.SUBMITTED || status === 'DELETED'),
+    enabled: isSpOrder || readOnly ? false : !status ? false : !(status === ORDER_STATUS.REJECTED || isSubmitted || status === 'DELETED'),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
@@ -652,14 +653,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   );
 
   const handleOnEditSection = (stage) => {
-    if (
-      (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) &&
-      stage === ORDER_STAGES.PATIENT_DETAILS &&
-      orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA'
-    ) {
+    if ((isSubmitted || isCSReview) && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA') {
       navigate(`./../orca-patient-details?orgId=${orgId}`);
     }
-    if (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) {
+    if (isSubmitted || isCSReview) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
       if (!isCustomerCentreUser && !checkEditPermission(stage)) {
         setAlert({
@@ -828,7 +825,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
       additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
       patientIdentifier: orderDetails.patient?.patientIdentifier,
-      medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
+      medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+      coiId: orderDetails.patient?.coiId
     });
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
@@ -909,7 +907,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       status !== ORDER_STATUS.REVIEW
     ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if ((allowUpdateBnBAfterSubmit && isPhysician) || CommonUtils.isNonEmptyObject(draftChanges)) {
+    } else if ((allowUpdateBnBAfterSubmit && isPhysician) || (CommonUtils.isNonEmptyObject(draftChanges) && (isCustomerCentreUser || !isSpOrder))) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
@@ -921,7 +919,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted) return false;
-    else if (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW || status === ORDER_STATUS.REVIEW) return false;
+    else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && orderDetails.approver && !isApprover) return false;
@@ -931,9 +929,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return true;
   }, [isRejected, isDeleted, isApprover, status, sapStatus]);
   const allowUpdateBnBAfterSubmit =
-    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL &&
-    (status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW) &&
-    sapStatus === SAP_ORDER_STATUS.OPEN;
+    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
@@ -1046,13 +1042,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   />
                 )}
                 {!isApprover &&
-                (isPhysician ||
-                  isSubmitted ||
-                  isApprovalPending ||
-                  isRejected ||
-                  orderDetails?.status === ORDER_STATUS.REVIEW ||
-                  isDeleted ||
-                  orderDetails?.status === ORDER_STATUS.CS_REVIEW) ? (
+                (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted || isCSReview) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t(isSpOrder ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
                     {showPapBadge}
@@ -1072,7 +1062,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   </div>
                 )}
 
-                {(isSubmitted || orderDetails?.status === ORDER_STATUS.CS_REVIEW) && !isSpOrder && (
+                {(isSubmitted || isCSReview) && !isSpOrder && (
                   <div className="row-space-between-center">
                     <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
 
@@ -1162,7 +1152,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               <div className={'MCP-module-body'}>
                 {isSubmitted && <TrackingDetails orderDetails={orderDetails} />}
 
-                {(status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW || status === ORDER_STATUS.APPROVAL_PENDING) &&
+                {(isSubmitted || isCSReview || status === ORDER_STATUS.APPROVAL_PENDING) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
                     (!isSpOrder && (orderDetails?.approver || orderDetails?.submittedOn))) && (
                     <div className="MCP-CardContainer">
@@ -1197,14 +1187,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   />
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
-                      status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW
+                      isSubmitted || isCSReview
                         ? !isSpOrder
                           ? 'lg:grid-cols-6 xl:grid-cols-6'
                           : 'lg:grid-cols-2 xl:grid-cols-2'
                         : 'lg:grid-cols-5 xl:grid-cols-5'
                     }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
-                      ((status === ORDER_STATUS.SUBMITTED || status === ORDER_STATUS.CS_REVIEW) && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
+                      ((isSubmitted || isCSReview) && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
                       <DetailSegment label={t('labels.orderId')} value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId} />
                     )}
                     <DetailSegment
@@ -1387,7 +1377,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             size="md"
                             variant="tertiary"
                             disabled={
-                              (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) &&
+                              (isSubmitted || isCSReview) &&
                               !(therapyConfig?.config?.fields ?? []).some(
                                 (field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
                               )
@@ -1485,7 +1475,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           size="md"
                           variant="tertiary"
                           disabled={
-                            (orderDetails.status === ORDER_STATUS.SUBMITTED || orderDetails.status === ORDER_STATUS.CS_REVIEW) &&
+                            (isSubmitted || isCSReview) &&
                             !isSpOrder &&
                             !(therapyConfig?.config?.fields ?? []).some(
                               (field) =>
