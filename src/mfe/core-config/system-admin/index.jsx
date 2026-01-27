@@ -6,6 +6,7 @@ import SystemConfiguration from './SystemConfiguration';
 import Dashboard from './dashboard';
 import AuthUtils from '@src/util/AuthUtils';
 import NotFound from '@src/pages/error-pages/NotFound';
+import { CSReviewOrders } from './cs-review-orders';
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
 
@@ -39,6 +40,14 @@ export default function DashboardRoutes() {
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
             <SystemConfiguration />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={'orders/*'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+            <CSReviewOrders />
           </ProtectedRoute>
         }
       />

@@ -565,6 +565,8 @@ export const MessageEn = {
   'labels.caption.DELETED': 'Discarded',
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
+  'labels.organization': 'Organization',
+  'labels.caption.CS_REVIEW': 'CS Review',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
 
   'labels.caption.currentMonth': 'Current Month',

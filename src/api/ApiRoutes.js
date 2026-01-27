@@ -16,6 +16,7 @@ const constructOrderManagementServiceUrl = (uri) => {
 };
 
 const constructNotificationServiceUrl = (uri) => `${NOTIFICATION_SERVICE_BASE_URL}${uri}`;
+const constructOrderServiceUrl = (uri) => `${ORDERMANAGEMENT_SERVICE_BASE_URL}${uri}`;
 
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),
@@ -85,7 +86,8 @@ const ApiRoutes = Object.freeze({
   NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl('in-app-notification/unread/count'),
   NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl('in-app-notification/read/all'),
   NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`),
-  USER_BASE: () => constructUserManagementServiceUrl('')
+  USER_BASE: () => constructUserManagementServiceUrl(''),
+  ORDER_SERVICE_SYSTEM_ADMIN: () => constructOrderServiceUrl('api/admin/orders/')
 });
 
 export default ApiRoutes;

@@ -1,4 +1,5 @@
 import OrderService from '@src/api/commonService/OrderService';
+import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -26,12 +27,18 @@ function denormalizeInsurance(insurance, isMedical = true) {
   return result;
 }
 
-const useOrder = (orderId) => {
+const useOrder = (orderId, practiceId) => {
   const navigate = useNavigate();
+  const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 
   const result = useQuery({
     queryKey: ['order-details', orderId],
-    queryFn: async () => OrderService.getOrderById(orderId),
+    queryFn: async () => {
+      if (isCSReviewOrdersPage) {
+        return OrderService.getOrderByIdCsUser(orderId, practiceId);
+      }
+      return OrderService.getOrderById(orderId);
+    },
     cacheTime: 0,
     enabled: Boolean(orderId),
     select: (result) => {
