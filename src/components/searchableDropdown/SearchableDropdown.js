@@ -661,10 +661,7 @@ export const SearchableDropdown = (props) => {
       if (CommonUtils.isNonEmptyArray(valueToMoveToTop) && (valueToMoveToTop?.includes(a.label) || valueToMoveToTop?.includes(b.label))) {
         return 0;
       }
-      if (
-        CommonUtils.isNonEmptyArray(valueToMoveToLast) &&
-        (valueToMoveToLast?.includes(a.label) || valueToMoveToLast?.includes(b.label))
-      ) {
+      if (CommonUtils.isNonEmptyArray(valueToMoveToLast) && (valueToMoveToLast?.includes(a.label) || valueToMoveToLast?.includes(b.label))) {
         return 0;
       }
       const nameA = a?.label?.toUpperCase(); // ignore upper and lowercase
@@ -937,8 +934,7 @@ export const SearchableDropdown = (props) => {
             }}
             style={{
               ...getMenuItemSizeStyle(),
-              borderBottom:
-                !isMultiSelect && index !== tempTwentyOptions.length - 1 ? '1px solid var(--brand-color-grey-scale-cool-1)' : 'none'
+              borderBottom: !isMultiSelect && index !== tempTwentyOptions.length - 1 ? '1px solid var(--brand-color-grey-scale-cool-1)' : 'none'
             }}>
             {isMultiSelect && (
               <input
@@ -1069,13 +1065,7 @@ export const SearchableDropdown = (props) => {
             : 'max-content',
         maxWidth: !isInitialCheck && options.length === 0 ? '100%' : isModalDropdown ? '' : '165%',
         minWidth:
-          isEmptyOptions || (!isInitialCheck && options.length === 0)
-            ? 'auto'
-            : optionContainerWidth
-            ? optionContainerWidth
-            : isModalDropdown
-            ? ''
-            : '100%',
+          isEmptyOptions || (!isInitialCheck && options.length === 0) ? 'auto' : optionContainerWidth ? optionContainerWidth : isModalDropdown ? '' : '100%',
         maxHeight: optionContainerHeight,
         ...style
       };
@@ -1195,9 +1185,7 @@ export const SearchableDropdown = (props) => {
         </div>
       </div>
 
-      {error && errorMessage && (
-        <TextError errorMessage={errorMessage} size={size} id={id} data-testid={'error-testid-' + id} showErrorIcon />
-      )}
+      {error && errorMessage && <TextError errorMessage={errorMessage} size={size} id={id} data-testid={'error-testid-' + id} showErrorIcon />}
 
       {/* {error && errorMessage && (
         <p
@@ -1221,12 +1209,7 @@ export const SearchableDropdown = (props) => {
           {!isInitialCheck && options.length === 0 && isMultiSelect && <div style={{ marginTop: '-20px' }}></div>}
           <div
             style={{
-              padding:
-                isSearchEnable || (isShowClearSelection && !isEmptyOptions)
-                  ? '12px 12px 0px 12px'
-                  : isMultiSelect
-                  ? '0px 12px 8px 12px'
-                  : ''
+              padding: isSearchEnable || (isShowClearSelection && !isEmptyOptions) ? '12px 12px 0px 12px' : isMultiSelect ? '0px 12px 8px 12px' : ''
             }}>
             {isSearchEnable && (
               <div data-testid={'search-testid-' + id} className={isSuccess ? styles.success : styles.width}>
@@ -1258,11 +1241,7 @@ export const SearchableDropdown = (props) => {
                     endAdornment:
                       isClearable && CommonUtils.isNonEmptyString(searchString) ? (
                         <InputAdornment position="end">
-                          <IconButton
-                            aria-label="clear input search box"
-                            onClick={() => clearSearchInput()}
-                            onMouseDown={() => clearSearchInput()}
-                            edge="end">
+                          <IconButton aria-label="clear input search box" onClick={() => clearSearchInput()} onMouseDown={() => clearSearchInput()} edge="end">
                             <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <g clipPath="url(#clip0_1190_242128)">
                                 <path
@@ -1287,8 +1266,7 @@ export const SearchableDropdown = (props) => {
             {isShowClearSelection &&
               isMultiSelect &&
               !isEmptyOptions &&
-              ((eregVariant && selectedOptions && selectedOptions.length > 0 && nonSelectedOptions && nonSelectedOptions.length > 0) ||
-                !eregVariant) && (
+              ((eregVariant && selectedOptions && selectedOptions.length > 0 && nonSelectedOptions && nonSelectedOptions.length > 0) || !eregVariant) && (
                 <div
                   data-testid={'clearAll-testid-' + id}
                   className={styles.clearButton}

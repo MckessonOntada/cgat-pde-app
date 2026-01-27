@@ -1,141 +1,239 @@
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import Alert from '@src/components/cgat-alert/Alert';
-import ModuleHeader from '@src/components/module-header';
 import { RoutePaths } from '@src/routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import { useState } from 'react';
-import { useMutation } from 'react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
 import React from 'react';
 import { PATHS } from '../../routes/constants';
 import './index.scss';
 import PermissionForm from './PermissionForm';
-import UserCreationStepper from '../UserCreationStepper';
-import useUser from '../../useUser';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import useRouteMode from '../../routes/useRouteMode';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { PERMISSIONS_ENUM } from './permissionsEnum';
+
+const getSubmitCaption = ({ isSystemAdminView, selectedRole, isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Saving';
+  if (isEdit && !isSaving) return 'Update';
+
+  if (isSystemAdminView) {
+    if (selectedRole === 'Customer Centre') {
+      return 'Save And Continue';
+    }
+    return 'Add System Admin';
+  }
+
+  return 'Save and Continue';
+};
+
+const INITIAL_STATE = {
+  permissions: {},
+  role: null
+};
 
 const UserPermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const location = useLocation();
-  const { isEdit = false, isBack = false } = location.state || {};
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+  const { state, setValue } = useWidgetContext();
   const [alert, setAlert] = useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [initialFormValues, setInitialFormValue] = React.useState(INITIAL_STATE);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const requestParams = {
-    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
-  };
+  const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
+  const { selectedRole, userDetails = {}, createWizardSteps } = state;
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const { data: permissions } = useQuery({
+    queryKey: ['users/permissions'],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
+      return res.data || [];
+    },
+    select: (data) => {
+      const groupedPermissions = {
+        CREATE_NEW_ORDER: {},
+        USER_MANAGEMENT: {},
+        ADMIN_MANAGEMENT: {},
+        ORGANIZATION_MANAGEMENT: {},
+        ORDER_MANAGEMENT: {},
+        SYSTEM_CONFIGURATION: {},
+        PAYMENT_INVOICING: {},
+        MANAGE_PROVIDERS: {},
+        MANAGE_LINKED_ACCOUNTS: {}
+      };
 
-  const { isLoading, data: userDetails = {}, refetch } = useUser(userId, requestParams);
-  const handleGoBack = () => {
-    navigate(isEdit ? -1 : isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
-  };
+      data.forEach((permission) => {
+        Object.entries(PERMISSIONS_ENUM).forEach(([key, value]) => {
+          if (Object.values(value).includes(permission)) {
+            groupedPermissions[key][permission] = permission;
+          }
+        });
+      });
+      const filteredPermissions = Object.fromEntries(Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0));
+      return filteredPermissions;
+    },
+    enabled: true,
+    refetchOnWindowFocus: false
+  });
+
+  React.useEffect(() => {
+    if (userDetails.permissions && permissions) {
+      const filteredPermissionsEnum = isSystemAdminView
+        ? permissions || {}
+        : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
+      const _permissions = {};
+      Object.entries(filteredPermissionsEnum).map(([category, permissions]) => {
+        Object.entries(permissions).map(([key, permission], idx) => {
+          _permissions[key] = userDetails.permissions.includes(key) ? true : false;
+        });
+      });
+      const formValues = {
+        permissions: _permissions
+      };
+      if (userDetails.role) {
+        formValues.role = {
+          ...userDetails.role,
+          label: userDetails.role.name === 'Customer Centre' ? 'Customer Service' : userDetails.role.name
+        };
+      }
+      setInitialFormValue(formValues);
+    }
+  }, [state.userDetails, permissions]);
 
   const handleBack = () => {
     if (isEdit) {
-      navigate(`../${userId}`);
+      navigate(`./../..`);
     } else {
-      navigate(`../${userId}/${PATHS.EDIT}`, { state: { isBack: true } });
+      navigate(`./../personal`, { state: { isBack: true } });
     }
-  };
-
-  const isFormValuesChanged = (initialValues, currentValues) => {
-    const isRoleChanged = initialValues.roleId !== currentValues.roleId;
-    return isRoleChanged;
   };
 
   const {
     mutate: savePermissions,
-    isLoading: isSavingUserPermission,
+    isLoading: isSaving,
     isError: isSaveUserPermissionError,
     data: saveUserPermissionResponse
-  } = useMutation(async ({ payload }) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS()}/${userId}/roles-permissions?${serializeParams(requestParams)}`,
-      httpVerb.PATCH,
-      payload
-    );
-    return res.data;
+  } = useMutation({
+    mutationFn: async (payload) => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${id}/roles-permissions?${serializeParams({ userType })}`, httpVerb.PATCH, payload);
+      return res.data;
+    },
+    onSuccess: (response) => {
+      setValue('userDetails', response);
+
+      const isCustomerCentre = selectedRole === 'Customer Centre';
+
+      if (isEdit) {
+        if (!isSystemAdminView) {
+          navigate(`./../..`, {
+            state: {
+              alert: {
+                pinPoint: 'permissions',
+                type: 'success',
+                description: 'User role/permissions updated successfully.'
+              }
+            }
+          });
+          return;
+        }
+
+        navigate(`./../..`);
+        return;
+      }
+
+      if (!isSystemAdminView) {
+        setValue('createWizardSteps', {
+          ...createWizardSteps,
+          rolePermissions: true
+        });
+        navigate(`../${id}/${PATHS.ACCOUNTS}`);
+        return;
+      }
+
+      if (isCustomerCentre) {
+        setValue('createWizardSteps', {
+          ...createWizardSteps,
+          rolePermissions: true
+        });
+        navigate(`../${id}/${PATHS.MATERIAL}`);
+        return;
+      }
+
+      navigate('./../../..', {
+        search: '?tab=USERS',
+        state: {
+          alert: {
+            type: 'success',
+            description: 'New user created successfully.'
+          }
+        }
+      });
+
+      setValue('createWizardSteps', {});
+    },
+    onError: (error) => {
+      setAlert({ type: 'error', description: t('errors.default') });
+    }
   });
 
-  const handleSaveAndContinue = (values) => {
+  const handleOnSubmit = (values) => {
     const payload = {
-      roleId: userDetails?.roleId ? userDetails?.roleId : values.roleId,
-      permissions: values.permissions
+      roleId: values.role.id,
+      permissions: Object.keys(values.permissions).filter((key) => values.permissions[key] === true)
     };
+    if (!createWizardSteps.rolePermissions || isDirty) {
+      savePermissions(payload);
+      return;
+    }
 
-    savePermissions(
-      { payload },
-      {
-        onSuccess: (response) => {
-          if (isSystemAdminView) {
-            navigate(isEdit ? `../${userId}` : RoutePaths.pathSystemAdminManagement, {
-              state: { isSuccess: true }
-            });
-          } else {
-            navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.ADD_ACCOUNTS}`);
-          }
-        },
-        onError: (error) => {
-          setAlert({ type: 'error', description: t('errors.default') });
-        }
-      }
-    );
+    if (!isSystemAdminView) {
+      navigate(`../${id}/${PATHS.ACCOUNTS}`);
+      return;
+    }
+
+    if (selectedRole === 'Customer Centre') {
+      navigate(`../${id}/${PATHS.MATERIAL}`);
+      return;
+    }
   };
-
-  if (isLoading || isSavingUserPermission) {
-    return <Loader type={'screen'} />;
-  }
 
   return (
     <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isEdit ? 'userManagement.back_to_user_details' : isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
-        </Button>
-      </div>
-      <ModuleHeader heading={<Heading as="h1">{t(isEdit ? 'userManagement.edit_user' : 'userManagement.create_user')}</Heading>} />
-      {!isEdit && !isSystemAdminView && (
-        <div className="stepper">
-          <UserCreationStepper activeIndex={2} />
-        </div>
-      )}
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-      <Formik
-        initialValues={{
-          permissions: userDetails.permissions || [],
-          roleId: userDetails.role?.id
-        }}
-        enableReinitialize={true}
-        onSubmit={handleSaveAndContinue}
-        validateOnChange={false}
-        validateOnBlur={true}>
-        {({ values, setFieldValue, initialValues, isValid, handleSubmit, isDirty }) => {
+      <Formik initialValues={initialFormValues} enableReinitialize={true} onSubmit={handleOnSubmit} validateOnChange={false} validateOnBlur={true}>
+        {({ dirty }) => {
+          React.useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+
           return (
-            <Form>
-              <PermissionForm
-                enabledPermissions={values.permissions}
-                setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)}
-                handleRoleSelect={(value) => setFieldValue('roleId', value)}
-                editRoleId={values.roleId}
-                defaultRole={userDetails.role}
-              />
+            <FormikFormWrapper disabled={isSaving}>
+              <PermissionForm permissions={permissions} />
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>
                   {t('userManagement.button.back')}
                 </Button>
-                <Button variant="primary" type="submit" size={'md'}>
-                  {isEdit
-                    ? t('userManagement.label.save')
-                    : t(isSystemAdminView ? 'userManagement.label.createSystemAdmin' : 'userManagement.button.savencontinue')}
+                <Button
+                  disabled={!(isDirty || (!isEdit && createWizardSteps.rolePermissions))}
+                  variant="primary"
+                  isLoadingState={isSaving}
+                  Icon={isSaving && ButtonLoadingIcon}
+                  iconPosition="left"
+                  type="submit"
+                  size="md">
+                  {getSubmitCaption({ isSystemAdminView, selectedRole, isEdit, isSaving })}
                 </Button>
               </div>
-            </Form>
+            </FormikFormWrapper>
           );
         }}
       </Formik>

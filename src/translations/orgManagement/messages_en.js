@@ -127,6 +127,7 @@ export const OrgManagementEN = {
   'orgManagement.role.headingManageOrder': 'Manage Roles',
   'orgManagement.role.headingPermissionDetails': 'Permission Details',
   'orgManagement.role.labelAddRole': 'Add Role',
+  'orgManagement.role.labelEditRole': 'Edit Role',
   'orgManagement.role.labelStep': 'Step',
   'orgManagement.role.labelRolesListing': 'Roles Listing',
   'orgManagement.role.labelRolesDetails': 'Role Details',

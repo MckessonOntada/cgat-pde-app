@@ -16,14 +16,6 @@ const Routes = () => {
       <Route path={`${PATHS.editOrg}/:orgId`} element={<CreateOrganization />} />
       <Route path={PATHS.createOrg} element={<CreateOrganization />} />
       <Route path={PATHS.viewOrg} element={<ViewOrganization />} />
-      {/* <Route
-        path={`${PATHS.roles}/*`}
-        element={
-          <ProtectedRoute permissions={routePermissionConfig.roles}>
-            <Role />
-          </ProtectedRoute>
-        }
-      /> */}
       <Route path="*" element={<NotFound />} />
     </ReactRoutes>
   );

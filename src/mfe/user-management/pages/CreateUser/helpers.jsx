@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button, CheckboxGroup, Tooltip } from '@mckesson/mcp-component-library';
+import { CheckboxGroup, Tooltip } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import CommonUtils from '@src/util/CommonUtils';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
+import Button from '@src/components/button';
 
 export const createColumns = ({
   t,
@@ -253,7 +254,12 @@ export const createColumns = ({
         }
 
         return (
-          <Button Icon={LinkIcon} variant="tertiary" size="sm" onClick={() => columnActions.onUnlink(materialIds)}>
+          <Button
+            style={{ padding: 0 }}
+            variant="text"
+            size="small"
+            startIcon={<LinkIcon width="14" height="14" />}
+            onClick={() => columnActions.onUnlink(materialIds)}>
             {t('account.btn.unlink')}
           </Button>
         );

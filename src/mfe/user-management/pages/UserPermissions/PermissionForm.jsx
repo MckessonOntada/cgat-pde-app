@@ -5,6 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
 import { useQuery } from 'react-query';
+import { Field, useFormikContext } from 'formik';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
@@ -12,19 +13,14 @@ import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
-const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage, defaultRole }) => {
+const PermissionForm = ({ permissions, isRolePage }) => {
   const { t } = useTranslate();
-  const [selectedRole, setSelectedRole] = useState(editRoleId || '');
+  const { setFieldValue, values } = useFormikContext();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [searchKey, setSearchKey] = useState('');
-  const [selectedRoleData, setSelectedRoleData] = useState(null);
-
-  useEffect(() => {
-    if (defaultRole) {
-      setSelectedRoleData({ label: defaultRole.name, value: defaultRole.id });
-    }
-  }, [defaultRole]);
+  const { setValue } = useWidgetContext();
 
   const getParams = () => {
     let payload = { status: 'active', isPhysicianRequired: false, query: searchKey };
@@ -34,18 +30,18 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   const {
     isLoading,
     isError,
-    data: roleData,
+    data: roleData = [],
     refetch
   } = useQuery({
-    queryKey: [`users/getAll}`],
+    queryKey: [`roles/getAll}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams(getParams())}`, httpVerb.GET, {});
 
       if (res.data?.content) {
         const roles = res.data?.content?.map((role) => ({
           ...role,
-          label: role.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : role.name, //  `role.name` for the label
-          value: role.id //  `role.id` for the value
+          label: role.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : role.name,
+          value: role.id
         }));
         return roles;
       }
@@ -54,168 +50,34 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     refetchOnWindowFocus: false
   });
 
-  const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
-
   useEffect(() => {
     refetch();
   }, [searchKey]);
 
-  const { data: permissionsData } = useQuery({
-    queryKey: ['users/permissions'],
-    queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
-      const rawPermissions = res.data || [];
-      // grouped format
-      const groupedPermissions = {
-        CREATE_NEW_ORDER: {},
-        USER_MANAGEMENT: {},
-        ADMIN_MANAGEMENT: {},
-        ORGANIZATION_MANAGEMENT: {},
-        ORDER_MANAGEMENT: {},
-        SYSTEM_CONFIGURATION: {},
-        PAYMENT_INVOICING: {},
-        MANAGE_PROVIDERS: {},
-        MANAGE_LINKED_ACCOUNTS: {}
-      };
-
-      //filter the data according to group
-      rawPermissions.forEach((permission) => {
-        if (['THERAPY_SELECTION', 'ACCOUNT_SELECTION', 'UPDATE_PATIENTS_DETAILS', 'UPDATE_ADDITIONAL_DETAILS', 'SUBMIT_ORDER'].includes(permission)) {
-          groupedPermissions.CREATE_NEW_ORDER[permission] = permission;
-        } else if (
-          [
-            'MANAGE_USERS_SCREEN',
-            'ADD_USERS',
-            'EDIT_USERS',
-            'VIEW_USERS',
-            'UPLOAD_USERS',
-            'CREATE_USER_FOR_PENDING_USER_REQUEST',
-            'MANAGE_ROLES_SCREEN',
-            'ADD_ROLES',
-            'VIEW_ROLES',
-            'EDIT_ROLES',
-            'ON_BEHALF_OF_USER'
-          ].includes(permission)
-        ) {
-          groupedPermissions.USER_MANAGEMENT[permission] = permission;
-        } else if (
-          ['MANAGE_SYSTEM_ADMINISTRATOR_SCREEN', 'ADD_SYSTEM_ADMINISTRATOR', 'VIEW_SYSTEM_ADMINISTRATOR', 'EDIT_SYSTEM_ADMINISTRATOR'].includes(permission)
-        ) {
-          groupedPermissions.ADMIN_MANAGEMENT[permission] = permission;
-        } else if (['MANAGE_ORGANIZATION_SCREEN', 'ADD_ORGANIZATION', 'EDIT_ORGANIZATION', 'VIEW_ORGANIZATION'].includes(permission)) {
-          groupedPermissions.ORGANIZATION_MANAGEMENT[permission] = permission;
-        } else if (
-          [
-            'UPLOAD_ORDER_DOCUMENTS',
-            'VIEW_ORDERS',
-            'APPROVE_ORDERS',
-            'CANCEL_ORDER',
-            'REJECT_ORDER',
-            'VIEW_PENDING_ORDERS',
-            'MANAGE_APPROVER_GROUP',
-            'VIEW_APPROVER_GROUP',
-            'ADD_APPROVER_GROUP',
-            'EDIT_APPROVER_GROUP',
-            'DISCARD_ORDER'
-          ].includes(permission)
-        ) {
-          groupedPermissions.ORDER_MANAGEMENT[permission] = permission;
-        } else if (
-          [
-            'ADD_QUESTIONNAIRE',
-            'VIEW_QUESTIONNAIRE',
-            'CONFIGURE_QUESTIONNAIRE',
-            'DEACTIVATE_QUESTIONNAIRE',
-            'MANAGE_MATERIAL',
-            'VIEW_MATERIAL',
-            'MANAGE_CATALOG',
-            'VIEW_CATALOG',
-            'MANAGE_CATALOG',
-            'VIEW_CATALOG',
-            'VIEW_SP_MATERIAL',
-            'VIEW_CROSSWALK',
-            'ADD_CROSSWALK',
-            'UPLOAD_CROSSWALK',
-            'MANAGE_SP_ACCOUNT',
-            'ADD_SP_ACCOUNT',
-            'MANAGE_SP_CATALOG',
-            'VIEW_SP_CATALOG'
-          ].includes(permission)
-        ) {
-          groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;
-        } else if (
-          [
-            'PAY_INVOICES',
-            'MANAGE_CUSTOMER_STATEMENT',
-            'VIEW_INVOICES',
-            'MANAGE_INVOICES',
-            'VIEW_PAYMENT_HISTORY',
-            'VIEW_CUSTOMER_STATEMENT',
-            'VIEW_PAYMENT_METHOD_CARD',
-            'ADD_PAYMENT_METHOD_CARD',
-            'MANAGE_PAYMENT_METHOD_CARD',
-            'DELETE_PAYMENT_METHOD_CARD',
-            'ADD_PAYMENT_METHOD_BANK',
-            'VIEW_PAYMENT_METHOD_BANK',
-            'CANCEL_PAYMENT',
-            'VIEW_CREDIT_LISTING'
-          ].includes(permission)
-        ) {
-          groupedPermissions.PAYMENT_INVOICING[permission] = permission;
-        } else if (['MANAGE_PROVIDERS_SCREEN', 'VIEW_PROVIDER', 'ADD_PROVIDER', 'EDIT_PROVIDER', 'UPLOAD_PROVIDER'].includes(permission)) {
-          groupedPermissions.MANAGE_PROVIDERS[permission] = permission;
-        } else if (['MANAGE_LINKED_ACCOUNTS'].includes(permission)) {
-          groupedPermissions.MANAGE_LINKED_ACCOUNTS[permission] = permission;
-        }
-      });
-
-      // remove empty data
-      const filteredPermissions = Object.fromEntries(Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0));
-
-      return filteredPermissions;
-    },
-    enabled: true,
-    refetchOnWindowFocus: false
-  });
-
   const filteredPermissionsEnum = isSystemAdminView
-    ? permissionsData || {}
-    : Object.fromEntries(Object.entries(permissionsData || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
-
-  const getAllPermissions = () => Object.values(filteredPermissionsEnum).flatMap((permissions) => Object.values(permissions));
+    ? permissions || {}
+    : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
 
   const enableAllPermissions = () => {
-    const allPermissions = getAllPermissions();
-    setEnabledPermissions(allPermissions);
+    const newPermissions = Object.fromEntries(Object.keys(values.permissions).map((k) => [k, true]));
+    setFieldValue('permissions', newPermissions);
   };
 
   const resetPermissions = () => {
-    setEnabledPermissions([]);
+    const newPermissions = Object.fromEntries(Object.keys(values.permissions).map((k) => [k, false]));
+    setFieldValue('permissions', newPermissions);
   };
 
-  const handleRoleChange = (value) => {
-    const selected = value;
-    const roleId = roleData?.find((item) => item.id == value);
-    setSelectedRoleData(roleId);
+  const handleOnChange = (value) => {
+    const selectedRoleDetails = roleData.find((x) => x.id === value);
+    if (selectedRoleDetails) {
+      const newRolePermissions = selectedRoleDetails.permissions || [];
+      const _permissions = Object.fromEntries(Object.keys(values.permissions).map((key) => [key, newRolePermissions.includes(key)]));
 
-    // Get permissions for the selected role
-    let permissions = roleId?.permissions ?? [];
-
-    if (selected) {
-      setSelectedRole(selected);
-      setEnabledPermissions(permissions);
-      handleRoleSelect(selected);
+      setFieldValue('permissions', _permissions);
+      setFieldValue('role', selectedRoleDetails);
+      setValue('selectedRole', selectedRoleDetails.name);
     }
-  };
-
-  const togglePermission = (permission) => {
-    const updatedPermissions = isPermissionEnabled(permission) ? enabledPermissions.filter((perm) => perm !== permission) : [...enabledPermissions, permission];
-
-    setEnabledPermissions(updatedPermissions);
-  };
-
-  const isPermissionEnabled = (permission) => {
-    return Array.isArray(enabledPermissions) && enabledPermissions.includes(permission);
   };
 
   return (
@@ -226,22 +88,28 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              <MultiSelectDropdown
-                id={'select-role-search'}
-                label={t('userManagement.user_permissions.select_role')}
-                isMultiSelect={false}
-                placeholder={'select role'}
-                onChange={handleRoleChange}
-                options={roleData || []}
-                variant={'async'}
-                onSearch={(event) => setSearchKey(event)}
-                recordsCountToEnableSearch={5}
-                isRequired={!isRolePage}
-                size="lg"
-                isSortEnable={false}
-                value={editRoleId?.toString() || ''}
-                fieldDisplayValue={selectedRoleData}
-              />
+              <Field name={`role`}>
+                {({ field, form }) => {
+                  return (
+                    <MultiSelectDropdown
+                      id={'select-role-search'}
+                      label={t('userManagement.user_permissions.select_role')}
+                      isMultiSelect={false}
+                      placeholder={'Select Role'}
+                      onChange={handleOnChange}
+                      options={roleData}
+                      variant={'async'}
+                      onSearch={(event) => setSearchKey(event)}
+                      recordsCountToEnableSearch={5}
+                      isRequired={!isRolePage}
+                      size="lg"
+                      isSortEnable={false}
+                      value={field.value && field.value?.id}
+                      defaultSelectedLabel={field.value?.label}
+                    />
+                  );
+                }}
+              </Field>
             </div>
           </div>
         </Fragment>
@@ -277,15 +145,26 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                             <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
                           </div>
                           <div className="permission-toggle">
-                            <Switch
-                              id={`toggle-${category}-${key}`}
-                              label={!isSystemAdminView ? (isPermissionEnabled(permission) ? 'Enabled' : 'Disabled') : undefined}
-                              disabled={isSystemAdminView}
-                              labelPosition="right"
-                              size="lg"
-                              checked={isPermissionEnabled(permission)}
-                              onChange={() => togglePermission(permission)}
-                            />
+                            <Field name={`permissions.${key}`}>
+                              {({ field, form }) => {
+                                return (
+                                  <div>
+                                    <Switch
+                                      id={`toggle-${category}-${key}`}
+                                      label={!isSystemAdminView && field.value ? 'Enabled' : 'Disabled'}
+                                      disabled={isSystemAdminView}
+                                      labelPosition="right"
+                                      size="lg"
+                                      checked={field.value}
+                                      onChange={() => {
+                                        form.setFieldValue(field.name, !field.value);
+                                        form.setFieldTouched(field.name, true, false);
+                                      }}
+                                    />
+                                  </div>
+                                );
+                              }}
+                            </Field>
                           </div>
                         </div>
                         {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && <div className="divider"></div>}

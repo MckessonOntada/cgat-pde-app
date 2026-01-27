@@ -1,13 +1,14 @@
 export const PATHS = {
   DASHBOARD: '/',
-  userDetail: ':userId',
-  createUser: 'create',
+  DETAILS: ':userId',
+  CREATE: 'create',
   EDIT: 'edit',
+  PERSONAL: 'personal',
   PERMISSIONS: 'permissions',
-  ADD_ACCOUNTS: 'accounts',
+  ACCOUNTS: 'accounts',
   MATERIAL: 'materials',
-  REVIEW_USER: 'review-user',
-  UPLOAD_USER: 'upload-user',
+  REVIEW: 'review',
+  UPLOAD: 'upload',
   ACCOUNT_SETTING: 'account-setting',
   NOTIFICATION_PREFERENCES: 'notification-preferences'
 };

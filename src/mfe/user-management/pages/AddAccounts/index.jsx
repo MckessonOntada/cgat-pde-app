@@ -1,102 +1,79 @@
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import Alert from '@src/components/cgat-alert/Alert';
-import ModuleHeader from '@src/components/module-header';
 import { RoutePaths } from '@src/routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes';
-import UserCreationStepper from '../UserCreationStepper';
+import useRouteMode from '../../routes/useRouteMode';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+
+const getSubmitCaption = ({ isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Saving';
+  if (!isSaving && isEdit) return 'Update';
+  return 'Save and Continue';
+};
 
 const AddAccounts = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { userId } = useParams();
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alert, setAlert] = React.useState(null);
-  const { isEdit } = location.state || {};
   const practiceId = AuthUtils.getPracticeId() ?? 1;
-  const selectedCount = selectedAccounts?.length || 0;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
-
-  const handleGoBack = () => {
-    navigate(isEdit ? -1 : RoutePaths.pathUserManagement);
-  };
+  const { setValue } = useWidgetContext();
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${userId}` : `../${userId}/${PATHS.PERMISSIONS}`, {
+    navigate(isEdit ? `../${id}` : `../${id}/${PATHS.PERMISSIONS}`, {
       state: { isBack: true }
     });
   };
 
-  const { mutate, isLoading: isSavingAccounts } = useMutation(async ({ payload }) => {
-    const url = `${ApiRoutes.USERS()}/${userId}/accounts?${serializeParams(requestParams)}`;
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
-    return res.data;
+  const { mutate: addAccounts, isLoading: isSaving } = useMutation({
+    mutationFn: async (payload) => {
+      const url = `${ApiRoutes.USERS()}/${id}/accounts?${serializeParams(requestParams)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+      return res.data;
+    },
+    onSuccess: (response) => {
+      setValue('userDetails', response);
+      if (isEdit) {
+        navigate(`./../..`, {
+          state: {
+            alert: {
+              pinPoint: 'accounts',
+              type: 'success',
+              description: `${selectedAccounts.length} ${t('messages.accountlinkSuccess')}.`
+            }
+          }
+        });
+      } else {
+        navigate(`./../materials`);
+      }
+    },
+    onError: (error) => {}
   });
 
-  const handleAddAccounts = () => {
-    if (selectedAccounts?.length <= 0) {
-      setAlert({
-        isVisible: true,
-        description: `Select at least one account`,
-        type: 'error'
-      });
-      return;
-    }
+  const handleOnSubmit = () => {
     const payload = selectedAccounts?.map((account) => account.id);
-    mutate(
-      {
-        payload
-      },
-      {
-        onSuccess: (response) => {
-          if (isEdit) {
-            navigate(`../${userId}`, {
-              state: {
-                alert: {
-                  pinPoint: 'linked_accounts',
-                  type: 'success',
-                  description: `${selectedCount} ${t('messages.accountlinkSuccess')}.`
-                }
-              }
-            });
-          } else {
-            navigate(`../${userId}/materials`, { state: { isCreate: true } });
-          }
-        },
-        onError: (error) => {}
-      }
-    );
+    addAccounts(payload);
   };
-  if (isSavingAccounts) {
-    return <Loader type={'screen'} />;
-  }
+
   return (
     <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t(isEdit ? 'userManagement.back_to_user_details' : 'userManagement.user.backmessage')}
-        </Button>
-      </div>
       <div className="MCP-module-body">
-        <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
-        {!isEdit && (
-          <div className="stepper">
-            <UserCreationStepper activeIndex={3} />
-          </div>
-        )}
         {alert?.isVisible && <Alert type={alert.type} description={alert.description} onClose={() => setAlert(null)} />}
         <UserAccounts
           autoFocus={true}
@@ -112,16 +89,17 @@ const AddAccounts = () => {
           <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
             {t('userManagement.button.back')}
           </Button>
-          {!isEdit && (
-            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
-              {t('userManagement.button.savencontinue')}
-            </Button>
-          )}
-          {isEdit && (
-            <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
-              {t('userManagement.button.add_accounts')}
-            </Button>
-          )}
+          <Button
+            variant="primary"
+            disabled={selectedAccounts.length <= 0}
+            onClick={handleOnSubmit}
+            isLoadingState={isSaving}
+            Icon={isSaving && ButtonLoadingIcon}
+            iconPosition="left"
+            type="button"
+            size="md">
+            {getSubmitCaption({ isEdit, isSaving })}
+          </Button>
         </div>
       </div>
     </div>
