@@ -16,7 +16,7 @@ export const useOrders = () => {
   return React.useContext(OrderContext);
 };
 
-export const OrderProvider = ({ children, isCSReviewOrdersPage = false }) => {
+export const OrderProvider = ({ children }) => {
   const navigate = useNavigate();
   const [assigneeList, setAssigneeList] = React.useState([]);
   const [assigneeRequestParams, setAssigneeRequestParams] = React.useState({
@@ -136,23 +136,9 @@ export const OrderProvider = ({ children, isCSReviewOrdersPage = false }) => {
   } = useQuery({
     queryKey: ['orders', requestParams],
     queryFn: async () => {
-      if (isCSReviewOrdersPage) {
-        return OrderService.getCSReviewOrders({
-          ...requestParams,
-          userId: AuthUtils.getUserId()
-        });
-      }
-
-      if (isPhysician) {
-        return OrderService.getPhysicianOrders({
-          ...requestParams,
-          reviewSubmitted: config.tab === ORDER_TABS.SUBMITTED
-        });
-      }
-
-      return OrderService.getOrders({
-        ...requestParams
-      });
+      return isPhysician
+        ? OrderService.getPhysicianOrders({ ...requestParams, reviewSubmitted: config.tab === ORDER_TABS.SUBMITTED })
+        : OrderService.getOrders({ ...requestParams });
     },
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;

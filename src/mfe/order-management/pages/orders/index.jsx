@@ -24,7 +24,7 @@ import { routesConfig } from './../../routes/constants';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import { getTableColumns } from './TableColumns';
 
-const OrderIndex = ({ isCSReviewOrdersPage }) => {
+const OrderIndex = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -35,7 +35,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const hasCreatePermissions = hasPermission(PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION);
 
   const [tabList, setTabList] = useState(() => {
-    const allTabs = getTabs(isCSReviewOrdersPage);
+    const allTabs = getTabs();
     allTabs.forEach((tab) => {
       tab.configName = t(tab.configName);
       tab.labelForMobile = t(tab.labelForMobile);
@@ -70,12 +70,10 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       searchParams.orderDate = filters.orderDate;
       searchParams.startDate = filters.dateRange?.[0];
       searchParams.endDate = filters.dateRange?.[1];
-      searchParams.status = filters.status;
     } else if (config.tab === ORDER_TABS.SUBMITTED_SP) {
       searchParams.orderDate = filters.orderDate;
       searchParams.startDate = filters.dateRange?.[0];
       searchParams.endDate = filters.dateRange?.[1];
-      searchParams.status = filters.status;
     } else if (config.tab === ORDER_TABS.PENDING_SUBMISSION) {
       searchParams.orderType = filters.orderType;
       searchParams.orderDate = filters.orderDate;
@@ -174,7 +172,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     }
   };
 
-  const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage);
+  const columns = getTableColumns(config.tab, t, alertContainerId);
 
   const handleOnViewChange = (view) => {
     params.set('view', view);
@@ -279,20 +277,6 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       });
     }
 
-    if (isCSReviewOrdersPage && (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || config.tab === ORDER_TABS.SUBMITTED_SP)) {
-      const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW];
-
-      filters.push({
-        type: 'dropdown',
-        name: 'status',
-        label: t('userManagement.table.status'),
-        options: statusOptions.map((opt) => ({
-          label: t(`labels.caption.${opt}`),
-          value: opt
-        }))
-      });
-    }
-
     return {
       availableFilters: filters,
       searchPlaceholder
@@ -331,8 +315,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         <ModuleHeader
           heading={<Heading as="h1">{t(isPhysician ? 'headings.prescription' : 'headings.orders')}</Heading>}
           controls={
-            !isPhysician &&
-            !isCSReviewOrdersPage && (
+            !isPhysician && (
               <div className="controls">
                 <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnCreateNewOrder} size="lg" aria-label={t('controls.createNewOrder')}>
                   {t('controls.ariaLabels.createNewOrder')}
@@ -379,7 +362,6 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
                   />
                 }
                 controls={
-                  !isCSReviewOrdersPage &&
                   CommonUtils.isNonEmptyArray(toggleFilters) && (
                     <div>
                       <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>

@@ -9,7 +9,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './assets/styles/Header.module.scss';
-import { navLinks, systemAdminTab } from './constants';
+import { navLinks } from './constants';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const impersonateLogout = () => {
@@ -28,7 +28,6 @@ const SecondaryHeader = () => {
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const isCustomerCenter = AuthUtils.isCustomerCenterView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -47,30 +46,22 @@ const SecondaryHeader = () => {
       navigate('/?expelled=true');
     }
   };
+
   const tabs = useMemo(() => {
-    if (isSystemAdminView || isCustomerCenter) {
-      const isOrdersPath = location.pathname.includes('orders');
-
-      const filteredTabs = systemAdminTab.filter((item) => {
-        if (isSystemAdminView && !isCustomerCenter) {
-          return item.configName === 'systemAdministrator';
+    if (isSystemAdminView) {
+      return [
+        {
+          label: 'System Administrator',
+          path: '/',
+          id: 1,
+          configName: t('dashboard.card.systemAdministrator'),
+          isActive: true,
+          isActiveTab: true,
+          labelForMobile: 'System Administrator',
+          sequence: 1,
+          ariaSelected: true
         }
-        if (isCustomerCenter) {
-          return true;
-        }
-        return false;
-      });
-
-      return filteredTabs.map((item) => {
-        const isActiveTab = item.configName === 'orders' ? isOrdersPath : !isOrdersPath;
-
-        return {
-          ...item,
-          isActiveTab,
-          ariaSelected: String(isActiveTab),
-          configName: t(`dashboard.card.${item.configName}`)
-        };
-      });
+      ];
     }
 
     if (!Array.isArray(navLinks) || navLinks.length === 0) return [];

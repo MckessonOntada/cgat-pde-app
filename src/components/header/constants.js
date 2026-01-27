@@ -55,32 +55,6 @@ export const navLinks = [
     sequence: 1
   }
 ];
-
-export const systemAdminTab = [
-  {
-    label: 'Orders',
-    path: '/system-admin/orders',
-    id: 1,
-    configName: 'orders',
-    isActive: true,
-    isActiveTab: false,
-    labelForMobile: 'Orders',
-    sequence: 1,
-    ariaSelected: false
-  },
-  {
-    label: 'System Administrator',
-    path: '/',
-    id: 2,
-    configName: 'systemAdministrator',
-    isActive: true,
-    isActiveTab: true,
-    labelForMobile: 'System Administrator',
-    sequence: 2,
-    ariaSelected: true
-  }
-];
-
 export const profileOptions = [
   {
     label: 'Account Settings',

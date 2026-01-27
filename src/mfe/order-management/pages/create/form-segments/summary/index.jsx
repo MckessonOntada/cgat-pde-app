@@ -29,7 +29,7 @@ import { Form, Formik } from 'formik';
 import React, { useContext, useRef } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ORDER_STATUS } from '../../../orders/config';
 import { SAP_ORDER_STATUS } from '../../../orders/constants';
 import useOrder from '../../../orders/useOrder';
@@ -58,12 +58,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const dispatch = useDispatch();
   const locationState = location?.state ?? {};
   const { orderId } = useParams();
-  const [searchParams] = useSearchParams();
-  const orgId = searchParams.get('orgId');
-  const isCustomerCentreUser = AuthUtils.isCustomerCenterView();
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { data: orderDetails = {}, isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId, orgId);
+  const { data: orderDetails = {}, isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId);
   const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
@@ -359,33 +356,24 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     retry: false
   });
 
-  const { isLoading: isResubmitting, mutate: reSubmitOrder } = useMutation(
-    async (draftChanges) => {
-      if (isCustomerCentreUser) {
-        await OrderService.reSubmitOrderCsUser(orderId, draftChanges, orgId);
-      } else {
-        await OrderService.reSubmitOrder(orderId, draftChanges);
-      }
+  const { isLoading: isResubmitting, mutate: reSubmitOrder } = useMutation(async (draftChanges) => await OrderService.reSubmitOrder(orderId, draftChanges), {
+    onSuccess: (_result) => {
+      navigate(`${RoutePaths.pathOrderManagement}`, {
+        state: { ...locationState, isApproved: true, alert: { type: 'success', description: 'Order has been Resubmitted Successfully.' } }
+      });
     },
-    {
-      onSuccess: (_result) => {
-        navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}`, {
-          state: { ...locationState, isApproved: true, alert: { type: 'success', description: 'Order has been Resubmitted Successfully.' } }
-        });
-      },
-      onError: (error) => {
-        const statusCode = error?.response?.status;
-        let description = t('error.default');
-        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-        setAlert({
-          description,
-          type: 'error'
-        });
-      },
-      retry: false
-    }
-  );
+      setAlert({
+        description,
+        type: 'error'
+      });
+    },
+    retry: false
+  });
 
   const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
     isDisabled: false,
@@ -501,7 +489,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     } else {
       if (!isDirty) {
         const prevSearch = locationState?.__prevSearch || '';
-        navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}${prevSearch}`);
+        navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
       } else {
         handleOnDiscardChanges('back');
       }
@@ -656,11 +644,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       (orderDetails.status === ORDER_STATUS.SUBMITTED && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName) ===
       'ORCA'
     ) {
-      navigate(`./../orca-patient-details?orgId=${orgId}`);
+      navigate('./../orca-patient-details');
     }
     if (orderDetails.status === ORDER_STATUS.SUBMITTED && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
-      if (!isCustomerCentreUser && !checkEditPermission(stage)) {
+      if (!checkEditPermission(stage)) {
         setAlert({
           description: t('labels.summaryEditMessage'),
           type: 'error'
@@ -849,13 +837,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       </PermittedComponent>
     );
 
-    const controlReSubmitOrder = isCustomerCentreUser ? (
-      <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
-        {t('captions.btnSubmitOrder')}
-      </Button>
-    ) : (
+    const controlReSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button size={'md'} disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>

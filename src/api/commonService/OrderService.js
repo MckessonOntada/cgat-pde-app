@@ -521,58 +521,6 @@ async function verifyOrcaDetails(payload) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
 }
-async function getCSReviewOrders(requestParams) {
-  const url = `${ApiRoutes.ORDERS()}/customer-review?${serializeParams(requestParams)}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
-  if (res.data) {
-    return res.data;
-  }
-  return [];
-}
-
-async function getOrderByIdCsUser(orderId, userId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
-  const url = `${ApiRoutes.ORDER_SERVICE_SYSTEM_ADMIN()}${orderId}?currentOrgId=${userId}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET);
-  if (res.data) {
-    return res.data;
-  }
-  return {};
-}
-async function reSubmitOrderCsUser(orderId, payload, userId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
-
-  const url = `${ApiRoutes.ORDER_SERVICE_SYSTEM_ADMIN()}${orderId}/update-submitted-order?currentOrgId=${userId}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
-
-  if (res.data) {
-    return res.data;
-  }
-
-  return {};
-}
-
-async function savePatientDetailsCsUser(orderId, payload, skipDuplicateCheck = false, channelType, isDraft = false, isSendNotification = true, orgId) {
-  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
-  const params = {
-    skipDuplicateCheck,
-    currentOrgId: orgId
-  };
-  if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-    params.channelType = channelType;
-  }
-  params.isDraft = isDraft;
-  params.sendNotification = isSendNotification;
-  const url = `${ApiRoutes.ORDER_SERVICE_SYSTEM_ADMIN()}${orderId}/patient?${serializeParams(params)}`;
-  try {
-    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
-    if (res.data) {
-      return res.data;
-    }
-  } catch (err) {
-    throw { err, payload };
-  }
-}
 
 const OrderService = Object.freeze({
   createOrder,
@@ -621,11 +569,7 @@ const OrderService = Object.freeze({
   getTrackingDetails,
   regeneronPatientIdVerification,
   regeneronCoiIdVerification,
-  verifyOrcaDetails,
-  getCSReviewOrders,
-  getOrderByIdCsUser,
-  reSubmitOrderCsUser,
-  savePatientDetailsCsUser
+  verifyOrcaDetails
 });
 
 export default OrderService;

@@ -41,6 +41,5 @@ export const DashboardES = {
   'header.tabs.orders': 'S_Orders',
   'header.tabs.prescription': 'S_Prescriptions',
   'header.tabs.admin': 'S_Admin',
-  'dashboard.card.system_config_manage_spmaterial': 'S_SP Material Master',
-  'dashboard.card.orders': 'S_Orders'
+  'dashboard.card.system_config_manage_spmaterial': 'S_SP Material Master'
 };
