@@ -102,7 +102,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       setDraftChanges({
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
         patientIdentifier: orderDetails.patient?.patientIdentifier,
-        medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
+        medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+        coiId: orderDetails.patient?.coiId
       });
     }
   }, [orderDetails]);
@@ -533,7 +534,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDraftChanges({
                 additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
                 patientIdentifier: orderDetails.patient?.patientIdentifier,
-                medicalRecordNumber: orderDetails.patient?.medicalRecordNumber
+                medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+                coiId: orderDetails.patient?.coiId
               });
             }
           }}>
@@ -693,8 +695,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           validationSchema = patientDetailsValidationSchema(t, therapyConfig, orderDetails.channelType);
         } else {
           initialValues = {
-            ...stripPrefixSuffixFromData(draftChanges, spTherapyConfig.config.fields),
-            coiId: draftChanges.additionalDetailsRequestDTO.coiId
+            ...stripPrefixSuffixFromData(draftChanges, spTherapyConfig.config.fields)
           };
           validationSchema = patientDetailsValidationSchema(t, spTherapyConfig, orderDetails.channelType);
         }
@@ -714,11 +715,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               isSpOrder
                 ? setDraftChanges((prev) => ({
                     ...prev,
-                    ...tempValue,
-                    additionalDetailsRequestDTO: {
-                      ...prev.additionalDetailsRequestDTO,
-                      coiId: tempValue.coiId
-                    }
+                    ...tempValue
                   }))
                 : setDraftChanges((prev) => ({
                     ...prev,
@@ -1465,8 +1462,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       {spTherapyConfig?.config?.fields
                         ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber', 'patientIdentifier', 'coiId'].includes(field.fieldName))
                         ?.map((field) => {
-                          const value = draftChanges?.[field.fieldName] ?? patient?.[field.fieldName] ?? '-';
-
+                          const value = draftChanges?.[field.fieldName] || '-';
                           return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={value} />;
                         })}
                     </div>
