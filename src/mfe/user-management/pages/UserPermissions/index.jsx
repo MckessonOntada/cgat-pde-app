@@ -44,7 +44,7 @@ const UserPermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
-  const { state, setValue } = useWidgetContext();
+  const { state, setValue, reset } = useWidgetContext();
   const [alert, setAlert] = useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const [initialFormValues, setInitialFormValue] = React.useState(INITIAL_STATE);
@@ -168,6 +168,7 @@ const UserPermissions = () => {
         return;
       }
 
+      reset();
       navigate('./../../..', {
         search: '?tab=USERS',
         state: {
