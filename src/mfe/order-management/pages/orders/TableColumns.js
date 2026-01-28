@@ -315,7 +315,8 @@ function getOrderProcessingStatus(orderProcessingStatus) {
   return map[key] || null;
 }
 
-const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired, practiceId }) => {
+const getPathByOrderStage = (props, isCSReviewOrdersPage) => {
+  const { currentStage, id, patientDetailsRequired, practiceId } = props;
   switch (currentStage) {
     case ORDER_STAGES.ACCOUNT_DETAILS:
       return `${id}/accounts`;
@@ -369,9 +370,10 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     sortKey: 'backend_order_id',
     minWidth: '130px',
     cell: function (props) {
+      const url = getPathByOrderStage(props, isCSReviewOrdersPage);
       return (
-        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
-          <EclipsesTextCss str={props.backendOrderId} maxWidth={170} />
+        <Link className="MCP-table-link" to={url} state={getState(props)}>
+          <EclipsesTextCss str={props.backendOrderId || props.id} maxWidth={170} />
         </Link>
       );
     }
@@ -423,8 +425,9 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     minWidth: '140px',
     cell: (props) => {
       const state = getState(props);
+      const url = getPathByOrderStage(props, isCSReviewOrdersPage);
       return (
-        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={state}>
+        <Link className="MCP-table-link" to={url} state={state}>
           <Tooltip body={props.id}>{props.id}</Tooltip>
         </Link>
       );

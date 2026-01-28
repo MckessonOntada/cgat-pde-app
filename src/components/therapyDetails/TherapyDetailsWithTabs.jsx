@@ -41,7 +41,9 @@ function TherapyDetailsWithTabs({
   heading,
   isMaterialListing = false,
   hideTab = false,
-  readOnly = false
+  readOnly = false,
+  isCustomerCentreUser = false,
+  createdById
 }) {
   const channelType = _channelType ?? CHANNEL_TYPE.BUY_AND_BILL;
   const isSPMaterial = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -83,6 +85,8 @@ function TherapyDetailsWithTabs({
         return OrderService.getTherapyDetailsByTradeName2(trade, channelType);
       } else if (isDetailsByNdc) {
         return OrderService.getTherapyDetailsByNDC(trade, channelType);
+      } else if (isCustomerCentreUser) {
+        return OrderService.getTherapyDetailsByTradeNameCsUser(trade, channelType, createdById);
       } else {
         return OrderService.getTherapyDetailsByTradeName(trade, channelType);
       }
