@@ -31,6 +31,7 @@ import UserMaterial from '../CreateUser/UserMaterial';
 import UserService from '@src/api/commonService/UserService';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import MaterialWrapper from '../CreateUser/MaterialWrapper';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -576,7 +577,9 @@ const UserDetail = () => {
               />
               {alert && alert.pinPoint === 'materials' && <Alert {...alert} onClose={handleAlertClose} />}
               <div>
-                <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+                <MaterialWrapper listingMode="INCLUDED">
+                  <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+                </MaterialWrapper>
               </div>
             </div>
           )}

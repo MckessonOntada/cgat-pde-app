@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { PROVIDER_STATUS } from '../../config';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { useFilters, usePagination, useSelection, useSort, useTable } from '../../context/TableContext';
+import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/context/TableContext';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';

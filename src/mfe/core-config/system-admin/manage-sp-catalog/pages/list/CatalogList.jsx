@@ -8,7 +8,7 @@ import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bo
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';

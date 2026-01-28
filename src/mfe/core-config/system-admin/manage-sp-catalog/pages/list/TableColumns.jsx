@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconButton, MenuList } from '@mckesson/mcp-component-library';
-import { usePagination, useSelection, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { usePagination, useSelection, useTable } from '@src/context/TableContext';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';

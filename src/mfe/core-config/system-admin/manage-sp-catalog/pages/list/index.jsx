@@ -7,7 +7,7 @@ import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import CatalogList from './CatalogList';
-import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider } from '@src/context/TableContext';
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
 import Alert from '@src/components/cgat-alert/Alert';

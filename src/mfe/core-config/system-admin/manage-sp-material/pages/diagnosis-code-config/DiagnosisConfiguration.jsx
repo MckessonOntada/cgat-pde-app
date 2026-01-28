@@ -5,7 +5,7 @@ import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
 import ModuleHeader from '@src/components/module-header';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { TableProvider, useFilters, useTable, usePagination } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider, useFilters, useTable, usePagination } from '@src/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React from 'react';

@@ -14,6 +14,7 @@ import useRouteMode from '../../routes/useRouteMode';
 import AuthUtils from '@src/util/AuthUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { useFilters, useTable } from '@src/context/TableContext';
 
 const submitTranslationConfig = {
   systemAdmin: 'Add System Admin',
@@ -32,44 +33,25 @@ export default function MaterialSelection() {
   const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
   const [isSaving, setIsSaving] = React.useState(false);
   const navigate = useNavigate();
-  const [data, setData] = React.useState([]);
-  const [searchQuery, setSearchQuery] = React.useState('');
   const [selection, setSelection] = React.useState([]);
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { state, setValue } = useWidgetContext();
-
+  const { data } = useTable();
+  const { applyFilters, clearFilters } = useFilters();
   React.useEffect(() => {
-    const userDetails = state.userDetails;
-    let materialPromise = null;
-    if (isSystemAdmin && state.selectedRole === 'Customer Centre') {
-      materialPromise = MaterialService.getAllMaterialsForCustomerCentre(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' });
-    } else {
-      materialPromise = MaterialService.getAllMaterials(id, { listingMode: isEdit ? 'EXCLUDED' : 'ALL' });
-    }
-    materialPromise
-      .then((response) => {
-        const selectedRecords = response.flatMap((trade) => {
-          if (trade.isExpandable) {
-            return trade.therapies;
-          }
-          return [trade];
-        });
-
-        setData(response);
-        const selectedRole = userDetails.role?.name;
-        if (!isEdit && selectedRole !== 'Customer Centre') {
-          setSelection(selectedRecords);
-          return null;
+    if (data && data.length > 0 && !isSystemAdminView) {
+      const selectedRecords = data.flatMap((trade) => {
+        if (trade.isExpandable) {
+          return trade.therapies;
         }
-      })
-      .catch((error) => {
-        console.log(error);
+        return [trade];
       });
-  }, []);
 
+      setSelection(selectedRecords);
+    }
+  }, [data]);
   const handleOnSubmit = () => {
     const userDetails = state.userDetails;
     const selectedRole = userDetails.role?.name;
@@ -143,14 +125,6 @@ export default function MaterialSelection() {
     }
   };
 
-  const filteredData = React.useMemo(() => {
-    if (!data) return [];
-    return data.filter((item) => {
-      const stringifiedItem = JSON.stringify(item);
-      return stringifiedItem.indexOf(searchQuery) > -1 ? true : false;
-    });
-  }, [data, searchQuery]);
-
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -158,8 +132,8 @@ export default function MaterialSelection() {
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
             <CommonFilters
-              onApplyFilters={(filters) => setSearchQuery(filters.searchQuery)}
-              onClearFilters={() => setSearchQuery('')}
+              onApplyFilters={({ searchQuery: query }) => applyFilters({ query })}
+              onClearFilters={clearFilters}
               additionalFilters={[]}
               searchPlaceholder={translateFn('placeholder.materialTable1')}
             />
@@ -167,10 +141,7 @@ export default function MaterialSelection() {
           <TableHeading heading={translateFn('table.title.selectMaterial')} />
           <div className="table-selection-wrapper">
             <div className="table">
-              <Materials
-                omitColumns={['action', 'formulation', 'dosage']}
-                {...{ data: filteredData, loading: false, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
-              />
+              <Materials omitColumns={['action', 'formulation', 'dosage']} {...{ selection, setSelection }} />
             </div>
             <div className="list">
               <List title={translateFn('list.title.selectedMaterials')}>

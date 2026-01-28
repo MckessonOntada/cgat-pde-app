@@ -4,7 +4,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';

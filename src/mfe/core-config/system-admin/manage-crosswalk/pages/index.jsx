@@ -2,7 +2,7 @@ import React from 'react';
 import List from './list';
 
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
-import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider } from '@src/context/TableContext';
 
 const Index = () => {
   const defaultFilters = {
