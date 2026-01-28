@@ -8,7 +8,7 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import { List, ListItem } from '@src/components/list';
 import ModuleHeader from '@src/components/module-header';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { TableProvider, useFilters } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider, useFilters } from '@src/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React from 'react';

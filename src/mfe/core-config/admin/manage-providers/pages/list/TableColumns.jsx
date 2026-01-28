@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Button, MenuList, Tooltip } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
-import { usePagination, useSelection, useTable } from '../../context/TableContext';
+import { usePagination, useSelection, useTable } from '@src/context/TableContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';

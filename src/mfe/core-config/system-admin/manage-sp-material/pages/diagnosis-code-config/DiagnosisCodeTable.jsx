@@ -6,7 +6,7 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import EmptyDataTable from '@src/components/EmptyTable';
 import useResponsiveView from '@src/hooks/useResponsiveView';
-import { usePagination, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { usePagination, useTable } from '@src/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React from 'react';

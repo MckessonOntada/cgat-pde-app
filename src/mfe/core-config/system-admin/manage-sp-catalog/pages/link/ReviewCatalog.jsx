@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider } from '@src/context/TableContext';
 
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
 

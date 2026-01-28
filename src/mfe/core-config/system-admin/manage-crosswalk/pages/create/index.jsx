@@ -5,7 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PageHeader from '@src/components/pageHeader';
 import style from './style.module.scss';
-import { TableProvider } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { TableProvider } from '@src/context/TableContext';
 import MaterialService from '@src/api/commonService/MaterialService';
 import Materials from './Materials';
 import Products from './Products';

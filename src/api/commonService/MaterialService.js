@@ -178,7 +178,8 @@ async function getAllMaterials(userId, params = { listingMode: 'ALL' }) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
 
   if (res.data) {
-    return ServiceUtil.transformTherapies(res.data);
+    res.data.content = ServiceUtil.transformTherapies(res.data.content || []);
+    return res.data;
   }
   return [];
 }
@@ -188,7 +189,8 @@ async function getAllMaterialsForCustomerCentre(userId, params = { listingMode: 
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
 
   if (res.data) {
-    return ServiceUtil.transformTherapies(res.data.content || []);
+    res.data.content = ServiceUtil.transformTherapies(res.data.content || []);
+    return res.data;
   }
   return [];
 }

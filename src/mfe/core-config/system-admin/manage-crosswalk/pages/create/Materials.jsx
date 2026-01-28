@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSort, useTable } from '@src/context/TableContext';
 import { RadioGroup, InputField, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';

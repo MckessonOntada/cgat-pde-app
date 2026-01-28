@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import AuthUtils from '@src/util/AuthUtils';
+import { useFilters, useTable } from '@src/context/TableContext';
 
 function UserMaterial(props) {
   const { searchPlaceholder } = props;
@@ -21,31 +22,8 @@ function UserMaterial(props) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { state } = useWidgetContext();
-
-  const {
-    data,
-    isLoading: loading,
-    refetch: refreshData
-  } = useQuery({
-    queryKey: ['unlink-material', userId],
-    queryFn: () => {
-      const userDetails = state.userDetails || {};
-      const roleName = userDetails.role?.name;
-      if (roleName === 'Customer Centre') {
-        return MaterialService.getAllMaterialsForCustomerCentre(userId, { listingMode: 'INCLUDED' });
-      } else {
-        return MaterialService.getAllMaterials(userId, { listingMode: 'INCLUDED' });
-      }
-    }
-  });
-
-  const filteredData = React.useMemo(() => {
-    if (!data) return [];
-    return data.filter((item) => {
-      const stringifiedItem = JSON.stringify(item);
-      return stringifiedItem.indexOf(searchQuery) > -1 ? true : false;
-    });
-  }, [data, searchQuery]);
+  const { data, loading, refreshTable } = useTable();
+  const { applyFilters, clearFilters } = useFilters();
 
   const unlinkMaterial = (selection) => {
     const userDetails = state.userDetails;
@@ -59,7 +37,7 @@ function UserMaterial(props) {
     if (unlinkPromise)
       unlinkPromise
         .then((response) => {
-          refreshData();
+          refreshTable();
           setSelection([]);
           setAlert({
             type: 'success',
@@ -105,8 +83,8 @@ function UserMaterial(props) {
       <div className="MCP-panel-container">
         <div className="MCP-panel-container">
           <CommonFilters
-            onApplyFilters={(filters) => setSearchQuery(filters.searchQuery)}
-            onClearFilters={() => setSearchQuery('')}
+            onApplyFilters={({ searchQuery: query }) => applyFilters({ query })}
+            onClearFilters={clearFilters}
             additionalFilters={[]}
             searchPlaceholder={searchPlaceholder}
           />
@@ -125,7 +103,7 @@ function UserMaterial(props) {
           columnActions={{
             onUnlink: confirmMaterialUnlink
           }}
-          {...{ data: filteredData, loading, isFilterApplied: Boolean(searchQuery), selection, setSelection }}
+          {...{ selection, setSelection }}
         />
       </div>
     </React.Fragment>

@@ -6,27 +6,16 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { createColumns } from './helpers';
 import CommonUtils from '@src/util/CommonUtils';
-import withPagination from './withPagination';
+import { useFilters, usePagination, useTable } from '@src/context/TableContext';
 
-function Materials({
-  selection = [],
-  setSelection,
-  omitColumns = [],
-  columnActions,
-  trade,
-  onChange,
-  readOnly,
-  data,
-  pagination = {},
-  loading,
-  isFilterApplied,
-  error,
-  changePage
-}) {
+function Materials({ selection = [], setSelection, omitColumns = [], columnActions, trade, onChange, readOnly, error }) {
   const showCardView = useResponsiveView();
   const { t: translateFn } = useTranslate();
   const [expandedRows, setExpandedRows] = React.useState([]);
-
+  const { pagination, changePage } = usePagination();
+  const { data, loading } = useTable();
+  const { filters } = useFilters();
+  const isFilterApplied = Object.values(filters).some((v) => v !== null && v !== undefined && v !== '');
   const isRowExpanded = (trade) => {
     return expandedRows.includes(trade.tradeName);
   };
@@ -113,7 +102,8 @@ function Materials({
         noDataComponent={
           <EmptyDataTable
             isLoading={loading}
-            isError={error}
+            isEr
+            ror={error}
             image={EmptyDataImage}
             heading={isFilterApplied ? translateFn('errors.messages.noRecordsFound') : translateFn('emptyTable.title.noRecordsFoundUserMaterials')}
             description={!isFilterApplied && translateFn('emptyTable.description.noRecordsFoundUserMaterials')}
@@ -124,4 +114,4 @@ function Materials({
   );
 }
 
-export default withPagination(Materials);
+export default Materials;

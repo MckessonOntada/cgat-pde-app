@@ -12,14 +12,11 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
-
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import SPMaterialDetails from '@src/mfe/core-config/system-admin/manage-sp-material/pages/SPMaterialDetails';
-import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSort, useTable } from '@src/context/TableContext';
 import Alert from '@src/components/cgat-alert/Alert';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { ChannelType } from '../../../manage-sp-account/util';
