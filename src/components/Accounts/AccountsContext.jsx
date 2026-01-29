@@ -84,7 +84,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
 
   // Fetch data from server
-  const { isLoading, data, isError, refetch } = useQuery({
+  const { isLoading, isFetching, data, isError, refetch } = useQuery({
     queryKey: [apiUrl],
     queryFn: async () => {
       const response = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
@@ -130,6 +130,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       },
       paginationConfig,
       isLoading,
+      isFetching,
       isError,
       refetch,
       setSortCriteria,

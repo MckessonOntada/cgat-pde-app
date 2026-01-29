@@ -305,7 +305,7 @@ const UserDetail = () => {
 
   const prePermissions = userDetails?.isActive && userDetails?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
   if (isLoading) {
-    return <Loader type={'screen'} />;
+    return <Loader variant={'circular'} />;
   }
   if (isError) {
     const statusCode = error?.response?.status;

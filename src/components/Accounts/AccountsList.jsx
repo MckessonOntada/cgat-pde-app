@@ -29,7 +29,7 @@ export default function AccountsList(props) {
     isPhysicianUser,
     practiceName
   } = props;
-  const { data = [], paginationConfig, refetch, setPageNumber, filterConfig } = useAccounts();
+  const { data = [], paginationConfig, refetch, setPageNumber, filterConfig, isFetching } = useAccounts();
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const [tableHeight, setTableHeight] = useState('100%');
@@ -191,7 +191,7 @@ export default function AccountsList(props) {
             collapsibleCardView={false}
             noDataComponent={
               <EmptyDataTable
-                isLoading={isLoading}
+                isLoading={isLoading || isFetching}
                 image={EmptyDataImage}
                 heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('account.add.label')}
                 description={!isDataFiltered && t('account.empty_table.description')}
