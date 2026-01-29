@@ -27,7 +27,7 @@ function UserCreationStepper({ activeIndex }) {
     return userCreationSteps;
   }, [selectedRole]);
 
-  if (isSystemAdminView && steps.length <= 2 && selectedRole !== 'Customer Centre') return null;
+  // if (isSystemAdminView && steps.length <= 2 && selectedRole !== 'Customer Centre') return null;
   return <Stepper activeIndex={activeIndex} dividerText="of" stepHeaders={steps.map((x) => ({ label: t(x) }))} />;
 }
 

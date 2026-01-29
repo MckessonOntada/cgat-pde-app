@@ -37,7 +37,7 @@ export default function MaterialSelection() {
   const [alert, setAlert] = React.useState(null);
   const { t: translateFn } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { state, setValue } = useWidgetContext();
+  const { state, reset } = useWidgetContext();
   const { data } = useTable();
   const { applyFilters, clearFilters } = useFilters();
   React.useEffect(() => {
@@ -75,7 +75,7 @@ export default function MaterialSelection() {
       setIsSaving(true);
       addMaterialPromise
         .then((response) => {
-          setValue('createWizardSteps', {});
+          reset();
           if (isEdit) {
             navigate(`./../..`, {
               state: {

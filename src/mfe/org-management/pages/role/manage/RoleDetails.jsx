@@ -69,7 +69,7 @@ const RoleDetails = () => {
 
   const roleValidationSchema = getRoleValidationSchema(t);
 
-  const { mutate, isLoading } = useMutation(
+  const { mutate: saveRoleDetails, isLoading } = useMutation(
     async (data) => {
       let apiUrl = ApiRoutes.GET_ROLES();
       let actionSpecificHttpVerb = httpVerb.POST;
@@ -83,8 +83,9 @@ const RoleDetails = () => {
     },
     {
       onSuccess: (res) => {
+        const { data } = res;
         if (isEdit) {
-          navigate(`${moduleBasePath}/${roleId}`, {
+          navigate(`${moduleBasePath}/${data.id}`, {
             state: {
               alert: {
                 type: 'success',
@@ -93,7 +94,7 @@ const RoleDetails = () => {
             }
           });
         } else {
-          navigate(`${moduleBasePath}/${id}/permissions`, {
+          navigate(`${moduleBasePath}/${data.id}/permissions`, {
             state: { data: data }
           });
         }
@@ -115,7 +116,7 @@ const RoleDetails = () => {
     if (roleId) {
       payload.id = roleId;
     }
-    mutate(payload);
+    saveRoleDetails(payload);
   };
 
   const handleNavigate = () => {

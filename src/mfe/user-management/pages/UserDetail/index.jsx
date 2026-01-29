@@ -305,7 +305,7 @@ const UserDetail = () => {
 
   const prePermissions = userDetails?.isActive && userDetails?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
   if (isLoading) {
-    return <Loader type={'screen'} />;
+    return <Loader variant={'circular'} />;
   }
   if (isError) {
     const statusCode = error?.response?.status;
@@ -578,7 +578,7 @@ const UserDetail = () => {
               {alert && alert.pinPoint === 'materials' && <Alert {...alert} onClose={handleAlertClose} />}
               <div>
                 <MaterialWrapper listingMode="INCLUDED">
-                  <UserMaterial searchPlaceholder={translateFn('placeholder.materialTable')} />
+                  <UserMaterial onAlert={setAlert} searchPlaceholder={translateFn('placeholder.materialTable')} />
                 </MaterialWrapper>
               </div>
             </div>
@@ -615,7 +615,7 @@ const UserDetail = () => {
                           showLabels={true}
                           isPreferencesLoaded={isPreferencesLoaded}
                           isLoadingPreferences={isLoading}
-                          config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
+                          config={{ ...preferencesConfig, userPermissions: userDetails.permissions || [] }}
                         />
                       </div>
                     </Form>

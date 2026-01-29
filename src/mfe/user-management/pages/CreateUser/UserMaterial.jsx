@@ -13,16 +13,15 @@ import AuthUtils from '@src/util/AuthUtils';
 import { useFilters, useTable } from '@src/context/TableContext';
 
 function UserMaterial(props) {
-  const { searchPlaceholder } = props;
+  const { searchPlaceholder, onAlert } = props;
   const [alert, setAlert] = React.useState(null);
   const { userId } = useParams();
   const { t: translateFn } = useTranslate();
   const [selection, setSelection] = React.useState([]);
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = React.useState('');
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { state } = useWidgetContext();
-  const { data, loading, refreshTable } = useTable();
+  const { refreshTable } = useTable();
   const { applyFilters, clearFilters } = useFilters();
 
   const unlinkMaterial = (selection) => {
@@ -39,16 +38,26 @@ function UserMaterial(props) {
         .then((response) => {
           refreshTable();
           setSelection([]);
-          setAlert({
+          const alert = {
             type: 'success',
             description: 'Material unlinked successfully.'
-          });
+          };
+          if (onAlert && typeof onAlert === 'function') {
+            onAlert({ ...alert, pinPoint: 'materials' });
+          } else {
+            setAlert(alert);
+          }
         })
         .catch((error) => {
-          setAlert({
+          const alert = {
             type: 'error',
             description: 'Failed  to unlink material. Please try again.'
-          });
+          };
+          if (onAlert && typeof onAlert === 'function') {
+            onAlert({ ...alert, pinPoint: 'materials' });
+          } else {
+            setAlert(alert);
+          }
         })
         .finally(() => {
           dispatch(closeModal());
@@ -78,7 +87,7 @@ function UserMaterial(props) {
   };
 
   return (
-    <React.Fragment>
+    <div className="stack">
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <div className="MCP-panel-container">
         <div className="MCP-panel-container">
@@ -106,7 +115,7 @@ function UserMaterial(props) {
           {...{ selection, setSelection }}
         />
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 

@@ -17,6 +17,7 @@ import usePermission from '@src/hooks/usePermissions';
 import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 import Alert from '@src/components/cgat-alert/Alert';
 import { USER_TABS } from './constants';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const getUserTabs = (t) => [
   {
@@ -45,7 +46,7 @@ export default function Dashboard() {
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
   const [tabList, setTabList] = React.useState(getUserTabs(t));
-
+  const { reset } = useWidgetContext();
   const tab = params.get('tab');
 
   useEffect(() => {
@@ -102,6 +103,7 @@ export default function Dashboard() {
   };
 
   const handleOnCreate = () => {
+    reset();
     navigate(PATHS.CREATE);
   };
 

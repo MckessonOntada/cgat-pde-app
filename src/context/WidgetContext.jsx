@@ -22,7 +22,9 @@ export const WidgetProvider = ({ initialState = {}, children }) => {
     });
   };
 
-  return <WidgetContext.Provider value={{ state, setValue, resetValue }}>{children}</WidgetContext.Provider>;
+  const reset = () => setState(initialState);
+
+  return <WidgetContext.Provider value={{ state, setValue, reset, resetValue }}>{children}</WidgetContext.Provider>;
 };
 
 export const useWidgetContext = () => {
