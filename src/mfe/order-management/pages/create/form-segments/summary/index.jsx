@@ -50,7 +50,7 @@ import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import { TrackingDetails } from './tracking-details';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
-
+import { useWidgetContext } from '@src/context/WidgetContext';
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -75,6 +75,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
   const [allowedSubmission, setAllowedSubmission] = React.useState(true);
+  const { state, setValue } = useWidgetContext();
   const {
     therapy = {},
     catalog = {},
@@ -95,15 +96,26 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     spTherapyConfig,
     therapyConfig = {}
   } = orderDetails || {};
+  const { orcaPatient, isVerified: isOrcaPatientVerified } = state;
+  const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const manufacturer = isSpOrder ? orderDetails.spTherapyConfig?.config?.manufacturerName : orderDetails.therapyConfig?.config?.manufacturerName;
   React.useEffect(() => {
-    if (orderDetails?.additionalDetails) {
+    if (manufacturer === MANUFACTURER.ORCA) {
+      setDraftChanges({
+        additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+        patientIdentifier: patientData?.patientIdentifier,
+        medicalRecordNumber: patientData?.medicalRecordNumber,
+        coiId: orderDetails.patient?.coiId,
+        patientDTO: { patient: { ...patientData } }
+      });
+    } else {
       setDraftChanges({
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
         patientIdentifier: orderDetails.patient?.patientIdentifier,
         medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
-        coiId: orderDetails.patient?.coiId
+        coiId: orderDetails.patient?.coiId,
+        patientDTO: null
       });
     }
   }, [orderDetails]);
@@ -369,6 +381,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     },
     {
       onSuccess: (_result) => {
+        setValue('orcaPatient', null);
+        setValue('isVerified', false);
         navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}`, {
           state: { ...locationState, isApproved: true, alert: { type: 'success', description: 'Order has been Resubmitted Successfully.' } }
         });
@@ -417,6 +431,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
 
   const handleOnBackButtonClick = () => {
+    setValue('orcaPatient', null);
+    setValue('isVerified', false);
     const prevSearch = locationState.__prevSearch || '';
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
@@ -497,9 +513,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const handleOnBackToOrders = () => {
     if (backToInvoiceListing || backToInvoiceDetails) {
+      setValue('orcaPatient', null);
+      setValue('isVerified', false);
       navigate(-1);
     } else {
       if (!isDirty || isCustomerCentreUser) {
+        setValue('orcaPatient', null);
+        setValue('isVerified', false);
         const prevSearch = locationState?.__prevSearch || '';
         navigate(`${isCustomerCentreUser ? RoutePaths.pathCSUserOrder : RoutePaths.pathOrderManagement}${prevSearch}`);
       } else {
@@ -532,12 +552,25 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
             } else {
               dispatch(closeModal());
-              setDraftChanges({
-                additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-                patientIdentifier: orderDetails.patient?.patientIdentifier,
-                medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
-                coiId: orderDetails.patient?.coiId
-              });
+              setValue('orcaPatient', null);
+              setValue('isVerified', false);
+              if (manufacturer === MANUFACTURER.ORCA) {
+                setDraftChanges({
+                  additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+                  patientIdentifier: orderDetails.patient?.patientIdentifier,
+                  medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+                  coiId: orderDetails.patient?.coiId,
+                  patientDTO: { patient: { ...patient } }
+                });
+              } else {
+                setDraftChanges({
+                  additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+                  patientIdentifier: orderDetails.patient?.patientIdentifier,
+                  medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+                  coiId: orderDetails.patient?.coiId,
+                  patientDTO: null
+                });
+              }
             }
           }}>
           {t('button.caption.confirm')}
@@ -822,12 +855,27 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const getAllowedControls = () => {
     const controls = [];
-    const isOrderChanged = !CommonUtils.deepEqual(draftChanges, {
-      additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-      patientIdentifier: orderDetails.patient?.patientIdentifier,
-      medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
-      coiId: orderDetails.patient?.coiId
-    });
+    const draftChangesInitialValue =
+      manufacturer === MANUFACTURER.ORCA
+        ? {
+            additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+            patientIdentifier: orderDetails.patient?.patientIdentifier,
+            medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+            coiId: orderDetails.patient?.coiId,
+            patientDTO: { patient: { ...patient } }
+          }
+        : {
+            additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+            patientIdentifier: orderDetails.patient?.patientIdentifier,
+            medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+            coiId: orderDetails.patient?.coiId,
+            patientDTO: null
+          };
+
+    console.log('----------------', draftChangesInitialValue);
+    console.log('-------------drafy---', draftChanges);
+
+    const isOrderChanged = !CommonUtils.deepEqual(draftChanges, draftChangesInitialValue);
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
         {t('captions.btnPrintSummary')}
@@ -1399,16 +1447,16 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       <DetailSegment
                         label={t('labels.patientName')}
                         value={
-                          patient.fullName ? (
-                            <Tooltip body={patient.fullName}>
-                              <span className="overflowing">{patient.fullName}</span>
+                          patient.fullName || patientData?.patientInfo?.firstName ? (
+                            <Tooltip body={CommonUtils.getUSFullName(patientData?.patientInfo)}>
+                              <span className="overflowing">{CommonUtils.getUSFullName(patientData?.patientInfo)}</span>
                             </Tooltip>
                           ) : (
                             '-'
                           )
                         }
                       />
-                      <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+                      <DetailSegment label={t('labels.DOB')} value={patientData?.patientInfo?.dateOfBirth || '-'} />
                       {isSpOrder && (
                         <DetailSegment
                           label={t('labels.emailId')}
@@ -1423,7 +1471,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           }
                         />
                       )}
-                      <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+                      <DetailSegment label={t('labels.gender')} value={patientData?.patientInfo?.gender || '-'} />
                       {!isSpOrder &&
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
@@ -1470,7 +1518,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                     controls={
-                      (showControls || allowUpdateBnBAfterSubmit) && (
+                      (showControls || allowUpdateBnBAfterSubmit || isCSReview) && (
                         <Button
                           size="md"
                           variant="tertiary"

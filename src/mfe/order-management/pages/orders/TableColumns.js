@@ -34,7 +34,7 @@ const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 
 function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
-  const { id, status } = props || {};
+  const { id, status, practiceId } = props || {};
   const { tab, alertContainerId } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
@@ -114,8 +114,8 @@ function getOptionsByStatus(props) {
     const preservedState = { __prevSearch: search };
     switch (value) {
       case ORDER_ENTITY_ACTION.VIEW:
-        navigate(`${id}/summary`, {
-          state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : preservedState
+        navigate(isCSReviewOrdersPage ? `${id}/summary?orgId=${practiceId}` : `${id}/summary`, {
+          state: props.status === ORDER_STATUS.SUBMITTED || props.status === ORDER_STATUS.CS_REVIEW ? { ...preservedState, isEdit: true } : preservedState
         });
         break;
       case ORDER_ENTITY_ACTION.RESUME:
@@ -124,7 +124,10 @@ function getOptionsByStatus(props) {
             pathname: getPathByOrderStage(props)
           },
           {
-            state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : { ...preservedState, isSimulate: true }
+            state:
+              props.status === ORDER_STATUS.SUBMITTED || props.status === ORDER_STATUS.CS_REVIEW || props.status === ORDER_STATUS.REVIEW
+                ? { ...preservedState, isEdit: true }
+                : { ...preservedState, isSimulate: true }
           }
         );
         break;
@@ -152,8 +155,8 @@ function getOptionsByStatus(props) {
         break;
       case ORDER_ENTITY_ACTION.EDIT:
         if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
-          navigate(`${id}/summary`, {
-            state: props.status === ORDER_STATUS.SUBMITTED ? { ...preservedState, isEdit: true } : preservedState
+          navigate(isCSReviewOrdersPage ? `${id}/summary?orgId=${practiceId}` : `${id}/summary`, {
+            state: props.status === ORDER_STATUS.SUBMITTED || props.status === ORDER_STATUS.CS_REVIEW ? { ...preservedState, isEdit: true } : preservedState
           });
         } else {
           renderModal({
@@ -277,7 +280,7 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
-    if (status === ORDER_STATUS.SUBMITTED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS) || isCSReviewOrdersPage)) {
+    if (status === ORDER_STATUS.SUBMITTED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS) || !isCSReviewOrdersPage)) {
       options.push({
         label: translate(`labels.orderActions.uploadDocument`),
         value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
