@@ -576,7 +576,7 @@ async function savePatientDetailsCsUser(orderId, payload, skipDuplicateCheck = f
 
 async function getTherapyDetailsByTradeNameCsUser(tradeName, channelType, userId) {
   if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
-  const url = `${ApiRoutes.USERS()}/current/therapies/details/tradeName/${tradeName}?channelType=${channelType}&userId=${'10742'}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies/details/tradeName/${tradeName}?channelType=${channelType}&userId=${userId}`;
 
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
