@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -15,20 +14,21 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import usePermission from '@src/hooks/usePermissions';
-import { checkIsDataFiltered } from '@src/util/CommonUtils';
+import { useFilters, usePagination, useSort, useTable } from '@src/context/TableContext';
 
-const RolesDataTable = () => {
+const RoleList = ({ onAlert }) => {
   const { t } = useTranslate();
-  const [selectedRows, setSelectedRows] = useState(null);
+  const [selection, setSelection] = React.useState(null);
   const { hasPermission } = usePermission();
-  const columns = createColumns(t, selectedRows, setSelectedRows, hasPermission);
-  const { applySort } = useRole();
-  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage, isError, error, filterConfig } = useRole();
+  const columns = createColumns(t, selection, setSelection, hasPermission);
+  const { applySort } = useSort();
+  const { isError, error } = {};
   const dispatch = useDispatch();
+  const { pagination, changePage } = usePagination();
+  const { data, loading, refreshData } = useTable();
+  const { filters } = useFilters();
   const showCardView = useResponsiveView();
-  const isDataFiltered = React.useMemo(() => {
-    return checkIsDataFiltered(filterConfig);
-  }, [filterConfig]);
+  const isDataFiltered = Object.values(filters).some((v) => v !== null && v !== undefined && v !== '');
 
   const { mutate: deleteRole } = useMutation({
     mutationFn: async (id) => {
@@ -36,27 +36,23 @@ const RolesDataTable = () => {
       return response.data;
     },
     onError: (error, variables, context) => {
-      setMessage({
-        kind: 'error',
-        primaryMessage: t('errors.default')
+      onAlert({
+        type: 'error',
+        description: t('errors.default')
       });
     },
     onSuccess: (data, variables, context) => {
-      setSelectedRows(null);
-      setMessage({
-        kind: 'success',
-        primaryMessage: t('orgManagement.messages.deleteRoleSuccess')
+      setSelection(null);
+      onAlert({
+        type: 'success',
+        description: t('orgManagement.messages.deleteRoleSuccess')
       });
       refreshData();
     }
   });
 
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
-  };
-
-  const handleRowSelected = ({ selectedRows }) => {
-    setSelectedRows(selectedRows.map((row) => row.id));
+    if (selectedColumn.sortKey) applySort(selectedColumn.sortKey, sortDirection);
   };
 
   const handleOnUserConfirmation = () => {
@@ -76,7 +72,7 @@ const RolesDataTable = () => {
           size="md"
           variant="primary"
           onClick={() => {
-            deleteRole(selectedRows);
+            deleteRole(selection[0]);
             dispatch(closeModal());
           }}>
           {t('orgManagement.button.OK')}
@@ -90,7 +86,7 @@ const RolesDataTable = () => {
     <div>
       <TableHeading
         heading={t('orgManagement.role.labelRolesListing')}
-        secondaryView={!!selectedRows}
+        secondaryView={selection}
         secondaryViewHeading={`1 ${t('orgManagement.selected_items')}`}
         secondaryViewControls={
           <Button variant="secondary" onClick={handleOnUserConfirmation}>
@@ -106,22 +102,22 @@ const RolesDataTable = () => {
         columns={columns}
         data={data}
         onSortIconClick={handleSort}
-        currentPage={paginationConfig.pageNumber}
-        totalPageCount={paginationConfig.totalPages}
+        currentPage={pagination.pageNumber}
+        totalPageCount={pagination.totalPages}
         pagination={true}
-        handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
-        totalRocords={paginationConfig.totalElements} // Corrected typo here
-        recordsPerPage={paginationConfig.pageSize}
+        handleChangePage={(_event, newPageIndex) => changePage(newPageIndex)}
+        totalRocords={pagination.totalElements}
+        recordsPerPage={pagination.pageSize}
         paginationTotalRecorsMessage={'results'}
         paginationRecordsPerPageMessage={`per page`}
         selectableRowsHeader={false}
-        selectedRowId={selectedRows}
+        selectedRowId={selection}
         showCardView={showCardView}
         defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             error={isError && error}
-            isLoading={isLoading}
+            isLoading={loading}
             image={EmptyDataImage}
             heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('message.emptyTableTitle')}
             description={!isDataFiltered && t('orgManagement.messages.roleEmptyTableSubtitle')}
@@ -134,4 +130,4 @@ const RolesDataTable = () => {
   );
 };
 
-export default RolesDataTable;
+export default RoleList;

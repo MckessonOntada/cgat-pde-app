@@ -127,7 +127,7 @@ function DashboardPage() {
           controls={
             <div className="controls">
               {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
-                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
+                <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.CREATE}`)}>
                   {t('orgManagement.add.label')}
                 </Button>
               )}

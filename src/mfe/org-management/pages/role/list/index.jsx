@@ -3,8 +3,7 @@ import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from '@src/components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { useRole } from '../../../context/RoleContext';
-import RolesDataTable from './RolesDataTable';
+import RoleList from './RoleList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS } from '../../../routes/constants';
@@ -12,30 +11,31 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import AuthUtils from '@src/util/AuthUtils';
 import CommonFilters from '@src/components/Filters';
 import Alert from '@src/components/cgat-alert/Alert';
+import { useFilters } from '@src/context/TableContext';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
-function RolesList() {
+function Roles() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
-  const { messageConfig, clearMessage, clearFilters, applyFilters, refreshData, setMessage } = useRole();
   const userPermissions = AuthUtils.getUserPermissions();
+  const { applyFilters, clearFilters } = useFilters();
+  const [alert, setAlert] = React.useState(null);
+  const { setValue } = useWidgetContext();
 
   const handleOnAddRoleClick = () => {
-    navigate(PATHS.createRole);
+    setValue('roleDetails', null);
+    setValue('createWizardSteps', {});
+    navigate('create');
   };
-  useEffect(() => {
+  React.useEffect(() => {
     clearFilters();
-    refreshData();
-    if (location.state?.showAlert) {
-      setMessage({
-        primaryMessage: location.state?.showAlert.description,
-        kind: location.state?.showAlert.type
-      });
-      navigate(location.pathname, { replace: true, state: { ...location.state, showAlert: null } });
-    } else {
-      clearMessage();
+    const { alert } = location.state || {};
+    if (alert) {
+      setAlert(alert);
+      navigate(location.pathname, { replace: true });
     }
-  }, []);
+  }, [location.state]);
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -70,10 +70,8 @@ function RolesList() {
 
   return (
     <div className="MCP-module-wrapper">
-      {/* Breadcrumb */}
       <Breadcrumb items={breadcrumbItems} />
       <div className="MCP-module-body">
-        {/* module header */}
         <ModuleHeader
           heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
           controls={
@@ -84,9 +82,7 @@ function RolesList() {
             )
           }
         />
-        {messageConfig.kind && messageConfig.primaryMessage && (
-          <Alert onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
-        )}
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         {/* module body */}
         <div className="MCP-module-body">
@@ -101,7 +97,7 @@ function RolesList() {
               />
             </div>
             <div className="MCP-table-wrapper">
-              <RolesDataTable />
+              <RoleList onAlert={setAlert} />
             </div>
           </div>
         </div>
@@ -110,4 +106,4 @@ function RolesList() {
   );
 }
 
-export default RolesList;
+export default Roles;
