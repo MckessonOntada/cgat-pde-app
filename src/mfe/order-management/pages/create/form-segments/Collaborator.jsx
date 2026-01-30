@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import { CollaboratorRoleDrawer } from './CollaboratorRoleDrawer';
 
-const Collaborator = ({ collaborators, channelType, currentStage, orderId, showControls = true }) => {
+const Collaborator = ({ collaborators, channelType, currentStage, orderId, showControls = true, isCustomerCentreUser }) => {
   const [openDetails, setOpenDetails] = useState(false);
   const { t } = useTranslate();
 
@@ -26,7 +26,8 @@ const Collaborator = ({ collaborators, channelType, currentStage, orderId, showC
 
   const { data: roles, isLoading } = useQuery({
     queryKey: [currentStage, orderId],
-    queryFn: () => OrderService.getOrderStagesRoles(orderId)
+    queryFn: () => OrderService.getOrderStagesRoles(orderId),
+    enabled: !isCustomerCentreUser
   });
 
   function buildCollaborators(data) {
