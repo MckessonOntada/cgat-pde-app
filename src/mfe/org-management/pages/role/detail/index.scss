@@ -8,15 +8,21 @@
 
 .role-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
-.role-info {
+.role-info,
+.role-status {
   display: flex;
   align-items: center;
   gap: var(--spacing-02);
+  flex: 1;
+  max-width: 50%;
+}
+
+.role-status {
+  justify-content: flex-end;
 }
 
 .label-text {
@@ -92,10 +98,4 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.role-status {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }

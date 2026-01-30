@@ -4,10 +4,7 @@ import { PATHS } from './constants';
 import Home from '../pages/Dashboard';
 import CreateOrganization from '../pages/CreateOrganization';
 import ViewOrganization from '../pages/ViewOrganization';
-import Role from '../pages/role';
 import NotFound from '../../../pages/error-pages/NotFound';
-import ProtectedRoute from '@src/routes/ProtectedRoute';
-import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 
 const Routes = () => {
   return (
