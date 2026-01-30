@@ -49,7 +49,7 @@ export default function MaterialSelection() {
         return [trade];
       });
 
-      setSelection(selectedRecords);
+      if (!(!isSystemAdminView && isEdit)) setSelection(selectedRecords);
     }
   }, [data]);
   const handleOnSubmit = () => {
@@ -60,22 +60,26 @@ export default function MaterialSelection() {
       const selectedMaterialIds = selection.map((item) => item.id);
       addMaterialPromise = MaterialService.addMaterial(id, selectedMaterialIds);
     } else {
-      const flatIds = data.flatMap((trade) => {
-        if (trade.isExpandable) {
-          return trade.therapies.map((therapy) => therapy.id);
-        }
-        return [trade.id];
-      });
-      const selectedMaterialIds = selection.map((item) => item.id);
-      const restrictedMaterialIds = flatIds.filter((id) => !selectedMaterialIds.includes(id));
-      addMaterialPromise = MaterialService.restrictMaterial(id, restrictedMaterialIds);
+      if (!isSystemAdminView && isEdit) {
+        const selectedMaterialIds = selection.map((item) => item.id);
+        addMaterialPromise = MaterialService.unrestrictMaterial(id, selectedMaterialIds);
+      } else {
+        const flatIds = data.flatMap((trade) => {
+          if (trade.isExpandable) {
+            return trade.therapies.map((therapy) => therapy.id);
+          }
+          return [trade.id];
+        });
+        const selectedMaterialIds = selection.map((item) => item.id);
+        const restrictedMaterialIds = flatIds.filter((id) => !selectedMaterialIds.includes(id));
+        addMaterialPromise = MaterialService.restrictMaterial(id, restrictedMaterialIds);
+      }
     }
 
     if (addMaterialPromise) {
       setIsSaving(true);
       addMaterialPromise
         .then((response) => {
-          reset();
           if (isEdit) {
             navigate(`./../..`, {
               state: {
@@ -87,6 +91,7 @@ export default function MaterialSelection() {
               }
             });
           } else {
+            reset();
             navigate('./../../..', {
               search: `?tab=USERS`,
               state: {
