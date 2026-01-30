@@ -156,7 +156,6 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
 
       dataFetchPromise
         .then((result) => {
-          setLoading(false);
           setData(result.content);
           const { totalElements, totalPages } = result;
           setPagination({
@@ -166,9 +165,10 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
           });
         })
         .catch((error) => {
-          setLoading(false);
           setError(error);
-          //setError
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } catch (error) {
       console.log(error);
@@ -263,8 +263,9 @@ export const TableProvider = ({ fetchFn, defaultFilters, defaultSort, columns, a
     columns,
     sort,
     selectedRows,
-    selectedRowObjects,
     setSelection,
+    selectedRowObjects,
+    setSelectedRowObjects,
     setPagination,
     toggleRowSelection,
     selectAll,

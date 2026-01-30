@@ -95,7 +95,6 @@ const NotificationPreferencePanel = ({
               })}
           </div>
         </div>
-
         {rows.length > 0 && (
           <div className={style.rows}>
             {rows.map((row, rowIndex) => {

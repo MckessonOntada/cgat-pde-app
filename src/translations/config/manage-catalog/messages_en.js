@@ -45,6 +45,6 @@ export const ManageCatalogMessagesEN = {
   'ManageCatalog.BacktoPage': 'BACK TO MANAGE CATALOG PAGE',
   'ManageCatalog.Configurations': 'Configurations',
   'ManageCatalog.input.validation.text': 'Maximum 5,000 Characters',
-
+  'input.helpers.maxCharLimit': 'Maximum {count} Characters',
   'refineFilter.message': 'Add / Refine Search to see updated results'
 };

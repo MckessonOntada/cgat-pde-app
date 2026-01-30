@@ -6,102 +6,134 @@ import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
 import Alert from '@src/components/cgat-alert/Alert';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
 import { useMutation } from 'react-query';
 import NotificationPreferencePanel from '@src/mfe/core-config/notifications-setting/communication-preference-panel/NotificationPreferencePanel';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
 import { Form, Formik } from 'formik';
 import { extractUserPreferences, getMergedPreferences } from '@src/mfe/core-config/notifications-setting/communication-preference-panel/helpers';
+import RoleService from '@src/api/commonService/RoleService';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import useRouteMode from '@src/mfe/user-management/routes/useRouteMode';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
+
+const getSubmitButtonCaption = ({ isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Creating';
+  if (!isSaving && isEdit) return 'Update Preferences';
+  return 'Create Role';
+};
 
 const NotificationRolePreferences = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { roleId } = useParams();
-  const location = useLocation();
   const [alert, setAlert] = React.useState(null);
-  const { isEdit, communicationPreferences } = location.state || {};
-  const permissions = location.state?.data?.permissions || location.state?.permissions;
-  const [preferencesConfig, setPreferenceConfig] = React.useState(notificationConfig);
+  const [initialValue, setInitialValue] = React.useState(notificationConfig);
+  const { state, setValue } = useWidgetContext();
+  const { roleDetails, createWizardSteps } = state;
+  const { isEdit, id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'roleId' });
+  const [isDirty, setIsDirty] = React.useState(false);
 
   React.useEffect(() => {
-    const updatedConfig = getMergedPreferences(preferencesConfig, communicationPreferences, {});
-    setPreferenceConfig(updatedConfig);
+    const updatedConfig = getMergedPreferences(initialValue, roleDetails.communicationPreferences?.preferences, {});
+    setInitialValue(updatedConfig);
   }, []);
 
-  const handleGoBack = () => {
-    navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles/${roleId}/permissions`, {
-      state: { ...location.state, backFromPreferences: true }
-    });
+  const handleOnBack = () => {
+    navigate(isEdit ? `./../..` : `./../permissions`);
   };
-  const { mutate, isLoading } = useMutation(
-    async (data) => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_COMMUNICATION_PREFERENCES(roleId)}`, httpVerb.PATCH, data);
-      return res;
-    },
-    {
-      onSuccess: (res) => {
-        const data = res?.data;
-        if (data) {
-          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/roles`, {
+
+  const { mutate: updateCommunicationPreferences, isLoading: isSaving } = useMutation({
+    mutationFn: async (data) => RoleService.updateCommunicationPreferences(id, data),
+    onSuccess: (data) => {
+      setValue('roleDetails', data);
+      if (data) {
+        if (isEdit) {
+          navigate(`./../..`, {
             state: {
-              showAlert: {
+              alert: {
+                pinPoint: 'notification-preferences',
                 type: 'success',
-                description: t(isEdit ? 'orgManagement.messages.roleUpdate' : 'orgManagement.messages.newRoleCreation')
+                description: t(isEdit ? 'Communication preferences updated successfully.' : 'orgManagement.messages.newRoleCreation')
+              }
+            }
+          });
+        } else {
+          setValue('createWizardSteps', {
+            ...createWizardSteps,
+            permissions: true
+          });
+          navigate(`./../../..`, {
+            state: {
+              alert: {
+                type: 'success',
+                description: 'New role created successfully.'
               }
             }
           });
         }
-      },
-      onError: (error) => {
-        console.error('Error posting data:', error);
-        setAlert({
-          type: 'error',
-          description: t('errors.default')
-        });
       }
+    },
+    onError: (error) => {
+      setAlert({
+        type: 'error',
+        description: t('errors.default')
+      });
     }
-  );
-  const handleSubmit = (values) => {
+  });
+
+  const handleOnSubmit = (values) => {
     const payload = extractUserPreferences(values);
-    mutate(payload);
+    updateCommunicationPreferences(payload);
   };
-  if (isLoading) {
-    return <Loader type={'screen'} />;
-  }
+
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={IconArrowLeft} onClick={handleGoBack} size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={IconArrowLeft} onClick={handleOnBack} size="md">
           {t(isEdit ? 'control.Back_to_role_details_page' : 'orgManagement.role.captionsBtnBackToManageRoles')}
         </Button>
       </div>
 
-      <ModuleHeader heading={<PageHeader heading={t(isEdit ? 'label.Edit_Role' : 'orgManagement.role.labelAddRole')} />} />
+      <ModuleHeader heading={<PageHeader heading={t(isEdit ? 'Update Communication Preferences' : 'orgManagement.role.labelAddRole')} />} />
       {alert && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
-      <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={handleSubmit}>
-        <Form>
-          <div className="MCP-module-body">
-            <div className="MCP-panel-container">
-              <NotificationPreferencePanel
-                readOnly={false}
-                showLabels={true}
-                isLoadingPreferences={false}
-                allPreferred={true}
-                config={{ ...preferencesConfig, userPermissions: permissions }}
-              />
-            </div>
-            <div className={'buttonGroup'}>
-              <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
-                {t('userManagement.button.back')}
-              </Button>
-              <Button variant="primary" type="submit" onClick={handleSubmit} size={'md'}>
-                {t(isEdit ? 'control.Update_Role' : 'control.Create_Role')}
-              </Button>
-            </div>
-          </div>
-        </Form>
+      <Formik initialValues={initialValue} enableReinitialize={true} onSubmit={handleOnSubmit}>
+        {({ dirty }) => {
+          React.useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+          return (
+            <FormikFormWrapper disabled={isSaving}>
+              <div className="MCP-module-body">
+                <div className="MCP-panel-container">
+                  <NotificationPreferencePanel
+                    readOnly={false}
+                    showLabels={true}
+                    isLoadingPreferences={false}
+                    allPreferred={true}
+                    config={{ ...initialValue, userPermissions: roleDetails.permissions }}
+                  />
+                </div>
+                <div className={'buttonGroup'}>
+                  <Button variant="secondary" type="button" onClick={handleOnBack} size={'md'}>
+                    {t('userManagement.button.back')}
+                  </Button>
+                  <Button
+                    disabled={isSaving || !isDirty}
+                    variant="primary"
+                    isLoadingState={isSaving}
+                    Icon={isSaving && ButtonLoadingIcon}
+                    iconPosition="left"
+                    type={'submit'}
+                    size="md">
+                    {getSubmitButtonCaption({ isEdit, isSaving })}
+                  </Button>
+                </div>
+              </div>
+            </FormikFormWrapper>
+          );
+        }}
       </Formik>
     </div>
   );

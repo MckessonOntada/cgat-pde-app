@@ -1,18 +1,20 @@
-import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
-import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import Components from '@src/components/form/Components';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
-import { useRole } from '@src/mfe/org-management/context/RoleContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import DiscardChangesModal from './DiscardChangesModel';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import useRouteMode from '@src/mfe/user-management/routes/useRouteMode';
+import RoleService from '@src/api/commonService/RoleService';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
 
 const getRoleValidationSchema = (t) =>
   Yup.object({
@@ -26,40 +28,46 @@ const getRoleValidationSchema = (t) =>
       .max(100, t('orgManagement.form.errors.roleDescriptionMaxLength'))
   });
 
+const getSubmitButtonCaption = ({ isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Saving';
+  if (!isSaving && isEdit) return 'Update Details';
+  return 'Save and Continue';
+};
+
+const INITIAL_STATE = {
+  roleName: '',
+  roleDescription: ''
+};
 const moduleBasePath = '/admin/organization/roles';
 
 const RoleDetails = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { roleId } = useParams();
-  const { refreshData } = useRole();
+  const { state, setValue } = useWidgetContext();
   const [alert, setAlert] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const location = useLocation();
-  const row = location.state ?? {};
+  const { roleDetails, createWizardSteps } = state;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const isEdit = !!roleId;
+  const { isEdit, id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'roleId' });
 
-  const [initialFormValues, setInitialFormValues] = React.useState({
-    roleName: '',
-    roleDescription: ''
-  });
+  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_STATE);
 
   React.useEffect(() => {
-    if (roleId && row) {
-      const { name, description } = row;
+    if ((isEdit && roleDetails) || createWizardSteps.details) {
+      const { name, description } = roleDetails;
       setInitialFormValues({
         roleName: name,
         roleDescription: description
       });
     }
-  }, [roleId]);
+  }, [roleDetails]);
 
   const handleOnBackButtonClick = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(isEdit ? `${moduleBasePath}/${roleId}` : moduleBasePath);
+      navigate(isEdit ? `${moduleBasePath}/${id}` : moduleBasePath);
     }
   };
 
@@ -69,52 +77,54 @@ const RoleDetails = () => {
 
   const roleValidationSchema = getRoleValidationSchema(t);
 
-  const { mutate: saveRoleDetails, isLoading } = useMutation(
-    async (data) => {
-      let apiUrl = ApiRoutes.GET_ROLES();
-      let actionSpecificHttpVerb = httpVerb.POST;
-
-      if (roleId) {
-        apiUrl += `/${roleId}`;
-        actionSpecificHttpVerb = httpVerb.PATCH;
+  const { mutate: saveRoleDetails, isLoading: isSaving } = useMutation({
+    mutationFn: async (data) => {
+      if ((isEdit && id) || (!isEdit && createWizardSteps.details)) {
+        return RoleService.updateRole(id, data);
+      } else {
+        return RoleService.createRole(data);
       }
-      const res = await HttpResourceService.callRest(apiUrl, actionSpecificHttpVerb, data);
-      return res;
     },
-    {
-      onSuccess: (res) => {
-        const { data } = res;
-        if (isEdit) {
-          navigate(`${moduleBasePath}/${data.id}`, {
-            state: {
-              alert: {
-                type: 'success',
-                description: 'Role details updated successfully.'
-              }
+    onSuccess: (data) => {
+      setValue('roleDetails', data);
+      setValue('createWizardSteps', {
+        ...state.createWizardSteps,
+        details: true
+      });
+      if (isEdit) {
+        navigate(`${moduleBasePath}/${data.id}`, {
+          state: {
+            alert: {
+              pinPoint: 'details',
+              type: 'success',
+              description: 'Role details updated successfully.'
             }
-          });
-        } else {
-          navigate(`${moduleBasePath}/${data.id}/permissions`, {
-            state: { data: data }
-          });
-        }
-      },
-      onError: (error) => {
-        setAlert({
-          type: 'error',
-          description: error.message
+          }
         });
+      } else {
+        navigate(`../${data.id}/permissions`);
       }
+    },
+    onError: (error) => {
+      setAlert({
+        type: 'error',
+        description: error.message
+      });
     }
-  );
+  });
 
   const handleOnSubmit = (values, _action) => {
+    if (createWizardSteps.details && !isDirty) {
+      navigate(`./../permissions`);
+      return;
+    }
+
     const payload = {
       name: values.roleName,
       description: values.roleDescription
     };
-    if (roleId) {
-      payload.id = roleId;
+    if (id) {
+      payload.id = id;
     }
     saveRoleDetails(payload);
   };
@@ -125,9 +135,6 @@ const RoleDetails = () => {
     }
   };
 
-  if (isLoading) {
-    return <Loader type={'screen'} />;
-  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -147,7 +154,7 @@ const RoleDetails = () => {
               }, [dirty]);
 
               return (
-                <Form>
+                <FormikFormWrapper disabled={isSaving}>
                   <div className="MCP-module-wrapper">
                     <div className="MCP-panel-container">
                       <ModuleHeader
@@ -169,8 +176,8 @@ const RoleDetails = () => {
                             placeholder=" "
                             component={Components['textarea']}
                             fieldlabel={t('orgManagement.role.labelRoleDescription')}
-                            maxCharHelperText={t('ManageCatalog.input.validation.text')}
-                            maxCharLimit={5000}
+                            maxCharHelperText={t('input.helpers.maxCharLimit', { count: '100' })}
+                            maxCharLimit={100}
                           />
                         </div>
                       </div>
@@ -180,12 +187,19 @@ const RoleDetails = () => {
                       <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
                         {t('orgManagement.button.cancel')}
                       </Button>
-                      <Button disabled={!isDirty} size="md" variant="primary" type="submit">
-                        {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                      <Button
+                        disabled={!(isDirty || (!isEdit && createWizardSteps.details))}
+                        size="md"
+                        variant="primary"
+                        type="submit"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left">
+                        {getSubmitButtonCaption({ isEdit, isSaving })}
                       </Button>
                     </div>
                   </div>
-                </Form>
+                </FormikFormWrapper>
               );
             }}
           </Formik>

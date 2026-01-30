@@ -17,21 +17,32 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import AuthUtils from '@src/util/AuthUtils';
 import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import RoleService from '@src/api/commonService/RoleService';
+import useRouteMode from '@src/mfe/user-management/routes/useRouteMode';
+
+const getSubmitButtonCaption = ({ isEdit, isSaving }) => {
+  if (isSaving && isEdit) return 'Updating';
+  if (isSaving && !isEdit) return 'Saving';
+  if (!isSaving && isEdit) return 'Update Permissions';
+  return 'Save and Continue';
+};
 
 const RolePermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { roleId } = useParams();
   const location = useLocation();
-  const row = location.state.data || null;
+  const { state } = useWidgetContext();
+  const { roleDetails, createWizardSteps } = state;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [initialFormValues, setInitialFormValue] = React.useState({});
   const [alert, setAlert] = useState(null);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const { isEdit } = location.state || {};
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'roleId' });
   const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
-
+  const { setValue } = useWidgetContext();
   const { data: permissions } = useQuery({
     queryKey: ['users/permissions'],
     queryFn: async () => {
@@ -72,7 +83,7 @@ const RolePermissions = () => {
         ? permissions || {}
         : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
 
-      const { permissions: existingPermissions, communicationPreferences, ...rest } = row;
+      const { permissions: existingPermissions, communicationPreferences, ...rest } = roleDetails;
       const _permissions = {};
       Object.entries(filteredPermissionsEnum).map(([_category, permissions]) => {
         Object.entries(permissions).map(([key, _permission]) => {
@@ -83,30 +94,33 @@ const RolePermissions = () => {
       setInitialFormValue({
         permissions: _permissions,
         role: {
-          ...rest
+          ...rest,
+          id: rest.id.toString()
         }
       });
     }
-  }, [permissions, location.state]);
+  }, [permissions, roleDetails, location]);
 
   const handleOnCancelButtonClick = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
-    } else navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`);
+    } else navigate(isEdit ? `./../..` : `./../details`);
   };
 
   const { mutate: updatePermissions, isLoading: isUpdating } = useMutation({
-    mutationFn: async (data) => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`, httpVerb.PATCH, data);
-      return res;
-    },
-    onSuccess: (_response) => {
+    mutationFn: async (data) => RoleService.updatePermissions(id, data),
+    onSuccess: (response) => {
+      setValue('roleDetails', response);
       if (isEdit) {
-        navigate(`/admin/organization/roles/${roleId}`, {
-          state: { alert: { type: 'success', description: 'Role permissions updated successfully.' } }
+        navigate(`./../..`, {
+          state: { alert: { pinPoint: 'permissions', type: 'success', description: 'Role permissions updated successfully.' } }
         });
       } else {
-        navigate(`/admin/organization/roles/${roleId}/notification-permissions`);
+        setValue('createWizardSteps', {
+          ...state.createWizardSteps,
+          permissions: true
+        });
+        navigate(`../${roleId}/notification-preferences`);
       }
     },
     onError: (_error) => {
@@ -121,12 +135,12 @@ const RolePermissions = () => {
     if (isDirty) {
       setModalSuccessCallback('mainlist');
     } else {
-      navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
+      navigate(isEdit ? `./../..` : './../../..');
     }
   };
 
   const handleNavigate = () => {
-    if (modalSuccessCallback === 'back') navigate(`../${roleId}/edit-role`, { state: row });
+    if (modalSuccessCallback === 'back') navigate(`../${roleId}/edit-role`, { state: roleDetails });
     else if (modalSuccessCallback === 'list') {
       navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
     } else if (modalSuccessCallback === 'mainlist') {
@@ -135,12 +149,19 @@ const RolePermissions = () => {
   };
 
   const handleOnSubmit = (values) => {
+    if (createWizardSteps.details && !isDirty) {
+      navigate(`./../notification-preferences`);
+      return;
+    }
+
     const { permissions = [] } = values;
     const payload = {
       permissions: Object.keys(permissions).filter((k) => permissions[k])
     };
     updatePermissions(payload);
   };
+
+  console.log('initialFormValues', initialFormValues);
 
   return (
     <div className="MCP-module-wrapper">
@@ -150,7 +171,7 @@ const RolePermissions = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
+      <ModuleHeader heading={<PageHeader heading={isEdit ? 'Edit Role Permissions' : t('orgManagement.role.labelAddRole')} />} />
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
 
       <div className="MCP-module-body">
@@ -165,17 +186,17 @@ const RolePermissions = () => {
                   <PermissionForm permissions={permissions} isRolePage={true} />
                   <div className={'buttonGroup'}>
                     <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
-                      {t('orgManagement.button.cancel')}
+                      {isEdit ? t('orgManagement.button.cancel') : 'Back'}
                     </Button>
                     <Button
-                      disabled={isUpdating || !isDirty}
+                      disabled={!(!isUpdating || isDirty || (!isEdit && createWizardSteps.permissions))}
                       variant="primary"
                       isLoadingState={isUpdating}
                       Icon={isUpdating && ButtonLoadingIcon}
                       iconPosition="left"
                       type="submit"
                       size="md">
-                      {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                      {getSubmitButtonCaption({ isEdit, isSaving: isUpdating })}
                     </Button>
                   </div>
                 </FormikFormWrapper>
