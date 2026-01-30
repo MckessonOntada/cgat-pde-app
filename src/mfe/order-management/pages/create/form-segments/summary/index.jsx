@@ -871,10 +871,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             coiId: orderDetails.patient?.coiId,
             patientDTO: null
           };
-
-    console.log('----------------', draftChangesInitialValue);
-    console.log('-------------drafy---', draftChanges);
-
+          
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, draftChangesInitialValue);
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
