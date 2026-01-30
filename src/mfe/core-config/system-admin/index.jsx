@@ -7,9 +7,13 @@ import Dashboard from './dashboard';
 import AuthUtils from '@src/util/AuthUtils';
 import NotFound from '@src/pages/error-pages/NotFound';
 import { CSReviewOrders } from './cs-review-orders';
+import { WidgetProvider } from '@src/context/WidgetContext';
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
-
+const INITIAL_STATE = {
+  orcaPatient: null,
+  isVerified: false
+};
 export default function DashboardRoutes() {
   return (
     <Routes>
@@ -47,7 +51,9 @@ export default function DashboardRoutes() {
         path={'orders/*'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-            <CSReviewOrders />
+            <WidgetProvider initialState={INITIAL_STATE}>
+              <CSReviewOrders />
+            </WidgetProvider>
           </ProtectedRoute>
         }
       />

@@ -16,6 +16,7 @@ import { getManufacturer, removeFieldPrefixSuffix, updatePatientValues } from '.
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import AuthUtils from '@src/util/AuthUtils';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function OrcaPatientDetails() {
   const { orderId } = useParams();
@@ -36,28 +37,30 @@ function OrcaPatientDetails() {
   const manufacturer = getManufacturer(orderDetails);
   const formikRef = React.useRef();
   const [isPatientVerified, setPatientVerified] = React.useState(false);
+  const { state, setValue } = useWidgetContext();
 
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
-
+  const { orcaPatient } = state;
   React.useEffect(() => {
-    if (orderDetails.id) {
+    if (orderDetails.id || orcaPatient) {
       const { patient = {} } = orderDetails;
+      const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
       const verifiedPatient = {
-        ...patient.patientInfo
+        ...patientData.patientInfo
       };
 
-      if (patient.medicalRecordNumber) {
-        verifiedPatient.medicalRecordNumber = patient.medicalRecordNumber;
+      if (patientData.medicalRecordNumber) {
+        verifiedPatient.medicalRecordNumber = patientData.medicalRecordNumber;
       }
-      if (patient.patientIdentifier) {
-        verifiedPatient.patientId = patient.patientIdentifier;
+      if (patientData.patientIdentifier) {
+        verifiedPatient.patientId = patientData.patientIdentifier;
       }
 
       setOrcaVerifiedPatient(verifiedPatient);
       setPatientVerified(['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(verifiedPatient?.[key])));
 
       setInitialValues({
-        patient: { ...patient }
+        patient: { ...patientData }
       });
     }
   }, [orderDetails]);
@@ -237,7 +240,18 @@ function OrcaPatientDetails() {
     const payload = {
       patient
     };
-    savePatientDetails({ payload });
+
+    setValue('orcaPatient', patient);
+    setValue('isVerified', true);
+    navigate(-1, {
+      state: {
+        alert: {
+          description: 'Patient details updated successfully',
+          type: 'success'
+        }
+      }
+    });
+    // savePatientDetails({ payload });
   };
 
   const spTherapyConfig = {
