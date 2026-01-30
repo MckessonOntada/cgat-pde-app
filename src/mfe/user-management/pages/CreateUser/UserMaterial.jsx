@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import AuthUtils from '@src/util/AuthUtils';
-import { useFilters, useTable } from '@src/context/TableContext';
+import { useFilters, usePagination, useTable } from '@src/context/TableContext';
 
 function UserMaterial(props) {
   const { searchPlaceholder, onAlert } = props;
@@ -22,6 +22,7 @@ function UserMaterial(props) {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { state } = useWidgetContext();
   const { refreshTable } = useTable();
+  const { changePage } = usePagination();
   const { applyFilters, clearFilters } = useFilters();
 
   const unlinkMaterial = (selection) => {
@@ -36,6 +37,7 @@ function UserMaterial(props) {
     if (unlinkPromise)
       unlinkPromise
         .then((response) => {
+          changePage(0);
           refreshTable();
           setSelection([]);
           const alert = {

@@ -32,6 +32,7 @@ import UserService from '@src/api/commonService/UserService';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import MaterialWrapper from '../CreateUser/MaterialWrapper';
+import useRouteMode from '../../routes/useRouteMode';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -62,7 +63,9 @@ const UserDetail = () => {
   const [alert, setAlert] = useState(null);
   const [isPhysicianUser, setIsPhysicianUser] = useState(false);
   const location = useLocation();
-  const { isPending = false, isEdit = false } = location.state || {};
+  const { isPending = false } = location.state || {};
+  const { isEdit, id } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
+
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
@@ -80,34 +83,21 @@ const UserDetail = () => {
     isActive: false
   });
 
-  const {
-    isLoading,
-    data: userDetails = {},
-    refetch,
-    isError,
-    error
-  } = useQuery({
-    queryKey: [`users/${userId}`],
-    queryFn: () => UserService.getUserDetails(userId, requestParams, isPending),
-    enabled: Boolean(userId),
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setValue('userDetails', data);
-      const u = data?.userCommunicationPreferences?.preferences;
-      const r = data?.role?.communicationPreferences?.preferences;
+  const { userDetails = {}, isLoading } = state;
+  React.useEffect(() => {
+    console.log('userDetails changed', state.userDetails);
+    if (userDetails) {
+      const u = userDetails?.userCommunicationPreferences?.preferences;
+      const r = userDetails?.role?.communicationPreferences?.preferences;
       const updated = getMergedPreferences(preferencesConfig, u, r);
 
       setPreferenceConfig(updated);
       setIsPreferencesLoaded(true);
 
-      const role = data?.role;
+      const role = userDetails?.role;
       setIsPhysicianUser(AuthUtils.isPhysician(role?.name, role?.id));
-    },
-    select: (data) => {
-      if (!data.communicationPreferences) data.communicationPreferences = {};
-      return data;
     }
-  });
+  }, [userDetails]);
 
   useEffect(() => {
     if (isEdit) {
@@ -304,16 +294,14 @@ const UserDetail = () => {
   const loggedUserId = Number(AuthUtils.getUserId());
 
   const prePermissions = userDetails?.isActive && userDetails?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
-  if (isLoading) {
-    return <Loader variant={'circular'} />;
-  }
-  if (isError) {
-    const statusCode = error?.response?.status;
-    let description = translateFn('error.default');
-    if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-    return <Alert type="error" description={description} />;
-  }
+  // if (isError) {
+  //   const statusCode = error?.response?.status;
+  //   let description = translateFn('error.default');
+  //   if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+
+  //   return <Alert type="error" description={description} />;
+  // }
   return (
     <div className="MCP-module-wrapper">
       <div>
