@@ -7,6 +7,12 @@ import { CONFIG_MODULE_ROUTES } from '../core-config/system-admin/constants';
 import AppRoutes from '@src/routes/AppRoutes';
 import { PERMISSIONS_ENUM } from '../user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import { WidgetProvider } from '@src/context/WidgetContext';
+
+const INITIAL_STATE = {
+  orcaPatient: null,
+  isVerified: false
+};
 
 const OrderManagement = () => {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
@@ -21,7 +27,9 @@ const OrderManagement = () => {
   return (
     <div>
       <ManageOrderProvider>
-        <Routes />
+        <WidgetProvider initialState={INITIAL_STATE}>
+          <Routes />
+        </WidgetProvider>
         <Outlet />
       </ManageOrderProvider>
     </div>

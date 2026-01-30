@@ -280,7 +280,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     }
 
     if (isCSReviewOrdersPage && (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || config.tab === ORDER_TABS.SUBMITTED_SP)) {
-      const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW];
+      const statusOptions = [ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW];
 
       filters.push({
         type: 'dropdown',
