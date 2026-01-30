@@ -871,7 +871,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             coiId: orderDetails.patient?.coiId,
             patientDTO: null
           };
-          
+
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, draftChangesInitialValue);
     const controlPrintSummary = (
       <Button size={'md'} variant="secondary" onClick={() => printPage()}>
@@ -1240,7 +1240,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
                       ((isSubmitted || isCSReview) && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
-                      <DetailSegment label={t('labels.orderId')} value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId} />
+                      <DetailSegment
+                        label={t('labels.orderId')}
+                        value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId || orderDetails.id}
+                      />
                     )}
                     <DetailSegment
                       label={t('labels.therapy')}
