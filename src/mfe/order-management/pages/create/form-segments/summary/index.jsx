@@ -1154,6 +1154,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     orderId={orderId}
                     channelType={orderDetails.channelType}
                     showControls={false}
+                    isCustomerCentreUser={isCustomerCentreUser}
                   />
                 )}
                 {orderDetails?.therapy?.manufacturerName && <ManufacturerLogo therapyId={orderDetails.therapy?.id} />}
