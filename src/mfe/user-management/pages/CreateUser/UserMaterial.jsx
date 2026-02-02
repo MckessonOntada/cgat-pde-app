@@ -1,16 +1,14 @@
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Button, Alert, Modal } from '@mckesson/mcp-component-library';
 import React from 'react';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useParams } from 'react-router-dom';
 import Materials from './Materials';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonFilters from '@src/components/Filters';
-import { useQuery } from 'react-query';
-import { useDispatch } from 'react-redux';
-import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import AuthUtils from '@src/util/AuthUtils';
 import { useFilters, usePagination, useTable } from '@src/context/TableContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function UserMaterial(props) {
   const { searchPlaceholder, onAlert } = props;
@@ -18,7 +16,8 @@ function UserMaterial(props) {
   const { userId } = useParams();
   const { t: translateFn } = useTranslate();
   const [selection, setSelection] = React.useState([]);
-  const dispatch = useDispatch();
+  const [unlinkConfirmationOpen, setUnlinkConfirmationOpen] = React.useState(false);
+  const [unlinkSelection, setUnlinkSelection] = React.useState([]);
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { state } = useWidgetContext();
   const { refreshTable } = useTable();
@@ -27,20 +26,20 @@ function UserMaterial(props) {
   const { changePage } = usePagination();
   const { applyFilters, clearFilters } = useFilters();
 
-  const unlinkMaterial = (selection) => {
+  const unlinkMaterial = () => {
     const userDetails = state.userDetails;
     const selectedRole = userDetails.role.name;
     let unlinkPromise = null;
     if (isSystemAdmin && selectedRole === 'Customer Centre') {
-      unlinkPromise = MaterialService.unlinkCustomerCentreMaterials(userId, selection);
+      unlinkPromise = MaterialService.unlinkCustomerCentreMaterials(userId, unlinkSelection);
     } else {
-      unlinkPromise = MaterialService.unlinkMaterial(userId, selection);
+      unlinkPromise = MaterialService.unlinkMaterial(userId, unlinkSelection);
     }
     if (unlinkPromise)
       unlinkPromise
-        .then((response) => {
+        .then((_response) => {
           const totalCount = data.reduce((sum, item) => sum + (item.isExpandable ? item.therapies.length : 1), 0);
-          if (totalCount === selection.length) {
+          if (totalCount === selection.length && pagination.pageNo > 1) {
             changePage(Math.max(pagination.pageNo - 1, 1));
           } else {
             refreshTable();
@@ -68,30 +67,18 @@ function UserMaterial(props) {
           }
         })
         .finally(() => {
-          dispatch(closeModal());
+          setUnlinkSelection([]);
+          setUnlinkConfirmationOpen(false);
         });
   };
 
-  const confirmMaterialUnlink = (selection) => {
-    const modalState = {
-      title: translateFn('messages.confirmation.unlinkMaterial'),
-      body: (
-        <div className="MCP-modal-body">
-          <p>{translateFn('messages.confirmation.unlinkMaterialDescription')}</p>
-        </div>
-      ),
-      footer: (
-        <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            {translateFn('orgManagement.button.cancel')}
-          </Button>
-          <Button size="md" variant="primary" onClick={() => unlinkMaterial(selection)}>
-            {translateFn('orgManagement.button.OK')}
-          </Button>
-        </div>
-      )
-    };
-    dispatch(openModal(modalState));
+  const handleOnUnlink = (selection) => {
+    setUnlinkSelection(selection);
+    setUnlinkConfirmationOpen(true);
+  };
+  const handleOnNo = () => {
+    setSelection([]);
+    setUnlinkConfirmationOpen(false);
   };
 
   return (
@@ -110,7 +97,7 @@ function UserMaterial(props) {
           <SelectionRibbon
             header={translateFn('table.ribbon.nItemsSelected', { n: selection.length })}
             controls={
-              <Button variant="secondary" onClick={() => confirmMaterialUnlink(selection.map((item) => item.id))}>
+              <Button variant="secondary" onClick={() => handleOnUnlink(selection.map((item) => item.id))}>
                 Unlink
               </Button>
             }
@@ -118,11 +105,12 @@ function UserMaterial(props) {
         ) : null}
         <Materials
           columnActions={{
-            onUnlink: confirmMaterialUnlink
+            onUnlink: handleOnUnlink
           }}
           {...{ selection, setSelection, data, loading }}
         />
       </div>
+      {unlinkConfirmationOpen && <UnlinkConfirmation onYes={unlinkMaterial} onNo={handleOnNo} />}
     </div>
   );
 }
@@ -135,5 +123,42 @@ function SelectionRibbon({ header, controls }) {
     </div>
   );
 }
+
+const UnlinkConfirmation = ({ onYes, onNo }) => {
+  const { t: translateFn } = useTranslate();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleOnYes = (...args) => {
+    setIsLoading(true);
+    onYes && onYes(args);
+  };
+
+  return (
+    <Modal
+      {...{
+        id: 'material-unlink-consent-modal',
+        isOpen: true,
+        onClose: onNo,
+        modalTitle: translateFn('messages.confirmation.unlinkMaterial'),
+        modalBody: (
+          <div className="MCP-modal-body">
+            <p>{translateFn('messages.confirmation.unlinkMaterialDescription')}</p>
+          </div>
+        ),
+        modalFooter: (
+          <div className="controls">
+            <Button size="md" variant="secondary" onClick={onNo}>
+              {translateFn('orgManagement.button.cancel')}
+            </Button>
+            <Button variant="primary" isLoadingState={isLoading} Icon={isLoading && ButtonLoadingIcon} iconPosition="left" onClick={handleOnYes} size="md">
+              {isLoading ? 'Unlinking' : translateFn('orgManagement.button.OK')}
+            </Button>
+          </div>
+        ),
+        modalSize: 'md'
+      }}
+    />
+  );
+};
 
 export default UserMaterial;
