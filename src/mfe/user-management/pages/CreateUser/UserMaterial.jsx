@@ -22,6 +22,8 @@ function UserMaterial(props) {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { state } = useWidgetContext();
   const { refreshTable } = useTable();
+  const { data, loading } = useTable();
+  const { pagination } = usePagination();
   const { changePage } = usePagination();
   const { applyFilters, clearFilters } = useFilters();
 
@@ -37,8 +39,12 @@ function UserMaterial(props) {
     if (unlinkPromise)
       unlinkPromise
         .then((response) => {
-          changePage(0);
-          refreshTable();
+          const totalCount = data.reduce((sum, item) => sum + (item.isExpandable ? item.therapies.length : 1), 0);
+          if (totalCount === selection.length) {
+            changePage(Math.max(pagination.pageNo - 1, 1));
+          } else {
+            refreshTable();
+          }
           setSelection([]);
           const alert = {
             type: 'success',
@@ -114,7 +120,7 @@ function UserMaterial(props) {
           columnActions={{
             onUnlink: confirmMaterialUnlink
           }}
-          {...{ selection, setSelection }}
+          {...{ selection, setSelection, data, loading }}
         />
       </div>
     </div>
