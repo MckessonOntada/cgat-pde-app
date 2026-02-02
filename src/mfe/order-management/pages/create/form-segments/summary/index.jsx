@@ -68,7 +68,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
-  const [sapStatus, setSapStatus] = React.useState(null);
+  const [sapStatus, setSapStatus] = React.useState(SAP_ORDER_STATUS.OPEN);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const hasFetchedInventory = useRef(false);
   const [drawerElement, setDrawerElement] = React.useState(null);
@@ -1055,7 +1055,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const netAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.totalNetPrice);
   const taxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
   const totalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
-
+  console.log(orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL, isSubmitted || isCSReview, sapStatus === SAP_ORDER_STATUS.OPEN);
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching || patientIdCoiIdValidationLoading) && <Loader type={'screen'} />}
