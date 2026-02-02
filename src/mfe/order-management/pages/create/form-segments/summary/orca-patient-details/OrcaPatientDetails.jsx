@@ -317,7 +317,7 @@ function OrcaPatientDetails() {
                       </Button>
 
                       <Button
-                        disabled={!isPatientVerified || !isDirty}
+                        disabled={!isPatientVerified || !isDirty || isPatientVerifying}
                         variant="primary"
                         isLoadingState={isSaving}
                         Icon={isSaving && ButtonLoadingIcon}
