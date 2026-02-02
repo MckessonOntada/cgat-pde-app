@@ -38,7 +38,7 @@ export default function MaterialSelection() {
   const { t: translateFn } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { state, reset } = useWidgetContext();
-  const { data } = useTable();
+  const { data, loading } = useTable();
   const { applyFilters, clearFilters } = useFilters();
   React.useEffect(() => {
     if (data && data.length > 0 && !isSystemAdminView) {
@@ -146,7 +146,7 @@ export default function MaterialSelection() {
           <TableHeading heading={translateFn('table.title.selectMaterial')} />
           <div className="table-selection-wrapper">
             <div className="table">
-              <Materials omitColumns={['action', 'formulation', 'dosage']} {...{ selection, setSelection }} />
+              <Materials omitColumns={['action', 'formulation', 'dosage']} {...{ selection, setSelection, data, loading }} />
             </div>
             <div className="list">
               <List title={translateFn('list.title.selectedMaterials')}>

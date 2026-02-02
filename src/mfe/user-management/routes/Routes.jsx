@@ -38,7 +38,7 @@ const Routes = () => {
           <Route
             path={`:userId/${PATHS.MATERIAL}`}
             element={
-              <MaterialWrapper listingMode="EXCLUDED">
+              <MaterialWrapper listingMode="ALL">
                 <MaterialSelection />
               </MaterialWrapper>
             }

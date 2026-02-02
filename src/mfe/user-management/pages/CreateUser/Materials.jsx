@@ -8,12 +8,11 @@ import { createColumns } from './helpers';
 import CommonUtils from '@src/util/CommonUtils';
 import { useFilters, usePagination, useTable } from '@src/context/TableContext';
 
-function Materials({ selection = [], setSelection, omitColumns = [], columnActions, trade, onChange, readOnly, error }) {
+function Materials({ selection = [], data, loading = false, setSelection, omitColumns = [], columnActions, trade, onChange, readOnly, error }) {
   const showCardView = useResponsiveView();
   const { t: translateFn } = useTranslate();
   const [expandedRows, setExpandedRows] = React.useState([]);
   const { pagination, changePage } = usePagination();
-  const { data, loading } = useTable();
   const { filters } = useFilters();
   const isFilterApplied = Object.values(filters).some((v) => v !== null && v !== undefined && v !== '');
   const isRowExpanded = (trade) => {
