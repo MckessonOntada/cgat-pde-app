@@ -68,7 +68,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
-  const [sapStatus, setSapStatus] = React.useState(null);
+  const [sapStatus, setSapStatus] = React.useState(SAP_ORDER_STATUS.OPEN);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const hasFetchedInventory = useRef(false);
   const [drawerElement, setDrawerElement] = React.useState(null);
