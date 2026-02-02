@@ -1055,7 +1055,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const netAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.totalNetPrice);
   const taxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
   const totalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
-  console.log(orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL, isSubmitted || isCSReview, sapStatus === SAP_ORDER_STATUS.OPEN);
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {(isSaving || isFetching || patientIdCoiIdValidationLoading) && <Loader type={'screen'} />}
