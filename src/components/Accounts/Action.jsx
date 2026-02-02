@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Modal } from '@mckesson/mcp-component-library';
+import { Modal, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
-import Button from '@src/components/button';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { useAccounts } from './AccountsContext';
+import IconButton from '@src/components/button';
 
 export default function Actions({ row, userId, practiceId, refetch }) {
   const { t } = useTranslate();
@@ -65,9 +65,9 @@ export default function Actions({ row, userId, practiceId, refetch }) {
 
   return (
     <React.Fragment>
-      <Button style={{ padding: 0 }} variant="text" size="small" startIcon={<LinkIcon width="14" height="14" />} onClick={() => handleOpenPopup(row.id)}>
+      <IconButton style={{ padding: 0 }} variant="text" size="small" startIcon={<LinkIcon width="14" height="14" />} onClick={() => handleOpenPopup(row.id)}>
         Unlink
-      </Button>
+      </IconButton>
       <Modal
         {...{
           id: 'xxxs-modal',
