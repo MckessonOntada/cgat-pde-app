@@ -38,7 +38,7 @@ const ReviewUser = () => {
           controls={
             <div className="row-space-between-center lblStatusDetails">
               <Label className="lblStatus">{t(`userManagement.table.status`)}</Label>
-              <Badge text={status} type={status === 'rejected' ? 'error' : 'info'} />
+              <Badge text={status} type={status === 'REJECTED' ? 'error' : 'info'} />
             </div>
           }
         />

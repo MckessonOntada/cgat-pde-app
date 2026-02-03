@@ -533,5 +533,6 @@ export const UserManagementEN = {
 
   'button.caption.addAttribute': 'Add Attribute',
   'group.rule.helperText': 'Please select a criteria to apply the approval rules on.',
-  'notificationGroup.validation.noLeadingTrailingSpaces': 'Group name must not start or end with spaces'
+  'notificationGroup.validation.noLeadingTrailingSpaces': 'Group name must not start or end with spaces',
+  'userManagement.message.userRejectSuccess': 'User has been Rejected successfully.'
 };

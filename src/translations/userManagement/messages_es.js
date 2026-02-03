@@ -504,5 +504,6 @@ export const UserManagementES = {
   'notificationGroup.placeholder.selectNotificationTriggers': 'Select Notification Triggers',
   'notificationGroup.placeholder.selectAccounts': 'Select Accounts',
   'notificationGroup.placeholder.selectMaterials': 'Select Materials',
-  'notificationGroup.validation.noLeadingTrailingSpaces': 'S_Group name must not start or end with spaces'
+  'notificationGroup.validation.noLeadingTrailingSpaces': 'S_Group name must not start or end with spaces',
+  'userManagement.message.userRejectSuccess': 'User has been Rejected successfully.'
 };
