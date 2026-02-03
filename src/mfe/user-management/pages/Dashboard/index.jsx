@@ -50,26 +50,39 @@ export default function Dashboard() {
   const tab = params.get('tab');
 
   useEffect(() => {
-    let shouldReplace = false;
     const nextParams = new URLSearchParams(location.search);
+    let shouldNavigate = false;
+    let nextState = location.state || null;
+
+    let activeTab = tab;
 
     if (!tab) {
+      activeTab = USER_TABS.USERS;
       nextParams.set('tab', USER_TABS.USERS);
-      shouldReplace = true;
+      shouldNavigate = true;
     }
+
+    setTabList((prev) =>
+      prev.map((t) => ({
+        ...t,
+        isActiveTab: t.id === activeTab
+      }))
+    );
 
     const { alert } = location.state || {};
     if (alert) {
       setAlert(alert);
-      shouldReplace = true;
+      nextState = null;
+      shouldNavigate = true;
     }
 
-    if (shouldReplace) {
-      navigate(`${location.pathname}?${nextParams.toString()}`, { replace: true, state: null });
-    } else {
-      setTabList(tabList.map((t) => ({ ...t, isActiveTab: t.id === tab })));
+    if (shouldNavigate) {
+      navigate(`${location.pathname}?${nextParams.toString()}`, {
+        replace: true,
+        state: nextState
+      });
     }
-  }, [location.search, location.state]);
+  }, [location.search, location.state, navigate]);
 
   const showAlert = (type, description) => {
     setAlert({

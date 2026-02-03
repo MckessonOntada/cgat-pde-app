@@ -20,10 +20,10 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { PATHS } from '../../routes';
-import { RoutePaths } from '@src/routes/constants';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import { USER_TABS } from './constants';
 import ProviderService from '@src/api/commonService/ProviderService';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -52,6 +52,7 @@ function UserTable({ onActionSuccess, showAlert }) {
   const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
   const navigate = useNavigate();
+  const { state, setValue } = useWidgetContext();
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
@@ -131,16 +132,34 @@ function UserTable({ onActionSuccess, showAlert }) {
     isLoading: isLoadingReject,
     isError: isRejectError,
     data: rejectData
-  } = useMutation(async ({ userId }) => {
-    const reqParams = {
-      status: 'REJECTED'
-    };
-    const rejectResponse = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
-      httpVerb.PATCH,
-      {}
-    );
-    return rejectResponse.data;
+  } = useMutation({
+    mutationFn: async (id) => {
+      const reqParams = {
+        status: 'REJECTED'
+      };
+      const rejectResponse = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS_PROVISIONING()}/${id}/status?${serializeParams(reqParams)}`,
+        httpVerb.PATCH,
+        {}
+      );
+      return rejectResponse.data;
+    },
+
+    onSuccess: (response) => {
+      refreshData();
+      navigate(`${location.pathname}${location.search}`, {
+        state: {
+          alert: {
+            type: 'success',
+            description: t('userManagement.message.userRejectSuccess')
+          }
+        },
+        replace: true
+      });
+    },
+    onError: (error) => {
+      console.log('error: ', error);
+    }
   });
   const { mutate: resendVerifyLink } = useMutation(
     async (email) => {
@@ -168,29 +187,16 @@ function UserTable({ onActionSuccess, showAlert }) {
   );
 
   const handleOnOptionSelection = (value, row) => {
-    if (value == 'review') {
-      navigate(row.status !== 'PENDING' ? `../${row.id}/${PATHS.EDIT}?provision=true` : `../${row.id}/${PATHS.REVIEW}?provision=true`, {
-        state: { isPending: true }
-      });
+    if (value == 'review' && row.status === 'PENDING') {
+      navigate(`../${PATHS.CREATE}/${row.id}/${PATHS.PERSONAL}?provision=true`);
+    } else if (value == 'review' && row.status !== 'PENDING') {
+      navigate(`../${row.id}/${PATHS.REVIEW}?provision=true`);
     } else if (value === 'resendLink') {
       resendVerifyLink(row.contact.email);
     } else if (value === 'edit') {
       navigate(`${row.id}`);
     } else if (value === 'reject') {
-      rejectUser(
-        { userId: row.id },
-        {
-          onSuccess: (response) => {
-            navigate(RoutePaths.pathUserManagement, {
-              state: { isReject: true, isSuccess: true },
-              replace: true
-            });
-          },
-          onError: (error) => {
-            console.log('error: ', error);
-          }
-        }
-      );
+      rejectUser(row.id);
     }
   };
 
@@ -339,52 +345,43 @@ function UserTable({ onActionSuccess, showAlert }) {
         id: 'action',
         center: true,
         name: t('userManagement.table.action'),
-        cell: (row) => (
-          <MenuList
-            menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
-            handleSelect={(value) => handleOnOptionSelection(value, row)}
-            options={
-              !isSystemAdminView
-                ? tab === USER_TABS.PENDING_REQUESTS
-                  ? [
-                      {
-                        label: t('userManagement.table.action.review'),
-                        value: 'review'
-                      },
-                      ...(row.status !== 'REJECTED'
-                        ? [
-                            {
-                              label: t('userManagement.button.rejectrequest'),
-                              value: 'reject'
-                            }
-                          ]
-                        : [])
-                    ]
-                  : [
-                      {
-                        label: t('userManagement.button.resendLink'),
-                        value: 'resendLink'
-                      },
-                      {
-                        label: t('userManagement.viewUser'),
-                        value: 'edit'
-                      }
-                    ]
-                : [
-                    {
-                      label: t('userManagement.button.resendLink'),
-                      value: 'resendLink'
-                    },
-                    {
-                      label: t('userManagement.viewUser'),
-                      value: 'edit'
-                    }
-                  ]
+        cell: (row) => {
+          let options = [];
+
+          if (!isSystemAdminView) {
+            if (tab === USER_TABS.PENDING_REQUESTS) {
+              options = [{ label: t('userManagement.table.action.review'), value: 'review' }];
+
+              if (row.status !== 'REJECTED') {
+                options.push({
+                  label: t('userManagement.button.rejectrequest'),
+                  value: 'reject'
+                });
+              }
+            } else {
+              options = [
+                { label: t('userManagement.button.resendLink'), value: 'resendLink' },
+                { label: t('userManagement.viewUser'), value: 'edit' }
+              ];
             }
-            aria-label="Order options"
-            size="md"
-          />
-        ),
+          } else {
+            options = [
+              { label: t('userManagement.button.resendLink'), value: 'resendLink' },
+              { label: t('userManagement.viewUser'), value: 'edit' }
+            ];
+          }
+
+          return (
+            <MenuList
+              menuIcon={<IconEllipsis key="menu-list-users-table" />}
+              handleSelect={(value) => handleOnOptionSelection(value, row)}
+              options={options}
+              aria-label="Order options"
+              size="md"
+            />
+          );
+        },
+
         isAction: true
       }
     ];
