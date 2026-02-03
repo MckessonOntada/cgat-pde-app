@@ -919,7 +919,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     const controlRejectOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleReject}>
+        <Button size={'md'} variant="secondary" type="submit" onClick={handleReject}>
           {t(isSpOrder ? 'captions.btnRejectPrescription' : 'captions.btnRejectOrder')}
         </Button>
       </PermittedComponent>
@@ -952,10 +952,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       status !== ORDER_STATUS.REVIEW
     ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if ((allowUpdateBnBAfterSubmit && isPhysician) || (CommonUtils.isNonEmptyObject(draftChanges) && (isCustomerCentreUser || !isSpOrder))) {
-      controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
+    } else if (
+      (allowUpdateBnBAfterSubmit && isPhysician) ||
+      (CommonUtils.isNonEmptyObject(draftChanges) && isApprover && (isCustomerCentreUser || !isSpOrder))
+    ) {
+      controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     }
 
     return controls;
@@ -1013,7 +1016,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     });
   }
 
-  const askForPapOrder = Boolean(!isSpOrder && isImpersonatedAdmin());
+  const askForPapOrder = Boolean(!isSpOrder && isImpersonatedAdmin() && !['APPROVAL_PENDING', 'SUBMITTED'].includes(status));
   const primaryPolicyHolderName = CommonUtils.getUSFullName({
     firstName: payerDetails?.primaryMedicalInsurance?.policyHolderFirstName,
     lastName: payerDetails?.primaryMedicalInsurance?.policyHolderLastName
