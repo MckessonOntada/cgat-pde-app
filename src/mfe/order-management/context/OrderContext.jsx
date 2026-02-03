@@ -1,7 +1,7 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React from 'react';
 import { useQuery } from 'react-query';
-import { ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TAB_FILTERS, TOGGLE_FILTERS } from '../pages/orders/config';
+import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS, TOGGLE_FILTERS } from '../pages/orders/config';
 import { getDateRangeFromSelection } from '../pages/orders/dateRangeUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
@@ -83,10 +83,7 @@ export const OrderProvider = ({ children, isCSReviewOrdersPage = false }) => {
     }
   }, [location.search]);
 
-  const getStatuses = (config) =>
-    isCSReviewOrdersPage
-      ? config.status || [ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW]
-      : config.status || (config.tab && TAB_FILTERS[config.tab].join(','));
+  const getStatuses = (config) => (isCSReviewOrdersPage ? config.status || '' : config.status || (config.tab && TAB_FILTERS[config.tab].join(',')));
 
   const getChannelType = (config) => {
     if ([config.tab, config.orderType].includes(ORDER_TABS.SUBMITTED_SP)) {
