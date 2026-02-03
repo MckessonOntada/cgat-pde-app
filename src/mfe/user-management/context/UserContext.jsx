@@ -22,14 +22,14 @@ export const useUser = () => {
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  status: [],
+  status: 'all',
   role: [],
   dateRange: []
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: null,
-  sortOrder: null
+  sortBy: 'updated_At',
+  sortOrder: 'desc'
 };
 
 const INITIAL_PAGINATION_CONFIG = {

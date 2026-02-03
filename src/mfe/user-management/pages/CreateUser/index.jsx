@@ -98,7 +98,7 @@ const CreateUser = () => {
     const createdId = response?.id;
     let targetPath = '';
     if (provision) {
-      navigate(`./../../${createdId}/create/${PATHS.PERMISSIONS}`);
+      navigate(`./../../${createdId}/${PATHS.PERMISSIONS}`);
       return;
     } else if (isEdit) {
       targetPath = `./../..`;
@@ -123,7 +123,14 @@ const CreateUser = () => {
   const { mutate: rejectUserRequest } = useMutation({
     mutationFn: (params) => UserService.rejectUserRequest(id, params),
     onSuccess: (_response) => {
-      navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true } });
+      navigate(RoutePaths.pathUserManagement, {
+        state: {
+          alert: {
+            type: 'success',
+            description: t('userManagement.message.userRejectSuccess')
+          }
+        }
+      });
     },
     onError
   });
@@ -209,7 +216,7 @@ const CreateUser = () => {
   });
 
   const handleRejectRequest = () => {
-    rejectUserRequest({ status: true });
+    rejectUserRequest({ status: 'REJECTED' });
   };
 
   const handleSubmit = (values) => {
@@ -222,14 +229,14 @@ const CreateUser = () => {
       userType: isSystemAdminView ? 'ADMIN' : 'GENERAL',
       status: 'APPROVED'
     };
-    if (createWizardSteps.personalDetails) {
+    if (provision) {
+      approveUserRequest({ payload, params });
+    } else if (createWizardSteps.personalDetails) {
       if (!isDirty) {
         navigate(`../${id}/permissions`);
       } else {
         updateUser({ payload, params });
       }
-    } else if (provision && isEdit) {
-      approveUserRequest({ payload, params });
     } else if (isEdit) {
       updateUser({ payload, params });
     } else {
