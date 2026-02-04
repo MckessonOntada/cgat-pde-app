@@ -74,7 +74,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [drawerElement, setDrawerElement] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
-  const [allowedSubmission, setAllowedSubmission] = React.useState(true);
+  const [allowedSubmission, setAllowedSubmission] = React.useState(false);
   const { state, setValue } = useWidgetContext();
   const {
     therapy = {},
@@ -165,7 +165,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
       status,
-      isSPOrder: isSpOrder
+      isSPOrder: isSpOrder,
+      isCustomerCentreUser
     },
     (status) => setSapStatus(status),
     (error) => {
@@ -194,12 +195,23 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
   };
 
+  React.useState(() => {
+    setAllowedSubmission(state.isVerified);
+  }, [state.isVerified]);
+
   React.useEffect(() => {
-    const { id, status } = orderDetails;
+    const { id, status, patient = {} } = orderDetails;
     const invalidStatuses = [ORDER_STATUS.SUBMITTED, ORDER_STATUS.REJECTED, 'DELETED'];
 
     if (!id || invalidStatuses.includes(status)) {
       return;
+    }
+
+    if (manufacturer === MANUFACTURER.ORCA && patient.patientInfo) {
+      const patientInfo = patient.patientInfo;
+      const isVerified = !!(patientInfo.firstName && patientInfo.lastName && patientInfo.dateOfBirth);
+      setAllowedSubmission(isVerified);
+      setValue('isVerified', isVerified);
     }
 
     if (catalog.inventoryType === 'T') {
@@ -911,7 +923,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       </Button>
     ) : (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+        <Button
+          size="md"
+          disabled={(isResubmitting || !isOrderChanged || !allowedSubmission) && !(isCustomerCentreUser || isCSReview || isSubmitted)}
+          variant="primary"
+          type="submit"
+          onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -952,7 +969,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       status !== ORDER_STATUS.REVIEW
     ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
-    } else if (isCustomerCentreUser && isCSReview) {
+    } else if (isCustomerCentreUser || isCSReview || isSubmitted) {
       controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
