@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { ORDER_STATUS } from '../../../orders/config';
 
 function useSapOrder(payload, onSuccess, onError) {
-  const { sapOrderId, salesOrgId, status, isSPOrder } = payload;
+  const { sapOrderId, salesOrgId, status, isSPOrder, isCustomerCentreUser } = payload;
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['sap-order-status', sapOrderId, salesOrgId],
