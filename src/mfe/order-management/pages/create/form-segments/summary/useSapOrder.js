@@ -16,7 +16,7 @@ function useSapOrder(payload, onSuccess, onError) {
     onError: () => {
       onError();
     },
-    enabled: Boolean(!isSPOrder && sapOrderId && salesOrgId && status === ORDER_STATUS.SUBMITTED),
+    enabled: Boolean(!isSPOrder && sapOrderId && salesOrgId && !isCustomerCentreUser && status === ORDER_STATUS.SUBMITTED),
     refetchOnWindowFocus: false
   });
 

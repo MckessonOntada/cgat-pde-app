@@ -906,7 +906,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     );
 
     const controlReSubmitOrder = isCustomerCentreUser ? (
-      <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+      <Button size="md" disabled={isResubmitting || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
         {t('captions.btnSubmitOrder')}
       </Button>
     ) : (
@@ -952,6 +952,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       status !== ORDER_STATUS.REVIEW
     ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
+    } else if (isCustomerCentreUser && isCSReview) {
+      controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
     } else if (
@@ -975,7 +977,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       return true;
     }
     return true;
-  }, [isRejected, isDeleted, isApprover, status, sapStatus]);
+  }, [isRejected, isDeleted, isSubmitted, isCSReview, isApprover, status, sapStatus, orderDetails]);
   const allowUpdateBnBAfterSubmit =
     orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
@@ -1110,7 +1112,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   </div>
                 )}
 
-                {(isSubmitted || isCSReview) && !isSpOrder && (
+                {isSubmitted && !isCSReview && !isSpOrder && (
                   <div className="row-space-between-center">
                     <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
 
