@@ -288,7 +288,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         label: t('userManagement.table.status'),
         options: statusOptions.map((opt) => ({
           label: t(`labels.caption.${opt}`),
-          value: opt
+          value: opt === ORDER_STATUS.ALL ? '' : opt
         }))
       });
     }

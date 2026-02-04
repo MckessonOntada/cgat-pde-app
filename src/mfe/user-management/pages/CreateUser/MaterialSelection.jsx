@@ -126,7 +126,7 @@ export default function MaterialSelection() {
     if (selectedRole === 'Customer Centre') {
       navigate(isEdit ? `./../..` : `../${id}/${PATHS.PERMISSIONS}`);
     } else {
-      navigate(isEdit ? `./..` : `../${id}/${PATHS.ACCOUNTS}`);
+      navigate(isEdit ? `./../..` : `../${id}/${PATHS.ACCOUNTS}`);
     }
   };
 
