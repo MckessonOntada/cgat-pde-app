@@ -181,6 +181,16 @@ function getLoggedInUserId() {
   return getUserId();
 }
 
+function getMckessonOrgId() {
+  const selectedOrg = sessionStorage.getItem('selectedOrganization');
+  try {
+    const parsedOrgDetails = JSON.parse(selectedOrg);
+    if (parsedOrgDetails.mckessonOrgId) return parsedOrgDetails.mckessonOrgId;
+  } catch (error) {
+    throw new Error('No organization found');
+  }
+}
+
 function getOrgName() {
   const selectedOrg = sessionStorage.getItem('selectedOrganization');
   try {
@@ -216,7 +226,8 @@ const AuthUtils = Object.freeze({
   isPhysician,
   getLoggedInUserId,
   isRootAdmin,
-  getOrgName
+  getOrgName,
+  getMckessonOrgId
 });
 
 export default AuthUtils;
