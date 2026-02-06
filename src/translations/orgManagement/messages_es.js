@@ -11,6 +11,8 @@ export const OrgManagementES = {
 
   'orgManagement.table.name': 'S_Organization Name',
   'orgManagement.table.id': 'S_Organization ID',
+  'orgManagement.table.orgID': 'Org ID',
+
   'orgManagement.table.location': 'S_Location',
   'orgManagement.table.status': 'S_Status',
   'orgManagement.table.dateUpdated': 'S_Last Updated On',

@@ -3,6 +3,7 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import ServiceUtil from './ServiceUtil';
+import AuthUtils from '@src/util/AuthUtils';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -113,8 +114,10 @@ async function saveAccount(orderId, payload, isDraft = false, isSendNotification
 
 async function submitOrder(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
-
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/submit`;
+  const params = {
+    mckessonOrgId: AuthUtils.getMckessonOrgId()
+  };
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/submit?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
@@ -517,6 +520,7 @@ async function regeneronCoiIdVerification(patientId, coiId) {
 }
 
 async function verifyOrcaDetails(payload) {
+  payload.mckessonOrgId = AuthUtils.getMckessonOrgId();
   let url = `${ApiRoutes.USER_BASE()}orca/patients?${serializeParams(payload)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) return res.data;
