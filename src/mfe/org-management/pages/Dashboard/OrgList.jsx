@@ -141,7 +141,7 @@ const OrgList = ({ onActionSuccess }) => {
     {
       id: 'orgId',
       name: t('orgManagement.table.id'),
-      selector: (row) => row.id,
+      selector: (row) => row.mckessonOrgId,
       sortable: true,
       minWidth: '140px',
       sortKey: 'id',
