@@ -20,13 +20,30 @@ const getStates = () => {
   });
   return options;
 };
-export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, manufacturer, isPatientVerifying, isPatientVerified }) => {
+export const PatientSections = ({
+  channelType,
+  therapyConfig,
+  validateOnBlur,
+  manufacturer,
+  isPatientVerifying,
+  isPatientVerified,
+  isCSUserReviewingOrca = false
+}) => {
   return [
     {
       rows: [
         {
           grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
           controls: [
+            isCSUserReviewingOrca && {
+              id: 'patient.manufacturerOrderId',
+              name: 'patient.manufacturerOrderId',
+              label: 'Orca Therapy Id',
+              placeholder: ' ',
+              type: 'input',
+              isRequired: true,
+              maxLength: 80
+            },
             ...(channelType === CHANNEL_TYPE.BUY_AND_BILL
               ? therapyConfig?.config?.fields
                   ?.filter((field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field.fieldName) && field?.properties?.displayOnForm)
@@ -43,7 +60,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
                       isRequired: field.properties.mandatoryField,
                       infoText: field?.properties.helpInfoMessage,
                       endIcon: getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
-                      onBlur: validateOnBlur
+                      onBlur: !isCSUserReviewingOrca && validateOnBlur
                     };
                   }) || []
               : [])
@@ -59,7 +76,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -69,7 +86,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer)
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)
             },
             {
               id: 'patient-info-lastName',
@@ -78,7 +95,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -91,7 +108,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
                 label: item,
                 value: item
               })),
-              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -101,7 +118,7 @@ export const PatientSections = ({ channelType, therapyConfig, validateOnBlur, ma
               placeholder: ' ',
               type: 'datePicker',
               disableFuture: true,
-              isReadOnly: [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             }
           ]
