@@ -18,6 +18,7 @@ import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-load
 import AuthUtils from '@src/util/AuthUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { ORDER_STATUS } from '@src/mfe/order-management/pages/orders/config';
+import PageHeader from '@src/components/pageHeader';
 
 function OrcaPatientDetails() {
   const { orderId } = useParams();
@@ -56,6 +57,10 @@ function OrcaPatientDetails() {
 
       if (patientData.patientIdentifier) {
         verifiedPatient.patientId = patientData.patientIdentifier;
+      }
+
+      if (patientData.manufacturerOrderId) {
+        verifiedPatient.manufacturerOrderId = patientData.manufacturerOrderId;
       }
 
       setOrcaVerifiedPatient(verifiedPatient);
@@ -212,7 +217,7 @@ function OrcaPatientDetails() {
   };
 
   const handleOnBack = () => {
-    navigate(-1);
+    navigate(`../${orderId}/summary${location.search}`);
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
@@ -224,7 +229,7 @@ function OrcaPatientDetails() {
     },
     {
       onSuccess: (result) => {
-        navigate(-1, {
+        navigate(`../${orderId}/summary${location.search}`, {
           state: {
             alert: {
               description: 'Patient details updated successfully',
@@ -262,7 +267,8 @@ function OrcaPatientDetails() {
     isMRNRequired: false,
     ...(orderDetails?.spTherapyConfig || {})
   };
-  const isCSUserReviewingOrca = isCustomerCentreUser && orderDetails.status === ORDER_STATUS.CS_REVIEW && manufacturer === MANUFACTURER.ORCA;
+  const isCSUserReviewingOrca =
+    isCustomerCentreUser && [ORDER_STATUS.CS_REVIEW, ORDER_STATUS.SUBMITTED].includes(orderDetails.status) && manufacturer === MANUFACTURER.ORCA;
 
   if (isLoading) return <Loader type={'circular'} />;
 
@@ -275,9 +281,7 @@ function OrcaPatientDetails() {
               {translateFn('captions.btnBackToSummary')}
             </Button>
           </div>
-          <Heading as="h4" className="page-heading">
-            Edit Patient Details
-          </Heading>
+          <PageHeader heading="Edit Patient Details" />
         </div>
       </div>
       <div className="MCP-module-body">

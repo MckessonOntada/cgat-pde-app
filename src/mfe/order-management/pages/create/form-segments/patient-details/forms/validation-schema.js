@@ -233,7 +233,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
           schema
             .trim()
             .matches(/^[a-zA-Z0-9]+$/, 'Only alphanumeric value allowed')
-            .required('Value is required'),
+            .required('Orca therapy ID is required'),
         otherwise: (schema) => schema.notRequired()
       })
     }),

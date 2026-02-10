@@ -197,7 +197,7 @@ export const MessageEs = {
   'table.columns.captions.accountName': 'S_Account Name',
   'table.columns.captions.accountNumber': 'S_Account Number',
   'table.columns.captions.address': 'S_Address',
-  'table.ariaLabel.orderList': 'S_Order listing',
+  '': 'S_Order Listing',
   'table.ariaLabel.prescriptionList': 'S_Prescription Listing',
   'table.actions.reviewOrder': 'S_Review Order',
   'table.actions.resumeOrder': 'S_Resume Order',
