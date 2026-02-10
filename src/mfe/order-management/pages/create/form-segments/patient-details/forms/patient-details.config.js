@@ -59,7 +59,7 @@ export const PatientSections = ({
                       suffix,
                       isRequired: field.properties.mandatoryField,
                       infoText: field?.properties.helpInfoMessage,
-                      endIcon: getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
+                      endIcon: !isCSUserReviewingOrca && getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
                       onBlur: !isCSUserReviewingOrca && validateOnBlur
                     };
                   }) || []

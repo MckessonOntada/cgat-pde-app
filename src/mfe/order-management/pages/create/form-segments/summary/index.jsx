@@ -572,6 +572,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
                   patientIdentifier: orderDetails.patient?.patientIdentifier,
                   medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+                  manufacturerOrderId: orderDetails.patient?.manufacturerOrderId,
                   coiId: orderDetails.patient?.coiId,
                   patientDTO: { patient: { ...patient } }
                 });

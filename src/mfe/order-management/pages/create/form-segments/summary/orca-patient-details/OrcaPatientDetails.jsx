@@ -39,6 +39,7 @@ function OrcaPatientDetails() {
   const manufacturer = getManufacturer(orderDetails);
   const formikRef = React.useRef();
   const [isPatientVerified, setPatientVerified] = React.useState(false);
+  const [originallyVerified, setOriginallyVerified] = React.useState(null);
   const { state, setValue } = useWidgetContext();
 
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
@@ -64,6 +65,7 @@ function OrcaPatientDetails() {
       }
 
       setOrcaVerifiedPatient(verifiedPatient);
+      setOriginallyVerified(verifiedPatient);
       setPatientVerified(['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(verifiedPatient?.[key])));
 
       setInitialValues({
@@ -91,7 +93,7 @@ function OrcaPatientDetails() {
       } else {
         clearPatientDetails();
       }
-      setIsDirty(false);
+      setIsDirty(!CommonUtils.deepEqual(originallyVerified, orcaVerifiedPatient));
     }
   }, [orcaVerifiedPatient]);
 
@@ -271,7 +273,7 @@ function OrcaPatientDetails() {
     isCustomerCentreUser && [ORDER_STATUS.CS_REVIEW, ORDER_STATUS.SUBMITTED].includes(orderDetails.status) && manufacturer === MANUFACTURER.ORCA;
 
   if (isLoading) return <Loader type={'circular'} />;
-
+  console.log(!isPatientVerified, !isDirty, isPatientVerifying);
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
