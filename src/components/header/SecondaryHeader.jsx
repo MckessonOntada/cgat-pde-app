@@ -204,7 +204,7 @@ const SecondaryHeader = () => {
               title={`${t('button.captions.exitUserView')}?`}
               body={<p>{`${t('message.exitUserViewConfirmation')} ${impersonatedUsername}?`}</p>}
               footer={[
-                <Button size="md" variant="secondary" onClick={() => setExitUserViewModalOpen}>
+                <Button size="md" variant="secondary" onClick={() => setExitUserViewModalOpen(false)}>
                   {t('button.caption.no')}
                 </Button>,
                 <Button
