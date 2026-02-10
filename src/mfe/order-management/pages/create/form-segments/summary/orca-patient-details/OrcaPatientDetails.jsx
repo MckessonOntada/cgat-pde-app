@@ -17,6 +17,8 @@ import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import AuthUtils from '@src/util/AuthUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { ORDER_STATUS } from '@src/mfe/order-management/pages/orders/config';
+import PageHeader from '@src/components/pageHeader';
 
 function OrcaPatientDetails() {
   const { orderId } = useParams();
@@ -37,6 +39,7 @@ function OrcaPatientDetails() {
   const manufacturer = getManufacturer(orderDetails);
   const formikRef = React.useRef();
   const [isPatientVerified, setPatientVerified] = React.useState(false);
+  const [originallyVerified, setOriginallyVerified] = React.useState(null);
   const { state, setValue } = useWidgetContext();
 
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
@@ -52,11 +55,17 @@ function OrcaPatientDetails() {
       if (patientData.medicalRecordNumber) {
         verifiedPatient.medicalRecordNumber = patientData.medicalRecordNumber;
       }
+
       if (patientData.patientIdentifier) {
         verifiedPatient.patientId = patientData.patientIdentifier;
       }
 
+      if (patientData.manufacturerOrderId) {
+        verifiedPatient.manufacturerOrderId = patientData.manufacturerOrderId;
+      }
+
       setOrcaVerifiedPatient(verifiedPatient);
+      setOriginallyVerified(verifiedPatient);
       setPatientVerified(['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(verifiedPatient?.[key])));
 
       setInitialValues({
@@ -75,6 +84,7 @@ function OrcaPatientDetails() {
 
         setFieldValue('patient.medicalRecordNumber', removeFieldPrefixSuffix(orcaVerifiedPatient.medicalRecordNumber, 'medicalRecordNumber', orderDetails));
         setFieldValue('patient.patientIdentifier', removeFieldPrefixSuffix(orcaVerifiedPatient.patientId, 'patientIdentifier', orderDetails));
+        setFieldValue('patient.manufacturerOrderId', orcaVerifiedPatient.manufacturerOrderId || '');
         setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
         setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
         setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
@@ -83,6 +93,7 @@ function OrcaPatientDetails() {
       } else {
         clearPatientDetails();
       }
+      setIsDirty(!CommonUtils.deepEqual(originallyVerified, orcaVerifiedPatient));
     }
   }, [orcaVerifiedPatient]);
 
@@ -95,6 +106,7 @@ function OrcaPatientDetails() {
       setPatientVerified(true);
       setFieldValue('patient.medicalRecordNumber', removeFieldPrefixSuffix(orcaVerifiedPatient.medicalRecordNumber, 'medicalRecordNumber', orderDetails));
       setFieldValue('patient.patientIdentifier', removeFieldPrefixSuffix(orcaVerifiedPatient.patientId, 'patientIdentifier', orderDetails));
+      setFieldValue('patient.manufacturerOrderId', orcaVerifiedPatient.manufacturerOrderId || '');
       setFieldValue('patient.patientInfo.firstName', orcaVerifiedPatient.firstName);
       setFieldValue('patient.patientInfo.middleName', orcaVerifiedPatient.middleName);
       setFieldValue('patient.patientInfo.lastName', orcaVerifiedPatient.lastName);
@@ -163,6 +175,7 @@ function OrcaPatientDetails() {
     }
     setFieldValue('patient.medicalRecordNumber', removeFieldPrefixSuffix(newMedicalRecordNumber, 'medicalRecordNumber', orderDetails));
     setFieldValue('patient.patientIdentifier', removeFieldPrefixSuffix(newPatientIdentifier, 'patientIdentifier', orderDetails));
+    setFieldValue('patient.manufacturerOrderId', '');
     setFieldValue('patient.patientInfo.firstName', '');
     setFieldValue('patient.patientInfo.middleName', '');
     setFieldValue('patient.patientInfo.lastName', '');
@@ -206,7 +219,7 @@ function OrcaPatientDetails() {
   };
 
   const handleOnBack = () => {
-    navigate(-1);
+    navigate(`../${orderId}/summary${location.search}`);
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
@@ -218,7 +231,7 @@ function OrcaPatientDetails() {
     },
     {
       onSuccess: (result) => {
-        navigate(-1, {
+        navigate(`../${orderId}/summary${location.search}`, {
           state: {
             alert: {
               description: 'Patient details updated successfully',
@@ -237,9 +250,6 @@ function OrcaPatientDetails() {
     const updatedValue = updatePatientValues(values, config || []);
     const { patient } = updatedValue;
     if (!patient) return;
-    const payload = {
-      patient
-    };
 
     setValue('orcaPatient', patient);
     setValue('isVerified', true);
@@ -251,7 +261,6 @@ function OrcaPatientDetails() {
         }
       }
     });
-    // savePatientDetails({ payload });
   };
 
   const spTherapyConfig = {
@@ -260,8 +269,11 @@ function OrcaPatientDetails() {
     isMRNRequired: false,
     ...(orderDetails?.spTherapyConfig || {})
   };
+  const isCSUserReviewingOrca =
+    isCustomerCentreUser && [ORDER_STATUS.CS_REVIEW, ORDER_STATUS.SUBMITTED].includes(orderDetails.status) && manufacturer === MANUFACTURER.ORCA;
 
   if (isLoading) return <Loader type={'circular'} />;
+  console.log(!isPatientVerified, !isDirty, isPatientVerifying);
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">
@@ -271,9 +283,7 @@ function OrcaPatientDetails() {
               {translateFn('captions.btnBackToSummary')}
             </Button>
           </div>
-          <Heading as="h4" className="page-heading">
-            Edit Patient Details
-          </Heading>
+          <PageHeader heading="Edit Patient Details" />
         </div>
       </div>
       <div className="MCP-module-body">
@@ -286,15 +296,17 @@ function OrcaPatientDetails() {
               orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
               spTherapyConfig,
               therapyConfig,
-              manufacturer
+              manufacturer,
+              isCSUserReviewingOrca
             )}
             onSubmit={handleOnSave}
             enableReinitialize
             innerRef={formikRef}>
-            {({ dirty }) => {
+            {({ values, errors, touched, dirty }) => {
               React.useEffect(() => {
                 setIsDirty(dirty);
               }, [dirty]);
+              console.log(values, errors, touched);
               return (
                 <Form>
                   <div className="stack">
@@ -307,7 +319,8 @@ function OrcaPatientDetails() {
                           validateOnBlur,
                           manufacturer,
                           isPatientVerifying,
-                          isPatientVerified: isPatientVerified
+                          isPatientVerified: isPatientVerified,
+                          isCSUserReviewingOrca
                         })}
                       />
                     </div>
@@ -317,7 +330,7 @@ function OrcaPatientDetails() {
                       </Button>
 
                       <Button
-                        disabled={!isPatientVerified || !isDirty || isPatientVerifying}
+                        disabled={isCSUserReviewingOrca ? false : !isPatientVerified || !isDirty || isPatientVerifying}
                         variant="primary"
                         isLoadingState={isSaving}
                         Icon={isSaving && ButtonLoadingIcon}

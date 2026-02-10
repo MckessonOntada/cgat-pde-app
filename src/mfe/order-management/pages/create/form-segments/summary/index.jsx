@@ -106,6 +106,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
         patientIdentifier: patientData?.patientIdentifier,
         medicalRecordNumber: patientData?.medicalRecordNumber,
+        manufacturerOrderId: patientData.manufacturerOrderId,
         coiId: orderDetails.patient?.coiId,
         patientDTO: { patient: { ...patientData } }
       });
@@ -571,6 +572,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
                   patientIdentifier: orderDetails.patient?.patientIdentifier,
                   medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+                  manufacturerOrderId: orderDetails.patient?.manufacturerOrderId,
                   coiId: orderDetails.patient?.coiId,
                   patientDTO: { patient: { ...patient } }
                 });
@@ -1203,6 +1205,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         {readOnly && status === ORDER_STATUS.IN_DRAFT && (
           <NotifyAlert stage={ORDER_STAGES.ORDER_SUMMARY} OnEdit={false} orderId={orderId} setAlert={setAlert} />
         )}
+        {isCustomerCentreUser && status === ORDER_STATUS.CS_REVIEW && (
+          <Alert
+            type="info"
+            description="Please review and update the order details to proceed with submission. Follow work instructions if needed."
+            showCloseIcon={false}
+          />
+        )}
         {alert && <Alert className="alert-container-print" {...alert} onClose={() => setAlert(null)} />}
         {notifications?.length > 0 && (
           <div className="alert-container-print">
@@ -1501,6 +1510,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           ?.map((field) => {
                             return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
+                      {!isSpOrder && isCustomerCentreUser && <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId} />}
                     </div>
                   </div>
                 )}

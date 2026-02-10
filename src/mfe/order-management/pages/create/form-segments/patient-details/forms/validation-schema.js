@@ -67,7 +67,7 @@ export const normalizePatient = (patient) => {
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer) => {
+export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer, isCSUserReviewingOrca = false) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
@@ -226,7 +226,16 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
             state: Yup.string().nullable().required(t('orderManagement.patientDetails.validation.state'))
           })
       }),
-      ...buildDynamicFieldValidators(configToUse, t)
+      ...buildDynamicFieldValidators(configToUse, t),
+      manufacturerOrderId: Yup.string().when([], {
+        is: () => isCSUserReviewingOrca,
+        then: (schema) =>
+          schema
+            .trim()
+            .matches(/^[a-zA-Z0-9]+$/, 'Only alphanumeric value allowed')
+            .required('Orca therapy ID is required'),
+        otherwise: (schema) => schema.notRequired()
+      })
     }),
     providerId: Yup.string().when([], {
       is: () => isSpOrder,
