@@ -20,7 +20,6 @@ const OrderStatus = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const isPhysician = AuthUtils.isPhysician();
   const locationState = location?.state ?? {};
   const { data: orderDetails = {}, isFetching } = useOrder(orderId);
   const contentRef = useRef(null);
@@ -42,6 +41,9 @@ const OrderStatus = () => {
   const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
   const isApprover = approver && typeof approver === 'object' && approver.id != null;
+  const isPhysician = AuthUtils.isPhysician();
+  const isCSReviewer = AuthUtils.isCustomerCenter() && AuthUtils.isCustomerCenterView();
+  const isOrgUser = AuthUtils.isSystemAdminView();
 
   const backToOrders = () => {
     const prevSearch = locationState.__prevSearch || '';
@@ -50,14 +52,19 @@ const OrderStatus = () => {
 
   let message;
 
-  if (isPhysician) {
+  if (isOrgUser) {
+    if (orderStatus === 'SUBMITTED') message = 'Your order has been submitted successfully and is in line for fulfillment.';
+    else if (orderStatus === 'APPROVAL_PENDING') message = 'Your order has been submitted successfully and is now pending for approval.';
+    else if (orderStatus === 'CS_REVIEW') message = 'Your order has been submitted successfully and is now in Customer Service review.';
+  } else if (isCSReviewer) {
+    if (orderStatus === 'SUBMITTED') message = 'Your order has been submitted successfully and is in line for fulfillment.';
+  } else if (isApprover) {
+    if (orderStatus === 'SUBMITTED') message = 'Your order has been approved successfully and is in line for fulfillment.';
+    else if (orderStatus === 'CS_REVIEW') message = 'Your order was approved successfully and is currently in Customer Service review.';
+  } else if (isPhysician) {
     message = 'messages.prescriptionSuccess';
   } else if (orderStatus === 'SUBMITTED') {
-    if (isApprover) {
-      message = 'messages.orderApprovalSuccess';
-    } else {
-      message = 'messages.orderSuccess';
-    }
+    message = 'messages.orderSuccess';
   } else if (orderStatus === 'REVIEW') {
     message = 'messages.orderSuccessReviewPending';
   } else {
