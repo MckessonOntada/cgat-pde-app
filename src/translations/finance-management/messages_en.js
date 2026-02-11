@@ -36,7 +36,9 @@ export const PaymentInvoicesEN = {
 
   // Invoices Table
   'paymentInvoices.invoicesTable.filter.billDateStart': 'Bill Date (Start)',
+  'paymentInvoices.invoicesTable.filter.invoiceDateStart': 'Invoice Date (Start)',
   'paymentInvoices.invoicesTable.filter.billDateEnd': 'Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.invoiceDateEnd': 'Invoice Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',

@@ -27,8 +27,8 @@ export default function Invoices({ type }) {
       {
         type: 'dateRangePicker',
         name: 'billDate',
-        startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
-        endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.invoiceDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.invoiceDateEnd')
       },
       {
         type: 'dateRangePicker',

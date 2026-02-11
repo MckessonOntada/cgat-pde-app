@@ -34,7 +34,9 @@ export const PaymentInvoicesES = {
   'paymentInvoices.balanceAPI.error': 'S_Error fetching open invoices balance.',
   // Invoices Table
   'paymentInvoices.invoicesTable.filter.billDateStart': 's_Bill Date (Start)',
+  'paymentInvoices.invoicesTable.filter.invoiceDateStart': 's_Invoice Date (Start)',
   'paymentInvoices.invoicesTable.filter.billDateEnd': 's_Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.invoiceDateEnd': 's_Invoice Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 'S_Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'S_Due Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 's_Due Date (Start)',
