@@ -109,15 +109,15 @@ const OrderStatus = () => {
               <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.pdeId')} value={orderId} />
             )}
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
-            {patientName && <DetailSegment label={t('labels.patientName')} value={patientName} />}
+            {patientName ? <DetailSegment label={t('labels.patientName')} value={patientName} /> : <div></div>}
           </div>
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             {(therapyConfig?.isPIDRequired || patient?.patientIdentifier) && (
               <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier} />
             )}
 
-            {patient?.patientInfo?.dateOfBirth && <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth} />}
-            {patient?.patientInfo?.gender && <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender} />}
+            {patient?.patientInfo?.dateOfBirth ? <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth} /> : <div></div>}
+            {patient?.patientInfo?.gender ? <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender} /> : <div></div>}
             {!(therapyConfig?.isPIDRequired || patient?.patientIdentifier) && <div></div>}
 
             {!spOrder && (
