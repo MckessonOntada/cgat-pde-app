@@ -118,7 +118,7 @@ export const UserProvider = ({ children }) => {
   const { data: roleList = [] } = useQuery({
     queryKey: ['user', 'roles-list'],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams({ isPhysicianRequired: true })}`, httpVerb.GET, {});
+      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams({ isPhysicianRequired: false })}`, httpVerb.GET, {});
       if (response.data) {
         const { content: data } = response.data;
         return data.map((item) => ({
