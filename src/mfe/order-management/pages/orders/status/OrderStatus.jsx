@@ -43,7 +43,7 @@ const OrderStatus = () => {
   const isApprover = approver && typeof approver === 'object' && approver.id != null;
   const isPhysician = AuthUtils.isPhysician();
   const isCSReviewer = AuthUtils.isCustomerCenter() && AuthUtils.isCustomerCenterView();
-  const isOrgUser = AuthUtils.isSystemAdminView();
+  const isOrgUser = !AuthUtils.isSystemAdminView();
 
   const backToOrders = () => {
     const prevSearch = locationState.__prevSearch || '';
