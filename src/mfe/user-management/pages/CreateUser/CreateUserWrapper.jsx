@@ -27,13 +27,24 @@ function CreateUserWrapper() {
   const { stepIndex } = useActiveRouteHandle(STEPS);
   const translationConfig = React.useMemo(() => {
     const config = {};
+    const isEditHeading = () => {
+      if (location.pathname.includes('personal')) return 'Edit Personal Details';
+      if (location.pathname.includes('permissions')) return 'Edit User Role';
+      if (location.pathname.includes('accounts')) return 'Link Accounts';
+      if (location.pathname.includes('material')) return 'Link Materials';
+      return '';
+    };
+
     if (isSystemAdminView) {
       config.backButtonLabel = isEdit ? 'Back to user details page' : 'Back to Manage System Admin Page';
-      config.heading = isEdit ? 'Edit System Administrator' : 'Add System Administrator';
+
+      config.heading = isEdit ? isEditHeading() : 'Add System Administrator';
     } else {
       config.backButtonLabel = isEdit ? 'Back to user details page' : 'Back to Manage Users';
-      config.heading = isEdit ? 'Edit Organization User' : 'Add Organization User';
+
+      config.heading = isEdit ? isEditHeading() : 'Add Organization User';
     }
+
     return config;
   }, []);
   const handleOnBack = () => {
