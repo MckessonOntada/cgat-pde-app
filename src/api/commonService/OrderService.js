@@ -534,6 +534,15 @@ async function getCSReviewOrders(requestParams) {
   return [];
 }
 
+async function cancelOrder(orderId, reason) {
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/cancel`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, reason);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function getOrderByIdCsUser(orderId, userId) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const url = `${ApiRoutes.ORDER_SERVICE_SYSTEM_ADMIN()}${orderId}?currentOrgId=${userId}`;
@@ -653,7 +662,8 @@ const OrderService = Object.freeze({
   reSubmitOrderCsUser,
   savePatientDetailsCsUser,
   getTherapyDetailsByTradeNameCsUser,
-  downloadDocumentCsUser
+  downloadDocumentCsUser,
+  cancelOrder
 });
 
 export default OrderService;
