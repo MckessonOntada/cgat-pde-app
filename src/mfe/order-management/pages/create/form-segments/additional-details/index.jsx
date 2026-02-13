@@ -39,7 +39,7 @@ import { getManufacturer, NotifyAlert, removePrefixSuffixFromValues, updateAddit
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
-
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 const INITIAL_VALUES = {
   coiId: '',
   orderQuantity: '',
@@ -96,6 +96,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
+  const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
+
   const manufacturer = getManufacturer(orderDetails);
   const dispatch = useDispatch();
   const formikRef = React.useRef();
@@ -730,6 +732,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
+    if (manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
+      setAlert({
+        description: t('orderManagement.coiId.empty', {
+          coiId: getDisplayNameByFieldName('coiId')
+        }),
+        type: 'warning'
+      });
+      setEmptyFirstTime(false);
+      scrollToTopUtil();
+      return;
+    }
     const variantDetails = !!variant
       ? {
           variant: variant.variant,
