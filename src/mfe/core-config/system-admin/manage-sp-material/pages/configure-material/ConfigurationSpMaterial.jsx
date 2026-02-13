@@ -187,6 +187,20 @@ export default function ConfigurationSpMaterial() {
         }
       }
 
+      if (manufacturerName === MANUFACTURER.KITE) {
+        if ([FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) {
+          updatedField = {
+            ...field,
+            properties: {
+              ...field.properties,
+              displayOnForm: true,
+              mandatoryField: true
+            }
+          };
+          openTabs.push(`field-${idx}`);
+        }
+      }
+
       return updatedField;
     });
     setOpenTabs(openTabs);
@@ -254,7 +268,7 @@ export default function ConfigurationSpMaterial() {
                               materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
                             );
                             setFieldValue('fields', updatedFields);
-                            if (isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(selectedManufacturer)) {
+                            if (isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON, MANUFACTURER.KITE].includes(selectedManufacturer)) {
                               setFieldValue('patientInformationRequired', true);
                             }
                           }}
@@ -277,7 +291,7 @@ export default function ConfigurationSpMaterial() {
                           id={fieldNameForChannel}
                           items={channelOptions.map((option) => ({
                             ...option,
-                            isDisabled: isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON].includes(values.manufacturerName)
+                            isDisabled: isBnbMaterial && [MANUFACTURER.ORCA, MANUFACTURER.REGENERON, MANUFACTURER.KITE].includes(values.manufacturerName)
                           }))}
                           onChangeValue={(value) => {
                             const finalValue = value === 'true' ? true : value === 'false' ? false : value;
