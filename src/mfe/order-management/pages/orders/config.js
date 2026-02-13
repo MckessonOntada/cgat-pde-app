@@ -19,7 +19,9 @@ export const ORDER_STATUS = Object.freeze({
   CANCELLED: 'CANCELLED',
   ALL: 'ALL',
   REVIEW: 'REVIEW',
-  CS_REVIEW: 'CS_REVIEW'
+  CS_REVIEW: 'CS_REVIEW',
+  COMPLETED: 'COMPLETED',
+  OPEN: 'OPEN'
 });
 
 export const TAB_FILTERS = Object.freeze({
