@@ -1107,5 +1107,13 @@ export const MessageEn = {
     '{patientID} and {coiId} do not match the master file. Please verify the details before submitting the order.',
   'orderManagement.patientID.verificationFailedSubmitPage': '{patientID} do not match the master file. Please verify the details before submitting the order.',
   'orderManagement.CoiId.verificationFailedSubmitPage': 'Please verify {patientId} first to match {coiId} in the master file.',
-  'labels.selectProcurementOptions': 'Select Procurement Options'
+  'labels.selectProcurementOptions': 'Select Procurement Options',
+  'orderManagement.patientID.empty':
+    '{patientID} has not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+  'orderManagement.coiId.empty':
+    '{coiId} has not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+  'orderManagement.patientID.CoiId.empty':
+    '{patientID} and/or {coiId} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+  'orderManagement.mrn.patientID.empty':
+    '{mrn} and/or {patientID} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.'
 };

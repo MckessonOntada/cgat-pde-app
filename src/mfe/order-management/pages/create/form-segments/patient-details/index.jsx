@@ -41,6 +41,7 @@ import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import OrcaPatientVerificationPanel from '../orca-patient-verification-panel/OrcaPatientVerificationPanel';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -63,6 +64,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [orcaVerifiedPatient, setOrcaVerifiedPatient] = React.useState(null);
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
   const [isPatientVerified, setPatientVerified] = React.useState(false);
+  const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
   const dispatch = useDispatch();
   const formikRef = useRef();
   const manufacturer = getManufacturer(orderDetails);
@@ -344,6 +346,41 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
 
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
+    if (!!manufacturer && isEmptyFirstTime) {
+      if (manufacturer === MANUFACTURER.ORCA && (!form.patient?.patientIdentifier || !form.patient?.medicalRecordNumber)) {
+        setAlert({
+          description: t('orderManagement.mrn.patientID.empty', {
+            patientID: getDisplayNameByFieldName('patientIdentifier'),
+            mrn: getDisplayNameByFieldName('medicalRecordNumber')
+          }),
+          type: 'warning'
+        });
+        setEmptyFirstTime(false);
+        scrollToTopUtil();
+        return;
+      }
+      if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (!form.patient?.patientIdentifier || !form.patient?.coiId)) {
+        setAlert({
+          description: t('orderManagement.patientID.CoiId.empty', {
+            patientID: getDisplayNameByFieldName('patientIdentifier'),
+            coiId: getDisplayNameByFieldName('coiId')
+          }),
+          type: 'warning'
+        });
+        setEmptyFirstTime(false);
+        scrollToTopUtil();
+        return;
+      }
+      if (channelType === CHANNEL_TYPE.BUY_AND_BILL && !form.patient?.patientIdentifier) {
+        setAlert({
+          description: t('orderManagement.patientID.empty', { patientID: getDisplayNameByFieldName('patientIdentifier') }),
+          type: 'warning'
+        });
+        setEmptyFirstTime(false);
+        scrollToTopUtil();
+        return;
+      }
+    }
     const formValue = CommonUtils.cleanObject(form);
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
