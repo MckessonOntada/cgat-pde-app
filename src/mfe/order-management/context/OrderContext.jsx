@@ -83,7 +83,21 @@ export const OrderProvider = ({ children, isCSReviewOrdersPage = false }) => {
     }
   }, [location.search]);
 
-  const getStatuses = (config) => (isCSReviewOrdersPage ? config.status || '' : config.status || (config.tab && TAB_FILTERS[config.tab].join(',')));
+  const getStatuses = (config) => {
+    if (!config.tab) return '';
+
+    if (isCSReviewOrdersPage) {
+      if (!config.status || config.status === 'ALL') {
+        return '';
+      }
+      return config.status;
+    } else {
+      if (!config.status || config.status === 'ALL') {
+        return TAB_FILTERS[config.tab].join(',');
+      }
+      return config.status;
+    }
+  };
 
   const getChannelType = (config) => {
     if ([config.tab, config.orderType].includes(ORDER_TABS.SUBMITTED_SP)) {
