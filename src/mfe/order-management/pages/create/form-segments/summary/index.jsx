@@ -779,29 +779,31 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     ...tempValue
                   }));
             }
-            if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
-              patientIdCoiIdValidation({
-                patientId: tempValue.patientIdentifier,
-                coiId: !isSpOrder ? draftChanges.additionalDetailsRequestDTO.coiId || '' : tempValue?.coiId || ''
-              });
-              scrollToTopUtil();
-            } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
-              if (draftChanges.patientIdentifier) {
+            if (status !== ORDER_STATUS.CS_REVIEW) {
+              if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
                 patientIdCoiIdValidation({
-                  patientId: draftChanges.patientIdentifier,
-                  coiId: tempValue.coiId
+                  patientId: tempValue.patientIdentifier,
+                  coiId: !isSpOrder ? draftChanges.additionalDetailsRequestDTO.coiId || '' : tempValue?.coiId || ''
                 });
                 scrollToTopUtil();
-              } else {
-                setAlert({
-                  description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
-                    patientId: getDisplayNameByFieldName('patientIdentifier'),
-                    coiId: getDisplayNameByFieldName('coiId')
-                  }),
-                  type: 'error'
-                });
-                setAllowedSubmission(false);
-                scrollToTopUtil();
+              } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
+                if (draftChanges.patientIdentifier) {
+                  patientIdCoiIdValidation({
+                    patientId: draftChanges.patientIdentifier,
+                    coiId: tempValue.coiId
+                  });
+                  scrollToTopUtil();
+                } else {
+                  setAlert({
+                    description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
+                      patientId: getDisplayNameByFieldName('patientIdentifier'),
+                      coiId: getDisplayNameByFieldName('coiId')
+                    }),
+                    type: 'error'
+                  });
+                  setAllowedSubmission(false);
+                  scrollToTopUtil();
+                }
               }
             }
             setDrawerElement(null);
