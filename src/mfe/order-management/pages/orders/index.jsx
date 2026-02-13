@@ -331,20 +331,6 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       });
     }
 
-    if (isCSReviewOrdersPage && (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || config.tab === ORDER_TABS.SUBMITTED_SP)) {
-      const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED];
-
-      filters.push({
-        type: 'dropdown',
-        name: 'status',
-        label: t('userManagement.table.status'),
-        options: statusOptions.map((opt) => ({
-          label: t(`labels.caption.${opt}`),
-          value: opt
-        }))
-      });
-    }
-
     return {
       availableFilters: filters,
       searchPlaceholder
