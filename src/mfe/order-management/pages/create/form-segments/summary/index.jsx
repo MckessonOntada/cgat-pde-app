@@ -779,7 +779,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     ...tempValue
                   }));
             }
-            if (status !== ORDER_STATUS.CS_REVIEW) {
+            if (!isCustomerCentreUser) {
               if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
                 patientIdCoiIdValidation({
                   patientId: tempValue.patientIdentifier,
@@ -807,8 +807,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               } else {
                 setAllowedSubmission(true);
               }
-            }
-            if (manufacturer === MANUFACTURER.KITE) {
+            } else {
               setAllowedSubmission(true);
             }
             setDrawerElement(null);
@@ -922,6 +921,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
             patientIdentifier: orderDetails.patient?.patientIdentifier,
             medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+            manufacturerOrderId: orderDetails.patient?.manufacturerOrderId,
             coiId: orderDetails.patient?.coiId,
             patientDTO: { patient: { ...patient } }
           }
@@ -973,17 +973,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     );
 
     const controlReSubmitOrder = isCustomerCentreUser ? (
-      <Button size="md" disabled={isResubmitting || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+      <Button size="md" disabled={isResubmitting || !allowedSubmission || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
         {t('captions.btnSubmitOrder')}
       </Button>
     ) : (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button
-          size="md"
-          disabled={(isResubmitting || !isOrderChanged || !allowedSubmission) && !(isCustomerCentreUser || isCSReview || isSubmitted)}
-          variant="primary"
-          type="submit"
-          onClick={handleOnReSubmit}>
+        <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -1576,7 +1571,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
                       {!isSpOrder && isCustomerCentreUser && manufacturer === MANUFACTURER.ORCA && (
-                        <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId} />
+                        <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId || '-'} />
                       )}
                     </div>
                   </div>
