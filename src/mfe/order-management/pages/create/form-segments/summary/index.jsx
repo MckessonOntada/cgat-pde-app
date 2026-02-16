@@ -893,7 +893,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const cancelOrder = () => {
     setIsCancellingOrder(true);
-    OrderService.cancelOrder(orderId, cancelOrderReason)
+    OrderService.cancelOrder(orderId, orderDetails.practiceId, cancelOrderReason)
       .then((response) => {
         refreshOrderDetails();
         setAlert({

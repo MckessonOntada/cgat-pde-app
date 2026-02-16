@@ -26,7 +26,8 @@ const getColorByStatus = (status) => {
     [ORDER_STATUS.APPROVAL_PENDING]: 'info',
     [ORDER_STATUS.SUBMITTED]: 'success',
     [ORDER_STATUS.DELETED]: 'error',
-    [ORDER_STATUS.REJECTED]: 'error'
+    [ORDER_STATUS.REJECTED]: 'error',
+    [ORDER_STATUS.CANCELLED]: 'error'
   };
   return statusColors[status] || 'info';
 };

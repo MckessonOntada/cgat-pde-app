@@ -4,6 +4,7 @@ import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import ServiceUtil from './ServiceUtil';
 import AuthUtils from '@src/util/AuthUtils';
+import { ORDERMANAGEMENT_SERVICE_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -534,8 +535,8 @@ async function getCSReviewOrders(requestParams) {
   return [];
 }
 
-async function cancelOrder(orderId, reason) {
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/cancel`;
+async function cancelOrder(orderId, practiceId, reason) {
+  const url = `${ORDERMANAGEMENT_SERVICE_BASE_URL}api/practices/${practiceId}/orders/${orderId}/cancel`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, reason);
   if (res.data) {
     return res.data;
