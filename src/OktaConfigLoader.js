@@ -1,11 +1,11 @@
 import AppRoutes from './routes/AppRoutes';
 import OktaHelper from './config/OktaHelper';
-import { REACT_APP_OKTA_AUTH_SERVER_ID, REACT_APP_OKTA_BASE_URL, REACT_APP_OKTA_CLIENT_ID } from './config/AppConfig';
+import { REACT_APP_OKTA_AUTH_SERVER_ID, REACT_APP_OKTA_BASE_URL, REACT_APP_OKTA_CLIENT_ID, REACT_APP_OKTA_LOGIN_URL } from './config/AppConfig';
 
 const OktaConfigLoader = (props) => {
   const { children } = props;
   const res = {
-    baseUrl: REACT_APP_OKTA_BASE_URL,
+    baseUrl: 'REACT_APP_OKTA_LOGIN_URL',
     protocol: 'oauth2',
     authServerId: REACT_APP_OKTA_AUTH_SERVER_ID,
     clientId: REACT_APP_OKTA_CLIENT_ID,
