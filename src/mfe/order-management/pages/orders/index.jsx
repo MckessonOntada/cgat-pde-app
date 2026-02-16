@@ -197,14 +197,66 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     let searchPlaceholder = 'controls.placeholder.searchOrderPlaceholder';
 
     switch (config.tab) {
-      case ORDER_TABS.SUBMITTED_SP:
+      case ORDER_TABS.SUBMITTED_SP: {
         searchPlaceholder = 'controls.placeholder.searchSPOrderPlaceholder';
+        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED];
+        filters.push({
+          type: 'dropdown',
+          name: 'status',
+          label: t('userManagement.table.status'),
+          options: statusOptions.map((opt) => ({
+            label: t(`labels.caption.${opt}`),
+            value: opt
+          }))
+        });
         break;
+      }
 
-      case ORDER_TABS.REVIEW:
-      case ORDER_TABS.SUBMITTED:
+      case ORDER_TABS.REVIEW: {
         searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
         return { availableFilters: [], searchPlaceholder };
+      }
+      case ORDER_TABS.SUBMITTED: {
+        searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
+        return { availableFilters: [], searchPlaceholder };
+      }
+      case ORDER_TABS.SUBMITTED_BUY_AND_BILL: {
+        searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
+        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED, ORDER_STATUS.COMPLETED];
+
+        filters.push({
+          type: 'dropdown',
+          name: 'status',
+          label: t('userManagement.table.status'),
+          options: statusOptions.map((opt) => ({
+            label: t(`labels.caption.${opt}`),
+            value: opt
+          }))
+        });
+        filters.push({
+          type: 'dropdown',
+          name: 'orderDate',
+          label: currentTab.id === ORDER_TABS.SUBMITTED_SP ? 'Prescription Date' : 'Order Date',
+          options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
+            label: t(`labels.caption.${opt.value}`),
+            value: opt.value
+          })),
+          linkedFilters: (value) =>
+            value === 'customRange'
+              ? [
+                  {
+                    type: 'dateRangePicker',
+                    name: 'dateRange',
+                    startDateLabel: t('labels.startDate'),
+                    endDateLabel: t('labels.endDate'),
+                    required: true,
+                    maxDate: new Date()
+                  }
+                ]
+              : []
+        });
+        return { availableFilters: filters, searchPlaceholder };
+      }
 
       case ORDER_TABS.PENDING_SUBMISSION: {
         const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED, ORDER_STATUS.REVIEW];
@@ -276,20 +328,6 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
                 }
               ]
             : []
-      });
-    }
-
-    if (isCSReviewOrdersPage && (config.tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL || config.tab === ORDER_TABS.SUBMITTED_SP)) {
-      const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW];
-
-      filters.push({
-        type: 'dropdown',
-        name: 'status',
-        label: t('userManagement.table.status'),
-        options: statusOptions.map((opt) => ({
-          label: t(`labels.caption.${opt}`),
-          value: opt === ORDER_STATUS.ALL ? '' : opt
-        }))
       });
     }
 

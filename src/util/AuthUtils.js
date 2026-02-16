@@ -95,6 +95,10 @@ const isSystemAdminView = function () {
   return (isSystemAdmin() || isCustomerCenter() || isTreatmentCentreExecutive()) && !getPracticeId();
 };
 
+const isUserAdmin = function () {
+  return !getPracticeId();
+};
+
 const setImpersonateId = async (id) => {
   if (!id) throw new Error('Missing impersonate id');
 
@@ -227,7 +231,8 @@ const AuthUtils = Object.freeze({
   getLoggedInUserId,
   isRootAdmin,
   getOrgName,
-  getMckessonOrgId
+  getMckessonOrgId,
+  isUserAdmin
 });
 
 export default AuthUtils;

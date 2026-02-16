@@ -15,7 +15,8 @@ export const CHANNEL_TYPE = {
 
 export const MANUFACTURER = {
   ORCA: 'ORCA',
-  REGENERON: 'REGENERON'
+  REGENERON: 'REGENERON',
+  KITE: 'KITE'
 };
 export const FormList = (t) => [
   {

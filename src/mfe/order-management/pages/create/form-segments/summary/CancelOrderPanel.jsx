@@ -1,0 +1,126 @@
+import React from 'react';
+import styles from './CommentPanel.module.scss';
+import { Button, Heading } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
+import Components from '@src/components/form/Components';
+import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import { useMutation } from 'react-query';
+import OrderService from '@src/api/commonService/OrderService';
+import useAlert from '@src/hooks/useAlert';
+import FloatingDrawer from '@src/components/floating-drawer';
+import { ORDER_STATUS } from '../../../orders/config';
+
+const INITIAL_VALUES = {
+  rejectionReason: ''
+};
+
+const COMMENT_MAX_LENGTH = 5000;
+
+const CancelOrderPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
+  const { t } = useTranslate();
+  const firstField = React.useRef(null);
+  const serverResponseMessage = 'server-response-reject-order';
+  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
+  serverResponseMessage;
+  const { showAlert } = useAlert();
+
+  const validationSchema = Yup.object({
+    rejectionReason: Yup.string()
+      .min(2, t('message.errorShortComment'))
+      .max(5000, t('message.errorCommentExceedMaxLength').replace('{{length}}', COMMENT_MAX_LENGTH))
+      .required('Comment is required to cancel the order. Please provide reason to cancel order.')
+  });
+
+  React.useEffect(() => {
+    if (firstField.current) {
+      firstField.current.focus();
+    }
+  }, []);
+
+  const { mutate: rejectOrder } = useMutation(async ({ orderId, rejectionReason }) => await OrderService.rejectOrder(orderId, rejectionReason), {
+    onSuccess: (response) => {
+      const { status } = response;
+      if (status === ORDER_STATUS.REJECTED) {
+        onSuccess(response);
+      } else {
+        showAlert({ description: 'Could not cancel order. Please try again later', type: 'error', anchorEl: serverResponseMessage });
+      }
+    },
+    onError: (error) => {
+      showAlert({ description: error.message, type: 'error', anchorEl: serverResponseMessage });
+    }
+  });
+
+  const handleOnSubmit = (values) => {
+    const { rejectionReason } = values;
+    onSuccess(rejectionReason);
+  };
+
+  React.useEffect(() => {
+    const { rejectionDetails = {} } = meta;
+    if (rejectionDetails?.cancellationReason) {
+      setInitialValues({
+        rejectionReason: JSON.parse(rejectionDetails.cancellationReason)
+      });
+    }
+  }, [meta]);
+
+  return (
+    <Formik initialValues={initialValues} enableReinitialize={true} validationSchema={validationSchema} onSubmit={handleOnSubmit}>
+      {({ values }) => {
+        return (
+          <Form>
+            <FloatingDrawer
+              open={openDrawer}
+              anchor="right"
+              onClose={onClose}
+              heading={!readOnly ? 'Cancel Order' : 'Cancellation Reason'}
+              controls={
+                <div className="controls">
+                  {!readOnly ? (
+                    <React.Fragment>
+                      <Button onClick={onClose} variant="secondary" size="md">
+                        {t('captions.btnCancel')}
+                      </Button>
+                      <Button type="submit" variant="primary" size="md">
+                        Cancel Order
+                      </Button>
+                    </React.Fragment>
+                  ) : (
+                    <Button onClick={onClose} variant="secondary" size="md">
+                      Close
+                    </Button>
+                  )}
+                </div>
+              }>
+              <div className={styles.wrapper}>
+                <div className={styles.drawerContent}>
+                  <div className={styles.topSect}>
+                    <div className={styles.form}>
+                      <div className={styles.serverMessage} id={serverResponseMessage}></div>
+                      <Field
+                        ref={firstField}
+                        name="rejectionReason"
+                        fieldlabel={t('captions.lblReason')}
+                        placeholder=" "
+                        isRequired
+                        isReadOnly={readOnly}
+                        component={Components['textarea']}
+                        maxCharHelperText={t('forms.placeholder.max_5000_chars')}
+                        maxCharLimit={COMMENT_MAX_LENGTH}>
+                        {values.rejectionReason}
+                      </Field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FloatingDrawer>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+};
+
+export default CancelOrderPanel;

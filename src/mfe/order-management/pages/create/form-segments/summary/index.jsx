@@ -1,4 +1,4 @@
-import { Badge, Button, CheckboxGroup, Heading, Label, Loader, Tooltip } from '@mckesson/mcp-component-library';
+import { Badge, Button, CheckboxGroup, Heading, Label, Loader, Tooltip, Modal } from '@mckesson/mcp-component-library';
 import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
 import OrderService from '@src/api/commonService/OrderService';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -51,6 +51,10 @@ import useTimedArray from './useTimedArray';
 import { TrackingDetails } from './tracking-details';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import CancelOrderPanel from './CancelOrderPanel';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import OrderStatus from '../../../orders/status/OrderStatus';
+
 const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -67,6 +71,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
+  const [isCancelOrderPanelOpen, setIsCancelOrderPanelOpen] = React.useState(false);
+  const [isCancelOrderConfirmationOpen, setIsCancelOrderConfirmationOpen] = React.useState(false);
+  const [isCancellingOrder, setIsCancellingOrder] = React.useState(false);
+  const [cancelOrderReason, setCancelOrderReason] = React.useState(null);
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const [sapStatus, setSapStatus] = React.useState(SAP_ORDER_STATUS.OPEN);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
@@ -324,7 +332,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: isSpOrder || readOnly ? false : !status ? false : !(status === ORDER_STATUS.REJECTED || isSubmitted || status === 'DELETED'),
+    enabled:
+      isSpOrder || readOnly
+        ? false
+        : !status
+        ? false
+        : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
@@ -766,30 +779,36 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     ...tempValue
                   }));
             }
-            if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
-              patientIdCoiIdValidation({
-                patientId: tempValue.patientIdentifier,
-                coiId: !isSpOrder ? draftChanges.additionalDetailsRequestDTO.coiId || '' : tempValue?.coiId || ''
-              });
-              scrollToTopUtil();
-            } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
-              if (draftChanges.patientIdentifier) {
+            if (!isCustomerCentreUser) {
+              if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
                 patientIdCoiIdValidation({
-                  patientId: draftChanges.patientIdentifier,
-                  coiId: tempValue.coiId
+                  patientId: tempValue.patientIdentifier,
+                  coiId: !isSpOrder ? draftChanges.additionalDetailsRequestDTO.coiId || '' : tempValue?.coiId || ''
                 });
                 scrollToTopUtil();
+              } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
+                if (draftChanges.patientIdentifier) {
+                  patientIdCoiIdValidation({
+                    patientId: draftChanges.patientIdentifier,
+                    coiId: tempValue.coiId
+                  });
+                  scrollToTopUtil();
+                } else {
+                  setAlert({
+                    description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
+                      patientId: getDisplayNameByFieldName('patientIdentifier'),
+                      coiId: getDisplayNameByFieldName('coiId')
+                    }),
+                    type: 'error'
+                  });
+                  setAllowedSubmission(false);
+                  scrollToTopUtil();
+                }
               } else {
-                setAlert({
-                  description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
-                    patientId: getDisplayNameByFieldName('patientIdentifier'),
-                    coiId: getDisplayNameByFieldName('coiId')
-                  }),
-                  type: 'error'
-                });
-                setAllowedSubmission(false);
-                scrollToTopUtil();
+                setAllowedSubmission(true);
               }
+            } else {
+              setAllowedSubmission(true);
             }
             setDrawerElement(null);
           }}>
@@ -867,6 +886,33 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     navigate(0, { state: { ...locationState } });
   };
 
+  const handleOnCancelOrder = () => {
+    setIsCancelOrderPanelOpen(true);
+  };
+
+  const cancelOrder = () => {
+    setIsCancellingOrder(true);
+    OrderService.cancelOrder(orderId, orderDetails.practiceId, cancelOrderReason)
+      .then((response) => {
+        refreshOrderDetails();
+        setAlert({
+          type: 'success',
+          description: 'Your order has been successfully cancelled.'
+        });
+      })
+      .catch((error) => {
+        setAlert({
+          type: 'error',
+          description: 'Something went wrong. Please try again.'
+        });
+      })
+      .finally(() => {
+        setCancelOrderReason(null);
+        setIsCancelOrderConfirmationOpen(false);
+        setIsCancellingOrder(false);
+      });
+  };
+
   const getAllowedControls = () => {
     const controls = [];
     const draftChangesInitialValue =
@@ -875,6 +921,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
             patientIdentifier: orderDetails.patient?.patientIdentifier,
             medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+            manufacturerOrderId: orderDetails.patient?.manufacturerOrderId,
             coiId: orderDetails.patient?.coiId,
             patientDTO: { patient: { ...patient } }
           }
@@ -899,6 +946,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       </Button>
     );
 
+    const controlCancelOrder = (
+      <Button size={'md'} disabled={isSaving} variant="secondary" onClick={handleOnCancelOrder}>
+        Cancel Order
+      </Button>
+    );
+
     const controlDiscardChanges = (
       <Button size={'md'} disabled={isSaving || !isOrderChanged} variant="secondary" onClick={handleOnDiscardChanges}>
         {t('captions.btnDiscardChanges')}
@@ -920,17 +973,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     );
 
     const controlReSubmitOrder = isCustomerCentreUser ? (
-      <Button size="md" disabled={isResubmitting || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
+      <Button size="md" disabled={isResubmitting || !allowedSubmission || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
         {t('captions.btnSubmitOrder')}
       </Button>
     ) : (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button
-          size="md"
-          disabled={(isResubmitting || !isOrderChanged || !allowedSubmission) && !(isCustomerCentreUser || isCSReview || isSubmitted)}
-          variant="primary"
-          type="submit"
-          onClick={handleOnReSubmit}>
+        <Button size="md" disabled={isResubmitting || !isOrderChanged || !allowedSubmission} variant="primary" type="submit" onClick={handleOnReSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -959,7 +1007,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         </Button>
       </PermittedComponent>
     );
-    if (status === ORDER_STATUS.REJECTED || status === ORDER_STATUS.DELETED) {
+    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED, ORDER_STATUS.CANCELLED].includes(status)) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
@@ -972,7 +1020,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (isCustomerCentreUser || isCSReview || isSubmitted) {
-      controls.push(controlDiscardChanges, controlPrintSummary, controlReSubmitOrder);
+      controls.push(controlDiscardChanges);
+      if (!isApprover && isCSReview) {
+        controls.push(controlCancelOrder);
+      }
+      controls.push(controlPrintSummary, controlReSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
     } else if (
@@ -987,7 +1039,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
-    if (isRejected || isDeleted) return false;
+    if (isRejected || isDeleted || status === ORDER_STATUS.CANCELLED) return false;
     else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
@@ -1130,6 +1182,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     </Button>
                   </div>
                 )}
+                {status === ORDER_STATUS.CANCELLED && (
+                  <div className="row-space-between-center">
+                    <Badge text={'Cancelled'} type="error" />
+                    <Button size="md" variant="tertiary" onClick={() => setIsCancelOrderPanelOpen(true)}>
+                      See Cancelled Reason
+                    </Button>
+                  </div>
+                )}
 
                 {isSubmitted && !isCSReview && !isSpOrder && (
                   <div className="row-space-between-center">
@@ -1191,7 +1251,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       <div className="MCP-module-body" ref={contentRef}>
         {!isError && (
           <React.Fragment>
-            {showControls && (
+            {showControls && ![ORDER_STATUS.CANCELLED, ORDER_STATUS.REJECTED].includes(status) && (
               <div className="order-stepper-wrapper">
                 <OrderStepper
                   status={orderDetails?.currentStage}
@@ -1510,7 +1570,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           ?.map((field) => {
                             return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
-                      {!isSpOrder && isCustomerCentreUser && <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId} />}
+                      {!isSpOrder && isCustomerCentreUser && manufacturer === MANUFACTURER.ORCA && (
+                        <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId || '-'} />
+                      )}
                     </div>
                   </div>
                 )}
@@ -1823,6 +1885,54 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           onSuccess={handleAfterRejectOrder}
           onClose={() => setIsCommentPanelOpen(false)}
           openDrawer={isCommentPanelOpen}
+        />
+      )}
+
+      {isCancelOrderPanelOpen && (
+        <CancelOrderPanel
+          readOnly={status === ORDER_STATUS.CANCELLED}
+          meta={{ orderId, rejectionDetails: orderDetails.cancellationDetails, isSpOrder }}
+          onSuccess={(reason) => {
+            setIsCancelOrderPanelOpen(false);
+            setIsCancelOrderConfirmationOpen(true);
+            setCancelOrderReason(reason);
+          }}
+          onClose={() => {
+            setIsCancelOrderPanelOpen(false);
+          }}
+          openDrawer={isCancelOrderPanelOpen}
+        />
+      )}
+
+      {isCancelOrderConfirmationOpen && (
+        <Modal
+          id="cancel-order-confirmation-modal"
+          isOpen={isCancelOrderConfirmationOpen}
+          onClose={() => setIsCancelOrderConfirmationOpen(false)}
+          modalTitle={'Cancel Order'}
+          modalBody={
+            <div className="MCP-modal-body">
+              <p>Are you sure you want to cancel this order?</p>
+            </div>
+          }
+          modalFooter={
+            <div className="controls">
+              <Button size="md" variant="secondary" onClick={() => setIsCancelOrderConfirmationOpen(false)}>
+                No
+              </Button>
+              <Button
+                variant="primary"
+                onClick={cancelOrder}
+                isLoadingState={isSaving}
+                Icon={isSaving && ButtonLoadingIcon}
+                iconPosition="left"
+                type="submit"
+                size="md">
+                {isCancellingOrder ? 'Cancelling' : 'Yes'}
+              </Button>
+            </div>
+          }
+          modalSize="md"
         />
       )}
 
