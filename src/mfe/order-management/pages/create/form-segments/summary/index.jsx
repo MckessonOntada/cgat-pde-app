@@ -804,7 +804,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   setAllowedSubmission(false);
                   scrollToTopUtil();
                 }
+              } else {
+                setAllowedSubmission(true);
               }
+            }
+            if (manufacturer === MANUFACTURER.KITE) {
+              setAllowedSubmission(true);
             }
             setDrawerElement(null);
           }}>
