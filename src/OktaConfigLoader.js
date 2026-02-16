@@ -5,7 +5,7 @@ import { REACT_APP_OKTA_AUTH_SERVER_ID, REACT_APP_OKTA_BASE_URL, REACT_APP_OKTA_
 const OktaConfigLoader = (props) => {
   const { children } = props;
   const res = {
-    baseUrl: REACT_APP_OKTA_LOGIN_URL,
+    baseUrl: REACT_APP_OKTA_BASE_URL,
     protocol: 'oauth2',
     authServerId: REACT_APP_OKTA_AUTH_SERVER_ID,
     clientId: REACT_APP_OKTA_CLIENT_ID,
