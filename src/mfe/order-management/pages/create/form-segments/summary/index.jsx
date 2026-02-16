@@ -1575,7 +1575,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           ?.map((field) => {
                             return <DetailSegment key={field.fieldName} label={field.properties.displayName} value={draftChanges?.[field.fieldName] || '-'} />;
                           })}
-                      {!isSpOrder && isCustomerCentreUser && <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId} />}
+                      {!isSpOrder && isCustomerCentreUser && manufacturer === MANUFACTURER.ORCA && (
+                        <DetailSegment label={'Orca Therapy Id'} value={draftChanges?.manufacturerOrderId} />
+                      )}
                     </div>
                   </div>
                 )}
