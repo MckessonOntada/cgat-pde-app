@@ -1007,7 +1007,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         </Button>
       </PermittedComponent>
     );
-    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED, ORDER_STATUS.CANCELLED].includes(status)) {
+    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED, ORDER_STATUS.CANCELLED].includes(status) || (isSpOrder && status === ORDER_STATUS.SUBMITTED)) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
@@ -1041,6 +1041,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted || status === ORDER_STATUS.CANCELLED) return false;
     else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
+    else if (isSpOrder && isSubmitted) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && orderDetails.approver && !isApprover) return false;
@@ -1584,7 +1585,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       heading={<Heading as="h3">{t('orderManagement.patientDetails.identifier_details')}</Heading>}
                       controls={
                         showControls ||
-                        (isCustomerCentreUser && (
+                        (isCSReview && (
                           <Button size="md" variant="tertiary" onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
                           </Button>
@@ -1613,6 +1614,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                     controls={
+                      !isSpOrder &&
                       (showControls || allowUpdateBnBAfterSubmit || isCSReview) && (
                         <Button
                           size="md"
