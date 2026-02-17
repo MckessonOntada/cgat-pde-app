@@ -113,10 +113,11 @@ async function saveAccount(orderId, payload, isDraft = false, isSendNotification
   return {};
 }
 
-async function submitOrder(orderId, payload) {
+async function submitOrder(orderId, payload, isInternalOrder = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const params = {
-    mckessonOrgId: AuthUtils.getMckessonOrgId()
+    mckessonOrgId: AuthUtils.getMckessonOrgId(),
+    isInternalOrder: isInternalOrder
   };
   const url = `${ApiRoutes.ORDERS()}/${orderId}/submit?${serializeParams(params)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);

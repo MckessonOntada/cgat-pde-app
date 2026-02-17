@@ -374,28 +374,31 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
   });
 
-  const { isLoading: isSaving, mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
-    onSuccess: (_result, { action }) => {
-      if (action === BUTTON_ACTIONS.SUBMIT) {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, { state: { ...locationState } });
-      } else {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, {
-          state: { ...locationState, isApproved: true }
-        });
-      }
-    },
-    onError: (error) => {
-      const statusCode = error?.response?.status;
-      let description = t('error.default');
-      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+  const { isLoading: isSaving, mutate: submitOrder } = useMutation(
+    async ({ action, isPAPOrder, isInternalOrder }) => await OrderService.submitOrder(orderId, isPAPOrder, isInternalOrder),
+    {
+      onSuccess: (_result, { action }) => {
+        if (action === BUTTON_ACTIONS.SUBMIT) {
+          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, { state: { ...locationState } });
+        } else {
+          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, {
+            state: { ...locationState, isApproved: true }
+          });
+        }
+      },
+      onError: (error) => {
+        const statusCode = error?.response?.status;
+        let description = t('error.default');
+        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      setAlert({
-        description,
-        type: 'error'
-      });
-    },
-    retry: false
-  });
+        setAlert({
+          description,
+          type: 'error'
+        });
+      },
+      retry: false
+    }
+  );
 
   const { isLoading: isResubmitting, mutate: reSubmitOrder } = useMutation(
     async (draftChanges) => {
@@ -441,6 +444,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     value: false
   });
 
+  const [spRemainInInspiroLink, setSpRemainInInspiroLink] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('messages.orderPlacementAcknowledgementSPInspiroLink'),
+    value: false
+  });
+
   const handleChange = () => {
     setOrderAgreementCheckboxError(null);
     setAgreeCheckboxOptions({
@@ -455,6 +465,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       isChecked: !papOrderOptions.isChecked
     });
   };
+  const handleSpInspiroLinkChange = () => {
+    setSpRemainInInspiroLink({
+      ...spRemainInInspiroLink,
+      isChecked: !spRemainInInspiroLink.isChecked
+    });
+  };
 
   const handleOnBackButtonClick = () => {
     setValue('orcaPatient', null);
@@ -466,6 +482,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isImpersonatedAdmin = () => {
     const impersonatedByUser = AuthUtils.getImpersonatedByUser();
     if (impersonatedByUser && (impersonatedByUser.role?.name === SYSTEM_ADMIN || impersonatedByUser.role?.name === CUSTOMER_CENTRE)) {
+      return true;
+    }
+    return false;
+  };
+
+  const isImpersonatedCSAdmin = () => {
+    const impersonatedByUser = AuthUtils.getImpersonatedByUser();
+    if (impersonatedByUser && impersonatedByUser.role?.name === CUSTOMER_CENTRE) {
       return true;
     }
     return false;
@@ -486,7 +510,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             isPAPOrder: papOrderOptions.isChecked
           });
         } else {
-          submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+          submitOrder({ action: BUTTON_ACTIONS.SUBMIT, isInternalOrder: spRemainInInspiroLink.isChecked });
         }
       }
     }
@@ -1041,7 +1065,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const showControls = React.useMemo(() => {
     if (isRejected || isDeleted || status === ORDER_STATUS.CANCELLED) return false;
     else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
-    else if (isSpOrder && isSubmitted) return false;
+    // else if (isSpOrder && isSubmitted) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
     else if (status === ORDER_STATUS.APPROVAL_PENDING && orderDetails.approver && !isApprover) return false;
@@ -1091,6 +1115,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   }
 
   const askForPapOrder = Boolean(!isSpOrder && isImpersonatedAdmin() && !['APPROVAL_PENDING', 'SUBMITTED'].includes(status));
+  const askForSpRemainInInspiroLink = Boolean(isSpOrder && isImpersonatedCSAdmin());
   const primaryPolicyHolderName = CommonUtils.getUSFullName({
     firstName: payerDetails?.primaryMedicalInsurance?.policyHolderFirstName,
     lastName: payerDetails?.primaryMedicalInsurance?.policyHolderLastName
@@ -1584,12 +1609,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{t('orderManagement.patientDetails.identifier_details')}</Heading>}
                       controls={
-                        showControls ||
-                        (isCSReview && (
+                        (showControls || isCSReview) && (
                           <Button size="md" variant="tertiary" onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)} Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
                           </Button>
-                        ))
+                        )
                       }
                     />
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
@@ -1614,8 +1638,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                     controls={
-                      !isSpOrder &&
-                      (showControls || allowUpdateBnBAfterSubmit || isCSReview) && (
+                      (showControls || allowUpdateBnBAfterSubmit || (isCSReview && !isSpOrder)) && (
                         <Button
                           size="md"
                           variant="tertiary"
@@ -1852,6 +1875,21 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     ]}
                     size="md"
                   />
+                  {askForSpRemainInInspiroLink && (
+                    <div>
+                      <CheckboxGroup
+                        id={'sp-remain-in-inspiro-link'}
+                        name="sp-remain-in-inspiro-link"
+                        items={[
+                          {
+                            ...spRemainInInspiroLink,
+                            onChange: () => handleSpInspiroLinkChange()
+                          }
+                        ]}
+                        size="md"
+                      />
+                    </div>
+                  )}
                   {askForPapOrder && (
                     <div className={styles['pap-order-selection-control']}>
                       <CheckboxGroup
