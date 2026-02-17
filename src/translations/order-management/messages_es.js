@@ -314,6 +314,8 @@ export const MessageEs = {
   'messages.selectAcknowledgementError': 'S_Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'S_The selected therapy is in stock.',
   'messages.papOrderPlacementAcknowledgement': 'S_Submit this as No Cost therapy Order.',
+  'messages.orderPlacementAcknowledgementSPInspiroLink':
+    'S_I acknowledge that this order will not be submitted to Specialty Pharmacy and will remain in InspiroLink.',
   'messages.inventoryCheck.error':
     'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
   'modal.action.continue': 'S_Continue',
