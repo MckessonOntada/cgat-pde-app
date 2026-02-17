@@ -32,7 +32,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { getManufacturer, isValidToSaveAsDraft, NotifyAlert, removePrefixSuffixFromValues, updatePatientValues, removeFieldPrefixSuffix } from '../OrderUtil';
+import { getManufacturer, isValidToSaveAsDraft, NotifyAlert, getValueWIthoutPrefixAndSuffix, updatePatientValues, removeFieldPrefixSuffix } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
@@ -201,7 +201,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
       const config =
         orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
-      const patientDetails = removePrefixSuffixFromValues(orderDetails.patient, config || []);
+      const patientDetails = getValueWIthoutPrefixAndSuffix(orderDetails.patient, config || []);
       setInitialValues({
         patient: CommonUtils.normalizeFormData(normalizePatient(patientDetails)),
         providerId: orderDetails.provider?.id

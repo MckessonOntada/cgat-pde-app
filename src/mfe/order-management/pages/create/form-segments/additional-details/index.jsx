@@ -588,13 +588,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         drugName: therapy?.materialDescription,
         strength: spTherapyConfig.strength,
         daysSupply: spTherapyConfig.daysSupply,
-        quantity: spTherapyConfig.quantity,
+        quantity: spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity ? spTherapyConfig.maxQuantity : spTherapyConfig.quantity,
         refills: spTherapyConfig.refills,
         instructions: spTherapyConfig.instructions,
         terms: false,
         consentPolicy: spTherapyConfig.consentPolicy,
         acknowledgement: false
       });
+    } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      removePrefixSuffixFromValues(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
+      if (therapyConfig.maxQuantity === therapyConfig.maxQuantity) {
+        initialValues.orderQuantity = therapyConfig.maxQuantity;
+      }
     }
 
     if (additionalDetails) {
@@ -687,9 +692,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }));
       }
     }
-    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-      removePrefixSuffixFromValues(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
-    }
+
     setInitialFormValues((prev) => ({
       ...prev,
       ...initialValues
@@ -1391,20 +1394,23 @@ const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly, 
   return (
     <div className="form-segment ">
       <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
-        {defaultFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
-          <Field
-            key={index}
-            name={name}
-            label={label}
-            placeholder={placeholder}
-            isRequired={isRequired}
-            component={component}
-            maxLength={maxLength}
-            readOnly={readOnly}
-            isDisabled={readOnly}
-            {...otherProps}
-          />
-        ))}
+        {defaultFields.map(({ name, label, placeholder, isRequired, readOnly: _readOnly, component, maxLength, ...otherProps }, index) => {
+          debugger;
+          return (
+            <Field
+              key={index}
+              name={name}
+              label={label}
+              placeholder={placeholder}
+              isRequired={isRequired}
+              component={component}
+              maxLength={maxLength}
+              readOnly={readOnly || _readOnly}
+              isDisabled={readOnly || _readOnly}
+              {...otherProps}
+            />
+          );
+        })}
       </div>
     </div>
   );

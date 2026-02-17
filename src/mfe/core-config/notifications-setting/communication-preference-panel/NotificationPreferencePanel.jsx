@@ -72,7 +72,7 @@ const NotificationPreferencePanel = ({
                         variant={controlValue ? 'secondary' : 'primary'}
                       />
                     ) : (
-                      <Tooltip body={true && translateFn(tooltipKey)}>
+                      <Tooltip body={showTooltip && translateFn(tooltipKey)}>
                         <div className={style['switch-control']}>
                           <Switch
                             id={`notification-setting-${sectionIndex}-header-${optionKey}`}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
@@ -115,11 +114,13 @@ function NotificationPreferenceConfiguration() {
     <Formik initialValues={preferencesConfig} enableReinitialize={true} onSubmit={handleOnSubmit}>
       <Form>
         <div className="MCP-module-body">
+          <ModuleHeader heading={<Heading as="h1">Edit Communication Preferences</Heading>} />
           {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
           <div className="MCP-CardContainer">
             <NotificationPreferencePanel
               readOnly={false}
               showLabels={true}
+              showTooltip={true}
               isLoadingPreferences={false}
               isPreferencesLoaded={isPreferencesLoaded}
               config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
