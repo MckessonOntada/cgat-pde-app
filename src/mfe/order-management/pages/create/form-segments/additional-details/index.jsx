@@ -732,7 +732,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
-    if (manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
+    if (channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA && manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
       setAlert({
         description: t('orderManagement.coiId.empty', {
           coiId: getDisplayNameByFieldName('coiId')
