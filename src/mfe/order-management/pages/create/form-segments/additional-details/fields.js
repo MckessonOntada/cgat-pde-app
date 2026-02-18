@@ -32,11 +32,13 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
         });
       }
     });
+
     dynamic_fields.push({
       name: 'orderQuantity',
       label: translationFn('labels.orderQuantity'),
       placeholder: ' ',
       isRequired: true,
+      readOnly: therapyConfig?.maxQuantity === therapyConfig?.minQuantity,
       component: Components['input'],
       maxLength: 2
     });
