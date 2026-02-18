@@ -180,6 +180,7 @@ export const MessageEs = {
   'labels.orderId': 'S_Order ID',
   'labels.pdeId': 'S_PDE ID',
   'labels.sapId': 'S_SAP ID',
+  'labels.inspiroLinkId': 'S_InspiroLink ID',
   'labels.therapy': 'S_Therapy',
   'labels.orderView.MY_ORDERS': 'S_My Orders',
   'labels.orderView.ALL_ORDERS': 'S_All Orders',
