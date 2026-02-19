@@ -198,7 +198,7 @@ const SecondaryHeader = () => {
         <div className={styles.wrapper}>
           <LeftSideView />
           <RightSideView />
-          {exitUserViewModalOpen && (
+          {exitUserViewModalOpen && impersonatedUsername && (
             <ExitUserViewConfirmation
               onClose={() => setExitUserViewModalOpen(false)}
               title={`${t('button.captions.exitUserView')}?`}
