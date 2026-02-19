@@ -113,7 +113,7 @@ const OrderStatus = () => {
             {orderStatus === 'SUBMITTED' ? (
               <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.sapId')} value={backendOrderId} />
             ) : (
-              <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.pdeId')} value={orderId} />
+              <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.inspiroLinkId')} value={orderId} />
             )}
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             {patientName ? <DetailSegment label={t('labels.patientName')} value={patientName} /> : <div></div>}

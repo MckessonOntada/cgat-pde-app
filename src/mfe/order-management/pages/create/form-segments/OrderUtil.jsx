@@ -187,7 +187,7 @@ export function updateAdditionalDetailsValues(values, fieldConfigs) {
   return values;
 }
 
-export function removePrefixSuffixFromValues(values, fieldConfigs) {
+export function getValueWIthoutPrefixAndSuffix(values, fieldConfigs) {
   if (!values) return values;
 
   fieldConfigs.forEach((config) => {
