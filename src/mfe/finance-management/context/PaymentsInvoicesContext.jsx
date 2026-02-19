@@ -337,6 +337,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       companyCode: selectedAccount?.companyCode,
       salesOrg: selectedAccount?.salesOrg,
       payerAccountNumber: selectedAccount?.accountNumber,
+      ...(isHistory && { clearedItems: 'X' }),
       openInvoiceFilterDTO: {
         searchTerm: filterConfig?.searchQuery || '',
         paymentTerm: filterConfig?.paymentTerm || [],

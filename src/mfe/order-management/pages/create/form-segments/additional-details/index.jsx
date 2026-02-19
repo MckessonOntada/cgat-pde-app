@@ -35,7 +35,7 @@ import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { getManufacturer, NotifyAlert, removePrefixSuffixFromValues, updateAdditionalDetailsValues } from '../OrderUtil';
+import { getManufacturer, NotifyAlert, getValueWIthoutPrefixAndSuffix, updateAdditionalDetailsValues } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
 import { useOrderPrice } from './useOrderPrice';
@@ -596,8 +596,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         acknowledgement: false
       });
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-      removePrefixSuffixFromValues(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
-      if (therapyConfig.maxQuantity === therapyConfig.maxQuantity) {
+      getValueWIthoutPrefixAndSuffix(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
+      if (therapyConfig.maxQuantity === therapyConfig.minQuantity) {
         initialValues.orderQuantity = therapyConfig.maxQuantity;
       }
     }
@@ -1395,7 +1395,6 @@ const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly, 
     <div className="form-segment ">
       <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
         {defaultFields.map(({ name, label, placeholder, isRequired, readOnly: _readOnly, component, maxLength, ...otherProps }, index) => {
-          debugger;
           return (
             <Field
               key={index}

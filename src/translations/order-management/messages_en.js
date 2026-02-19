@@ -205,6 +205,7 @@ export const MessageEn = {
   'labels.orderId': 'Order ID',
   'labels.pdeId': 'PDE ID',
   'labels.sapId': 'SAP ID',
+  'labels.inspiroLinkId': 'InspiroLink ID',
   'labels.therapy': 'Therapy',
   'labels.orderView.MY_ORDERS': 'My Orders',
   'labels.orderView.ALL_ORDERS': 'All Orders',

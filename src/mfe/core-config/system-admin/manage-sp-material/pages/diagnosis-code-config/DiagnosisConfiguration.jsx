@@ -19,7 +19,7 @@ function DiagnosisConfiguration() {
   const location = useLocation();
   const { filters, applyFilters, clearFilters } = useFilters();
   const { refreshTable } = useTable();
-  const { changePage } = usePagination();
+  const { changePage, pagination } = usePagination();
   const { t: translateFn } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const [selectedCodes, setSelectedCodes] = React.useState([]);
@@ -47,12 +47,20 @@ function DiagnosisConfiguration() {
 
     MaterialService.removeAssignedDiagnosisCode(selectedTherapy.id, ids)
       .then((_response) => {
+        const newTotalElements = pagination.totalElements - selectedCodes.length;
+        const newTotalPages = Math.ceil(newTotalElements / pagination.pageSize);
+
+        if (pagination.pageNo > newTotalPages && pagination.pageNo > 1) {
+          setSelectedCodes([]);
+          changePage(newTotalPages);
+        } else {
+          setSelectedCodes([]);
+          refreshTable();
+        }
         setAlert({
           description: translateFn('successMessage.nCodesRemoved', { n: ids.length }),
           type: 'success'
         });
-        setSelectedCodes([]);
-        changePage(1);
       })
       .catch((error) => {
         const statusCode = error?.response?.status;
