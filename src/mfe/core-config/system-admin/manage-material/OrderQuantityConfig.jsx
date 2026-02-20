@@ -10,21 +10,22 @@ import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-mate
 import { Field, Form, Formik } from 'formik';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import * as Yup from 'yup';
-import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import Components from '@src/components/form/Components';
 import OrderService from '@src/api/commonService/OrderService';
 import Alert from '@src/components/cgat-alert/Alert';
+import { useSPMaterial } from '../manage-sp-material/context/SPMaterialContext';
 
-function OrderQuantityConfig({ onClose, onSuccess, onError }) {
+function OrderQuantityConfig({ channelType = CHANNEL_TYPE.BUY_AND_BILL, onClose, onSuccess, onError }) {
   const { t } = useTranslate();
   const [alert, setAlert] = React.useState(null);
   const { selectedMaterials, setSelectedMaterials, refetch } = useManageMaterial();
+  const { selectedSPMaterial, setSelectedSPMaterial, refreshData } = useSPMaterial();
   const [initialValues, setInitialValues] = React.useState({
     minQuantity: '',
     maxQuantity: ''
   });
 
-  const validationSchemaforOrderQuantity = (t) =>
+  const validationSchemaForOrderQuantity = (t) =>
     Yup.object({
       minQuantity: Yup.string()
         .required(t('manageMaterial.drawer.details.configuration.body.minQuantityRequired'))
@@ -54,18 +55,23 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
   const { data: MaterialData, isLoading: isMaterialDataLoading } = useQuery({
     queryKey: ['therapyDetailsByTrade'],
     queryFn: async () => {
-      const result = await OrderService.getTherapyDetailsByTradeName2(
-        selectedMaterials.map((material) => material.tradeName),
-        CHANNEL_TYPE.BUY_AND_BILL
-      );
+      let ndc = null;
+      if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+        ndc = selectedMaterials.map((material) => material.tradeName);
+      } else {
+        ndc = selectedSPMaterial.map((material) => material.tradeName);
+      }
+      const result = await OrderService.getTherapyDetailsByTradeName2(ndc, channelType);
       return result;
     },
-    enabled: !!selectedMaterials && selectedMaterials?.length === 1 ? true : false,
+    enabled:
+      (channelType === CHANNEL_TYPE.BUY_AND_BILL && selectedMaterials?.length === 1) ||
+      (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && selectedSPMaterial?.length === 1),
     refetchOnWindowFocus: false
   });
 
   React.useEffect(() => {
-    if (selectedMaterials?.length === 1 && Array.isArray(MaterialData)) {
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && selectedMaterials?.length === 1 && Array.isArray(MaterialData)) {
       const selectedNDC = selectedMaterials[0].ndc;
       const matchedMaterial = MaterialData.find((item) => item.materialConfig?.ndcNumber === selectedNDC);
 
@@ -77,10 +83,22 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
           maxQuantity: config.maxQuantity || ''
         });
       }
-    }
-  }, [MaterialData, selectedMaterials]);
+    } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && selectedSPMaterial?.length === 1 && Array.isArray(MaterialData)) {
+      const selectedNDC = selectedSPMaterial[0].ndcNumber;
+      const matchedMaterial = MaterialData.find((item) => item.therapy?.ndcNumber === selectedNDC);
 
-  const { mutate: applyConfiguration, isLoading: isApplyConfigurationLoading } = useMutation(
+      if (matchedMaterial) {
+        const config = matchedMaterial.spTherapyConfig;
+
+        setInitialValues({
+          minQuantity: config.minQuantity || '',
+          maxQuantity: config.maxQuantity || ''
+        });
+      }
+    }
+  }, [MaterialData, selectedMaterials, selectedSPMaterial]);
+
+  const { mutate: applyBnBConfiguration, isLoading: isApplyConfigurationLoading } = useMutation(
     async (configValues) => {
       return await HttpResourceService.callRest(`${ApiRoutes.CONFIGURE_SP_MATERIALS_UPDATE_QUANTITY()}`, httpVerb.POST, configValues);
     },
@@ -88,8 +106,13 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
       onSuccess: () => {
         onSuccess();
         onClose();
-        refetch();
-        setSelectedMaterials([]);
+        if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+          refetch();
+          setSelectedMaterials([]);
+        } else {
+          refreshData();
+          setSelectedSPMaterial([]);
+        }
       },
       onError: () => {
         onError();
@@ -115,6 +138,24 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
     }
   ];
 
+  const { mutate: applySPConfiguration } = useMutation(
+    async (configValues) => {
+      return await HttpResourceService.callRest(`${ApiRoutes.CONFIGURE_SP_MATERIALS()}/update`, httpVerb.POST, configValues);
+    },
+    {
+      onSuccess: () => {
+        onSuccess();
+        onClose();
+        refreshData();
+        setSelectedSPMaterial([]);
+      },
+      onError: () => {
+        onError();
+        onClose();
+      }
+    }
+  );
+
   const handleApplyConfiguration = (values) => {
     if (parseInt(values.minQuantity, 10) > parseInt(values.maxQuantity, 10)) {
       setAlert({
@@ -123,14 +164,23 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
       });
       return;
     }
-    const configValues = {
-      ndcNumbers: selectedMaterials.map((material) => material.ndc),
-      minQuantity: values.minQuantity,
-      maxQuantity: values.maxQuantity,
-      channelType: CHANNEL_TYPE.BUY_AND_BILL,
-      minLessThanOrEqualToMax: values.minQuantity <= values.maxQuantity ? 'yes' : 'no'
-    };
-    applyConfiguration(configValues);
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      const configValues = {
+        ndcNumbers: selectedMaterials.map((material) => material.ndc),
+        minQuantity: values.minQuantity,
+        maxQuantity: values.maxQuantity,
+        channelType: CHANNEL_TYPE.BUY_AND_BILL,
+        minLessThanOrEqualToMax: values.minQuantity <= values.maxQuantity ? 'yes' : 'no'
+      };
+      applyBnBConfiguration(configValues);
+    } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      const configValues = {
+        spProductIds: selectedSPMaterial.map((material) => material.materialNumber),
+        minQuantity: values.minQuantity,
+        maxQuantity: values.maxQuantity
+      };
+      applySPConfiguration(configValues);
+    }
   };
 
   if (isMaterialDataLoading || isApplyConfigurationLoading) {
@@ -138,7 +188,7 @@ function OrderQuantityConfig({ onClose, onSuccess, onError }) {
   }
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchemaforOrderQuantity(t)} enableReinitialize onSubmit={handleApplyConfiguration}>
+    <Formik initialValues={initialValues} validationSchema={validationSchemaForOrderQuantity(t)} enableReinitialize onSubmit={handleApplyConfiguration}>
       {() => (
         <Form>
           <FloatingDrawer
