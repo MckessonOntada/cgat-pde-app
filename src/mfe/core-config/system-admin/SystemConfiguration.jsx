@@ -83,9 +83,11 @@ export default function SystemConfiguration() {
         path={'manage-sp-material/*'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.spMaterial}>
-            <SPMaterialProvider>
-              <ManageSPMaterialRoute />
-            </SPMaterialProvider>
+            <ManageMaterialProvider>
+              <SPMaterialProvider>
+                <ManageSPMaterialRoute />
+              </SPMaterialProvider>
+            </ManageMaterialProvider>
           </ProtectedRoute>
         }
       />
