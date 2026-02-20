@@ -9,7 +9,9 @@ import ReviewCatalogList from '../pages/link/ReviewCatalog';
 import { OrgAccountMultiSelectionProvider } from '../pages/context/OrgAccountMultiSelectContext';
 import ViewSPCatalogConfig from '../pages/ViewSPCatalogConfig';
 import ViewQuesionnairePreview from '../pages/ViewQuestionnairePreview';
-
+import { SPAccountProvider } from '../../manage-sp-account/context/SPAccountContext';
+import AssociatedSPAccount from '../../manage-sp-material/pages/AssociatedSPAccount';
+import { OrgAccountSelectionProvider } from '../../manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 const SPCatalogRouter = () => {
   return (
     <Routes>
@@ -32,6 +34,16 @@ const SPCatalogRouter = () => {
           <SPMaterialProvider isLinkCatalog={true}>
             <ReviewCatalogList />
           </SPMaterialProvider>
+        }
+      />
+      <Route
+        path={ROUTE_PATHS.ASSOCIATED_ACCOUNT}
+        element={
+          <OrgAccountSelectionProvider enableOrg={false} enableAcct={false} defaultFirstOrgSelected={false} enableConfigure={false}>
+            <SPAccountProvider isSpMaterial={true}>
+              <AssociatedSPAccount isLinkCatalog={true} />
+            </SPAccountProvider>
+          </OrgAccountSelectionProvider>
         }
       />
       <Route path={ROUTE_PATHS.UPLOAD} element={<Upload />} />
