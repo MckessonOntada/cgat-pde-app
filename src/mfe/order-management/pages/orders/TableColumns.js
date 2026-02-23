@@ -36,7 +36,7 @@ const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
   const { id, status, practiceId } = props || {};
-  const { tab, alertContainerId, handleOnCancelOrder } = this.__meta__;
+  const { tab, alertContainerId, handleOnCancelOrder, isCSReviewOrdersPage } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
