@@ -17,6 +17,7 @@ import ConfigureSPPrescription from './ConfigureSPPrescription';
 import { getLinkSPMaterialColumns, getSPMaterialColumns } from './SPMaterialColumns';
 import SPMaterialDetails from './SPMaterialDetails';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import OrderQuantityConfig from '../../manage-material/OrderQuantityConfig';
 
 function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAlert }) {
   const { t } = useTranslate();
@@ -25,7 +26,8 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState({
     config: false,
-    prescriptionConfig: false
+    prescriptionConfig: false,
+    orderQuantityConfig: false
   });
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -177,6 +179,17 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
           secondaryViewHeading={`${selectedSPMaterial?.length} ${t('manageMaterial.table.header.text')}`}
           secondaryViewControls={
             <div className="controls">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setOpenConfiguration((prev) => ({
+                    ...prev,
+                    orderQuantityConfig: !prev.orderQuantityConfig
+                  }));
+                }}
+                size="sm">
+                {t('manageMaterial.table.header.button.OrderQuantity')}
+              </Button>
               {!isMultipleSelected && (
                 <>
                   <Button
@@ -281,6 +294,14 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
       {openConfiguration.prescriptionConfig && (
         <ConfigureSPPrescription
           onClose={() => setOpenConfiguration((prev) => ({ ...prev, prescriptionConfig: false }))}
+          onSuccess={onSuccess}
+          onError={onError}
+        />
+      )}
+      {openConfiguration.orderQuantityConfig && (
+        <OrderQuantityConfig
+          channelType={CHANNEL_TYPE.SPECIALTY_PHARMA}
+          onClose={() => setOpenConfiguration((prev) => ({ ...prev, orderQuantityConfig: false }))}
           onSuccess={onSuccess}
           onError={onError}
         />

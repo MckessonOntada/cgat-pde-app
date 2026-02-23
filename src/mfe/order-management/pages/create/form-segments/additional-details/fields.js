@@ -12,7 +12,7 @@ const getBinaryOptions = (keyPrefix = '', readOnly) => {
   }));
 };
 
-export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, channelType, handleCoiIdValidation }) => {
+export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, spTherapyConfig, channelType, handleCoiIdValidation }) => {
   const dynamic_fields = [];
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     therapyConfig?.config?.fields?.forEach((field) => {
@@ -32,13 +32,22 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
         });
       }
     });
-
     dynamic_fields.push({
       name: 'orderQuantity',
       label: translationFn('labels.orderQuantity'),
       placeholder: ' ',
       isRequired: true,
       readOnly: therapyConfig?.maxQuantity === therapyConfig?.minQuantity,
+      component: Components['input'],
+      maxLength: 2
+    });
+  } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+    dynamic_fields.push({
+      name: 'orderQuantity',
+      label: translationFn('labels.orderQuantity'),
+      placeholder: ' ',
+      isRequired: true,
+      readOnly: spTherapyConfig?.maxQuantity === spTherapyConfig?.minQuantity,
       component: Components['input'],
       maxLength: 2
     });

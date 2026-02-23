@@ -36,7 +36,7 @@ const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
   const { id, status, practiceId } = props || {};
-  const { tab, alertContainerId } = this.__meta__;
+  const { tab, alertContainerId, handleOnCancelOrder, isCSReviewOrdersPage } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
@@ -146,13 +146,17 @@ function getOptionsByStatus(props) {
         });
         break;
       case ORDER_ENTITY_ACTION.CANCEL:
-        renderModal({
-          title: translate('labels.information'),
-          bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
-          footerActions: {
-            cancel: { label: translate('labels.orderActions.OK') }
-          }
-        });
+        if (props.status === ORDER_STATUS.CS_REVIEW) {
+          handleOnCancelOrder(props);
+        } else {
+          renderModal({
+            title: translate('labels.information'),
+            bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
+            footerActions: {
+              cancel: { label: translate('labels.orderActions.OK') }
+            }
+          });
+        }
         break;
       case ORDER_ENTITY_ACTION.EDIT:
         if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
@@ -275,7 +279,7 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.EDIT
       });
     }
-    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage) {
+    if (status !== ORDER_STATUS.CANCELLED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage)) {
       options.push({
         label: translate(`labels.orderActions.cancel`),
         value: ORDER_ENTITY_ACTION.CANCEL
@@ -611,7 +615,7 @@ const jsxColumns = (isCSReviewOrdersPage) => [
   }
 ];
 
-export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId, isCSReviewOrdersPage) => {
+export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId, isCSReviewOrdersPage, handleOnCancelOrder) => {
   if (!tab) throw new Error('table type is missing');
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
@@ -623,7 +627,8 @@ export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, transla
     translate,
     tab,
     alertContainerId,
-    isCSReviewOrdersPage
+    isCSReviewOrdersPage,
+    handleOnCancelOrder
   };
 
   tableColumns.map((column) => {

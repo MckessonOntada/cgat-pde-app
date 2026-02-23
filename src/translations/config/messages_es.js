@@ -193,6 +193,7 @@ export const ConfigurationMessagesES = {
   'SPCatalog.Material.selectall': 'S_select all',
   'SPCatalog.Material.clearall': 'S_Clear all',
   'SPCatalog.btnBack': 'S_Back to manage SP Catalog page',
+  'SPMaterialMaster.btnBack': 'S_Back to so material master',
   'SPCatalog.Link.Success': 'S_SP Catalog for {{count}} Accounts has been updated successfully.',
   'SPCatalog.unlink.SPMaterial.confirmation': 'S_Are you sure you want to unlink this SP Material?',
   'SPCatalog.unlink.SPMaterial.success': 'S_SP Material(s) unlinked successfully.',

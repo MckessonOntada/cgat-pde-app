@@ -12,7 +12,7 @@ import AccountService from '@src/api/commonService/AccountService';
 import Alert from '@src/components/cgat-alert/Alert';
 import { renderModal } from '@src/util/ModalUtil';
 
-function AssociatedSPAccount() {
+function AssociatedSPAccount({ isLinkCatalog = false }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { applyFilters, clearFilters, refetchSPAccountList } = useSPAccountContext();
@@ -73,9 +73,11 @@ function AssociatedSPAccount() {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => navigate('/system-admin/config/manage-sp-material', { state: { isAssociatedAccount: true } })}
+          onClick={() =>
+            navigate(isLinkCatalog ? '/system-admin/config/sp-catalog' : '/system-admin/config/manage-sp-material', { state: { isAssociatedAccount: true } })
+          }
           size="md">
-          {t('Back to sp material master')}
+          {t(isLinkCatalog ? 'SPCatalog.btnBack' : 'SPMaterialMaster.btnBack')}
         </Button>
       </div>
       <div className="MCP-module-body">

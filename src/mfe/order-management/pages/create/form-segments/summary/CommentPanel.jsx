@@ -56,7 +56,7 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) => {
     const { rejectionReason } = values;
     const { orderId } = meta;
     if (rejectionReason && orderId) {
-      rejectOrder({ orderId, rejectionReason });
+      rejectOrder({ orderId, rejectionReason: rejectionReason.trim() });
     }
   };
 

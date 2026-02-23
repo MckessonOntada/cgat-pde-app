@@ -1,4 +1,4 @@
-import { Button, Heading, TabList } from '@mckesson/mcp-component-library';
+import { Button, Heading, TabList, Modal } from '@mckesson/mcp-component-library';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import Alert from '@src/components/cgat-alert/Alert';
@@ -23,11 +23,19 @@ import { useOrders } from '../../context/OrderContext';
 import { routesConfig } from './../../routes/constants';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import { getTableColumns } from './TableColumns';
+import CancelOrderPanel from '../create/form-segments/summary/CancelOrderPanel';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+import OrderService from '@src/api/commonService/OrderService';
 
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
+  const [isCancelOrderPanelOpen, setIsCancelOrderPanelOpen] = React.useState(false);
+  const [isCancelOrderConfirmationOpen, setIsCancelOrderConfirmationOpen] = React.useState(false);
+  const [isCancellingOrder, setIsCancellingOrder] = React.useState(false);
+  const [cancelOrderReason, setCancelOrderReason] = React.useState(null);
+  const [selectedOrder, setSelectedOrder] = React.useState(null);
 
   const { t } = useTranslate();
   const [alert, setAlert] = useState(null);
@@ -55,7 +63,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     return [];
   }, [location.search]);
 
-  const { assigneeList, error, searchAssigneeByTest, data, isFetching, config } = useOrders();
+  const { assigneeList, error, searchAssigneeByTest, data, isFetching, config, refreshData } = useOrders();
   const activeTab = tabList.find((tab) => tab.id === config.tab);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
@@ -173,8 +181,36 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       navigate(`${location.pathname}?${params.toString()}`, { replace: false });
     }
   };
+  const handleOnCancelOrder = (props) => {
+    setSelectedOrder(props);
+    setIsCancelOrderPanelOpen(true);
+  };
 
-  const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage);
+  const cancelOrder = () => {
+    setIsCancellingOrder(true);
+    OrderService.cancelOrder(selectedOrder?.id, selectedOrder.practiceId, cancelOrderReason)
+      .then((response) => {
+        refreshData();
+        setAlert({
+          type: 'success',
+          description: 'Your order has been successfully cancelled.'
+        });
+      })
+      .catch((error) => {
+        setAlert({
+          type: 'error',
+          description: 'Something went wrong. Please try again.'
+        });
+      })
+      .finally(() => {
+        setCancelOrderReason(null);
+        setIsCancelOrderConfirmationOpen(false);
+        setIsCancellingOrder(false);
+        setSelectedOrder(null);
+      });
+  };
+
+  const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage, handleOnCancelOrder);
 
   const handleOnViewChange = (view) => {
     params.set('view', view);
@@ -475,6 +511,53 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
           </div>
         </div>
       </div>
+      {isCancelOrderPanelOpen && (
+        <CancelOrderPanel
+          readOnly={false}
+          meta={{ orderId: selectedOrder?.id, isSpOrder: false }}
+          onSuccess={(reason) => {
+            setIsCancelOrderPanelOpen(false);
+            setIsCancelOrderConfirmationOpen(true);
+            setCancelOrderReason(reason);
+          }}
+          onClose={() => {
+            setIsCancelOrderPanelOpen(false);
+            setSelectedOrder(null);
+          }}
+          openDrawer={isCancelOrderPanelOpen}
+        />
+      )}
+      {isCancelOrderConfirmationOpen && (
+        <Modal
+          id="cancel-order-confirmation-modal"
+          isOpen={isCancelOrderConfirmationOpen}
+          onClose={() => setIsCancelOrderConfirmationOpen(false)}
+          modalTitle={'Cancel Order'}
+          modalBody={
+            <div className="MCP-modal-body">
+              <p>Are you sure you want to cancel this order?</p>
+            </div>
+          }
+          modalFooter={
+            <div className="controls">
+              <Button size="md" variant="secondary" onClick={() => setIsCancelOrderConfirmationOpen(false)}>
+                No
+              </Button>
+              <Button
+                variant="primary"
+                onClick={cancelOrder}
+                isLoadingState={isCancellingOrder}
+                Icon={isCancellingOrder && ButtonLoadingIcon}
+                iconPosition="left"
+                type="submit"
+                size="md">
+                {isCancellingOrder ? 'Cancelling' : 'Yes'}
+              </Button>
+            </div>
+          }
+          modalSize="md"
+        />
+      )}
     </div>
   );
 };

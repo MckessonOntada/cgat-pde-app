@@ -84,7 +84,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [alert, setAlert] = React.useState(null);
   const [triageAlert, setTriageAlert] = React.useState(null);
   const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
-  const { tradeDetails = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
+  const { tradeDetails = {}, spTherapyConfig = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -588,7 +588,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         drugName: therapy?.materialDescription,
         strength: spTherapyConfig.strength,
         daysSupply: spTherapyConfig.daysSupply,
-        quantity: spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity ? spTherapyConfig.maxQuantity : spTherapyConfig.quantity,
+        quantity: spTherapyConfig.quantity,
+        orderQuantity: spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity ? spTherapyConfig.maxQuantity : additionalDetails?.orderQuantity,
         refills: spTherapyConfig.refills,
         instructions: spTherapyConfig.instructions,
         terms: false,
@@ -759,9 +760,15 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       : null;
 
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
-    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && orderQuantity) {
-      const minQty = therapyConfig?.minQuantity ?? 1;
-      const maxQty = therapyConfig?.maxQuantity ?? 99;
+    let orderQuantityConfig = {};
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      orderQuantityConfig = therapyConfig;
+    } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      orderQuantityConfig = spTherapyConfig;
+    }
+    if (orderQuantity) {
+      const minQty = orderQuantityConfig.minQuantity ?? 1;
+      const maxQty = orderQuantityConfig.maxQuantity ?? 99;
 
       if (orderQuantity < minQty || orderQuantity > maxQty) {
         setAlert({
@@ -814,6 +821,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       }
 
       payload.clinicalDetails = clinicalDetails;
+      payload.orderQuantity = orderQuantity;
       payload.diagnosisCode = JSON.stringify(
         diagnosisCode.map((item) => ({
           code: item.code,
@@ -1203,8 +1211,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
                       <div className="form-segment-list">
                         <AdditionalDetailsDefaultFields
-                          therapyConfig={therapyConfig}
-                          channelType={channelType}
+                          {...{ therapyConfig, channelType, spTherapyConfig }}
                           readOnly={readOnly || !isAllowedToProceed}
                           handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors)}
                         />
@@ -1384,10 +1391,17 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, spTherapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
-  const defaultFields = getDefaultAdditionalDetailsFields({ translationFn: t, therapyConfig, channelType, setFieldValue, handleCoiIdValidation });
+  const defaultFields = getDefaultAdditionalDetailsFields({
+    translationFn: t,
+    therapyConfig,
+    spTherapyConfig,
+    channelType,
+    setFieldValue,
+    handleCoiIdValidation
+  });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;
 

@@ -54,7 +54,7 @@ const CancelOrderPanel = ({ readOnly, onClose, onSuccess, meta, openDrawer }) =>
 
   const handleOnSubmit = (values) => {
     const { rejectionReason } = values;
-    onSuccess(rejectionReason);
+    onSuccess(rejectionReason.trim());
   };
 
   React.useEffect(() => {
