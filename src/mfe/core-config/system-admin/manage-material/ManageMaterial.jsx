@@ -16,9 +16,10 @@ function ManageMaterial() {
   const location = useLocation();
 
   React.useEffect(() => {
+    clearFilters();
+    setSelectedMaterials([]);
+    refetch();
     if (location.state?.alert?.type && location.state?.alert?.description) {
-      refetch();
-      setSelectedMaterials([]);
       setAlert({
         type: location.state.alert.type,
         description: location.state?.alert?.description
