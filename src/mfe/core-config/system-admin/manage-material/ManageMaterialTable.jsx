@@ -21,7 +21,6 @@ import {
 } from '@src/mfe/order-management/pages/create/form-segments/therapy-selection/assets/constants/TherapyDetailsConstants';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import OrderQuantityConfig from './OrderQuantityConfig';
-import ConfigureSPMaterials from '../manage-sp-material/pages/ConfigureSPMaterials';
 import { routeConstants } from './routes/constants';
 
 function ManageMaterialTable({ onSuccess, onError, ...props }) {
@@ -104,7 +103,6 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
       selector: (row) => row['materialNumber'],
       width: '50px',
       showInMobileHeader: true
-      //  omit: isCustomerCenter || isTreatmentCenterExecutive
     },
     {
       name: t('labels.therapy'),
