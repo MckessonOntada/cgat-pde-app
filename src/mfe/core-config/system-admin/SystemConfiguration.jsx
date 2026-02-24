@@ -44,7 +44,9 @@ export default function SystemConfiguration() {
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
             <ManageMaterialProvider>
-              <ManageMaterialRoute />
+              <SPMaterialProvider>
+                <ManageMaterialRoute />
+              </SPMaterialProvider>
             </ManageMaterialProvider>
           </ProtectedRoute>
         }
