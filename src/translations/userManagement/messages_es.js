@@ -166,7 +166,7 @@ export const UserManagementES = {
   'userManagement.searchFilter.addaccount_label': 'S_Search By Name or location',
   'userManagement.add_accounts.labelheader': 'S_Select accounts',
 
-  USER_MANAGEMENT: 'S_User and account Management',
+  USER_MANAGEMENT: 'S_User and Account Management',
   ORGANIZATION_MANAGEMENT: 'S_Organization Management',
   ORDER_MANAGEMENT: 'S_Order Management',
   PAYMENT_INVOICING: 'S_Payment & Invoicing',

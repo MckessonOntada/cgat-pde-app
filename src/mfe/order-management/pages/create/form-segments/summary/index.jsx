@@ -1534,7 +1534,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
-                        (showControls || allowUpdateBnBAfterSubmit || (!isSpOrder && isCustomerCentreUser)) && (
+                        (showControls || allowUpdateBnBAfterSubmit) && (
                           <Button
                             size="md"
                             variant="tertiary"
