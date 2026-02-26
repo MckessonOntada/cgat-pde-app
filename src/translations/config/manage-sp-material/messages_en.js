@@ -190,5 +190,12 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.configuration.customRegex.error.minDateGreaterThanMaxDate': 'Minimum date should not be greater than maximum date',
   'manageSPMaterial.configuration.validation.displayNameMaxLength': 'Display name must not exceed 40 characters.',
   'manageSPMaterial.configuration.validation.errorMessageMaxLength': 'Error message must not exceed 100 characters.',
-  'manageSPMaterial.configuration.validation.helpInfoMaxLength': 'Help information message must not exceed 100 characters.'
+  'manageSPMaterial.configuration.validation.helpInfoMaxLength': 'Help information message must not exceed 100 characters.',
+  'manageSPMaterial.configuration.label.partnerNumber': 'Partner Number',
+  'manageSPMaterial.configuration.label.second-LegShipmentInformationRequired': 'Second Leg Shipment Information Required',
+  'manageSPMaterial.configuration.validation.secondLegShipInfoRequired': 'Second Leg Shipment Information is required.',
+  'manageSPMaterial.configuration.validation.partnerNumberRequired': 'Partner Number is required.',
+  'manageSPMaterial.configuration.validation.partnerNumberMaxLength': 'Partner Number must not exceed 50 characters.',
+  'manageSPMaterial.configuration.validation.partnerNumberAlphaNumeric':
+    'Partner Number must contain only letters, numbers, and spaces. Special characters are not allowed.'
 };
