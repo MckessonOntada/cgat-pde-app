@@ -1141,6 +1141,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
   const isPhysician = AuthUtils.isPhysician();
 
+  const isIdentifierPresent = [patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber].some(
+    (item) => item !== '' && item !== undefined && item !== null
+  );
+
   const backTextKey = backToInvoiceListing
     ? 'orderManagement.backToInvoiceDetails'
     : backToInvoiceDetails
@@ -1534,7 +1538,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
-                        (showControls || allowUpdateBnBAfterSubmit || (!isSpOrder && isCustomerCentreUser)) && (
+                        (showControls || allowUpdateBnBAfterSubmit) && (
                           <Button
                             size="md"
                             variant="tertiary"
@@ -1599,7 +1603,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   </div>
                 )}
 
-                {shouldShowIdentifierSection && (
+                {shouldShowIdentifierSection && isIdentifierPresent && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
