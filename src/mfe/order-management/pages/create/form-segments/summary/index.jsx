@@ -1599,7 +1599,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   </div>
                 )}
 
-                {shouldShowIdentifierSection && isIdentifierPresent && (
+                {shouldShowIdentifierSection && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
