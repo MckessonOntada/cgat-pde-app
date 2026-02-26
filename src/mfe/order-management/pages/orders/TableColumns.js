@@ -273,13 +273,17 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.VIEW
       });
     }
-    if (hasEditPermission || isCSReviewOrdersPage) {
+    if (status !== ORDER_STATUS.CANCELLED && status !== ORDER_STATUS.REJECTED && (hasEditPermission || isCSReviewOrdersPage)) {
       options.push({
         label: translate(`labels.orderActions.edit`),
         value: ORDER_ENTITY_ACTION.EDIT
       });
     }
-    if (status !== ORDER_STATUS.CANCELLED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage)) {
+    if (
+      status !== ORDER_STATUS.CANCELLED &&
+      status !== ORDER_STATUS.REJECTED &&
+      (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage)
+    ) {
       options.push({
         label: translate(`labels.orderActions.cancel`),
         value: ORDER_ENTITY_ACTION.CANCEL
