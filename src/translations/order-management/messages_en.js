@@ -1097,7 +1097,7 @@ export const MessageEn = {
   'message:orcaPatientVerificationAbrupt':
     'Verification was not successful. Please re-enter the {patientId} or {medicalRecordNumber} to restart the verification process.',
   'helperText.orcaPatientVerificationDateControl':
-    "Note: We ask for the patient's Date of Birth to make sure you're accessing the right record and keeping patient information secure.",
+    "Note: We ask for the patient's date of birth to make sure you are accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
     'The {patientId} or {medicalRecordNumber} entered is not valid. Please re-enter {patientId}/{medicalRecordNumber} or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
   'orderManagement.patientID.verificationSuccess': '{patientID} Verified.',
@@ -1112,11 +1112,11 @@ export const MessageEn = {
   'orderManagement.CoiId.verificationFailedSubmitPage': 'Please verify {patientId} first to match {coiId} in the master file.',
   'labels.selectProcurementOptions': 'Select Procurement Options',
   'orderManagement.patientID.empty':
-    '{patientID} has not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+    '{patientID} is missing. Please continue entering the remaining order details and submit the order. A customer support representative will contact you to finalize your order.',
   'orderManagement.coiId.empty':
-    '{coiId} has not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+    '{coiId} is missing. Please continue entering the remaining order details and submit the order. A customer support representative will contact you to finalize your order.',
   'orderManagement.patientID.CoiId.empty':
-    '{patientID} and/or {coiId} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+    '{patientID}, {coiId}, or both are missing. Continue entering the remaining details and submit the prescription request, A member of the Pharmacy operations team will contact you shortly.',
   'orderManagement.mrn.patientID.empty':
     '{mrn} and/or {patientID} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.'
 };

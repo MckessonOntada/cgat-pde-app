@@ -165,7 +165,7 @@ export const UserManagementEN = {
   'userManagement.add_accounts.labelheader': 'Select accounts',
 
   CREATE_NEW_ORDER: 'Order Workflow',
-  USER_MANAGEMENT: 'User and account Management',
+  USER_MANAGEMENT: 'User and Account Management',
   ORGANIZATION_MANAGEMENT: 'Organization Management',
   ORDER_MANAGEMENT: 'Order Management',
   PAYMENT_INVOICING: 'Payment & Invoicing',
