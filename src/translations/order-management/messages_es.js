@@ -549,6 +549,12 @@ export const MessageEs = {
   'labels.zip': 'S_ZIP',
   'labels.address': 'S_Address',
   'labels.phoneNumber': 'S_Phone Number',
+  'labels.country': 'S_Country',
+  'labels.city': 'S_City',
+  'labels.uniqueTransactionId': 'S_Unique Transaction Id',
+  'message.nameIsRequired': 'S_Name is required',
+  'message.incorrectTransactionId':
+    'S_The unique transaction ID does not match our records. Please enter the correct value or keep the value empty to proceed to the next step.',
   'labels.deaNumber': 'S_DEA Number',
   'labels.npiNumber': 'S_NPI Number',
   'table.columns.captions.createdBy': 'S_Created by',

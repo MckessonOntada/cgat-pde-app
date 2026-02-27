@@ -37,9 +37,16 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { getManufacturer, NotifyAlert, getValueWIthoutPrefixAndSuffix, updateAdditionalDetailsValues } from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
-import { getClinicalDetailFields, getDefaultAdditionalDetailsFields, getPrescriptionDetailsFields, getPrescriptionDetailsSummaryFieldsConfig } from './fields';
+import {
+  getClinicalDetailFields,
+  getDefaultAdditionalDetailsFields,
+  getPrescriptionDetailsFields,
+  getPrescriptionDetailsSummaryFieldsConfig,
+  getShipmentInformationForm
+} from './fields';
 import { useOrderPrice } from './useOrderPrice';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
+import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
 const INITIAL_VALUES = {
   coiId: '',
   orderQuantity: '',
@@ -97,6 +104,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
+  const [isSecondLegShipInfoRequired, setIsSecondLegShipInfoRequired] = React.useState(false);
 
   const manufacturer = getManufacturer(orderDetails);
   const dispatch = useDispatch();
@@ -121,13 +129,15 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     if (orderDetails.id) {
+      setIsSecondLegShipInfoRequired(orderDetails.therapyConfig?.config?.secondLegShipInfoRequired);
+
       const prevSearch = locationState.__prevSearch || '';
       if (orderDetails.isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
       if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
     }
   }, [orderDetails]);
 
-  const initialValidationSchema = (isVariantRequired, channelType) => {
+  const initialValidationSchema = ({ isVariantRequired, channelType, secondLegShipInfoRequired = false }) => {
     let schema = Yup.object({
       variant: Yup.object()
         .shape({
@@ -256,6 +266,42 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       schema = schema.concat(Yup.object().shape(dynamicFields));
     }
 
+    if (secondLegShipInfoRequired) {
+      const secondLegShipValidationSchema = Yup.object({
+        secondLegShipInfo: Yup.object({
+          transactionId: Yup.string(),
+          name: Yup.string().required(t('message.nameIsRequired')),
+          address: Yup.object({
+            address1: Yup.string()
+              .required(t('userManagement.create_user.validation.address_1_required'))
+              .test('no-leading-trailing-spaces', t('message.noLeadingTrailingSpace'), (value) => value === value?.trim())
+              .matches(ADDRESS_REGEX, t('userManagement.create_user.validation.address_1')) // Alphanumeric and special characters
+              .min(2, t('userManagement.create_user.validation.address_1'))
+              .max(100, t('userManagement.create_user.validation.address_1')),
+            address2: Yup.string()
+              .test('no-leading-trailing-spaces', t('message.noLeadingTrailingSpace'), (value) => value === value?.trim())
+              .matches(ADDRESS_REGEX, t('userManagement.create_user.validation.address_1')),
+            city: Yup.string()
+              .required(t('userManagement.create_user.validation.city_required'))
+              .matches(ALPHABETIC_WITH_SPACE, t('userManagement.create_user.validation.city')) // Only alphabets
+              .min(2, t('userManagement.create_user.validation.city_min_max'))
+              .max(50, t('userManagement.create_user.validation.city_min_max')),
+            state: Yup.string().required(t('userManagement.create_user.validation.state_required')),
+            zip: Yup.string()
+              .required(t('userManagement.create_user.validation.zip_required'))
+              .matches(ZIP_REGEX, t('userManagement.create_user.validation.zip')) // Only digits
+              .max(10, t('userManagement.create_account.validation.zip_max')),
+            country: Yup.string().required(t('userManagement.create_user.validation.state_required'))
+          }),
+          phoneNumber: Yup.string()
+            .required(t('userManagement.create_user.validation.phone_no_required'))
+            .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
+        })
+      });
+
+      schema = schema.concat(secondLegShipValidationSchema);
+    }
+
     return schema;
   };
 
@@ -286,7 +332,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
-    const updatedValidationSchema = initialValidationSchema(isVariantRequired, channelType);
+    const updatedValidationSchema = initialValidationSchema({ isVariantRequired, channelType, secondLegShipInfoRequired: isSecondLegShipInfoRequired });
 
     let questionnaireValidationSchema = Yup.object();
     let questionnaireFields = {};
@@ -693,6 +739,22 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }));
       }
     }
+    const secondLegShipInfo = orderDetails.additionalDetails?.secondLegShipInfo || {};
+    if (isSecondLegShipInfoRequired) {
+      initialValues.secondLegShipInfo = {
+        transactionId: secondLegShipInfo.transactionId,
+        name: secondLegShipInfo.name,
+        address: {
+          address1: secondLegShipInfo.address?.address1,
+          address2: secondLegShipInfo.address?.address2,
+          zip: secondLegShipInfo.address?.zip,
+          state: secondLegShipInfo.address?.state,
+          city: secondLegShipInfo.address?.city,
+          country: secondLegShipInfo.address?.country || 'USA'
+        },
+        phoneNumber: secondLegShipInfo.phoneNumber
+      };
+    }
 
     setInitialFormValues((prev) => ({
       ...prev,
@@ -801,6 +863,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
+
+    if (isSecondLegShipInfoRequired) {
+      payload.secondLegShipInfo = values.secondLegShipInfo;
+    }
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       const { hasAllergies, allergyDetails, dateOfAdministration, dateOfApheresis } = values;
@@ -1184,6 +1250,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
               formEffects(values, initialFormValues, setFieldValue);
             }, [values, initialFormValues]);
 
+            console.log(initialFormValues, validationSchema);
+
             React.useEffect(() => {
               const isReallyDirty = checkReallyDirty(initialFormValues, values);
 
@@ -1215,6 +1283,15 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           readOnly={readOnly || !isAllowedToProceed}
                           handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors)}
                         />
+                        {isSecondLegShipInfoRequired && (
+                          <ShipmentInformation
+                            channelType={channelType}
+                            onDiagnosisCodeSearch={setDiagnosisSearchQuery}
+                            diagnosisCode={diagnosisCode}
+                            readOnly={readOnly || !isAllowedToProceed}
+                            setAlert={setAlert}
+                          />
+                        )}
                         <VariantDetails
                           variantAcknowledgement={variantAcknowledgement}
                           handleOnAcknowledgmentChange={handleOnAcknowledgmentChange}
@@ -1560,6 +1637,65 @@ const VariantDetails = ({
           onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
           fileTypeText={allowedFileTypeText}
         />
+      </div>
+    </FormSectionWrapper>
+  );
+};
+
+const ShipmentInformation = ({ readOnly, setAlert }) => {
+  const { values, setFieldValue, initialValues } = useFormikContext();
+  const [isVerifyingTransactionId, setIsVerifyingTransactionId] = React.useState(false);
+  const [isTransactionIdVerified, setIsTransactionIdVerified] = React.useState(false);
+  React.useEffect(() => {
+    const transactionId = initialValues.secondLegShipInfo?.transactionId;
+    setIsTransactionIdVerified(Boolean(transactionId));
+  }, [initialValues]);
+  const { t } = useTranslate();
+  const fields = getShipmentInformationForm({
+    translationFn: t,
+    formValues: values,
+    setFieldValue,
+    isVerifyingTransactionId,
+    setIsVerifyingTransactionId,
+    isTransactionIdVerified,
+    setIsTransactionIdVerified,
+    setAlert
+  });
+  if (CommonUtils.isEmptyArray(fields)) return null;
+  const [row1, row2] = fields;
+  return (
+    <FormSectionWrapper title="Second-Leg Shipment Information" isRequired={true}>
+      <div className="grid grid-gap-16 grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-baseline">
+        {row1.map(({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
+          <div key={index} className={`${layout.classes}`}>
+            <Field
+              name={name}
+              label={label}
+              placeholder={placeholder}
+              isRequired={isRequired}
+              component={component}
+              maxLength={maxLength}
+              isDisabled={readOnly}
+              {...otherProps}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-gap-16 grid-cols-3 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
+        {row2.map(({ name, label, placeholder, isRequired, component, maxLength, layout = {}, ...otherProps }, index) => (
+          <div key={index} className={`${layout.classes}`}>
+            <Field
+              name={name}
+              label={label}
+              placeholder={placeholder}
+              isRequired={isRequired}
+              component={component}
+              maxLength={maxLength}
+              isDisabled={readOnly}
+              {...otherProps}
+            />
+          </div>
+        ))}
       </div>
     </FormSectionWrapper>
   );

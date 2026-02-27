@@ -1,7 +1,11 @@
 import Components from '@src/components/form/Components';
 import CommonUtils from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
-import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { getCountries, US_STATES } from '@src/components/form/util';
+import OrderService from '@src/api/commonService/OrderService';
+import React from 'react';
+import { ReactComponent as LoadingIcon } from '@src/assets/svg/button-loading.svg';
+import { ReactComponent as SuccessTick } from '@src/assets/svg/tick-circle-success.svg';
 
 const getBinaryOptions = (keyPrefix = '', readOnly) => {
   return ['Yes', 'No'].map((option, index) => ({
@@ -194,6 +198,7 @@ export const getPrescriptionDetailsFields = ({ translationFn, formValues, setFie
 
   return fields;
 };
+
 export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formValues }) => {
   return [
     {
@@ -286,4 +291,129 @@ export const getPrescriptionDetailsSummaryFieldsConfig = ({ translationFn, formV
       ]
     }
   ];
+};
+
+export const getShipmentInformationForm = ({
+  translationFn,
+  setFieldValue,
+  isVerifyingTransactionId,
+  setIsVerifyingTransactionId,
+  isTransactionIdVerified,
+  setIsTransactionIdVerified,
+  setAlert
+}) => {
+  const fields = [];
+  const row1 = [];
+  row1.push({
+    name: 'secondLegShipInfo.transactionId',
+    label: translationFn('labels.uniqueTransactionId'),
+    placeholder: ' ',
+    component: Components['inputText'],
+    endIcon: isVerifyingTransactionId ? <LoadingIcon /> : isTransactionIdVerified ? <SuccessTick /> : null,
+    onBlur: function (e) {
+      setAlert(null);
+      setIsVerifyingTransactionId(true);
+      OrderService.verifyTransactionId(e.target.value)
+        .then((response) => {
+          if (!response) {
+            setFieldValue('secondLegShipInfo.transactionId', '');
+            setAlert({
+              type: 'warning',
+              description: translationFn('message.incorrectTransactionId')
+            });
+          }
+          setIsTransactionIdVerified(response);
+        })
+        .finally(() => {
+          setIsVerifyingTransactionId(false);
+        });
+    },
+    size: 'lg'
+  });
+
+  row1.push({
+    name: 'secondLegShipInfo.name',
+    label: translationFn('labels.name'),
+    placeholder: ' ',
+    isRequired: true,
+    minLength: 2,
+    maxLength: 100,
+    component: Components['input'],
+    size: 'lg'
+  });
+
+  row1.push({
+    name: 'secondLegShipInfo.address.address1',
+    label: translationFn('userManagement.create_user.inputLabel.address_1'),
+    placeholder: ' ',
+    isRequired: true,
+    maxLength: 150,
+    component: Components['input'],
+    size: 'lg'
+  });
+  row1.push({
+    name: 'secondLegShipInfo.address.address2',
+    label: translationFn('userManagement.create_user.inputLabel.address_2'),
+    placeholder: ' ',
+    isRequired: false,
+    maxLength: 150,
+    component: Components['input'],
+    size: 'lg'
+  });
+  fields.push(row1);
+
+  const row2 = [];
+  row2.push({
+    name: 'secondLegShipInfo.address.city',
+    label: translationFn('labels.city'),
+    placeholder: ' ',
+    isRequired: true,
+    maxLength: 50,
+    component: Components['input'],
+    size: 'lg'
+  });
+  row2.push({
+    name: 'secondLegShipInfo.address.zip',
+    label: translationFn('userManagement.create_user.inputLabel.zip'),
+    placeholder: ' ',
+    isRequired: true,
+    component: Components['zipInput'],
+    size: 'lg'
+  });
+  row2.push({
+    name: 'secondLegShipInfo.address.state',
+    label: translationFn('userManagement.create_user.inputLabel.state'),
+    placeholder: 'Select State',
+    isRequired: true,
+    options: US_STATES().unshift({
+      isDisabled: true,
+      value: '',
+      label: translationFn('orgManagement.create_org.option.please_select')
+    }),
+    isMultiSelect: false,
+    component: Components['stateDropdown'],
+    size: 'lg'
+  });
+  row2.push({
+    name: 'secondLegShipInfo.address.country',
+    label: translationFn('labels.country'),
+    placeholder: 'Select Country',
+    isRequired: true,
+    options: getCountries(),
+    isMultiSelect: false,
+    component: Components['dropdown'],
+    size: 'lg'
+  });
+  row2.push({
+    name: 'secondLegShipInfo.phoneNumber',
+    label: translationFn('labels.phoneNumber'),
+    placeholder: ' ',
+    isRequired: true,
+    component: Components['phoneInput'],
+    size: 'lg'
+  });
+
+  fields.push(row2);
+
+  return fields;
 };

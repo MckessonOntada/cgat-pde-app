@@ -611,6 +611,14 @@ async function downloadDocumentCsUser(url) {
   }
 }
 
+const verifyTransactionId = async (id) => {
+  if (!id) throw new Error('Id is missing. Id is required for verification.');
+
+  const url = `${ApiRoutes.ORDERS()}/verify/${id}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) return res.data;
+};
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -665,7 +673,8 @@ const OrderService = Object.freeze({
   savePatientDetailsCsUser,
   getTherapyDetailsByTradeNameCsUser,
   downloadDocumentCsUser,
-  cancelOrder
+  cancelOrder,
+  verifyTransactionId
 });
 
 export default OrderService;
