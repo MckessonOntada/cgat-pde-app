@@ -679,6 +679,12 @@ export const MessageEn = {
   'labels.zip': 'ZIP',
   'labels.address': 'Address',
   'labels.phoneNumber': 'Phone Number',
+  'labels.country': 'Country',
+  'labels.city': 'City',
+  'labels.uniqueTransactionId': 'Unique Transaction Id',
+  'message.nameIsRequired': 'Name is required',
+  'message.incorrectTransactionId':
+    'The unique transaction ID does not match our records. Please enter the correct value or keep the value empty to proceed to the next step.',
   'labels.deaNumber': 'DEA Number',
   'labels.npiNumber': 'NPI Number',
 
