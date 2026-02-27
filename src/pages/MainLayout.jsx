@@ -23,12 +23,17 @@ import Header from '../components/header';
 import AppRoutes from '../routes/AppRoutes';
 import ErrorWrapper from './ErrorWrapper';
 import NotFound from './error-pages/NotFound';
+import { WidgetProvider } from '@src/context/WidgetContext';
+import { CSReviewOrders } from '@src/mfe/core-config/system-admin/cs-review-orders';
 
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
-
+const INITIAL_STATE = {
+  orcaPatient: null,
+  isVerified: false
+};
 function MainLayout() {
   const { notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
-
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header onNotificationClick={() => setNotificationDrawerOpen(!notificationDrawerOpen)} />
@@ -72,9 +77,17 @@ function MainLayout() {
                     <Route
                       path={'orders/*'}
                       element={
-                        <ProtectedRoute permissions={[...routePermissionConfig.orders]}>
-                          <OrderManagementEntryPoint />
-                        </ProtectedRoute>
+                        isCustomerCenter ? (
+                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+                            <WidgetProvider initialState={INITIAL_STATE}>
+                              <CSReviewOrders />
+                            </WidgetProvider>
+                          </ProtectedRoute>
+                        ) : (
+                          <ProtectedRoute permissions={[...routePermissionConfig.orders]}>
+                            <OrderManagementEntryPoint />
+                          </ProtectedRoute>
+                        )
                       }
                     />
 
