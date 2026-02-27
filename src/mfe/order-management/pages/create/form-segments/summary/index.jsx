@@ -1141,10 +1141,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
   const isPhysician = AuthUtils.isPhysician();
 
-  const isIdentifierPresent = [patient.patientIdentifier, patient.coiId, patient.medicalRecordNumber].some(
-    (item) => item !== '' && item !== undefined && item !== null
-  );
-
   const backTextKey = backToInvoiceListing
     ? 'orderManagement.backToInvoiceDetails'
     : backToInvoiceDetails
@@ -1603,7 +1599,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   </div>
                 )}
 
-                {shouldShowIdentifierSection && isIdentifierPresent && (
+                {shouldShowIdentifierSection && (
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
