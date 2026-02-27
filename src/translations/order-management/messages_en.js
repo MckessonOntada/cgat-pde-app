@@ -1124,5 +1124,9 @@ export const MessageEn = {
   'orderManagement.patientID.CoiId.empty':
     '{patientID}, {coiId}, or both are missing. Continue entering the remaining details and submit the prescription request, A member of the Pharmacy operations team will contact you shortly.',
   'orderManagement.mrn.patientID.empty':
-    '{mrn} and/or {patientID} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.'
+    '{mrn} and/or {patientID} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+  'label.secondLegShipmentInfo': 'Second-leg Shipment Information',
+  'label.uniqueTransactionID': 'Unique Transaction ID',
+  'label.name': 'Name',
+  'label.address': 'Address'
 };
