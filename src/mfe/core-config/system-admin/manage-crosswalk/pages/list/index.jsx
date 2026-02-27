@@ -41,8 +41,8 @@ const List = () => {
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
-        label: t('breadcrumb.systemAdmin'),
-        url: '/admin'
+        label: 'System Administrator',
+        url: '/system-admin/home'
       },
       {
         label: t('breadcrumb.systemConfiguration'),
