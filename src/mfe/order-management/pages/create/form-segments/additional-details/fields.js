@@ -355,7 +355,6 @@ export const getShipmentInformationForm = ({
     name: 'secondLegShipInfo.address.address2',
     label: translationFn('userManagement.create_user.inputLabel.address_2'),
     placeholder: ' ',
-    isRequired: false,
     maxLength: 150,
     component: Components['input'],
     size: 'lg'
