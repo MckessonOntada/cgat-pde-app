@@ -742,17 +742,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     const secondLegShipInfo = orderDetails.additionalDetails?.secondLegShipInfo || {};
     if (isSecondLegShipInfoRequired) {
       initialValues.secondLegShipInfo = {
-        transactionId: secondLegShipInfo.transactionId,
-        name: secondLegShipInfo.name,
+        transactionId: secondLegShipInfo.transactionId || '',
+        name: secondLegShipInfo.name || '',
         address: {
-          address1: secondLegShipInfo.address?.address1,
-          address2: secondLegShipInfo.address?.address2,
-          zip: secondLegShipInfo.address?.zip,
-          state: secondLegShipInfo.address?.state,
-          city: secondLegShipInfo.address?.city,
+          address1: secondLegShipInfo.address?.address1 || '',
+          address2: secondLegShipInfo.address?.address2 || '',
+          zip: secondLegShipInfo.address?.zip || '',
+          state: secondLegShipInfo.address?.state || '',
+          city: secondLegShipInfo.address?.city || '',
           country: secondLegShipInfo.address?.country || 'USA'
         },
-        phoneNumber: secondLegShipInfo.phoneNumber
+        phoneNumber: secondLegShipInfo.phoneNumber || ''
       };
     }
 
