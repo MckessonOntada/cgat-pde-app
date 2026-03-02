@@ -346,8 +346,20 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
     setValidationSchema(finalValidationSchema);
 
+    const initialQuantityDetails = {};
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      if (spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity && spTherapyConfig.minQuantity > 0) {
+        initialQuantityDetails.orderQuantity = spTherapyConfig.minQuantity;
+      }
+    } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+      if (therapyConfig.maxQuantity === therapyConfig.minQuantity && therapyConfig.minQuantity > 0) {
+        initialQuantityDetails.orderQuantity = therapyConfig.minQuantity;
+      }
+    }
+
     setInitialFormValues({
       ...formikRef.current?.values,
+      ...initialQuantityDetails,
       ...storedValue,
       ...questionnaireFields
     });
@@ -635,17 +647,20 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         strength: spTherapyConfig.strength,
         daysSupply: spTherapyConfig.daysSupply,
         quantity: spTherapyConfig.quantity,
-        orderQuantity: spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity ? spTherapyConfig.maxQuantity : additionalDetails?.orderQuantity,
+        orderQuantity: additionalDetails?.orderQuantity,
         refills: spTherapyConfig.refills,
         instructions: spTherapyConfig.instructions,
         terms: false,
         consentPolicy: spTherapyConfig.consentPolicy,
         acknowledgement: false
       });
+      if (spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity && spTherapyConfig.minQuantity > 0) {
+        initialValues.orderQuantity = spTherapyConfig.minQuantity;
+      }
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       getValueWIthoutPrefixAndSuffix(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
-      if (therapyConfig.maxQuantity === therapyConfig.minQuantity) {
-        initialValues.orderQuantity = therapyConfig.maxQuantity;
+      if (therapyConfig.maxQuantity === therapyConfig.minQuantity && therapyConfig.minQuantity > 0) {
+        initialValues.orderQuantity = therapyConfig.minQuantity;
       }
     }
 
