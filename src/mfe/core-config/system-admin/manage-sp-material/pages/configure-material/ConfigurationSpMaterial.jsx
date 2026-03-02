@@ -307,6 +307,9 @@ export default function ConfigurationSpMaterial() {
                                 const finalValue = value === 'true' ? true : value === 'false' ? false : value;
                                 setFieldError('secondLegShipInfoRequired', '');
                                 setFieldValue('secondLegShipInfoRequired', finalValue);
+                                if (finalValue === false) {
+                                  setFieldValue('partnerNumber', '');
+                                }
                               }}
                               radioBtnWidth="auto"
                               value={values.secondLegShipInfoRequired}
