@@ -41,7 +41,7 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       label: translationFn('labels.orderQuantity'),
       placeholder: ' ',
       isRequired: true,
-      readOnly: therapyConfig?.maxQuantity === therapyConfig?.minQuantity,
+      // readOnly: therapyConfig?.maxQuantity === therapyConfig?.minQuantity,
       component: Components['input'],
       maxLength: 2
     });
@@ -51,7 +51,7 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       label: translationFn('labels.orderQuantity'),
       placeholder: ' ',
       isRequired: true,
-      readOnly: spTherapyConfig?.maxQuantity === spTherapyConfig?.minQuantity,
+      // readOnly: spTherapyConfig?.maxQuantity === spTherapyConfig?.minQuantity,
       component: Components['input'],
       maxLength: 2
     });
