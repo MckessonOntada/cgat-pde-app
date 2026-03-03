@@ -38,7 +38,7 @@ const List = () => {
     return [
       {
         label: t('breadcrumb.admin'),
-        url: isSystemAdminView ? '/system-admin/home' : '/admin'
+        url: isSystemAdminView ? '/' : '/admin'
       },
       {
         label: t('label.providers')

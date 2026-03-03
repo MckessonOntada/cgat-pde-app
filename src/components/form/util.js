@@ -56,17 +56,6 @@ export const US_STATES = () => {
     }));
 };
 
-export const getCountries = () => {
-  const countries = ['USA'];
-  return countries
-    .sort((a, b) => a.localeCompare(b))
-    .map((country) => ({
-      isDisabled: false,
-      value: country,
-      label: country
-    }));
-};
-
 export const US_CITIES_OF_STATE = (state) => {
   const _options = [];
 

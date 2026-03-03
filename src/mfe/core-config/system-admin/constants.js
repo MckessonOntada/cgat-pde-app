@@ -10,7 +10,7 @@ import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 const BREADCRUMB_ITEMS = [
   {
     label: 'systemAdministrator',
-    url: '/system-admin/home'
+    url: '/admin'
   },
   {
     label: 'system_configuration'

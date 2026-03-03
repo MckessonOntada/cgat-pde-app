@@ -508,14 +508,7 @@ export function getUSFullName({ firstName, lastName, middleName }) {
 }
 export const getAddress = (account) => {
   const sanitizedAccount = CommonUtils.sanitizeValue(account);
-  return [
-    sanitizedAccount.address1,
-    sanitizedAccount.address2,
-    sanitizedAccount.city,
-    sanitizedAccount.state,
-    sanitizedAccount.country,
-    sanitizedAccount.zipCode || sanitizedAccount.zip
-  ]
+  return [sanitizedAccount.address1, sanitizedAccount.address2, sanitizedAccount.city, sanitizedAccount.state, sanitizedAccount.zipCode]
     .filter(Boolean)
     .join(', ');
 };

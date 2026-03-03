@@ -31,7 +31,7 @@ function ManageMaterial() {
   const breadcrumbItems = [
     {
       label: t('manageMaterial.breadcrumbs.systemAdministrator'),
-      url: '/system-admin/home'
+      url: '/'
     },
     {
       label: t('manageMaterial.breadcrumbs.systemConfiguration'),
