@@ -49,6 +49,7 @@ const SecondaryHeader = () => {
   };
   const tabs = useMemo(() => {
     if (isSystemAdminView || isCustomerCenter) {
+      debugger;
       const isOrdersPath = location.pathname.includes('orders');
 
       const filteredTabs = systemAdminTab.filter((item) => {

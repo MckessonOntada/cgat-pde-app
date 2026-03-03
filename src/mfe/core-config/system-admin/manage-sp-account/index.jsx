@@ -17,7 +17,7 @@ function ManageSPAccount() {
   const translatedBreadcrumbs = [
     {
       label: 'systemAdministrator',
-      url: '/admin'
+      url: '/system-admin/home'
     },
     {
       label: 'system_configuration',

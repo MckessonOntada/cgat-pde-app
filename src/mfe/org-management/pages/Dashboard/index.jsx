@@ -14,6 +14,7 @@ import { US_STATES } from '@src/components/form/util';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 import Alert from '@src/components/cgat-alert/Alert';
+import AuthUtils from '@src/util/AuthUtils';
 
 function DashboardPage() {
   const { t } = useTranslate();
@@ -26,7 +27,7 @@ function DashboardPage() {
   const [isDeactivate, setIsDeactivate] = React.useState(false);
   const { hasPermission } = usePermission();
   const { applyFilters, clearFilters } = useOrg();
-
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [statesList, setStatesList] = useState([]);
   const [statusList, setStatusList] = useState([
     { label: 'All', value: 'all' },
@@ -46,8 +47,8 @@ function DashboardPage() {
 
   const breadcrumbItems = [
     {
-      label: `${t('orgManagement.header.admin')}`,
-      url: '/'
+      label: isSystemAdminView ? 'System Administrator' : `${t('orgManagement.header.admin')}`,
+      url: isSystemAdminView ? '/system-admin/home' : 'admin'
     },
     {
       label: `${t('orgManagement.header.label')}`

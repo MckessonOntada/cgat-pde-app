@@ -26,7 +26,7 @@ const ProviderForm = (props) => {
     return [
       {
         label: t('breadcrumb.admin'),
-        url: isSystemAdminView ? '/' : '/admin'
+        url: isSystemAdminView ? '/system-admin/home' : '/admin'
       },
       {
         label: t('label.providers'),
