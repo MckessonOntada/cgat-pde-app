@@ -6,16 +6,18 @@ import SystemConfiguration from './SystemConfiguration';
 import Dashboard from './dashboard';
 import AuthUtils from '@src/util/AuthUtils';
 import NotFound from '@src/pages/error-pages/NotFound';
+import { CSReviewOrders } from './cs-review-orders';
+import { WidgetProvider } from '@src/context/WidgetContext';
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
-
+const INITIAL_STATE = {
+  orcaPatient: null,
+  isVerified: false
+};
 export default function DashboardRoutes() {
-  const isCustomerCenter = AuthUtils.isCustomerCenter();
-
   return (
     <Routes>
-      <Route index element={isCustomerCenter ? <Navigate to="/orders" /> : <Dashboard />} />
-      <Route path="home" element={<Dashboard />} />
+      <Route index element={<Dashboard />} />
       <Route
         path={'user/*'}
         element={
@@ -42,6 +44,16 @@ export default function DashboardRoutes() {
         element={
           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
             <SystemConfiguration />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={'orders/*'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+            <WidgetProvider initialState={INITIAL_STATE}>
+              <CSReviewOrders />
+            </WidgetProvider>
           </ProtectedRoute>
         }
       />

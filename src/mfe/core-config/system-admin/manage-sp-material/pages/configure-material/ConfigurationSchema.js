@@ -2,20 +2,6 @@ import * as Yup from 'yup';
 
 export const getConfigurationSchema = (t, channelOptions, fieldNameForChannel, isBnbMaterial) =>
   Yup.object({
-    ...(isBnbMaterial && {
-      secondLegShipInfoRequired: Yup.boolean().oneOf([true, false]).required(t('manageSPMaterial.configuration.validation.secondLegShipInfoRequired'))
-    }),
-    partnerNumber: Yup.string()
-      .transform((value) => (value ? value.trim() : ''))
-      .when('secondLegShipInfoRequired', {
-        is: true,
-        then: (schema) =>
-          schema
-            .required(t('manageSPMaterial.configuration.validation.partnerNumberRequired'))
-            .max(50, t('manageSPMaterial.configuration.validation.partnerNumberMaxLength'))
-            .matches(/^(?=.*[a-zA-Z0-9])[a-zA-Z0-9 ]+$/, t('manageSPMaterial.configuration.validation.partnerNumberAlphaNumeric')),
-        otherwise: (schema) => schema.strip(true)
-      }),
     [fieldNameForChannel]: isBnbMaterial
       ? Yup.boolean().oneOf([true, false]).required(t('manageSPMaterial.configuration.validation.patientInformationRequired'))
       : Yup.string()

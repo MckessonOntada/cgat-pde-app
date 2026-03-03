@@ -1682,32 +1682,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     )}
                   </div>
                 </div>
-                {therapyConfig?.config?.secondLegShipInfoRequired && (
-                  <div className="MCP-module-body">
-                    <div className="MCP-CardContainer">
-                      <ModuleHeader
-                        className={styles.panelHeader}
-                        heading={<Heading as="h3">{t('label.secondLegShipmentInfo')}</Heading>}
-                        controls={
-                          showControls && (
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          )
-                        }
-                      />
-                      <div className={` grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-                        <DetailSegment label={t('label.uniqueTransactionID')} value={additionalDetails?.secondLegShipInfo?.transactionId || '-'} />
-                        <DetailSegment label={t('label.name')} value={additionalDetails?.secondLegShipInfo?.name || '-'} />
-                        <DetailSegment label={t('label.address')} value={CommonUtils.getAddress(additionalDetails?.secondLegShipInfo?.address) || '-'} />
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {spTherapyConfig?.isPrescriptionDetailsRequired && (
                   <div className="MCP-CardContainer">

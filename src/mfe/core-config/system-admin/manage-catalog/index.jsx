@@ -17,7 +17,7 @@ function ManageCatalog(props) {
   const translatedBreadcrumbs = [
     {
       label: 'systemAdministrator',
-      url: '/system-admin/home'
+      url: '/admin'
     },
     {
       label: 'system_configuration',

@@ -46,7 +46,7 @@ function CreateUserWrapper() {
     }
 
     return config;
-  }, [location]);
+  }, []);
   const handleOnBack = () => {
     if (isEdit) navigate('..', { relative: 'path' });
     else navigate('..');
