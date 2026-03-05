@@ -235,7 +235,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     switch (config.tab) {
       case ORDER_TABS.SUBMITTED_SP: {
         searchPlaceholder = 'controls.placeholder.searchSPOrderPlaceholder';
-        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED];
+        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.OPEN, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED];
         filters.push({
           type: 'dropdown',
           name: 'status',
@@ -258,7 +258,14 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       }
       case ORDER_TABS.SUBMITTED_BUY_AND_BILL: {
         searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
-        const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED, ORDER_STATUS.COMPLETED];
+        const statusOptions = [
+          ORDER_STATUS.ALL,
+          ORDER_STATUS.SUBMITTED,
+          ORDER_STATUS.OPEN,
+          ORDER_STATUS.CS_REVIEW,
+          ORDER_STATUS.CANCELLED,
+          ORDER_STATUS.COMPLETED
+        ];
 
         filters.push({
           type: 'dropdown',
