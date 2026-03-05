@@ -59,7 +59,7 @@ export const navLinks = [
 export const systemAdminTab = [
   {
     label: 'Orders',
-    path: '/system-admin/orders',
+    path: '/orders',
     id: 1,
     configName: 'orders',
     isActive: true,
@@ -70,7 +70,7 @@ export const systemAdminTab = [
   },
   {
     label: 'System Administrator',
-    path: '/',
+    path: '/system-admin/home',
     id: 2,
     configName: 'systemAdministrator',
     isActive: true,
