@@ -45,6 +45,8 @@ export const getFieldFormatOptions = (fieldName) => {
 export const defaultFieldFormatBnb = () => ({
   patientInformationRequired: null,
   manufacturerName: null,
+  secondLegShipInfoRequired: null,
+  partnerNumber: '',
   fields: [
     {
       fieldName: 'patientIdentifier',

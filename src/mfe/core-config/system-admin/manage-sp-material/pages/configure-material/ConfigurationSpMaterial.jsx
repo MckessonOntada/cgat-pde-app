@@ -39,7 +39,7 @@ export default function ConfigurationSpMaterial() {
         }))
       ]);
     });
-  }, []);
+  }, [materialType]);
 
   const fieldNameForChannel = isBnbMaterial ? 'patientInformationRequired' : 'triageChannel';
 
@@ -78,6 +78,8 @@ export default function ConfigurationSpMaterial() {
 
   const initialValues = {
     manufacturerName: ndcDetails?.manufacturerName || null,
+    ...(isBnbMaterial && { secondLegShipInfoRequired: ndcDetails?.secondLegShipInfoRequired }),
+    ...(isBnbMaterial && { partnerNumber: ndcDetails?.partnerNumber || '' }),
     [fieldNameForChannel]: isBnbMaterial ? ndcDetails?.patientInformationRequired : ndcDetails?.triageChannel,
     fields: ndcDetails?.fields?.map((field) => ({
       fieldName: field?.fieldName,
@@ -237,8 +239,6 @@ export default function ConfigurationSpMaterial() {
             validateOnBlur={true}
             enableReinitialize={true}>
             {({ values, setFieldValue, errors, touched, setFieldError, resetForm, setFieldTouched }) => {
-              console.log('Formik error:', errors);
-              console.log('Formik touched:', touched);
               return (
                 <Form>
                   <div className="MCP-module-body">
@@ -277,13 +277,59 @@ export default function ConfigurationSpMaterial() {
                     </React.Fragment>
                     <React.Fragment>
                       <ModuleHeader
-                        heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.channelConfiguration')}</Heading>}
+                        heading={
+                          <Heading as="h2">
+                            {t(
+                              isBnbMaterial
+                                ? 'manageSPMaterial.configuration.heading.fieldConfiguration'
+                                : 'manageSPMaterial.configuration.heading.channelConfiguration'
+                            )}
+                          </Heading>
+                        }
                         controls={
                           <p className="form-instruction">
                             <span className="required">* </span> {t('userManagement.create_user.required')}
                           </p>
                         }
                       />
+                      {isBnbMaterial && (
+                        <>
+                          <div className={styles.radioGroupSelection}>
+                            <RadioGroup
+                              caption={t('manageSPMaterial.configuration.label.second-LegShipmentInformationRequired')}
+                              direction="row"
+                              id={'secondLegShipInfoRequired'}
+                              items={[
+                                { isDisabled: false, label: t('manageSPMaterial.configuration.radio.yes'), value: true },
+                                { isDisabled: false, label: t('manageSPMaterial.configuration.radio.no'), value: false }
+                              ]}
+                              onChangeValue={(value) => {
+                                const finalValue = value === 'true' ? true : value === 'false' ? false : value;
+                                setFieldError('secondLegShipInfoRequired', '');
+                                setFieldValue('secondLegShipInfoRequired', finalValue);
+                                if (finalValue === false) {
+                                  setFieldValue('partnerNumber', '');
+                                }
+                              }}
+                              radioBtnWidth="auto"
+                              value={values.secondLegShipInfoRequired}
+                              isRequired
+                              error={touched['secondLegShipInfoRequired'] && Boolean(errors['secondLegShipInfoRequired'])}
+                              errorMessage={touched['secondLegShipInfoRequired'] && errors['secondLegShipInfoRequired']}
+                            />
+                          </div>
+                          {values.secondLegShipInfoRequired === true && (
+                            <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                              <Field
+                                name="partnerNumber"
+                                label={t('manageSPMaterial.configuration.label.partnerNumber')}
+                                isRequired={true}
+                                component={Components['input']}
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
                       <div className={styles.radioGroupSelection}>
                         <RadioGroup
                           caption={t(labelTranslation.channelOptionsLabel)}
@@ -323,14 +369,16 @@ export default function ConfigurationSpMaterial() {
                         />
                       </div>
                     </React.Fragment>
-                    <ModuleHeader
-                      heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
-                      controls={
-                        <p className="form-instruction">
-                          <span className="required">* </span> {t('userManagement.create_user.required')}
-                        </p>
-                      }
-                    />
+                    {!isBnbMaterial && (
+                      <ModuleHeader
+                        heading={<Heading as="h2">{t('manageSPMaterial.configuration.heading.fieldConfiguration')}</Heading>}
+                        controls={
+                          <p className="form-instruction">
+                            <span className="required">* </span> {t('userManagement.create_user.required')}
+                          </p>
+                        }
+                      />
+                    )}
                     <Accordion multiple value={openTabs} onChange={setOpenTabs}>
                       {values?.fields?.map((field, idx) => {
                         if (

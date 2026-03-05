@@ -19,8 +19,8 @@ function ManageQuestionnaire() {
 
   const breadcrumbItems = [
     {
-      label: 'System administrator',
-      url: '/'
+      label: 'System Administrator',
+      url: '/system-admin/home'
     },
     {
       label: 'System Configuration',

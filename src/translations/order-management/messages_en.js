@@ -679,6 +679,12 @@ export const MessageEn = {
   'labels.zip': 'ZIP',
   'labels.address': 'Address',
   'labels.phoneNumber': 'Phone Number',
+  'labels.country': 'Country',
+  'labels.city': 'City',
+  'labels.uniqueTransactionId': 'Unique Transaction Id',
+  'message.nameIsRequired': 'Name is required',
+  'message.incorrectTransactionId':
+    'The unique transaction ID does not match our records. Please enter the correct value or keep the value empty to proceed to the next step.',
   'labels.deaNumber': 'DEA Number',
   'labels.npiNumber': 'NPI Number',
 
@@ -1118,5 +1124,9 @@ export const MessageEn = {
   'orderManagement.patientID.CoiId.empty':
     '{patientID}, {coiId}, or both are missing. Continue entering the remaining details and submit the prescription request, A member of the Pharmacy operations team will contact you shortly.',
   'orderManagement.mrn.patientID.empty':
-    '{mrn} and/or {patientID} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.'
+    '{mrn} and/or {patientID} have not been entered. You may continue to the next step; however, Customer Service will reach out to obtain the missing information.',
+  'label.secondLegShipmentInfo': 'Second-leg Shipment Information',
+  'label.uniqueTransactionID': 'Unique Transaction ID',
+  'label.name': 'Name',
+  'label.address': 'Address'
 };
