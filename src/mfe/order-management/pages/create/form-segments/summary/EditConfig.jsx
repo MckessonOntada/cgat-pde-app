@@ -49,12 +49,13 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
         const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
         const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+        const formatType = field?.properties?.fieldFormat?.formatType;
         dynamic_fields.push({
           id: `additional-details-${field.fieldName}`,
           name: field?.fieldName,
           label: field?.properties?.displayName,
           isRequired: field?.properties?.mandatoryField,
-          type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
+          type: prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input',
           prefix,
           suffix,
           infoText: field?.properties.helpInfoMessage
@@ -157,7 +158,15 @@ export const patientDetailsValidationSchema = (t, therapyConfig, channelType) =>
 export const additionalDetailsValidationSchema = (t, therapyConfig) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
-    const allowedFields = new Set(['coiId', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis']);
+    const allowedFields = new Set([
+      'coiId',
+      'poNumber',
+      'shipToPONumber',
+      'dateOfAdministration',
+      'dateOfApheresis',
+      `timeOfApheresis`,
+      `timeOfAdministration`
+    ]);
 
     config?.config?.fields?.forEach((field) => {
       if (!allowedFields.has(field.fieldName) || !field.properties?.displayOnForm) return;

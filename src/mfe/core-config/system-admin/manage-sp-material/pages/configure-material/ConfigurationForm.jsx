@@ -134,11 +134,11 @@ const ConfigurationForm = ({ field, index, setFieldError, setFieldTouched }) => 
               setFieldValue(path('fieldFormat.validationRegex'), fieldFormatRegexObj[fieldEntry?.fieldFormat?.formatType].regex);
               setFieldValue(path('fieldFormat.validationFormat'), '');
             }}
-            disabled={!displayOnForm || !formatType}>
+            disabled={!displayOnForm || !formatType || formatType === 'Time_HH_MM'}>
             {t('manageSPMaterial.configuration.button.reset')}
           </Button>
 
-          <Button size="md" buttonWidth="100%" variant="secondary" onClick={() => setCustomRegex(true)} disabled={!displayOnForm || !formatType}>
+          <Button size="md" buttonWidth="100%" variant="secondary" onClick={() => setCustomRegex(true)} disabled={!displayOnForm || !formatType || formatType === 'Time_HH_MM'}>
             {t('manageSPMaterial.configuration.button.editRegex')}
           </Button>
         </div>

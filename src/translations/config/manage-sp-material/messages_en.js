@@ -178,6 +178,8 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.configuration.header.shipToPONumber': 'Ship To PO Number',
   'manageSPMaterial.configuration.header.dateOfAdministration': 'Date of Administration',
   'manageSPMaterial.configuration.header.dateOfApheresis': 'Date of Apheresis',
+  'manageSPMaterial.configuration.header.timeOfAdministration': 'Time of Administration',
+  'manageSPMaterial.configuration.header.timeOfApheresis': 'Time of Apheresis',
   'button.caption.backToMaterialMaster': 'back to material Master',
   'manageSPMaterial.configuration.heading.manufacturerConfiguration': 'Manufacturer Configuration',
   'label.selectManufacturer': 'Select Manufacturer',

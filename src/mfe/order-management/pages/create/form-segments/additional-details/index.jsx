@@ -55,6 +55,8 @@ const INITIAL_VALUES = {
   shipToPONumber: '',
   dateOfAdministration: '',
   dateOfApheresis: '',
+  timeOfApheresis: '',
+  timeOfAdministration: '',
   hasAllergies: '',
   allergyDetails: '',
   diagnosisCode: [],
@@ -668,6 +670,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const {
         dateOfAdministration,
         dateOfApheresis,
+        timeOfApheresis,
+        timeOfAdministration,
         coiId,
         orderQuantity,
         patientConsentTaken,
@@ -702,6 +706,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           allergyDetails: clinicalDetails.allergiesSpecification ?? '',
           dateOfAdministration: clinicalDetails.dateOfAdministration,
           dateOfApheresis: clinicalDetails.dateOfApheresis,
+          timeOfApheresis: clinicalDetails.timeOfApheresis || '',
+          timeOfAdministration: clinicalDetails.timeOfAdministration || '',
           hasAllergies: clinicalDetails.hasAllergies ? 'yes' : 'no',
           diagnosisCode: []
         });
@@ -732,6 +738,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         Object.assign(initialValues, {
           dateOfAdministration,
           dateOfApheresis,
+          timeOfApheresis,
+          timeOfAdministration,
           coiId,
           orderQuantity,
           slotNumber,
@@ -836,7 +844,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       : null;
 
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber } = values;
+    const {
+      coiId,
+      orderQuantity,
+      slotNumber,
+      poNumber,
+      dateOfAdministration,
+      dateOfApheresis,
+      diagnosisCode,
+      shipToPONumber,
+      timeOfAdministration,
+      timeOfApheresis
+    } = values;
     let orderQuantityConfig = {};
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       orderQuantityConfig = therapyConfig;
@@ -916,6 +935,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       payload.shipToPONumber = shipToPONumber;
       payload.dateOfAdministration = dateOfAdministration;
       payload.dateOfApheresis = dateOfApheresis;
+      payload.timeOfAdministration = timeOfAdministration;
+      payload.timeOfApheresis = timeOfApheresis;
     }
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       updateAdditionalDetailsValues(payload, orderDetails?.therapyConfig?.config?.fields || []);
