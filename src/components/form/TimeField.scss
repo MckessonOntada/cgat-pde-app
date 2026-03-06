@@ -1,0 +1,92 @@
+@use "@src/assets/styles/abstracts/mixins";
+.timepicker-wrapper {
+  position: relative;
+}
+
+.timepicker-input {
+  width: 100%;
+  height: 3.8rem;
+  padding: 0.9rem 1.2rem;
+  font-size: var(--brand-font-size--default);
+  line-height: var(--brand-line-height--m-large) !important;
+  letter-spacing: -0.016px;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--brand-color-primary-background);
+  font-family: var(--brand-font-family-body);
+  font-weight: var(--brand-font-weight-600);
+}
+
+.timepicker-input {
+  &:focus {
+    outline: none !important;
+    border: 1px solid var(--stroke-field-active);
+    box-shadow: 0 0 0 1px var(--stroke-field-active);
+    color: var(--brand-color-black);
+  }
+  &.error {
+    border: 1px solid var(--fill-status-error-text);
+    color: var(--fill-status-error-text);
+    font-weight: var(--brand-font-weight-600);
+  }
+  &::placeholder {
+    font-size: var(--brand-font-size--small);
+    color: var(--brand-color-background-light-slate);
+  }
+}
+
+.timepicker-dropdown {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  display: flex;
+  border: 1px solid #ccc;
+  background: white;
+  z-index: 10;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87);
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  transform-origin: top center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.time-column {
+  height: 180px;
+  overflow-y: auto;
+  width: 100%;
+  border-right: 1px solid #eee;
+}
+
+.time-column:last-child {
+  border-right: none;
+}
+
+.time-item {
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-size: var(--brand-font-size--small);
+  border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+}
+
+.time-item:hover {
+  background-color: #faf5e2;
+}
+
+.time-item.active {
+  background-color: #faf5e2;
+}
+.clock-icon-btn {
+  position: absolute;
+  right: 0px;
+  top: 25px;
+  svg {
+    height: 18px !important;
+    width: 18px !important;
+  }
+}

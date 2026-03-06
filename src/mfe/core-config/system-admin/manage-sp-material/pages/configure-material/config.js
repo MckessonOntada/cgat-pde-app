@@ -23,6 +23,10 @@ export const fieldFormatRegexObj = {
     regex: '^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$',
     errorMessage: 'Enter a valid date in MM/DD/YYYY format.'
   },
+  Time_HH_MM: {
+    regex: '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
+    errorMessage: 'Invalid time format. Use HH:MM (e.g., 14:30).'
+  },
   'UUID/Unique ID': {
     regex: '^[A-Za-z0-9-]{8,36}$',
     errorMessage: 'Enter a valid Unique ID (letters, numbers, hyphens), 8–36 characters long.'
@@ -31,6 +35,9 @@ export const fieldFormatRegexObj = {
 export const getFieldFormatOptions = (fieldName) => {
   if (['dateOfAdministration', 'dateOfApheresis'].includes(fieldName)) {
     return [{ label: 'Date_MM_DD_YYYY', value: 'Date_MM_DD_YYYY' }];
+  }
+  if (['timeOfAdministration', 'timeOfApheresis'].includes(fieldName)) {
+    return [{ label: 'Time_HH_MM', value: 'Time_HH_MM' }];
   }
   return [
     { label: 'Text', value: 'Text' },
@@ -163,6 +170,25 @@ export const defaultFieldFormatBnb = () => ({
       }
     },
     {
+      fieldName: 'timeOfAdministration',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Time of Administration',
+        errorMessage: 'Invalid time format. Use HH:MM (e.g., 14:30).',
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Time_HH_MM',
+          validationRegex: '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
+          validationFormat: '',
+          get options() {
+            return getFieldFormatOptions('timeOfAdministration');
+          }
+        }
+      }
+    },
+    {
       fieldName: 'dateOfApheresis',
       properties: {
         displayOnForm: false,
@@ -177,6 +203,25 @@ export const defaultFieldFormatBnb = () => ({
           validationFormat: '',
           get options() {
             return getFieldFormatOptions('dateOfApheresis');
+          }
+        }
+      }
+    },
+    {
+      fieldName: 'timeOfApheresis',
+      properties: {
+        displayOnForm: false,
+        mandatoryField: false,
+        showHelpIcon: false,
+        displayName: 'Time of Apheresis',
+        errorMessage: 'Invalid time format. Use HH:MM (e.g., 14:30).',
+        helpInfoMessage: '',
+        fieldFormat: {
+          formatType: 'Time_HH_MM',
+          validationRegex: '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
+          validationFormat: '',
+          get options() {
+            return getFieldFormatOptions('timeOfApheresis');
           }
         }
       }
