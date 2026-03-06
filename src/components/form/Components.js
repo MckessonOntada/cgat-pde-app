@@ -11,6 +11,7 @@ import ToggleButtonFieldFormik from './formik/ToggleButtonFormik';
 import InputFileFormik from './formik/InputFileFormik';
 import StateDropdown from './StateDropdown';
 import InputTextFormik from './formik/InputTextFormik';
+import TimeFieldFormik from './formik/TimeFieldFormik';
 
 const Components = {
   input: InputFieldFormik,
@@ -25,7 +26,8 @@ const Components = {
   radioGroup: RadioGroup,
   toggleButton: ToggleButtonFieldFormik,
   inputFile: InputFileFormik,
-  stateDropdown: StateDropdown
+  stateDropdown: StateDropdown,
+  time: TimeFieldFormik
 };
 
 export default Components;

@@ -23,14 +23,16 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
         const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
         const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+        const formatType = field?.properties?.fieldFormat?.formatType;
         dynamic_fields.push({
           name: field?.fieldName,
           label: field?.properties?.displayName,
           isRequired: field?.properties?.mandatoryField,
-          component: Components[prefix || suffix ? 'inputText' : field?.properties?.fieldFormat?.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input'],
+          component:
+            Components[prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input'],
           prefix,
           suffix,
-          ...(field?.properties?.fieldFormat?.formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
+          ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
           infoText: field?.properties.helpInfoMessage,
           ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
         });
