@@ -36,7 +36,7 @@ const AddAccounts = () => {
   const { setValue } = useWidgetContext();
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${id}` : `../${id}/${PATHS.PERMISSIONS}`, {
+    navigate(isEdit ? -1 : `../${id}/${PATHS.PERMISSIONS}`, {
       state: { isBack: true }
     });
   };
