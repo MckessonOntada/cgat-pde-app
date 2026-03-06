@@ -765,7 +765,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             dateOfAdministration: additionalDetails.dateOfAdministration || '',
             poNumber: additionalDetails.poNumber || '',
             shipToPONumber: additionalDetails.shipToPONumber || '',
-            dateOfApheresis: additionalDetails.dateOfApheresis || ''
+            dateOfApheresis: additionalDetails.dateOfApheresis || '',
+            timeOfApheresis: additionalDetails.timeOfApheresis || '',
+            timeOfAdministration: additionalDetails.timeOfAdministration || ''
           };
         }
       } else if (stage === ORDER_STAGES.PATIENT_DETAILS) {
@@ -1643,8 +1645,15 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                             !isSpOrder &&
                             !(therapyConfig?.config?.fields ?? []).some(
                               (field) =>
-                                ['coiId', 'poNumber', 'shipToPONumber', 'dateOfAdministration', 'dateOfApheresis'].includes(field?.fieldName) &&
-                                field?.properties?.displayOnForm === true
+                                [
+                                  'coiId',
+                                  'poNumber',
+                                  'shipToPONumber',
+                                  'dateOfAdministration',
+                                  'dateOfApheresis',
+                                  'timeOfApheresis',
+                                  'timeOfAdministration'
+                                ].includes(field?.fieldName) && field?.properties?.displayOnForm === true
                             )
                           }
                           onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
@@ -1674,6 +1683,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
                     {isSpOrder && (
                       <>
+                        {additionalDetails?.orderQuantity && (
+                          <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
+                        )}
                         <DetailSegment label={t('label.diagnosisCode')} value={getDiagnosisCodesDisplayLabel(additionalDetails?.diagnosisCode)} />
                         {additionalDetails?.clinicalDetails?.hasAllergies && (
                           <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
