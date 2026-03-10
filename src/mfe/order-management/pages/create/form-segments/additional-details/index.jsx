@@ -667,6 +667,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
 
     if (additionalDetails) {
+      const additionalDetailsWithoutPrefixAndSuffix = getValueWIthoutPrefixAndSuffix(additionalDetails, orderDetails?.therapyConfig?.config?.fields || []);
       const {
         dateOfAdministration,
         dateOfApheresis,
@@ -682,7 +683,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         configuredQuestionnaires,
         diagnosisCode,
         clinicalDetails = {}
-      } = additionalDetails;
+      } = additionalDetailsWithoutPrefixAndSuffix;
 
       if (variantDetails) {
         const { variantDocumentPath, ...otherDetails } = variantDetails;
