@@ -9,7 +9,6 @@ import PatientDetails from '../pages/create/form-segments/patient-details';
 import Summary from '../pages/create/form-segments/summary';
 import AdditionalDetails from '../pages/create/form-segments/additional-details';
 import NotFound from '../../../pages/error-pages/NotFound';
-import { TherapyProvider } from '../context/TherapyContext';
 import { OrderProvider } from '../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
@@ -100,73 +99,6 @@ function OrderManagementRoutes() {
           }
         />
       </Route>
-
-      {/* <Route
-        path={`:orderId/patient`}
-        element={
-          <ProtectedRoute permissions={orderPermissions}>
-            <PatientDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/payer`}
-        element={
-          <ProtectedRoute permissions={orderPermissions}>
-            <Payer />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/additional-details`}
-        element={
-          <ProtectedRoute permissions={orderPermissions}>
-            <AdditionalDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/summary`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <Summary />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/orca-patient-details`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <OrcaPatientDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/order-confirmed`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <OrderStatus />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/upload-document`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <UploadOrderDocument />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path={`:orderId/finalize-order`}
-        element={
-          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REVIEW_ORDER]}>
-            <FinalizeOrder />
-          </ProtectedRoute>
-        }
-      /> */}
-
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );
@@ -182,9 +114,13 @@ export const OrderLoader = () => {
     if (!id) {
       setValue('isLoading', false);
       setValue('orderDetails', {});
+      setValue('isChangeOnPreviousStep', false);
+      setValue('isApprover', false);
       return;
     }
     setValue('orderDetails', {});
+    setValue('isChangeOnPreviousStep', false);
+    setValue('isApprover', false);
     let fetchPromise = null;
     if (isCustomerReviewOrderWizard) {
       const params = new URLSearchParams(location.search);

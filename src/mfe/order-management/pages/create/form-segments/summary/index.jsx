@@ -502,7 +502,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const handleOnSubmit = () => {
     if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/review`, { state: { ...locationState } });
     } else {
       if (!agreeCheckboxOptions.isChecked) {
         setOrderAgreementCheckboxError('Please acknowledge to submit order');

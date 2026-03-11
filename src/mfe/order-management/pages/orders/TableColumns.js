@@ -52,7 +52,7 @@ function getOptionsByStatus(props) {
   ]);
   // Mutations
   const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
-    onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { isApprover: true, ...variables.preservedState } }),
+    onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { ...variables.preservedState } }),
     onError: (err) =>
       showAlert({
         description: t(handleApiError(err)),
@@ -177,7 +177,6 @@ function getOptionsByStatus(props) {
         navigate(`${id}/summary`, {
           state: {
             isEdit: props.approver?.id === loggedInUserId,
-            isApprover: props.approver?.id === loggedInUserId,
             __prevSearch: search
           }
         });
