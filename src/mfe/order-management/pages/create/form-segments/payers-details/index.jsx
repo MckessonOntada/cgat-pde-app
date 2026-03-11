@@ -34,13 +34,14 @@ import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
+import { getOrderStepCaption, normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function Payer({ readOnly, hasPermission }) {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -396,7 +397,6 @@ function Payer({ readOnly, hasPermission }) {
 
   return (
     <div className="MCP-module-wrapper">
-      {isSaving && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBack} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -687,8 +687,15 @@ function Payer({ readOnly, hasPermission }) {
                         disabled={readOnly || !isDirty}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button size="md" variant="primary" type="submit" disabled={readOnly}>
-                        {t('captions.btnSaveAndContinue')}
+                      <Button
+                        variant="primary"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left"
+                        type="submit"
+                        disabled={readOnly}
+                        size="md">
+                        {t(getOrderStepCaption(isSaving))}
                       </Button>
                     </div>
                   </div>

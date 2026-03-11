@@ -38,7 +38,7 @@ import { CGAT_IDENTIFIER, CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Co
 import { InventoryIndicator } from '../InventoryIndicator';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderStepper from '../OrderStepper';
-import { normalizeOrderResponse, NotifyAlert, showEditAlert } from '../OrderUtil';
+import { getOrderStepCaption, normalizeOrderResponse, NotifyAlert, showEditAlert } from '../OrderUtil';
 import AttachmentCard from './AttachmentCard';
 import CommentPanel from './CommentPanel';
 import { BUTTON_ACTIONS } from './constants';
@@ -383,9 +383,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     {
       onSuccess: (_result, { action }) => {
         if (action === BUTTON_ACTIONS.SUBMIT) {
-          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, { state: { ...locationState } });
+          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/status`, { state: { ...locationState } });
         } else {
-          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, {
+          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/status`, {
             state: { ...locationState, isApproved: true }
           });
         }
@@ -998,8 +998,15 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     const controlSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} disabled={isSaving} variant="primary" type="submit" onClick={handleOnSubmit}>
-          {t(isSpOrder ? 'captions.btnSubmitPrescription' : 'captions.btnSubmitOrder')}
+        <Button
+          variant="primary"
+          isLoadingState={isSaving}
+          Icon={isSaving && ButtonLoadingIcon}
+          iconPosition="left"
+          onClick={handleOnSubmit}
+          disabled={isSaving}
+          size="md">
+          {isSaving ? 'Saving' : t(isSpOrder ? 'captions.btnSubmitPrescription' : 'captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
     );
@@ -1164,7 +1171,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
-      {(isSaving || patientIdCoiIdValidationLoading) && <Loader type={'screen'} />}
+      {patientIdCoiIdValidationLoading && <Loader type={'screen'} />}
 
       {!isError && (
         <React.Fragment>

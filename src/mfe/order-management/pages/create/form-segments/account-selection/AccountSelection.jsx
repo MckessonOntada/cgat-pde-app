@@ -22,17 +22,18 @@ import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
+import { getOrderStepCaption, normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
-  const [open, setOpen] = React.useState(false);
+  const [isAccountSelectionUserGuideOpen, setIsAccountSelectionUserGuideOpen] = React.useState(false);
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
@@ -155,7 +156,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
 
   const handleOnClick = () => {
     setAlert(null);
-    setOpen(true);
+    setIsAccountSelectionUserGuideOpen(true);
   };
 
   React.useEffect(() => {
@@ -260,7 +261,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     setSelectedSoldToAccount(selectedAccount);
     setSelectedShipToAccount(null);
     setAccountConfig(config);
-    setOpen(false);
+    setIsAccountSelectionUserGuideOpen(false);
   };
 
   return (
@@ -377,8 +378,15 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
               <Button size="md" onClick={handleOnSaveAsDraft} variant="primary" type="submit" disabled={readOnly || !isDirty}>
                 {t('button.caption.saveAsDraft')}
               </Button>
-              <Button size="md" onClick={handleOnSaveAndContinue} variant="primary" type="submit" disabled={readOnly}>
-                {t('captions.btnSaveAndContinue')}
+              <Button
+                variant="primary"
+                isLoadingState={isSaving}
+                Icon={isSaving && ButtonLoadingIcon}
+                iconPosition="left"
+                disabled={readOnly}
+                onClick={handleOnSaveAndContinue}
+                size="md">
+                {t(getOrderStepCaption(isSaving))}
               </Button>
             </div>
           </div>
@@ -392,12 +400,12 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
           onClose={() => setModalSuccessCallback(null)}
           onConfirm={handleNavigate}
         />
-        {open && (
+        {isAccountSelectionUserGuideOpen && (
           <AccountSelectionUserGuide
-            openDrawer={open}
+            openDrawer={isAccountSelectionUserGuideOpen}
             trade={tradeDetails}
             onSubmit={handleOnAccountSelection}
-            onClose={() => setOpen(false)}
+            onClose={() => setIsAccountSelectionUserGuideOpen(false)}
             channelType={tradeDetails?.channelType}
           />
         )}

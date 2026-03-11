@@ -25,10 +25,11 @@ import { useDispatch } from 'react-redux';
 import { ORDER_STAGES } from '../Constants';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
+import { getOrderStepCaption, normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
 import { useFilters } from '@src/context/TableContext';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import useRouteMode from '@src/mfe/user-management/routes/useRouteMode';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function TherapySelection({ readOnly }) {
   const { t } = useTranslate();
@@ -298,8 +299,16 @@ function TherapySelection({ readOnly }) {
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button size="md" variant="primary" disabled={readOnly} onClick={handleOnSubmit}>
-                {t('captions.btnSaveAndContinue')}
+              <Button
+                variant="primary"
+                isLoadingState={isSaving || isUpdating}
+                Icon={(isSaving || isUpdating) && ButtonLoadingIcon}
+                iconPosition="left"
+                type="submit"
+                disabled={readOnly}
+                onClick={handleOnSubmit}
+                size="md">
+                {t(getOrderStepCaption(isSaving, isUpdating))}
               </Button>
             </div>
           </div>

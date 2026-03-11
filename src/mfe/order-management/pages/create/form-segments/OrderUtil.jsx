@@ -298,3 +298,9 @@ export const normalizeOrderResponse = (response) => {
 
   return response;
 };
+
+export function getOrderStepCaption(isSaving, isUpdating) {
+  if (isSaving && !isUpdating) return 'Saving';
+  if (!isSaving && isUpdating) return 'Updating';
+  return 'captions.btnSaveAndContinue';
+}

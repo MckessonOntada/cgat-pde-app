@@ -14,7 +14,6 @@ import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
-import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
@@ -39,7 +38,8 @@ import {
   getValueWIthoutPrefixAndSuffix,
   updatePatientValues,
   removeFieldPrefixSuffix,
-  normalizeOrderResponse
+  normalizeOrderResponse,
+  getOrderStepCaption
 } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
@@ -51,6 +51,7 @@ import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/a
 import OrcaPatientVerificationPanel from '../orca-patient-verification-panel/OrcaPatientVerificationPanel';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -66,7 +67,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isDirty, setIsDirty] = React.useState(false);
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isApprover } = state;
-  // const { isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
@@ -353,6 +353,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
 
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
+    setIsOrderInDraft(isSavingDraft);
     if (!!manufacturer && isEmptyFirstTime) {
       if (manufacturer === MANUFACTURER.ORCA && (!form.patient?.patientIdentifier || !form.patient?.medicalRecordNumber)) {
         setAlert({
@@ -685,7 +686,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
+      {(isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -959,13 +960,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button
-                        size="md"
-                        onClick={() => setIsOrderInDraft(false)}
-                        variant="primary"
-                        type="submit"
-                        disabled={readOnly || !isAllowedToProceed || isPatientVerifying}>
+                      {/* <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit">
                         {t('captions.btnSaveAndContinue')}
+                      </Button> */}
+                      <Button
+                        variant="primary"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left"
+                        type="submit"
+                        disabled={readOnly || !isAllowedToProceed || isPatientVerifying}
+                        size="md">
+                        {t(getOrderStepCaption(isSaving))}
                       </Button>
                     </div>
                   </div>

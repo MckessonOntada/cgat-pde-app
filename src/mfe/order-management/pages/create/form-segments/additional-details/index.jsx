@@ -29,13 +29,19 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { ORDER_STATUS } from '../../../orders/config';
-import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
 import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { getManufacturer, NotifyAlert, getValueWIthoutPrefixAndSuffix, updateAdditionalDetailsValues, normalizeOrderResponse } from '../OrderUtil';
+import {
+  getManufacturer,
+  NotifyAlert,
+  getValueWIthoutPrefixAndSuffix,
+  updateAdditionalDetailsValues,
+  normalizeOrderResponse,
+  getOrderStepCaption
+} from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import {
   getClinicalDetailFields,
@@ -48,6 +54,8 @@ import { useOrderPrice } from './useOrderPrice';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+
 const INITIAL_VALUES = {
   coiId: '',
   orderQuantity: '',
@@ -95,7 +103,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [triageAlert, setTriageAlert] = React.useState(null);
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isApprover } = state;
-  // const { isFetching } = useOrder(orderId);
   const { tradeDetails = {}, spTherapyConfig = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
@@ -822,6 +829,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
+    setIsOrderInDraft(isSavingAsDraft);
     if (channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA && manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
       setAlert({
         description: t('orderManagement.coiId.empty', {
@@ -1218,7 +1226,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isCoiIdValidationLoading) && <Loader type={'screen'} />}
+      {isCoiIdValidationLoading && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -1370,16 +1378,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button
-                        size="md"
-                        onClick={() => setIsOrderInDraft(false)}
+                        variant="primary"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left"
+                        type="submit"
                         disabled={
                           (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (!values.consentPolicy || diagnosisCode.length === 0)) ||
                           readOnly ||
                           !isAllowedToProceed
                         }
-                        variant="primary"
-                        type="submit">
-                        {t('captions.btnSaveAndContinue')}
+                        size="md">
+                        {t(getOrderStepCaption(isSaving))}
                       </Button>
                     </div>
                   </div>
