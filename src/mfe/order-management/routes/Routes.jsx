@@ -172,10 +172,9 @@ function OrderManagementRoutes() {
   );
 }
 
-const OrderLoader = () => {
+export const OrderLoader = () => {
   const { state, setValue } = useWidgetContext();
-  const { id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'orderId' });
-  const orgId = AuthUtils.getPracticeId();
+  const { id } = useRouteMode({ editSegment: 'edit', paramKey: 'orderId' });
   const isCustomerReviewOrderWizard = AuthUtils.isCustomerCenterView();
   const navigate = useNavigate();
 
@@ -188,6 +187,9 @@ const OrderLoader = () => {
     setValue('orderDetails', {});
     let fetchPromise = null;
     if (isCustomerReviewOrderWizard) {
+      const params = new URLSearchParams(location.search);
+      const orgId = params.get('orgId');
+
       fetchPromise = OrderService.getOrderByIdCsUser(id, orgId);
     } else {
       fetchPromise = OrderService.getOrderById(id);

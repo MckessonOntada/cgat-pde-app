@@ -1013,8 +1013,15 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     );
 
     const controlReSubmitOrder = isCustomerCentreUser ? (
-      <Button size="md" disabled={isResubmitting || !allowedSubmission || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
-        {t('captions.btnSubmitOrder')}
+      <Button
+        variant="primary"
+        isLoadingState={isResubmitting}
+        Icon={isResubmitting && ButtonLoadingIcon}
+        iconPosition="left"
+        onClick={handleOnReSubmit}
+        disabled={isResubmitting || !allowedSubmission || !isOrderChanged}
+        size="md">
+        {isResubmitting ? 'Submitting' : t('captions.btnSubmitOrder')}
       </Button>
     ) : (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
@@ -1289,7 +1296,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       <div className="MCP-module-body" ref={contentRef}>
         {!isError && (
           <React.Fragment>
-            {showControls && ![ORDER_STATUS.CANCELLED, ORDER_STATUS.REJECTED].includes(status) && (
+            {showControls && status && ![ORDER_STATUS.CANCELLED, ORDER_STATUS.REJECTED].includes(status) && (
               <div className="order-stepper-wrapper">
                 <OrderStepper
                   status={orderDetails?.currentStage}

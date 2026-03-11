@@ -34,8 +34,8 @@ const OrderManagement = () => {
       <ManageOrderProvider>
         <WidgetProvider initialState={INITIAL_STATE}>
           <Routes />
+          <Outlet />
         </WidgetProvider>
-        <Outlet />
       </ManageOrderProvider>
     </div>
   );

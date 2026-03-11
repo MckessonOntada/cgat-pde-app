@@ -361,9 +361,9 @@ const getState = (props) => {
     state = { ...props };
   } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
     if (approver?.id === loggedInUserId) {
-      state = { isEdit: true, isApprover: true };
+      state = { isEdit: true };
     } else {
-      state = { isApprover: false };
+      state = {};
     }
   } else if (status === ORDER_STATUS.IN_DRAFT) {
     state = { isSimulate: true };
