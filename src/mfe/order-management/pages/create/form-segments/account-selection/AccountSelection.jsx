@@ -223,7 +223,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (isStageInDraft || isDirty) {
       saveAccount({ ...payload, isDraft, isSendNotification: !isDraft });
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/patient-details`, {
         state: { ...locationState, alertState, isEdit: false }
       });
     }
@@ -243,7 +243,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (modalSuccessCallback === 'list') {
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'details') {
-      navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
+      navigate(`${RoutePaths.pathOrderManagement}/edit/${orderId}`, {
         state: { ...locationState, isEdit: false, isBack: true }
       });
     } else if (modalSuccessCallback === 'summary') {

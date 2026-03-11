@@ -24,7 +24,6 @@ const OrderStatus = () => {
   const locationState = location?.state ?? {};
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isApprover } = state;
-  const { data, isFetching } = useOrder(orderId);
   const contentRef = useRef(null);
   const { therapyConfig } = orderDetails;
   const { controlRef } = useContext(FooterContext);
@@ -49,6 +48,7 @@ const OrderStatus = () => {
 
   const backToOrders = () => {
     const prevSearch = locationState.__prevSearch || '';
+    setValue('orderDetails', {});
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
@@ -77,8 +77,6 @@ const OrderStatus = () => {
 
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
-      {isFetching && <Loader type={'screen'} />}
-
       <div>
         <Button
           className="back-button-control"

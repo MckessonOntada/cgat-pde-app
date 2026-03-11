@@ -110,7 +110,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   React.useEffect(() => {
     if (orderDetails.channelType) {
       if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired)
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+        navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/additional-details`, {
           state: { ...locationState }
         });
       else {

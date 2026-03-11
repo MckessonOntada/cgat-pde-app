@@ -70,7 +70,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isApprover } = state;
   const isError = false;
-  // const { isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId, orgId);
   const { isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
@@ -381,7 +380,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(
     async ({ action, isPAPOrder, isInternalOrder }) => await OrderService.submitOrder(orderId, isPAPOrder, isInternalOrder),
     {
-      onSuccess: (_result, { action }) => {
+      onSuccess: (result, { action }) => {
+        const beautifiedOrderDetails = normalizeOrderResponse(result);
+        setValue('orderDetails', beautifiedOrderDetails);
         if (action === BUTTON_ACTIONS.SUBMIT) {
           navigate(`${RoutePaths.pathOrderManagement}/${orderId}/status`, { state: { ...locationState } });
         } else {
@@ -888,11 +889,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       }
       const basePath = RoutePaths.pathOrderManagement;
       const stageRoutes = {
-        [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit-order/${orderId}`,
-        [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/${orderId}/accounts`,
-        [ORDER_STAGES.PATIENT_DETAILS]: `${basePath}/${orderId}/patient`,
-        [ORDER_STAGES.PAYER_DETAILS]: `${basePath}/${orderId}/payer`,
-        [ORDER_STAGES.ADDITIONAL_DETAILS]: `${basePath}/${orderId}/additional-details`
+        [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit/${orderId}`,
+        [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/create/${orderId}/account-details`,
+        [ORDER_STAGES.PATIENT_DETAILS]: `${basePath}/create/${orderId}/patient-details`,
+        [ORDER_STAGES.PAYER_DETAILS]: `${basePath}/create/${orderId}/payer-details`,
+        [ORDER_STAGES.ADDITIONAL_DETAILS]: `${basePath}/create/${orderId}/additional-details`
       };
 
       const route = stageRoutes[stage] || basePath;

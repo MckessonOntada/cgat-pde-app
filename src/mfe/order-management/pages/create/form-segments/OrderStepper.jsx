@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 import style from './OrderStepper.module.scss';
 import { RoutePaths } from '@src/routes/constants';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   const { t } = useTranslate();
@@ -19,7 +20,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
       PATIENT_AND_PROVIDER_DETAILS: `${baseRoute}/create/${orderId}/patient-details`,
       PAYER_DETAILS: `${baseRoute}/create/${orderId}/payer-details`,
       ADDITIONAL_DETAILS: `${baseRoute}/create/${orderId}/additional-details`,
-      ORDER_SUMMARY: `${baseRoute}/create/${orderId}/summary`
+      ORDER_SUMMARY: `${baseRoute}/${orderId}/summary`
     };
   }, []);
   const forms = React.useMemo(() => {
@@ -63,6 +64,19 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
     ORDER_SUMMARY: 6
   };
 
+  const { state } = useWidgetContext();
+  const { orderDetails = {} } = state;
+
+  React.useEffect(() => {
+    console.log(location.pathname);
+    const c_nav = Object.keys(navLinks).find((k) => navLinks[k] === location.pathname);
+    const webOrderIndex = currentStage[c_nav];
+    const serverOrderIndex = currentStage[orderDetails.currentStage];
+    if (webOrderIndex > serverOrderIndex) {
+      navigate(navLinks[orderDetails.currentStage], { state: location.state });
+    }
+  }, [location.pathname, orderDetails.currentStage]);
+
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && status === ORDER_STAGES.PATIENT_DETAILS) status = ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS;
 
   const activeIndex = filteredStepperItems.find((step) => step.name === status)?.order || 1;
@@ -92,7 +106,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
       <div>
         <code
           style={{
-            background: '#fff',
+            background: '#e2d7d3',
             padding: '8px',
             fontSize: '18px',
             lineHeight: '32px'

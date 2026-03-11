@@ -78,10 +78,10 @@ function OrderManagementRoutes() {
           <Route path={`:orderId/payer-details`} element={<PayersDetails />} />
           <Route path={`:orderId/patient-details`} element={<PatientDetails />} />
           <Route path={`:orderId/additional-details`} element={<AdditionalDetails />} />
-          <Route path={`:orderId/review`} element={<FinalizeOrder />} />
         </Route>
       </Route>
       <Route path=":orderId" element={<OrderLoader />}>
+        <Route path={`:orderId/review`} element={<FinalizeOrder />} />
         <Route path={`verification/:manufacturer`} element={<OrcaPatientDetails />} />
         <Route path={`documents/upload`} element={<UploadOrderDocument />} />
         <Route path={`status`} element={<OrderStatus />} />
@@ -185,6 +185,7 @@ const OrderLoader = () => {
       setValue('orderDetails', {});
       return;
     }
+    setValue('orderDetails', {});
     let fetchPromise = null;
     if (isCustomerReviewOrderWizard) {
       fetchPromise = OrderService.getOrderByIdCsUser(id, orgId);

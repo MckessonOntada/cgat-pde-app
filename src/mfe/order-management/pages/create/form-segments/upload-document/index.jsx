@@ -20,6 +20,7 @@ import { CHANNEL_TYPE } from '../Constants';
 import Alert from '@src/components/cgat-alert/Alert';
 import { validateFile } from '@src/components/uploadFile/uploadUtils';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from '../additional-details/constants';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const COMMENT_MAX_LENGTH = 5000;
 
@@ -32,7 +33,8 @@ function UploadOrderDocument() {
   const [showTherapyDetails, setShowTherapyDetails] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [alert, setAlert] = React.useState(null);
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {} } = state;
   const [validationMessage, setValidationMessage] = React.useState(null);
   const channelType = orderDetails.channelType;
   const allowedFileTypes = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? ALLOWED_FILE_TYPE.filter((type) => type === 'application/pdf') : ALLOWED_FILE_TYPE;
@@ -115,43 +117,37 @@ function UploadOrderDocument() {
       <div className="MCP-CardContainer">
         <ModuleHeader className={styles['panel-header']} heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>} />
 
-        {isFetching ? (
-          <div className="spinner-wrapper md">
-            <SpinnerIcon />
+        <div>
+          <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+            {isSpOrder && <DetailSegment key={'order_id'} label={t('labels.orderId')} value={orderDetails.backendOrderId} />}
+            <DetailSegment
+              key={'therapy_name'}
+              label="Therapy"
+              value={
+                isSpOrder ? (
+                  <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
+                    {orderDetails.therapy?.materialDescription}
+                  </Link>
+                ) : (
+                  orderDetails.therapy?.materialDescription
+                )
+              }
+            />
+            {orderDetails.therapy?.channelType === CHANNEL_TYPE.BUY_AND_BILL && (
+              <div className="price-wrapper">
+                <DetailSegment
+                  label={t('labels.orderCost')}
+                  value={
+                    <span className="dollarSign">
+                      <span>$</span>
+                      {CommonUtils.formatNumberWithoutSymbol(orderDetails.paporder ? 0 : orderDetails.orderCost)}
+                    </span>
+                  }
+                />
+              </div>
+            )}
           </div>
-        ) : (
-          <div>
-            <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-              {isSpOrder && <DetailSegment key={'order_id'} label={t('labels.orderId')} value={orderDetails.backendOrderId} />}
-              <DetailSegment
-                key={'therapy_name'}
-                label="Therapy"
-                value={
-                  isSpOrder ? (
-                    <Link onClick={() => setShowTherapyDetails(true)} className="MCP-table-link">
-                      {orderDetails.therapy?.materialDescription}
-                    </Link>
-                  ) : (
-                    orderDetails.therapy?.materialDescription
-                  )
-                }
-              />
-              {orderDetails.therapy?.channelType === CHANNEL_TYPE.BUY_AND_BILL && (
-                <div className="price-wrapper">
-                  <DetailSegment
-                    label={t('labels.orderCost')}
-                    value={
-                      <span className="dollarSign">
-                        <span>$</span>
-                        {CommonUtils.formatNumberWithoutSymbol(orderDetails.paporder ? 0 : orderDetails.orderCost)}
-                      </span>
-                    }
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        </div>
       </div>
       <div className="MCP-module-body">
         <div className="">
