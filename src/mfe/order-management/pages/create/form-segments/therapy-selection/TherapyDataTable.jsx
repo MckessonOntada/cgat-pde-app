@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTherapy } from '../../../../context/TherapyContext';
+// import { useTherapy } from '../../../../context/TherapyContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './TherapyDataColumns';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -7,14 +7,19 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import CommonUtils, { checkIsDataFiltered } from '@src/util/CommonUtils';
+import { useFilters, usePagination, useSort, useTable } from '@src/context/TableContext';
 
 const TherapyDataTable = (props) => {
   const { trade, onChange, readOnly } = props;
   const { t } = useTranslate();
-  const { data, paginationConfig, setPageNumber, isFetching, error, applySort, filterConfig } = useTherapy();
+  // const { paginationConfig, setPageNumber, isFetching, error, _applySort, filterConfig } = useTherapy();
+  const { sort, applySort } = useSort();
+  const { data, error, loading } = useTable();
+  const { filters } = useFilters();
+  const { pagination, changePage } = usePagination();
   const isDataFiltered = React.useMemo(() => {
-    return checkIsDataFiltered(filterConfig);
-  }, [filterConfig]);
+    return checkIsDataFiltered(filters);
+  }, [filters]);
   const showCardView = useResponsiveView();
 
   const [expandedRows, setExpandedRows] = React.useState([]);
@@ -54,16 +59,9 @@ const TherapyDataTable = (props) => {
     );
   };
 
-  const handleOnPageChange = (_event, pageIndex) => {
-    setPageNumber(pageIndex);
-  };
-
   const handleOnSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) {
-      applySort({
-        sortBy: selectedColumn.sortKey,
-        sortOrder: sortDirection
-      });
+      applySort(selectedColumn.sortKey, sortDirection);
     }
   };
 
@@ -75,13 +73,13 @@ const TherapyDataTable = (props) => {
       type="normal"
       columns={columns}
       data={data}
-      handleChangePage={handleOnPageChange}
+      handleChangePage={(_event, pageIndex) => changePage(pageIndex)}
       onSortIconClick={handleOnSort}
       pagination
-      currentPage={paginationConfig.pageNumber}
-      totalPageCount={paginationConfig.totalPages}
-      totalRocords={paginationConfig.totalElements}
-      recordsPerPage={paginationConfig.pageSize}
+      currentPage={pagination.pageNo}
+      totalPageCount={pagination.totalPages}
+      totalRocords={pagination.totalElements}
+      recordsPerPage={pagination.pageSize}
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={t('labels.perPage')}
       paginationTotalRecorsMessage={t('labels.results')}
@@ -94,7 +92,7 @@ const TherapyDataTable = (props) => {
       nestedCardViewKey={'therapies'}
       noDataComponent={
         <EmptyDataTable
-          isLoading={isFetching}
+          isLoading={loading}
           error={error?.message}
           image={EmptyDataImage}
           heading={isDataFiltered ? t('errors.messages.noRecordsFound') : t('table.labels.therapySelectionNoDataAvailable')}

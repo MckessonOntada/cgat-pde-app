@@ -10,15 +10,16 @@ import { RoutePaths } from '@src/routes/constants';
 function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   const { t } = useTranslate();
   const { orderId } = useParams();
+
   const navLinks = React.useMemo(() => {
     const baseRoute = RoutePaths.pathOrderManagement;
     return {
-      ACCOUNT_DETAILS: `${baseRoute}/${orderId}/accounts`,
-      PATIENT_DETAILS: `${baseRoute}/${orderId}/patient`,
-      PATIENT_AND_PROVIDER_DETAILS: `${baseRoute}/${orderId}/patient`,
-      PAYER_DETAILS: `${baseRoute}/${orderId}/payer`,
-      ADDITIONAL_DETAILS: `${baseRoute}/${orderId}/additional-details`,
-      ORDER_SUMMARY: `${baseRoute}/${orderId}/summary`
+      ACCOUNT_DETAILS: `${baseRoute}/create/${orderId}/account-details`,
+      PATIENT_DETAILS: `${baseRoute}/create/${orderId}/patient-details`,
+      PATIENT_AND_PROVIDER_DETAILS: `${baseRoute}/create/${orderId}/patient-details`,
+      PAYER_DETAILS: `${baseRoute}/create/${orderId}/payer-details`,
+      ADDITIONAL_DETAILS: `${baseRoute}/create/${orderId}/additional-details`,
+      ORDER_SUMMARY: `${baseRoute}/create/${orderId}/summary`
     };
   }, []);
   const forms = React.useMemo(() => {
@@ -74,7 +75,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
       if (currentStage[stepByTitle] <= currentStage[status]) {
         const newNavLink = navLinks[stepByTitle];
         if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
-          navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
+          navigate(`${RoutePaths.pathOrderManagement}/edit/${orderId}`, {
             state: { ...locationState, isBack: true }
           });
         else {
@@ -88,6 +89,17 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   return (
     <div className={style['custom-order-stepper']}>
+      <div>
+        <code
+          style={{
+            background: '#fff',
+            padding: '8px',
+            fontSize: '18px',
+            lineHeight: '32px'
+          }}>
+          {JSON.stringify(location.state)}
+        </code>
+      </div>
       <StepperMui
         activeIndex={activeIndex}
         dividerText="of"

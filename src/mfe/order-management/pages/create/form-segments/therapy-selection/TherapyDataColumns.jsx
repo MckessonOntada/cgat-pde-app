@@ -4,7 +4,6 @@ import { RadioGroup, Tooltip } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as ArrowAngleRight } from '@src/assets/svg/arrow-right.svg';
 import CommonUtils from '@src/util/CommonUtils';
-import { CHANNEL_TYPE } from '../Constants';
 
 export const createColumns = ({ t, trade = {}, onChange, readOnly, isRowExpanded, onExpandToggle }) => [
   {

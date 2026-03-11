@@ -14,6 +14,7 @@ import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import { RoutePaths } from '@src/routes/constants';
 import AuthUtils from '@src/util/AuthUtils';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
@@ -21,7 +22,9 @@ const OrderStatus = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = location?.state ?? {};
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
+  const { data, isFetching } = useOrder(orderId);
   const contentRef = useRef(null);
   const { therapyConfig } = orderDetails;
   const { controlRef } = useContext(FooterContext);
@@ -37,10 +40,9 @@ const OrderStatus = () => {
     }`
   );
 
-  const { therapy = {}, orderCost, patient = {}, status: orderStatus, backendOrderId, approver, accountDetails } = orderDetails || {};
+  const { therapy = {}, orderCost, patient = {}, status: orderStatus, backendOrderId, accountDetails } = orderDetails || {};
   const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
-  const isApprover = approver && typeof approver === 'object' && approver.id != null;
   const isPhysician = AuthUtils.isPhysician();
   const isCSReviewer = AuthUtils.isCustomerCenter() && AuthUtils.isCustomerCenterView();
   const isOrgUser = !AuthUtils.isSystemAdminView();

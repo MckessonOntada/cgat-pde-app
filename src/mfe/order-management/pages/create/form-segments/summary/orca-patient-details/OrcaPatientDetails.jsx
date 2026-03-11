@@ -219,7 +219,7 @@ function OrcaPatientDetails() {
   };
 
   const handleOnBack = () => {
-    navigate(`../${orderId}/summary${location.search}`);
+    navigate(`../summary${location.search}`);
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(

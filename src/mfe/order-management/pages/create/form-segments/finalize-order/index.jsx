@@ -5,7 +5,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { RoutePaths } from '@src/routes/constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { prescriptionAndSignatureSection, sections } from './finalize-config';
+import { prescriptionAndSignatureSection } from './finalize-config';
 import { Field, Form, Formik } from 'formik';
 import { getPrescriptionAndSignatureInitialValues, getPrescriptionAndSignatureSchema } from './validation-schema';
 import Components from '@src/components/form/Components';

@@ -34,12 +34,13 @@ import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import Components from '@src/components/form/Components';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { NotifyAlert } from '../OrderUtil';
+import { normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function Payer({ readOnly, hasPermission }) {
   const [formValues, setFormValues] = React.useState(baseValues);
@@ -55,9 +56,10 @@ function Payer({ readOnly, hasPermission }) {
   const locationState = location?.state ?? {};
   const { orderId } = useParams();
   const [isDirty, setIsDirty] = React.useState(false);
-  const { isEdit = false, isApprover = false } = locationState || {};
+  const { isEdit = false } = locationState || {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
   const { isDraft } = orderDetails;
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -98,11 +100,10 @@ function Payer({ readOnly, hasPermission }) {
   }, [orderDetails]);
 
   React.useEffect(() => {
-    const { changeOnPreviousStep = false } = location.state;
+    const { isChangeOnPreviousStep } = state;
 
-    if (changeOnPreviousStep && !hasPermission) {
-      const { changeOnPreviousStep, ...newState } = location.state;
-      navigate(location.pathname, { state: newState });
+    if (isChangeOnPreviousStep && !hasPermission) {
+      navigate(location.pathname, { state: location.state });
       const state = {};
       state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
@@ -210,8 +211,7 @@ function Payer({ readOnly, hasPermission }) {
     navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
       state: {
         ...locationState,
-        isEdit: false,
-        isApprover: isApprover
+        isEdit: false
       }
     });
   };
@@ -220,19 +220,16 @@ function Payer({ readOnly, hasPermission }) {
     navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
       state: {
         ...locationState,
-        isEdit: isSummaryEdit,
-        isApprover: isApprover
+        isEdit: isSummaryEdit
       }
     });
   };
 
-  const navigateToNextStage = (orderId, changeOnPreviousStep) => {
-    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+  const navigateToNextStage = (orderId) => {
+    navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/additional-details`, {
       state: {
         ...locationState,
-        isEdit: false,
-        isApprover: isApprover,
-        changeOnPreviousStep
+        isEdit: false
       }
     });
   };
@@ -241,11 +238,13 @@ function Payer({ readOnly, hasPermission }) {
     queryKey: 'save-payer-details',
     mutationFn: ({ isPayerDetailsRequired, insuranceDetails, isSendNotification, isSavingDraft }) =>
       OrderService.savePayerDetails(orderId, isPayerDetailsRequired, insuranceDetails, orderDetails.channelType, isSavingDraft, isSendNotification),
-    onSuccess: (_response, variables) => {
+    onSuccess: (result, variables) => {
+      const beautifiedOrderDetails = normalizeOrderResponse(result);
+      setValue('orderDetails', beautifiedOrderDetails);
       if (!variables.isSavingDraft) {
         navigateToNextStage(orderId, true);
       } else {
-        refreshOrderDetails();
+        // refreshOrderDetails();
         setIsDirty(false);
         setAlert({
           description: 'Order Saved In Draft Successfully',
@@ -397,7 +396,7 @@ function Payer({ readOnly, hasPermission }) {
 
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isFetching) && <Loader type={'screen'} />}
+      {isSaving && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBack} size="md">
           {t('captions.btnBackToManageOrder')}

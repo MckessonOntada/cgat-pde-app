@@ -15,7 +15,6 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { CGAT_IDENTIFIER, CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
@@ -23,12 +22,13 @@ import Alert from '@src/components/cgat-alert/Alert';
 import CommonUtils from '@src/util/CommonUtils';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { NotifyAlert } from '../OrderUtil';
+import { normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { useDispatch } from 'react-redux';
 import { hasUnsavedChanges } from '@src/store/reducer/orderReducer';
 import { openModal } from '@src/store/reducer/modalReducer';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const AccountSelection = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -39,11 +39,11 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const locationState = location?.state ?? {};
   const [accountConfig, setAccountConfig] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = locationState;
-  const updatedLocationState = { ...locationState, isTherapyChanged: false };
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isTherapyChanged, isApprover } = state;
+  const { isEdit = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [alert, setAlert] = useState(null);
-  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
   const isStageInDraft = orderDetails.isDraft;
   const [selectedSoldToAccount, setSelectedSoldToAccount] = React.useState(null);
   const [selectedShipToAccount, setSelectedShipToAccount] = React.useState(null);
@@ -58,7 +58,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     const { isPapOrder, status, tradeDetails, accountDetails: { soldToAccount, shipToAccount } = {} } = orderDetails;
 
     if (isPapOrder) {
-      navigate(`${RoutePaths.pathOrderManagement}${updatedLocationState?.__prevSearch}`);
+      navigate(`${RoutePaths.pathOrderManagement}${locationState?.__prevSearch}`);
       return;
     }
 
@@ -83,8 +83,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
 
   React.useEffect(() => {
     if (isTherapyChanged && !hasPermission) {
-      const { isTherapyChanged, ...newState } = location.state;
-      navigate(location.pathname, { state: newState });
+      navigate(location.pathname, { state: location.state });
       const state = {};
       state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
@@ -105,34 +104,33 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
 
   const handleSaveSuccess = (result, variables) => {
     const { id } = result;
-
+    const beautifiedOrderDetails = normalizeOrderResponse(result);
+    setValue('orderDetails', beautifiedOrderDetails);
     if (variables.isDraft) {
-      handleDraftSaveSuccess();
       return;
     }
 
     navigateToPatient(id);
   };
 
-  const handleDraftSaveSuccess = () => {
-    refreshOrderDetails();
-    const { isTherapyChanged, ...rest } = location.state || {};
-    setIsDirty(false);
-    setAlert({
-      description: 'Order Saved In Draft Successfully',
-      type: 'success'
-    });
-    navigate(location.pathname, { state: rest });
-  };
+  // const handleDraftSaveSuccess = () => {
+  //   refreshOrderDetails();
+  //   const { isTherapyChanged, ...rest } = location.state || {};
+  //   setIsDirty(false);
+  //   setAlert({
+  //     description: 'Order Saved In Draft Successfully',
+  //     type: 'success'
+  //   });
+  //   navigate(location.pathname, { state: rest });
+  // };
 
   const navigateToPatient = (orderId) => {
-    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+    setValue('isChangeOnPreviousStep', true);
+    navigate(`../${orderId}/patient-details`, {
       state: {
-        ...updatedLocationState,
+        ...locationState,
         alertState,
-        isEdit: false,
-        isApprover,
-        changeOnPreviousStep: true
+        isEdit: false
       }
     });
   };
@@ -180,11 +178,11 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     }
     if (isEdit) {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...updatedLocationState, isEdit: isEdit, isApprover: isApprover }
+        state: { ...locationState, isEdit: isEdit }
       });
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover, isBack: true }
+      navigate(`${RoutePaths.pathOrderManagement}/edit/${orderId}`, {
+        state: { ...locationState, isEdit: false, isBack: true }
       });
     }
   };
@@ -225,7 +223,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
       saveAccount({ ...payload, isDraft, isSendNotification: !isDraft });
     } else {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
-        state: { ...updatedLocationState, alertState, isEdit: false, isApprover }
+        state: { ...locationState, alertState, isEdit: false }
       });
     }
   };
@@ -234,22 +232,22 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      const prevSearch = updatedLocationState?.__prevSearch || '';
+      const prevSearch = locationState?.__prevSearch || '';
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     }
   };
 
   const handleNavigate = () => {
-    const prevSearch = updatedLocationState?.__prevSearch || '';
+    const prevSearch = locationState?.__prevSearch || '';
     if (modalSuccessCallback === 'list') {
       navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     } else if (modalSuccessCallback === 'details') {
       navigate(`${RoutePaths.pathOrderManagement}/edit-order/${orderId}`, {
-        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover, isBack: true }
+        state: { ...locationState, isEdit: false, isBack: true }
       });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
-        state: { ...updatedLocationState, isEdit: false, isApprover: isApprover }
+        state: { ...locationState, isEdit: false }
       });
     }
   };
@@ -267,7 +265,6 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
 
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isFetching) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
