@@ -66,10 +66,9 @@ function DetailsPanel({ orderDetails, onClose }) {
   const [recentEvent, setRecentEvent] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [deliveryTitle, setDeliveryTitle] = React.useState(null);
-  const [alert, setAlert] = React.useState(null);
   React.useEffect(() => {
     if (orderDetails.requestId)
-      OrderService.getTrackingDetails(orderDetails.accountDetails.shipToAccount.accountNumber, orderDetails.requestId)
+      OrderService.getTrackingDetails(orderDetails?.accountDetails?.shipToAccount?.accountNumber, orderDetails?.requestId)
         .then((response) => {
           const updates = response.updates || [];
           if (!updates.length) {
@@ -129,7 +128,7 @@ function DetailsPanel({ orderDetails, onClose }) {
   const orderSummary = React.useMemo(() => {
     if (CommonUtils.isNonEmptyObject(orderDetails) && orderDetails.id) {
       return {
-        orderNumber: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : orderDetails.backendOrderId,
+        orderNumber: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.id : orderDetails.backendOrderId,
         orderDate: dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY'),
         therapy: orderDetails.therapy?.tradeName,
         orderCost: orderDetails.cost ? <span className="dollarSign">CommonUtils.formatNumberWithoutSymbol(orderDetails.cost)</span> : '-'
@@ -147,7 +146,7 @@ function DetailsPanel({ orderDetails, onClose }) {
         <div className="stack">
           <div className={style.section}>
             <div className="stack">
-              {recentEvent.eventCode === 21 ? (
+              {recentEvent?.eventCode === 21 ? (
                 <p className={`${style.heading} ${style.error}`}>{translateFn('labels.orderCancelled')}</p>
               ) : (
                 <React.Fragment>
@@ -173,7 +172,7 @@ function DetailsPanel({ orderDetails, onClose }) {
               <div className={style.summary}>
                 {Object.entries(orderSummary).map(([key, value]) => {
                   return (
-                    <div data-direction={'row'} className={style.summaryItem}>
+                    <div key={key} data-direction={'row'} className={style.summaryItem}>
                       <p className={style.label}>{translateFn(`labels.${key}`)}</p>
                       <p className={style.value}>{value}</p>
                     </div>
@@ -188,12 +187,12 @@ function DetailsPanel({ orderDetails, onClose }) {
               <div className="stack">
                 {Object.entries(trackingEvents).map(([day, eventGroup]) => {
                   return (
-                    <div className={style.events}>
+                    <div key={day} className={style.events}>
                       <p className={style.eventTitle}>{dayjs(day).format('ddd, MMM DD')}</p>
                       <div className={style.summary}>
                         {eventGroup.map((event, index) => {
                           return (
-                            <div data-direction={'row'} className={style.summaryItem}>
+                            <div key={index} data-direction={'row'} className={style.summaryItem}>
                               <p className={style.label}>{dayjs(event.messageDate).format('hh:mm a')}</p>
                               <p className={style.value}>{event.message}</p>
                             </div>
