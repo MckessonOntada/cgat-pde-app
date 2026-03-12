@@ -103,17 +103,6 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   return (
     <div className={style['custom-order-stepper']}>
-      <div>
-        <code
-          style={{
-            background: '#e2d7d3',
-            padding: '8px',
-            fontSize: '18px',
-            lineHeight: '32px'
-          }}>
-          {JSON.stringify(location.state)}
-        </code>
-      </div>
       <StepperMui
         activeIndex={activeIndex}
         dividerText="of"

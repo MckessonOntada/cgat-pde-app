@@ -80,7 +80,7 @@ function TherapySelection({ readOnly }) {
   React.useEffect(() => {
     const isDirty = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
     setIsDirty(isDirty);
-    setValue('isTherapyChanged', isDirty);
+    if (orderDetails?.tradeDetails?.ndc) setValue('isTherapyChanged', isDirty);
     dispatch(hasUnsavedChanges(isDirty));
     return () => dispatch(hasUnsavedChanges(false));
   }, [tradeDetails]);
