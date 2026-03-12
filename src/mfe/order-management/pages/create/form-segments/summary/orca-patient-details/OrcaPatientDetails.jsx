@@ -1,4 +1,3 @@
-import useOrder from '@src/mfe/order-management/pages/orders/useOrder';
 import { Form, Formik, getIn } from 'formik';
 import React from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -13,7 +12,6 @@ import { OrcaPatientVerificationPanel } from '../../orca-patient-verification-pa
 import { getValidationSchema } from '../../patient-details/forms/validation-schema';
 import { getManufacturer, removeFieldPrefixSuffix, updatePatientValues } from '../../OrderUtil';
 import CommonUtils from '@src/util/CommonUtils';
-import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import AuthUtils from '@src/util/AuthUtils';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { ORDER_STATUS } from '@src/mfe/order-management/pages/orders/config';
@@ -306,8 +304,6 @@ function OrcaPatientDetails() {
                       <Button
                         disabled={isCSUserReviewingOrca ? false : !isPatientVerified || !isDirty || isPatientVerifying}
                         variant="primary"
-                        isLoadingState={isSaving}
-                        Icon={isSaving && ButtonLoadingIcon}
                         iconPosition="left"
                         type="submit"
                         size="md">
