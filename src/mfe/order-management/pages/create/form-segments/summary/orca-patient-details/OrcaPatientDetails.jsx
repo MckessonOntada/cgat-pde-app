@@ -6,11 +6,10 @@ import { CHANNEL_TYPE, MANUFACTURER } from '../../Constants';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { PatientSections } from '../../patient-details/forms/patient-details.config';
 import OrderService from '@src/api/commonService/OrderService';
-import { Alert, Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Alert, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { OrcaPatientVerificationPanel } from '../../orca-patient-verification-panel';
-import { useMutation } from 'react-query';
 import { getValidationSchema } from '../../patient-details/forms/validation-schema';
 import { getManufacturer, removeFieldPrefixSuffix, updatePatientValues } from '../../OrderUtil';
 import CommonUtils from '@src/util/CommonUtils';
@@ -29,7 +28,8 @@ function OrcaPatientDetails() {
   const [searchParams] = useSearchParams();
   const orgId = searchParams.get('orgId');
   const isCustomerCentreUser = AuthUtils.isCustomerCenterView();
-  const { data: orderDetails = {}, isLoading } = useOrder(orderId, orgId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, orcaPatient } = state;
   const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
   const { therapyConfig = {} } = orderDetails;
   const [isOrcaValidationPanelOpen, setIsOrcaValidationPanelOpen] = React.useState(false);
@@ -40,10 +40,8 @@ function OrcaPatientDetails() {
   const formikRef = React.useRef();
   const [isPatientVerified, setPatientVerified] = React.useState(false);
   const [originallyVerified, setOriginallyVerified] = React.useState(null);
-  const { state, setValue } = useWidgetContext();
 
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
-  const { orcaPatient } = state;
   React.useEffect(() => {
     if (orderDetails.id || orcaPatient) {
       const { patient = {} } = orderDetails;
@@ -219,30 +217,8 @@ function OrcaPatientDetails() {
   };
 
   const handleOnBack = () => {
-    navigate(`../${orderId}/summary${location.search}`);
+    navigate(`../summary${location.search}`);
   };
-
-  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck, isSendNotification }) => {
-      if (isCustomerCentreUser) {
-        return OrderService.savePatientDetailsCsUser(orderId, payload, true, orderDetails.channelType, false, isSendNotification, orgId);
-      }
-      return OrderService.savePatientDetails(orderId, payload, true, orderDetails.channelType, false, isSendNotification);
-    },
-    {
-      onSuccess: (result) => {
-        navigate(`../${orderId}/summary${location.search}`, {
-          state: {
-            alert: {
-              description: 'Patient details updated successfully',
-              type: 'success'
-            }
-          }
-        });
-      },
-      onError: ({ err: error, payload }) => {}
-    }
-  );
 
   const handleOnSave = (values) => {
     const config =
@@ -272,8 +248,6 @@ function OrcaPatientDetails() {
   const isCSUserReviewingOrca =
     isCustomerCentreUser && [ORDER_STATUS.CS_REVIEW, ORDER_STATUS.SUBMITTED].includes(orderDetails.status) && manufacturer === MANUFACTURER.ORCA;
 
-  if (isLoading) return <Loader type={'circular'} />;
-  console.log(!isPatientVerified, !isDirty, isPatientVerifying);
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-header">

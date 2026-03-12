@@ -38,7 +38,7 @@ import { CGAT_IDENTIFIER, CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Co
 import { InventoryIndicator } from '../InventoryIndicator';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderStepper from '../OrderStepper';
-import { NotifyAlert, showEditAlert } from '../OrderUtil';
+import { getOrderStepCaption, normalizeOrderResponse, NotifyAlert, showEditAlert } from '../OrderUtil';
 import AttachmentCard from './AttachmentCard';
 import CommentPanel from './CommentPanel';
 import { BUTTON_ACTIONS } from './constants';
@@ -67,8 +67,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isCustomerCentreUser = AuthUtils.isCustomerCenterView();
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
-  const { data: orderDetails = {}, isFetching, isError, error, refetch: refreshOrderDetails } = useOrder(orderId, orgId);
-  const { isApprover = false, isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
+  const isError = false;
+  const { isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const [isCancelOrderPanelOpen, setIsCancelOrderPanelOpen] = React.useState(false);
@@ -83,7 +85,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
   const [allowedSubmission, setAllowedSubmission] = React.useState(false);
-  const { state, setValue } = useWidgetContext();
   const {
     therapy = {},
     catalog = {},
@@ -133,20 +134,19 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return () => dispatch(hasUnsavedChanges(false));
   }, []);
 
-  React.useEffect(() => {
-    if (isError) {
-      addNotification({
-        type: 'error',
-        description: error.message || 'Something went wrong please try again.'
-      });
-    }
-  }, [isError]);
+  // React.useEffect(() => {
+  //   if (isError) {
+  //     addNotification({
+  //       type: 'error',
+  //       description: error.message || 'Something went wrong please try again.'
+  //     });
+  //   }
+  // }, [isError]);
 
   React.useEffect(() => {
-    const { changeOnPreviousStep = false } = location.state || {};
-    if (changeOnPreviousStep && !hasPermission) {
-      const { changeOnPreviousStep, ...newState } = location.state;
-      navigate(location.pathname, { state: newState });
+    const { isChangeOnPreviousStep } = state;
+    if (isChangeOnPreviousStep && !hasPermission) {
+      navigate(location.pathname, { state: location.state });
       const state = {};
       state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
       state.body = (
@@ -342,7 +342,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
-      refreshOrderDetails();
+
+      const beautifiedOrderDetails = normalizeOrderResponse(result);
+      setValue('orderDetails', beautifiedOrderDetails);
+
       if (warningMessages.length > 0) {
         warningMessages.forEach((msg) => {
           addNotification({
@@ -377,11 +380,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(
     async ({ action, isPAPOrder, isInternalOrder }) => await OrderService.submitOrder(orderId, isPAPOrder, isInternalOrder),
     {
-      onSuccess: (_result, { action }) => {
+      onSuccess: (result, { action }) => {
+        const beautifiedOrderDetails = normalizeOrderResponse(result);
+        setValue('orderDetails', beautifiedOrderDetails);
         if (action === BUTTON_ACTIONS.SUBMIT) {
-          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, { state: { ...locationState } });
+          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/status`, { state: { ...locationState } });
         } else {
-          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, {
+          navigate(`${RoutePaths.pathOrderManagement}/${orderId}/status`, {
             state: { ...locationState, isApproved: true }
           });
         }
@@ -497,7 +502,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const handleOnSubmit = () => {
     if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/finalize-order`, { state: { ...locationState } });
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/review`, { state: { ...locationState } });
     } else {
       if (!agreeCheckboxOptions.isChecked) {
         setOrderAgreementCheckboxError('Please acknowledge to submit order');
@@ -738,7 +743,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const handleOnEditSection = (stage) => {
     if ((isSubmitted || isCSReview) && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA') {
-      navigate(`./../orca-patient-details?orgId=${orgId}`);
+      navigate(`../verification/orca?orgId=${orgId}`);
     }
     if (isSubmitted || isCSReview) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
@@ -884,16 +889,16 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       }
       const basePath = RoutePaths.pathOrderManagement;
       const stageRoutes = {
-        [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit-order/${orderId}`,
-        [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/${orderId}/accounts`,
-        [ORDER_STAGES.PATIENT_DETAILS]: `${basePath}/${orderId}/patient`,
-        [ORDER_STAGES.PAYER_DETAILS]: `${basePath}/${orderId}/payer`,
-        [ORDER_STAGES.ADDITIONAL_DETAILS]: `${basePath}/${orderId}/additional-details`
+        [ORDER_STAGES.THERAPY_SELECTION]: `${basePath}/edit/${orderId}`,
+        [ORDER_STAGES.ACCOUNT_DETAILS]: `${basePath}/create/${orderId}/account-details`,
+        [ORDER_STAGES.PATIENT_DETAILS]: `${basePath}/create/${orderId}/patient-details`,
+        [ORDER_STAGES.PAYER_DETAILS]: `${basePath}/create/${orderId}/payer-details`,
+        [ORDER_STAGES.ADDITIONAL_DETAILS]: `${basePath}/create/${orderId}/additional-details`
       };
 
       const route = stageRoutes[stage] || basePath;
       navigate(route, {
-        state: { ...locationState, isEdit: true, isApprover }
+        state: { ...locationState, isEdit: true }
       });
       return;
     }
@@ -920,7 +925,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     setIsCancellingOrder(true);
     OrderService.cancelOrder(orderId, orderDetails.practiceId, cancelOrderReason)
       .then((response) => {
-        refreshOrderDetails();
+        const beautifiedOrderDetails = normalizeOrderResponse(result);
+        setValue('orderDetails', beautifiedOrderDetails);
+        // refreshOrderDetails();
         setAlert({
           type: 'success',
           description: 'Your order has been successfully cancelled.'
@@ -992,15 +999,29 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     const controlSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
-        <Button size={'md'} disabled={isSaving} variant="primary" type="submit" onClick={handleOnSubmit}>
-          {t(isSpOrder ? 'captions.btnSubmitPrescription' : 'captions.btnSubmitOrder')}
+        <Button
+          variant="primary"
+          isLoadingState={isSaving}
+          Icon={isSaving && ButtonLoadingIcon}
+          iconPosition="left"
+          onClick={handleOnSubmit}
+          disabled={isSaving}
+          size="md">
+          {isSaving ? 'Saving' : t(isSpOrder ? 'captions.btnSubmitPrescription' : 'captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
     );
 
     const controlReSubmitOrder = isCustomerCentreUser ? (
-      <Button size="md" disabled={isResubmitting || !allowedSubmission || !isOrderChanged} variant="primary" type="submit" onClick={handleOnReSubmit}>
-        {t('captions.btnSubmitOrder')}
+      <Button
+        variant="primary"
+        isLoadingState={isResubmitting}
+        Icon={isResubmitting && ButtonLoadingIcon}
+        iconPosition="left"
+        onClick={handleOnReSubmit}
+        disabled={isResubmitting || !allowedSubmission || !isOrderChanged}
+        size="md">
+        {isResubmitting ? 'Submitting' : t('captions.btnSubmitOrder')}
       </Button>
     ) : (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.CREATE_NEW_ORDER.SUBMIT_ORDER]}>
@@ -1158,7 +1179,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
-      {(isSaving || isFetching || patientIdCoiIdValidationLoading) && <Loader type={'screen'} />}
+      {patientIdCoiIdValidationLoading && <Loader type={'screen'} />}
 
       {!isError && (
         <React.Fragment>
@@ -1275,7 +1296,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       <div className="MCP-module-body" ref={contentRef}>
         {!isError && (
           <React.Fragment>
-            {showControls && ![ORDER_STATUS.CANCELLED, ORDER_STATUS.REJECTED].includes(status) && (
+            {showControls && status && ![ORDER_STATUS.CANCELLED, ORDER_STATUS.REJECTED].includes(status) && (
               <div className="order-stepper-wrapper">
                 <OrderStepper
                   status={orderDetails?.currentStage}

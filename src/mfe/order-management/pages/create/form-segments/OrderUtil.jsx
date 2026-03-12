@@ -241,3 +241,66 @@ export const removeFieldPrefixSuffix = (value, fieldName, orderDetails) => {
 
   return cleanedValue;
 };
+
+function denormalizeInsurance(insurance, isMedical = true) {
+  if (!insurance) return null;
+
+  const { medicalCardFront, medicalCardBack, pharmacyCardFront, pharmacyCardBack, ...rest } = insurance;
+  const result = {
+    ...rest
+  };
+
+  if (isMedical) {
+    result.medicalCardFront =
+      typeof medicalCardFront === 'string' ? { ...CommonUtils.getFileNameAndType(medicalCardFront), url: medicalCardFront } : medicalCardFront;
+    result.medicalCardBack =
+      typeof medicalCardBack === 'string' ? { ...CommonUtils.getFileNameAndType(medicalCardBack), url: medicalCardBack } : medicalCardBack;
+  } else {
+    result.pharmacyCardFront =
+      typeof pharmacyCardFront === 'string' ? { ...CommonUtils.getFileNameAndType(pharmacyCardFront), url: pharmacyCardFront } : pharmacyCardFront;
+    result.pharmacyCardBack =
+      typeof pharmacyCardBack === 'string' ? { ...CommonUtils.getFileNameAndType(pharmacyCardBack), url: pharmacyCardBack } : pharmacyCardBack;
+  }
+
+  return result;
+}
+
+export const normalizeOrderResponse = (response) => {
+  if (!response) return {};
+  Object.entries(response).forEach((entry) => {
+    const [key, value] = entry;
+    if (value === null) {
+      response[key] = undefined;
+    }
+  });
+  response.isPapOrder = response.paporder;
+  const { accountDetails, provider, payerDetails, therapy = {}, spTherapyConfig } = response;
+  if (accountDetails?.soldToAccount?.channelType) {
+    response.channelType = accountDetails.soldToAccount.channelType;
+  }
+  if (provider) {
+    provider.id = +provider.id;
+  }
+  if (therapy?.materialNumber) therapy.displayMaterialNumber = CommonUtils.removeLeadingZeros(therapy.materialNumber);
+  if (payerDetails) {
+    [
+      ['primaryMedicalInsurance', true],
+      ['secondaryMedicalInsurance', true],
+      ['primaryPharmacyInsurance', false],
+      ['secondaryPharmacyInsurance', false]
+    ].forEach(([key, isMedical]) => {
+      response.payerDetails[key] = denormalizeInsurance(response.payerDetails[key], isMedical);
+    });
+  }
+  if (therapy.strength && therapy.dosage) {
+    spTherapyConfig.strength = `${therapy.strength} ${therapy.dosage}`;
+  }
+
+  return response;
+};
+
+export function getOrderStepCaption(isSaving, isUpdating) {
+  if (isSaving && !isUpdating) return 'Saving';
+  if (!isSaving && isUpdating) return 'Updating';
+  return 'captions.btnSaveAndContinue';
+}

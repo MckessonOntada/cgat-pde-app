@@ -29,13 +29,19 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { ORDER_STATUS } from '../../../orders/config';
-import useOrder from '../../../orders/useOrder';
 import Collaborator from '../Collaborator';
 import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import ManufacturerLogo from '../ManufacturerLogo';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { getManufacturer, NotifyAlert, getValueWIthoutPrefixAndSuffix, updateAdditionalDetailsValues } from '../OrderUtil';
+import {
+  getManufacturer,
+  NotifyAlert,
+  getValueWIthoutPrefixAndSuffix,
+  updateAdditionalDetailsValues,
+  normalizeOrderResponse,
+  getOrderStepCaption
+} from '../OrderUtil';
 import { ALLOWED_FILE_TYPE, ALLOWED_FILE_TYPE_TEXT } from './constants';
 import {
   getClinicalDetailFields,
@@ -47,6 +53,9 @@ import {
 import { useOrderPrice } from './useOrderPrice';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
+
 const INITIAL_VALUES = {
   coiId: '',
   orderQuantity: '',
@@ -74,7 +83,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const location = useLocation();
   const locationState = location?.state ?? {};
   const { controlRef } = useContext(FooterContext);
-  const { isEdit = false, isApprover = false, alertState } = locationState;
+  const { isEdit = false, alertState } = locationState;
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [storedValue, setStoredValue] = useState([]);
@@ -92,7 +101,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [variant, setVariant] = React.useState();
   const [alert, setAlert] = React.useState(null);
   const [triageAlert, setTriageAlert] = React.useState(null);
-  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
   const { tradeDetails = {}, spTherapyConfig = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
@@ -367,13 +377,11 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     });
   }, [variantsData, questionnaireTemplateConfig, channelType]);
 
-  const navigateToNextStage = (id, changeOnPreviousStep) => {
+  const navigateToNextStage = (id) => {
     navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
       state: {
         ...locationState,
-        isEdit: isEdit,
-        isApprover: isApprover,
-        changeOnPreviousStep
+        isEdit: isEdit
       }
     });
   };
@@ -383,8 +391,11 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     {
       onSuccess: (result, variables) => {
         const { id } = result;
+        const beautifiedOrderDetails = normalizeOrderResponse(result);
+        setValue('orderDetails', beautifiedOrderDetails);
         if (!variables?.isSavingAsDraft) {
-          navigateToNextStage(id, true);
+          setValue('isChangeOnPreviousStep', true);
+          navigateToNextStage(id);
         } else {
           setIsDirty(false);
           setAlert({
@@ -592,11 +603,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     if (orderDetails) {
-      const { changeOnPreviousStep = false } = location.state;
+      const { isChangeOnPreviousStep } = state;
 
-      if (changeOnPreviousStep && !hasPermission) {
-        const { changeOnPreviousStep, ...newState } = location.state;
-        navigate(location.pathname, { state: newState });
+      if (isChangeOnPreviousStep && !hasPermission) {
+        navigate(location.pathname, { state: location.state });
         const state = {};
         state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
         state.body = (
@@ -667,6 +677,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
 
     if (additionalDetails) {
+      const additionalDetailsWithoutPrefixAndSuffix = getValueWIthoutPrefixAndSuffix(additionalDetails, orderDetails?.therapyConfig?.config?.fields || []);
       const {
         dateOfAdministration,
         dateOfApheresis,
@@ -682,7 +693,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         configuredQuestionnaires,
         diagnosisCode,
         clinicalDetails = {}
-      } = additionalDetails;
+      } = additionalDetailsWithoutPrefixAndSuffix;
 
       if (variantDetails) {
         const { variantDocumentPath, ...otherDetails } = variantDetails;
@@ -794,8 +805,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
+          isEdit: isEdit
         }
       });
     } else {
@@ -804,16 +814,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         navigate(`${RoutePaths.pathOrderManagement}/${orderId}/${targetPage}`, {
           state: {
             ...locationState,
-            isEdit: false,
-            isApprover: isApprover
+            isEdit: false
           }
         });
       } else {
         navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
           state: {
             ...locationState,
-            isEdit: false,
-            isApprover: isApprover
+            isEdit: false
           }
         });
       }
@@ -821,6 +829,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
+    setIsOrderInDraft(isSavingAsDraft);
     if (channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA && manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
       setAlert({
         description: t('orderManagement.coiId.empty', {
@@ -977,24 +986,21 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
+          isEdit: isEdit
         }
       });
     } else if (modalSuccessCallback === 'patient') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
         state: {
           ...locationState,
-          isEdit: false,
-          isApprover: isApprover
+          isEdit: false
         }
       });
     } else if (modalSuccessCallback === 'account') {
       navigate(`/${orderId}/accounts`, {
         state: {
           ...locationState,
-          isEdit: false,
-          isApprover: isApprover
+          isEdit: false
         }
       });
     }
@@ -1220,7 +1226,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isFetching || isCoiIdValidationLoading) && <Loader type={'screen'} />}
+      {isCoiIdValidationLoading && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -1278,9 +1284,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           validationSchema={validationSchema}
           onError={console.log}
           validationContext={{ ...therapyConfig }}
-          onSubmit={(values) => {
-            handleOnSubmit(values);
-          }}>
+          onSubmit={(values) => handleOnSubmit(values)}>
           {({ dirty, values, setFieldValue, errors, touched, setTouched, setErrors, setFieldTouched }) => {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
@@ -1374,16 +1378,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button
-                        size="md"
-                        onClick={() => setIsOrderInDraft(false)}
+                        variant="primary"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left"
+                        type="submit"
                         disabled={
                           (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (!values.consentPolicy || diagnosisCode.length === 0)) ||
                           readOnly ||
                           !isAllowedToProceed
                         }
-                        variant="primary"
-                        type="submit">
-                        {t('captions.btnSaveAndContinue')}
+                        size="md">
+                        {t(getOrderStepCaption(isSaving))}
                       </Button>
                     </div>
                   </div>

@@ -29,7 +29,12 @@ import { CSReviewOrders } from '@src/mfe/core-config/system-admin/cs-review-orde
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const INITIAL_STATE = {
   orcaPatient: null,
-  isVerified: false
+  isVerified: false,
+  orderDetails: {},
+  isLoading: false,
+  isTherapyChanged: false,
+  isChangeOnPreviousStep: false,
+  isApprover: false
 };
 function MainLayout() {
   const { notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();

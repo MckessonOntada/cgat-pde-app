@@ -127,14 +127,6 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
     onClose();
   };
 
-  if (isFetchingConfig) {
-    return (
-      <div className={styles.wrapper}>
-        <Loader variant="text" type="screen" />
-      </div>
-    );
-  }
-
   const getProgramDisabled = (program, selectedChannel) =>
     !programs.includes(program) || !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) || selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
@@ -205,81 +197,99 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
       width={'520px'}
       controls={
         <div className="controls">
-          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.btnCancel')} />
-          <Button label={t('captions.btnApply')} onClick={() => handleOnSubmit(account)} variant="primary" size="md" aria-label={t('captions.btnSelect')} />
+          <Button
+            disabled={isFetchingConfig}
+            label={t('captions.btnCancel')}
+            onClick={onClose}
+            variant="secondary"
+            size="md"
+            aria-label={t('captions.btnCancel')}
+          />
+          <Button
+            disabled={isFetchingConfig}
+            label={t('captions.btnApply')}
+            onClick={() => handleOnSubmit(account)}
+            variant="primary"
+            size="md"
+            aria-label={t('captions.btnSelect')}
+          />
         </div>
       }>
-      <div className="MCP-module-wrapper">
-        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-        <div className={styles.wrapper}>
-          <div className={styles.drawerContent}>
-            <div className={styles.topSect}>
-              <div className="MCP-CardContainer">
-                <div className={styles.selectionBlock}>
-                  <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
-                  <RadioGroup
-                    direction="row"
-                    id="order-channel-options"
-                    items={channelList}
-                    onChangeValue={(value) => {
-                      setAlert(null);
-                      setChannel(value);
-                      handleCheckboxChange();
-                    }}
-                    value={selectedChannel}
-                    radioBtnWidth="auto"
-                    size="lg"
-                  />
-                </div>
-              </div>
-
-              {selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+      {isFetchingConfig ? (
+        <Loader variant="circular" />
+      ) : (
+        <div className="MCP-module-wrapper">
+          {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+          <div className={styles.wrapper}>
+            <div className={styles.drawerContent}>
+              <div className={styles.topSect}>
                 <div className="MCP-CardContainer">
                   <div className={styles.selectionBlock}>
-                    <p>{t('labels.orderAssistance.selectProgram')}</p>
-                    <div className="radio-btn-group">
-                      {programList.map((item, index) => (
-                        <div key={`radio-option-${index}`} className="radio-info-group">
-                          <label key={item.value} className="custom-radio">
-                            <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
-                            <span class="checkmark"></span>
-                            {item.label}
-                          </label>
-                          {infoModel(item.label)}
-                        </div>
-                      ))}
-                    </div>
+                    <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
+                    <RadioGroup
+                      direction="row"
+                      id="order-channel-options"
+                      items={channelList}
+                      onChangeValue={(value) => {
+                        setAlert(null);
+                        setChannel(value);
+                        handleCheckboxChange();
+                      }}
+                      value={selectedChannel}
+                      radioBtnWidth="auto"
+                      size="lg"
+                    />
                   </div>
                 </div>
-              )}
-              {selectedProgram === '340B' && selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
-                <div className="MCP-modal-body">
-                  <p>{t('order.account.selection.340b.checkboxHeading')}</p>
-                  <ol className="details-info">
-                    <li className="details-li">
-                      <div className="details-key">{t('order.account.selection.340b.checkboxinfo1')}</div>
-                    </li>
-                    <li className="details-li">
-                      <div className="details-key">{t('order.account.selection.340b.checkboxinfo2')}</div>
-                    </li>
-                  </ol>
-                  <CheckboxGroup
-                    id={'default'}
-                    items={checkboxOptions.map((item) => ({
-                      ...item,
-                      onChange: () => handleSelectChange(item.value)
-                    }))}
-                    // itemCustomStyles={captionStyle}
-                  />
-                </div>
-              )}
-              {(selectedProgram !== '340B' || (selectedProgram === '340B' && checkboxOptions[0]?.isChecked)) && (
-                <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
-              )}
+
+                {selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+                  <div className="MCP-CardContainer">
+                    <div className={styles.selectionBlock}>
+                      <p>{t('labels.orderAssistance.selectProgram')}</p>
+                      <div className="radio-btn-group">
+                        {programList.map((item, index) => (
+                          <div key={`radio-option-${index}`} className="radio-info-group">
+                            <label key={item.value} className="custom-radio">
+                              <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
+                              <span class="checkmark"></span>
+                              {item.label}
+                            </label>
+                            {infoModel(item.label)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {selectedProgram === '340B' && selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+                  <div className="MCP-modal-body">
+                    <p>{t('order.account.selection.340b.checkboxHeading')}</p>
+                    <ol className="details-info">
+                      <li className="details-li">
+                        <div className="details-key">{t('order.account.selection.340b.checkboxinfo1')}</div>
+                      </li>
+                      <li className="details-li">
+                        <div className="details-key">{t('order.account.selection.340b.checkboxinfo2')}</div>
+                      </li>
+                    </ol>
+                    <CheckboxGroup
+                      id={'default'}
+                      items={checkboxOptions.map((item) => ({
+                        ...item,
+                        onChange: () => handleSelectChange(item.value)
+                      }))}
+                      // itemCustomStyles={captionStyle}
+                    />
+                  </div>
+                )}
+                {(selectedProgram !== '340B' || (selectedProgram === '340B' && checkboxOptions[0]?.isChecked)) && (
+                  <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </FloatingDrawer>
   );
 };

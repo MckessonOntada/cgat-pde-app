@@ -34,3 +34,4 @@ Our app architecture is built with the latest React 18 technology to make it wor
    Contributions to the CGAT-PDE App are welcome! To contribute, follow these steps:
 
    We create feature branches and then create a pull request off that branch, after approval the code is merged.
+

@@ -11,7 +11,12 @@ import { WidgetProvider } from '@src/context/WidgetContext';
 
 const INITIAL_STATE = {
   orcaPatient: null,
-  isVerified: false
+  isVerified: false,
+  orderDetails: {},
+  isLoading: false,
+  isTherapyChanged: false,
+  isChangeOnPreviousStep: false,
+  isApprover: false
 };
 
 const OrderManagement = () => {
@@ -29,8 +34,8 @@ const OrderManagement = () => {
       <ManageOrderProvider>
         <WidgetProvider initialState={INITIAL_STATE}>
           <Routes />
+          <Outlet />
         </WidgetProvider>
-        <Outlet />
       </ManageOrderProvider>
     </div>
   );

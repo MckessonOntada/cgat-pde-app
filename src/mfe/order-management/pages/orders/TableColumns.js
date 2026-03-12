@@ -52,7 +52,7 @@ function getOptionsByStatus(props) {
   ]);
   // Mutations
   const { mutate: assignToMe } = useMutation(({ preservedState }) => OrderService.setOrderAssignToMe(id), {
-    onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { isApprover: true, ...variables.preservedState } }),
+    onSuccess: (_, variables) => navigate(`${id}/summary`, { state: { ...variables.preservedState } }),
     onError: (err) =>
       showAlert({
         description: t(handleApiError(err)),
@@ -177,7 +177,6 @@ function getOptionsByStatus(props) {
         navigate(`${id}/summary`, {
           state: {
             isEdit: props.approver?.id === loggedInUserId,
-            isApprover: props.approver?.id === loggedInUserId,
             __prevSearch: search
           }
         });
@@ -331,13 +330,13 @@ const getPathByOrderStage = (props, isCSReviewOrdersPage) => {
   const { currentStage, id, patientDetailsRequired, practiceId } = props;
   switch (currentStage) {
     case ORDER_STAGES.ACCOUNT_DETAILS:
-      return `${id}/accounts`;
+      return `create/${id}/account-details`;
     case ORDER_STAGES.PATIENT_DETAILS:
-      return patientDetailsRequired ? `${id}/patient` : `${id}/additional-details`;
+      return patientDetailsRequired ? `create/${id}/patient-details` : `create/${id}/additional-details`;
     case ORDER_STAGES.PAYER_DETAILS:
-      return `${id}/payer`;
+      return `create/${id}/payer-details`;
     case ORDER_STAGES.ADDITIONAL_DETAILS:
-      return `${id}/additional-details`;
+      return `create/${id}/additional-details`;
     case ORDER_STAGES.ORDER_SUMMARY:
       if (isCSReviewOrdersPage) {
         return `${id}/summary?orgId=${practiceId}`;
@@ -361,14 +360,14 @@ const getState = (props) => {
     state = { ...props };
   } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
     if (approver?.id === loggedInUserId) {
-      state = { isEdit: true, isApprover: true, props };
+      state = { isEdit: true };
     } else {
-      state = { isApprover: false, props };
+      state = {};
     }
   } else if (status === ORDER_STATUS.IN_DRAFT) {
-    state = { isSimulate: true, props };
+    state = { isSimulate: true };
   } else {
-    state = { ...props };
+    state = {};
   }
   return { ...state, __prevSearch: search };
 };

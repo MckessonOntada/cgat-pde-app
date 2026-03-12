@@ -26,6 +26,7 @@ import { getTableColumns } from './TableColumns';
 import CancelOrderPanel from '../create/form-segments/summary/CancelOrderPanel';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import OrderService from '@src/api/commonService/OrderService';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const [selectedOrder, setSelectedOrder] = React.useState(null);
 
   const { t } = useTranslate();
+  const { state, setValue } = useWidgetContext();
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
   const hasCreatePermissions = hasPermission(PERMISSIONS_ENUM.CREATE_NEW_ORDER.THERAPY_SELECTION);
@@ -50,6 +52,10 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     });
     return allTabs;
   });
+
+  React.useEffect(() => {
+    setValue('orderDetails', {});
+  }, []);
 
   const filterParams = params.get('filters');
   let assigneeIdsFromURL = React.useMemo(() => {
@@ -131,9 +137,20 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
   };
 
   React.useEffect(() => {
-    const tabId = params.get('tab') || (isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL);
-    const newTabs = tabList.map((tab) => ({ ...tab, isActiveTab: tab.id === tabId }));
-    setTabList(newTabs);
+    let tabId = params.get('tab');
+
+    if (!tabId) {
+      tabId = isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL;
+      params.set('tab', tabId);
+      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
+    }
+
+    setTabList(
+      tabList.map((tab) => ({
+        ...tab,
+        isActiveTab: tab.id === tabId
+      }))
+    );
   }, [location.search]);
 
   React.useEffect(() => {
@@ -217,14 +234,6 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     params.set('page-no', 1);
     navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   };
-
-  React.useEffect(() => {
-    const tab = params.get('tab');
-    if (!tab) {
-      params.set('tab', ORDER_TABS.SUBMITTED_BUY_AND_BILL);
-      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
-    }
-  }, [location.search]);
 
   const currentTab = tabList.find((tab) => tab?.['isActiveTab']) || {};
 

@@ -5,7 +5,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { RoutePaths } from '@src/routes/constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { prescriptionAndSignatureSection, sections } from './finalize-config';
+import { prescriptionAndSignatureSection } from './finalize-config';
 import { Field, Form, Formik } from 'formik';
 import { getPrescriptionAndSignatureInitialValues, getPrescriptionAndSignatureSchema } from './validation-schema';
 import Components from '@src/components/form/Components';
@@ -15,6 +15,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import Alert from '@src/components/cgat-alert/Alert';
 import styles from './FinalizeOrder.module.scss';
 import AuthUtils from '@src/util/AuthUtils';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 function FinalizeOrder() {
   const { t } = useTranslate();
@@ -22,7 +23,8 @@ function FinalizeOrder() {
   const [alert, setAlert] = React.useState(null);
   const { state: locationState = {} } = useLocation();
   const { orderId } = useParams();
-  const { data: orderDetails = {} } = useOrder(orderId);
+  const { state } = useWidgetContext();
+  const { orderDetails = {} } = state;
   const isPhysician = AuthUtils.isPhysician();
 
   const initialValues = {
