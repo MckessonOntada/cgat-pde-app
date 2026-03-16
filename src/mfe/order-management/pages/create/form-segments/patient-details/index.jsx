@@ -393,6 +393,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const payload = updatePatientValues(formValue, config || []);
+    if (orderDetails.rules.hasImpersonatedUserPhiPermission) {
+      const { patientIdentifier, medicalRecordNumber } = payload.patientDetails;
+      payload.patientDetails = { patientIdentifier, medicalRecordNumber };
+    }
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
     }
@@ -684,6 +688,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       coiIdValidation({ patientId, coiId: value });
     }
   };
+
+  console.log(orderDetails);
   return (
     <div className="MCP-module-wrapper">
       {(isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
@@ -730,7 +736,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig, manufacturer)}
+          validationSchema={getValidationSchema({
+            t,
+            isSpOrder: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+            spMaterialConfig: spTherapyConfig,
+            therapyConfig,
+            manufacturer,
+            rules: orderDetails.rules
+          })}
           enableReinitialize={true}
           innerRef={formikRef}
           onSubmit={(values) => handleSubmit(values)}>
@@ -761,14 +774,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
                         <FormRenderer
                           sections={PatientSections({
+                            rules: orderDetails.rules,
                             channelType,
                             therapyConfig,
                             validateOnBlur,
                             manufacturer,
                             isPatientVerifying,
-                            isPatientVerified: isPatientVerified
+                            isPatientVerified: isPatientVerified,
+                            readOnly: readOnly || !isAllowedToProceed
                           })}
-                          readOnly={readOnly || !isAllowedToProceed}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>

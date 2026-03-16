@@ -67,7 +67,7 @@ export const normalizePatient = (patient) => {
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer, isCSUserReviewingOrca = false) => {
+export const getValidationSchema = ({ t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer, isCSUserReviewingOrca = false, rules = {} }) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
@@ -125,7 +125,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
           return true;
         });
       }
-      if (!isOrca) {
+      if (!isOrca && rules.hasImpersonatedUserPhiPermission) {
         validator = validator.when([], {
           is: () => field.properties.mandatoryField,
           then: (s) => s.required(`${field.properties.displayName} is required`),
@@ -150,7 +150,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
 
         const message = displayName ? `${displayName} is required` : fallbackMessages[fieldName] || '';
 
-        if (customizedFieldDetails?.properties?.mandatoryField) {
+        if (rules.hasImpersonatedUserPhiPermission && customizedFieldDetails?.properties?.mandatoryField) {
           dynamicFields[fieldName] = dynamicFields[fieldName].test('required-field', message, function (value) {
             return customizedFieldDetails.properties?.mandatoryField && value !== undefined && value !== null && value !== '';
           });

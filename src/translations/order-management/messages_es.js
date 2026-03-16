@@ -160,6 +160,7 @@ export const MessageEs = {
   'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
   'labels.dateOfApheresisFutureDateOnly': 'S_Date of Apheresis must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchNonPhiOrderPlaceholder': 'S_Search by Order ID, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
   'controls.placeholder.reviewTabSearchBox': 'S_Search by Prescription ID, Patient name, Therapy',
   'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',

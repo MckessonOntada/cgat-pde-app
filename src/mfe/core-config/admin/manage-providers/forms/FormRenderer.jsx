@@ -128,7 +128,7 @@ const FormRenderer = ({
                         maxLength: control.maxLength,
                         isReadOnly: control.isReadOnly,
                         fieldlabel: control.fieldLabel,
-                        readOnly: readOnly,
+                        readOnly: control.isReadOnly,
                         isDisabled: readOnly,
                         ...(control.onBlur && { onBlur: control.onBlur })
                       };

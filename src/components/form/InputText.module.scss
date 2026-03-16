@@ -46,6 +46,14 @@
   border-width: 0.1rem;
   border-style: solid;
   border-color: var(--brand-color-primary-background);
+  &.disabled {
+    color: var(--brand-color-text-light-slate) !important;
+    border: 1px solid !important;
+    border-color: var(--brand-color-primary-background) !important;
+    border-width: 1px;
+    cursor: not-allowed;
+    background: var(--brand-color-cool-blue);
+  }
 
   &.errorField {
     background-position: top 9px right 9.89px;
@@ -66,6 +74,7 @@
     min-width: 30px;
     border: none;
     font-size: inherit;
+    background-color: transparent;
     &:focus {
       border: none;
       box-shadow: none;

@@ -158,7 +158,7 @@ export const OrderLoader = () => {
           setValue('isLoading', false);
         });
     }
-  }, [id]);
+  }, [id, location.pathname]);
 
   if (state.isLoading) return <Loader variant="circular" />;
   return <Outlet />;
