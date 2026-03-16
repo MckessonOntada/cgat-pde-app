@@ -47,7 +47,8 @@ async function getOrderById(orderId) {
 async function savePatientDetails(orderId, payload, skipDuplicateCheck = false, channelType, isDraft = false, isSendNotification = true) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
   const params = {
-    skipDuplicateCheck
+    skipDuplicateCheck,
+    mckessonOrgId: AuthUtils.getMckessonOrgId()
   };
   if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
     params.channelType = channelType;

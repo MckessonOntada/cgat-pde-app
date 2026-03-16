@@ -393,6 +393,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const payload = updatePatientValues(formValue, config || []);
+    if (orderDetails.rules.hasImpersonatedUserPhiPermission) {
+      const { patientIdentifier, medicalRecordNumber } = payload.patientDetails;
+      payload.patientDetails = { patientIdentifier, medicalRecordNumber };
+    }
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
     }
