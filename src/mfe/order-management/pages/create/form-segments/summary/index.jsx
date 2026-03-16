@@ -743,7 +743,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const handleOnEditSection = (stage) => {
     if ((isSubmitted || isCSReview) && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA') {
-      navigate(`../verification/orca?orgId=${orgId}`);
+      navigate(`../verification/orca${isCustomerCentreUser ? `?orgId=${orgId}` : ''}`);
     }
     if (isSubmitted || isCSReview) {
       if (![ORDER_STAGES.ADDITIONAL_DETAILS, ORDER_STAGES.PATIENT_DETAILS].includes(stage)) return;
