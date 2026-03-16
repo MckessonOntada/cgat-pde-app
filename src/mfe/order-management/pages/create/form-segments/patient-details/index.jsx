@@ -684,6 +684,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       coiIdValidation({ patientId, coiId: value });
     }
   };
+
+  console.log(orderDetails);
   return (
     <div className="MCP-module-wrapper">
       {(isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
@@ -730,7 +732,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig, manufacturer)}
+          validationSchema={getValidationSchema({
+            t,
+            isSpOrder: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+            spMaterialConfig: spTherapyConfig,
+            therapyConfig,
+            manufacturer,
+            rules: orderDetails.rules
+          })}
           enableReinitialize={true}
           innerRef={formikRef}
           onSubmit={(values) => handleSubmit(values)}>
@@ -761,14 +770,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
                         <FormRenderer
                           sections={PatientSections({
+                            rules: orderDetails.rules,
                             channelType,
                             therapyConfig,
                             validateOnBlur,
                             manufacturer,
                             isPatientVerifying,
-                            isPatientVerified: isPatientVerified
+                            isPatientVerified: isPatientVerified,
+                            readOnly: readOnly || !isAllowedToProceed
                           })}
-                          readOnly={readOnly || !isAllowedToProceed}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>

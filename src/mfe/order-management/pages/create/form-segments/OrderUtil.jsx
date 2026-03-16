@@ -8,6 +8,7 @@ import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import { Tooltip } from '@mckesson/mcp-component-library';
+import Order from '@src/entities/Order';
 
 export function showSaveAsDraftConfirm({ t, onOk, onCancel, onContinue }) {
   return renderModal({
@@ -296,7 +297,7 @@ export const normalizeOrderResponse = (response) => {
     spTherapyConfig.strength = `${therapy.strength} ${therapy.dosage}`;
   }
 
-  return response;
+  return new Order(response);
 };
 
 export function getOrderStepCaption(isSaving, isUpdating) {
