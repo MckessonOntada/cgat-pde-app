@@ -229,11 +229,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
       ...buildDynamicFieldValidators(configToUse, t),
       manufacturerOrderId: Yup.string().when([], {
         is: () => isCSUserReviewingOrca,
-        then: (schema) =>
-          schema
-            .trim()
-            .matches(/^[a-zA-Z0-9]+$/, 'Only alphanumeric value allowed')
-            .required('Orca therapy ID is required'),
+        then: (schema) => schema.matches(/^[^\s]+$/, 'Please enter valid Orca Therapy Id').required('Orca therapy ID is required'),
         otherwise: (schema) => schema.notRequired()
       })
     }),
