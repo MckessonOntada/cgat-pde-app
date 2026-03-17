@@ -263,14 +263,17 @@ function OrcaPatientDetails() {
         <div className="">
           <Formik
             initialValues={initialValues}
-            validationSchema={getValidationSchema(
-              translateFn,
-              orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
-              spTherapyConfig,
+            validationSchema={getValidationSchema({
+              t: translateFn,
+              isSpOrder: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+              spMaterialConfig: spTherapyConfig,
               therapyConfig,
               manufacturer,
-              isCSUserReviewingOrca
-            )}
+              isCSUserReviewingOrca,
+              rules: {
+                hasImpersonatedUserPhiPermission: true
+              }
+            })}
             onSubmit={handleOnSave}
             enableReinitialize
             innerRef={formikRef}>
@@ -292,7 +295,10 @@ function OrcaPatientDetails() {
                           manufacturer,
                           isPatientVerifying,
                           isPatientVerified: isPatientVerified,
-                          isCSUserReviewingOrca
+                          isCSUserReviewingOrca,
+                          rules: {
+                            hasImpersonatedUserPhiPermission: true
+                          }
                         })}
                       />
                     </div>

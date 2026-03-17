@@ -142,6 +142,11 @@ const isImpersonatedUserCustomerCenter = function () {
   return false;
 };
 
+const isAdminWithPhiPermission = function () {
+  const impersonateId = getImpersonateId();
+  return impersonateId > 0 && !AuthUtils.isSystemAdminView() ? AuthUtils.impersonatedUserHasPermission(['VIEW_PHI_INFORMATION']) : true;
+};
+
 /**
  * @description - Check if the user has a specific permission
  * @param {any} permission - The input to check.
@@ -257,7 +262,8 @@ const AuthUtils = Object.freeze({
   getMckessonOrgId,
   isUserAdmin,
   impersonatedUserHasPermission,
-  isImpersonatedUserCustomerCenter
+  isImpersonatedUserCustomerCenter,
+  isAdminWithPhiPermission
 });
 
 export default AuthUtils;
