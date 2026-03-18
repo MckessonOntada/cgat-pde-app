@@ -270,6 +270,8 @@ export default function ConfigurationSpMaterial() {
                               setFieldValue(fieldNameForChannel, '');
                             }
                             setFieldValue('manufacturerName', selectedManufacturer);
+                            setFieldValue('partnerNumber', '');
+                            setFieldValue('secondLegShipInfoRequired', '');
                             const updatedFields = applyManufacturerRules(
                               selectedManufacturer,
                               materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
