@@ -11,10 +11,11 @@ const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
 
 export default function DashboardRoutes() {
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   return (
     <Routes>
-      <Route index element={isCustomerCenter ? <Navigate to="/orders" /> : <Dashboard />} />
+      <Route index element={isSystemAdminView && isCustomerCenter ? <Navigate to="/orders" /> : <Dashboard />} />
       <Route path="home" element={<Dashboard />} />
       <Route
         path={'user/*'}
