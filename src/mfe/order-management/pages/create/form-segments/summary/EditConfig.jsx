@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
-import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
+import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
-export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, channelType, isCustomerCentreUser) => {
+export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, channelType, isCustomerCentreUser, manufacturer) => {
   const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
@@ -14,11 +14,16 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
         ) {
           const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
           const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          const isRequired =
+            field?.properties?.mandatoryField ||
+            (isCustomerCentreUser &&
+              field.fieldName === 'patientIdentifier' &&
+              [MANUFACTURER.ORCA, MANUFACTURER.KITE, MANUFACTURER.REGENERON].includes(manufacturer));
           dynamic_fields.push({
             id: `patient-info-${field.fieldName}`,
             name: field?.fieldName,
             label: field?.properties?.displayName,
-            isRequired: field?.properties?.mandatoryField,
+            isRequired: isRequired,
             type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
             prefix,
             suffix,
@@ -26,7 +31,7 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
           });
         }
       });
-      if (isCustomerCentreUser) {
+      if (isCustomerCentreUser && manufacturer === MANUFACTURER.ORCA) {
         dynamic_fields.push({
           id: 'patient-info-manufacturerOrderId',
           name: 'manufacturerOrderId',
@@ -89,7 +94,7 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
   return formattedControls;
 };
 
-export const patientDetailsValidationSchema = (t, therapyConfig, channelType, isCustomerCentreUser) => {
+export const patientDetailsValidationSchema = (t, therapyConfig, channelType, isCustomerCentreUser, manufacturer) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set(['patientIdentifier']);
@@ -156,14 +161,18 @@ export const patientDetailsValidationSchema = (t, therapyConfig, channelType, is
       }
 
       validator = validator.when([], {
-        is: () => field.properties.mandatoryField || (isCustomerCentreUser && field.fieldName === 'patientIdentifier'),
+        is: () =>
+          field.properties.mandatoryField ||
+          (isCustomerCentreUser &&
+            field.fieldName === 'patientIdentifier' &&
+            [MANUFACTURER.ORCA, MANUFACTURER.KITE, MANUFACTURER.REGENERON].includes(manufacturer)),
         then: (s) => s.required(`${field.properties.displayName} is required`),
         otherwise: (s) => s.notRequired()
       });
 
       dynamicFields[field.fieldName] = validator;
     });
-    if (isCustomerCentreUser) {
+    if (isCustomerCentreUser && manufacturer === MANUFACTURER.ORCA) {
       dynamicFields.manufacturerOrderId = Yup.string()
         .matches(/^[^\s]+$/, 'Please enter valid Orca Therapy Id')
         .required('Orca therapy ID is required');

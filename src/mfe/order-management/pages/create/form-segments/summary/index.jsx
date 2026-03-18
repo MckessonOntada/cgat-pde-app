@@ -521,27 +521,26 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
   };
 
-  // const removeKey = (obj, keyToRemove) => {
-  //   if (Array.isArray(obj)) {
-  //     return obj.map((item) => removeKey(item, keyToRemove));
-  //   } else if (obj && typeof obj === 'object') {
-  //     return Object.fromEntries(
-  //       Object.entries(obj)
-  //         .filter(([key]) => key !== keyToRemove)
-  //         .map(([key, value]) => [key, removeKey(value, keyToRemove)])
-  //     );
-  //   }
-  //   return obj;
-  // };
+  const removeKeyFromPayload = (obj, keyToRemove) => {
+    if (Array.isArray(obj)) {
+      return obj.map((item) => removeKeyFromPayload(item, keyToRemove));
+    } else if (obj && typeof obj === 'object') {
+      return Object.fromEntries(
+        Object.entries(obj)
+          .filter(([key]) => key !== keyToRemove)
+          .map(([key, value]) => [key, removeKeyFromPayload(value, keyToRemove)])
+      );
+    }
+    return obj;
+  };
 
   const handleOnReSubmit = () => {
-    // if (AuthUtils.isSystemAdminView()) {
-    //   const finalPayload = removeKey(draftChanges, 'medicalRecordNumber');
-    //   reSubmitOrder(finalPayload);
-    // } else {
-    //   reSubmitOrder(draftChanges);
-    // }
-    reSubmitOrder(draftChanges);
+    if (AuthUtils.isSystemAdminView()) {
+      const finalPayload = removeKeyFromPayload(draftChanges, 'medicalRecordNumber');
+      reSubmitOrder(finalPayload);
+    } else {
+      reSubmitOrder(draftChanges);
+    }
   };
 
   const handleApprove = () => {
@@ -779,7 +778,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         return;
       }
 
-      let formConfig = getUpdateFormConfig(stage, therapyConfig, spTherapyConfig, orderDetails.channelType, isCustomerCentreUser);
+      let formConfig = getUpdateFormConfig(stage, therapyConfig, spTherapyConfig, orderDetails.channelType, isCustomerCentreUser, manufacturer);
       let initialValues = {};
       let validationSchema = null;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
@@ -804,7 +803,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           initialValues = {
             ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
           };
-          validationSchema = patientDetailsValidationSchema(t, therapyConfig, orderDetails.channelType, isCustomerCentreUser);
+          validationSchema = patientDetailsValidationSchema(t, therapyConfig, orderDetails.channelType, isCustomerCentreUser.valueOf, manufacturer);
         } else {
           initialValues = {
             ...stripPrefixSuffixFromData(draftChanges, spTherapyConfig.config.fields)
@@ -1629,7 +1628,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           )
                         }
                       />
-                      <DetailSegment label={t('labels.DOB')} value={patientData?.patientInfo?.dateOfBirth || '-'} />
+                      <DetailSegment
+                        label={t('labels.DOB')}
+                        value={patientData?.patientInfo?.dateOfBirth === null ? '*****' : patientData?.patientInfo?.dateOfBirth || '-'}
+                      />
                       {isSpOrder && (
                         <DetailSegment
                           label={t('labels.emailId')}
@@ -1644,7 +1646,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           }
                         />
                       )}
-                      <DetailSegment label={t('labels.gender')} value={patientData?.patientInfo?.gender || '-'} />
+                      <DetailSegment
+                        label={t('labels.gender')}
+                        value={patientData?.patientInfo?.gender === null ? '*****' : patientData?.patientInfo?.gender || '-'}
+                      />
                       {!isSpOrder &&
                         therapyConfig?.config?.fields
                           ?.filter((field) => field?.properties?.displayOnForm && ['medicalRecordNumber'].includes(field.fieldName))
