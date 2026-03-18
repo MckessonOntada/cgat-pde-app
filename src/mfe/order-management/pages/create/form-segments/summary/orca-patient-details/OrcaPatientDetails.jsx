@@ -270,8 +270,9 @@ function OrcaPatientDetails() {
               therapyConfig,
               manufacturer,
               isCSUserReviewingOrca,
+              isCustomerCentreUser,
               rules: {
-                hasImpersonatedUserPhiPermission: true
+                hasImpersonatedUserPhiPermission: AuthUtils.isImpersonatedAdminWithPhiPermission()
               }
             })}
             onSubmit={handleOnSave}
@@ -296,8 +297,9 @@ function OrcaPatientDetails() {
                           isPatientVerifying,
                           isPatientVerified: isPatientVerified,
                           isCSUserReviewingOrca,
+                          isCustomerCentreUser,
                           rules: {
-                            hasImpersonatedUserPhiPermission: true
+                            hasImpersonatedUserPhiPermission: AuthUtils.isImpersonatedAdminWithPhiPermission()
                           }
                         })}
                       />

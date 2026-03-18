@@ -3,12 +3,15 @@ import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import { CHANNEL_TYPE, ORDER_STAGES } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
-export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, channelType) => {
+export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, channelType, isCustomerCentreUser) => {
   const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       therapyConfig?.config?.fields?.forEach((field) => {
-        if (field?.properties?.displayOnForm && (field.fieldName === 'patientIdentifier' || field.fieldName === 'medicalRecordNumber')) {
+        if (
+          field?.properties?.displayOnForm &&
+          (field.fieldName === 'patientIdentifier' || (!isCustomerCentreUser && field.fieldName === 'medicalRecordNumber'))
+        ) {
           const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
           const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
           dynamic_fields.push({
@@ -23,6 +26,16 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
           });
         }
       });
+      if (isCustomerCentreUser) {
+        dynamic_fields.push({
+          id: 'patient-info-manufacturerOrderId',
+          name: 'manufacturerOrderId',
+          label: 'Orca Therapy Id',
+          isRequired: true,
+          type: 'input',
+          maxLength: 80
+        });
+      }
     } else {
       spTherapyConfig?.config?.fields?.forEach((field) => {
         if (
@@ -35,7 +48,7 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
             id: `patient-info-${field.fieldName}`,
             name: field?.fieldName,
             label: field?.properties?.displayName,
-            isRequired: field?.properties?.mandatoryField,
+            isRequired: field?.properties?.mandatoryField || (!isCustomerCentreUser && field.fieldName === 'patientIdentifier'),
             type: prefix || suffix ? 'inputText' : field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'input',
             prefix,
             suffix,
@@ -75,10 +88,11 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
   return formattedControls;
 };
 
-export const patientDetailsValidationSchema = (t, therapyConfig, channelType) => {
+export const patientDetailsValidationSchema = (t, therapyConfig, channelType, isCustomerCentreUser) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
-    const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    const allowedFields = new Set(['patientIdentifier']);
+    if (!isCustomerCentreUser && channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA) allowedFields.add('medicalRecordNumber');
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) allowedFields.add('coiId');
 
     config?.config?.fields?.forEach((field) => {
@@ -141,14 +155,18 @@ export const patientDetailsValidationSchema = (t, therapyConfig, channelType) =>
       }
 
       validator = validator.when([], {
-        is: () => field.properties.mandatoryField,
+        is: () => field.properties.mandatoryField || (isCustomerCentreUser && field.fieldName === 'patientIdentifier'),
         then: (s) => s.required(`${field.properties.displayName} is required`),
         otherwise: (s) => s.notRequired()
       });
 
       dynamicFields[field.fieldName] = validator;
     });
-
+    if (isCustomerCentreUser) {
+      dynamicFields.manufacturerOrderId = Yup.string()
+        .matches(/^[^\s]+$/, 'Please enter valid Orca Therapy Id')
+        .required('Orca therapy ID is required');
+    }
     return dynamicFields;
   };
 

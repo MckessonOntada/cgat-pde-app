@@ -521,7 +521,26 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
   };
 
+  // const removeKey = (obj, keyToRemove) => {
+  //   if (Array.isArray(obj)) {
+  //     return obj.map((item) => removeKey(item, keyToRemove));
+  //   } else if (obj && typeof obj === 'object') {
+  //     return Object.fromEntries(
+  //       Object.entries(obj)
+  //         .filter(([key]) => key !== keyToRemove)
+  //         .map(([key, value]) => [key, removeKey(value, keyToRemove)])
+  //     );
+  //   }
+  //   return obj;
+  // };
+
   const handleOnReSubmit = () => {
+    // if (AuthUtils.isSystemAdminView()) {
+    //   const finalPayload = removeKey(draftChanges, 'medicalRecordNumber');
+    //   reSubmitOrder(finalPayload);
+    // } else {
+    //   reSubmitOrder(draftChanges);
+    // }
     reSubmitOrder(draftChanges);
   };
 
@@ -742,7 +761,12 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   );
 
   const handleOnEditSection = (stage) => {
-    if ((isSubmitted || isCSReview) && stage === ORDER_STAGES.PATIENT_DETAILS && orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA') {
+    if (
+      (isSubmitted || isCSReview) &&
+      !isCustomerCentreUser &&
+      stage === ORDER_STAGES.PATIENT_DETAILS &&
+      orderDetails.therapyConfig?.config?.manufacturerName === 'ORCA'
+    ) {
       navigate(`../verification/orca${isCustomerCentreUser ? `?orgId=${orgId}` : ''}`);
     }
     if (isSubmitted || isCSReview) {
@@ -755,7 +779,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         return;
       }
 
-      let formConfig = getUpdateFormConfig(stage, therapyConfig, spTherapyConfig, orderDetails.channelType);
+      let formConfig = getUpdateFormConfig(stage, therapyConfig, spTherapyConfig, orderDetails.channelType, isCustomerCentreUser);
       let initialValues = {};
       let validationSchema = null;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
@@ -780,7 +804,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           initialValues = {
             ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
           };
-          validationSchema = patientDetailsValidationSchema(t, therapyConfig, orderDetails.channelType);
+          validationSchema = patientDetailsValidationSchema(t, therapyConfig, orderDetails.channelType, isCustomerCentreUser);
         } else {
           initialValues = {
             ...stripPrefixSuffixFromData(draftChanges, spTherapyConfig.config.fields)
@@ -804,6 +828,18 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                 ? setDraftChanges((prev) => ({
                     ...prev,
                     ...tempValue
+                  }))
+                : AuthUtils.isSystemAdminView()
+                ? setDraftChanges((prev) => ({
+                    ...prev,
+                    ...tempValue,
+                    patientDTO: {
+                      ...tempValue.patientDTO,
+                      patient: {
+                        ...tempValue.patientDTO?.patient,
+                        manufacturerOrderId: tempValue.manufacturerOrderId
+                      }
+                    }
                   }))
                 : setDraftChanges((prev) => ({
                     ...prev,

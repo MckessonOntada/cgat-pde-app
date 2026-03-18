@@ -142,9 +142,9 @@ const isImpersonatedUserCustomerCenter = function () {
   return false;
 };
 
-const isAdminWithPhiPermission = function () {
+const isImpersonatedAdminWithPhiPermission = function () {
   const impersonateId = getImpersonateId();
-  return impersonateId > 0 && !AuthUtils.isSystemAdminView() ? AuthUtils.impersonatedUserHasPermission(['VIEW_PHI_INFORMATION']) : true;
+  return impersonateId > 0 && !isSystemAdminView() ? impersonatedUserHasPermission(['VIEW_PHI_INFORMATION']) : true;
 };
 
 /**
@@ -263,7 +263,7 @@ const AuthUtils = Object.freeze({
   isUserAdmin,
   impersonatedUserHasPermission,
   isImpersonatedUserCustomerCenter,
-  isAdminWithPhiPermission
+  isImpersonatedAdminWithPhiPermission
 });
 
 export default AuthUtils;
