@@ -997,7 +997,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`/${orderId}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
         state: {
           ...locationState,
           isEdit: false

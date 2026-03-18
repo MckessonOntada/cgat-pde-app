@@ -58,6 +58,7 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
           type: prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input',
           prefix,
           suffix,
+          ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
           infoText: field?.properties.helpInfoMessage
         });
       }

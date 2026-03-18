@@ -453,7 +453,7 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     cell: function (props) {
       const patientInfo = props.patient && props.patient.patientInfo;
       if (!patientInfo) return 'N/A';
-      return <EclipsesTextCss str={CommonUtils.getFullName(patientInfo)} maxWidth={130} />;
+      return <EclipsesTextCss str={CommonUtils.getUSFullName(patientInfo)} maxWidth={130} />;
     }
   },
   {

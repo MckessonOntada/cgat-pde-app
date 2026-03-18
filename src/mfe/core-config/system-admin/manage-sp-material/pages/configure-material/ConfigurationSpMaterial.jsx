@@ -54,12 +54,19 @@ export default function ConfigurationSpMaterial() {
       ];
 
   const { data: materialDetails, isLoading } = useQuery({
-    queryKey: ['MaterialDetails'],
+    queryKey: ['MaterialDetails', materialType, therapy],
     queryFn: async () => {
-      const result = await (isBnbMaterial
-        ? MaterialService.getMaterialConfigByNdc(ChannelType.BUY_AND_BILL, therapy?.[0]?.ndc)
-        : MaterialService.getSpMaterialConfigByMaterialNumber(ChannelType.SPECIALITY_PHARMA, therapy?.[0]?.materialNumber));
-      return isBnbMaterial ? result?.materialConfig?.config : result?.spTherapyConfig?.config;
+      try {
+        const result = await (isBnbMaterial
+          ? MaterialService.getMaterialConfigByNdc(ChannelType.BUY_AND_BILL, therapy?.[0]?.ndc)
+          : MaterialService.getSpMaterialConfigByMaterialNumber(ChannelType.SPECIALITY_PHARMA, therapy?.[0]?.materialNumber));
+        return isBnbMaterial ? result?.materialConfig?.config : result?.spTherapyConfig?.config;
+      } catch (error) {
+        if (error?.response?.status === 404) {
+          return null;
+        }
+        throw error;
+      }
     },
 
     enabled: Array.isArray(therapy) && therapy.length === 1,
@@ -263,6 +270,8 @@ export default function ConfigurationSpMaterial() {
                               setFieldValue(fieldNameForChannel, '');
                             }
                             setFieldValue('manufacturerName', selectedManufacturer);
+                            setFieldValue('partnerNumber', '');
+                            setFieldValue('secondLegShipInfoRequired', '');
                             const updatedFields = applyManufacturerRules(
                               selectedManufacturer,
                               materialType === CHANNEL_TYPE.BUY_AND_BILL ? defaultFieldFormatBnb()?.fields : defaultFieldFormatSp()?.fields
