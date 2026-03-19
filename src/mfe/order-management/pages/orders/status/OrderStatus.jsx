@@ -10,7 +10,7 @@ import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
 import useOrder from '../useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
-import CommonUtils, { getFullName } from '@src/util/CommonUtils';
+import CommonUtils, { getUSFullName } from '@src/util/CommonUtils';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import { RoutePaths } from '@src/routes/constants';
 import AuthUtils from '@src/util/AuthUtils';
@@ -70,8 +70,7 @@ const OrderStatus = () => {
   } else {
     message = 'messages.orderSuccessApprovalPending';
   }
-
-  const patientName = getFullName(patient?.patientInfo);
+  const patientName = CommonUtils.getUSFullName({ ...patient?.patientInfo });
 
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
