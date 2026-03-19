@@ -62,7 +62,7 @@ function NotificationPreferenceConfiguration() {
     const params = { userId };
     UserService.setCommunicationPreferences(payload, params)
       .then((response) => {
-        navigate('./..', {
+        navigate('./../..', {
           state: {
             alert: {
               pinPoint: 'notification_preferences',
@@ -133,7 +133,7 @@ function NotificationPreferenceConfiguration() {
             />
           </div>
           <div className="controls">
-            <Button size="md" variant="secondary" onClick={() => navigate('./../')}>
+            <Button size="md" variant="secondary" onClick={() => navigate('./../..')}>
               {translateFn('captions.btnBack')}
             </Button>{' '}
             <Button size="md" variant="primary" type="submit">
