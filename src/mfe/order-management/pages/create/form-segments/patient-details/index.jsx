@@ -86,7 +86,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
     if (status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
     if (patient && manufacturer === MANUFACTURER.ORCA) {
-      const patient = patient;
       const verifiedPatient = {
         ...patient.patientInfo
       };
@@ -393,9 +392,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const payload = updatePatientValues(formValue, config || []);
-    if (orderDetails.rules.hasImpersonatedUserPhiPermission) {
-      const { patientIdentifier, medicalRecordNumber } = payload.patientDetails;
-      payload.patientDetails = { patientIdentifier, medicalRecordNumber };
+    if (!orderDetails.rules.hasImpersonatedUserPhiPermission) {
+      const { patientIdentifier, medicalRecordNumber } = payload.patient;
+      payload.patient = { patientIdentifier, medicalRecordNumber };
     }
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');

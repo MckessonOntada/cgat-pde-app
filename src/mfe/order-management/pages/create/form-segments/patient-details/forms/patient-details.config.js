@@ -64,7 +64,7 @@ export const PatientSections = ({
                       isRequired: !rules.hasImpersonatedUserPhiPermission ? false : field.properties.mandatoryField,
                       infoText: field?.properties.helpInfoMessage,
                       endIcon: !isCSUserReviewingOrca && getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
-                      onBlur: !isCSUserReviewingOrca && validateOnBlur
+                      onBlur: !isReadOnly && !isCSUserReviewingOrca && validateOnBlur
                     };
                   }) || []
               : [])
