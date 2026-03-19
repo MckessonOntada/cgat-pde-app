@@ -109,6 +109,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const manufacturer = isSpOrder ? orderDetails.spTherapyConfig?.config?.manufacturerName : orderDetails.therapyConfig?.config?.manufacturerName;
+  const isImpersonatedAdminWithPhiPermission = AuthUtils.isImpersonatedAdminWithPhiPermission();
   React.useEffect(() => {
     if (manufacturer === MANUFACTURER.ORCA) {
       setDraftChanges({
@@ -1630,7 +1631,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       />
                       <DetailSegment
                         label={t('labels.DOB')}
-                        value={patientData?.patientInfo?.dateOfBirth === null ? '*****' : patientData?.patientInfo?.dateOfBirth || '-'}
+                        value={!isImpersonatedAdminWithPhiPermission ? '*****' : patientData?.patientInfo?.dateOfBirth || '-'}
                       />
                       {isSpOrder && (
                         <DetailSegment
@@ -1648,7 +1649,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       )}
                       <DetailSegment
                         label={t('labels.gender')}
-                        value={patientData?.patientInfo?.gender === null ? '*****' : patientData?.patientInfo?.gender || '-'}
+                        value={!isImpersonatedAdminWithPhiPermission ? '*****' : patientData?.patientInfo?.gender || '-'}
                       />
                       {!isSpOrder &&
                         therapyConfig?.config?.fields
