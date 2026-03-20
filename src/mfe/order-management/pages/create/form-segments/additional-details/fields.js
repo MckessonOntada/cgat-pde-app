@@ -313,8 +313,18 @@ export const getShipmentInformationForm = ({
     component: Components['inputText'],
     endIcon: isVerifyingTransactionId ? <LoadingIcon /> : isTransactionIdVerified ? <SuccessTick /> : null,
     onBlur: function (e) {
+      let value = e.target.value.trim();
       setAlert(null);
       setIsVerifyingTransactionId(true);
+      if (value.indexOf('/') > -1) {
+        setFieldValue('secondLegShipInfo.transactionId', '');
+        setAlert({
+          type: 'warning',
+          description: translationFn('message.incorrectTransactionId')
+        });
+        setIsVerifyingTransactionId(false);
+        return;
+      }
       OrderService.verifyTransactionId(e.target.value)
         .then((response) => {
           if (!response) {
@@ -323,6 +333,8 @@ export const getShipmentInformationForm = ({
               type: 'warning',
               description: translationFn('message.incorrectTransactionId')
             });
+          } else {
+            setFieldValue('secondLegShipInfo.transactionId', value);
           }
           setIsTransactionIdVerified(response);
         })

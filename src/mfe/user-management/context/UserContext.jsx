@@ -93,10 +93,15 @@ export const UserProvider = ({ children }) => {
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['users', tab, requestParams],
     queryFn: async () => {
-      const url =
-        tab === USER_TABS.USERS
-          ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
-          : `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
+      let url = '';
+      if (tab === USER_TABS.USERS) {
+        url = `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`;
+      } else if (PENDING_REQUESTS) {
+        url = `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
+      }
+
+      if (!url) return;
+
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         const { content: data, totalElements, totalPages } = res.data;
