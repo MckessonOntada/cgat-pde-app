@@ -313,6 +313,7 @@ export const getShipmentInformationForm = ({
     component: Components['inputText'],
     endIcon: isVerifyingTransactionId ? <LoadingIcon /> : isTransactionIdVerified ? <SuccessTick /> : null,
     onBlur: function (e) {
+      let value = e.target.value.trim();
       setAlert(null);
       setIsVerifyingTransactionId(true);
       OrderService.verifyTransactionId(e.target.value)
@@ -323,6 +324,8 @@ export const getShipmentInformationForm = ({
               type: 'warning',
               description: translationFn('message.incorrectTransactionId')
             });
+          } else {
+            setFieldValue('secondLegShipInfo.transactionId', value);
           }
           setIsTransactionIdVerified(response);
         })
