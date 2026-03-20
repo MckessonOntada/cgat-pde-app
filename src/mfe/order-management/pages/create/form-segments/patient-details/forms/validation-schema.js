@@ -125,7 +125,7 @@ export const getValidationSchema = ({ t, isSpOrder, spMaterialConfig, therapyCon
           return true;
         });
       }
-      if (!isOrca && rules.hasImpersonatedUserPhiPermission) {
+      if (!isOrca) {
         validator = validator.when([], {
           is: () => field.properties.mandatoryField,
           then: (s) => s.required(`${field.properties.displayName} is required`),
@@ -150,7 +150,7 @@ export const getValidationSchema = ({ t, isSpOrder, spMaterialConfig, therapyCon
 
         const message = displayName ? `${displayName} is required` : fallbackMessages[fieldName] || '';
 
-        if (rules.hasImpersonatedUserPhiPermission && customizedFieldDetails?.properties?.mandatoryField) {
+        if (customizedFieldDetails?.properties?.mandatoryField) {
           dynamicFields[fieldName] = dynamicFields[fieldName].test('required-field', message, function (value) {
             return customizedFieldDetails.properties?.mandatoryField && value !== undefined && value !== null && value !== '';
           });
