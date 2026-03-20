@@ -42,9 +42,6 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const { controlRef } = useContext(FooterContext);
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isTherapyChanged, isApprover } = state;
-
-  console.log(orderDetails);
-
   const { isEdit = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [alert, setAlert] = useState(null);
