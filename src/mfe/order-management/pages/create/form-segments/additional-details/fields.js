@@ -316,6 +316,15 @@ export const getShipmentInformationForm = ({
       let value = e.target.value.trim();
       setAlert(null);
       setIsVerifyingTransactionId(true);
+      if (value.indexOf('/') > -1) {
+        setFieldValue('secondLegShipInfo.transactionId', '');
+        setAlert({
+          type: 'warning',
+          description: translationFn('message.incorrectTransactionId')
+        });
+        setIsVerifyingTransactionId(false);
+        return;
+      }
       OrderService.verifyTransactionId(e.target.value)
         .then((response) => {
           if (!response) {
