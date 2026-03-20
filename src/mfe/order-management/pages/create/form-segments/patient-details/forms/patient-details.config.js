@@ -52,7 +52,7 @@ export const PatientSections = ({
                   ?.map((field) => {
                     const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
                     const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-                    const isReadOnly = !rules.hasImpersonatedUserPhiPermission ? ['medicalRecordNumber'].includes(field.fieldName) : readOnly;
+                    const isReadOnly = readOnly;
                     return {
                       id: `patient-info-${field.fieldName}`,
                       name: `patient.${field.fieldName}`,
@@ -80,7 +80,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -90,7 +90,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)
+              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer))
             },
             {
               id: 'patient-info-lastName',
@@ -99,7 +99,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -122,7 +122,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'datePicker',
               disableFuture: true,
-              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
+              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             }
           ]

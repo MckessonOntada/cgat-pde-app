@@ -132,8 +132,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const _setOrcaVerifiedPatient = (orcaVerifiedPatient) => {
     const setFieldValue = formikRef.current?.setFieldValue;
-
     if (orcaVerifiedPatient) {
+      if (!orderDetails.rules?.hasImpersonatedUserPhiPermission) {
+        orcaVerifiedPatient.firstName = '*'.repeat(6);
+        orcaVerifiedPatient.middleName = '*'.repeat(6);
+        orcaVerifiedPatient.lastName = '*'.repeat(6);
+        orcaVerifiedPatient.dateOfBirth = '';
+      }
       formikRef.current?.setTouched({});
       formikRef.current?.setErrors({});
       setPatientVerified(true);
