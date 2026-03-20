@@ -66,7 +66,10 @@ jobs:
         REACT_APP_OKTA_AUTH_SERVER_ID: ${{ secrets.REACT_APP_OKTA_AUTH_SERVER_ID }}
         REACT_APP_OKTA_CLIENT_ID: ${{ secrets.REACT_APP_OKTA_CLIENT_ID }}
         REACT_APP_OKTA_BASE_URL: ${{ vars.REACT_APP_OKTA_BASE_URL }}
+        REACT_APP_OKTA_LOGIN_URL: ${{ vars.REACT_APP_OKTA_LOGIN_URL }}
         REACT_APP_RELEASE_BUILD_TAG: ${{ env.IMAGE_TAG }}
+        JFROG_USERNAME: ${{ secrets.JFROG_USERNAME }}
+        JFROG_API_KEY: ${{ secrets.JFROG_API_KEY }}
       run: |
         # Setting up cluster configurations, config files are in the kubectl image
         # https://github.com/mckesson/pltsrv-kube-apps/tree/master/kubectl

@@ -3,6 +3,7 @@ import Summary from '@src/mfe/order-management/pages/create/form-segments/summar
 import OrcaPatientDetails from '@src/mfe/order-management/pages/create/form-segments/summary/orca-patient-details/OrcaPatientDetails';
 import UploadOrderDocument from '@src/mfe/order-management/pages/create/form-segments/upload-document';
 import OrderIndex from '@src/mfe/order-management/pages/orders';
+import { OrderLoader } from '@src/mfe/order-management/routes/Routes';
 import NotFound from '@src/pages/error-pages/NotFound';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import React from 'react';
@@ -19,30 +20,32 @@ export const CSReviewOrders = () => {
           </OrderProvider>
         }
       />
-      <Route
-        path={`:orderId/summary`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <Summary />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/orca-patient-details`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <OrcaPatientDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={`:orderId/upload-document`}
-        element={
-          <ProtectedRoute permissions={[]}>
-            <UploadOrderDocument />
-          </ProtectedRoute>
-        }
-      />
+      <Route path=":orderId" element={<OrderLoader />}>
+        <Route
+          path={`summary`}
+          element={
+            <ProtectedRoute permissions={[]}>
+              <Summary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={`verification/:manufacturer`}
+          element={
+            <ProtectedRoute permissions={[]}>
+              <OrcaPatientDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={`documents/upload`}
+          element={
+            <ProtectedRoute permissions={[]}>
+              <UploadOrderDocument />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );

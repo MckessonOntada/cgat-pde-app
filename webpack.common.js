@@ -138,7 +138,9 @@ module.exports = {
       __FS_ORG_ID__: JSON.stringify(process.env.REACT_APP_FS_ORG_ID),
       __REACT_APP_OKTA_AUTH_SERVER_ID__: JSON.stringify(process.env.REACT_APP_OKTA_AUTH_SERVER_ID),
       __REACT_APP_OKTA_CLIENT_ID__: JSON.stringify(process.env.REACT_APP_OKTA_CLIENT_ID),
-      __REACT_APP_OKTA_BASE_URL__: JSON.stringify(process.env.REACT_APP_OKTA_BASE_URL)
+      __REACT_APP_OKTA_BASE_URL__: JSON.stringify(process.env.REACT_APP_OKTA_BASE_URL),
+      __REACT_APP_OKTA_LOGIN_URL__: JSON.stringify(process.env.REACT_APP_OKTA_LOGIN_URL)
+    
     }),
     new Dotenv()
     // Uncomment to run the Bundle Analyzer

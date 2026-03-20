@@ -92,7 +92,7 @@ const InputText = ({
       )}
 
       <div className={`${styles.inputFieldContainer}`}>
-        <div className={`${styles.inputFlex} ${hasError && styles.errorField}`}>
+        <div className={`${styles.inputFlex} ${hasError && styles.errorField}  ${isReadOnly && styles.disabled}`}>
           {startIcon && <div className={styles.startIcon}>{startIcon}</div>}
           {prefix && <div className={styles.prefix}>{prefix}</div>}
 

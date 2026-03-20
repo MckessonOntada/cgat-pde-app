@@ -14,7 +14,6 @@ import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
-import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { AddressSections, IdentifierSections, PatientSections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
@@ -32,7 +31,16 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import ManufacturerLogo from '../ManufacturerLogo';
 import { ORDER_STATUS } from '../../../orders/config';
-import { getManufacturer, isValidToSaveAsDraft, NotifyAlert, getValueWIthoutPrefixAndSuffix, updatePatientValues, removeFieldPrefixSuffix } from '../OrderUtil';
+import {
+  getManufacturer,
+  isValidToSaveAsDraft,
+  NotifyAlert,
+  getValueWIthoutPrefixAndSuffix,
+  updatePatientValues,
+  removeFieldPrefixSuffix,
+  normalizeOrderResponse,
+  getOrderStepCaption
+} from '../OrderUtil';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/admin/manage-providers/config';
@@ -42,6 +50,8 @@ import { openModal } from '@src/store/reducer/modalReducer';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 import OrcaPatientVerificationPanel from '../orca-patient-verification-panel/OrcaPatientVerificationPanel';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 const PatientDetails = ({ readOnly, hasPermission }) => {
   const { t } = useTranslate();
@@ -52,10 +62,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [alert, setAlert] = React.useState(null);
   const location = useLocation();
   const locationState = location?.state ?? {};
-  const { isEdit = false, isApprover = false, alertState } = locationState;
+  const { isEdit = false, alertState } = locationState;
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const { data: orderDetails = {}, isFetching, refetch: refreshOrderDetails } = useOrder(orderId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
   const isStageInDraft = orderDetails.isDraft;
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
@@ -70,12 +81,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const manufacturer = getManufacturer(orderDetails);
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = orderDetails || {};
+    const { isPapOrder, status, patient } = orderDetails || {};
     const prevSearch = locationState.__prevSearch || '';
     if (isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
-    if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
-    if (orderDetails.patient && manufacturer === MANUFACTURER.ORCA) {
-      const patient = orderDetails.patient;
+    if (status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
+    if (patient && manufacturer === MANUFACTURER.ORCA) {
       const verifiedPatient = {
         ...patient.patientInfo
       };
@@ -99,14 +109,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   React.useEffect(() => {
     if (orderDetails.channelType) {
       if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && !orderDetails.patientDetailsRequired)
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/additional-details`, {
+        navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/additional-details`, {
           state: { ...locationState }
         });
       else {
-        const { changeOnPreviousStep = false } = location.state;
-        if (changeOnPreviousStep && !hasPermission) {
-          const { changeOnPreviousStep, ...newState } = location.state;
-          navigate(location.pathname, { state: newState });
+        const { isChangeOnPreviousStep } = state;
+
+        if (isChangeOnPreviousStep && !hasPermission) {
+          navigate(location.pathname, { state: location.state });
           const state = {};
           state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
           state.body = (
@@ -122,8 +132,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const _setOrcaVerifiedPatient = (orcaVerifiedPatient) => {
     const setFieldValue = formikRef.current?.setFieldValue;
-
     if (orcaVerifiedPatient) {
+      if (!orderDetails.rules?.hasImpersonatedUserPhiPermission) {
+        orcaVerifiedPatient.firstName = '*'.repeat(6);
+        orcaVerifiedPatient.middleName = '*'.repeat(6);
+        orcaVerifiedPatient.lastName = '*'.repeat(6);
+        orcaVerifiedPatient.dateOfBirth = '';
+      }
       formikRef.current?.setTouched({});
       formikRef.current?.setErrors({});
       setPatientVerified(true);
@@ -255,21 +270,17 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
   const navigateToNextStage = (id, changeOnPreviousStep) => {
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      navigate(`${RoutePaths.pathOrderManagement}/${id}/payer`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${id}/payer-details`, {
         state: {
           ...locationState,
-          isEdit: false,
-          isApprover: isApprover,
-          changeOnPreviousStep
+          isEdit: false
         }
       });
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}/${id}/additional-details`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${id}/additional-details`, {
         state: {
           ...locationState,
-          isEdit: false,
-          isApprover: isApprover,
-          changeOnPreviousStep
+          isEdit: false
         }
       });
     }
@@ -282,11 +293,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     {
       onSuccess: (result, variables) => {
         const { id } = result;
+        const beautifiedOrderDetails = normalizeOrderResponse(result);
+        setValue('orderDetails', beautifiedOrderDetails);
         if (!variables?.isSavingDraft) {
           navigateToNextStage(id, true);
           setProvider(null);
         } else {
-          refreshOrderDetails();
+          // refreshOrderDetails();
           setIsDirty(false);
           setAlert({
             description: 'Order Saved In Draft Successfully',
@@ -330,22 +343,21 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
-          isEdit: true,
-          isApprover: isApprover
+          isEdit: true
         }
       });
     } else {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
         state: {
           ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
+          isEdit: isEdit
         }
       });
     }
   };
 
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
+    setIsOrderInDraft(isSavingDraft);
     if (!!manufacturer && isEmptyFirstTime) {
       if (manufacturer === MANUFACTURER.ORCA && (!form.patient?.patientIdentifier || !form.patient?.medicalRecordNumber)) {
         setAlert({
@@ -385,6 +397,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const payload = updatePatientValues(formValue, config || []);
+    if (!orderDetails.rules.hasImpersonatedUserPhiPermission) {
+      const { patientIdentifier, medicalRecordNumber } = payload.patient;
+      payload.patient = { patientIdentifier, medicalRecordNumber };
+    }
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
     }
@@ -420,16 +436,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/summary`, {
         state: {
           ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
+          isEdit: isEdit
         }
       });
     } else if (modalSuccessCallback === 'account') {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
         state: {
           ...locationState,
-          isEdit: isEdit,
-          isApprover: isApprover
+          isEdit: isEdit
         }
       });
     }
@@ -678,9 +692,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       coiIdValidation({ patientId, coiId: value });
     }
   };
+
+  console.log(orderDetails);
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isFetching || isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
+      {(isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -724,7 +740,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t, orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA, spTherapyConfig, therapyConfig, manufacturer)}
+          validationSchema={getValidationSchema({
+            t,
+            isSpOrder: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA,
+            spMaterialConfig: spTherapyConfig,
+            therapyConfig,
+            manufacturer,
+            rules: orderDetails.rules
+          })}
           enableReinitialize={true}
           innerRef={formikRef}
           onSubmit={(values) => handleSubmit(values)}>
@@ -755,14 +778,15 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
                         <FormRenderer
                           sections={PatientSections({
+                            rules: orderDetails.rules,
                             channelType,
                             therapyConfig,
                             validateOnBlur,
                             manufacturer,
                             isPatientVerifying,
-                            isPatientVerified: isPatientVerified
+                            isPatientVerified: isPatientVerified,
+                            readOnly: readOnly || !isAllowedToProceed
                           })}
-                          readOnly={readOnly || !isAllowedToProceed}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                           <>
@@ -954,13 +978,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                         disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
-                      <Button
-                        size="md"
-                        onClick={() => setIsOrderInDraft(false)}
-                        variant="primary"
-                        type="submit"
-                        disabled={readOnly || !isAllowedToProceed || isPatientVerifying}>
+                      {/* <Button size="md" onClick={() => setIsOrderInDraft(false)} variant="primary" type="submit">
                         {t('captions.btnSaveAndContinue')}
+                      </Button> */}
+                      <Button
+                        variant="primary"
+                        isLoadingState={isSaving}
+                        Icon={isSaving && ButtonLoadingIcon}
+                        iconPosition="left"
+                        type="submit"
+                        disabled={readOnly || !isAllowedToProceed || isPatientVerifying}
+                        size="md">
+                        {t(getOrderStepCaption(isSaving))}
                       </Button>
                     </div>
                   </div>

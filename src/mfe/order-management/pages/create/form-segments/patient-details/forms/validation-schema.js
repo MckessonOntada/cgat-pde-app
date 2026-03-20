@@ -67,10 +67,20 @@ export const normalizePatient = (patient) => {
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer, isCSUserReviewingOrca = false) => {
+export const getValidationSchema = ({
+  t,
+  isSpOrder,
+  spMaterialConfig,
+  therapyConfig,
+  manufacturer,
+  isCSUserReviewingOrca = false,
+  rules = {},
+  isCustomerCentreUser = false
+}) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
-    const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    const allowedFields = new Set(['patientIdentifier']);
+    if (!isCustomerCentreUser && isSpOrder) allowedFields.add('medicalRecordNumber');
     if (isSpOrder) allowedFields.add('coiId');
     const isOrca = manufacturer === 'ORCA';
 
@@ -229,11 +239,7 @@ export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfi
       ...buildDynamicFieldValidators(configToUse, t),
       manufacturerOrderId: Yup.string().when([], {
         is: () => isCSUserReviewingOrca,
-        then: (schema) =>
-          schema
-            .trim()
-            .matches(/^[a-zA-Z0-9]+$/, 'Only alphanumeric value allowed')
-            .required('Orca therapy ID is required'),
+        then: (schema) => schema.matches(/^[^\s]+$/, 'Please enter valid Orca Therapy Id').required('Orca therapy ID is required'),
         otherwise: (schema) => schema.notRequired()
       })
     }),

@@ -1,10 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { Button, Loader } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
-import { useTherapy } from '../../../../context/TherapyContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
@@ -15,7 +14,6 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { TherapyDetailsConstantsForBB, TherapyDetailsConstantsForSP } from './assets/constants/TherapyDetailsConstants';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import useOrder from '../../../orders/useOrder';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import Alert from '@src/components/cgat-alert/Alert';
@@ -27,7 +25,11 @@ import { useDispatch } from 'react-redux';
 import { ORDER_STAGES } from '../Constants';
 import Collaborator from '../Collaborator';
 import withPermissions from '@src/mfe/order-management/routes/OrderPermissions';
-import { NotifyAlert } from '../OrderUtil';
+import { getOrderStepCaption, normalizeOrderResponse, NotifyAlert } from '../OrderUtil';
+import { useFilters } from '@src/context/TableContext';
+import { useWidgetContext } from '@src/context/WidgetContext';
+import useRouteMode from '@src/mfe/user-management/routes/useRouteMode';
+import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 
 function TherapySelection({ readOnly }) {
   const { t } = useTranslate();
@@ -39,17 +41,20 @@ function TherapySelection({ readOnly }) {
   const [prevSearchState, setPrevSearchState] = React.useState(null);
   const dispatch = useDispatch();
   const { orderId } = useParams();
-  const { clearFilters, applyFilters } = useTherapy();
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
-  const [tradeDetails, setTradeDetails] = useState(orderDetails?.tradeDetails);
+  const { applyFilters, clearFilters } = useFilters();
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
+  const { id, isEdit, params } = useRouteMode({ editSegment: 'edit', paramKey: 'orderId' });
+
+  const [tradeDetails, setTradeDetails] = useState(isEdit && orderDetails?.tradeDetails);
   const [isDirty, setIsDirty] = React.useState(false);
   const searchParams = new URLSearchParams(search);
   const trade = searchParams.get('trade');
   const channelType = searchParams.get('channelType');
+
   const therapy = searchParams.get('therapy');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { isEdit = pathname === '/edit-order', isApprover = false, isBack = false } = locationState || {};
-  const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
+  const { isBack = false } = locationState || {};
   const [alert, setAlert] = React.useState(null);
 
   React.useEffect(() => {
@@ -75,6 +80,7 @@ function TherapySelection({ readOnly }) {
   React.useEffect(() => {
     const isDirty = tradeDetails?.ndc !== orderDetails?.tradeDetails?.ndc;
     setIsDirty(isDirty);
+    if (orderDetails?.tradeDetails?.ndc) setValue('isTherapyChanged', isDirty);
     dispatch(hasUnsavedChanges(isDirty));
     return () => dispatch(hasUnsavedChanges(false));
   }, [tradeDetails]);
@@ -96,15 +102,17 @@ function TherapySelection({ readOnly }) {
     });
   };
 
-  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
+  const { isLoading: isSaving, mutate: createOrder } = useMutation({
+    mutationFn: async (data) => OrderService.createOrder(data),
     onSuccess: (result) => {
       const { id } = result;
-      navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
+      const beautifiedOrderDetails = normalizeOrderResponse(result);
+      setValue('orderDetails', beautifiedOrderDetails);
+      navigate(`../${id}/account-details`, {
         state: {
           ...locationState,
           ...(prevSearchState && { __prevSearch: prevSearchState }),
-          isEdit: false,
-          isApprover: isApprover
+          isEdit: false
         }
       });
     },
@@ -119,43 +127,43 @@ function TherapySelection({ readOnly }) {
       });
     }
   });
+
   const navigateToNextStage = (id) => {
-    navigate(`${RoutePaths.pathOrderManagement}/${id}/accounts`, {
+    navigate(`/orders/create/${id}/account-details`, {
       state: {
         ...locationState,
         ...(prevSearchState && { __prevSearch: prevSearchState }),
-        isEdit: false,
-        isApprover: isApprover,
-        isTherapyChanged: isDirty
+        isEdit: false
       }
     });
   };
 
-  const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
-    async ({ orderId, payload }) => {
+  const { isLoading: isUpdating, mutate: updateTherapy } = useMutation({
+    mutationFn: async ({ orderId, payload }) => {
       return await OrderService.updateTherapy(orderId, payload);
     },
-    {
-      onSuccess: (result) => {
-        const { id } = result;
-        navigateToNextStage(id);
-      },
-      onError: (error) => {
-        const statusCode = error?.response?.status;
-        let description = t('error.default');
-        if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
+    onSuccess: (result) => {
+      const { id } = result;
+      const beautifiedOrderDetails = normalizeOrderResponse(result);
+      setValue('orderDetails', beautifiedOrderDetails);
+      navigateToNextStage(id);
+    },
+    onError: (error) => {
+      const statusCode = error?.response?.status;
+      let description = t('error.default');
+      if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-        setAlert({
-          description,
-          type: 'error'
-        });
-      }
+      setAlert({
+        description,
+        type: 'error'
+      });
     }
-  );
+  });
 
   const handleOnSubmit = () => {
     if (!tradeDetails) {
-      setTherapySelectionMessage({
+      setAlert({
+        pinPoint: 'therapy-selection',
         description: 'Select therapy to create order',
         type: 'error'
       });
@@ -176,7 +184,7 @@ function TherapySelection({ readOnly }) {
           navigateToNextStage(orderId);
         }
       } else {
-        createNewOrder(payload);
+        createOrder(payload);
       }
     }
   };
@@ -200,8 +208,7 @@ function TherapySelection({ readOnly }) {
         state: {
           ...locationState,
           ...(prevSearchState && { __prevSearch: prevSearchState }),
-          isEdit: true,
-          isApprover: isApprover
+          isEdit: true
         }
       });
     } else {
@@ -219,8 +226,7 @@ function TherapySelection({ readOnly }) {
         state: {
           ...locationState,
           ...(prevSearchState && { __prevSearch: prevSearchState }),
-          isEdit: true,
-          isApprover: isApprover
+          isEdit: true
         }
       });
     }
@@ -230,9 +236,13 @@ function TherapySelection({ readOnly }) {
     setTradeDetails(details);
   };
 
+  const handleOnApplyFilters = (filters) => {
+    const { searchQuery, ...rest } = filters;
+    applyFilters({ query: searchQuery, ...rest });
+  };
+
   return (
     <div className="MCP-module-wrapper">
-      {(isSaving || isFetching || isUpdating) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -247,7 +257,7 @@ function TherapySelection({ readOnly }) {
               currentStage={orderDetails?.currentStage}
               collaborators={orderDetails?.collaborators}
               orderId={orderId}
-              channelType={orderDetails.channelType}
+              channelType={orderDetails?.channelType}
             />
           )
         }
@@ -257,7 +267,7 @@ function TherapySelection({ readOnly }) {
         <OrderStepper
           status={orderDetails?.currentStage}
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
-          channelType={orderDetails.channelType}
+          channelType={orderDetails?.channelType}
         />
         {readOnly && (
           <NotifyAlert
@@ -267,23 +277,21 @@ function TherapySelection({ readOnly }) {
             setAlert={setAlert}
           />
         )}
-        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+        {alert && !alert.pinPoint && <Alert {...alert} onClose={() => setAlert(null)} />}
 
         <div className={`${styles.wrapper}`}>
           <div className="MCP-panel-container">
             <div className="MCP-CardContainer">
               <CommonFilters
                 autoFocus={true}
-                onApplyFilters={applyFilters}
+                onApplyFilters={handleOnApplyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={[]}
                 searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
             <TableHeading heading={t('labels.therapySelection')} />
-            {therapySelectionMessage && (
-              <Alert description={therapySelectionMessage.description} type={therapySelectionMessage.type} onClose={() => setTherapySelectionMessage(null)} />
-            )}
+            {alert && alert.pinPoint === 'therapy-selection' && <Alert {...alert} onClose={() => setAlert(null)} />}
             <TherapyDataTable trade={tradeDetails} onChange={setTradeDetails} location={location} readOnly={readOnly} />
           </div>
           <div className="footer-wrapper" ref={controlRef}>
@@ -291,8 +299,16 @@ function TherapySelection({ readOnly }) {
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button size="md" variant="primary" type="submit" disabled={readOnly} onClick={handleOnSubmit}>
-                {t('captions.btnSaveAndContinue')}
+              <Button
+                variant="primary"
+                isLoadingState={isSaving || isUpdating}
+                Icon={(isSaving || isUpdating) && ButtonLoadingIcon}
+                iconPosition="left"
+                type="submit"
+                disabled={readOnly}
+                onClick={handleOnSubmit}
+                size="md">
+                {t(getOrderStepCaption(isSaving, isUpdating))}
               </Button>
             </div>
           </div>

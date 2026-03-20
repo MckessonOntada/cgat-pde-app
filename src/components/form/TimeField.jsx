@@ -28,7 +28,6 @@ export default function TimePicker(prop) {
   const { errors, touched, setFieldValue, setFieldTouched } = form;
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
-  console.log('TimePicker render', { value, errors, touched });
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -66,7 +65,7 @@ export default function TimePicker(prop) {
   };
 
   const handleBlur = () => {
-    const digits = value.replace(/\D/g, '');
+    const digits = value?.replace(/\D/g, '');
 
     if (digits.length === 4) {
       const hour = digits.slice(0, 2).padStart(2, '0');
@@ -85,8 +84,8 @@ export default function TimePicker(prop) {
     }
   };
 
-  const selectedHour = value.split(':')[0] || '00';
-  const selectedMinute = value.split(':')[1] || '00';
+  const selectedHour = value?.split(':')[0] || '00';
+  const selectedMinute = value?.split(':')[1] || '00';
 
   return (
     <div className="timepicker-wrapper" ref={wrapperRef}>
