@@ -97,6 +97,12 @@ function OrcaPatientDetails() {
     const setFieldValue = formikRef.current?.setFieldValue;
 
     if (orcaVerifiedPatient) {
+      if (!AuthUtils.isImpersonatedAdminWithPhiPermission()) {
+        orcaVerifiedPatient.firstName = orcaVerifiedPatient.firstName ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.middleName = orcaVerifiedPatient.middleName ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.lastName = orcaVerifiedPatient.lastName ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.dateOfBirth = '';
+      }
       formikRef.current?.setTouched({});
       formikRef.current?.setErrors({});
       setPatientVerified(true);

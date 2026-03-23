@@ -219,7 +219,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     if (manufacturer === MANUFACTURER.ORCA && patient.patientInfo) {
       const patientInfo = patient.patientInfo;
-      const isVerified = !!(patientInfo.firstName && patientInfo.lastName && patientInfo.dateOfBirth);
+      const isVerified = !!(patientInfo.firstName && patientInfo.lastName);
       setAllowedSubmission(isVerified);
       setValue('isVerified', isVerified);
     }
@@ -1633,7 +1633,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       />
                       <DetailSegment
                         label={t('labels.DOB')}
-                        value={!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser ? '******' : patientData?.patientInfo?.dateOfBirth || '-'}
+                        value={
+                          !isSpOrder && (!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser)
+                            ? '******'
+                            : patientData?.patientInfo?.dateOfBirth || '-'
+                        }
                       />
                       {isSpOrder && (
                         <DetailSegment
@@ -1651,7 +1655,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       )}
                       <DetailSegment
                         label={t('labels.gender')}
-                        value={!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser ? '******' : patientData?.patientInfo?.gender || '-'}
+                        value={
+                          !isSpOrder && (!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser) ? '******' : patientData?.patientInfo?.gender || '-'
+                        }
                       />
                       {!isSpOrder &&
                         therapyConfig?.config?.fields
