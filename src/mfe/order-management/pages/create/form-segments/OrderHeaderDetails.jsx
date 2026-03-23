@@ -14,6 +14,7 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
   const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
   const isBuyAndBillOrder = channelType === CHANNEL_TYPE.BUY_AND_BILL;
+  const hasImpersonatedUserPhiPermission = orderDetails?.rules?.hasImpersonatedUserPhiPermission;
   const formatFieldWithPrefixSuffix = (value, fieldName) => {
     if (!value) return '';
     const config =
@@ -84,7 +85,9 @@ function OrderHeaderDetails({ orderDetails = {}, priceDetails = {}, status, sele
         key={'patient-name'}
         label={t('labels.patientDetails')}
         value={[
-          patient?.patientInfo && CommonUtils.getUSFullName(patient.patientInfo),
+          !hasImpersonatedUserPhiPermission && patient?.patientInfo?.firstName === '******'
+            ? patient?.patientInfo?.firstName
+            : CommonUtils.getUSFullName(patient?.patientInfo),
           patient?.patientIdentifier && `ID: ${formatFieldWithPrefixSuffix(patient.patientIdentifier, 'patientIdentifier')}`,
           patient?.medicalRecordNumber && `MRN: ${formatFieldWithPrefixSuffix(patient.medicalRecordNumber, 'medicalRecordNumber')}`
         ]

@@ -1620,8 +1620,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       <DetailSegment
                         label={t('labels.patientName')}
                         value={
-                          !isImpersonatedAdminWithPhiPermission ? (
-                            '******'
+                          (!isImpersonatedAdminWithPhiPermission && patient?.patientInfo?.firstName === '******') || isCustomerCentreUser ? (
+                            patient?.patientInfo?.firstName
                           ) : patient.fullName || patientData?.patientInfo?.firstName ? (
                             <Tooltip body={CommonUtils.getUSFullName(patientData?.patientInfo)}>
                               <span className="overflowing">{CommonUtils.getUSFullName(patientData?.patientInfo)}</span>
@@ -1633,7 +1633,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       />
                       <DetailSegment
                         label={t('labels.DOB')}
-                        value={!isImpersonatedAdminWithPhiPermission ? '******' : patientData?.patientInfo?.dateOfBirth || '-'}
+                        value={!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser ? '******' : patientData?.patientInfo?.dateOfBirth || '-'}
                       />
                       {isSpOrder && (
                         <DetailSegment
@@ -1651,7 +1651,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       )}
                       <DetailSegment
                         label={t('labels.gender')}
-                        value={!isImpersonatedAdminWithPhiPermission ? '******' : patientData?.patientInfo?.gender || '-'}
+                        value={!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser ? '******' : patientData?.patientInfo?.gender || '-'}
                       />
                       {!isSpOrder &&
                         therapyConfig?.config?.fields

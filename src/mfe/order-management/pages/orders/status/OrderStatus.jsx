@@ -72,7 +72,10 @@ const OrderStatus = () => {
   } else {
     message = 'messages.orderSuccessApprovalPending';
   }
-  const patientName = CommonUtils.getUSFullName({ ...patient?.patientInfo });
+  const patientName =
+    !orderDetails?.rules?.hasImpersonatedUserPhiPermission && patient?.patientInfo?.firstName === '******'
+      ? patient?.patientInfo?.firstName
+      : CommonUtils.getUSFullName({ ...patient?.patientInfo });
 
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
