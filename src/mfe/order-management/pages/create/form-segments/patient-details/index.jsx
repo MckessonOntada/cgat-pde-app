@@ -355,7 +355,22 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       });
     }
   };
+  function removeMaskedFields(obj) {
+    if (Array.isArray(obj)) {
+      return obj.map(removeMaskedFields);
+    }
 
+    if (obj !== null && typeof obj === 'object') {
+      return Object.entries(obj).reduce((acc, [key, value]) => {
+        if (value === '******') return acc;
+
+        acc[key] = removeMaskedFields(value);
+        return acc;
+      }, {});
+    }
+
+    return obj;
+  }
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
     setIsOrderInDraft(isSavingDraft);
     if (!!manufacturer && isEmptyFirstTime) {
@@ -397,9 +412,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const payload = updatePatientValues(formValue, config || []);
-    if (!orderDetails.rules.hasImpersonatedUserPhiPermission) {
-      const { patientIdentifier, medicalRecordNumber } = payload.patient;
-      payload.patient = { patientIdentifier, medicalRecordNumber };
+    if (!orderDetails.rules.hasImpersonatedUserPhiPermission && manufacturer === MANUFACTURER.ORCA) {
+      const { patientIdentifier } = payload.patient;
+      payload.patient = { patientIdentifier };
     }
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
@@ -408,11 +423,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       skipDuplicateCheck = true;
     }
     setInitialValues(form);
+
+    const updatedPayload = !orderDetails.rules?.hasImpersonatedUserPhiPermission && manufacturer !== MANUFACTURER.ORCA ? removeMaskedFields(payload) : payload;
     if (isDirty || isStageInDraft || orcaVerifiedPatient) {
-      savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: isSavingDraft ? false : true, isSavingDraft });
+      savePatientDetails({ payload: updatedPayload, skipDuplicateCheck, isSendNotification: isSavingDraft ? false : true, isSavingDraft });
     } else if (!isDirty && !isStageInDraft) {
       if (orderDetails?.currentStage === ORDER_STAGES.PATIENT_DETAILS) {
-        savePatientDetails({ payload, skipDuplicateCheck, isSendNotification: false, isSavingDraft });
+        savePatientDetails({ payload: updatedPayload, skipDuplicateCheck, isSendNotification: false, isSavingDraft });
       } else {
         navigateToNextStage(orderId);
       }

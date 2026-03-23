@@ -80,7 +80,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -90,7 +90,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer))
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)
             },
             {
               id: 'patient-info-lastName',
@@ -99,7 +99,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'input',
               maxLength: 50,
-              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -112,7 +112,7 @@ export const PatientSections = ({
                 label: item,
                 value: item
               })),
-              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             },
             {
@@ -122,7 +122,7 @@ export const PatientSections = ({
               placeholder: ' ',
               type: 'datePicker',
               disableFuture: true,
-              isReadOnly: !rules.hasImpersonatedUserPhiPermission || (!isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer)),
+              isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
             }
           ]
