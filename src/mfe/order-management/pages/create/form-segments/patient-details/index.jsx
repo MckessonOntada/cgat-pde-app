@@ -134,9 +134,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const setFieldValue = formikRef.current?.setFieldValue;
     if (orcaVerifiedPatient) {
       if (!orderDetails.rules?.hasImpersonatedUserPhiPermission) {
-        orcaVerifiedPatient.firstName = '*'.repeat(6);
-        orcaVerifiedPatient.middleName = '*'.repeat(6);
-        orcaVerifiedPatient.lastName = '*'.repeat(6);
+        orcaVerifiedPatient.firstName = orcaVerifiedPatient.firstName ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.middleName = orcaVerifiedPatient.middleName ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.lastName = orcaVerifiedPatient.lastName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.dateOfBirth = '';
       }
       formikRef.current?.setTouched({});
