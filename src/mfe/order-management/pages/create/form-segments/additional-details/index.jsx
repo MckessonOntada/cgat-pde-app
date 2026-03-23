@@ -269,6 +269,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       });
       dynamicFields.orderQuantity = Yup.number()
+        .transform((value, originalValue) => {
+          if (!/^[0-9]+$/.test(originalValue)) {
+            return NaN;
+          }
+          return value;
+        })
         .typeError(t('labels.OrderQuantityShouldPositive'))
         .min(1, t('labels.OrderQuantityMin', { min: 1 }))
         .max(99, t('labels.OrderQuantityMax', { max: 99 }))
