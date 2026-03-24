@@ -317,6 +317,7 @@ export const getShipmentInformationForm = ({
       setAlert(null);
       setIsVerifyingTransactionId(true);
       if (value.indexOf('/') > -1) {
+        setIsTransactionIdVerified(false);
         setFieldValue('secondLegShipInfo.transactionId', '');
         setAlert({
           type: 'warning',
