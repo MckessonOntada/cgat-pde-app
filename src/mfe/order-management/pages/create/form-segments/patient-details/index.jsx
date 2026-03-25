@@ -413,8 +413,12 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const payload = updatePatientValues(formValue, config || []);
     if (!orderDetails.rules.hasImpersonatedUserPhiPermission && manufacturer === MANUFACTURER.ORCA) {
-      const { patientIdentifier } = payload.patient;
-      payload.patient = { patientIdentifier };
+      const { patientIdentifier, medicalRecordNumber } = payload.patient;
+      if (payload.patient.medicalRecordNumber === '******' || payload.patient.medicalRecordNumber === '') {
+        payload.patient = { patientIdentifier };
+      } else {
+        payload.patient = { patientIdentifier, medicalRecordNumber };
+      }
     }
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(form.dateOfBirth, 'MM-DD-YYYY');
