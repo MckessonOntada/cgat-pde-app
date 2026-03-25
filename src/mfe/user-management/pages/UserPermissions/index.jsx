@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import { Button } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -37,8 +38,26 @@ const getSubmitCaption = ({ isSystemAdminView, selectedRole, isEdit, isSaving })
 
 const INITIAL_STATE = {
   permissions: {},
-  role: null
+  role: null,
+  channel: null
 };
+
+const roleSchema = Yup.object().shape({
+  role: Yup.number().typeError('Id must be a number').required('Id is required'),
+
+  channel: Yup.string()
+    .typeError('Channel must be a string')
+    .when('id', {
+      is: 2,
+      then: (schema) => schema.required('Channel is required when id is 2'),
+      otherwise: (schema) => schema.notRequired()
+    }),
+
+  permissions: Yup.array()
+    .of(Yup.string().typeError('Each permission must be a string').required('Permission cannot be empty'))
+    .min(1, 'At least one permission is required')
+    .required('Permissions are required')
+});
 
 const UserPermissions = () => {
   const { t } = useTranslate();
@@ -210,7 +229,13 @@ const UserPermissions = () => {
   return (
     <div className="MCP-module-wrapper">
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-      <Formik initialValues={initialFormValues} enableReinitialize={true} onSubmit={handleOnSubmit} validateOnChange={false} validateOnBlur={true}>
+      <Formik
+        validationSchema={roleSchema}
+        initialValues={initialFormValues}
+        enableReinitialize={true}
+        onSubmit={handleOnSubmit}
+        validateOnChange={false}
+        validateOnBlur={true}>
         {({ dirty }) => {
           React.useEffect(() => {
             setIsDirty(dirty);

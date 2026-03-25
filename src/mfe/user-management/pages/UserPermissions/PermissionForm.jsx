@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment, useMemo } from 'react';
-import { Switch, Button, Heading } from '@mckesson/mcp-component-library';
+import { RadioGroup, Switch, Button, Heading, Required } from '@mckesson/mcp-component-library';
 import Dropdown from '@src/components/form/Dropdown';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
@@ -14,6 +14,7 @@ import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 const PermissionForm = ({ permissions, isRolePage }) => {
   const { t } = useTranslate();
@@ -26,6 +27,14 @@ const PermissionForm = ({ permissions, isRolePage }) => {
     let payload = { status: 'active', isPhysicianRequired: false, query: searchKey };
     return payload;
   };
+
+  const channelList = [
+    { label: t('labels.BUY_AND_BILL'), value: CHANNEL_TYPE.BUY_AND_BILL },
+    {
+      label: t('labels.SPECIALITY_PHARMACY'),
+      value: CHANNEL_TYPE.SPECIALTY_PHARMA
+    }
+  ];
 
   const {
     isLoading,
@@ -89,27 +98,58 @@ const PermissionForm = ({ permissions, isRolePage }) => {
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
               <Field name={`role`}>
-                {({ field, form }) => {
+                {({ field, form, values }) => {
                   return (
-                    <MultiSelectDropdown
-                      id={'select-role-search'}
-                      label={t('userManagement.user_permissions.select_role')}
-                      isMultiSelect={false}
-                      placeholder={'Select Role'}
-                      onChange={handleOnChange}
-                      options={roleData}
-                      variant={'async'}
-                      onSearch={(event) => setSearchKey(event)}
-                      recordsCountToEnableSearch={5}
-                      isRequired={!isRolePage}
-                      size="lg"
-                      isSortEnable={false}
-                      value={field.value && field.value?.id}
-                      defaultSelectedLabel={field.value?.label}
-                    />
+                    <React.Fragment>
+                      <div>
+                        <MultiSelectDropdown
+                          id={'select-role-search'}
+                          label={t('userManagement.user_permissions.select_role')}
+                          isMultiSelect={false}
+                          placeholder={'Select Role'}
+                          onChange={handleOnChange}
+                          options={roleData}
+                          variant={'async'}
+                          onSearch={(event) => setSearchKey(event)}
+                          recordsCountToEnableSearch={5}
+                          isRequired={!isRolePage}
+                          size="lg"
+                          isSortEnable={false}
+                          value={field.value && field.value?.id}
+                          defaultSelectedLabel={field.value?.label}
+                        />
+                      </div>
+                    </React.Fragment>
                   );
                 }}
               </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+              {values.role?.name === 'Customer Centre' && (
+                <div className="radio-group">
+                  <Field name={`channel`}>
+                    {({ field, form, values }) => {
+                      return (
+                        <React.Fragment>
+                          <label>
+                            {'Which channel is this user associated with?'}
+                            <Required>*</Required>
+                          </label>
+                          <RadioGroup
+                            direction="row"
+                            id="order-channel-options"
+                            items={channelList}
+                            onChangeValue={(value) => {}}
+                            value={''}
+                            radioBtnWidth="auto"
+                            size="lg"
+                          />
+                        </React.Fragment>
+                      );
+                    }}
+                  </Field>
+                </div>
+              )}
             </div>
           </div>
         </Fragment>
