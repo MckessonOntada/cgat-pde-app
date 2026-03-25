@@ -119,6 +119,34 @@ const getImpersonateId = () => {
   return null;
 };
 
+const impersonatedUserHasPermission = (permissions) => {
+  try {
+    const impersonatedUser = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+    const impersonatedUserPermissions = impersonatedUser?.permissions || [];
+    if (Array.isArray(permissions) && permissions.length > 0) {
+      return permissions.every((permission) => impersonatedUserPermissions.includes(permission));
+    }
+    if (typeof permissions === 'string' && permissions != '') {
+      return impersonatedUserPermissions.includes(permissions);
+    }
+  } catch (error) {}
+  return false;
+};
+
+const isImpersonatedUserCustomerCenter = function () {
+  try {
+    const impersonatedUser = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+    const role = impersonatedUser?.role?.name;
+    return role === 'Customer Centre';
+  } catch (error) {}
+  return false;
+};
+
+const isImpersonatedAdminWithPhiPermission = function () {
+  const impersonateId = getImpersonateId();
+  return impersonateId > 0 && !isSystemAdminView() ? impersonatedUserHasPermission(['VIEW_PHI_INFORMATION']) : true;
+};
+
 /**
  * @description - Check if the user has a specific permission
  * @param {any} permission - The input to check.
@@ -232,7 +260,10 @@ const AuthUtils = Object.freeze({
   isRootAdmin,
   getOrgName,
   getMckessonOrgId,
-  isUserAdmin
+  isUserAdmin,
+  impersonatedUserHasPermission,
+  isImpersonatedUserCustomerCenter,
+  isImpersonatedAdminWithPhiPermission
 });
 
 export default AuthUtils;

@@ -489,7 +489,10 @@ export const getFullName = (name) => {
   return `${lastName || ''}, ${firstName || ''} ${middleName || ''}`.trim();
 };
 
-export function getUSFullName({ firstName, lastName, middleName }) {
+export function getUSFullName(name) {
+  if (!name || typeof name !== 'object') return '';
+
+  const { firstName, lastName, middleName } = name;
   const fName = firstName?.trim();
   const lName = lastName?.trim();
   const mName = middleName?.trim();

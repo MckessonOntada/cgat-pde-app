@@ -21,6 +21,8 @@ const getStates = () => {
   return options;
 };
 export const PatientSections = ({
+  rules = {},
+  readOnly = false,
   channelType,
   therapyConfig,
   validateOnBlur,
@@ -50,6 +52,7 @@ export const PatientSections = ({
                   ?.map((field) => {
                     const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
                     const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+                    const isReadOnly = readOnly;
                     return {
                       id: `patient-info-${field.fieldName}`,
                       name: `patient.${field.fieldName}`,
@@ -57,10 +60,11 @@ export const PatientSections = ({
                       type: field?.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : 'inputText',
                       prefix,
                       suffix,
+                      isReadOnly,
                       isRequired: field.properties.mandatoryField,
                       infoText: field?.properties.helpInfoMessage,
                       endIcon: !isCSUserReviewingOrca && getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
-                      onBlur: !isCSUserReviewingOrca && validateOnBlur
+                      onBlur: !isReadOnly && !isCSUserReviewingOrca && validateOnBlur
                     };
                   }) || []
               : [])

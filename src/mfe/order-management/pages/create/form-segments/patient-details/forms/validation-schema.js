@@ -67,10 +67,20 @@ export const normalizePatient = (patient) => {
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
-export const getValidationSchema = (t, isSpOrder, spMaterialConfig, therapyConfig, manufacturer, isCSUserReviewingOrca = false) => {
+export const getValidationSchema = ({
+  t,
+  isSpOrder,
+  spMaterialConfig,
+  therapyConfig,
+  manufacturer,
+  isCSUserReviewingOrca = false,
+  rules = {},
+  isCustomerCentreUser = false
+}) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
-    const allowedFields = new Set(['patientIdentifier', 'medicalRecordNumber']);
+    const allowedFields = new Set(['patientIdentifier']);
+    if (!isCustomerCentreUser && isSpOrder) allowedFields.add('medicalRecordNumber');
     if (isSpOrder) allowedFields.add('coiId');
     const isOrca = manufacturer === 'ORCA';
 

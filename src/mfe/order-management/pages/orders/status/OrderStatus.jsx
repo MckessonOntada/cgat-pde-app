@@ -14,6 +14,7 @@ import CommonUtils, { getUSFullName } from '@src/util/CommonUtils';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import { RoutePaths } from '@src/routes/constants';
 import AuthUtils from '@src/util/AuthUtils';
+import { useWidgetContext } from '@src/context/WidgetContext';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
@@ -21,7 +22,8 @@ const OrderStatus = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = location?.state ?? {};
-  const { data: orderDetails = {}, isFetching } = useOrder(orderId);
+  const { state, setValue } = useWidgetContext();
+  const { orderDetails = {}, isApprover } = state;
   const contentRef = useRef(null);
   const { therapyConfig } = orderDetails;
   const { controlRef } = useContext(FooterContext);
@@ -37,16 +39,16 @@ const OrderStatus = () => {
     }`
   );
 
-  const { therapy = {}, orderCost, patient = {}, status: orderStatus, backendOrderId, approver, accountDetails } = orderDetails || {};
+  const { therapy = {}, orderCost, patient = {}, status: orderStatus, backendOrderId, accountDetails } = orderDetails || {};
   const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
-  const isApprover = approver && typeof approver === 'object' && approver.id != null;
   const isPhysician = AuthUtils.isPhysician();
   const isCSReviewer = AuthUtils.isCustomerCenter() && AuthUtils.isCustomerCenterView();
   const isOrgUser = !AuthUtils.isSystemAdminView();
 
   const backToOrders = () => {
     const prevSearch = locationState.__prevSearch || '';
+    setValue('orderDetails', {});
     navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
   };
 
@@ -70,12 +72,13 @@ const OrderStatus = () => {
   } else {
     message = 'messages.orderSuccessApprovalPending';
   }
-  const patientName = CommonUtils.getUSFullName({ ...patient?.patientInfo });
+  const patientName =
+    !orderDetails?.rules?.hasImpersonatedUserPhiPermission && patient?.patientInfo?.firstName === '******'
+      ? patient?.patientInfo?.firstName
+      : CommonUtils.getUSFullName({ ...patient?.patientInfo });
 
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
-      {isFetching && <Loader type={'screen'} />}
-
       <div>
         <Button
           className="back-button-control"
