@@ -411,13 +411,16 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     const formValue = CommonUtils.cleanObject(form);
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
-    const payload = updatePatientValues(formValue, config || []);
+    let payload = updatePatientValues(formValue, config || []);
     if (!orderDetails.rules.hasImpersonatedUserPhiPermission && manufacturer === MANUFACTURER.ORCA) {
-      const { patientIdentifier, medicalRecordNumber } = payload.patient;
-      if (payload.patient.medicalRecordNumber === '******' || payload.patient.medicalRecordNumber === '') {
-        payload.patient = { patientIdentifier };
+      let { patientIdentifier, medicalRecordNumber } = payload.patient || {};
+
+      const isMaskedOrEmpty = !medicalRecordNumber || medicalRecordNumber === '******';
+
+      if (!patientIdentifier && !medicalRecordNumber) {
+        payload = {};
       } else {
-        payload.patient = { patientIdentifier, medicalRecordNumber };
+        payload.patient = isMaskedOrEmpty ? { patientIdentifier } : { patientIdentifier, medicalRecordNumber };
       }
     }
     if (form.dateOfBirth) {
@@ -714,7 +717,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
-  console.log(orderDetails);
   return (
     <div className="MCP-module-wrapper">
       {(isCoiIdValidationLoading || isIdentifierValidationLoading) && <Loader type={'screen'} />}
