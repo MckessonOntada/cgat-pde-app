@@ -317,6 +317,7 @@ export const getShipmentInformationForm = ({
       setAlert(null);
       setIsVerifyingTransactionId(true);
       if (value.indexOf('/') > -1) {
+        setIsTransactionIdVerified(false);
         setFieldValue('secondLegShipInfo.transactionId', '');
         setAlert({
           type: 'warning',
@@ -325,7 +326,7 @@ export const getShipmentInformationForm = ({
         setIsVerifyingTransactionId(false);
         return;
       }
-      OrderService.verifyTransactionId(e.target.value)
+      OrderService.verifyTransactionId(value)
         .then((response) => {
           if (!response) {
             setFieldValue('secondLegShipInfo.transactionId', '');
