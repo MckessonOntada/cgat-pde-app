@@ -347,7 +347,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         }
       });
     } else {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/account-details`, {
         state: {
           ...locationState,
           isEdit: isEdit
@@ -464,7 +464,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/account-details`, {
         state: {
           ...locationState,
           isEdit: isEdit

@@ -104,7 +104,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     isCoiIdRequired,
     spTherapyConfig,
     therapyConfig = {}
-  } = orderDetails || {};
+  } = orderDetails;
   const { orcaPatient, isVerified: isOrcaPatientVerified } = state;
   const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -129,7 +129,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         patientDTO: null
       });
     }
-  }, [orderDetails]);
+  }, [orderDetails.id]);
 
   React.useEffect(() => {
     return () => dispatch(hasUnsavedChanges(false));
