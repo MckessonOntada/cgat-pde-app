@@ -1295,9 +1295,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             React.useEffect(() => {
               formEffects(values, initialFormValues, setFieldValue);
             }, [values, initialFormValues]);
-
-            console.log(initialFormValues, validationSchema);
-
             React.useEffect(() => {
               const isReallyDirty = checkReallyDirty(initialFormValues, values);
 
