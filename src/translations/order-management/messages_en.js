@@ -1106,7 +1106,7 @@ export const MessageEn = {
   'helperText.orcaPatientVerificationDateControl':
     "Note: We ask for the patient's date of birth to make sure you are accessing the right record and keeping patient information secure.",
   'message.orcaPatientVerificationFailed1':
-    'The {patientId} or {medicalRecordNumber} entered is not valid. Please re-enter {patientId}/{medicalRecordNumber} or continue entering the remaining order details and submit the order. A Customer Support representative will contact you shortly.',
+    'The {patientId} or {medicalRecordNumber} entered is invalid. Please continue entering the remaining order details and submit the order. A Customer Support representative will contact Orca Bio case manager for valid information.',
   'orderManagement.patientID.verificationSuccess': '{patientID} Verified.',
   'orderManagement.coiId.verificationSuccess': '{patientID} and {coiId} Verified.',
   'orderManagement.coiId.valid': '{coiId} Verified.',
@@ -1119,9 +1119,9 @@ export const MessageEn = {
   'orderManagement.CoiId.verificationFailedSubmitPage': 'Please verify {patientId} first to match {coiId} in the master file.',
   'labels.selectProcurementOptions': 'Select Procurement Options',
   'orderManagement.patientID.empty':
-    '{patientID} is missing. Please continue entering the remaining order details and submit the order. A customer support representative will contact you to finalize your order.',
+    '{patientID} is missing. Continue entering the remaining order details and submit the order. A Customer Support representative will contact you to finalize your order.',
   'orderManagement.coiId.empty':
-    '{coiId} is missing. Please continue entering the remaining order details and submit the order. A customer support representative will contact you to finalize your order.',
+    '{coiId} is missing. Continue entering the remaining order details and submit the order. A Customer Support representative will contact you to finalize your order.',
   'orderManagement.patientID.CoiId.empty':
     '{patientID}, {coiId}, or both are missing. Continue entering the remaining details and submit the prescription request, A member of the Pharmacy operations team will contact you shortly.',
   'orderManagement.mrn.patientID.empty':
