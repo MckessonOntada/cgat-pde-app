@@ -118,6 +118,10 @@ const UserPermissions = () => {
           ...userDetails.role,
           label: userDetails.role.name === 'Customer Centre' ? 'Customer Service' : userDetails.role.name
         };
+
+        if (userDetails.role.name === 'Customer Centre') {
+          formValues.channelType = userDetails.channelType;
+        }
       }
       setInitialFormValue(formValues);
     }
