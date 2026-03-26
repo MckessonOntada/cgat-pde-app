@@ -209,7 +209,7 @@ function Payer({ readOnly, hasPermission }) {
   };
 
   const navigateToPatientStage = (orderId) => {
-    navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+    navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/patient-details`, {
       state: {
         ...locationState,
         isEdit: false

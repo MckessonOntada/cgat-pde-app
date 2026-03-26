@@ -816,15 +816,15 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer' : 'patient';
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/${targetPage}`, {
+        const targetPage = channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? 'payer-details' : 'patient-details';
+        navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/${targetPage}`, {
           state: {
             ...locationState,
             isEdit: false
           }
         });
       } else {
-        navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
+        navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/account-details`, {
           state: {
             ...locationState,
             isEdit: false
@@ -996,14 +996,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/patient`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/patient-details`, {
         state: {
           ...locationState,
           isEdit: false
         }
       });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/accounts`, {
+      navigate(`${RoutePaths.pathOrderManagement}/create/${orderId}/account-details`, {
         state: {
           ...locationState,
           isEdit: false

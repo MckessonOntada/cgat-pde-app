@@ -104,7 +104,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     isCoiIdRequired,
     spTherapyConfig,
     therapyConfig = {}
-  } = orderDetails || {};
+  } = orderDetails;
   const { orcaPatient, isVerified: isOrcaPatientVerified } = state;
   const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
@@ -129,7 +129,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         patientDTO: null
       });
     }
-  }, [orderDetails]);
+  }, [orderDetails.id]);
 
   React.useEffect(() => {
     return () => dispatch(hasUnsavedChanges(false));
@@ -343,9 +343,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
-
-      const beautifiedOrderDetails = normalizeOrderResponse(result);
-      setValue('orderDetails', beautifiedOrderDetails);
 
       if (warningMessages.length > 0) {
         warningMessages.forEach((msg) => {
