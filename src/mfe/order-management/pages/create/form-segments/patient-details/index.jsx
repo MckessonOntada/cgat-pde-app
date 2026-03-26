@@ -373,7 +373,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   }
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
     setIsOrderInDraft(isSavingDraft);
-    if (!!manufacturer && isEmptyFirstTime) {
+    if (!!manufacturer && manufacturer !== MANUFACTURER.BMS && isEmptyFirstTime) {
       if (manufacturer === MANUFACTURER.ORCA && (!form.patient?.patientIdentifier || !form.patient?.medicalRecordNumber)) {
         setAlert({
           description: t('orderManagement.mrn.patientID.empty', {
