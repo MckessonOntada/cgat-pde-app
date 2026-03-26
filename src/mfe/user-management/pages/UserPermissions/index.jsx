@@ -39,24 +39,19 @@ const getSubmitCaption = ({ isSystemAdminView, selectedRole, isEdit, isSaving })
 const INITIAL_STATE = {
   permissions: {},
   role: null,
-  channel: null
+  channelType: null
 };
 
 const roleSchema = Yup.object().shape({
-  role: Yup.number().typeError('Id must be a number').required('Id is required'),
+  role: Yup.object().required('Id is required'),
 
-  channel: Yup.string()
+  channelType: Yup.string()
     .typeError('Channel must be a string')
-    .when('id', {
+    .when('role.id', {
       is: 2,
-      then: (schema) => schema.required('Channel is required when id is 2'),
+      then: (schema) => schema.required('Channel type is required.'),
       otherwise: (schema) => schema.notRequired()
-    }),
-
-  permissions: Yup.array()
-    .of(Yup.string().typeError('Each permission must be a string').required('Permission cannot be empty'))
-    .min(1, 'At least one permission is required')
-    .required('Permissions are required')
+    })
 });
 
 const UserPermissions = () => {
@@ -208,6 +203,7 @@ const UserPermissions = () => {
   const handleOnSubmit = (values) => {
     const payload = {
       roleId: values.role.id,
+      channelType: values.channelType,
       permissions: Object.keys(values.permissions).filter((key) => values.permissions[key] === true)
     };
     if (!createWizardSteps.rolePermissions || isDirty) {

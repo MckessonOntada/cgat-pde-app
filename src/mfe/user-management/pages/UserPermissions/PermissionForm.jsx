@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Fragment, useMemo } from 'react';
-import { RadioGroup, Switch, Button, Heading, Required } from '@mckesson/mcp-component-library';
-import Dropdown from '@src/components/form/Dropdown';
+import React, { useState, useEffect, Fragment } from 'react';
+import { RadioGroup, Switch, Button, Heading, Required, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
@@ -11,7 +10,6 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
-import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
@@ -98,7 +96,7 @@ const PermissionForm = ({ permissions, isRolePage }) => {
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
               <Field name={`role`}>
-                {({ field, form, values }) => {
+                {({ field, form, meta }) => {
                   return (
                     <React.Fragment>
                       <div>
@@ -118,6 +116,8 @@ const PermissionForm = ({ permissions, isRolePage }) => {
                           value={field.value && field.value?.id}
                           defaultSelectedLabel={field.value?.label}
                         />
+
+                        {meta.error && <TextError errorMessage={meta.error} />}
                       </div>
                     </React.Fragment>
                   );
@@ -127,23 +127,23 @@ const PermissionForm = ({ permissions, isRolePage }) => {
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
               {values.role?.name === 'Customer Centre' && (
                 <div className="radio-group">
-                  <Field name={`channel`}>
-                    {({ field, form, values }) => {
+                  <Field name={`channelType`}>
+                    {({ field, form, meta }) => {
+                      const { setFieldValue } = form;
                       return (
                         <React.Fragment>
-                          <label>
-                            {'Which channel is this user associated with?'}
-                            <Required>*</Required>
-                          </label>
                           <RadioGroup
                             direction="row"
                             id="order-channel-options"
+                            caption={'Which channel is this user associated with?'}
+                            isRequired={true}
                             items={channelList}
-                            onChangeValue={(value) => {}}
-                            value={''}
+                            onChangeValue={(value) => setFieldValue(field.name, value)}
+                            value={field.value}
                             radioBtnWidth="auto"
                             size="lg"
                           />
+                          {meta.error && <TextError errorMessage={meta.error} />}
                         </React.Fragment>
                       );
                     }}
