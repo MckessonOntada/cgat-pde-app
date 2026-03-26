@@ -344,9 +344,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
 
-      const beautifiedOrderDetails = normalizeOrderResponse(result);
-      setValue('orderDetails', beautifiedOrderDetails);
-
       if (warningMessages.length > 0) {
         warningMessages.forEach((msg) => {
           addNotification({
