@@ -1172,10 +1172,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
             type: 'success'
           });
         } else {
-          setAlert({
-            description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
-            type: 'warning'
-          });
+          setAlert(null);
         }
       },
       onError: () => {
