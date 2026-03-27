@@ -199,7 +199,7 @@ function getOptionsByStatus(props) {
         discardVersion({ orderId: props.id, preservedState });
         break;
       case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT: {
-        navigate(`${props.id}/upload-document?`, {
+        navigate(`${props.id}/documents/upload`, {
           state: { __prevSearch: search }
         });
         break;
