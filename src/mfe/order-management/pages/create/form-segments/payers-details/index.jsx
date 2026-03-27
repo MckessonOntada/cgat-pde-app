@@ -48,6 +48,7 @@ function Payer({ readOnly, hasPermission }) {
   const [isSecondaryMedicalInsuranceOpen, setIsSecondaryMedicalInsuranceOpen] = React.useState(false);
   const [isSecondaryPharmacyInsuranceOpen, setIsSecondaryPharmacyInsuranceOpen] = React.useState(false);
   const [alert, setAlert] = React.useState(null);
+  const [saveType, setSaveType] = React.useState(null);
   const [isPayerDetailsRequired, setIsPayerDetailsRequired] = React.useState(false);
   const { controlRef } = useContext(FooterContext);
   const { t } = useTranslate();
@@ -242,6 +243,7 @@ function Payer({ readOnly, hasPermission }) {
     onSuccess: (result, variables) => {
       const beautifiedOrderDetails = normalizeOrderResponse(result);
       setValue('orderDetails', beautifiedOrderDetails);
+      setSaveType(null);
       if (!variables.isSavingDraft) {
         navigateToNextStage(orderId, true);
       } else {
@@ -257,7 +259,7 @@ function Payer({ readOnly, hasPermission }) {
       const statusCode = error?.response?.status;
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
+      setSaveType(null);
       setAlert({
         type: 'error',
         description
@@ -287,6 +289,7 @@ function Payer({ readOnly, hasPermission }) {
   }
 
   const handleOnSubmit = (values, isSavingDraft) => {
+    setSaveType(isSavingDraft ? 'draft' : 'continue');
     const { payerDetailsRequired, insuranceDetails = null } = values;
     const isPayerDetailsRequired = payerDetailsRequired === 'yes';
     if (isPayerDetailsRequired) {
@@ -682,20 +685,22 @@ function Payer({ readOnly, hasPermission }) {
                       <Button
                         size="md"
                         onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
-                        variant="primary"
+                        isLoadingState={isSaving && saveType === 'draft'}
+                        Icon={isSaving && saveType === 'draft' && ButtonLoadingIcon}
+                        variant="secondary"
                         type="button"
                         disabled={readOnly || !isDirty}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button
                         variant="primary"
-                        isLoadingState={isSaving}
-                        Icon={isSaving && ButtonLoadingIcon}
+                        isLoadingState={isSaving && saveType === 'continue'}
+                        Icon={isSaving && saveType === 'continue' && ButtonLoadingIcon}
                         iconPosition="left"
                         type="submit"
                         disabled={readOnly}
                         size="md">
-                        {t(getOrderStepCaption(isSaving))}
+                        {t(getOrderStepCaption(isSaving && saveType === 'continue'))}
                       </Button>
                     </div>
                   </div>

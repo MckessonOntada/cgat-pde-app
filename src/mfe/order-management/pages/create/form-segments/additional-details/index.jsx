@@ -117,6 +117,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
   const [isSecondLegShipInfoRequired, setIsSecondLegShipInfoRequired] = React.useState(false);
+  const [saveType, setSaveType] = React.useState(null);
 
   const manufacturer = getManufacturer(orderDetails);
   const dispatch = useDispatch();
@@ -399,6 +400,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         const { id } = result;
         const beautifiedOrderDetails = normalizeOrderResponse(result);
         setValue('orderDetails', beautifiedOrderDetails);
+        setSaveType(null);
         if (!variables?.isSavingAsDraft) {
           setValue('isChangeOnPreviousStep', true);
           navigateToNextStage(id);
@@ -414,7 +416,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         const statusCode = error?.response?.status;
         let description = t('error.default');
         if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
-
+        setSaveType(null);
         setAlert({
           description,
           type: 'error'
@@ -836,6 +838,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
     setIsOrderInDraft(isSavingAsDraft);
+    setSaveType(isSavingAsDraft ? 'draft' : 'continue');
     if (channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA && manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
       setAlert({
         description: t('orderManagement.coiId.empty', {
@@ -1371,16 +1374,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                       </Button>{' '}
                       <Button
                         size="md"
+                        isLoadingState={isSaving && saveType === 'draft'}
+                        Icon={isSaving && saveType === 'draft' && ButtonLoadingIcon}
                         onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
-                        variant="primary"
+                        variant="secondary"
                         type="button"
                         disabled={readOnly || (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? skipTerms || !values.consentPolicy : !isDirty)}>
                         {t('button.caption.saveAsDraft')}
                       </Button>
                       <Button
                         variant="primary"
-                        isLoadingState={isSaving}
-                        Icon={isSaving && ButtonLoadingIcon}
+                        isLoadingState={isSaving && saveType === 'continue'}
+                        Icon={isSaving && saveType === 'continue' && ButtonLoadingIcon}
                         iconPosition="left"
                         type="submit"
                         disabled={
@@ -1389,7 +1394,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                           !isAllowedToProceed
                         }
                         size="md">
-                        {t(getOrderStepCaption(isSaving))}
+                        {t(getOrderStepCaption(isSaving && saveType === 'continue'))}
                       </Button>
                     </div>
                   </div>
