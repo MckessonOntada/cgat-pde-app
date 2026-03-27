@@ -149,7 +149,9 @@ export const getTabs = (isCSReviewOrdersPage) => {
       }
     ];
   } else if (isCSReviewOrdersPage) {
-    return [
+    const channelType = sessionStorage.getItem('CHANNEL_TYPE');
+
+    const tabs = [
       {
         id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
         configName: 'labels.tabs.submittedBuyAndBill',
@@ -165,6 +167,13 @@ export const getTabs = (isCSReviewOrdersPage) => {
         labelForMobile: 'labels.tabs.submittedSp'
       }
     ];
+    if (channelType === 'BUY_AND_BILL') {
+      return [tabs[0]];
+    } else if (channelType === 'SPECIALITY_PHARMA') {
+      return [tabs[1]];
+    } else {
+      return tabs;
+    }
   } else {
     return [
       {

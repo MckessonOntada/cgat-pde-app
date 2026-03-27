@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Fragment, useMemo } from 'react';
-import { Switch, Button, Heading } from '@mckesson/mcp-component-library';
-import Dropdown from '@src/components/form/Dropdown';
+import React, { useState, useEffect, Fragment } from 'react';
+import { RadioGroup, Switch, Button, Heading, Required, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
@@ -11,9 +10,9 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
-import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 const PermissionForm = ({ permissions, isRolePage }) => {
   const { t } = useTranslate();
@@ -26,6 +25,14 @@ const PermissionForm = ({ permissions, isRolePage }) => {
     let payload = { status: 'active', isPhysicianRequired: false, query: searchKey };
     return payload;
   };
+
+  const channelList = [
+    { label: t('labels.BUY_AND_BILL'), value: CHANNEL_TYPE.BUY_AND_BILL },
+    {
+      label: t('labels.SPECIALITY_PHARMACY'),
+      value: CHANNEL_TYPE.SPECIALTY_PHARMA
+    }
+  ];
 
   const {
     isLoading,
@@ -74,6 +81,7 @@ const PermissionForm = ({ permissions, isRolePage }) => {
       const newRolePermissions = selectedRoleDetails.permissions || [];
       const _permissions = Object.fromEntries(Object.keys(values.permissions).map((key) => [key, newRolePermissions.includes(key)]));
 
+      setFieldValue('channelType', null);
       setFieldValue('permissions', _permissions);
       setFieldValue('role', selectedRoleDetails);
       setValue('selectedRole', selectedRoleDetails.name);
@@ -89,27 +97,60 @@ const PermissionForm = ({ permissions, isRolePage }) => {
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
               <Field name={`role`}>
-                {({ field, form }) => {
+                {({ field, form, meta }) => {
                   return (
-                    <MultiSelectDropdown
-                      id={'select-role-search'}
-                      label={t('userManagement.user_permissions.select_role')}
-                      isMultiSelect={false}
-                      placeholder={'Select Role'}
-                      onChange={handleOnChange}
-                      options={roleData}
-                      variant={'async'}
-                      onSearch={(event) => setSearchKey(event)}
-                      recordsCountToEnableSearch={5}
-                      isRequired={!isRolePage}
-                      size="lg"
-                      isSortEnable={false}
-                      value={field.value && field.value?.id}
-                      defaultSelectedLabel={field.value?.label}
-                    />
+                    <React.Fragment>
+                      <div>
+                        <MultiSelectDropdown
+                          id={'select-role-search'}
+                          label={t('userManagement.user_permissions.select_role')}
+                          isMultiSelect={false}
+                          placeholder={'Select Role'}
+                          onChange={handleOnChange}
+                          options={roleData}
+                          variant={'async'}
+                          onSearch={(event) => setSearchKey(event)}
+                          recordsCountToEnableSearch={5}
+                          isRequired={!isRolePage}
+                          size="lg"
+                          isSortEnable={false}
+                          value={field.value && field.value?.id}
+                          defaultSelectedLabel={field.value?.label}
+                        />
+
+                        {meta.error && <TextError errorMessage={meta.error} />}
+                      </div>
+                    </React.Fragment>
                   );
                 }}
               </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+              {values.role?.name === 'Customer Centre' && (
+                <div className="radio-group">
+                  <Field name={`channelType`}>
+                    {({ field, form, meta }) => {
+                      const { setFieldValue } = form;
+                      return (
+                        <React.Fragment>
+                          <RadioGroup
+                            direction="row"
+                            id="order-channel-options"
+                            caption={'Which channel is this user associated with?'}
+                            isRequired={true}
+                            items={channelList}
+                            onChangeValue={(value) => setFieldValue(field.name, value)}
+                            value={field.value}
+                            radioBtnWidth="auto"
+                            size="lg"
+                          />
+                          {meta.error && <TextError errorMessage={meta.error} />}
+                        </React.Fragment>
+                      );
+                    }}
+                  </Field>
+                </div>
+              )}
             </div>
           </div>
         </Fragment>

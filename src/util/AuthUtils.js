@@ -233,6 +233,10 @@ function getOrgName() {
   }
 }
 
+function getCSUserChannelType() {
+  return sessionStorage.getItem('CHANNEL_TYPE');
+}
+
 const AuthUtils = Object.freeze({
   userHasRole,
   userHasPermission,
@@ -263,7 +267,8 @@ const AuthUtils = Object.freeze({
   isUserAdmin,
   impersonatedUserHasPermission,
   isImpersonatedUserCustomerCenter,
-  isImpersonatedAdminWithPhiPermission
+  isImpersonatedAdminWithPhiPermission,
+  getCSUserChannelType
 });
 
 export default AuthUtils;
