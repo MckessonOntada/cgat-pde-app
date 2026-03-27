@@ -81,6 +81,7 @@ const PermissionForm = ({ permissions, isRolePage }) => {
       const newRolePermissions = selectedRoleDetails.permissions || [];
       const _permissions = Object.fromEntries(Object.keys(values.permissions).map((key) => [key, newRolePermissions.includes(key)]));
 
+      setFieldValue('channelType', null);
       setFieldValue('permissions', _permissions);
       setFieldValue('role', selectedRoleDetails);
       setValue('selectedRole', selectedRoleDetails.name);
