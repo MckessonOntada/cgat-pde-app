@@ -374,6 +374,16 @@ const UserDetail = () => {
                   }}
                 />
               )}
+              {userDetails?.role?.name === 'Customer Centre' && (
+                <Badge
+                  text={userDetails?.channelType?.replace('_', ' ')}
+                  type={getBackgroundColorByRole(userDetails?.role?.name)}
+                  customStyle={{
+                    background: '#DEEBF0',
+                    color: '#254E56'
+                  }}
+                />
+              )}
             </div>
             <div className="user-status">
               <span className="view_label">{translateFn('userManagement.userDetails.lastUpdatedOn')}</span>
