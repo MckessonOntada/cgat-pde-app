@@ -52,6 +52,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   const [tradeDetails, setTradeDetails] = React.useState();
   const dispatch = useDispatch();
   const alertContainerId = 'accountSelection-alert-Container';
+  const [saveType, setSaveType] = useState(null);
 
   React.useEffect(() => {
     if (!orderDetails?.id) return;
@@ -110,7 +111,8 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (variables.isDraft) {
       return;
     }
-
+    setIsDirty(false);
+    setSaveType(null);
     navigateToPatient(id);
   };
 
@@ -137,6 +139,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   };
 
   const handleSaveError = (error) => {
+    setSaveType(null);
     const statusCode = error?.response?.status;
     const description = statusCode >= 400 && statusCode < 600 ? t('error.default') : CommonUtils.getAxiosErrorMessage(error);
 
@@ -213,7 +216,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
 
   const handleOnSubmit = async (isDraft) => {
     if (isSaving) return;
-
+    setSaveType(isDraft ? 'draft' : 'continue');
     const payload = {
       program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : '',
       soldToAccountId: selectedSoldToAccount.id,
@@ -375,18 +378,25 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button size="md" onClick={handleOnSaveAsDraft} variant="primary" type="submit" disabled={readOnly || !isDirty}>
+              <Button
+                size="md"
+                isLoadingState={isSaving && saveType === 'draft'}
+                Icon={isSaving && saveType === 'draft' && ButtonLoadingIcon}
+                onClick={handleOnSaveAsDraft}
+                variant="secondary"
+                type="submit"
+                disabled={readOnly || !isDirty}>
                 {t('button.caption.saveAsDraft')}
               </Button>
               <Button
                 variant="primary"
-                isLoadingState={isSaving}
-                Icon={isSaving && ButtonLoadingIcon}
+                isLoadingState={isSaving && saveType === 'continue'}
+                Icon={isSaving && saveType === 'continue' && ButtonLoadingIcon}
                 iconPosition="left"
                 disabled={readOnly}
                 onClick={handleOnSaveAndContinue}
                 size="md">
-                {t(getOrderStepCaption(isSaving))}
+                {t(getOrderStepCaption(isSaving && saveType === 'continue'))}
               </Button>
             </div>
           </div>
