@@ -216,6 +216,8 @@ export const UserManagementEN = {
   'USER_MANAGEMENT.VIEW_ROLES.DESCRIPTION': 'Allows user to view the screen',
   'USER_MANAGEMENT.ON_BEHALF_OF_USER': 'On Behalf of User',
   'USER_MANAGEMENT.ON_BEHALF_OF_USER.DESCRIPTION': "Allows admin to login on another user's behalf, enabling login from another user button",
+  'USER_MANAGEMENT.VIEW_PHI_INFORMATION': 'View PHI Information',
+  'USER_MANAGEMENT.VIEW_PHI_INFORMATION.DESCRIPTION': 'Allows users to see PHI Information',
 
   'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN': 'Manage Organization',
   'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN.DESCRIPTION': 'Allows editing and deactivating the organization, enabling edit and deactivate options',
