@@ -126,6 +126,12 @@ export const UserProvider = ({ children }) => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams({ isPhysicianRequired: false })}`, httpVerb.GET, {});
       if (response.data) {
         const { content: data } = response.data;
+        if (AuthUtils.isSystemAdminView()) {
+          return data.map((item) => ({
+            label: item.name === 'Customer Centre' ? 'Customer Service' : item.name,
+            value: item.id
+          }));
+        }
         return data.map((item) => ({
           label: item.name,
           value: item.id
