@@ -100,6 +100,9 @@ export const OrderProvider = ({ children, isCSReviewOrdersPage = false }) => {
   };
 
   const getChannelType = (config) => {
+    if (AuthUtils.isCustomerCenterView()) {
+      return AuthUtils.getCSUserChannelType();
+    }
     if ([config.tab, config.orderType].includes(ORDER_TABS.SUBMITTED_SP)) {
       return CHANNEL_TYPE.SPECIALTY_PHARMA;
     }

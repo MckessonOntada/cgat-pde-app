@@ -48,6 +48,10 @@ const updateSessionStorage = async () => {
     sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, activeUserPermissions);
     sessionStorage.setItem(SESSION_CONST.USER_FULL_NAME, userFullName);
     sessionStorage.setItem(SESSION_CONST.ROLE_ID, roleId);
+    debugger;
+    if (activeUserRoleName === 'Customer Centre') {
+      sessionStorage.setItem('CHANNEL_TYPE', userDetails.channelType);
+    }
 
     if (userDetails?.impersonatedByUser) {
       sessionStorage.setItem(SESSION_CONST.IMPERSONATED_BY_USER, JSON.stringify(userDetails.impersonatedByUser));

@@ -80,7 +80,7 @@ function OrderManagementRoutes() {
         </Route>
       </Route>
       <Route path=":orderId" element={<OrderLoader />}>
-        <Route path={`:orderId/review`} element={<FinalizeOrder />} />
+        <Route path={`review`} element={<FinalizeOrder />} />
         <Route path={`verification/:manufacturer`} element={<OrcaPatientDetails />} />
         <Route path={`documents/upload`} element={<UploadOrderDocument />} />
         <Route path={`status`} element={<OrderStatus />} />
