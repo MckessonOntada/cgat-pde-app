@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import { Button } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -37,8 +38,21 @@ const getSubmitCaption = ({ isSystemAdminView, selectedRole, isEdit, isSaving })
 
 const INITIAL_STATE = {
   permissions: {},
-  role: null
+  role: null,
+  channelType: null
 };
+
+const roleSchema = Yup.object().shape({
+  role: Yup.object().required('Id is required'),
+
+  channelType: Yup.string()
+    .typeError('Channel must be a string')
+    .when('role.id', {
+      is: 2,
+      then: (schema) => schema.required('Channel type is required.'),
+      otherwise: (schema) => schema.notRequired()
+    })
+});
 
 const UserPermissions = () => {
   const { t } = useTranslate();
@@ -104,6 +118,10 @@ const UserPermissions = () => {
           ...userDetails.role,
           label: userDetails.role.name === 'Customer Centre' ? 'Customer Service' : userDetails.role.name
         };
+
+        if (userDetails.role.name === 'Customer Centre') {
+          formValues.channelType = userDetails.channelType;
+        }
       }
       setInitialFormValue(formValues);
     }
@@ -189,6 +207,7 @@ const UserPermissions = () => {
   const handleOnSubmit = (values) => {
     const payload = {
       roleId: values.role.id,
+      channelType: values.channelType,
       permissions: Object.keys(values.permissions).filter((key) => values.permissions[key] === true)
     };
     if (!createWizardSteps.rolePermissions || isDirty) {
@@ -210,7 +229,13 @@ const UserPermissions = () => {
   return (
     <div className="MCP-module-wrapper">
       {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-      <Formik initialValues={initialFormValues} enableReinitialize={true} onSubmit={handleOnSubmit} validateOnChange={false} validateOnBlur={true}>
+      <Formik
+        validationSchema={roleSchema}
+        initialValues={initialFormValues}
+        enableReinitialize={true}
+        onSubmit={handleOnSubmit}
+        validateOnChange={false}
+        validateOnBlur={true}>
         {({ dirty }) => {
           React.useEffect(() => {
             setIsDirty(dirty);

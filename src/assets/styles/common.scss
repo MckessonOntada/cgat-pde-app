@@ -981,12 +981,16 @@ div.disable-all {
       line-height: var(--brand-line-height--x-large);
       margin-bottom: var(--spacing-04);
     }
+    div {
+      margin-right: var(--spacing-02);
+    }
   }
 
   label {
     font-size: var(--brand-font-size--default) !important;
     font-weight: var(--brand-font-weight-600) !important;
     line-height: var(--brand-line-height--m-large) !important;
+    white-space: nowrap;
   }
 }
 

@@ -27,6 +27,7 @@ import CancelOrderPanel from '../create/form-segments/summary/CancelOrderPanel';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import { useWidgetContext } from '@src/context/WidgetContext';
+import { CHANNEL_TYPE } from '../create/form-segments/Constants';
 
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
@@ -138,11 +139,11 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
 
   React.useEffect(() => {
     let tabId = params.get('tab');
-
-    if (!tabId) {
+    const isCustomerCenterView = AuthUtils.isCustomerCenterView();
+    if (isCustomerCenterView) {
+      tabId = AuthUtils.getCSUserChannelType() === CHANNEL_TYPE.BUY_AND_BILL ? ORDER_TABS.SUBMITTED_BUY_AND_BILL : ORDER_TABS.SUBMITTED_SP;
+    } else if (!tabId) {
       tabId = isPhysician ? ORDER_TABS.REVIEW : ORDER_TABS.SUBMITTED_BUY_AND_BILL;
-      params.set('tab', tabId);
-      navigate(`${location.pathname}?${params.toString()}`, { replace: false });
     }
 
     setTabList(
@@ -151,6 +152,8 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         isActiveTab: tab.id === tabId
       }))
     );
+    params.set('tab', tabId);
+    navigate(`${location.pathname}?${params.toString()}`, { replace: false });
   }, [location.search]);
 
   React.useEffect(() => {
