@@ -26,9 +26,35 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
-  const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
+  const [includeInvoiceData, setIncludeInvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig, refetch } = usePaymentInvoices();
+  const isHistory = useLocation().pathname.split('/').includes('invoices-history');
+
+  const { data = [], isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig, refetch } = usePaymentInvoices();
+  const beautifiedData = React.useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (isHistory) {
+      return data.slice().sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+    } else {
+      const upcoming = [];
+      const overdue = [];
+      data.forEach((d) => {
+        const dueDate = new Date(d.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        if (dueDate >= today) {
+          upcoming.push(d);
+        } else {
+          overdue.push(d);
+        }
+      });
+
+      upcoming.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      overdue.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+      dueDate;
+      return [...upcoming, ...overdue];
+    }
+  }, [data]);
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
@@ -37,7 +63,6 @@ export default function InvoicesTable() {
   const isDataFiltered = React.useMemo(() => {
     return checkIsDataFiltered(filterConfig);
   }, [filterConfig]);
-  const isHistory = useLocation().pathname.split('/').includes('invoices-history');
 
   React.useEffect(() => {
     refetch();
@@ -128,14 +153,14 @@ export default function InvoicesTable() {
           selectableRows,
           'billNumber',
           paginationConfig,
-          includeinvoiceData,
-          setIncludeinvoiceData,
+          includeInvoiceData,
+          setIncludeInvoiceData,
           false,
           false,
           false,
           MAX_SELECTION
         );
-        const isHeaderDisabled = includeinvoiceData.length >= MAX_SELECTION && !isAllChecked(selectableRows, includeinvoiceData, 'billNumber');
+        const isHeaderDisabled = includeInvoiceData.length >= MAX_SELECTION && !isAllChecked(selectableRows, includeInvoiceData, 'billNumber');
         return isHeaderDisabled ? (
           <Tooltip body={t('paymentInvoices.invoice.count.text')} placement="right">
             <span>{headerCheckbox}</span>
@@ -148,15 +173,15 @@ export default function InvoicesTable() {
       cell: (row, index) => {
         const isScheduled = row.scheduled === 'X';
         const isDisabled =
-          (includeinvoiceData.length >= MAX_SELECTION && !includeinvoiceData.some((item) => item.billNumber === row.billNumber)) || isScheduled;
+          (includeInvoiceData.length >= MAX_SELECTION && !includeInvoiceData.some((item) => item.billNumber === row.billNumber)) || isScheduled;
 
         const rowCheckBox = renderTableCheckBox(
           row,
           data,
           'billNumber',
           paginationConfig,
-          includeinvoiceData,
-          setIncludeinvoiceData,
+          includeInvoiceData,
+          setIncludeInvoiceData,
           false,
           false,
           isDisabled,
@@ -403,15 +428,15 @@ export default function InvoicesTable() {
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         }
-        secondaryView={includeinvoiceData.length > 0}
-        secondaryViewHeading={`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}
+        secondaryView={includeInvoiceData.length > 0}
+        secondaryViewHeading={`${includeInvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}
         secondaryViewControls={
           <Button
             variant="secondary"
             onClick={() => {
               navigate(`/record/invoices/reviewPayments`, {
                 state: {
-                  invoices: includeinvoiceData,
+                  invoices: includeInvoiceData,
                   reviewPay: true,
                   selectedPayToAcc: selectedAccount
                 }
@@ -426,7 +451,7 @@ export default function InvoicesTable() {
         id="my-data-table"
         type="normal"
         columns={columns}
-        data={data || []}
+        data={beautifiedData || []}
         onSortIconClick={handleSort}
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
@@ -440,8 +465,8 @@ export default function InvoicesTable() {
         showCardView={showCardView}
         defaultExpandedCardView={false}
         isMultipleRowSelect={true}
-        selectedData={includeinvoiceData}
-        setSelectedData={setIncludeinvoiceData}
+        selectedData={includeInvoiceData}
+        setSelectedData={setIncludeInvoiceData}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
