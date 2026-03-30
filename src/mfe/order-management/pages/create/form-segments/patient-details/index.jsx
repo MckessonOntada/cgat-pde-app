@@ -76,6 +76,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
   const [isPatientVerified, setPatientVerified] = React.useState(false);
   const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
+  const [saveType, setSaveType] = React.useState(null);
   const dispatch = useDispatch();
   const formikRef = useRef();
   const manufacturer = getManufacturer(orderDetails);
@@ -295,6 +296,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         const { id } = result;
         const beautifiedOrderDetails = normalizeOrderResponse(result);
         setValue('orderDetails', beautifiedOrderDetails);
+        setSaveType(null);
         if (!variables?.isSavingDraft) {
           navigateToNextStage(id, true);
           setProvider(null);
@@ -309,6 +311,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       },
       onError: ({ err: error, payload }) => {
         const statusCode = error?.response?.status;
+        setSaveType(null);
         if (statusCode === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
@@ -373,6 +376,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   }
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
     setIsOrderInDraft(isSavingDraft);
+    setSaveType(isSavingDraft ? 'draft' : 'continue');
     if (!!manufacturer && manufacturer !== MANUFACTURER.BMS && isEmptyFirstTime) {
       if (manufacturer === MANUFACTURER.ORCA && (!form.patient?.patientIdentifier || !form.patient?.medicalRecordNumber)) {
         setAlert({
@@ -979,7 +983,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                       <Button
                         size="md"
                         onClick={() => handleOnSaveDraft(values, errors, touched, setTouched, setErrors)}
-                        variant="primary"
+                        isLoadingState={isSaving && saveType === 'draft'}
+                        Icon={isSaving && saveType === 'draft' && ButtonLoadingIcon}
+                        variant="secondary"
                         type="button"
                         disabled={readOnly || !isDirty || !isAllowedToProceed}>
                         {t('button.caption.saveAsDraft')}
@@ -989,13 +995,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                       </Button> */}
                       <Button
                         variant="primary"
-                        isLoadingState={isSaving}
-                        Icon={isSaving && ButtonLoadingIcon}
+                        isLoadingState={isSaving && saveType === 'continue'}
+                        Icon={isSaving && saveType === 'continue' && ButtonLoadingIcon}
                         iconPosition="left"
                         type="submit"
                         disabled={readOnly || !isAllowedToProceed || isPatientVerifying}
                         size="md">
-                        {t(getOrderStepCaption(isSaving))}
+                        {t(getOrderStepCaption(isSaving && saveType === 'continue'))}
                       </Button>
                     </div>
                   </div>
