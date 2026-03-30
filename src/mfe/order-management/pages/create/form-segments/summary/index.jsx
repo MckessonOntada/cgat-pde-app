@@ -333,12 +333,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled:
-      isSpOrder || readOnly
-        ? false
-        : !status
-        ? false
-        : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
+    // enabled:
+    //   isSpOrder || readOnly
+    //     ? false
+    //     : !status
+    //     ? false
+    //     : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
+    enabled: false,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
@@ -368,10 +369,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       let description = t('error.default');
       if (!(statusCode >= 400 && statusCode < 600)) description = CommonUtils.getAxiosErrorMessage(error);
 
-      setAlert({
-        description,
-        type: 'error'
-      });
+      // setAlert({
+      //   description,
+      //   type: 'error'
+      // });
     }
   });
 
