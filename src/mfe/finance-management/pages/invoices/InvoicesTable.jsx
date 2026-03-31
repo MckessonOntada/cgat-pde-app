@@ -51,7 +51,7 @@ export default function InvoicesTable() {
 
       upcoming.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
       overdue.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
-      dueDate;
+
       return [...upcoming, ...overdue];
     }
   }, [data]);
