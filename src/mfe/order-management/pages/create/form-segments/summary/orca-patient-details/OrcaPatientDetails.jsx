@@ -211,7 +211,7 @@ function OrcaPatientDetails() {
           if (error.status === 404) {
             warningMessage = `The Orca Bio Recipient ID or Hospital Medical Record Number (MRN) entered could not be found. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
           } else if (error.status === 409) {
-            warningMessage = `There are Multiple record on the entered MRN . Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
+            warningMessage = `There are Multiple record on the entered MRN/PID. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
           }
           setAlert({
             type: 'warning',
