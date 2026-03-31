@@ -195,20 +195,27 @@ function OrcaPatientDetails() {
       setIsPatientVerifying(true);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
-          if (response && Array.isArray(response) && response.length > 0) {
-            setOrcaPatientList([...response]);
-            setIsOrcaValidationPanelOpen(true);
+          if (response && Array.isArray(response) && response.length === 1) {
+            _setOrcaVerifiedPatient(response[0]);
+            setPatientVerified(true);
+            setAlert({
+              type: 'success',
+              description: translateFn('message.orcaPatientVerificationSuccess')
+            });
           }
         })
         .catch((error) => {
           clearPatientDetails(patientId ? 'patientIdentifier' : 'medicalRecordNumber');
           setPatientVerified(false);
+          let warningMessage = `Something went wrong please try again.`;
+          if (error.status === 404) {
+            warningMessage = `The Orca Bio Recipient ID or Hospital Medical Record Number (MRN) entered could not be found. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
+          } else if (error.status === 409) {
+            warningMessage = `There are Multiple record on the entered MRN/PID. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
+          }
           setAlert({
             type: 'warning',
-            description: translateFn('message.orcaPatientVerificationFailed1', {
-              patientId: getDisplayNameByFieldName('patientIdentifier'),
-              medicalRecordNumber: getDisplayNameByFieldName('medicalRecordNumber')
-            })
+            description: warningMessage
           });
         })
         .finally(() => {
