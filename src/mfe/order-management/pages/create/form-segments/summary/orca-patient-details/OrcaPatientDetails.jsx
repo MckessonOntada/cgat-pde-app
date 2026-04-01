@@ -153,7 +153,6 @@ function OrcaPatientDetails() {
     const { id } = e.target;
     formikRef.current?.setFieldTouched(id, true);
     if (getIn(formikRef.current?.errors, id)) {
-      setAlert(null);
       clearPatientDetails();
       return;
     }
