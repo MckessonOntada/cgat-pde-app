@@ -121,8 +121,6 @@ export const PatientSections = ({
               label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
               placeholder: ' ',
               type: 'datePicker',
-              useUnmaskedValue: true,
-              mask: 'x',
               disableFuture: true,
               isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
