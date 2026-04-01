@@ -375,6 +375,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     return obj;
   }
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
+    if (manufacturer === MANUFACTURER.ORCA && !isPatientVerified) {
+      setAlert({
+        type: 'warning',
+        description: `The Orca Bio Recipient ID or Hospital Medical Record Number (MRN) entered could not be found. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`
+      });
+      return;
+    }
     setIsOrderInDraft(isSavingDraft);
     setSaveType(isSavingDraft ? 'draft' : 'continue');
     if (!!manufacturer && manufacturer !== MANUFACTURER.BMS && isEmptyFirstTime) {
@@ -611,10 +618,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     formikRef.current?.setFieldTouched(idValue, true);
 
     if (getIn(formikRef.current?.errors, idValue)) {
-      setAlert(null);
       if (manufacturer === MANUFACTURER.ORCA) {
         setPatientVerified(false);
         clearPatientDetails();
+      } else {
+        setAlert(null);
       }
       return;
     }
@@ -669,28 +677,35 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       setIsPatientVerifying(true);
       OrderService.verifyOrcaDetails(payload)
         .then((response) => {
-          if (response && Array.isArray(response) && response.length > 0) {
-            setOrcaPatientList([...response]);
-            setIsOrcaValidationPanelOpen(true);
-            setPatientVerified(false);
+          if (response && Array.isArray(response) && response.length === 1) {
+            // setOrcaPatientList([...response]);
+            // setIsOrcaValidationPanelOpen(true);
+            _setOrcaVerifiedPatient(response[0]);
+            setPatientVerified(true);
+            setAlert({
+              type: 'success',
+              description: t('message.orcaPatientVerificationSuccess')
+            });
           }
         })
         .catch((error) => {
           clearPatientDetails(patientId ? 'patientIdentifier' : 'medicalRecordNumber');
           setPatientVerified(false);
+          let warningMessage = `Something went wrong please try again.`;
+          if (error.status === 404) {
+            warningMessage = `The Orca Bio Recipient ID or Hospital Medical Record Number (MRN) entered could not be found. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
+          } else if (error.status === 409) {
+            warningMessage = `There are Multiple record on the entered MRN/PID. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`;
+          }
           setAlert({
             type: 'warning',
-            description: t('message.orcaPatientVerificationFailed1', {
-              patientId: getDisplayNameByFieldName('patientIdentifier'),
-              medicalRecordNumber: getDisplayNameByFieldName('medicalRecordNumber')
-            })
+            description: warningMessage
           });
         })
         .finally(() => {
           setIsPatientVerifying(false);
         });
     } else {
-      setAlert(null);
       setPatientVerified(false);
       clearPatientDetails();
     }

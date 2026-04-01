@@ -91,7 +91,6 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, hea
         className={styles.drawerModule}
         style={drawerStyles}
         ref={drawerRef}
-        onClick={(e) => e.stopPropagation()} // Prevents closing on click inside
         onTouchMove={swipeable ? handleSwipe : null}
         aria-modal="true"
         role="dialog"
