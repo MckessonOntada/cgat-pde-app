@@ -618,10 +618,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     formikRef.current?.setFieldTouched(idValue, true);
 
     if (getIn(formikRef.current?.errors, idValue)) {
-      setAlert(null);
       if (manufacturer === MANUFACTURER.ORCA) {
         setPatientVerified(false);
         clearPatientDetails();
+      } else {
+        setAlert(null);
       }
       return;
     }
@@ -705,7 +706,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           setIsPatientVerifying(false);
         });
     } else {
-      setAlert(null);
       setPatientVerified(false);
       clearPatientDetails();
     }
