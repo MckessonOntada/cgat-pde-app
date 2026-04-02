@@ -76,6 +76,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
   const [isPatientVerified, setPatientVerified] = React.useState(false);
   const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
+  const [isDobMasked, setIsDobMasked] = React.useState(false);
+  const [isGenderMasked, setIsGenderMasked] = React.useState(false);
   const [saveType, setSaveType] = React.useState(null);
   const dispatch = useDispatch();
   const formikRef = useRef();
@@ -138,7 +140,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         orcaVerifiedPatient.firstName = orcaVerifiedPatient.firstName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.middleName = orcaVerifiedPatient.middleName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.lastName = orcaVerifiedPatient.lastName ? '*'.repeat(6) : '';
-        orcaVerifiedPatient.dateOfBirth = '';
+        orcaVerifiedPatient.dateOfBirth = orcaVerifiedPatient.dateMasked ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.gender = orcaVerifiedPatient.gender === 'Masked' ? '*'.repeat(6) : '';
+        setIsDobMasked(true);
+        setIsGenderMasked(true);
       }
       formikRef.current?.setTouched({});
       formikRef.current?.setErrors({});
@@ -218,6 +223,14 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
       const config =
         orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
       const patientDetails = getValueWIthoutPrefixAndSuffix(orderDetails.patient, config || []);
+      if (!orderDetails.rules.hasImpersonatedUserPhiPermission) {
+        setIsDobMasked(patientDetails?.patientInfo?.dateMasked || manufacturer === MANUFACTURER.ORCA);
+        setIsGenderMasked(patientDetails?.patientInfo?.gender === 'Masked' || manufacturer === MANUFACTURER.ORCA);
+        if (patientDetails?.patientInfo?.dateMasked || patientDetails?.patientInfo?.gender === 'Masked') {
+          patientDetails.patientInfo.dateOfBirth = patientDetails?.patientInfo?.dateMasked ? '*'.repeat(6) : '';
+          patientDetails.patientInfo.gender = patientDetails?.patientInfo?.gender === 'Masked' ? '*'.repeat(6) : '';
+        }
+      }
       setInitialValues({
         patient: CommonUtils.normalizeFormData(normalizePatient(patientDetails)),
         providerId: orderDetails.provider?.id
@@ -365,8 +378,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
     if (obj !== null && typeof obj === 'object') {
       return Object.entries(obj).reduce((acc, [key, value]) => {
-        if (value === '******') return acc;
-
+        if (value === '******' || value === 'Masked') return acc;
         acc[key] = removeMaskedFields(value);
         return acc;
       }, {});
@@ -642,6 +654,18 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
   };
 
+  const componentTypeChange = (e) => {
+    const name = e.target.name;
+    const setFieldValue = formikRef.current?.setFieldValue;
+    if (name === 'patient.patientInfo.gender') {
+      setIsGenderMasked(false);
+      setFieldValue('patient.patientInfo.gender', '');
+    } else {
+      setIsDobMasked(false);
+      setFieldValue('patient.patientInfo.dateOfBirth', '');
+    }
+  };
+
   const clearPatientDetails = (lastUpdatedField) => {
     const setFieldValue = formikRef.current?.setFieldValue;
     setOrcaVerifiedPatient(null);
@@ -764,7 +788,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             spMaterialConfig: spTherapyConfig,
             therapyConfig,
             manufacturer,
-            rules: orderDetails.rules
+            rules: orderDetails.rules,
+            isDobMasked,
+            isGenderMasked
           })}
           enableReinitialize={true}
           innerRef={formikRef}
@@ -803,7 +829,10 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                             manufacturer,
                             isPatientVerifying,
                             isPatientVerified: isPatientVerified,
-                            readOnly: readOnly || !isAllowedToProceed
+                            readOnly: readOnly || !isAllowedToProceed,
+                            componentTypeChange,
+                            isDobMasked,
+                            isGenderMasked
                           })}
                         />
                         {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
