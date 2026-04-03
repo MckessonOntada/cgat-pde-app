@@ -41,11 +41,19 @@ const LoginCallback = () => {
       const roles = decodedResponse['roles'];
       const username = decodedResponse['userName'];
       const userId = decodedResponse['userId'];
+      const activeUserPermissions = decodedResponse['permissions'];
+      const roleId = decodedResponse['role']['id'];
+      const userFullName = `${decodedResponse?.name.lastName}, ${decodedResponse?.name.firstName}${
+        decodedResponse?.name.middleName ? ' ' + decodedResponse.name.middleName : ''
+      }`;
 
       if (CommonUtils.isNonEmptyArray(roles) && username) {
         sessionStorage.setItem('USER_ROLE', roles[0]);
         sessionStorage.setItem('USERNAME', username);
         sessionStorage.setItem('USER_ID', userId);
+        sessionStorage.setItem('USER_PERMISSIONS', activeUserPermissions);
+        sessionStorage.setItem('USER_FULL_NAME', userFullName);
+        sessionStorage.setItem('ROLE_ID', roleId);
         return true;
       } else {
         setIsFetched(true);
