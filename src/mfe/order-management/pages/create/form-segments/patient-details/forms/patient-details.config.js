@@ -67,6 +67,12 @@ export const PatientSections = ({
                       isRequired: field.properties.mandatoryField,
                       infoText: field?.properties.helpInfoMessage,
                       endIcon: !isCSUserReviewingOrca && getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
+                      onKeyPress: (e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          validateOnBlur(e);
+                        }
+                      },
                       onBlur: !isReadOnly && !isCSUserReviewingOrca && validateOnBlur
                     };
                   }) || []
