@@ -166,7 +166,6 @@ function OrcaPatientDetails() {
     const { id } = e.target;
     formikRef.current?.setFieldTouched(id, true);
     if (getIn(formikRef.current?.errors, id)) {
-      setAlert(null);
       clearPatientDetails();
       return;
     }
@@ -245,6 +244,14 @@ function OrcaPatientDetails() {
   };
 
   const handleOnSave = (values) => {
+    if (manufacturer === MANUFACTURER.ORCA && !isPatientVerified) {
+      setAlert({
+        type: 'warning',
+        description: `The Orca Bio Recipient ID or Hospital Medical Record Number (MRN) entered could not be found. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`
+      });
+      return;
+    }
+
     const config =
       orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.spTherapyConfig?.config?.fields : orderDetails.therapyConfig?.config?.fields;
     const updatedValue = updatePatientValues(values, config || []);
