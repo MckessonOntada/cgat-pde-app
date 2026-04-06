@@ -117,7 +117,7 @@ export const PatientSections = ({
               label: 'orderManagement.patientDetails.inputLabel.gender',
               placeholder: ' ',
               type: isGenderMasked ? 'inputText' : 'dropdown',
-              onFocus: !rules.hasImpersonatedUserPhiPermission && componentTypeChange,
+              onFocus: !rules.hasImpersonatedUserPhiPermission && manufacturer !== MANUFACTURER.ORCA && componentTypeChange,
               options: ['Male', 'Female', 'Other'].map((item) => ({
                 label: item,
                 value: item
@@ -131,7 +131,7 @@ export const PatientSections = ({
               label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
               placeholder: ' ',
               type: isDobMasked ? 'inputText' : 'datePicker',
-              onFocus: !rules.hasImpersonatedUserPhiPermission && componentTypeChange,
+              onFocus: !rules.hasImpersonatedUserPhiPermission && manufacturer !== MANUFACTURER.ORCA && componentTypeChange,
               disableFuture: true,
               isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
