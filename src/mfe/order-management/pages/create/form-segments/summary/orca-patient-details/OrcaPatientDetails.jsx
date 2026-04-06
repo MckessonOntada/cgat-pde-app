@@ -74,7 +74,7 @@ function OrcaPatientDetails() {
 
       setOrcaVerifiedPatient(verifiedPatient);
       setOriginallyVerified(verifiedPatient);
-      setPatientVerified(['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(verifiedPatient?.[key])));
+      setPatientVerified(['firstName', 'lastName'].every((key) => Boolean(verifiedPatient?.[key])));
 
       setInitialValues({
         patient: { ...patientData }
