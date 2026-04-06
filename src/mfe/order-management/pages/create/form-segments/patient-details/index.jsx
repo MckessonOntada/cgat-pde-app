@@ -138,7 +138,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         orcaVerifiedPatient.firstName = orcaVerifiedPatient.firstName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.middleName = orcaVerifiedPatient.middleName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.lastName = orcaVerifiedPatient.lastName ? '*'.repeat(6) : '';
-        orcaVerifiedPatient.gender = orcaVerifiedPatient.gender ? '*'.repeat(6) : '';
         orcaVerifiedPatient.dateOfBirth = '';
       }
       formikRef.current?.setTouched({});
