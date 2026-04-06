@@ -73,7 +73,7 @@ function FinalizeOrder() {
 
   const { isLoading: isSaving, mutate: finalizeOrder } = useMutation(async (payload) => await OrderService.finalizeOrder(orderId, payload), {
     onSuccess: (_result) => {
-      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/order-confirmed`, { state: { ...locationState } });
+      navigate(`${RoutePaths.pathOrderManagement}/${orderId}/status`, { state: { ...locationState } });
     },
     onError: (error) => {
       const statusCode = error?.response?.status;
