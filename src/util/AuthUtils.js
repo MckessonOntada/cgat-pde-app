@@ -133,6 +133,16 @@ const impersonatedUserHasPermission = (permissions) => {
   return false;
 };
 
+const hasUserPhiPermission = () => {
+  try {
+    const permissions = sessionStorage.getItem('USER_PERMISSIONS');
+    if (permissions.includes('VIEW_PHI_INFORMATION')) {
+      return true;
+    }
+  } catch (error) {}
+  return false;
+};
+
 const isImpersonatedUserCustomerCenter = function () {
   try {
     const impersonatedUser = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));

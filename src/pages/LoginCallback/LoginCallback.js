@@ -6,10 +6,17 @@ import AuthService from '../../api/authService/AuthService';
 import { Loader, Button } from '@mckesson/mcp-component-library';
 import ErrorComponent from '../../components/error/ErrorComponent';
 import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
+import AuthUtils from '@src/util/AuthUtils';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 
 const LoginCallback = () => {
   let { oktaAuth } = useOktaAuth();
   const [isFetched, setIsFetched] = useState(false);
+  const {
+    organization: { setOrganization, selectedOrganization }
+  } = useSessionFeatures();
   const [error, setError] = useState({
     isError: false,
     header: 'Please reach out to IT team for access.',
@@ -18,8 +25,16 @@ const LoginCallback = () => {
 
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
-    () => {
-      /* Post login */
+    async () => {
+      /*post login*/
+      //Fetching organization details if the loggedin user is not system admin.
+      if (!AuthUtils.isSystemAdmin() && !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive()) {
+        const _practiceId = AuthUtils.getPracticeId();
+        const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${_practiceId}`, httpVerb.GET, {});
+        if (res?.data) {
+          setOrganization(res.data);
+        }
+      }
     },
     {
       enabled: false,
@@ -38,14 +53,30 @@ const LoginCallback = () => {
         setError({ ...error, isError: true });
         return false;
       }
-      const roles = decodedResponse['roles'];
+      const roles = decodedResponse['role']['name'];
       const username = decodedResponse['userName'];
-      const userId = decodedResponse['userId'];
+      const userId = decodedResponse['id'];
+      const activeUserPermissions = decodedResponse['permissions'];
+      const roleId = decodedResponse['role']['id'];
+      const userFullName = `${decodedResponse?.name.lastName}, ${decodedResponse?.name.firstName}${
+        decodedResponse?.name.middleName ? ' ' + decodedResponse.name.middleName : ''
+      }`;
+      const activeUserPracticeId = decodedResponse['practiceId'];
+      const channelType = decodedResponse['channelType'];
 
-      if (CommonUtils.isNonEmptyArray(roles) && username) {
-        sessionStorage.setItem('USER_ROLE', roles[0]);
+      if (username) {
+        sessionStorage.setItem('USER_ROLE', roles);
         sessionStorage.setItem('USERNAME', username);
         sessionStorage.setItem('USER_ID', userId);
+        sessionStorage.setItem('USER_PERMISSIONS', activeUserPermissions);
+        sessionStorage.setItem('USER_FULL_NAME', userFullName);
+        sessionStorage.setItem('ROLE_ID', roleId);
+        if (roles === 'Customer Centre') {
+          sessionStorage.setItem('CHANNEL_TYPE', channelType);
+        }
+        if (roles !== 'System Administrator' && roles !== 'Customer Centre' && roles !== 'Treatment Centre Executive') {
+          AuthUtils.setPracticeId(activeUserPracticeId);
+        }
         return true;
       } else {
         setIsFetched(true);
@@ -67,9 +98,13 @@ const LoginCallback = () => {
     try {
       const { tokens } = await oktaAuth.token.parseFromUrl();
       const sessionUserName = sessionStorage.getItem('okta-widget-username').toLocaleLowerCase();
+      const oktaTokenStorage = sessionStorage.getItem('okta-token-storage') || '{}';
+      console.log('Session oktaTokenStorage', oktaTokenStorage);
+      console.log('Token', tokens);
       sessionStorage.removeItem('okta-widget-username');
       if (tokens) {
         const hasRole = await checkUserRole(tokens);
+        sessionStorage.setItem('sid', oktaTokenStorage?.idToken?.idToken || ``);
         const userInfo = await oktaAuth.token.getUserInfo(tokens.accessToken, tokens.idToken);
         onPostUserLogin();
         if (userInfo.email.toLocaleLowerCase() !== sessionUserName) {
