@@ -7,10 +7,16 @@ import { Loader, Button } from '@mckesson/mcp-component-library';
 import ErrorComponent from '../../components/error/ErrorComponent';
 import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
 import AuthUtils from '@src/util/AuthUtils';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 
 const LoginCallback = () => {
   let { oktaAuth } = useOktaAuth();
   const [isFetched, setIsFetched] = useState(false);
+  const {
+    organization: { setOrganization, selectedOrganization }
+  } = useSessionFeatures();
   const [error, setError] = useState({
     isError: false,
     header: 'Please reach out to IT team for access.',
@@ -19,8 +25,16 @@ const LoginCallback = () => {
 
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
-    () => {
-      /* Post login */
+    async () => {
+      /*post login*/
+      //Fetching organization details if the loggedin user is not system admin.
+      if (!AuthUtils.isSystemAdmin() && !AuthUtils.isCustomerCenter() && !AuthUtils.isTreatmentCentreExecutive()) {
+        const _practiceId = AuthUtils.getPracticeId();
+        const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${_practiceId}`, httpVerb.GET, {});
+        if (res?.data) {
+          setOrganization(res.data);
+        }
+      }
     },
     {
       enabled: false,
@@ -84,9 +98,12 @@ const LoginCallback = () => {
     try {
       const { tokens } = await oktaAuth.token.parseFromUrl();
       const sessionUserName = sessionStorage.getItem('okta-widget-username').toLocaleLowerCase();
+      console.log('Session username from storage:', sessionUserName);
+      const oktaTokenStorage = sessionStorage.getItem('okta-token-storage');
       sessionStorage.removeItem('okta-widget-username');
       if (tokens) {
         const hasRole = await checkUserRole(tokens);
+        sessionStorage.setItem('sid', oktaTokenStorage?.idToken?.idToken || ``);
         const userInfo = await oktaAuth.token.getUserInfo(tokens.accessToken, tokens.idToken);
         onPostUserLogin();
         if (userInfo.email.toLocaleLowerCase() !== sessionUserName) {
