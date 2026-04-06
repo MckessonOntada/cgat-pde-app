@@ -376,7 +376,7 @@ const UserDetail = () => {
               )}
               {userDetails?.role?.name === 'Customer Centre' && (
                 <Badge
-                  text={userDetails?.channelType?.replace('_', ' ')}
+                  text={userDetails?.channelType?.replace(/_/g, ' ')}
                   type={getBackgroundColorByRole(userDetails?.role?.name)}
                   customStyle={{
                     background: '#DEEBF0',
