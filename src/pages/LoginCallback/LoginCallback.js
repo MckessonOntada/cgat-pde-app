@@ -38,7 +38,7 @@ const LoginCallback = () => {
         setError({ ...error, isError: true });
         return false;
       }
-      const roles = decodedResponse['roles'];
+      const roles = decodedResponse['role']['name'];
       const username = decodedResponse['userName'];
       const userId = decodedResponse['userId'];
       const activeUserPermissions = decodedResponse['permissions'];
@@ -46,14 +46,22 @@ const LoginCallback = () => {
       const userFullName = `${decodedResponse?.name.lastName}, ${decodedResponse?.name.firstName}${
         decodedResponse?.name.middleName ? ' ' + decodedResponse.name.middleName : ''
       }`;
+      const activeUserPracticeId = decodedResponse['practiceId'];
+      const channelType = decodedResponse['channelType'];
 
-      if (CommonUtils.isNonEmptyArray(roles) && username) {
-        sessionStorage.setItem('USER_ROLE', roles[0]);
+      if (username) {
+        sessionStorage.setItem('USER_ROLE', roles);
         sessionStorage.setItem('USERNAME', username);
         sessionStorage.setItem('USER_ID', userId);
         sessionStorage.setItem('USER_PERMISSIONS', activeUserPermissions);
         sessionStorage.setItem('USER_FULL_NAME', userFullName);
         sessionStorage.setItem('ROLE_ID', roleId);
+        if (roles === 'Customer Centre') {
+          sessionStorage.setItem('CHANNEL_TYPE', channelType);
+        }
+        if (roles !== 'System Administrator' && roles !== 'Customer Centre' && roles !== 'Treatment Centre Executive') {
+          AuthUtils.setPracticeId(activeUserPracticeId);
+        }
         return true;
       } else {
         setIsFetched(true);
