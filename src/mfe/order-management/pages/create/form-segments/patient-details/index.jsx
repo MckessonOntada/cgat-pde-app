@@ -100,7 +100,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         verifiedPatient.patientId = patient.patientIdentifier;
       }
       setOrcaVerifiedPatient(verifiedPatient);
-      setPatientVerified(['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(verifiedPatient?.[key])));
+      setPatientVerified(['firstName', 'lastName'].every((key) => Boolean(verifiedPatient?.[key])));
 
       setInitialValues({
         ...initialValues,
@@ -272,7 +272,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         confirm: {
           label: t('modal.action.continue'),
           action: () => {
-            handleSubmit(payload, true, isOrderInDraft);
+            handleSubmit(payload, true, true);
           }
         },
         cancel: {
@@ -387,7 +387,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     return obj;
   }
   const handleSubmit = (form, skipDuplicateCheck = false, isSavingDraft = false) => {
-    if (manufacturer === MANUFACTURER.ORCA && !isPatientVerified) {
+    if (!isSavingDraft && manufacturer === MANUFACTURER.ORCA && !isPatientVerified) {
       setAlert({
         type: 'warning',
         description: `The Orca Bio Recipient ID or Hospital Medical Record Number (MRN) entered could not be found. Please double-check your entry and try again. If the issue persists, contact your Orca Bio Case Manager for additional support at (877) 411-ORCA or casemanagement@orcabio.com.`
