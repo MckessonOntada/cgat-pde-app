@@ -6,6 +6,7 @@ import AuthService from '../../api/authService/AuthService';
 import { Loader, Button } from '@mckesson/mcp-component-library';
 import ErrorComponent from '../../components/error/ErrorComponent';
 import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
+import AuthUtils from '@src/util/AuthUtils';
 
 const LoginCallback = () => {
   let { oktaAuth } = useOktaAuth();
@@ -40,7 +41,7 @@ const LoginCallback = () => {
       }
       const roles = decodedResponse['role']['name'];
       const username = decodedResponse['userName'];
-      const userId = decodedResponse['userId'];
+      const userId = decodedResponse['id'];
       const activeUserPermissions = decodedResponse['permissions'];
       const roleId = decodedResponse['role']['id'];
       const userFullName = `${decodedResponse?.name.lastName}, ${decodedResponse?.name.firstName}${
