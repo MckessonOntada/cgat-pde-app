@@ -99,7 +99,7 @@ const LoginCallback = () => {
       const { tokens } = await oktaAuth.token.parseFromUrl();
       const sessionUserName = sessionStorage.getItem('okta-widget-username').toLocaleLowerCase();
       console.log('Session username from storage:', sessionUserName);
-      const oktaTokenStorage = sessionStorage.getItem('okta-token-storage');
+      const oktaTokenStorage = sessionStorage.getItem('okta-token-storage') || '{}';
       sessionStorage.removeItem('okta-widget-username');
       if (tokens) {
         const hasRole = await checkUserRole(tokens);
