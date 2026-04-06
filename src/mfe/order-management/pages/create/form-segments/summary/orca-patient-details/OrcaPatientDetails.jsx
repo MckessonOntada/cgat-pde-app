@@ -43,7 +43,19 @@ function OrcaPatientDetails() {
   React.useEffect(() => {
     if (orderDetails.id || orcaPatient) {
       const { patient = {} } = orderDetails;
-      const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
+
+      const basePatient = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
+
+      const patientData = {
+        ...basePatient,
+        patientInfo: { ...basePatient.patientInfo }
+      };
+
+      if (patientData?.patientInfo?.dateMasked || patientData?.patientInfo?.gender === 'Masked') {
+        patientData.patientInfo.dateOfBirth = patientData.patientInfo.dateMasked ? '*'.repeat(6) : '';
+        patientData.patientInfo.gender = ['Masked', '******'].includes(patientData.patientInfo.gender) ? '*'.repeat(6) : '';
+      }
+
       const verifiedPatient = {
         ...patientData.patientInfo
       };
@@ -62,7 +74,7 @@ function OrcaPatientDetails() {
 
       setOrcaVerifiedPatient(verifiedPatient);
       setOriginallyVerified(verifiedPatient);
-      setPatientVerified(['firstName', 'lastName', 'dateOfBirth'].every((key) => Boolean(verifiedPatient?.[key])));
+      setPatientVerified(['firstName', 'lastName'].every((key) => Boolean(verifiedPatient?.[key])));
 
       setInitialValues({
         patient: { ...patientData }
@@ -101,7 +113,8 @@ function OrcaPatientDetails() {
         orcaVerifiedPatient.firstName = orcaVerifiedPatient.firstName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.middleName = orcaVerifiedPatient.middleName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.lastName = orcaVerifiedPatient.lastName ? '*'.repeat(6) : '';
-        orcaVerifiedPatient.dateOfBirth = '';
+        orcaVerifiedPatient.dateOfBirth = orcaVerifiedPatient.dateMasked ? '*'.repeat(6) : '';
+        orcaVerifiedPatient.gender = orcaVerifiedPatient.gender === 'Masked' ? '*'.repeat(6) : '';
       }
       formikRef.current?.setTouched({});
       formikRef.current?.setErrors({});
@@ -293,7 +306,9 @@ function OrcaPatientDetails() {
               isCustomerCentreUser,
               rules: {
                 hasImpersonatedUserPhiPermission: AuthUtils.isImpersonatedAdminWithPhiPermission()
-              }
+              },
+              isDobMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission(),
+              isGenderMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission()
             })}
             onSubmit={handleOnSave}
             enableReinitialize
@@ -302,7 +317,6 @@ function OrcaPatientDetails() {
               React.useEffect(() => {
                 setIsDirty(dirty);
               }, [dirty]);
-              console.log(values, errors, touched);
               return (
                 <Form>
                   <div className="stack">
@@ -320,7 +334,9 @@ function OrcaPatientDetails() {
                           isCustomerCentreUser,
                           rules: {
                             hasImpersonatedUserPhiPermission: AuthUtils.isImpersonatedAdminWithPhiPermission()
-                          }
+                          },
+                          isDobMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission(),
+                          isGenderMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission()
                         })}
                       />
                     </div>

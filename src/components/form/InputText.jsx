@@ -39,6 +39,7 @@ const InputText = ({
   isShowLabel = true,
   labelTemplate = 'default',
   infoText,
+  onKeyPress,
   ...props
 }) => {
   const [value, setValue] = useState(propValue || '');
@@ -110,6 +111,7 @@ const InputText = ({
             className={`${styles.inputElement} ${hasError ? styles.errorInput : ''}`}
             onChange={handleChange}
             onBlur={handleBlur}
+            onKeyPress={onKeyPress}
             onKeyDown={handleKeyPress}
             {...props}
           />

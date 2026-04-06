@@ -366,7 +366,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     setValidationSchema(finalValidationSchema);
 
     const initialQuantityDetails = {};
-    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       if (spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity && spTherapyConfig.minQuantity > 0) {
         initialQuantityDetails.orderQuantity = spTherapyConfig.minQuantity;
       }

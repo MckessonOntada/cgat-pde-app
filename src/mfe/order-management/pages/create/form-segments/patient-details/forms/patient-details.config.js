@@ -29,7 +29,10 @@ export const PatientSections = ({
   manufacturer,
   isPatientVerifying,
   isPatientVerified,
-  isCSUserReviewingOrca = false
+  isCSUserReviewingOrca = false,
+  componentTypeChange,
+  isDobMasked,
+  isGenderMasked
 }) => {
   return [
     {
@@ -64,6 +67,12 @@ export const PatientSections = ({
                       isRequired: field.properties.mandatoryField,
                       infoText: field?.properties.helpInfoMessage,
                       endIcon: !isCSUserReviewingOrca && getFieldIcon(field.fieldName, isPatientVerifying, isPatientVerified),
+                      onKeyPress: (e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          validateOnBlur(e);
+                        }
+                      },
                       onBlur: !isReadOnly && !isCSUserReviewingOrca && validateOnBlur
                     };
                   }) || []
@@ -107,7 +116,8 @@ export const PatientSections = ({
               name: 'patient.patientInfo.gender',
               label: 'orderManagement.patientDetails.inputLabel.gender',
               placeholder: ' ',
-              type: 'dropdown',
+              type: isGenderMasked ? 'inputText' : 'dropdown',
+              onFocus: !rules.hasImpersonatedUserPhiPermission && manufacturer !== MANUFACTURER.ORCA && componentTypeChange,
               options: ['Male', 'Female', 'Other'].map((item) => ({
                 label: item,
                 value: item
@@ -120,7 +130,8 @@ export const PatientSections = ({
               name: 'patient.patientInfo.dateOfBirth',
               label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
               placeholder: ' ',
-              type: 'datePicker',
+              type: isDobMasked ? 'inputText' : 'datePicker',
+              onFocus: !rules.hasImpersonatedUserPhiPermission && manufacturer !== MANUFACTURER.ORCA && componentTypeChange,
               disableFuture: true,
               isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA

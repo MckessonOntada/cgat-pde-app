@@ -126,7 +126,11 @@ const OrderStatus = () => {
             )}
 
             {patient?.patientInfo?.dateOfBirth ? <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth} /> : <div></div>}
-            {patient?.patientInfo?.gender ? <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender} /> : <div></div>}
+            {patient?.patientInfo?.gender ? (
+              <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender === 'Masked' ? '******' : patient?.patientInfo?.gender || '-'} />
+            ) : (
+              <div></div>
+            )}
             {!(therapyConfig?.isPIDRequired || patient?.patientIdentifier) && <div></div>}
 
             {!spOrder && (
