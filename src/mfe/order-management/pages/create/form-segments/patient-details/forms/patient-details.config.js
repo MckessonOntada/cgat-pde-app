@@ -108,7 +108,7 @@ export const PatientSections = ({
               label: 'orderManagement.patientDetails.inputLabel.gender',
               placeholder: ' ',
               type: 'dropdown',
-              options: ['Male', 'Female', 'Other'].map((item) => ({
+              options: [...(!rules.hasImpersonatedUserPhiPermission ? ['******'] : ['Male', 'Female', 'Other'])].map((item) => ({
                 label: item,
                 value: item
               })),

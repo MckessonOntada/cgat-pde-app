@@ -196,7 +196,7 @@ export const getValidationSchema = ({
               otherwise: (schema) => schema.nullable()
             }),
           gender: Yup.string()
-            .oneOf(['Male', 'Female', 'Other'], t('labels.invalidGenderSelection'))
+            .oneOf([...(!rules.hasImpersonatedUserPhiPermission ? ['******'] : ['Male', 'Female', 'Other'])], t('labels.invalidGenderSelection'))
             .when([], {
               is: () => isSpOrder,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.gender')),
