@@ -75,7 +75,8 @@ export const getValidationSchema = ({
   manufacturer,
   isCSUserReviewingOrca = false,
   rules = {},
-  isCustomerCentreUser = false
+  isCustomerCentreUser = false,
+  isDobMasked = false
 }) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
@@ -187,16 +188,18 @@ export const getValidationSchema = ({
             field: 'last_name',
             required: isSpOrder
           }),
-          dateOfBirth: Yup.date()
-            .max(yesterday, t('labels.invalidDateOfBirth'))
-            .typeError(t('labels.selectValidDate'))
-            .when([], {
-              is: () => isSpOrder,
-              then: (schema) => schema.required(t('orderManagement.patientDetails.validation.dateOfBirth')),
-              otherwise: (schema) => schema.nullable()
-            }),
+          ...(!isDobMasked && {
+            dateOfBirth: Yup.date()
+              .max(yesterday, t('labels.invalidDateOfBirth'))
+              .typeError(t('labels.selectValidDate'))
+              .when([], {
+                is: () => isSpOrder,
+                then: (schema) => schema.required(t('orderManagement.patientDetails.validation.dateOfBirth')),
+                otherwise: (schema) => schema.nullable()
+              })
+          }),
           gender: Yup.string()
-            .oneOf(['Male', 'Female', 'Other'], t('labels.invalidGenderSelection'))
+            .oneOf(['Male', 'Female', 'Other', '******'], t('labels.invalidGenderSelection'))
             .when([], {
               is: () => isSpOrder,
               then: (schema) => schema.required(t('orderManagement.patientDetails.validation.gender')),

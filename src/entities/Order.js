@@ -7,7 +7,7 @@ function Order(data) {
   const rules = {};
 
   //evaluate admin-user + orgView + phi permission
-  rules.hasImpersonatedUserPhiPermission = AuthUtils.isImpersonatedAdminWithPhiPermission();
+  rules.hasImpersonatedUserPhiPermission = AuthUtils.hasUserPhiPermission();
   if (data.therapy?.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) rules.hasImpersonatedUserPhiPermission = true;
 
   this.rules = rules;

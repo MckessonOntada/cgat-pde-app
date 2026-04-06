@@ -532,11 +532,27 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
     return obj;
   };
+  function removeMaskedFields(obj) {
+    if (Array.isArray(obj)) {
+      return obj.map(removeMaskedFields);
+    }
+
+    if (obj !== null && typeof obj === 'object') {
+      return Object.entries(obj).reduce((acc, [key, value]) => {
+        if (value === '******' || value === 'Masked') return acc;
+        acc[key] = removeMaskedFields(value);
+        return acc;
+      }, {});
+    }
+
+    return obj;
+  }
 
   const handleOnReSubmit = () => {
     if (AuthUtils.isSystemAdminView()) {
-      const finalPayload = removeKeyFromPayload(draftChanges, 'medicalRecordNumber');
-      reSubmitOrder(finalPayload);
+      reSubmitOrder(removeKeyFromPayload(draftChanges, 'medicalRecordNumber'));
+    } else if (!isImpersonatedAdminWithPhiPermission) {
+      reSubmitOrder(removeMaskedFields(draftChanges));
     } else {
       reSubmitOrder(draftChanges);
     }
@@ -1631,11 +1647,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       />
                       <DetailSegment
                         label={t('labels.DOB')}
-                        value={
-                          !isSpOrder && (!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser)
-                            ? '******'
-                            : patientData?.patientInfo?.dateOfBirth || '-'
-                        }
+                        value={patientData?.patientInfo?.dateMasked ? '******' : patientData?.patientInfo?.dateOfBirth || '-'}
                       />
                       {isSpOrder && (
                         <DetailSegment
@@ -1653,9 +1665,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       )}
                       <DetailSegment
                         label={t('labels.gender')}
-                        value={
-                          !isSpOrder && (!isImpersonatedAdminWithPhiPermission || isCustomerCentreUser) ? '******' : patientData?.patientInfo?.gender || '-'
-                        }
+                        value={patientData?.patientInfo?.gender === 'Masked' ? '******' : patientData?.patientInfo?.gender || '-'}
                       />
                       {!isSpOrder &&
                         therapyConfig?.config?.fields
