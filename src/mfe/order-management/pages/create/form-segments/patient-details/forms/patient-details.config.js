@@ -29,7 +29,10 @@ export const PatientSections = ({
   manufacturer,
   isPatientVerifying,
   isPatientVerified,
-  isCSUserReviewingOrca = false
+  isCSUserReviewingOrca = false,
+  componentTypeChange,
+  isDobMasked,
+  isGenderMasked
 }) => {
   return [
     {
@@ -107,7 +110,8 @@ export const PatientSections = ({
               name: 'patient.patientInfo.gender',
               label: 'orderManagement.patientDetails.inputLabel.gender',
               placeholder: ' ',
-              type: 'dropdown',
+              type: isGenderMasked ? 'inputText' : 'dropdown',
+              onFocus: !rules.hasImpersonatedUserPhiPermission && componentTypeChange,
               options: ['Male', 'Female', 'Other'].map((item) => ({
                 label: item,
                 value: item
@@ -120,7 +124,8 @@ export const PatientSections = ({
               name: 'patient.patientInfo.dateOfBirth',
               label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
               placeholder: ' ',
-              type: 'datePicker',
+              type: isDobMasked ? 'inputText' : 'datePicker',
+              onFocus: !rules.hasImpersonatedUserPhiPermission && componentTypeChange,
               disableFuture: true,
               isReadOnly: !isCSUserReviewingOrca && [MANUFACTURER.ORCA].includes(manufacturer),
               isRequired: channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
