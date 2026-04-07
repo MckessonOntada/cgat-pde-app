@@ -278,7 +278,8 @@ const AuthUtils = Object.freeze({
   impersonatedUserHasPermission,
   isImpersonatedUserCustomerCenter,
   isImpersonatedAdminWithPhiPermission,
-  getCSUserChannelType
+  getCSUserChannelType,
+  hasUserPhiPermission
 });
 
 export default AuthUtils;
