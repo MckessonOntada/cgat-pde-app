@@ -272,7 +272,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
         confirm: {
           label: t('modal.action.continue'),
           action: () => {
-            handleSubmit(payload, true, true);
+            handleSubmit(payload, true, false);
           }
         },
         cancel: {
