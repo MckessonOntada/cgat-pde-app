@@ -324,7 +324,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     return schema;
   };
 
-  const { data: variantsData = {} } = useQuery({
+  const { data: variantsData = {}, isFetching: isFetchingVariants } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
       OrderService.getVariants(
@@ -766,6 +766,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         });
       }
 
+      console.log(orderQuantity);
+
       setStoredValue((prev) => ({
         ...prev,
         ...initialValues
@@ -797,7 +799,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         phoneNumber: secondLegShipInfo.phoneNumber || ''
       };
     }
-
     setInitialFormValues((prev) => ({
       ...prev,
       ...initialValues
@@ -1229,6 +1230,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     handleOnSubmit(values, true);
   };
+
+  if (isFetchingVariants || isFetchingConfiguredQuestions || !orderDetails.id) return <Loader variant={'circular'} />;
 
   return (
     <div className="MCP-module-wrapper">
