@@ -98,13 +98,10 @@ const LoginCallback = () => {
     try {
       const { tokens } = await oktaAuth.token.parseFromUrl();
       const sessionUserName = sessionStorage.getItem('okta-widget-username').toLocaleLowerCase();
-      const oktaTokenStorage = sessionStorage.getItem('okta-token-storage') || '{}';
-      console.log('Session oktaTokenStorage', oktaTokenStorage);
-      console.log('Token', tokens);
       sessionStorage.removeItem('okta-widget-username');
       if (tokens) {
         const hasRole = await checkUserRole(tokens);
-        sessionStorage.setItem('sid', oktaTokenStorage?.idToken?.idToken || ``);
+        sessionStorage.setItem('sid', tokens?.idToken?.idToken || '');
         const userInfo = await oktaAuth.token.getUserInfo(tokens.accessToken, tokens.idToken);
         onPostUserLogin();
         if (userInfo.email.toLocaleLowerCase() !== sessionUserName) {
