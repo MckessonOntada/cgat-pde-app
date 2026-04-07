@@ -135,7 +135,14 @@ const impersonatedUserHasPermission = (permissions) => {
 
 const hasUserPhiPermission = () => {
   try {
-    const permissions = sessionStorage.getItem('USER_PERMISSIONS');
+    const impersonatedUserId = sessionStorage.getItem('x-imp-user-id');
+    let permissions = [];
+    if (impersonatedUserId) {
+      const impersonatedUser = JSON.parse(sessionStorage.getItem('IMPERSONATED_BY_USER'));
+      permissions = impersonatedUser?.permissions || [];
+    } else {
+      permissions = sessionStorage.getItem('USER_PERMISSIONS');
+    }
     if (permissions.includes('VIEW_PHI_INFORMATION')) {
       return true;
     }
