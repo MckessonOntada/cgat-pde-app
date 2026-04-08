@@ -75,6 +75,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const [orcaVerifiedPatient, setOrcaVerifiedPatient] = React.useState(null);
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
   const [isPatientVerified, setPatientVerified] = React.useState(false);
+  const [previouslyVerifiedOrcaMrn, setPreviouslyVerifiedOrcaMrn] = React.useState(null);
   const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
   const [isDobMasked, setIsDobMasked] = React.useState(false);
   const [isGenderMasked, setIsGenderMasked] = React.useState(false);
@@ -693,7 +694,13 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   const validateOrcaDetails = (patientId, medicalRecordNumber) => {
     const payload = {};
     if (patientId) payload.patientId = patientId;
-    else if (medicalRecordNumber) payload.medicalRecordNumber = medicalRecordNumber;
+    else if (medicalRecordNumber) {
+      if (manufacturer === MANUFACTURER.ORCA) {
+        if (medicalRecordNumber === previouslyVerifiedOrcaMrn) return;
+        setPreviouslyVerifiedOrcaMrn(null);
+      }
+      payload.medicalRecordNumber = medicalRecordNumber;
+    }
 
     if (CommonUtils.isNonEmptyObject(payload)) {
       setAlert(null);
@@ -704,7 +711,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           if (response && Array.isArray(response) && response.length === 1) {
             // setOrcaPatientList([...response]);
             // setIsOrcaValidationPanelOpen(true);
-            _setOrcaVerifiedPatient(response[0]);
+            const verifiedPatient = response[0] || {};
+            setPreviouslyVerifiedOrcaMrn(verifiedPatient.medicalRecordNumber);
+            _setOrcaVerifiedPatient(verifiedPatient);
             setPatientVerified(true);
             setAlert({
               type: 'success',
