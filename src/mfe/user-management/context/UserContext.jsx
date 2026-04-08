@@ -96,7 +96,7 @@ export const UserProvider = ({ children }) => {
       let url = '';
       if (tab === USER_TABS.USERS) {
         url = `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`;
-      } else if (PENDING_REQUESTS) {
+      } else if (tab === USER_TABS.PENDING_REQUESTS) {
         url = `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
       }
 
