@@ -711,7 +711,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
           if (response && Array.isArray(response) && response.length === 1) {
             // setOrcaPatientList([...response]);
             // setIsOrcaValidationPanelOpen(true);
-            const verifiedPatient = response[0];
+            const verifiedPatient = response[0] || {};
             setPreviouslyVerifiedOrcaMrn(verifiedPatient.medicalRecordNumber);
             _setOrcaVerifiedPatient(verifiedPatient);
             setPatientVerified(true);
