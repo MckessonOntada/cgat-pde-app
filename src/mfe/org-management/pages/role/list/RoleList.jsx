@@ -25,7 +25,7 @@ const RoleList = ({ onAlert }) => {
   const { isError, error } = {};
   const dispatch = useDispatch();
   const { pagination, changePage } = usePagination();
-  const { data, loading, refreshData } = useTable();
+  const { data, loading, refreshTable } = useTable();
   const { filters } = useFilters();
   const showCardView = useResponsiveView();
   const isDataFiltered = Object.values(filters).some((v) => v !== null && v !== undefined && v !== '');
@@ -47,7 +47,7 @@ const RoleList = ({ onAlert }) => {
         type: 'success',
         description: t('orgManagement.messages.deleteRoleSuccess')
       });
-      refreshData();
+      refreshTable();
     }
   });
 
@@ -72,7 +72,7 @@ const RoleList = ({ onAlert }) => {
           size="md"
           variant="primary"
           onClick={() => {
-            deleteRole(selection[0]);
+            deleteRole(selection);
             dispatch(closeModal());
           }}>
           {t('orgManagement.button.OK')}
