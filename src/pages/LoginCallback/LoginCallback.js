@@ -74,7 +74,7 @@ const LoginCallback = () => {
         if (roles === 'Customer Centre') {
           sessionStorage.setItem('CHANNEL_TYPE', channelType);
         }
-        if (roles !== 'System Administrator' && roles !== 'Customer Centre' && roles !== 'Treatment Centre Executive') {
+        if (!['System Admin', 'Customer Centre', 'Treatment Centre Executive'].includes(roles)) {
           AuthUtils.setPracticeId(activeUserPracticeId);
         }
         return true;
@@ -96,7 +96,6 @@ const LoginCallback = () => {
 
   const handleMagicLinkLogin = async (otp, state) => {
     try {
-      //OPTIONAL: Validate same browser
       const storedState = sessionStorage.getItem('okta-state');
 
       if (storedState && storedState !== state) {
@@ -108,20 +107,12 @@ const LoginCallback = () => {
         setIsFetched(true);
         return;
       }
-
-      // 👉 Call Okta IDX API to verify OTP
-      const transaction = await oktaAuth.idx.parseEmailVerifyCallback({
-        otp: otp,
-        state: state
-      });
+      const transaction = await await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
 
       if (transaction.status === 'SUCCESS') {
         const tokens = transaction.tokens;
-
         const hasRole = await checkUserRole(tokens);
-
         sessionStorage.setItem('sid', tokens?.idToken?.idToken || '');
-
         onPostUserLogin();
 
         if (hasRole) {
@@ -155,7 +146,7 @@ const LoginCallback = () => {
 
       const otp = searchParams.get('otp');
       const state = searchParams.get('state');
-      debugger;
+
       // 👉 MAGIC LINK FLOW
       if (otp && state) {
         await handleMagicLinkLogin(otp, state);
