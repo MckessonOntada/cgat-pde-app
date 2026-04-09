@@ -66,7 +66,14 @@ const Routes = () => {
         </Route>
       </Route>
 
-      <Route path={PATHS.UPLOAD} element={<UploadUsers />} />
+      <Route
+        path={PATHS.UPLOAD}
+        element={
+          <UserProvider>
+            <UploadUsers />
+          </UserProvider>
+        }
+      />
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   );

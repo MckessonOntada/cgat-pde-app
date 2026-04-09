@@ -59,7 +59,6 @@ import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-load
 const INITIAL_VALUES = {
   coiId: '',
   orderQuantity: '',
-  slotNumber: '',
   poNumber: '',
   shipToPONumber: '',
   dateOfAdministration: '',
@@ -324,7 +323,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     return schema;
   };
 
-  const { data: variantsData = {} } = useQuery({
+  const { data: variantsData = {}, isFetching: isFetchingVariants } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () =>
       OrderService.getVariants(
@@ -696,7 +695,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         patientConsentTaken,
         poNumber,
         shipToPONumber,
-        slotNumber,
         variantDetails = {},
         configuredQuestionnaires,
         diagnosisCode,
@@ -761,10 +759,11 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           timeOfAdministration,
           coiId,
           orderQuantity,
-          slotNumber,
           shipToPONumber
         });
       }
+
+      console.log(orderQuantity);
 
       setStoredValue((prev) => ({
         ...prev,
@@ -797,7 +796,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         phoneNumber: secondLegShipInfo.phoneNumber || ''
       };
     }
-
     setInitialFormValues((prev) => ({
       ...prev,
       ...initialValues
@@ -862,18 +860,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       : null;
 
-    const {
-      coiId,
-      orderQuantity,
-      slotNumber,
-      poNumber,
-      dateOfAdministration,
-      dateOfApheresis,
-      diagnosisCode,
-      shipToPONumber,
-      timeOfAdministration,
-      timeOfApheresis
-    } = values;
+    const { coiId, orderQuantity, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber, timeOfAdministration, timeOfApheresis } =
+      values;
     let orderQuantityConfig = {};
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       orderQuantityConfig = therapyConfig;
@@ -949,7 +937,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     } else {
       payload.coiId = coiId;
       payload.orderQuantity = orderQuantity;
-      payload.slotNumber = slotNumber;
       payload.shipToPONumber = shipToPONumber;
       payload.dateOfAdministration = dateOfAdministration;
       payload.dateOfApheresis = dateOfApheresis;
@@ -1229,6 +1216,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
     handleOnSubmit(values, true);
   };
+
+  if (isFetchingVariants || isFetchingConfiguredQuestions || !orderDetails.id) return <Loader variant={'circular'} />;
 
   return (
     <div className="MCP-module-wrapper">

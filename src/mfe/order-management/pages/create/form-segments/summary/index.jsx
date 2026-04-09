@@ -333,13 +333,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    // enabled:
-    //   isSpOrder || readOnly
-    //     ? false
-    //     : !status
-    //     ? false
-    //     : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
-    enabled: false,
+    enabled:
+      isSpOrder || readOnly
+        ? false
+        : !status
+        ? false
+        : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
+
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
