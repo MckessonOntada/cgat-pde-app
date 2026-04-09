@@ -94,8 +94,73 @@ const LoginCallback = () => {
     AuthService.userLogout(oktaAuth);
   };
 
+  const handleMagicLinkLogin = async (otp, state) => {
+    try {
+      //OPTIONAL: Validate same browser
+      const storedState = sessionStorage.getItem('okta-state');
+
+      if (storedState && storedState !== state) {
+        setError({
+          ...error,
+          isError: true,
+          header: 'Please use the same browser/device or enter OTP manually.'
+        });
+        setIsFetched(true);
+        return;
+      }
+
+      // 👉 Call Okta IDX API to verify OTP
+      const transaction = await oktaAuth.idx.parseEmailVerifyCallback({
+        otp: otp,
+        state: state
+      });
+
+      if (transaction.status === 'SUCCESS') {
+        const tokens = transaction.tokens;
+
+        const hasRole = await checkUserRole(tokens);
+
+        sessionStorage.setItem('sid', tokens?.idToken?.idToken || '');
+
+        onPostUserLogin();
+
+        if (hasRole) {
+          oktaAuth.handleLoginRedirect(tokens);
+        } else {
+          setError({ ...error, isError: true });
+        }
+      } else {
+        setError({
+          ...error,
+          isError: true,
+          header: 'Invalid or expired magic link. Please try again.'
+        });
+      }
+
+      setIsFetched(true);
+    } catch (err) {
+      console.error(err);
+      setError({
+        ...error,
+        isError: true,
+        header: 'Magic link authentication failed.'
+      });
+      setIsFetched(true);
+    }
+  };
+
   const handleRedirect = async () => {
     try {
+      const searchParams = new URL(window.location.href).searchParams;
+
+      const otp = searchParams.get('otp');
+      const state = searchParams.get('state');
+      debugger;
+      // 👉 MAGIC LINK FLOW
+      if (otp && state) {
+        await handleMagicLinkLogin(otp, state);
+        return;
+      }
       const { tokens } = await oktaAuth.token.parseFromUrl();
       const sessionUserName = sessionStorage.getItem('okta-widget-username').toLocaleLowerCase();
       sessionStorage.removeItem('okta-widget-username');

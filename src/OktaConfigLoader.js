@@ -4,6 +4,9 @@ import { REACT_APP_OKTA_AUTH_SERVER_ID, REACT_APP_OKTA_BASE_URL, REACT_APP_OKTA_
 
 const OktaConfigLoader = (props) => {
   const { children } = props;
+  const searchParams = new URL(window.location.href).searchParams;
+  const otp = searchParams.get('otp');
+  const state = searchParams.get('state');
   const res = {
     baseUrl: REACT_APP_OKTA_BASE_URL,
     protocol: 'oauth2',
@@ -14,7 +17,9 @@ const OktaConfigLoader = (props) => {
     scopes: 'openid,email,profile,offline_access',
     state: {
       LANGUAGE: 'en'
-    }
+    },
+    otp: otp,
+    state: state
   };
 
   const finalConfig = {
