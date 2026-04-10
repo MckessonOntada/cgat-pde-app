@@ -10,10 +10,12 @@ import AuthUtils from '@src/util/AuthUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
+import { useNavigate } from 'react-router-dom';
 
 const LoginCallback = () => {
   let { oktaAuth } = useOktaAuth();
   const [isFetched, setIsFetched] = useState(false);
+  const navigate = useNavigate();
   const {
     organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
@@ -107,8 +109,11 @@ const LoginCallback = () => {
         setIsFetched(true);
         return;
       }
-      const transaction = await await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
+      debugger;
+      const transaction = await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
 
+      // const test = await oktaAuth.idx.proceed();
+      // console.log('Transaction after magic link callback:', test);
       if (transaction.status === 'SUCCESS') {
         const tokens = transaction.tokens;
         const hasRole = await checkUserRole(tokens);
@@ -120,6 +125,9 @@ const LoginCallback = () => {
         } else {
           setError({ ...error, isError: true });
         }
+      } else if (transaction.status === 'PENDING') {
+        const test = oktaAuth.idx.proceed('test', window.location.search);
+        console.log(test);
       } else {
         setError({
           ...error,
