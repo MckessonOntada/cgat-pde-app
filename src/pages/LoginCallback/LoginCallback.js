@@ -109,11 +109,8 @@ const LoginCallback = () => {
         setIsFetched(true);
         return;
       }
-      debugger;
       const transaction = await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
 
-      // const test = await oktaAuth.idx.proceed();
-      // console.log('Transaction after magic link callback:', test);
       if (transaction.status === 'SUCCESS') {
         const tokens = transaction.tokens;
         const hasRole = await checkUserRole(tokens);
@@ -126,13 +123,13 @@ const LoginCallback = () => {
           setError({ ...error, isError: true });
         }
       } else if (transaction.status === 'PENDING') {
-        const test = oktaAuth.idx.proceed('test', window.location.search);
+        const test = oktaAuth.idx.proceed(transaction.availableSteps.authenticator);
         console.log(test);
       } else {
         setError({
           ...error,
           isError: true,
-          header: 'Invalid or expired magic link. Please try again.'
+          header: 'Invalid or expired sign in link. Please try again or enter OTP manually.'
         });
       }
 
@@ -142,7 +139,7 @@ const LoginCallback = () => {
       setError({
         ...error,
         isError: true,
-        header: 'Magic link authentication failed.'
+        header: 'Authentication failed. Please try again or enter OTP manually.'
       });
       setIsFetched(true);
     }
