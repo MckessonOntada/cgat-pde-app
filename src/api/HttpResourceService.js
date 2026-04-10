@@ -87,6 +87,15 @@ const callRest = function (
     responseType
   });
 
+  axios.interceptors.request.use((config) => {
+    config.headers = {
+      ...config.headers,
+      'X-Correlation-Id': uuidv4()
+    };
+
+    return config;
+  });
+
   response.then(
     (resp) => successCallback(resp),
     (err) => {
