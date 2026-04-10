@@ -28,7 +28,6 @@ export const apiLoadingStatus = {
 export const defaultHeaders = {
   'Content-Type': 'application/json;charset=utf-8',
   'Accept-Language': 'en',
-  'X-Correlation-Id': uuidv4(),
   userId: 1
 };
 
@@ -85,6 +84,15 @@ const callRest = function (
     headers,
     data,
     responseType
+  });
+
+  axios.interceptors.request.use((config) => {
+    config.headers = {
+      ...config.headers,
+      'X-Correlation-Id': uuidv4()
+    };
+
+    return config;
   });
 
   response.then(
