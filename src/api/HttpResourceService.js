@@ -5,6 +5,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import store from '@src/store/store';
 import { openModal } from '@src/store/reducer/modalReducer';
 import { Button } from '@mckesson/mcp-component-library';
+import { v4 as uuidv4 } from 'uuid';
 
 const axiosInstance = axios.create({});
 const channel = new BroadcastChannel('auth_channel');
@@ -27,7 +28,7 @@ export const apiLoadingStatus = {
 export const defaultHeaders = {
   'Content-Type': 'application/json;charset=utf-8',
   'Accept-Language': 'en',
-  'X-Correlation-Id': sessionStorage.getItem('SESSION_ID'),
+  'X-Correlation-Id': uuidv4(),
   userId: 1
 };
 
