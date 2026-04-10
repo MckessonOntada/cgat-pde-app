@@ -27,6 +27,7 @@ export const apiLoadingStatus = {
 export const defaultHeaders = {
   'Content-Type': 'application/json;charset=utf-8',
   'Accept-Language': 'en',
+  'X-Correlation-Id': sessionStorage.getItem('SESSION_ID'),
   userId: 1
 };
 
@@ -36,9 +37,7 @@ export const authToken = (noHeader, noSidHeader, noImpersonation) => {
   }
 
   const headers = {
-    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN')
-      ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}`
-      : ''
+    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN') ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}` : ''
   };
 
   const sessionId = sessionStorage.getItem('sid');
@@ -104,9 +103,7 @@ const callRest = function (
 
 const logOutUnAuthorizedUser = (err) => {
   let ignorableURLs = [ApiRoutes.GET_CURRENT_USER];
-  let _ignoreLogout = ignorableURLs.some(
-    (item) => item === err.request.responseURL
-  );
+  let _ignoreLogout = ignorableURLs.some((item) => item === err.request.responseURL);
   if (!_ignoreLogout) {
     const state = {
       title: 'Alert Message',

@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLink 2.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import Footer from '@src/components/footer';
+import { v4 as uuidv4 } from 'uuid';
 
 const Login = () => {
   const widgetRef = useRef();
@@ -112,6 +113,8 @@ const Login = () => {
         if (response.status === 'SUCCESS') {
           if (userData.roleExist) {
             sessionStorage.setItem('sid', response.tokens.idToken.idToken);
+            const sessionId = uuidv4();
+            sessionStorage.setItem('SESSION_ID', sessionId);
             oktaAuth.handleLoginRedirect(response.tokens);
             onPostUserLogin(userData);
           } else {
