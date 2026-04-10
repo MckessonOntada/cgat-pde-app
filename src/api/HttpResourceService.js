@@ -133,10 +133,10 @@ const logOutUnAuthorizedUser = (err) => {
   }
 };
 
-const HttpResourceService = Object.freeze({
+const HttpResourceService = {
   callRest,
   defaultHeaders,
   apiLoadingStatus
-});
+};
 
 export default HttpResourceService;
