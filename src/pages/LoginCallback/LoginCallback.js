@@ -10,12 +10,10 @@ import AuthUtils from '@src/util/AuthUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
-import { useNavigate } from 'react-router-dom';
 
 const LoginCallback = () => {
   let { oktaAuth } = useOktaAuth();
   const [isFetched, setIsFetched] = useState(false);
-  const navigate = useNavigate();
   const {
     organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
