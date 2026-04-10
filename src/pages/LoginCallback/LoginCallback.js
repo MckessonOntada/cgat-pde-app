@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import CommonService from '../../api/commonService/CommonService';
-import CommonUtils from '@src/util/CommonUtils';
 import AuthService from '../../api/authService/AuthService';
 import { Loader, Button } from '@mckesson/mcp-component-library';
 import ErrorComponent from '../../components/error/ErrorComponent';
@@ -107,8 +106,8 @@ const LoginCallback = () => {
         setIsFetched(true);
         return;
       }
+      debugger;
       const transaction = await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
-
       if (transaction.status === 'SUCCESS') {
         const tokens = transaction.tokens;
         const hasRole = await checkUserRole(tokens);
@@ -120,9 +119,15 @@ const LoginCallback = () => {
         } else {
           setError({ ...error, isError: true });
         }
+      } else {
+        setError({
+          ...error,
+          isError: true,
+          header: 'Please try again by entering OTP manually.'
+        });
       }
-      // else if (transaction.status === 'PENDING') {
-      //   const test = oktaAuth.idx.proceed(transaction.availableSteps[0].authenticator);
+      // } else if (transaction.status === 'PENDING') {
+      //   const test = await oktaAuth.idx.proceed(transaction.availableSteps[0].authenticator);
       //   console.log(test);
       // } else {
       //   setError({
