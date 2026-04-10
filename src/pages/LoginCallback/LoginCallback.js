@@ -120,16 +120,17 @@ const LoginCallback = () => {
         } else {
           setError({ ...error, isError: true });
         }
-      } else if (transaction.status === 'PENDING') {
-        const test = oktaAuth.idx.proceed(transaction.availableSteps.authenticator);
-        console.log(test);
-      } else {
-        setError({
-          ...error,
-          isError: true,
-          header: 'Invalid or expired sign in link. Please try again or enter OTP manually.'
-        });
       }
+      // else if (transaction.status === 'PENDING') {
+      //   const test = oktaAuth.idx.proceed(transaction.availableSteps[0].authenticator);
+      //   console.log(test);
+      // } else {
+      //   setError({
+      //     ...error,
+      //     isError: true,
+      //     header: 'Invalid or expired sign in link. Please try again or enter OTP manually.'
+      //   });
+      // }
 
       setIsFetched(true);
     } catch (err) {
