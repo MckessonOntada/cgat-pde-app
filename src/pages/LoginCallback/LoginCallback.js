@@ -74,7 +74,7 @@ const LoginCallback = () => {
         if (roles === 'Customer Centre') {
           sessionStorage.setItem('CHANNEL_TYPE', channelType);
         }
-        if (roles !== 'System Administrator' && roles !== 'Customer Centre' && roles !== 'Treatment Centre Executive') {
+        if (!['System Admin', 'Customer Centre', 'Treatment Centre Executive'].includes(roles)) {
           AuthUtils.setPracticeId(activeUserPracticeId);
         }
         return true;
@@ -94,8 +94,68 @@ const LoginCallback = () => {
     AuthService.userLogout(oktaAuth);
   };
 
+  const handleMagicLinkLogin = async (otp, state) => {
+    try {
+      const storedState = sessionStorage.getItem('okta-state');
+
+      if (storedState && storedState !== state) {
+        setError({
+          ...error,
+          isError: true,
+          header: 'Please use the same browser/device or enter OTP manually.'
+        });
+        setIsFetched(true);
+        return;
+      }
+      const transaction = await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
+
+      if (transaction.status === 'SUCCESS') {
+        const tokens = transaction.tokens;
+        const hasRole = await checkUserRole(tokens);
+        sessionStorage.setItem('sid', tokens?.idToken?.idToken || '');
+        onPostUserLogin();
+
+        if (hasRole) {
+          oktaAuth.handleLoginRedirect(tokens);
+        } else {
+          setError({ ...error, isError: true });
+        }
+      }
+      // else if (transaction.status === 'PENDING') {
+      //   const test = oktaAuth.idx.proceed(transaction.availableSteps[0].authenticator);
+      //   console.log(test);
+      // } else {
+      //   setError({
+      //     ...error,
+      //     isError: true,
+      //     header: 'Invalid or expired sign in link. Please try again or enter OTP manually.'
+      //   });
+      // }
+
+      setIsFetched(true);
+    } catch (err) {
+      console.error(err);
+      setError({
+        ...error,
+        isError: true,
+        header: 'Authentication failed. Please try again or enter OTP manually.'
+      });
+      setIsFetched(true);
+    }
+  };
+
   const handleRedirect = async () => {
     try {
+      const searchParams = new URL(window.location.href).searchParams;
+
+      const otp = searchParams.get('otp');
+      const state = searchParams.get('state');
+
+      // 👉 MAGIC LINK FLOW
+      if (otp && state) {
+        await handleMagicLinkLogin(otp, state);
+        return;
+      }
       const { tokens } = await oktaAuth.token.parseFromUrl();
       const sessionUserName = sessionStorage.getItem('okta-widget-username').toLocaleLowerCase();
       sessionStorage.removeItem('okta-widget-username');
