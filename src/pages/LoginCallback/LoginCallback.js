@@ -106,7 +106,6 @@ const LoginCallback = () => {
         setIsFetched(true);
         return;
       }
-      debugger;
       const transaction = await oktaAuth.idx.handleEmailVerifyCallback(window.location.search);
       if (transaction.status === 'SUCCESS') {
         const tokens = transaction.tokens;
