@@ -70,3 +70,6 @@ h2.okta-form-title.o-form-head{
 #okta-sign-in .custom-checkbox label{
     background-position: -16px -10px !important;
 }
+.authenticator-row:first-of-type {
+  display: none !important;
+}
