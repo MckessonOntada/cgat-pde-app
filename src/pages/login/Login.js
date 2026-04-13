@@ -112,6 +112,7 @@ const Login = () => {
         if (response.status === 'SUCCESS') {
           if (userData.roleExist) {
             sessionStorage.setItem('sid', response.tokens.idToken.idToken);
+            localStorage.setItem('username', response.tokens.idToken.claims.preferred_username);
             oktaAuth.handleLoginRedirect(response.tokens);
             onPostUserLogin(userData);
           } else {
