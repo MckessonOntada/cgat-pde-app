@@ -5,6 +5,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import store from '@src/store/store';
 import { openModal } from '@src/store/reducer/modalReducer';
 import { Button } from '@mckesson/mcp-component-library';
+import { v4 as uuidv4 } from 'uuid';
 
 const axiosInstance = axios.create({});
 const channel = new BroadcastChannel('auth_channel');
@@ -36,9 +37,7 @@ export const authToken = (noHeader, noSidHeader, noImpersonation) => {
   }
 
   const headers = {
-    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN')
-      ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}`
-      : ''
+    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN') ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}` : ''
   };
 
   const sessionId = sessionStorage.getItem('sid');
@@ -87,6 +86,15 @@ const callRest = function (
     responseType
   });
 
+  axios.interceptors.request.use((config) => {
+    config.headers = {
+      ...config.headers,
+      'X-Correlation-Id': uuidv4()
+    };
+
+    return config;
+  });
+
   response.then(
     (resp) => successCallback(resp),
     (err) => {
@@ -104,9 +112,7 @@ const callRest = function (
 
 const logOutUnAuthorizedUser = (err) => {
   let ignorableURLs = [ApiRoutes.GET_CURRENT_USER];
-  let _ignoreLogout = ignorableURLs.some(
-    (item) => item === err.request.responseURL
-  );
+  let _ignoreLogout = ignorableURLs.some((item) => item === err.request.responseURL);
   if (!_ignoreLogout) {
     const state = {
       title: 'Alert Message',
@@ -136,10 +142,10 @@ const logOutUnAuthorizedUser = (err) => {
   }
 };
 
-const HttpResourceService = Object.freeze({
+const HttpResourceService = {
   callRest,
   defaultHeaders,
   apiLoadingStatus
-});
+};
 
 export default HttpResourceService;
