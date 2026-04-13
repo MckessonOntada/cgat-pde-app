@@ -73,3 +73,6 @@ h2.okta-form-title.o-form-head{
 .authenticator-row:first-of-type {
   display: none !important;
 }
+.auth-footer .link.js-switchAuthenticator{
+    display: none !important;
+}
