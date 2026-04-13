@@ -125,16 +125,6 @@ const LoginCallback = () => {
           header: 'Please try again by entering OTP manually.'
         });
       }
-      // } else if (transaction.status === 'PENDING') {
-      //   const test = await oktaAuth.idx.proceed(transaction.availableSteps[0].authenticator);
-      //   console.log(test);
-      // } else {
-      //   setError({
-      //     ...error,
-      //     isError: true,
-      //     header: 'Invalid or expired sign in link. Please try again or enter OTP manually.'
-      //   });
-      // }
 
       setIsFetched(true);
     } catch (err) {
