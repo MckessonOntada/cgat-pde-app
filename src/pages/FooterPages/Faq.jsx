@@ -9,72 +9,112 @@ import Right from '@src/assets/svg/arrow-right-small.svg';
 import { ReactComponent as Expend } from '@src/assets/svg/expend.svg';
 import { ReactComponent as Collapse } from '@src/assets/svg/collapse.svg';
 import { IconButton, Button } from '@mckesson/mcp-component-library';
+import data from './FaqList.js';
 
-const data = [
-  {
-    question: 'What are the features InspiroLink portal offers?',
-    answer:
-      'The InspiroLink portal offers capabilities like multi-channel procurement, invoicing and payment. The portal is built to be friendly with both mobile and iPad.'
-  },
-  {
-    question: 'How can I contact support?',
-    answer: 'Please contact your McKesson customer success executive.'
-  }
-];
 function Faq() {
   const [openIndexes, setOpenIndexes] = useState([]);
-
+  const [activeSection, seActiveSection] = useState(0);
+  const faqData = React.useMemo(() => {
+    const username = localStorage.getItem('username');
+    debugger;
+    if (!username) {
+      return [data[0], data[7]];
+    }
+    return data;
+  }, []);
   const toggleItem = (index) => {
     setOpenIndexes((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
   };
-  const expandAll = () => setOpenIndexes(data.map((_, i) => i));
+  const activeSectionData = activeSection !== null ? faqData[activeSection] : null;
+  const expandAll = () => setOpenIndexes(activeSectionData.question.map((q, qIdx) => qIdx));
   const collapseAll = () => setOpenIndexes([]);
+  const handleOnSectionChange = (sIdx) => {
+    seActiveSection(sIdx);
+    setOpenIndexes([]);
+  };
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
       <div className={`${mainLayoutStyles['app-wrapper']}`}>
         <div className={`${mainLayoutStyles.home} max-container`}>
           <div className="MCP-module-wrapper">
-            <div className="MCP-panel-container">
+            <div className={style.grid}>
+              <McKessonLogo aria-hidden="true" focusable="false" title={'company.logoAltText'} />
               <div className={style.contantHeading}>
-                <McKessonLogo aria-hidden="true" focusable="false" title={'company.logoAltText'} />
-                <Heading as="h1">FAQ’s</Heading>
+                <Heading as="h1">Frequently Asked Questions</Heading>
               </div>
-              <div className={style.faqSection}>
-                <Heading as="h3">About Portal</Heading>
-                <div>
-                  <div className={style.buttonGroup}>
-                    <IconButton label={'Expand all'} size="lg" iconButton={false} iconPosition="left" textButton={true} Icon={Expend} onClick={expandAll} />
-                    <IconButton
-                      label={'Collapse all'}
-                      size="lg"
-                      iconButton={false}
-                      iconPosition="left"
-                      textButton={true}
-                      Icon={Collapse}
-                      onClick={collapseAll}
-                    />
-                  </div>
-
-                  {data.map((item, index) => (
-                    <div key={index} className={style.faqItem}>
-                      <div className={style.heading} onClick={() => toggleItem(index)}>
-                        <span>
-                          {openIndexes.includes(index) ? (
-                            <Button variant="tertiary" type="button">
-                              <img src={Down} alt="toggle-icon" />
-                            </Button>
-                          ) : (
-                            <Button variant="tertiary" type="button">
-                              <img src={Right} alt="toggle-icon" />
-                            </Button>
-                          )}
-                        </span>
-                        <span>{item.question}</span>
-                      </div>
-                      {openIndexes.includes(index) && <div className={style.content}>{item.answer}</div>}
-                    </div>
+            </div>
+            <div className={style.grid}>
+              <div className={style['faq-index']}>
+                <div className={style['faq-indexes']}>
+                  {faqData.map((section, sIdx) => (
+                    <button
+                      key={sIdx}
+                      className={`${style['faq-index-item']} ${sIdx === activeSection ? style['active'] : ''}`}
+                      onClick={() => handleOnSectionChange(sIdx)}>
+                      <span>{section.title}</span>
+                    </button>
                   ))}
+                </div>
+              </div>
+              <div className={style['faq-content']}>
+                <div className={`${style.faqSection} MCP-panel-container`}>
+                  {activeSectionData && (
+                    <div key={activeSectionData.title}>
+                      <div className={style['faq-section']}>
+                        <Heading as="h3">{activeSectionData.title}</Heading>
+                        <div>
+                          <div className={style.buttonGroup}>
+                            <IconButton
+                              label={'Expand all'}
+                              size="lg"
+                              iconButton={false}
+                              iconPosition="left"
+                              textButton={true}
+                              Icon={Expend}
+                              onClick={expandAll}
+                            />
+                            <IconButton
+                              label={'Collapse all'}
+                              size="lg"
+                              iconButton={false}
+                              iconPosition="left"
+                              textButton={true}
+                              Icon={Collapse}
+                              onClick={collapseAll}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {activeSectionData.question.map((q, index) => {
+                        return (
+                          <div className={style.faqItem} key={index}>
+                            <div className={style.heading} onClick={() => toggleItem(index)}>
+                              <span>
+                                {openIndexes.includes(index) ? (
+                                  <Button variant="tertiary" type="button">
+                                    <img src={Down} alt="toggle-icon" />
+                                  </Button>
+                                ) : (
+                                  <Button variant="tertiary" type="button">
+                                    <img src={Right} alt="toggle-icon" />
+                                  </Button>
+                                )}
+                              </span>
+                              <span>{q.questionTitle}</span>
+                            </div>
+
+                            {openIndexes.includes(index) && (
+                              <div key={index} className={style.content}>
+                                <AnswerRenderer segments={q.answerSegment} />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -84,5 +124,29 @@ function Faq() {
     </div>
   );
 }
+
+const AnswerRenderer = ({ segments }) => {
+  return (
+    <div className={style['faq-content-list']}>
+      {segments.map((seg, i) => {
+        if (seg.type === 'p') {
+          return <p key={i}>{seg.content}</p>;
+        }
+
+        if (seg.type === 'ul') {
+          return (
+            <ul key={i}>
+              {seg.content.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+};
 
 export default Faq;
