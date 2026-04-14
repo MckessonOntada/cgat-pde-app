@@ -575,7 +575,7 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     selector: () => {},
     sortable: true,
     sortKey: 'status',
-    maxWidth: '140px',
+    maxWidth: '180px',
     center: true,
     showInMobileHeader: true,
     cardStatus: true,
