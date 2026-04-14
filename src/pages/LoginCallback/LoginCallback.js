@@ -125,16 +125,6 @@ const LoginCallback = () => {
           header: 'Please try again by entering OTP manually.'
         });
       }
-      // } else if (transaction.status === 'PENDING') {
-      //   const test = await oktaAuth.idx.proceed(transaction.availableSteps[0].authenticator);
-      //   console.log(test);
-      // } else {
-      //   setError({
-      //     ...error,
-      //     isError: true,
-      //     header: 'Invalid or expired sign in link. Please try again or enter OTP manually.'
-      //   });
-      // }
 
       setIsFetched(true);
     } catch (err) {
@@ -167,6 +157,7 @@ const LoginCallback = () => {
         const hasRole = await checkUserRole(tokens);
         sessionStorage.setItem('sid', tokens?.idToken?.idToken || '');
         const userInfo = await oktaAuth.token.getUserInfo(tokens.accessToken, tokens.idToken);
+        localStorage.setItem('username', userInfo.preferred_username);
         onPostUserLogin();
         if (userInfo.email.toLocaleLowerCase() !== sessionUserName) {
           setError({
