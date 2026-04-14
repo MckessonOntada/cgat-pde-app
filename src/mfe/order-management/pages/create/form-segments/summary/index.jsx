@@ -1227,6 +1227,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const taxAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.taxAmount);
   const totalCost = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderCost);
 
+  if (!orderDetails.id) return <Loader variant={'circular'} />;
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       {patientIdCoiIdValidationLoading && <Loader type={'screen'} />}
