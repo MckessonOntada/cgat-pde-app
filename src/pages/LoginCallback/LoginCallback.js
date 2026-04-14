@@ -167,6 +167,7 @@ const LoginCallback = () => {
         const hasRole = await checkUserRole(tokens);
         sessionStorage.setItem('sid', tokens?.idToken?.idToken || '');
         const userInfo = await oktaAuth.token.getUserInfo(tokens.accessToken, tokens.idToken);
+        localStorage.setItem('username', userInfo.preferred_username);
         onPostUserLogin();
         if (userInfo.email.toLocaleLowerCase() !== sessionUserName) {
           setError({
