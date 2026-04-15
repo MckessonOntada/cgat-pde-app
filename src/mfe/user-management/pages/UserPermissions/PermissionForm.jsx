@@ -90,74 +90,71 @@ const PermissionForm = ({ permissions, isRolePage }) => {
 
   return (
     <div className="MCP-module-wrapper">
-      <div className="MCP-module-body">
-        <ModuleHeader heading={<Heading as="h2">{t('userManagement.user_permissions.select_role')}</Heading>} />
-        <div className="MCP-panel-container">
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-            <Field name={`role`}>
-              {({ field, form, meta }) => {
-                return (
-                  <React.Fragment>
-                    <div>
-                      <MultiSelectDropdown
-                        id={'select-role-search'}
-                        label={t('userManagement.user_permissions.select_role')}
-                        isMultiSelect={false}
-                        placeholder={'Select Role'}
-                        onChange={handleOnChange}
-                        options={roleData}
-                        variant={'async'}
-                        onSearch={(event) => setSearchKey(event)}
-                        recordsCountToEnableSearch={5}
-                        isRequired={!isRolePage}
-                        size="lg"
-                        isSortEnable={false}
-                        value={field.value && field.value?.id}
-                        defaultSelectedLabel={field.value?.label}
-                      />
+      {
+        <Fragment>
+          <ModuleHeader heading={<Heading as="h2">{t('userManagement.user_permissions.select_role')}</Heading>} />
 
-                      {meta.error && <TextError errorMessage={meta.error} />}
-                    </div>
-                  </React.Fragment>
-                );
-              }}
-            </Field>
-          </div>
-        </div>
-      </div>
-      {values.role?.name === 'Customer Centre' && (
-        <div className="MCP-module-body">
-          <ModuleHeader heading={<Heading as="h2">{t('Select Channel')}</Heading>} />
           <div className="MCP-panel-container">
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-              <div className="radio-group">
-                <Field name={`channelType`}>
-                  {({ field, form, meta }) => {
-                    const { setFieldValue } = form;
-                    return (
-                      <React.Fragment>
-                        <RadioGroup
-                          direction="row"
-                          id="order-channel-options"
-                          caption={'Which channel is this user associated with?'}
-                          isRequired={true}
-                          items={channelList}
-                          onChangeValue={(value) => setFieldValue(field.name, value)}
-                          value={field.value}
-                          radioBtnWidth="auto"
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+              <Field name={`role`}>
+                {({ field, form, meta }) => {
+                  return (
+                    <React.Fragment>
+                      <div>
+                        <MultiSelectDropdown
+                          id={'select-role-search'}
+                          label={t('userManagement.user_permissions.select_role')}
+                          isMultiSelect={false}
+                          placeholder={'Select Role'}
+                          onChange={handleOnChange}
+                          options={roleData}
+                          variant={'async'}
+                          onSearch={(event) => setSearchKey(event)}
+                          recordsCountToEnableSearch={5}
+                          isRequired={!isRolePage}
                           size="lg"
+                          isSortEnable={false}
+                          value={field.value && field.value?.id}
+                          defaultSelectedLabel={field.value?.label}
                         />
+
                         {meta.error && <TextError errorMessage={meta.error} />}
-                      </React.Fragment>
-                    );
-                  }}
-                </Field>
-              </div>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+              {values.role?.name === 'Customer Centre' && (
+                <div className="radio-group">
+                  <Field name={`channelType`}>
+                    {({ field, form, meta }) => {
+                      const { setFieldValue } = form;
+                      return (
+                        <React.Fragment>
+                          <RadioGroup
+                            direction="row"
+                            id="order-channel-options"
+                            caption={'Which channel is this user associated with?'}
+                            isRequired={true}
+                            items={channelList}
+                            onChangeValue={(value) => setFieldValue(field.name, value)}
+                            value={field.value}
+                            radioBtnWidth="auto"
+                            size="lg"
+                          />
+                          {meta.error && <TextError errorMessage={meta.error} />}
+                        </React.Fragment>
+                      );
+                    }}
+                  </Field>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      )}
-
+        </Fragment>
+      }
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}

@@ -126,21 +126,16 @@ export const UserProvider = ({ children }) => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams({ isPhysicianRequired: false })}`, httpVerb.GET, {});
       if (response.data) {
         const { content: data } = response.data;
-        let roleOptions = [];
         if (AuthUtils.isSystemAdminView()) {
-          roleOptions = data.map((item) => ({
+          return data.map((item) => ({
             label: item.name === 'Customer Centre' ? 'Customer Service' : item.name,
             value: item.id
           }));
         }
-        roleOptions = data.map((item) => ({
+        return data.map((item) => ({
           label: item.name,
           value: item.id
         }));
-
-        roleOptions.unshift({ label: 'All', value: 'all' });
-
-        return roleOptions;
       }
       return [];
     },
@@ -159,9 +154,6 @@ export const UserProvider = ({ children }) => {
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    if (filters.role === 'all') {
-      filters.role = '';
-    }
     setFilterConfig({ ...filters });
   };
 

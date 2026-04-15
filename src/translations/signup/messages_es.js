@@ -27,8 +27,6 @@ export const SignupES = {
   'loginrequest.heading': 'S_Request Created',
   'loginrequest.button': 'S_Go to Login Page',
   'errors.user_provisioning_request_email_key': 'S_Email ID already exists in the System.',
-  'errors.unique_user_provisioning_email': 'S_Email ID already exists in the System.',
-  'errors.unique_user_email': 'S_Email ID already exists in the System.',
   'userManagement.create_user.alert.okta_user':
     "S_You don't have an account yet. Please complete the sign-up form below to request access. Your account will be activated once it's reviewed and approved by the admin."
 };
