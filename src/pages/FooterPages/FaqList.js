@@ -51,7 +51,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'Once approved, you will receive an email to activate your account and set your password.'
+            content: 'Once approved, you will receive an email invitation with instructions to activate your account and set your password.'
           }
         ]
       },
@@ -91,7 +91,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'If you still can’t log in after trying this, contact InspiroLink Support at celgenecart@mckesson.com for assistance. '
+            content: 'If you still can’t log in after trying this, Contact your McKesson Customer service agent for assistance.'
           }
         ]
       },
@@ -111,7 +111,7 @@ export default [
           {
             type: 'p',
             content:
-              'If you do not receive the reset email within a few minutes, check your spam or junk folder. If the issue persists, contact support at celgenecart@mckesson.com. '
+              'If you do not receive the reset email within a few minutes, check your spam or junk folder. If the issue persists, Contact your McKesson Customer service agent.'
           }
         ]
       },
@@ -173,7 +173,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'If the issue remains unresolved, contact InspiroLink support at celgenecart@mckesson.com. '
+            content: 'If the issue remains unresolved, Contact your McKesson Customer service agent. '
           }
         ]
       }
@@ -210,7 +210,7 @@ export default [
         answerSegment: [
           {
             type: 'p',
-            content: 'Login into InspiroLink, Click on ‘Orders’ tab in the top navigation, Click on ‘Create new Order’.'
+            content: 'Log in to InspiroLink, click on the “Orders” tab in the top navigation, Click on ‘Create new Order’.'
           },
           {
             type: 'p',
@@ -234,7 +234,7 @@ export default [
           {
             type: 'p',
             content:
-              'Orders in Pending Submission status can be edited or updated at any time before submission. Once an order has been submitted, edits are no longer available. To make changes to an order, contact customer service at celgenecart@mckesson.com. '
+              'Orders in Pending Submission status can be edited or updated at any time before submission. Once an order has been submitted, edits are no longer available. To make changes to an order, contact customer service at celgenecart@mckesson.com.'
           }
         ]
       },
@@ -252,7 +252,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'For time-sensitive cancellations, contact InspiroLink support immediately at celgenecart@mckesson.com.'
+            content: 'For time-sensitive cancellations, Contact your McKesson Customer service agent immediately.'
           }
         ]
       },
@@ -295,7 +295,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'After submission: Contact your McKesson Customer Service at celgenecart@mckesson.com to request cancellation of the duplicate order. '
+            content: 'After submission: Contact your McKesson Customer service agent to request cancellation of the duplicate order. '
           }
         ]
       },
@@ -318,7 +318,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'If the issue persists, contact support at celgenecart@mckesson.com.'
+            content: 'If the issue persists, Contact your McKesson Customer service agent.'
           }
         ]
       },
@@ -341,7 +341,7 @@ export default [
           {
             type: 'p',
             content:
-              'Please note that some settings can only be modified by an organization administrator. If you require changes to these settings, please contact your organization administrator or support at celgenecart@mckesson.com. '
+              'Please note that some settings can only be modified by an organization administrator. If you require changes to these settings, please contact your organization administrator or Contact your McKesson Customer service agent.'
           }
         ]
       }
@@ -393,8 +393,7 @@ export default [
         answerSegment: [
           {
             type: 'p',
-            content:
-              'If you believe an invoice contains an error, contact your McKesson Customer Service representative at celgenecart@mckesson.com with the following information: '
+            content: 'If you believe an invoice contains an error, Contact your McKesson Customer service agent with the following information:'
           },
           {
             type: 'ul',
@@ -553,7 +552,7 @@ export default [
           {
             type: 'p',
             content:
-              'Data entered into InspiroLink is not permanently deleted. If information is removed or modified unintentionally, contact support at celgenecart@mckesson.com. '
+              'Data entered into InspiroLink is not permanently deleted. If information is removed or modified unintentionally, Contact your McKesson Customer service agent. '
           }
         ]
       },
@@ -563,7 +562,7 @@ export default [
           {
             type: 'p',
             content:
-              'InspiroLink is designed to support treatment sites in managing therapy orders in a secure environment. For specific questions regarding HIPAA compliance, data handling agreements, or Business Associate Agreements (BAAs), please contact InspiroLink support at celgenecart@mckesson.com. '
+              'InspiroLink is designed to support treatment sites in managing therapy orders in a secure environment. For specific questions regarding HIPAA compliance, data handling agreements, or Business Associate Agreements (BAAs), please contact your McKesson Customer service agent. '
           }
         ]
       }
@@ -590,16 +589,6 @@ export default [
             type: 'p',
             content:
               'No. System updates are designed to preserve all existing data and records. Your orders, invoices, payment history, and account information will remain intact following any update. '
-          }
-        ]
-      },
-      {
-        questionTitle: 'Will I be notified before an update occurs? ',
-        answerSegment: [
-          {
-            type: 'p',
-            content:
-              'For updates that may affect platform availability or require user awareness, notifications will be communicated via email to registered users or through announcements within the InspiroLink platform. Most routine updates are applied in the background and require no action from users.  '
           }
         ]
       },
@@ -635,7 +624,7 @@ export default [
           {
             type: 'p',
             content:
-              'Yes. A therapy-specific addendum is created for each therapy onboarded to InspiroLink. Users are required to review the applicable addendum before placing an order to ensure all therapy-specific requirements are met. To get access to the therapy specific addendum, Please contact your designated ATC account director or the InspiroLink support team at celgenecart@mckesson.com '
+              'Yes. A therapy-specific addendum is created for each therapy onboarded to InspiroLink. Users are required to review the applicable addendum before placing an order to ensure all therapy-specific requirements are met. To get access to the therapy specific addendum, Please contact your designated ATC account director '
           }
         ]
       },
@@ -645,7 +634,7 @@ export default [
           {
             type: 'p',
             content:
-              'For onboarding support or training requests, contact your designated ATC account director or the InspiroLink support team at celgenecart@mckesson.com. '
+              'For onboarding support or training requests, contact your designated ATC account director or Contact your McKesson Customer service agent.'
           }
         ]
       }
@@ -660,11 +649,7 @@ export default [
         answerSegment: [
           {
             type: 'p',
-            content: 'For assistance, contact the InspiroLink support team: '
-          },
-          {
-            type: 'p',
-            content: 'Email: celgenecart@mckesson.com  '
+            content: 'For assistance, Contact your McKesson Customer service agent.'
           },
           {
             type: 'p',
