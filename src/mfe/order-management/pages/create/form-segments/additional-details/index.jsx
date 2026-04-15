@@ -791,7 +791,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           zip: secondLegShipInfo.address?.zip || '',
           state: secondLegShipInfo.address?.state || '',
           city: secondLegShipInfo.address?.city || '',
-          country: secondLegShipInfo.address?.country || 'USA'
+          country: secondLegShipInfo.address?.country || 'US'
         },
         phoneNumber: secondLegShipInfo.phoneNumber || ''
       };
