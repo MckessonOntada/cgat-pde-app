@@ -73,7 +73,7 @@ export default [
         ]
       },
       {
-        questionTitle: 'I’m not able to log in using MFA email link. What should I do?',
+        questionTitle: 'I’m not able to log in using MFA email “Sign In” link. What should I do?',
         answerSegment: [
           {
             type: 'p',
@@ -210,7 +210,7 @@ export default [
         answerSegment: [
           {
             type: 'p',
-            content: 'Log in to InspiroLink, click on the “Orders” tab in the top navigation, Click on ‘Create new Order’.'
+            content: 'Login into InspiroLink, Click on ‘Orders’ tab in the top navigation, Click on ‘Create new Order’. '
           },
           {
             type: 'p',
@@ -252,7 +252,7 @@ export default [
           },
           {
             type: 'p',
-            content: 'For time-sensitive cancellations, Contact your McKesson Customer service agent immediately.'
+            content: 'For time-sensitive cancellations, Contact your McKesson Customer service agent.'
           }
         ]
       },
@@ -422,7 +422,7 @@ export default [
     accessibleWithoutLogin: false,
     question: [
       {
-        questionTitle: 'How are user roles and permissions are managed?',
+        questionTitle: 'How are user roles and permissions managed?',
         answerSegment: [
           {
             type: 'p',
@@ -463,7 +463,7 @@ export default [
             content: 'To deactivate a user: '
           },
           {
-            type: 'p',
+            type: 'ul',
             content: [
               'Log in to InspiroLink as an administrator. ',
               'Navigate to the Admin section. ',
@@ -589,16 +589,6 @@ export default [
             type: 'p',
             content:
               'No. System updates are designed to preserve all existing data and records. Your orders, invoices, payment history, and account information will remain intact following any update. '
-          }
-        ]
-      },
-      {
-        questionTitle: 'Where can I view release notes?',
-        answerSegment: [
-          {
-            type: 'p',
-            content:
-              'Release notes summarizing new features, improvements, and important changes are shared via email and through the InspiroLink support or resource section within the platform. '
           }
         ]
       },
