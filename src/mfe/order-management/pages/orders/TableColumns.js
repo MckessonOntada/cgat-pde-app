@@ -452,14 +452,14 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     sortKey: 'patient_details.patient_info.first_name',
     cell: function (props) {
       const patientInfo = props.patient && props.patient.patientInfo;
-      const hasImpersonatedUserPhiPermission = AuthUtils.isImpersonatedAdminWithPhiPermission();
+      const hasUserPhiPermission = AuthUtils.hasUserPhiPermission();
       const isBnb = props?.therapy?.channelType === CHANNEL_TYPE.BUY_AND_BILL;
 
       if (!patientInfo) return 'N/A';
       return (
         <EclipsesTextCss
           str={
-            (isBnb && !hasImpersonatedUserPhiPermission && patientInfo.firstName === '******') || isCSReviewOrdersPage
+            (isBnb && !hasUserPhiPermission && patientInfo.firstName === '******') || isCSReviewOrdersPage
               ? patientInfo.firstName
               : CommonUtils.getUSFullName(patientInfo)
           }

@@ -1116,7 +1116,6 @@ export const MessageEn = {
   'orderManagement.patientID.CoiId.verificationFailedSubmitPage':
     '{patientID} and {coiId} do not match the master file. Please verify the details before submitting the order.',
   'orderManagement.patientID.verificationFailedSubmitPage': '{patientID} do not match the master file. Please verify the details before submitting the order.',
-  'orderManagement.CoiId.verificationFailedSubmitPage': 'Please verify {patientId} first to match {coiId} in the master file.',
   'labels.selectProcurementOptions': 'Select Procurement Options',
   'orderManagement.patientID.empty':
     '{patientID} is missing. Continue entering the remaining order details and submit the order. A Customer Support representative will contact you to finalize your order.',

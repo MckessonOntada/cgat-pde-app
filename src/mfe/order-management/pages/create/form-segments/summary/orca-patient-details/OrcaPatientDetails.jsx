@@ -38,6 +38,7 @@ function OrcaPatientDetails() {
   const formikRef = React.useRef();
   const [isPatientVerified, setPatientVerified] = React.useState(false);
   const [originallyVerified, setOriginallyVerified] = React.useState(null);
+  const hasUserPhiPermission = AuthUtils.hasUserPhiPermission();
 
   const [isPatientVerifying, setIsPatientVerifying] = React.useState(false);
   React.useEffect(() => {
@@ -109,7 +110,7 @@ function OrcaPatientDetails() {
     const setFieldValue = formikRef.current?.setFieldValue;
 
     if (orcaVerifiedPatient) {
-      if (!AuthUtils.isImpersonatedAdminWithPhiPermission()) {
+      if (!hasUserPhiPermission) {
         orcaVerifiedPatient.firstName = orcaVerifiedPatient.firstName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.middleName = orcaVerifiedPatient.middleName ? '*'.repeat(6) : '';
         orcaVerifiedPatient.lastName = orcaVerifiedPatient.lastName ? '*'.repeat(6) : '';
@@ -305,10 +306,10 @@ function OrcaPatientDetails() {
               isCSUserReviewingOrca,
               isCustomerCentreUser,
               rules: {
-                hasImpersonatedUserPhiPermission: AuthUtils.isImpersonatedAdminWithPhiPermission()
+                hasImpersonatedUserPhiPermission: hasUserPhiPermission
               },
-              isDobMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission(),
-              isGenderMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission()
+              isDobMasked: !hasUserPhiPermission,
+              isGenderMasked: !hasUserPhiPermission
             })}
             onSubmit={handleOnSave}
             enableReinitialize
@@ -333,10 +334,10 @@ function OrcaPatientDetails() {
                           isCSUserReviewingOrca,
                           isCustomerCentreUser,
                           rules: {
-                            hasImpersonatedUserPhiPermission: AuthUtils.isImpersonatedAdminWithPhiPermission()
+                            hasImpersonatedUserPhiPermission: hasUserPhiPermission
                           },
-                          isDobMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission(),
-                          isGenderMasked: !AuthUtils.isImpersonatedAdminWithPhiPermission()
+                          isDobMasked: !hasUserPhiPermission,
+                          isGenderMasked: !hasUserPhiPermission
                         })}
                       />
                     </div>
