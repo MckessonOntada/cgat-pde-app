@@ -733,7 +733,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               }),
               type: 'success'
             });
-            setAllowedSubmission(true);
           } else {
             setAlert({
               description: t('orderManagement.patientID.verificationSuccess', {
@@ -741,28 +740,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               }),
               type: 'success'
             });
-            setAllowedSubmission(false);
           }
+          scrollToTopUtil();
         } else {
-          if (variables.patientId && variables.coiId) {
-            setAlert({
-              description: t('orderManagement.patientID.CoiId.verificationFailedSubmitPage', {
-                patientID: getDisplayNameByFieldName('patientIdentifier'),
-                coiId: getDisplayNameByFieldName('coiId')
-              }),
-              type: 'error'
-            });
-            setAllowedSubmission(false);
-          } else {
-            setAlert({
-              description: t('orderManagement.patientID.verificationFailedSubmitPage', {
-                patientID: getDisplayNameByFieldName('patientIdentifier'),
-                coiId: getDisplayNameByFieldName('coiId')
-              }),
-              type: 'error'
-            });
-            setAllowedSubmission(false);
-          }
+          setAlert(null);
         }
       },
       onError: () => {
@@ -860,37 +841,25 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     ...tempValue
                   }));
             }
-            if (!isCustomerCentreUser) {
-              if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.PATIENT_DETAILS && tempValue.patientIdentifier) {
-                patientIdCoiIdValidation({
-                  patientId: tempValue.patientIdentifier,
-                  coiId: !isSpOrder ? draftChanges.additionalDetailsRequestDTO.coiId || '' : tempValue?.coiId || ''
-                });
-                scrollToTopUtil();
-              } else if (manufacturer === 'REGENERON' && stage === ORDER_STAGES.ADDITIONAL_DETAILS && tempValue.coiId) {
-                if (draftChanges.patientIdentifier) {
-                  patientIdCoiIdValidation({
-                    patientId: draftChanges.patientIdentifier,
-                    coiId: tempValue.coiId
-                  });
-                  scrollToTopUtil();
-                } else {
-                  setAlert({
-                    description: t('orderManagement.CoiId.verificationFailedSubmitPage', {
-                      patientId: getDisplayNameByFieldName('patientIdentifier'),
-                      coiId: getDisplayNameByFieldName('coiId')
-                    }),
-                    type: 'error'
-                  });
-                  setAllowedSubmission(false);
-                  scrollToTopUtil();
-                }
-              } else {
-                setAllowedSubmission(true);
+
+            if (!isCustomerCentreUser && manufacturer === 'REGENERON') {
+              const patientId = stage === ORDER_STAGES.PATIENT_DETAILS ? tempValue.patientIdentifier : draftChanges.patientIdentifier;
+
+              const coiId =
+                stage === ORDER_STAGES.PATIENT_DETAILS
+                  ? !isSpOrder
+                    ? draftChanges.additionalDetailsRequestDTO.coiId || ''
+                    : tempValue?.coiId || ''
+                  : tempValue.coiId;
+
+              if ((stage === ORDER_STAGES.PATIENT_DETAILS && patientId) || (stage === ORDER_STAGES.ADDITIONAL_DETAILS && coiId && patientId)) {
+                patientIdCoiIdValidation({ patientId, coiId });
               }
+              setAllowedSubmission(true);
             } else {
               setAllowedSubmission(true);
             }
+
             setDrawerElement(null);
           }}>
           {({ dirty, values }) => {
