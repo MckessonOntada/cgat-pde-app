@@ -269,7 +269,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         return { availableFilters: [], searchPlaceholder };
       }
       case ORDER_TABS.SUBMITTED_BUY_AND_BILL: {
-        if (AuthUtils.isImpersonatedAdminWithPhiPermission() && !isCSReviewOrdersPage) searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
+        if (AuthUtils.hasUserPhiPermission() && !isCSReviewOrdersPage) searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
         else searchPlaceholder = 'controls.placeholder.searchNonPhiOrderPlaceholder';
         const statusOptions = [
           ORDER_STATUS.ALL,

@@ -109,7 +109,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
   const manufacturer = isSpOrder ? orderDetails.spTherapyConfig?.config?.manufacturerName : orderDetails.therapyConfig?.config?.manufacturerName;
-  const isImpersonatedAdminWithPhiPermission = AuthUtils.isImpersonatedAdminWithPhiPermission();
+  const hasUserPhiPermission = AuthUtils.hasUserPhiPermission();
   React.useEffect(() => {
     if (manufacturer === MANUFACTURER.ORCA) {
       setDraftChanges({
@@ -551,7 +551,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const handleOnReSubmit = () => {
     if (AuthUtils.isSystemAdminView()) {
       reSubmitOrder(removeKeyFromPayload(draftChanges, 'medicalRecordNumber'));
-    } else if (!isImpersonatedAdminWithPhiPermission) {
+    } else if (!hasUserPhiPermission) {
       reSubmitOrder(removeMaskedFields(draftChanges));
     } else {
       reSubmitOrder(draftChanges);
@@ -1636,7 +1636,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       <DetailSegment
                         label={t('labels.patientName')}
                         value={
-                          (!isImpersonatedAdminWithPhiPermission && patient?.patientInfo?.firstName === '******') || isCustomerCentreUser ? (
+                          (!hasUserPhiPermission && patient?.patientInfo?.firstName === '******') || isCustomerCentreUser ? (
                             patient?.patientInfo?.firstName
                           ) : patient.fullName || patientData?.patientInfo?.firstName ? (
                             <Tooltip body={CommonUtils.getUSFullName(patientData?.patientInfo)}>
