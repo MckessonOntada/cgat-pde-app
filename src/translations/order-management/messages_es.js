@@ -162,6 +162,8 @@ export const MessageEs = {
   'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.searchNonPhiOrderPlaceholder': 'S_Search by Order ID, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
+  'controls.placeholder.searchCSReviewAdminPlaceholder': 'S_Search by Order ID, Account, Organization Name',
+  'controls.placeholder.searchSPCSReviewAdminPlaceholder': 'S_Search by Order ID, Therapy, Submitted By, Organization Name',
   'controls.placeholder.reviewTabSearchBox': 'S_Search by Prescription ID, Patient name, Therapy',
   'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'S_Search by Account name or Number',
