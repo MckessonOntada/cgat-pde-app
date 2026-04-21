@@ -187,6 +187,8 @@ export const MessageEn = {
   'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.searchNonPhiOrderPlaceholder': 'Search by Order ID, Account',
   'controls.placeholder.searchSPOrderPlaceholder': 'Search by Order ID, Therapy, Submitted By',
+  'controls.placeholder.searchCSReviewAdminPlaceholder': 'Search by Order ID, Account, Organization Name',
+  'controls.placeholder.searchSPCSReviewAdminPlaceholder': 'Search by Order ID, Therapy, Submitted By, Organization Name',
   'controls.placeholder.reviewTabSearchBox': 'Search by Prescription ID, Patient name, Therapy',
   'controls.placeholders.autoSearch': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'Search by Account name or Number',
