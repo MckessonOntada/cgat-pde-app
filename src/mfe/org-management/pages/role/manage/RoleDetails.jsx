@@ -105,10 +105,18 @@ const RoleDetails = () => {
         navigate(`../${data.id}/permissions`);
       }
     },
+
     onError: (error) => {
+      let errorMessage = 'errors.default';
+      if (error?.response && error.response.status === 409) {
+        errorMessage = 'error.unique_role';
+      } else {
+        errorMessage = error.message;
+      }
+
       setAlert({
         type: 'error',
-        description: error.message
+        description: t(errorMessage)
       });
     }
   });
