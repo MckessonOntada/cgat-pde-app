@@ -127,6 +127,7 @@ export const OrgManagementEN = {
   'orgManagement.empty_table.description': 'You need to add Organization to see data in this table.',
   'orgManagement.role.headingManageOrder': 'Manage Roles',
   'orgManagement.role.headingPermissionDetails': 'Permission Details',
+  'error.unique_role': 'Role already exists in the System.',
   'orgManagement.role.labelAddRole': 'Add Role',
   'orgManagement.role.labelEditRole': 'Edit Role',
   'orgManagement.role.labelStep': 'Step',
