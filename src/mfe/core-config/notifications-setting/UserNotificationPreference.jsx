@@ -218,12 +218,12 @@ const NotificationPreference = () => {
                   config={{ ...preferencesConfig, userPermissions: AuthUtils.getUserPermissions() }}
                 />
                 {/* <SettingPanelRenderer /> */}
-                <SMSConfigurationPanel
+                {/* <SMSConfigurationPanel
                   isLoadingVerification={isLoadingVerification}
                   linkedContactNumber={verificationStatus.number}
                   setAlert={setAlert}
                   onSave={handleOnSaveNumber}
-                />
+                /> */}
               </div>
 
               <div className="controls">
