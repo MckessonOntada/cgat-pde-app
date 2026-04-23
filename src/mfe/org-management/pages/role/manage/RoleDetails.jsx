@@ -19,11 +19,13 @@ import FormikFormWrapper from '@src/components/form/FormikFormWrapper';
 const getRoleValidationSchema = (t) =>
   Yup.object({
     roleName: Yup.string()
+      .transform((value) => value?.trim())
       .required(t('orgManagement.form.errors.roleNameRequired'))
       .min(2, t('orgManagement.form.errors.roleNameMinLength'))
       .max(50, t('orgManagement.form.errors.roleNameMaxLength'))
       .matches(/^[A-Za-z\s]+$/, t('orgManagement.form.errors.roleNamevalidation')),
     roleDescription: Yup.string()
+      .transform((value) => value?.trim())
       .min(10, t('orgManagement.form.errors.roleDescriptionMinLength'))
       .max(100, t('orgManagement.form.errors.roleDescriptionMaxLength'))
   });
@@ -128,7 +130,7 @@ const RoleDetails = () => {
     }
 
     const payload = {
-      name: values.roleName,
+      name: values.roleName.trim(),
       description: values.roleDescription
     };
     if (id) {
