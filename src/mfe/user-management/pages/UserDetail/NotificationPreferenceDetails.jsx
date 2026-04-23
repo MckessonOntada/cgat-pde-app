@@ -125,12 +125,12 @@ function NotificationPreferenceConfiguration() {
               isPreferencesLoaded={isPreferencesLoaded}
               config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
             />
-            <SMSConfigurationPanel
+            {/* <SMSConfigurationPanel
               onSave={handleOnSaveNumber}
               isLoadingVerification={false}
               linkedContactNumber={verificationStatus.number}
               setAlert={setAlert}
-            />
+            /> */}
           </div>
           <div className="controls">
             <Button size="md" variant="secondary" onClick={() => navigate('./../..')}>
