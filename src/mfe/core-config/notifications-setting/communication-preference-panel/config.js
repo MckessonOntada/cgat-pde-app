@@ -2,7 +2,11 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 
 const notificationConfig = {
   moduleName: 'notificationPreferences.moduleName',
-  options: ['notificationPreferences.optionEmail', 'notificationPreferences.optionInApp', 'notificationPreferences.optionSMS'],
+  options: [
+    'notificationPreferences.optionEmail',
+    'notificationPreferences.optionInApp'
+    //  'notificationPreferences.optionSMS'
+  ],
   sections: [
     {
       title: 'notificationPreferences.userManagement.title',
@@ -19,10 +23,10 @@ const notificationConfig = {
             },
             {
               value: false
-            },
-            {
-              value: false
             }
+            // {
+            //   value: false
+            // }
           ]
         },
         {
@@ -36,10 +40,10 @@ const notificationConfig = {
             },
             {
               value: false
-            },
-            {
-              value: false
             }
+            // {
+            //   value: false
+            // }
           ]
         }
       ]
@@ -59,10 +63,10 @@ const notificationConfig = {
             },
             {
               value: false
-            },
-            {
-              value: false
             }
+            // {
+            //   value: false
+            // }
           ]
         },
         {
@@ -75,10 +79,10 @@ const notificationConfig = {
             },
             {
               value: false
-            },
-            {
-              value: false
             }
+            // {
+            //   value: false
+            // }
           ]
         }
       ]
@@ -98,10 +102,10 @@ const notificationConfig = {
             },
             {
               value: false
-            },
-            {
-              value: false
             }
+            // {
+            //   value: false
+            // }
           ]
         },
         {
@@ -114,10 +118,10 @@ const notificationConfig = {
             },
             {
               value: false
-            },
-            {
-              value: false
             }
+            // {
+            //   value: false
+            // }
           ]
         }
       ]
@@ -133,10 +137,10 @@ const notificationConfig = {
         },
         {
           value: false
-        },
-        {
-          value: false
         }
+        // {
+        //   value: false
+        // }
       ]
     }
   ]
