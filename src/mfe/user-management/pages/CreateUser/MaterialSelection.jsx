@@ -56,7 +56,6 @@ export default function MaterialSelection() {
     const userDetails = state.userDetails;
     const selectedRole = userDetails.role?.name;
     let addMaterialPromise = null;
-    debugger;
     if (selectedRole === 'Customer Centre') {
       const selectedMaterialIds = selection.map((item) => ({
         ndc: item.ndc,
