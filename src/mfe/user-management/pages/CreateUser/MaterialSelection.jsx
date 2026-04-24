@@ -57,21 +57,30 @@ export default function MaterialSelection() {
     const selectedRole = userDetails.role?.name;
     let addMaterialPromise = null;
     if (selectedRole === 'Customer Centre') {
-      const selectedMaterialIds = selection.map((item) => item.id);
+      const selectedMaterialIds = selection.map((item) => ({
+        ndc: item.ndc,
+        tradeName: item.tradeName
+      }));
       addMaterialPromise = MaterialService.addMaterial(id, selectedMaterialIds);
     } else {
       if (!isSystemAdminView && isEdit) {
-        const selectedMaterialIds = selection.map((item) => item.id);
+        const selectedMaterialIds = selection.map((item) => ({
+          ndc: item.ndc,
+          tradeName: item.tradeName
+        }));
         addMaterialPromise = MaterialService.unrestrictMaterial(id, selectedMaterialIds);
       } else {
         const flatIds = data.flatMap((trade) => {
           if (trade.isExpandable) {
-            return trade.therapies.map((therapy) => therapy.id);
+            return trade.therapies.map((therapy) => ({
+              ndc: therapy.ndc,
+              tradeName: therapy.tradeName
+            }));
           }
-          return [trade.id];
+          return [trade];
         });
         const selectedMaterialIds = selection.map((item) => item.id);
-        const restrictedMaterialIds = flatIds.filter((id) => !selectedMaterialIds.includes(id));
+        const restrictedMaterialIds = flatIds.filter((trade) => !selectedMaterialIds.includes(trade.id));
         addMaterialPromise = MaterialService.restrictMaterial(id, restrictedMaterialIds);
       }
     }

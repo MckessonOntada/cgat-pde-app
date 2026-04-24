@@ -172,7 +172,7 @@ const NotificationPreference = () => {
             <div className="MCP-module-body">
               <ModuleHeader heading={<Heading as="h1">{translateFn('heading.notificationSetting')}</Heading>} />
 
-              {verificationStatus.isNumberVerified === false && (
+              {/* {verificationStatus.isNumberVerified === false && (
                 <Alert
                   type="info"
                   showCloseIcon={false}
@@ -204,7 +204,7 @@ const NotificationPreference = () => {
                     </div>
                   }
                 />
-              )}
+              )} */}
 
               {alert && <Alert id="activity-alert" {...alert} showCloseIcon onClose={() => setAlert(null)} />}
 
@@ -218,12 +218,12 @@ const NotificationPreference = () => {
                   config={{ ...preferencesConfig, userPermissions: AuthUtils.getUserPermissions() }}
                 />
                 {/* <SettingPanelRenderer /> */}
-                <SMSConfigurationPanel
+                {/* <SMSConfigurationPanel
                   isLoadingVerification={isLoadingVerification}
                   linkedContactNumber={verificationStatus.number}
                   setAlert={setAlert}
                   onSave={handleOnSaveNumber}
-                />
+                /> */}
               </div>
 
               <div className="controls">
