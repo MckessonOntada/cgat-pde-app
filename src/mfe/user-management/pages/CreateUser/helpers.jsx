@@ -246,11 +246,11 @@ export const createColumns = ({
       name: t('account.action'),
       omit: omitColumns.includes('action'),
       cell: (row) => {
-        let materialIds = [];
+        let materials = [];
         if (row.isExpandable) {
-          materialIds = row.therapies.map((therapy) => therapy.id);
+          materials = row.therapies.map((therapy) => therapy);
         } else {
-          materialIds = [row.id];
+          materials = [row];
         }
 
         return (
@@ -259,7 +259,7 @@ export const createColumns = ({
             variant="text"
             size="small"
             startIcon={<LinkIcon width="14" height="14" />}
-            onClick={() => columnActions.onUnlink(materialIds)}>
+            onClick={() => columnActions.onUnlink(materials)}>
             {t('account.btn.unlink')}
           </Button>
         );

@@ -29,11 +29,15 @@ function UserMaterial(props) {
   const unlinkMaterial = () => {
     const userDetails = state.userDetails;
     const selectedRole = userDetails.role.name;
+    const materialToUnlink = unlinkSelection.map((item) => ({
+      ndc: item.ndc,
+      tradeName: item.tradeName
+    }));
     let unlinkPromise = null;
     if (isSystemAdmin && selectedRole === 'Customer Centre') {
-      unlinkPromise = MaterialService.unlinkCustomerCentreMaterials(userId, unlinkSelection);
+      unlinkPromise = MaterialService.unlinkCustomerCentreMaterials(userId, materialToUnlink);
     } else {
-      unlinkPromise = MaterialService.unlinkMaterial(userId, unlinkSelection);
+      unlinkPromise = MaterialService.unlinkMaterial(userId, materialToUnlink);
     }
     if (unlinkPromise)
       unlinkPromise
@@ -97,7 +101,7 @@ function UserMaterial(props) {
           <SelectionRibbon
             header={translateFn('table.ribbon.nItemsSelected', { n: selection.length })}
             controls={
-              <Button variant="secondary" onClick={() => handleOnUnlink(selection.map((item) => item.id))}>
+              <Button variant="secondary" onClick={() => handleOnUnlink(selection)}>
                 Unlink
               </Button>
             }
