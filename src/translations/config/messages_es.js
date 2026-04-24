@@ -242,7 +242,7 @@ export const ConfigurationMessagesES = {
   'smsConfiguration.enableSMSNotification': 'S_Enable SMS Notifications:',
   'smsConfiguration.description':
     'S_To update the phone number, switch Enable SMS Notifications to Off, change the phone number, then switch Enable SMS Notifications to On. You will then receive a new SMS invitation to the new phone number.',
-  'notificationPreferences.moduleName': 'S_Manage Email, SMS & In-app Notifications',
+  'notificationPreferences.moduleName': 'S_Manage Email & In-app Notifications',
   'notificationPreferences.userManagement.title': 'S_User Management',
   'notificationPreferences.userManagement.processUpdate.title': 'S_Process Update',
   'notificationPreferences.userManagement.processUpdate.subtitle':
