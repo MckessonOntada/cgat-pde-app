@@ -9,7 +9,6 @@ Our app architecture is built with the latest React 18 technology to make it wor
 ## Getting Started  
 
 
-
 1. [Getting Started](####Getting-Started)
 2. [Configure GitHub npm Registry](####Configure-GitHub-npm-Registry)
 3. [Running the Application](####Running-the-Application)
