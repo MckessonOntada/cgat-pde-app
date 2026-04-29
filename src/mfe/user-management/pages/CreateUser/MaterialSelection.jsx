@@ -73,6 +73,7 @@ export default function MaterialSelection() {
         const flatIds = data.flatMap((trade) => {
           if (trade.isExpandable) {
             return trade.therapies.map((therapy) => ({
+              id: therapy.id,
               ndc: therapy.ndc,
               tradeName: therapy.tradeName
             }));
