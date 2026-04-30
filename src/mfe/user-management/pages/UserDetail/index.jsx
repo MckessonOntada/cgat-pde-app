@@ -115,6 +115,7 @@ const UserDetail = () => {
     if (alert) {
       setAlert(alert);
       navigate(`${location.pathname}${location.search}#${alert.pinPoint}`, { replace: true });
+      setValue('reloadUser', true);
     }
   }, [location.state]);
 

@@ -38,8 +38,9 @@ const UserLoader = () => {
       .catch((_error) => {})
       .finally(() => {
         setValue('isLoading', false);
+        setValue('reloadUser', false);
       });
-  }, [id]);
+  }, [id, state.reloadUser]);
 
   if (state.isLoading) return <Loader variant="circular" />;
 
