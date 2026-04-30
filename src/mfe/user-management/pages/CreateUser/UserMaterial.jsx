@@ -42,9 +42,11 @@ function UserMaterial(props) {
     if (unlinkPromise)
       unlinkPromise
         .then((_response) => {
-          const totalCount = data.reduce((sum, item) => sum + (item.isExpandable ? item.therapies.length : 1), 0);
-          if (totalCount === selection.length && pagination.pageNo > 1) {
-            changePage(Math.max(pagination.pageNo - 1, 1));
+          const totalAfterDelete = pagination.totalElements - unlinkSelection.length;
+          const lastPageAfterDelete = Math.ceil(totalAfterDelete / pagination.pageSize);
+
+          if (pagination.pageNo > lastPageAfterDelete) {
+            changePage(lastPageAfterDelete || 1);
           } else {
             refreshTable();
           }
