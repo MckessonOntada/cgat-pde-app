@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   selectedRole: '',
   isLoading: true,
   userDetails: null,
+  reloadUser: false,
   createWizardSteps: {
     personalDetails: false,
     rolePermissions: false,
