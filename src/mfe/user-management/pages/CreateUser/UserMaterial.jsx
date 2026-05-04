@@ -45,7 +45,7 @@ function UserMaterial(props) {
           const totalAfterDelete = pagination.totalElements - unlinkSelection.length;
           const lastPageAfterDelete = Math.ceil(totalAfterDelete / pagination.pageSize);
 
-          if (pagination.pageNo > lastPageAfterDelete) {
+          if (pagination.pageNo > lastPageAfterDelete && pagination.pageNo !== 1) {
             changePage(lastPageAfterDelete || 1);
           } else {
             refreshTable();
