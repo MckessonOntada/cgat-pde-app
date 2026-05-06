@@ -149,7 +149,7 @@ export const getValidationSchema = (t) => {
     patientInfo: Yup.object()
       .shape({
         firstName: CommonUtils.getNameValidation(t, { field: 'first_name' }),
-        middleName: CommonUtils.getNameValidation(t, { field: 'middle_name' }),
+        middleName: CommonUtils.getNameValidation(t, { field: 'middle_name', min:0 }),
         lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
         gender: Yup.string().nullable(),
         dateOfBirth: Yup.date()

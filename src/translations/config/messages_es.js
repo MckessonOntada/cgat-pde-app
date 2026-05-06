@@ -56,6 +56,7 @@ export const ConfigurationMessagesES = {
   'provider.disabledEditOnMultiSelect': 'S_Only one record can be edited at a time',
   'provider.firstName': 'S_First Name',
   'provider.firstName.required': 'S_Please Enter First Name',
+  'provider.firstName.min': 'S_First Name should be at leats 2 characters.',
   'provider.firstName.max': 'S_First Name should not exceed 50 characters.',
   'provider.firstName.invalid': 'S_First Name can only contain alphabets, spaces, ".", and "-".',
   'provider.firstName.trim': 'S_First Name cannot start or end with a space.',
@@ -67,6 +68,7 @@ export const ConfigurationMessagesES = {
 
   'provider.lastName': 'S_Last Name',
   'provider.lastName.required': 'S_Please enter Last Name',
+  'provider.lastName.min': 'S_Last Name should be at least 2 characters.',
   'provider.lastName.max': 'S_Last Name should not exceed 50 characters.',
   'provider.lastName.invalid': 'S_Last Name can only contain alphabets.',
   'provider.lastName.trim': 'S_Last Name cannot start or end with a space.',
