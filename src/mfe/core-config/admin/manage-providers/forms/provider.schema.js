@@ -19,6 +19,7 @@ export const getProviderSchema = (t) =>
     firstName: yup
       .string()
       .required(t('provider.firstName.required'))
+      .min(2, t('provider.firstName.min'))
       .max(50, t('provider.firstName.max'))
       .matches(nameRegex, t('provider.firstName.invalid'))
       .test('trim-check', t('provider.firstName.trim'), (val) => val === val?.trim()),
@@ -32,6 +33,7 @@ export const getProviderSchema = (t) =>
     lastName: yup
       .string()
       .required(t('provider.lastName.required'))
+      .min(2, t('provider.lastName.min'))
       .max(50, t('provider.lastName.max'))
       .matches(lastNameRegex, t('provider.lastName.invalid'))
       .test('trim-check', t('provider.lastName.trim'), (val) => val === val?.trim()),

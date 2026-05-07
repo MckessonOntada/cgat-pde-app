@@ -58,6 +58,7 @@ export const ConfigurationMessagesEN = {
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',
   'provider.firstName.max': 'First Name should not exceed 50 characters.',
+  'provider.firstName.min': 'First Name should be at leats 2 characters.',
   'provider.firstName.invalid': 'First Name can only contain alphabets, spaces, ".", and "-".',
   'provider.firstName.trim': 'First Name cannot start or end with a space.',
 
@@ -68,6 +69,7 @@ export const ConfigurationMessagesEN = {
 
   'provider.lastName': 'Last Name',
   'provider.lastName.required': 'Please enter Last Name',
+  'provider.lastName.min': 'Last Name should be at least 2 characters.',
   'provider.lastName.max': 'Last Name should not exceed 50 characters.',
   'provider.lastName.invalid': 'Last Name can only contain alphabets.',
   'provider.lastName.trim': 'Last Name cannot start or end with a space.',
