@@ -619,7 +619,7 @@ const formatNumberWithoutSymbol = (value) => {
 
 const getCamelCase = (str) => str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
 
-const getNameValidation = (t, { field = '', min = 0, max = 50, required = false, invalidKey } = {}) => {
+const getNameValidation = (t, { field = '', min = 2, max = 50, required = false, invalidKey } = {}) => {
   let schema = Yup.string()
     .nullable()
     .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t(invalidKey || `userManagement.create_user.validation.${field}`))
