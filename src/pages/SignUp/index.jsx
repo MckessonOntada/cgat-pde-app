@@ -114,7 +114,8 @@ const SignUp = () => {
         required: true
       }),
       middleName: CommonUtils.getNameValidation(t, {
-        field: 'middle_name'
+        field: 'middle_name',
+        min:0
       }),
       lastName: CommonUtils.getNameValidation(t, {
         field: 'last_name',

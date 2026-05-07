@@ -183,7 +183,7 @@ export const getValidationSchema = ({
             field: 'first_name',
             required: isSpOrder
           }),
-          middleName: CommonUtils.getNameValidation(t, { field: 'middle_name' }),
+          middleName: CommonUtils.getNameValidation(t, { field: 'middle_name', min:0 }),
           lastName: CommonUtils.getNameValidation(t, {
             field: 'last_name',
             required: isSpOrder
