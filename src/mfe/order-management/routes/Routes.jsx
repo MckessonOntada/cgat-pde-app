@@ -110,6 +110,27 @@ export const OrderLoader = () => {
   const isCustomerReviewOrderWizard = AuthUtils.isCustomerCenterView();
   const navigate = useNavigate();
 
+  const refreshOrderDetails = React.useCallback(async () => {
+    try {
+      const params = new URLSearchParams(location.search);
+      const orgId = params.get('orgId');
+      const result = isCustomerReviewOrderWizard
+        ? await OrderService.getOrderByIdCsUser(id, orgId)
+        : await OrderService.getOrderById(id);
+      if (result) {
+        const beautifiedOrderDetails = normalizeOrderResponse(result);
+        const loggedInUserId = AuthUtils.getUserId();
+        const { approver = {} } = beautifiedOrderDetails;
+        setValue('orderDetails', beautifiedOrderDetails);
+        setValue('isApprover', approver.id === loggedInUserId);
+      }
+    } catch (_) {}
+  }, [id, isCustomerReviewOrderWizard]);
+
+  React.useEffect(() => {
+    if (id) setValue('refetchOrderDetails', refreshOrderDetails);
+  }, [refreshOrderDetails]);
+
   React.useEffect(() => {
     if (!id) {
       setValue('isLoading', false);

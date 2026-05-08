@@ -68,7 +68,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [alert, setAlert] = React.useState(null);
   const { controlRef } = useContext(FooterContext);
   const { state, setValue } = useWidgetContext();
-  const { orderDetails = {}, isApprover } = state;
+  const { orderDetails = {}, isApprover, refetchOrderDetails } = state;
   const isError = false;
   const { isSimulate = false, backToInvoiceListing = false, backToInvoiceDetails = false } = locationState || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
@@ -344,7 +344,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
-      refreshOrderDetails();
+      refetchOrderDetails();
       if (warningMessages.length > 0) {
         warningMessages.forEach((msg) => {
           addNotification({
