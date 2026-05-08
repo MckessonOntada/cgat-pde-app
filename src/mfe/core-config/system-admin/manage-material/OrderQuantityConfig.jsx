@@ -55,13 +55,9 @@ function OrderQuantityConfig({ channelType = CHANNEL_TYPE.BUY_AND_BILL, onClose,
   const { data: MaterialData, isLoading: isMaterialDataLoading } = useQuery({
     queryKey: ['therapyDetailsByTrade'],
     queryFn: async () => {
-      let ndc = null;
-      if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-        ndc = selectedMaterials.map((material) => material.tradeName);
-      } else {
-        ndc = selectedSPMaterial.map((material) => material.tradeName);
-      }
-      const result = await OrderService.getTherapyDetailsByTradeName2(ndc, channelType);
+      const selectedMaterial = selectedMaterials[0];
+      if (!selectedMaterial.tradeName) return;
+      const result = await OrderService.getTherapyDetailsByTradeName2(selectedMaterial.tradeName);
       return result;
     },
     enabled:

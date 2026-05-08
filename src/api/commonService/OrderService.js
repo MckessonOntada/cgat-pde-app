@@ -416,16 +416,16 @@ async function uploadDocument(payload) {
 async function getTherapyDetailsByTradeName(tradeName, channelType) {
   if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
   const url = `${ApiRoutes.USERS()}/current/therapies/details?channelType=${channelType}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, tradeName);
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, { tradeName });
   if (res.data) return res.data;
 }
 async function getTherapyDetailsByTradeName2(tradeName, channelType) {
   if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
-  let url = `${ApiRoutes.THERAPIES()}/config/${tradeName}`;
+  let url = `${ApiRoutes.THERAPIES()}/config`;
   if (channelType) {
     url += `?channelType=${channelType}`;
   }
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, { tradeName });
   if (res.data) return res.data;
 }
 
@@ -593,7 +593,7 @@ async function getTherapyDetailsByTradeNameCsUser(tradeName, channelType, userId
   if (!tradeName) throw new Error('Trade name is missing. Trade name is required to fetch therapy details.');
   const url = `${ApiRoutes.USERS()}/current/therapies/details?channelType=${channelType}&userId=${userId}`;
 
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, tradeName);
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, { tradeName });
   if (res.data) return res.data;
 }
 
