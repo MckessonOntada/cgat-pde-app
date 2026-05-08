@@ -124,7 +124,18 @@ export const OrderLoader = () => {
         setValue('orderDetails', beautifiedOrderDetails);
         setValue('isApprover', approver.id === loggedInUserId);
       }
-    } catch (_) {}
+    } catch (error) {
+      if (error?.status === 404) {
+        navigate('/orders', {
+          state: {
+            alert: {
+              type: 'error',
+              description: 'Order details not found.'
+            }
+          }
+        });
+      }
+    }
   }, [id, isCustomerReviewOrderWizard]);
 
   React.useEffect(() => {
