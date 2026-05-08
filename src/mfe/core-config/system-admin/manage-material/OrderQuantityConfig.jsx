@@ -55,7 +55,7 @@ function OrderQuantityConfig({ channelType = CHANNEL_TYPE.BUY_AND_BILL, onClose,
   const { data: MaterialData, isLoading: isMaterialDataLoading } = useQuery({
     queryKey: ['therapyDetailsByTrade'],
     queryFn: async () => {
-      const selectedMaterial = selectedMaterials[0];
+      const selectedMaterial = selectedMaterials[0] || {};
       if (!selectedMaterial.tradeName) return;
       const result = await OrderService.getTherapyDetailsByTradeName2(selectedMaterial.tradeName);
       return result;
