@@ -791,6 +791,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PATIENT_DETAILS ? true : false}
             orderId={orderId}
             setAlert={setAlert}
+            isSpOrder={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA}
           />
         )}
 
