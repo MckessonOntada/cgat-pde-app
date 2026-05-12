@@ -130,8 +130,7 @@ function DetailsPanel({ orderDetails, onClose }) {
       return {
         orderNumber: orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? orderDetails.id : orderDetails.backendOrderId,
         orderDate: dayjs.utc(orderDetails.submittedOn).tz(dayjs.tz.guess()).format('MM/DD/YYYY'),
-        therapy: orderDetails.therapy?.tradeName,
-        orderCost: orderDetails.cost ? <span className="dollarSign">CommonUtils.formatNumberWithoutSymbol(orderDetails.cost)</span> : '-'
+        therapy: orderDetails.therapy?.tradeName
       };
     }
 
