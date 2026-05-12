@@ -34,7 +34,8 @@ const INITIAL_STATE = {
   isLoading: false,
   isTherapyChanged: false,
   isChangeOnPreviousStep: false,
-  isApprover: false
+  isApprover: false,
+  refetchOrderDetails: null
 };
 function MainLayout() {
   const { notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
