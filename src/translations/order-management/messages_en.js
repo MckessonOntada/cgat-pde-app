@@ -1130,5 +1130,6 @@ export const MessageEn = {
   'label.secondLegShipmentInfo': 'Second-leg Shipment Information',
   'label.uniqueTransactionID': 'Unique Transaction ID',
   'label.name': 'Name',
-  'label.address': 'Address'
+  'label.address': 'Address',
+  'labels.provider': 'Provider'
 };

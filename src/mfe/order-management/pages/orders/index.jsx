@@ -22,12 +22,35 @@ import Tab from '../../../../components/tab-group/Tab';
 import { useOrders } from '../../context/OrderContext';
 import { routesConfig } from './../../routes/constants';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
+import LayoutColumnSelector from './LayoutColumnSelector';
+import { getLayoutColumns } from './layoutColumnsUtils';
 import { getTableColumns } from './TableColumns';
 import CancelOrderPanel from '../create/form-segments/summary/CancelOrderPanel';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { CHANNEL_TYPE } from '../create/form-segments/Constants';
+
+const LAYOUT_COLUMN_CONFIG = {
+  common: [
+    { columnName: 'OrderId', mandatory: true, visibility: true },
+    { columnName: 'TherapyName', mandatory: true, visibility: true },
+    { columnName: 'SubmittedDate', mandatory: true, visibility: true },
+    { columnName: 'OrderStatus', mandatory: true, visibility: true },
+    { columnName: 'Action', mandatory: true, visibility: true },
+    { columnName: 'PatientName', mandatory: false, visibility: true },
+    { columnName: 'PatientId', mandatory: false, visibility: true },
+    { columnName: 'PoNumber', mandatory: false, visibility: true },
+    { columnName: 'CoiId', mandatory: false, visibility: true }
+  ],
+  SubmittedSP: [{ columnName: 'Provider', mandatory: false, visibility: true }],
+  SubmittedBnb: [{ columnName: 'Price', mandatory: false, visibility: true }],
+  PendingSubmission: [{ columnName: 'Price', mandatory: false, visibility: true }],
+  PendingApproval: [
+    { columnName: 'Assignee', mandatory: true, visibility: true },
+    { columnName: 'Price', mandatory: false, visibility: true }
+  ]
+};
 
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
@@ -230,7 +253,29 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       });
   };
 
-  const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage, handleOnCancelOrder);
+  const layoutColumns = useMemo(() => getLayoutColumns(LAYOUT_COLUMN_CONFIG, config.tab, t), [config.tab, t]);
+
+  const [appliedLayoutKeys, setAppliedLayoutKeys] = useState(() => layoutColumns.filter((c) => c.defaultChecked).map((c) => c.key));
+
+  React.useEffect(() => {
+    setAppliedLayoutKeys(layoutColumns.filter((c) => c.defaultChecked).map((c) => c.key));
+  }, [config.tab]);
+
+  const handleLayoutApply = (checkedKeys) => {
+    setAppliedLayoutKeys(checkedKeys);
+    const modifiedConfig = Object.fromEntries(
+      Object.entries(LAYOUT_COLUMN_CONFIG).map(([section, cols]) => [
+        section,
+        cols.map((col) => ({
+          ...col,
+          visibility: col.mandatory ? col.visibility : checkedKeys.includes(col.columnName)
+        }))
+      ])
+    );
+    console.log('Layout modified config:', modifiedConfig);
+  };
+
+  const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage, handleOnCancelOrder, appliedLayoutKeys);
 
   const handleOnViewChange = (view) => {
     params.set('view', view);
@@ -479,9 +524,8 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
                   />
                 }
                 controls={
-                  !isCSReviewOrdersPage &&
-                  CommonUtils.isNonEmptyArray(toggleFilters) && (
-                    <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {!isCSReviewOrdersPage && CommonUtils.isNonEmptyArray(toggleFilters) && (
                       <TabGroup value={config.view} onChange={handleOnViewChange} exclusive>
                         {toggleFilters.map((filter, index) => (
                           <Tab key={index} value={filter}>
@@ -489,8 +533,9 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
                           </Tab>
                         ))}
                       </TabGroup>
-                    </div>
-                  )
+                    )}
+                    <LayoutColumnSelector columns={layoutColumns} onApply={handleLayoutApply} />
+                  </div>
                 }
               />
 
