@@ -1,15 +1,5 @@
 import { ORDER_TABS } from './config';
 
-// Maps table column id → layout columnName (only non-mandatory optional columns)
-export const TABLE_ID_TO_LAYOUT_KEY = {
-  PATIENT_NAME: 'PatientName',
-  PATIENT_ID: 'PatientId',
-  PRICE: 'Price',
-  PROVIDER: 'Provider',
-  COI_ID: 'CoiId',
-  PO_NUMBER: 'PoNumber'
-};
-
 const TAB_TO_CONFIG_KEY = {
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: 'SubmittedBnb',
   [ORDER_TABS.SUBMITTED_SP]: 'SubmittedSP',

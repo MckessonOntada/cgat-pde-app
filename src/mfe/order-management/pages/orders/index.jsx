@@ -32,6 +32,24 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { CHANNEL_TYPE } from '../create/form-segments/Constants';
 
+// const LAYOUT_COLUMN_CONFIG = {
+//   common: [
+//     { columnName: 'OrderId', mandatory: true, visibility: true },
+//     { columnName: 'TherapyName', mandatory: true, visibility: true },
+//     { columnName: 'SubmittedDate', mandatory: true, visibility: true },
+//     { columnName: 'OrderStatus', mandatory: true, visibility: true },
+//     { columnName: 'Action', mandatory: true, visibility: true },
+//     { columnName: 'PatientName', mandatory: false, visibility: true },
+//     { columnName: 'PatientId', mandatory: false, visibility: true },
+//     { columnName: 'PoNumber', mandatory: false, visibility: true },
+//     { columnName: 'CoiId', mandatory: false, visibility: true }
+//   ],
+//   SubmittedSP: [{ columnName: 'Provider', mandatory: false, visibility: true }],
+//   SubmittedBnb: [{ columnName: 'Price', mandatory: false, visibility: true }],
+//   PendingSubmission: [],
+//   PendingApproval: [{ columnName: 'Assignee', mandatory: true, visibility: true }]
+// };
+
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -234,20 +252,18 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
   };
 
   const { data: columnPreferenceData, refetch: refetchColumnPreference } = useQuery({
-    queryKey: ['column-preference'],
+    queryKey: ['column-preference', AuthUtils.getUserId()],
     queryFn: () => OrderService.getColumnPreference(),
     refetchOnWindowFocus: false
   });
 
-  const activeLayoutConfig = columnPreferenceData;
-
-  const layoutColumns = useMemo(() => getLayoutColumns(activeLayoutConfig, config.tab, t), [activeLayoutConfig, config.tab, t]);
+  const layoutColumns = useMemo(() => getLayoutColumns(columnPreferenceData, config.tab, t), [columnPreferenceData, config.tab, t]);
 
   const [appliedLayoutKeys, setAppliedLayoutKeys] = useState(() => layoutColumns.filter((c) => c.defaultChecked).map((c) => c.key));
 
   React.useEffect(() => {
     setAppliedLayoutKeys(layoutColumns.filter((c) => c.defaultChecked).map((c) => c.key));
-  }, [config.tab]);
+  }, [layoutColumns]);
 
   const { mutate: saveColumnPreference } = useMutation({
     mutationFn: (payload) => OrderService.saveColumnPreference(payload),
@@ -261,9 +277,10 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
   });
 
   const handleLayoutApply = (checkedKeys) => {
+    if (!columnPreferenceData) return;
     setAppliedLayoutKeys(checkedKeys);
     const modifiedConfig = Object.fromEntries(
-      Object.entries(activeLayoutConfig).map(([section, cols]) => [
+      Object.entries(columnPreferenceData).map(([section, cols]) => [
         section,
         cols.map((col) => ({
           ...col,
