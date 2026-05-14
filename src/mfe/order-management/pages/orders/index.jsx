@@ -15,6 +15,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import React, { useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../../../components/module-header';
 import TabGroup from '../../../../components/tab-group';
@@ -30,27 +31,6 @@ import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-load
 import OrderService from '@src/api/commonService/OrderService';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { CHANNEL_TYPE } from '../create/form-segments/Constants';
-
-const LAYOUT_COLUMN_CONFIG = {
-  common: [
-    { columnName: 'OrderId', mandatory: true, visibility: true },
-    { columnName: 'TherapyName', mandatory: true, visibility: true },
-    { columnName: 'SubmittedDate', mandatory: true, visibility: true },
-    { columnName: 'OrderStatus', mandatory: true, visibility: true },
-    { columnName: 'Action', mandatory: true, visibility: true },
-    { columnName: 'PatientName', mandatory: false, visibility: true },
-    { columnName: 'PatientId', mandatory: false, visibility: true },
-    { columnName: 'PoNumber', mandatory: false, visibility: true },
-    { columnName: 'CoiId', mandatory: false, visibility: true }
-  ],
-  SubmittedSP: [{ columnName: 'Provider', mandatory: false, visibility: true }],
-  SubmittedBnb: [{ columnName: 'Price', mandatory: false, visibility: true }],
-  PendingSubmission: [{ columnName: 'Price', mandatory: false, visibility: true }],
-  PendingApproval: [
-    { columnName: 'Assignee', mandatory: true, visibility: true },
-    { columnName: 'Price', mandatory: false, visibility: true }
-  ]
-};
 
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
@@ -253,7 +233,15 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       });
   };
 
-  const layoutColumns = useMemo(() => getLayoutColumns(LAYOUT_COLUMN_CONFIG, config.tab, t), [config.tab, t]);
+  const { data: columnPreferenceData, refetch: refetchColumnPreference } = useQuery({
+    queryKey: ['column-preference'],
+    queryFn: () => OrderService.getColumnPreference(),
+    refetchOnWindowFocus: false
+  });
+
+  const activeLayoutConfig = columnPreferenceData;
+
+  const layoutColumns = useMemo(() => getLayoutColumns(activeLayoutConfig, config.tab, t), [activeLayoutConfig, config.tab, t]);
 
   const [appliedLayoutKeys, setAppliedLayoutKeys] = useState(() => layoutColumns.filter((c) => c.defaultChecked).map((c) => c.key));
 
@@ -261,10 +249,21 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
     setAppliedLayoutKeys(layoutColumns.filter((c) => c.defaultChecked).map((c) => c.key));
   }, [config.tab]);
 
+  const { mutate: saveColumnPreference } = useMutation({
+    mutationFn: (payload) => OrderService.saveColumnPreference(payload),
+    onSuccess: () => {
+      refetchColumnPreference();
+      setAlert({ type: 'success', description: t('messages.layout.applySuccess') });
+    },
+    onError: () => {
+      setAlert({ type: 'error', description: t('messages.layout.applyError') });
+    }
+  });
+
   const handleLayoutApply = (checkedKeys) => {
     setAppliedLayoutKeys(checkedKeys);
     const modifiedConfig = Object.fromEntries(
-      Object.entries(LAYOUT_COLUMN_CONFIG).map(([section, cols]) => [
+      Object.entries(activeLayoutConfig).map(([section, cols]) => [
         section,
         cols.map((col) => ({
           ...col,
@@ -272,7 +271,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         }))
       ])
     );
-    console.log('Layout modified config:', modifiedConfig);
+    saveColumnPreference(modifiedConfig);
   };
 
   const columns = getTableColumns(config.tab, t, alertContainerId, isCSReviewOrdersPage, handleOnCancelOrder, appliedLayoutKeys);

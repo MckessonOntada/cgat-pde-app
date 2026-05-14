@@ -27,10 +27,10 @@ const COLUMN_TRANSLATION_KEY = {
 };
 
 export const getLayoutColumns = (layoutConfig, tab, t) => {
-  const commonCols = (layoutConfig.common || []).filter((c) => !c.mandatory);
+  const commonCols = (layoutConfig?.common || []).filter((c) => !c.mandatory);
 
   const tabKey = TAB_TO_CONFIG_KEY[tab];
-  const tabCols = tabKey ? (layoutConfig[tabKey] || []).filter((c) => !c.mandatory) : [];
+  const tabCols = tabKey ? (layoutConfig?.[tabKey] || []).filter((c) => !c.mandatory) : [];
 
   return [...commonCols, ...tabCols].map(({ columnName, visibility }) => ({
     key: columnName,

@@ -1131,5 +1131,13 @@ export const MessageEn = {
   'label.uniqueTransactionID': 'Unique Transaction ID',
   'label.name': 'Name',
   'label.address': 'Address',
-  'labels.provider': 'Provider'
+  'labels.provider': 'Provider',
+
+  'labels.layout.buttonLabel': 'Layout',
+  'labels.layout.panelTitle': 'Show/Hide Columns',
+  'labels.layout.panelSubtitle': 'Select columns to display',
+  'labels.layout.clearAll': 'CLEAR ALL',
+  'labels.layout.apply': 'APPLY',
+  'messages.layout.applySuccess': 'Column preferences applied successfully.',
+  'messages.layout.applyError': 'Failed to save column preferences. Please try again.'
 };

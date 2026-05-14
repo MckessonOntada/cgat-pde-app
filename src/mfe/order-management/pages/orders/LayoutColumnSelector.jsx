@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as LayoutIcon } from '@src/assets/svg/layout.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 import styles from './LayoutColumnSelector.module.scss';
 
 const LayoutColumnSelector = ({ columns = [], onApply }) => {
+  const { t } = useTranslate();
   const [isOpen, setIsOpen] = useState(false);
   const [checkedKeys, setCheckedKeys] = useState(() => columns.filter((c) => c.defaultChecked).map((c) => c.key));
   const wrapperRef = useRef(null);
@@ -43,7 +45,7 @@ const LayoutColumnSelector = ({ columns = [], onApply }) => {
         iconButton={false}
         textButton={true}
         Icon={LayoutIcon}
-        label="Layout"
+        label={t('labels.layout.buttonLabel')}
         onClick={() => setIsOpen((v) => !v)}
         className={`${styles.layoutTrigger} ${isOpen ? styles.triggerActive : ''}`}
       />
@@ -51,8 +53,8 @@ const LayoutColumnSelector = ({ columns = [], onApply }) => {
       {isOpen && (
         <div className={styles.panel}>
           <div className={styles.panelHeader}>
-            <span className={styles.panelTitle}>Show/Hide Columns</span>
-            <span className={styles.panelSubtitle}>Select columns to display</span>
+            <span className={styles.panelTitle}>{t('labels.layout.panelTitle')}</span>
+            <span className={styles.panelSubtitle}>{t('labels.layout.panelSubtitle')}</span>
           </div>
 
           <div className={styles.columnList}>
@@ -77,10 +79,10 @@ const LayoutColumnSelector = ({ columns = [], onApply }) => {
 
           <div className={styles.panelFooter}>
             <Button variant="tertiary" size="md" className={styles.footerButton} onClick={handleClearAll}>
-              CLEAR ALL
+              {t('labels.layout.clearAll')}
             </Button>
             <Button variant="primary" size="md" onClick={handleApply}>
-              APPLY
+              {t('labels.layout.apply')}
             </Button>
           </div>
         </div>
