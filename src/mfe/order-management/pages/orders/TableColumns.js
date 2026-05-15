@@ -372,7 +372,7 @@ const getState = (props) => {
   return { ...state, __prevSearch: search };
 };
 
-const jsxColumns = (isCSReviewOrdersPage) => [
+const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.SAP_ID,
     name: 'labels.orderId',
@@ -450,6 +450,7 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     selector: () => {},
     sortable: true,
     sortKey: 'patient_details.patient_info.first_name',
+    omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('PatientName') : false,
     cell: function (props) {
       const patientInfo = props.patient && props.patient.patientInfo;
       const hasUserPhiPermission = AuthUtils.hasUserPhiPermission();
@@ -466,6 +467,18 @@ const jsxColumns = (isCSReviewOrdersPage) => [
           maxWidth={130}
         />
       );
+    }
+  },
+  {
+    id: COLUMNS.PATIENT_ID,
+    name: 'labels.PatientID',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'patient_id',
+    minWidth: '130px',
+    omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('PatientId') : false,
+    cell: function (props) {
+      return <EclipsesTextCss str={props.patient?.id || '-'} maxWidth={130} className={'MCP-table-cell'} />;
     }
   },
   {
@@ -598,11 +611,58 @@ const jsxColumns = (isCSReviewOrdersPage) => [
     }
   },
   {
+    id: COLUMNS.PROVIDER,
+    name: 'labels.provider',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'provider.name',
+    maxWidth: '170px',
+    minWidth: '150px',
+    omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('Provider') : false,
+    cell: function (props) {
+      return <EclipsesTextCss str={CommonUtils.getUSFullName(props?.provider?.name)} maxWidth={150} className={'MCP-table-cell'} />;
+    }
+  },
+  {
+    id: COLUMNS.COI_ID,
+    name: 'labels.coiId',
+    sortable: true,
+    sortKey: 'additional_details.coiId',
+    selector: () => {},
+    minWidth: '120px',
+    omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('CoiId') : false,
+    cell: function (props) {
+      return (
+        <EclipsesTextCss
+          str={
+            props.accountDetails?.shipToAccount?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? props.additionalDetails?.coiId || '-' : props.patient?.coiId || '-'
+          }
+          maxWidth={110}
+          className={'MCP-table-cell'}
+        />
+      );
+    }
+  },
+  {
+    id: COLUMNS.PO_NUMBER,
+    name: 'labels.providePONumber',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'additional_details.po_number',
+    minWidth: '130px',
+    omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('PoNumber') : false,
+    cell: function (props) {
+      return <EclipsesTextCss str={props.additionalDetails?.poNumber || '-'} maxWidth={120} className={'MCP-table-cell'} />;
+    }
+  },
+  {
     id: COLUMNS.PRICE,
     name: 'table.columns.captions.price',
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    sortKey: 'total_net_price',
     right: true,
+    omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('Price') : false,
     selector: 'orderCost',
     minWidth: '120px',
     cell: function (props) {
@@ -630,12 +690,19 @@ const jsxColumns = (isCSReviewOrdersPage) => [
   }
 ];
 
-export const getTableColumns = (tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL, translate, alertContainerId, isCSReviewOrdersPage, handleOnCancelOrder) => {
+export const getTableColumns = (
+  tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+  translate,
+  alertContainerId,
+  isCSReviewOrdersPage,
+  handleOnCancelOrder,
+  appliedLayoutKeys = null
+) => {
   if (!tab) throw new Error('table type is missing');
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
   const columns = TABLE_COLUMNS[tab];
-  const getJsxColumns = jsxColumns(isCSReviewOrdersPage);
+  const getJsxColumns = jsxColumns(isCSReviewOrdersPage, appliedLayoutKeys);
   const tableColumns = columns.map((col) => getJsxColumns.find((item) => item.id === col)).filter(Boolean);
 
   const protoObject = {

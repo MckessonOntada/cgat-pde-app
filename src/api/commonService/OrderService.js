@@ -619,6 +619,20 @@ const verifyTransactionId = async (id) => {
   if (res.data) return res.data;
 };
 
+async function getColumnPreference() {
+  const url = `${ApiRoutes.USER_BASE()}users/current/column-preference?userId=${AuthUtils.getUserId()}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, null, { 'Content-Type': 'application/json' });
+  if (res.data) return res.data;
+  return null;
+}
+
+async function saveColumnPreference(payload) {
+  const url = `${ApiRoutes.USER_BASE()}users/current/column-preference`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, { 'Content-Type': 'application/json' });
+  if (res.data) return res.data;
+  return null;
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -674,7 +688,9 @@ const OrderService = Object.freeze({
   getTherapyDetailsByTradeNameCsUser,
   downloadDocumentCsUser,
   cancelOrder,
-  verifyTransactionId
+  verifyTransactionId,
+  getColumnPreference,
+  saveColumnPreference
 });
 
 export default OrderService;

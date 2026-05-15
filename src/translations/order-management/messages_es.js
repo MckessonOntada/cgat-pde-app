@@ -773,5 +773,13 @@ export const MessageEs = {
   'label.secondLegShipmentInfo': 'S_Second-leg Shipment Information',
   'label.uniqueTransactionID': 'S_Unique Transaction ID',
   'label.name': 'S_Name',
-  'label.address': 'S_Address'
+  'label.address': 'S_Address',
+
+  'labels.layout.buttonLabel': 'S_Layout',
+  'labels.layout.panelTitle': 'S_Show/Hide Columns',
+  'labels.layout.panelSubtitle': 'S_Select columns to display',
+  'labels.layout.clearAll': 'S_CLEAR ALL',
+  'labels.layout.apply': 'S_APPLY',
+  'messages.layout.applySuccess': 'S_Column preferences applied successfully.',
+  'messages.layout.applyError': 'S_Failed to save column preferences. Please try again.'
 };
