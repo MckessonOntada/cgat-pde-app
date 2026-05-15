@@ -32,24 +32,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useWidgetContext } from '@src/context/WidgetContext';
 import { CHANNEL_TYPE } from '../create/form-segments/Constants';
 
-// const LAYOUT_COLUMN_CONFIG = {
-//   common: [
-//     { columnName: 'OrderId', mandatory: true, visibility: true },
-//     { columnName: 'TherapyName', mandatory: true, visibility: true },
-//     { columnName: 'SubmittedDate', mandatory: true, visibility: true },
-//     { columnName: 'OrderStatus', mandatory: true, visibility: true },
-//     { columnName: 'Action', mandatory: true, visibility: true },
-//     { columnName: 'PatientName', mandatory: false, visibility: true },
-//     { columnName: 'PatientId', mandatory: false, visibility: true },
-//     { columnName: 'PoNumber', mandatory: false, visibility: true },
-//     { columnName: 'CoiId', mandatory: false, visibility: true }
-//   ],
-//   SubmittedSP: [{ columnName: 'Provider', mandatory: false, visibility: true }],
-//   SubmittedBnb: [{ columnName: 'Price', mandatory: false, visibility: true }],
-//   PendingSubmission: [],
-//   PendingApproval: [{ columnName: 'Assignee', mandatory: true, visibility: true }]
-// };
-
 const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -550,7 +532,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
                         ))}
                       </TabGroup>
                     )}
-                    <LayoutColumnSelector columns={layoutColumns} onApply={handleLayoutApply} />
+                    {!isPhysician && <LayoutColumnSelector columns={layoutColumns} onApply={handleLayoutApply} />}
                   </div>
                 }
               />
