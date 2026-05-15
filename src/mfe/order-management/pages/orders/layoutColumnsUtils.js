@@ -1,6 +1,6 @@
 import { ORDER_TABS } from './config';
 
-const TAB_TO_CONFIG_KEY = {
+export const TAB_TO_CONFIG_KEY = {
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: 'SubmittedBnb',
   [ORDER_TABS.SUBMITTED_SP]: 'SubmittedSP',
   [ORDER_TABS.PENDING_SUBMISSION]: 'PendingSubmission',

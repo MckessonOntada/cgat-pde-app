@@ -24,7 +24,7 @@ import { useOrders } from '../../context/OrderContext';
 import { routesConfig } from './../../routes/constants';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
 import LayoutColumnSelector from './LayoutColumnSelector';
-import { getLayoutColumns } from './layoutColumnsUtils';
+import { getLayoutColumns, TAB_TO_CONFIG_KEY } from './layoutColumnsUtils';
 import { getTableColumns } from './TableColumns';
 import CancelOrderPanel from '../create/form-segments/summary/CancelOrderPanel';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
@@ -261,13 +261,17 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
   const handleLayoutApply = (checkedKeys) => {
     if (!columnPreferenceData) return;
     setAppliedLayoutKeys(checkedKeys);
+    const currentTabKey = TAB_TO_CONFIG_KEY[config.tab];
+    const editableSections = new Set(['common', currentTabKey].filter(Boolean));
     const modifiedConfig = Object.fromEntries(
       Object.entries(columnPreferenceData).map(([section, cols]) => [
         section,
-        cols.map((col) => ({
-          ...col,
-          visibility: col.mandatory ? col.visibility : checkedKeys.includes(col.columnName)
-        }))
+        editableSections.has(section)
+          ? cols.map((col) => ({
+              ...col,
+              visibility: col.mandatory ? col.visibility : checkedKeys.includes(col.columnName)
+            }))
+          : cols
       ])
     );
     saveColumnPreference(modifiedConfig);

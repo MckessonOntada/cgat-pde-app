@@ -478,7 +478,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
     minWidth: '130px',
     omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('PatientId') : false,
     cell: function (props) {
-      return <span>{props.patient?.id || '-'}</span>;
+      return <EclipsesTextCss str={props.patient?.id || '-'} maxWidth={130} className={'MCP-table-cell'} />;
     }
   },
   {
@@ -633,9 +633,13 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
     omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('CoiId') : false,
     cell: function (props) {
       return (
-        <span>
-          {props.accountDetails?.shipToAccount?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? props.additionalDetails?.coiId || '-' : props.patient?.coiId || '-'}
-        </span>
+        <EclipsesTextCss
+          str={
+            props.accountDetails?.shipToAccount?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? props.additionalDetails?.coiId || '-' : props.patient?.coiId || '-'
+          }
+          maxWidth={110}
+          className={'MCP-table-cell'}
+        />
       );
     }
   },
@@ -648,7 +652,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
     minWidth: '130px',
     omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('PoNumber') : false,
     cell: function (props) {
-      return <span>{props.additionalDetails?.poNumber || '-'}</span>;
+      return <EclipsesTextCss str={props.additionalDetails?.poNumber || '-'} maxWidth={120} className={'MCP-table-cell'} />;
     }
   },
   {
