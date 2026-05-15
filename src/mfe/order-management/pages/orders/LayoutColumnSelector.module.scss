@@ -1,0 +1,83 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding-left: 16px;
+}
+
+// Override McKesson IconButton to look like a bordered toggle button
+.layoutTrigger {
+  height: 32px;
+  padding: 4px 12px !important;
+  border: 1px solid var(--brand-color-grey-scale-cool-1, #ccc) !important;
+  color: var(--brand-color-text-light-slate, #444) !important;
+  font-size: var(--brand-font-size--small, 12px) !important;
+  font-weight: var(--brand-font-weight-600, 600) !important;
+  cursor: pointer;
+  border-radius: 4px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--brand-color-text-light-slate, #444) !important;
+  }
+
+  &:hover {
+    background-color: #e8e8e8 !important;
+  }
+}
+
+.triggerActive {
+  background-color: var(--brand-color-general-white, #fff) !important;
+  color: var(--brand-color-black, #000) !important;
+}
+
+.panel {
+  position: fixed;
+  z-index: 9999;
+  min-width: 230px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.panelHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.panelTitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.panelSubtitle {
+  display: block;
+  font-size: 12px;
+  color: #777;
+  margin-top: 2px;
+}
+
+.columnList {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panelFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid #f0f0f0;
+  gap: 8px;
+}
+
+.footerButton {
+  padding: 0px !important;
+}
