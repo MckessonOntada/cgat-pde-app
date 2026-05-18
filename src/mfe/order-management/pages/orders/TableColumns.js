@@ -474,11 +474,11 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
     name: 'labels.PatientID',
     selector: () => {},
     sortable: true,
-    sortKey: 'patient_id',
+    sortKey: 'patient_identifier',
     minWidth: '130px',
     omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('PatientId') : false,
     cell: function (props) {
-      return <EclipsesTextCss str={props.patient?.id || '-'} maxWidth={130} className={'MCP-table-cell'} />;
+      return <EclipsesTextCss str={props.patient?.patientIdentifier || '-'} maxWidth={130} className={'MCP-table-cell'} />;
     }
   },
   {
@@ -660,7 +660,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
     name: 'table.columns.captions.price',
     selector: () => {},
     sortable: true,
-    sortKey: 'total_net_price',
+    sortKey: 'order_cost',
     right: true,
     omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('Price') : false,
     selector: 'orderCost',
