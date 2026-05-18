@@ -15,7 +15,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import React, { useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../../../components/module-header';
 import TabGroup from '../../../../components/tab-group';
@@ -233,10 +233,14 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       });
   };
 
-  const { data: columnPreferenceData, refetch: refetchColumnPreference } = useQuery({
-    queryKey: ['column-preference', AuthUtils.getUserId()],
+  const queryClient = useQueryClient();
+  const columnPreferenceQueryKey = ['column-preference', AuthUtils.getUserId()];
+
+  const { data: columnPreferenceData } = useQuery({
+    queryKey: columnPreferenceQueryKey,
     queryFn: () => OrderService.getColumnPreference(),
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled: !AuthUtils.isPhysician()
   });
 
   const layoutColumns = useMemo(() => getLayoutColumns(columnPreferenceData, config.tab, t), [columnPreferenceData, config.tab, t]);
@@ -249,8 +253,8 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
 
   const { mutate: saveColumnPreference } = useMutation({
     mutationFn: (payload) => OrderService.saveColumnPreference(payload),
-    onSuccess: () => {
-      refetchColumnPreference();
+    onSuccess: (updatedData) => {
+      queryClient.setQueryData(columnPreferenceQueryKey, updatedData);
       setAlert({ type: 'success', description: t('messages.layout.applySuccess') });
     },
     onError: () => {
@@ -289,14 +293,21 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
 
   const additionalFiltersConfig = useMemo(() => {
     const filters = [];
-    let searchPlaceholder = 'controls.placeholder.searchOrderPlaceholder';
+    const isPatientNameVisible = appliedLayoutKeys.includes('PatientName');
+    let searchPlaceholder = isPatientNameVisible
+      ? 'controls.placeholder.searchOrderPlaceholder'
+      : 'controls.placeholder.searchOrderPlaceholderNoPatient';
 
     switch (config.tab) {
       case ORDER_TABS.SUBMITTED_SP: {
         if (isCSReviewOrdersPage) {
-          searchPlaceholder = 'controls.placeholder.searchSPCSReviewAdminPlaceholder';
+          searchPlaceholder = isPatientNameVisible
+            ? 'controls.placeholder.searchSPCSReviewAdminPlaceholder'
+            : 'controls.placeholder.searchSPCSReviewAdminPlaceholderNoPatient';
         } else {
-          searchPlaceholder = 'controls.placeholder.searchSPOrderPlaceholder';
+          searchPlaceholder = isPatientNameVisible
+            ? 'controls.placeholder.searchSPOrderPlaceholder'
+            : 'controls.placeholder.searchSPOrderPlaceholderNoPatient';
         }
         const statusOptions = [ORDER_STATUS.ALL, ORDER_STATUS.SUBMITTED, ORDER_STATUS.OPEN, ORDER_STATUS.CS_REVIEW, ORDER_STATUS.CANCELLED];
         filters.push({
@@ -320,7 +331,10 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
         return { availableFilters: [], searchPlaceholder };
       }
       case ORDER_TABS.SUBMITTED_BUY_AND_BILL: {
-        if (AuthUtils.hasUserPhiPermission() && !isCSReviewOrdersPage) searchPlaceholder = 'controls.placeholder.searchReviewOrderPlaceholder';
+        if (AuthUtils.hasUserPhiPermission() && !isCSReviewOrdersPage)
+          searchPlaceholder = isPatientNameVisible
+            ? 'controls.placeholder.searchReviewOrderPlaceholder'
+            : 'controls.placeholder.searchReviewOrderPlaceholderNoPatient';
         else if (isCSReviewOrdersPage) {
           searchPlaceholder = 'controls.placeholder.searchCSReviewAdminPlaceholder';
         } else searchPlaceholder = 'controls.placeholder.searchNonPhiOrderPlaceholder';
@@ -444,7 +458,7 @@ const OrderIndex = ({ isCSReviewOrdersPage }) => {
       availableFilters: filters,
       searchPlaceholder
     };
-  }, [location.search, config.tab, assigneeList, assigneeIdsFromURL]);
+  }, [location.search, config.tab, assigneeList, assigneeIdsFromURL, appliedLayoutKeys]);
 
   const initialFilterData = React.useMemo(() => {
     if (filterParams) {
