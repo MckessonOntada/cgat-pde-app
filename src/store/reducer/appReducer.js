@@ -9,12 +9,9 @@ const appSlice = createSlice({
     pageTitleKey: '',
     isScrolled: false,
     organizationList: [],
-    organizationListOptions: [],
+    organizationListOptions: []
   },
   reducers: {
-    showSystemError(state, action) {
-      state.systemError.isVisible = true;
-    },
     setPageTitleKey(state, action) {
       state.pageTitleKey = action?.payload;
     },
@@ -22,13 +19,13 @@ const appSlice = createSlice({
       state.isScrolled = action.payload;
     },
     updateOrganizationList(state, action) {
-      state.organizationList = action.payload
+      state.organizationList = action.payload;
     },
     updateOrganizationListOptions(state, action) {
-      state.organizationListOptions = action.payload.content.map((i) => ({ label: i.name, value: i.id, isChecked: false }))
+      state.organizationListOptions = action.payload.content.map((i) => ({ label: i.name, value: i.id, isChecked: false }));
     }
   }
 });
 
-export const { showSystemError, setPageTitleKey, setIsScrolled, updateOrganizationList, updateOrganizationListOptions } = appSlice.actions;
+export const { setPageTitleKey, setIsScrolled, updateOrganizationList, updateOrganizationListOptions } = appSlice.actions;
 export default appSlice.reducer;

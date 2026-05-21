@@ -248,20 +248,16 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
-
-      if (typeof valA === 'string' && typeof valB === 'string' && newSortConfig.sortBy !== 'billDate' && newSortConfig.sortBy !== 'dueDate') {
-        return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-      } else if (typeof valA === 'number' && typeof valB === 'number') {
-        return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
-      } else if (newSortConfig.sortBy === 'billDate' || newSortConfig.sortBy === 'dueDate') {
-        const dateA = dayjs(valA, 'DD/MM/YYYY');
-        const dateB = dayjs(valB, 'DD/MM/YYYY');
-        if (!dateA.isValid() || !dateB.isValid()) {
-          return 0;
-        }
-        return newSortConfig.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-      } else {
-        return 0;
+      switch (newSortConfig.sortBy) {
+        case 'billNumber':
+          return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        case 'dueDate':
+        case 'billDate':
+          return newSortConfig.sortOrder === 'asc'
+            ? dayjs(valA, 'DD/MM/YYYY') - dayjs(valB, 'DD/MM/YYYY')
+            : dayjs(valB, 'DD/MM/YYYY') - dayjs(valA, 'DD/MM/YYYY');
+        default:
+          return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
       }
     });
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;

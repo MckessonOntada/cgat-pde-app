@@ -7,7 +7,6 @@ import { openModal } from '@src/store/reducer/modalReducer';
 import { Button } from '@mckesson/mcp-component-library';
 import { v4 as uuidv4 } from 'uuid';
 
-const axiosInstance = axios.create({});
 const channel = new BroadcastChannel('auth_channel');
 
 export const httpVerb = {
@@ -56,6 +55,15 @@ export const authToken = (noHeader, noSidHeader, noImpersonation) => {
   return headers;
 };
 
+axios.interceptors.request.use((config) => {
+  config.headers = {
+    ...config.headers,
+    'X-Correlation-Id': uuidv4()
+  };
+
+  return config;
+});
+
 const callRest = function (
   endpoint,
   httpVerb = 'get',
@@ -84,15 +92,6 @@ const callRest = function (
     headers,
     data,
     responseType
-  });
-
-  axios.interceptors.request.use((config) => {
-    config.headers = {
-      ...config.headers,
-      'X-Correlation-Id': uuidv4()
-    };
-
-    return config;
   });
 
   response.then(
