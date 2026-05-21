@@ -16,7 +16,6 @@ import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import AuthUtils from '@src/util/AuthUtils';
 import React, { Suspense } from 'react';
-import { connect } from 'react-redux';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import styles from '../../src/assets/styles/MainLayout.module.scss';
 import Header from '../components/header';
@@ -143,5 +142,4 @@ const UserOnlyRout = () => {
   return isSystemAdmin ? <Navigate to="/" /> : <Outlet />;
 };
 
-const mapStateToProps = () => ({});
-export default connect(mapStateToProps, {})(MainLayout);
+export default MainLayout;
