@@ -55,14 +55,17 @@ const OrderStatus = () => {
   let message;
 
   if (isOrgUser) {
-    if (orderStatus === 'SUBMITTED') message = 'Your order has been submitted successfully and is in line for fulfillment.';
-    else if (orderStatus === 'APPROVAL_PENDING') message = 'Your order has been submitted successfully and is now pending for approval.';
-    else if (orderStatus === 'CS_REVIEW') message = 'Your order has been submitted successfully and is now in Customer Service review.';
+    if (orderStatus === 'SUBMITTED') message = 'messages.orderSuccess';
+    else if (orderStatus === 'APPROVAL_PENDING') message = 'messages.orderSuccessApprovalPending';
+    else if (orderStatus === 'CS_REVIEW') message = 'messages.orderSuccessCSReviewPending';
+    else if (spOrder && orderStatus === 'REVIEW') {
+      message = 'messages.prescriptionPendingPhysician';
+    }
   } else if (isCSReviewer) {
-    if (orderStatus === 'SUBMITTED') message = 'Your order has been submitted successfully and is in line for fulfillment.';
+    if (orderStatus === 'SUBMITTED') message = 'messages.orderSuccess';
   } else if (isApprover) {
-    if (orderStatus === 'SUBMITTED') message = 'Your order has been approved successfully and is in line for fulfillment.';
-    else if (orderStatus === 'CS_REVIEW') message = 'Your order was approved successfully and is currently in Customer Service review.';
+    if (orderStatus === 'SUBMITTED') message = 'messages.orderApprovalSuccess';
+    else if (orderStatus === 'CS_REVIEW') message = 'messages.orderSuccessCSReviewPending';
   } else if (isPhysician) {
     message = 'messages.prescriptionSuccess';
   } else if (orderStatus === 'SUBMITTED') {
@@ -76,7 +79,6 @@ const OrderStatus = () => {
     !orderDetails?.rules?.hasImpersonatedUserPhiPermission && patient?.patientInfo?.firstName === '******'
       ? patient?.patientInfo?.firstName
       : CommonUtils.getUSFullName({ ...patient?.patientInfo });
-
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
       <div>
