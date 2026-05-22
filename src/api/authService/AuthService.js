@@ -21,25 +21,13 @@ const routeToLogin = () => {
   removeAuthDetails();
 };
 
-const setAuthDetails = (data) => {
-  sessionStorage.setItem('APP_AUTH_TOKEN', `${data.tokenType} ${data.accessToken}`);
-  localStorage.setItem('APP_LOCALE', LOCALES.ENGLISH);
-};
-
 const setLanguage = (data) => {
   localStorage.setItem('APP_LOCALE', data);
 };
 
 const getIDPConfig = async () => {
   try {
-    const { data } = await HttpResourceService.callRest(
-      ApiRoutes.GET_CGAT_PDE_OKTA_CONFIG,
-      httpVerb.GET,
-      null,
-      defaultHeaders,
-      false, // noHeader
-      true // noSidHeader
-    );
+    const { data } = await HttpResourceService.callRest(ApiRoutes.GET_CGAT_PDE_OKTA_CONFIG, httpVerb.GET, null, defaultHeaders, false, true);
     return data;
   } catch (error) {
     throw Error('Unable to fetch practice okta details.', error);
@@ -60,7 +48,6 @@ const AuthService = Object.freeze({
   clearLocalStorage,
   removeAuthDetails,
   routeToLogin,
-  setAuthDetails,
   setLanguage,
   setAppAuthToken,
   userLogout

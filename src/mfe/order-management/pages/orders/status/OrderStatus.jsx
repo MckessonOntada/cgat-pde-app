@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './OrderStatus.module.scss';
 import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -55,14 +55,17 @@ const OrderStatus = () => {
   let message;
 
   if (isOrgUser) {
-    if (orderStatus === 'SUBMITTED') message = 'Your order has been submitted successfully and is in line for fulfillment.';
-    else if (orderStatus === 'APPROVAL_PENDING') message = 'Your order has been submitted successfully and is now pending for approval.';
-    else if (orderStatus === 'CS_REVIEW') message = 'Your order has been submitted successfully and is now in Customer Service review.';
+    if (orderStatus === 'SUBMITTED') message = 'messages.orderSuccess';
+    else if (orderStatus === 'APPROVAL_PENDING') message = 'messages.orderSuccessApprovalPending';
+    else if (orderStatus === 'CS_REVIEW') message = 'messages.orderSuccessCSReviewPending';
+    else if (spOrder && orderStatus === 'REVIEW') {
+      message = 'messages.prescriptionPendingPhysician';
+    }
   } else if (isCSReviewer) {
-    if (orderStatus === 'SUBMITTED') message = 'Your order has been submitted successfully and is in line for fulfillment.';
+    if (orderStatus === 'SUBMITTED') message = 'messages.orderSuccess';
   } else if (isApprover) {
-    if (orderStatus === 'SUBMITTED') message = 'Your order has been approved successfully and is in line for fulfillment.';
-    else if (orderStatus === 'CS_REVIEW') message = 'Your order was approved successfully and is currently in Customer Service review.';
+    if (orderStatus === 'SUBMITTED') message = 'messages.orderApprovalSuccess';
+    else if (orderStatus === 'CS_REVIEW') message = 'messages.orderSuccessCSReviewPending';
   } else if (isPhysician) {
     message = 'messages.prescriptionSuccess';
   } else if (orderStatus === 'SUBMITTED') {
@@ -76,7 +79,6 @@ const OrderStatus = () => {
     !orderDetails?.rules?.hasImpersonatedUserPhiPermission && patient?.patientInfo?.firstName === '******'
       ? patient?.patientInfo?.firstName
       : CommonUtils.getUSFullName({ ...patient?.patientInfo });
-
   return (
     <div className={'MCP-module-wrapper'} ref={contentRef}>
       <div>
@@ -113,11 +115,29 @@ const OrderStatus = () => {
         <div className="MCP-panel-container">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             {orderStatus === 'SUBMITTED' ? (
+              // <DetailSegment
+              //   label={t(spOrder ? 'labels.orderId' : 'labels.sapId')}
+              //   value={
+              //     <Link className="MCP-table-link" to={`${RoutePaths.pathOrderManagement}/${orderId}/summary`} state={locationState}>
+              //       {backendOrderId}
+              //     </Link>
+              //   }
+              //   noTooltip
+              // />
               <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.sapId')} value={backendOrderId} />
             ) : (
               <DetailSegment label={t(spOrder ? 'labels.orderId' : 'labels.inspiroLinkId')} value={orderId} />
+              // <DetailSegment
+              //   label={t(spOrder ? 'labels.orderId' : 'labels.inspiroLinkId')}
+              //   value={
+              //     <Link className="MCP-table-link" to={`${RoutePaths.pathOrderManagement}/${orderId}/summary`} state={locationState}>
+              //       {orderId}
+              //     </Link>
+              //   }
+              //   noTooltip
+              // />
             )}
-            <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
+            <DetailSegment label={t('labels.therapy')} value={therapy?.materialDescription} />
             {patientName ? <DetailSegment label={t('labels.patientName')} value={patientName} /> : <div></div>}
           </div>
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
