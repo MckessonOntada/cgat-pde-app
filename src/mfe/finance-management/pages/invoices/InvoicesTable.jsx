@@ -451,7 +451,7 @@ export default function InvoicesTable() {
         id="my-data-table"
         type="normal"
         columns={columns}
-        data={beautifiedData || []}
+        data={data || []}
         onSortIconClick={handleSort}
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
