@@ -31,30 +31,6 @@ export default function InvoicesTable() {
   const isHistory = useLocation().pathname.split('/').includes('invoices-history');
 
   const { data = [], isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel, filterConfig, refetch } = usePaymentInvoices();
-  const beautifiedData = React.useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (isHistory) {
-      return data.slice().sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
-    } else {
-      const upcoming = [];
-      const overdue = [];
-      data.forEach((d) => {
-        const dueDate = new Date(d.dueDate);
-        dueDate.setHours(0, 0, 0, 0);
-        if (dueDate >= today) {
-          upcoming.push(d);
-        } else {
-          overdue.push(d);
-        }
-      });
-
-      upcoming.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-      overdue.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
-
-      return [...upcoming, ...overdue];
-    }
-  }, [data]);
   const { showAlert } = useAlert();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
