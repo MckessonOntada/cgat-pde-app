@@ -5,12 +5,11 @@
   padding-left: 16px;
 }
 
-// Override McKesson IconButton to look like a bordered toggle button
 .layoutTrigger {
   height: 32px;
   padding: 4px 12px !important;
   border: 1px solid var(--brand-color-grey-scale-cool-1, #ccc) !important;
-  color: var(--brand-color-text-light-slate, #444) !important;
+  color: var(--brand-color-black) !important;
   font-size: var(--brand-font-size--small, 12px) !important;
   font-weight: var(--brand-font-weight-600, 600) !important;
   cursor: pointer;
@@ -19,11 +18,7 @@
   svg {
     width: 20px;
     height: 20px;
-    color: var(--brand-color-text-light-slate, #444) !important;
-  }
-
-  &:hover {
-    background-color: #e8e8e8 !important;
+    color: var(--brand-color-black) !important;
   }
 }
 
