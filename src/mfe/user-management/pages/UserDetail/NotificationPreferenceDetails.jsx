@@ -12,6 +12,7 @@ import UserService from '@src/api/commonService/UserService';
 import AuthUtils from '@src/util/AuthUtils';
 import Alert from '@src/components/alert/Alert';
 import useUser from '../../useUser';
+import { useQuery } from 'react-query';
 
 function NotificationPreferenceConfiguration() {
   const { t: translateFn } = useTranslate();
@@ -47,16 +48,22 @@ function NotificationPreferenceConfiguration() {
       });
   }, []);
 
-  React.useEffect(() => {
-    if (userDetails) {
-      const userCommunicationPreferences = userDetails.userCommunicationPreferences ?? {};
-      const roleCommunicationPreferences = userDetails.role?.communicationPreferences?.preferences;
+  const { data, error } = useQuery({
+    queryKey: ['communication-preferences', userId],
+    queryFn: () => UserService.getCommunicationPreferences(userId),
+    enabled: !!userId
+  });
 
-      const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
+  React.useEffect(() => {
+    if (data) {
+      const userCommunicationPreferences = data?.userCommunicationPreferences ?? {};
+      const roleCommunicationPreferences = data?.roleCommunicationPreferences?.preferences;
+
+      const updatedConfig = getMergedPreferences(notificationConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
       setPreferenceConfig(updatedConfig);
       setIsPreferencesLoaded(true);
     }
-  }, [notificationConfig, userDetails]);
+  }, [userDetails, data]);
   const handleOnSubmit = (values) => {
     const payload = extractUserPreferences(values);
     const params = { userId };
