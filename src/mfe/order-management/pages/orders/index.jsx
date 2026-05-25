@@ -23,7 +23,7 @@ import Tab from '../../../../components/tab-group/Tab';
 import { useOrders } from '../../context/OrderContext';
 import { routesConfig } from './../../routes/constants';
 import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW, TOGGLE_FILTERS } from './config';
-import LayoutColumnSelector from './LayoutColumnSelector';
+import LayoutColumnSelector from '@src/components/layout-column-selector/LayoutColumnSelector';
 import { getLayoutColumns, TAB_TO_CONFIG_KEY } from './layoutColumnsUtils';
 import { getTableColumns } from './TableColumns';
 import CancelOrderPanel from '../create/form-segments/summary/CancelOrderPanel';
