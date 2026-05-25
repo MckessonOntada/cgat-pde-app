@@ -42,6 +42,16 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 
+const sortByDueDateInitial = (invoices) =>
+  [...invoices].sort((a, b) => {
+    const hasA = !!a.dueDate;
+    const hasB = !!b.dueDate;
+    if (!hasA && !hasB) return 0;
+    if (!hasA) return 1;
+    if (!hasB) return -1;
+    return dayjs(a.dueDate, 'DD/MM/YYYY') - dayjs(b.dueDate, 'DD/MM/YYYY');
+  });
+
 export const PaymentsInvoiceProvider = ({ children }) => {
   const { t } = useTranslate();
   const [data, setData] = useState([]);
@@ -160,20 +170,20 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         setActualData([]);
         return;
       }
-
+      const sortedInvoices = sortByDueDateInitial(res.data.openInvoices);
       const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
       const endIndex = startIndex + paginationConfig.pageSize;
-      setData(res.data.openInvoices.slice(startIndex, endIndex));
-      setUnSlicedData(res.data.openInvoices);
-      setActualData(res.data.openInvoices);
+      setData(sortedInvoices.slice(startIndex, endIndex));
+      setUnSlicedData(sortedInvoices);
+      setActualData(sortedInvoices);
       if (resetFilterData) {
-        updateFilterData(res.data.openInvoices);
+        updateFilterData(sortedInvoices);
         setResetFilterData(false);
       }
       setPaginationConfig((state) => ({
         ...state,
-        totalPages: Math.ceil(res.data.openInvoices.length / paginationConfig.pageSize),
-        totalElements: res.data.openInvoices.length
+        totalPages: Math.ceil(sortedInvoices.length / paginationConfig.pageSize),
+        totalElements: sortedInvoices.length
       }));
     },
     {
@@ -252,6 +262,16 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         case 'billNumber':
           return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         case 'dueDate':
+          if (!valA && !valB) return 0;
+          if (newSortConfig.sortOrder === 'asc') {
+            if (!valA) return 1;
+            if (!valB) return -1;
+            return dayjs(valA, 'DD/MM/YYYY') - dayjs(valB, 'DD/MM/YYYY');
+          } else {
+            if (!valA) return -1;
+            if (!valB) return 1;
+            return dayjs(valB, 'DD/MM/YYYY') - dayjs(valA, 'DD/MM/YYYY');
+          }
         case 'billDate':
           return newSortConfig.sortOrder === 'asc'
             ? dayjs(valA, 'DD/MM/YYYY') - dayjs(valB, 'DD/MM/YYYY')
