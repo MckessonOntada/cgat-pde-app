@@ -59,11 +59,11 @@ function NotificationPreferenceConfiguration() {
       const userCommunicationPreferences = data?.userCommunicationPreferences ?? {};
       const roleCommunicationPreferences = data?.roleCommunicationPreferences?.preferences;
 
-      const updatedConfig = getMergedPreferences(notificationConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
+      const updatedConfig = getMergedPreferences(preferencesConfig, userCommunicationPreferences.preferences, roleCommunicationPreferences);
       setPreferenceConfig(updatedConfig);
       setIsPreferencesLoaded(true);
     }
-  }, [userDetails, data]);
+  }, [notificationConfig, userDetails, data]);
   const handleOnSubmit = (values) => {
     const payload = extractUserPreferences(values);
     const params = { userId };
