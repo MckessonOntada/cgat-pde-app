@@ -52,8 +52,8 @@ async function getSubscriptionDetails(userId, params = {}) {
   return res.data ?? null;
 }
 
-async function getCommunicationPreferences() {
-  const url = `${ApiRoutes.USERS()}/current/communication-preference`;
+async function getCommunicationPreferences(userId) {
+  const url = `${ApiRoutes.USERS()}/current/communication-preference${userId ? `?userId=${userId}` : ''}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data ?? null;
 }

@@ -84,11 +84,21 @@ const UserDetail = () => {
   });
 
   const { userDetails = {}, isLoading } = state;
+
+  const {
+    data,
+    isLoading: isCommPrefLoading,
+    error
+  } = useQuery({
+    queryKey: ['communication-preferences', userId],
+    queryFn: () => UserService.getCommunicationPreferences(userId),
+    enabled: !!userId
+  });
   React.useEffect(() => {
-    console.log('userDetails changed', state.userDetails);
-    if (userDetails) {
-      const u = userDetails?.userCommunicationPreferences?.preferences;
-      const r = userDetails?.role?.communicationPreferences?.preferences;
+    if (userDetails && data) {
+      const u = data?.userCommunicationPreferences?.preferences;
+      const r = data?.roleCommunicationPreferences?.preferences;
+
       const updated = getMergedPreferences(preferencesConfig, u, r);
 
       setPreferenceConfig(updated);
@@ -97,7 +107,7 @@ const UserDetail = () => {
       const role = userDetails?.role;
       setIsPhysicianUser(AuthUtils.isPhysician(role?.name, role?.id));
     }
-  }, [userDetails]);
+  }, [userDetails, data]);
 
   useEffect(() => {
     if (isEdit) {
@@ -613,7 +623,7 @@ const UserDetail = () => {
                           readOnly={true}
                           showLabels={true}
                           isPreferencesLoaded={isPreferencesLoaded}
-                          isLoadingPreferences={isLoading}
+                          isLoadingPreferences={isLoading || isCommPrefLoading}
                           config={{ ...preferencesConfig, userPermissions: userDetails.permissions || [] }}
                         />
                       </div>
