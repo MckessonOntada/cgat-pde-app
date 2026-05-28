@@ -8,11 +8,14 @@ Our app architecture is built with the latest React 18 technology to make it wor
  
 ## Getting Started  
 
-1. [Getting Started](####Getting-Started).
+
+1. [Getting Started](####Getting-Started)
 2. [Configure GitHub npm Registry](####Configure-GitHub-npm-Registry)
 3. [Running the Application](####Running-the-Application)
 4. [Contributing](####Contributing)
 -----------------------------------------------------------------------------------------------
+
+
 
 1. #### Getting Started
 
@@ -34,4 +37,6 @@ Our app architecture is built with the latest React 18 technology to make it wor
    Contributions to the CGAT-PDE App are welcome! To contribute, follow these steps:
 
    We create feature branches and then create a pull request off that branch, after approval the code is merged.
+
+*******
 
