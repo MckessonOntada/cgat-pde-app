@@ -38,3 +38,5 @@ Our app architecture is built with the latest React 18 technology to make it wor
 
    We create feature branches and then create a pull request off that branch, after approval the code is merged.
 
+*******
+
