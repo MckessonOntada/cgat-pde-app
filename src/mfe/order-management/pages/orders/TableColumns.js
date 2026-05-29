@@ -40,7 +40,7 @@ function getOptionsByStatus(props) {
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData, assignedGroupsData, orderView } = useOrders();
+  const { refreshData, assignedGroupsData, orderView, isFetching } = useOrders();
   const { hasPermission, hasAnyPermission } = usePermission();
   const { search } = useLocation();
   const hasEditPermission = hasAnyPermission([
@@ -77,7 +77,7 @@ function getOptionsByStatus(props) {
       })
   });
 
-  const { mutate: deleteOrder } = useMutation(({ preservedState }) => OrderService.deleteOrder(id), {
+  const { mutate: deleteOrder, isLoading: isDeletingOrder } = useMutation(({ preservedState }) => OrderService.deleteOrder(id), {
     onSuccess: (_, variables) => {
       refreshData();
       showAlert({
@@ -223,7 +223,8 @@ function getOptionsByStatus(props) {
       if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.DISCARD_ORDER)) {
         options.push({
           label: translate(`labels.orderActions.discard`),
-          value: ORDER_ENTITY_ACTION.DELETE
+          value: ORDER_ENTITY_ACTION.DELETE,
+          disabled: isDeletingOrder || isFetching
         });
       }
     } else if (status === ORDER_STATUS.REJECTED) {
