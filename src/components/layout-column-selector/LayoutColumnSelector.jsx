@@ -17,7 +17,14 @@ const LayoutColumnSelector = ({ columns = [], onApply }) => {
 
   useEffect(() => {
     setCheckedKeys(columns.filter((c) => c.defaultChecked).map((c) => c.key));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnsKey]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setCheckedKeys(columns.filter((c) => c.defaultChecked).map((c) => c.key));
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
