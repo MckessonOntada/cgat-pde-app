@@ -13,6 +13,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { extractUserPreferences, getMergedPreferences } from './communication-preference-panel/helpers';
 import NotificationPreferencePanel from './communication-preference-panel/NotificationPreferencePanel';
 import AuthUtils from '@src/util/AuthUtils';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 
 const VALIDATION_SCHEMA = Yup.object().shape({
   preferences: Yup.object()
@@ -123,6 +124,7 @@ const NotificationPreference = () => {
           description: 'Communication preferences updated successfully.',
           type: 'success'
         });
+        scrollToTopUtil();
       })
       .catch((error) => {
         const statusCode = error?.response?.status;
@@ -133,6 +135,7 @@ const NotificationPreference = () => {
           description,
           type: 'error'
         });
+        scrollToTopUtil();
       });
   };
 
