@@ -1,7 +1,7 @@
 import AuthUtils from '@src/util/AuthUtils';
 
 const usePermission = () => {
-  const userPermissions = AuthUtils.getUserPermissions();
+  const userPermissions = AuthUtils.getUserPermissions() || [];
   if (!userPermissions) return;
 
   const hasAllPermission = (permissions = []) => {
