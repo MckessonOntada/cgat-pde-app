@@ -207,6 +207,14 @@ export const getValidationSchema = ({
             })
         }),
       ...(isSpOrder && {
+        contact: Yup.object().nullable().shape({
+          phoneNumber: Yup.string()
+            .nullable()
+            .matches(PHONE_REGEX, t('message.invalidPhoneNumber'))
+            .required(t('orderManagement.patientDetails.validation.phone_no'))
+        })
+      }),
+      ...(isSpOrder && {
         patientAddress: Yup.object()
           .nullable()
           .shape({

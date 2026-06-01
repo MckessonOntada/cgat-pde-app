@@ -173,7 +173,20 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         is: () => isVariantRequired,
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
-      })
+      }),
+      orderQuantity: Yup.number()
+        .transform((value, originalValue) => {
+          if (!/^[0-9]+$/.test(originalValue)) {
+            return NaN;
+          }
+          return value;
+        })
+        .typeError(t('labels.OrderQuantityShouldPositive'))
+        .min(1, t('labels.OrderQuantityMin', { min: 1 }))
+        .max(99, t('labels.OrderQuantityMax', { max: 99 }))
+        .required(t('labels.orderQuantityRequired'))
+        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+        .integer(t('labels.OrderQuantityMustBeInteger'))
     });
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
@@ -268,19 +281,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           dynamicFields[field.fieldName] = validator;
         }
       });
-      dynamicFields.orderQuantity = Yup.number()
-        .transform((value, originalValue) => {
-          if (!/^[0-9]+$/.test(originalValue)) {
-            return NaN;
-          }
-          return value;
-        })
-        .typeError(t('labels.OrderQuantityShouldPositive'))
-        .min(1, t('labels.OrderQuantityMin', { min: 1 }))
-        .max(99, t('labels.OrderQuantityMax', { max: 99 }))
-        .required(t('labels.orderQuantityRequired'))
-        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-        .integer(t('labels.OrderQuantityMustBeInteger'));
       schema = schema.concat(Yup.object().shape(dynamicFields));
     }
 
@@ -1294,7 +1294,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
               dispatch(hasUnsavedChanges(isReallyDirty));
             }, [dirty, values, initialFormValues]);
-
             return (
               <Form>
                 <div className="MCP-module-body">
