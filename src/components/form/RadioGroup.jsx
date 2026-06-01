@@ -1,17 +1,11 @@
 import React from 'react';
 import { RadioGroup as BaseRadioGroup, Label, TextError } from '@mckesson/mcp-component-library';
 
-// TODO: Handle radio group validations & errors
 export default function RadioGroup(props) {
-  const { field, form, isRequired, caption, ...rest } = props;
-  //  const error = form.errors[field.name] && form.touched[field.name];
-
-  const fieldNameParts = field.name.includes('.') ? field.name.split('.') : null;
-  const rootFieldName = fieldNameParts ? fieldNameParts[0] : field.name;
-  const subFieldName = fieldNameParts ? fieldNameParts[1] : null;
-  const isTouched = subFieldName ? form.touched?.[rootFieldName]?.[subFieldName] || form.touched?.[field.name] : form.touched?.[field.name];
-
-  const error = isTouched ? (subFieldName ? form.errors[rootFieldName]?.[subFieldName] || form.errors[field.name] : form.errors[field.name]) : null;
+  const { field, form, isRequired, caption, onChangeValue, ...rest } = props;
+  const fieldMeta = form.getFieldMeta(field.name);
+  const isTouched = fieldMeta.touched || form.submitCount > 0;
+  const error = isTouched ? fieldMeta.error : null;
   return (
     <div className="radio-button-wrapper">
       <Label className="label-heading">

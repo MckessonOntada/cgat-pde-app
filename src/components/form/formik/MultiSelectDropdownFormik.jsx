@@ -13,10 +13,12 @@ const MultiSelectDropdownFormik = (props) => {
     ispillsVisible = false,
     pillsCount = null,
     pillsLabels = [],
-    onRemoveClick = () => {}
+    onRemoveClick = () => {},
+    onChange: externalOnChange,
+    ...rest
   } = props;
   const { name, value } = field;
-  const { setFieldValue, errors, touched } = form;
+  const { setFieldValue, setFieldTouched, errors, touched } = form;
   const errorMessage = getNestedValue(errors, name);
   const isFieldTouched = getNestedValue(touched, name);
   return (
@@ -29,23 +31,28 @@ const MultiSelectDropdownFormik = (props) => {
         error={isFieldTouched && errorMessage}
         isRequired={isRequired}
         onChange={(values) => {
-          const augmentedData = values
-            .filter((item) => item.isChecked)
-            .map((item) => ({
-              name: item.label,
-              value: item.value
-            }));
+          if (externalOnChange) {
+            externalOnChange(values);
+          } else {
+            const augmentedData = values
+              .filter((item) => item.isChecked)
+              .map((item) => ({
+                name: item.label,
+                value: item.value
+              }));
 
-          setFieldValue(`${name}_augmented`, augmentedData);
+            setFieldValue(`${name}_augmented`, augmentedData);
 
-          setFieldValue(
-            `${name}`,
-            values.filter((item) => item.isChecked).map((item) => item.value)
-          );
+            setFieldValue(
+              `${name}`,
+              values.filter((item) => item.isChecked).map((item) => item.value)
+            );
 
-          getUpdatedOptions(values);
+            getUpdatedOptions(values);
+          }
+          setFieldTouched(name, true, false);
         }}
-        {...props}
+        {...rest}
       />
       {ispillsVisible && value.length > 0 && (
         <div className="pills-container">
