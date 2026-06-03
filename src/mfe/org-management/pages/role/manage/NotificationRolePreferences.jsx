@@ -6,7 +6,7 @@ import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
 import Alert from '@src/components/cgat-alert/Alert';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import NotificationPreferencePanel from '@src/mfe/core-config/notifications-setting/communication-preference-panel/NotificationPreferencePanel';
 import notificationConfig from '@src/mfe/core-config/notifications-setting/communication-preference-panel/config';
 import { Form, Formik } from 'formik';
@@ -33,11 +33,17 @@ const NotificationRolePreferences = () => {
   const { roleDetails, createWizardSteps } = state;
   const { isEdit, id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'roleId' });
   const [isDirty, setIsDirty] = React.useState(false);
+  const queryClient = useQueryClient();
 
+  const { data, isLoading: isCommPrefLoading } = useQuery({
+    queryKey: ['role-communication-preferences', roleDetails?.id],
+    queryFn: () => RoleService.getCommunicationPreferences(roleDetails?.id),
+    enabled: !!roleDetails?.id
+  });
   React.useEffect(() => {
-    const updatedConfig = getMergedPreferences(initialValue, roleDetails.communicationPreferences?.preferences, {});
+    const updatedConfig = getMergedPreferences(initialValue, data?.preferences, {});
     setInitialValue(updatedConfig);
-  }, []);
+  }, [data]);
 
   const handleOnBack = () => {
     navigate(isEdit ? `./../..` : `./../permissions`);
@@ -46,6 +52,7 @@ const NotificationRolePreferences = () => {
   const { mutate: updateCommunicationPreferences, isLoading: isSaving } = useMutation({
     mutationFn: async (data) => RoleService.updateCommunicationPreferences(id, data),
     onSuccess: (data) => {
+      queryClient.invalidateQueries('role-communication-preferences', roleDetails?.id);
       setValue('roleDetails', data);
       if (data) {
         if (isEdit) {

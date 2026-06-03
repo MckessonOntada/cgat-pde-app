@@ -5,7 +5,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import { Button, Heading, Switch } from '@mckesson/mcp-component-library';
 import './index.scss';
 import ModuleHeader from '@src/components/module-header';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils.js';
@@ -37,13 +37,17 @@ const RoleProfile = () => {
   const { state, setValue } = useWidgetContext();
   const roleDetails = state?.roleDetails || null;
 
+  const { data, isLoading: isCommPrefLoading } = useQuery({
+    queryKey: ['role-communication-preferences', roleDetails?.id],
+    queryFn: () => RoleService.getCommunicationPreferences(roleDetails?.id),
+    enabled: !!roleDetails?.id
+  });
   React.useEffect(() => {
-    if (roleDetails && roleDetails.id) {
-      const updatedConfig = getMergedPreferences(preferencesConfig, {}, roleDetails.communicationPreferences?.preferences);
+    if (roleDetails && roleDetails.id && data?.preferences) {
+      const updatedConfig = getMergedPreferences(notificationConfig, {}, data?.preferences);
       setPreferenceConfig(updatedConfig);
     }
-  }, roleDetails);
-
+  }, [roleDetails, data?.preferences]);
   React.useEffect(() => {
     const { alert } = location.state || {};
     if (alert) {
@@ -255,7 +259,7 @@ const RoleProfile = () => {
                         onClick={() =>
                           navigate(`edit/notification-preferences`, {
                             state: {
-                              communicationPreferences: roleDetails?.communicationPreferences?.preferences,
+                              communicationPreferences: data?.preferences,
                               isEdit: true,
                               permissions: roleDetails?.permissions
                             }
@@ -270,7 +274,7 @@ const RoleProfile = () => {
             </div>
             {alert && alert.pinPoint === 'notification-preferences' && <Alert {...alert} onClose={() => setAlert(null)} />}
             <div className="MCP-panel-container grid grid-gap-16">
-              {roleDetails?.communicationPreferences?.preferences ? (
+              {data?.preferences ? (
                 <Formik initialValues={preferencesConfig} enableReinitialize={true}>
                   <Form>
                     <div className="MCP-panel-container">
