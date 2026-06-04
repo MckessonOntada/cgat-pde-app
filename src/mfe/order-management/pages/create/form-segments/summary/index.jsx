@@ -289,7 +289,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isApprovalPending = status === ORDER_STATUS.APPROVAL_PENDING;
   const isCSReview = status === ORDER_STATUS.CS_REVIEW;
   const isCanceledOrder = status === ORDER_STATUS.CANCELLED || orderProcessingStatus === ORDER_STATUS.CANCELLED;
-  const isCompleted = orderProcessingStatus === ORDER_STATUS.COMPLETED;
+  const isCompleted = sapStatus === SAP_ORDER_STATUS.COMPLETED;
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
