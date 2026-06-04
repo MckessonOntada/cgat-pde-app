@@ -160,7 +160,7 @@ function getOptionsByStatus(props) {
         }
         break;
       case ORDER_ENTITY_ACTION.EDIT:
-        if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
+        if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL && props.orderProcessingStatus !== ORDER_STATUS.COMPLETED) {
           navigate(isCSReviewOrdersPage ? `${id}/summary?orgId=${practiceId}` : `${id}/summary`, {
             state: props.status === ORDER_STATUS.SUBMITTED || props.status === ORDER_STATUS.CS_REVIEW ? { ...preservedState, isEdit: true } : preservedState
           });

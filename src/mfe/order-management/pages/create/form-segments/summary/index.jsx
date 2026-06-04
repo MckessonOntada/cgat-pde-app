@@ -289,7 +289,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isApprovalPending = status === ORDER_STATUS.APPROVAL_PENDING;
   const isCSReview = status === ORDER_STATUS.CS_REVIEW;
   const isCanceledOrder = status === ORDER_STATUS.CANCELLED || orderProcessingStatus === ORDER_STATUS.CANCELLED;
-  const isCompleted = sapStatus === SAP_ORDER_STATUS.COMPLETED;
+  const isCompleted = orderProcessingStatus === ORDER_STATUS.COMPLETED;
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -1108,7 +1108,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
-    if (isRejected || isDeleted || isCanceledOrder) return false;
+    if (isRejected || isDeleted || isCanceledOrder || isCompleted) return false;
     else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
     // else if (isSpOrder && isSubmitted) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
@@ -1118,9 +1118,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       return true;
     }
     return true;
-  }, [isRejected, isDeleted, isSubmitted, isCSReview, isApprover, status, sapStatus, orderDetails, isCanceledOrder]);
+  }, [isRejected, isDeleted, isSubmitted, isCSReview, isApprover, status, sapStatus, orderDetails, isCanceledOrder, isCompleted]);
   const allowUpdateBnBAfterSubmit =
-    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && sapStatus === SAP_ORDER_STATUS.OPEN;
+    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && !isCompleted && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
