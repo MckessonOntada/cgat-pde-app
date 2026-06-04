@@ -130,7 +130,7 @@ function NotificationPreferenceConfiguration() {
               showTooltip={true}
               isLoadingPreferences={false}
               isPreferencesLoaded={isPreferencesLoaded}
-              config={{ ...preferencesConfig, userPermissions: userDetails.permissions }}
+              config={{ ...preferencesConfig, userPermissions: userDetails?.permissions || [] }}
             />
             {/* <SMSConfigurationPanel
               onSave={handleOnSaveNumber}

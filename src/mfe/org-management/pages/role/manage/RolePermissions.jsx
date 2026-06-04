@@ -84,10 +84,12 @@ const RolePermissions = () => {
         : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
 
       const { permissions: existingPermissions, communicationPreferences, ...rest } = roleDetails;
+      const permissionList = existingPermissions ?? [];
+
       const _permissions = {};
       Object.entries(filteredPermissionsEnum).map(([_category, permissions]) => {
         Object.entries(permissions).map(([key, _permission]) => {
-          _permissions[key] = existingPermissions.includes(key);
+          _permissions[key] = permissionList.includes(key);
         });
       });
 

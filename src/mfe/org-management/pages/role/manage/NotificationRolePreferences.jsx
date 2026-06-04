@@ -41,7 +41,7 @@ const NotificationRolePreferences = () => {
     enabled: !!roleDetails?.id
   });
   React.useEffect(() => {
-    const updatedConfig = getMergedPreferences(initialValue, data?.preferences, {});
+    const updatedConfig = getMergedPreferences(initialValue, data?.preferences ?? {}, {});
     setInitialValue(updatedConfig);
   }, [data]);
 
