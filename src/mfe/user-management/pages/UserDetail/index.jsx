@@ -77,7 +77,7 @@ const UserDetail = () => {
   const [preferencesConfig, setPreferenceConfig] = useState(notificationConfig);
   const [isPreferencesLoaded, setIsPreferencesLoaded] = useState(false);
   const disablePay = useRef(false);
-  const { state, setValue } = useWidgetContext();
+  const { state, setValue, reset } = useWidgetContext();
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
@@ -197,6 +197,7 @@ const UserDetail = () => {
   };
 
   const goBack = () => {
+    reset();
     navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement, { state: { isBack: true } });
   };
 
@@ -624,7 +625,7 @@ const UserDetail = () => {
                           showLabels={true}
                           isPreferencesLoaded={isPreferencesLoaded}
                           isLoadingPreferences={isLoading || isCommPrefLoading}
-                          config={{ ...preferencesConfig, userPermissions: userDetails.permissions || [] }}
+                          config={{ ...preferencesConfig, userPermissions: userDetails?.permissions || [] }}
                         />
                       </div>
                     </Form>

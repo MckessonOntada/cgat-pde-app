@@ -9,7 +9,7 @@ import { Loader } from '@mckesson/mcp-component-library';
 
 const UserLoader = () => {
   const { id, params } = useRouteMode({ editSegment: 'edit', paramKey: 'userId' });
-  const { state, setValue } = useWidgetContext();
+  const { state, setValue, reset } = useWidgetContext();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   React.useEffect(() => {
@@ -35,7 +35,9 @@ const UserLoader = () => {
         setValue('selectedRole', selectedRole);
         setValue('userDetails', response);
       })
-      .catch((_error) => {})
+      .catch((_error) => {
+        reset();
+      })
       .finally(() => {
         setValue('isLoading', false);
         setValue('reloadUser', false);
