@@ -36,6 +36,7 @@ const isCSReviewOrdersPage = AuthUtils.isCustomerCenterView();
 function getOptionsByStatus(props) {
   const { t: translate } = useTranslate();
   const { id, status, practiceId } = props || {};
+  const canceledOrder = status === ORDER_STATUS.CANCELLED || props.orderProcessingStatus === ORDER_STATUS.CANCELLED;
   const { tab, alertContainerId, handleOnCancelOrder, isCSReviewOrdersPage } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
@@ -159,7 +160,7 @@ function getOptionsByStatus(props) {
         }
         break;
       case ORDER_ENTITY_ACTION.EDIT:
-        if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
+        if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL && props.orderProcessingStatus !== ORDER_STATUS.COMPLETED) {
           navigate(isCSReviewOrdersPage ? `${id}/summary?orgId=${practiceId}` : `${id}/summary`, {
             state: props.status === ORDER_STATUS.SUBMITTED || props.status === ORDER_STATUS.CS_REVIEW ? { ...preservedState, isEdit: true } : preservedState
           });
@@ -273,23 +274,23 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.VIEW
       });
     }
-    if (status !== ORDER_STATUS.CANCELLED && status !== ORDER_STATUS.REJECTED && (hasEditPermission || isCSReviewOrdersPage)) {
+    if (!canceledOrder && status !== ORDER_STATUS.REJECTED && (hasEditPermission || isCSReviewOrdersPage)) {
       options.push({
         label: translate(`labels.orderActions.edit`),
         value: ORDER_ENTITY_ACTION.EDIT
       });
     }
-    if (
-      status !== ORDER_STATUS.CANCELLED &&
-      status !== ORDER_STATUS.REJECTED &&
-      (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage)
-    ) {
+    if (!canceledOrder && status !== ORDER_STATUS.REJECTED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER) || isCSReviewOrdersPage)) {
       options.push({
         label: translate(`labels.orderActions.cancel`),
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
-    if (status === ORDER_STATUS.SUBMITTED && (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS) || !isCSReviewOrdersPage)) {
+    if (
+      !canceledOrder &&
+      status === ORDER_STATUS.SUBMITTED &&
+      (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.UPLOAD_ORDER_DOCUMENTS) || !isCSReviewOrdersPage)
+    ) {
       options.push({
         label: translate(`labels.orderActions.uploadDocument`),
         value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT

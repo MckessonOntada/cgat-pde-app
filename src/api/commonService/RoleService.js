@@ -44,6 +44,11 @@ async function deactivateRole(id) {
   return res.data;
 }
 
+async function getCommunicationPreferences(roleId) {
+  const url = `${ApiRoutes.GET_ROLES()}/${roleId}/communication-preferences`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  return res.data;
+}
 const RoleService = Object.freeze({
   getRoleDetails,
   createRole,
@@ -51,7 +56,8 @@ const RoleService = Object.freeze({
   updatePermissions,
   updateCommunicationPreferences,
   getAllRoles,
-  deactivateRole
+  deactivateRole,
+  getCommunicationPreferences
 });
 
 export default RoleService;

@@ -64,7 +64,8 @@ const UserPermissions = () => {
   const [initialFormValues, setInitialFormValue] = React.useState(INITIAL_STATE);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
-  const { selectedRole, userDetails = {}, createWizardSteps } = state;
+  const { selectedRole, createWizardSteps } = state;
+  const userDetails = state?.userDetails ?? {};
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { data: permissions } = useQuery({
     queryKey: ['users/permissions'],
@@ -100,7 +101,7 @@ const UserPermissions = () => {
   });
 
   React.useEffect(() => {
-    if (userDetails.permissions && permissions) {
+    if (userDetails?.permissions && permissions) {
       const filteredPermissionsEnum = isSystemAdminView
         ? permissions || {}
         : Object.fromEntries(Object.entries(permissions || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));

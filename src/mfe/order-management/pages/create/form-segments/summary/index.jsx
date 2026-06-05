@@ -103,7 +103,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     submittedBy,
     isCoiIdRequired,
     spTherapyConfig,
-    therapyConfig = {}
+    therapyConfig = {},
+    orderProcessingStatus
   } = orderDetails;
   const { orcaPatient, isVerified: isOrcaPatientVerified } = state;
   const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
@@ -287,6 +288,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isSubmitted = status === ORDER_STATUS.SUBMITTED;
   const isApprovalPending = status === ORDER_STATUS.APPROVAL_PENDING;
   const isCSReview = status === ORDER_STATUS.CS_REVIEW;
+  const isCanceledOrder = status === ORDER_STATUS.CANCELLED || orderProcessingStatus === ORDER_STATUS.CANCELLED;
+  const isCompleted = sapStatus === SAP_ORDER_STATUS.COMPLETED;
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -1073,7 +1076,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         </Button>
       </PermittedComponent>
     );
-    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED, ORDER_STATUS.CANCELLED].includes(status) || (isSpOrder && status === ORDER_STATUS.SUBMITTED)) {
+    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED].includes(status) || isCanceledOrder || isCompleted || (isSpOrder && status === ORDER_STATUS.SUBMITTED)) {
       controls.push(controlPrintSummary);
     } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
@@ -1105,7 +1108,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
-    if (isRejected || isDeleted || status === ORDER_STATUS.CANCELLED) return false;
+    if (isRejected || isDeleted || isCanceledOrder || isCompleted) return false;
     else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
     // else if (isSpOrder && isSubmitted) return false;
     else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
@@ -1115,9 +1118,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       return true;
     }
     return true;
-  }, [isRejected, isDeleted, isSubmitted, isCSReview, isApprover, status, sapStatus, orderDetails]);
+  }, [isRejected, isDeleted, isSubmitted, isCSReview, isApprover, status, sapStatus, orderDetails, isCanceledOrder, isCompleted]);
   const allowUpdateBnBAfterSubmit =
-    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && sapStatus === SAP_ORDER_STATUS.OPEN;
+    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && !isCompleted && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
@@ -1317,7 +1320,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       <div className="MCP-module-body" ref={contentRef}>
         {!isError && (
           <React.Fragment>
-            {showControls && status && ![ORDER_STATUS.CANCELLED, ORDER_STATUS.REJECTED].includes(status) && (
+            {showControls && status && !isCanceledOrder && !isRejected && (
               <div className="order-stepper-wrapper">
                 <OrderStepper
                   status={orderDetails?.currentStage}
