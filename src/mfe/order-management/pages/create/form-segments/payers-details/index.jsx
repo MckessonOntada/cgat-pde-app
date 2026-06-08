@@ -106,14 +106,6 @@ function Payer({ readOnly, hasPermission }) {
 
     if (isChangeOnPreviousStep && !hasPermission) {
       navigate(location.pathname, { state: location.state });
-      const state = {};
-      state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
-        </div>
-      );
-      dispatch(openModal(state));
     }
     return () => dispatch(hasUnsavedChanges(false));
   }, []);
@@ -439,7 +431,7 @@ function Payer({ readOnly, hasPermission }) {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
-        {readOnly && (
+        {readOnly && orderDetails?.currentStage && (
           <NotifyAlert
             stage={ORDER_STAGES.PAYER_DETAILS}
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PAYER_DETAILS ? true : false}

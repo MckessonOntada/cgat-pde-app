@@ -614,14 +614,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
       if (isChangeOnPreviousStep && !hasPermission) {
         navigate(location.pathname, { state: location.state });
-        const state = {};
-        state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
-        state.body = (
-          <div className="MCP-modal-body">
-            <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
-          </div>
-        );
-        dispatch(openModal(state));
       }
     }
   }, [orderDetails]);
@@ -1257,7 +1249,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
       <div className="MCP-module-body">
         <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} channelType={orderDetails.channelType} />
-        {readOnly && (
+        {readOnly && orderDetails?.currentStage && (
           <NotifyAlert
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ADDITIONAL_DETAILS ? true : false}
             stage={ORDER_STAGES.ADDITIONAL_DETAILS}
