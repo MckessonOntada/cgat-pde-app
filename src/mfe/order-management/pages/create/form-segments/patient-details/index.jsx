@@ -121,14 +121,6 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
         if (isChangeOnPreviousStep && !hasPermission) {
           navigate(location.pathname, { state: location.state });
-          const state = {};
-          state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
-          state.body = (
-            <div className="MCP-modal-body">
-              <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
-            </div>
-          );
-          dispatch(openModal(state));
         }
       }
     }
@@ -785,7 +777,7 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
 
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} channelType={channelType} />
-        {readOnly && (
+        {readOnly && orderDetails?.currentStage && (
           <NotifyAlert
             stage={ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS}
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.PATIENT_DETAILS ? true : false}
