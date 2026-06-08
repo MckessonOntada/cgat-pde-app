@@ -149,14 +149,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const { isChangeOnPreviousStep } = state;
     if (isChangeOnPreviousStep && !hasPermission) {
       navigate(location.pathname, { state: location.state });
-      const state = {};
-      state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
-        </div>
-      );
-      dispatch(openModal(state));
     }
   }, []);
 

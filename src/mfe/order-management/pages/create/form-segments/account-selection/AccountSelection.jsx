@@ -86,14 +86,6 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
   React.useEffect(() => {
     if (isTherapyChanged && !hasPermission) {
       navigate(location.pathname, { state: location.state });
-      const state = {};
-      state.title = t('title.stepSuccessfulCompletionByUnAuthorizedUser');
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>{t('message.stepSuccessfulCompletionByUnAuthorizedUser')}</p>
-        </div>
-      );
-      dispatch(openModal(state));
     }
   }, []);
 
@@ -298,7 +290,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails.channelType}
         />
-        {readOnly && (
+        {readOnly && orderDetails?.currentStage && (
           <NotifyAlert
             stage={ORDER_STAGES.ACCOUNT_DETAILS}
             OnEdit={readOnly && orderDetails?.currentStage !== ORDER_STAGES.ACCOUNT_DETAILS ? true : false}
