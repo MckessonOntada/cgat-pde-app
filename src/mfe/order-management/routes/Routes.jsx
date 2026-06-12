@@ -22,6 +22,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import useRouteMode from '@src/mfe/user-management/routes/useRouteMode';
 import AuthUtils from '@src/util/AuthUtils';
 import { normalizeOrderResponse } from '../pages/create/form-segments/OrderUtil';
+import { Loader } from '@mckesson/mcp-component-library';
 
 function OrderManagementRoutes() {
   const orderPermissions = [
@@ -114,9 +115,7 @@ export const OrderLoader = () => {
     try {
       const params = new URLSearchParams(location.search);
       const orgId = params.get('orgId');
-      const result = isCustomerReviewOrderWizard
-        ? await OrderService.getOrderByIdCsUser(id, orgId)
-        : await OrderService.getOrderById(id);
+      const result = isCustomerReviewOrderWizard ? await OrderService.getOrderByIdCsUser(id, orgId) : await OrderService.getOrderById(id);
       if (result) {
         const beautifiedOrderDetails = normalizeOrderResponse(result);
         const loggedInUserId = AuthUtils.getUserId();
@@ -150,6 +149,7 @@ export const OrderLoader = () => {
       setValue('isApprover', false);
       return;
     }
+    setValue('isLoading', true);
     setValue('orderDetails', {});
     setValue('isChangeOnPreviousStep', false);
     setValue('isApprover', false);
