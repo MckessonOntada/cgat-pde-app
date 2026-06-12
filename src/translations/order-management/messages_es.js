@@ -221,7 +221,7 @@ export const MessageEs = {
   'labels.orderActions.unassignToMe': 'S_Unassign',
   'labels.orderActions.approve': 'S_Approve Order',
   'labels.orderActions.deletemessage': 'S_Are you sure you wish to Discard this Order ?',
-  'labels.orderActions.cancelmessage': 'S_Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
+  'labels.orderActions.cancelmessage': 'S_To modify or cancel an order, please reach out to Customer Service for assistance',
   'labels.orderActions.OK': 'S_OK',
   'labels.information': 'S_Information',
   'labels.confirmation': 'S_Confirmation',
