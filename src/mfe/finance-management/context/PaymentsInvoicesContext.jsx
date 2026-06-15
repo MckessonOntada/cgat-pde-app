@@ -272,6 +272,10 @@ export const PaymentsInvoiceProvider = ({ children }) => {
             if (!valB) return 1;
             return dayjs(valB, 'DD/MM/YYYY') - dayjs(valA, 'DD/MM/YYYY');
           }
+        case 'status':
+          return newSortConfig.sortOrder === 'asc'
+            ? String(valA || '').localeCompare(String(valB || ''))
+            : String(valB || '').localeCompare(String(valA || ''));
         case 'billDate':
           return newSortConfig.sortOrder === 'asc'
             ? dayjs(valA, 'DD/MM/YYYY') - dayjs(valB, 'DD/MM/YYYY')
