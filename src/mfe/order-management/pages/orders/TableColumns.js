@@ -328,8 +328,16 @@ function getOrderProcessingStatus(orderProcessingStatus) {
   return map[key] || null;
 }
 
-const getPathByOrderStage = (props, isCSReviewOrdersPage) => {
-  const { currentStage, id, patientDetailsRequired, practiceId } = props;
+const getPathByOrderStage = (props, isCSReview) => {
+  const { currentStage, id, patientDetailsRequired, practiceId, status } = props;
+  const isCS = isCSReview !== undefined ? isCSReview : isCSReviewOrdersPage;
+  if (status === ORDER_STATUS.DELETED) {
+    if (isCS) {
+      return `${id}/summary?orgId=${practiceId}`;
+    } else {
+      return `${id}/summary`;
+    }
+  }
   switch (currentStage) {
     case ORDER_STAGES.ACCOUNT_DETAILS:
       return `create/${id}/account-details`;
@@ -340,7 +348,7 @@ const getPathByOrderStage = (props, isCSReviewOrdersPage) => {
     case ORDER_STAGES.ADDITIONAL_DETAILS:
       return `create/${id}/additional-details`;
     case ORDER_STAGES.ORDER_SUMMARY:
-      if (isCSReviewOrdersPage) {
+      if (isCS) {
         return `${id}/summary?orgId=${practiceId}`;
       } else {
         return `${id}/summary`;

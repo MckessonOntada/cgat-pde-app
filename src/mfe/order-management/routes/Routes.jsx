@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { routesConfig } from './constants';
 import OrderIndex from './../pages/orders';
 import OrderStatus from '../pages/orders/status/OrderStatus';
@@ -9,6 +9,7 @@ import PatientDetails from '../pages/create/form-segments/patient-details';
 import Summary from '../pages/create/form-segments/summary';
 import AdditionalDetails from '../pages/create/form-segments/additional-details';
 import NotFound from '../../../pages/error-pages/NotFound';
+import OrderDeleted from '../../../pages/error-pages/OrderDeleted';
 import { OrderProvider } from '../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
@@ -110,6 +111,7 @@ export const OrderLoader = () => {
   const { id } = useRouteMode({ editSegment: 'edit', paramKey: 'orderId' });
   const isCustomerReviewOrderWizard = AuthUtils.isCustomerCenterView();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const refreshOrderDetails = React.useCallback(async () => {
     try {
@@ -193,6 +195,11 @@ export const OrderLoader = () => {
   }, [id, location.pathname]);
 
   if (state.isLoading) return <Loader variant="circular" />;
+  const searchParams = new URLSearchParams(location.search);
+  const isFromNotification = searchParams.get('source') === 'notification';
+  if (state.orderDetails?.status === 'DELETED' && isFromNotification) {
+    return <OrderDeleted orderDetails={state.orderDetails} />;
+  }
   return <Outlet />;
 };
 
