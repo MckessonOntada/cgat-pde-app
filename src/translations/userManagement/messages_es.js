@@ -362,6 +362,7 @@ export const UserManagementES = {
   'messages.user_self_register_success': 'S_User has been registered successfully.',
   'messages.sysadmin_create_success': 'S_System Admin has been created successfully.',
   'messages.accountlinkSuccess': 'S_new account(s) has been successfully linked to this user.',
+  'messages.accountunlinkSuccess': 'S_Account has been successfully unlinked to this user.',
   'messages.provisionedsuccess': 'S_User provisioned in Okta successfully.',
   'messages.provisionederrror': 'S_Unable to provision the user in Okta.',
   'Table.Tabs.ActiveUser': 'S_USERS',

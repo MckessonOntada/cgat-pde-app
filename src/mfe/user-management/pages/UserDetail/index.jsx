@@ -84,7 +84,12 @@ const UserDetail = () => {
   });
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const refreshMaterials = () => setRefreshKey((k) => k + 1);
+  const refreshMaterials = (alerData) => {
+    setRefreshKey((k) => k + 1);
+    if (alerData) {
+      setAlert(alerData);
+    }
+  };
 
   const { userDetails = {}, isLoading } = state;
 
