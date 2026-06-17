@@ -38,7 +38,7 @@ export default function Actions({ row, userId, practiceId, refetch, refreshMater
       onSuccess: (response) => {
         setIsOpen(false);
         refetch();
-        refreshMaterials?.();
+        refreshMaterials?.({ pinPoint: 'accounts', type: 'success', description: `${t('messages.accountunlinkSuccess')}` });
         setPageNumber(1);
       },
       onError: (error) => {
