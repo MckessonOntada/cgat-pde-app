@@ -27,7 +27,8 @@ export default function AccountsList(props) {
     practiceId,
     userId,
     isPhysicianUser,
-    practiceName
+    practiceName,
+    refreshMaterials
   } = props;
   const { data = [], paginationConfig, refetch, setPageNumber, filterConfig, isFetching } = useAccounts();
   const { t } = useTranslate();
@@ -129,7 +130,7 @@ export default function AccountsList(props) {
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
+        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} refreshMaterials={refreshMaterials} />,
         width: '120px',
         omit: !isAuthorized || omitColumns.includes('action') || isPhysicianUser,
         isAction: true

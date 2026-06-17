@@ -6,6 +6,7 @@ import DetailSegment from '@src/components/DetailSegment';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
+import AuthUtils from '@src/util/AuthUtils';
 import styles from './OrderDeleted.module.scss';
 
 const OrderDeleted = ({ orderDetails }) => {
@@ -26,7 +27,14 @@ const OrderDeleted = ({ orderDetails }) => {
     updatedBy
   } = orderDetails;
 
-  const patientName = patient.patientInfo ? CommonUtils.getUSFullName(patient.patientInfo) : '-';
+  const hasUserPhiPermission = AuthUtils.hasUserPhiPermission();
+  const isCustomerCentreUser = AuthUtils.isCustomerCenterView();
+  const patientName =
+    !hasUserPhiPermission || isCustomerCentreUser
+      ? '******'
+      : patient.patientInfo
+      ? CommonUtils.getUSFullName(patient.patientInfo)
+      : '-';
   const therapyName = therapy.materialDescription || tradeDetails.tradeName || '-';
   const createdByName = createdBy?.name || createdBy?.userName || '-';
   const discardedByName = updatedBy?.name || updatedBy?.userName || '-';
