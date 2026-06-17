@@ -82,6 +82,9 @@ const UserDetail = () => {
     userId: null,
     isActive: false
   });
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const refreshMaterials = () => setRefreshKey((k) => k + 1);
 
   const { userDetails = {}, isLoading } = state;
 
@@ -559,6 +562,7 @@ const UserDetail = () => {
                   showSelectedAccounts={false}
                   userId={userId}
                   isPhysicianUser={isPhysicianUser}
+                  refreshMaterials={refreshMaterials}
                 />
               )}
             </div>
@@ -587,7 +591,7 @@ const UserDetail = () => {
               />
               {alert && alert.pinPoint === 'materials' && <Alert {...alert} onClose={handleAlertClose} />}
               <div>
-                <MaterialWrapper listingMode="INCLUDED">
+                <MaterialWrapper listingMode="INCLUDED" key={refreshKey}>
                   <UserMaterial onAlert={setAlert} searchPlaceholder={translateFn('placeholder.materialTable')} />
                 </MaterialWrapper>
               </div>
