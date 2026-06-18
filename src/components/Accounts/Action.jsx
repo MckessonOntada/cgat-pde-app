@@ -10,7 +10,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { useAccounts } from './AccountsContext';
 import IconButton from '@src/components/button';
 
-export default function Actions({ row, userId, practiceId, refetch }) {
+export default function Actions({ row, userId, practiceId, refetch, refreshMaterials }) {
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isOpen, setIsOpen] = useState(false);
@@ -36,9 +36,9 @@ export default function Actions({ row, userId, practiceId, refetch }) {
     },
     {
       onSuccess: (response) => {
-        console.log('Account Unlinked successfully:', response);
         setIsOpen(false);
         refetch();
+        refreshMaterials?.({ pinPoint: 'accounts', type: 'success', description: `${t('messages.accountunlinkSuccess')}` });
         setPageNumber(1);
       },
       onError: (error) => {
