@@ -1195,7 +1195,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
-      {patientIdCoiIdValidationLoading && <Loader type={'screen'} />}
+      {(patientIdCoiIdValidationLoading || isSimulationLoading) && <Loader type={'screen'} />}
 
       {!isError && (
         <React.Fragment>
