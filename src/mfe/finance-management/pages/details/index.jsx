@@ -48,6 +48,8 @@ function Details(props) {
   const source = invoices[0] || selectedCredit[0];
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
+    setInvoiceDetails({});
+    setBillDates({});
   };
 
   useEffect(() => {
@@ -154,6 +156,10 @@ function Details(props) {
           return res.data;
         }
       }
+    },
+    onError: () => {
+      setInvoiceDetails({});
+      setBillDates({});
     },
     refetchOnWindowFocus: false,
     retry: 1
