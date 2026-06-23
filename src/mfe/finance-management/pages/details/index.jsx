@@ -90,8 +90,8 @@ function Details(props) {
     }
   );
 
-  const { isLoading, data } = useQuery({
-    queryKey: ['invoiceDetails', selectedAccount],
+  const { isLoading, data, isError } = useQuery({
+    queryKey: ['invoiceDetails', selectedAccount, billNumber],
     queryFn: async () => {
       if (selectedAccount?.id) {
         const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, billNumber)}`;
@@ -390,7 +390,7 @@ function Details(props) {
             id="my-data-table"
             type="normal"
             columns={columns}
-            data={data?.invoiceItems || []}
+            data={isError ? [] : data?.invoiceItems ?? []}
             onSortIconClick={() => {}}
             progressPending={isLoading}
             fixedHeader
