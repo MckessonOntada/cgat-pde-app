@@ -76,7 +76,7 @@ function NotificationList() {
         wrap: true,
         maxWidth: '120px',
         cell: (props) => (
-          <FlatButton size="small" style={{ paddingLeft: 0, paddingRight: 0 }} variant="text" onClick={() => navigate(`${props.id}/edit`)}>
+          <FlatButton size="small" style={{ paddingLeft: 0, paddingRight: 0 }} variant="text" onClick={() => navigate(`${props.id}`)}>
             View
           </FlatButton>
         )
