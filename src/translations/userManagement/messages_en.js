@@ -537,5 +537,17 @@ export const UserManagementEN = {
   'button.caption.addAttribute': 'Add Attribute',
   'group.rule.helperText': 'Please select a criteria to apply the approval rules on.',
   'notificationGroup.validation.noLeadingTrailingSpaces': 'Group name must not start or end with spaces',
-  'userManagement.message.userRejectSuccess': 'User has been Rejected successfully.'
+  'userManagement.message.userRejectSuccess': 'User has been Rejected successfully.',
+  'notificationGroup.table.status': 'Status',
+  'notificationGroup.selected_items': 'selected items',
+  'notificationGroup.button.deactivate': 'Deactivate',
+  'notificationGroup.button.activate': 'Activate',
+  'notificationGroup.messages.deactivate_success': 'Notification group deactivated successfully.',
+  'notificationGroup.messages.activate_success': 'Notification group activated successfully.',
+  'notificationGroup.messages.deactivate_failure': 'Failed to deactivate notification group.',
+  'notificationGroup.messages.activate_failure': 'Failed to activate notification group.',
+  'notificationGroup.confirmationmessage': 'Confirmation Message',
+  'notificationGroup.confirmationmessage.message': 'Are you sure you want to deactivate the selected notification group?',
+  'notificationGroup.confirmationmessage.activatemessage': 'Are you sure you want to activate the selected notification group?',
+  'notificationGroup.button.cancel': 'Cancel'
 };

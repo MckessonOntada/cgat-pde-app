@@ -1,0 +1,153 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.label-text {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+  line-height: var(--brand-line-height--x-large);
+
+  white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
+}
+
+.notification-group-labelWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-03);
+}
+
+.attribute-category {
+  gap: var(--spacing-01) !important;
+
+  .price {
+    font-size: var(--brand-font-size--large);
+    font-weight: var(--brand-font-weight-600);
+    padding-left: var(--spacing-03);
+
+    span {
+      top: -4px;
+      font-size: var(--brand-font-size--10);
+      position: relative;
+      left: -1px;
+    }
+  }
+}
+
+.attribute-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: var(--spacing-03);
+  row-gap: var(--spacing-02);
+  align-items: start;
+
+  @include mixins.respond(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mixins.respond(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.attribute-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-02);
+  position: relative;
+
+  @include mixins.respond(md) {
+    &:not(:nth-child(2n)):after {
+      content: "";
+      position: absolute;
+      top: 0; // Aligns divider to the top
+      right: 0;
+      width: 1px;
+      height: var(--spacing-06); // Fixed divider height
+      background-color: var(--brand-color-background-grey);
+    }
+  }
+
+  @include mixins.respond(lg) {
+    &:not(:nth-child(4n)):after {
+      content: "";
+      position: absolute;
+      top: 0; // Aligns divider to the top
+      right: 0;
+      width: 1px;
+      height: var(--spacing-06); // Fixed divider height
+      background-color: var(--brand-color-background-grey);
+    }
+
+    // Remove divider for the last column in each row
+    &:nth-child(4n):after {
+      display: none;
+    }
+  }
+
+  // Remove divider for the very last item
+  &:last-child::after {
+    display: none;
+  }
+
+  .text {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 100%;
+  }
+}
+
+.notification-user-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: var(--spacing-03);
+  row-gap: var(--spacing-02);
+  align-items: start;
+
+  @include mixins.respond(sm) {
+    grid-template-columns: repeat(2, 1fr); // 2 columns for small screens
+  }
+
+  @include mixins.respond(md) {
+    grid-template-columns: repeat(4, 1fr); // 4 columns for medium screens
+  }
+
+  @include mixins.respond(lg) {
+    grid-template-columns: repeat(6, 1fr); // 6 columns for large screens
+  }
+}
+
+.notification-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-02);
+  position: relative;
+
+  &:not(:last-child):after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1px;
+    height: var(--spacing-06);
+    background-color: var(--brand-color-background-grey);
+  }
+
+  .text {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 100%;
+  }
+}
+
+.rule-list {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+
+  .rule-item {
+    .rule-item-value {
+      color: #6656b7; //not listed in colors
+    }
+  }
+}
