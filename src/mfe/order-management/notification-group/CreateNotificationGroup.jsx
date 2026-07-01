@@ -1,5 +1,5 @@
 import DynamicRuleGroup from '@src/components/rule-group';
-import getUIConfig from './config.js';
+import getUIConfig, { ROUTE_PATH } from './config.js';
 import React from 'react';
 import { Alert, Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { Formik, Form } from 'formik';
@@ -14,6 +14,7 @@ import ModuleHeader from '@src/components/module-header/index.jsx';
 import FlatButton from '@src/components/button';
 import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-loading.svg';
 import FormikFormWrapper from '@src/components/form/FormikFormWrapper.jsx';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel.jsx';
 
 function CreateNotificationGroup({ mode }) {
   const isEdit = mode === 'edit';
@@ -29,6 +30,8 @@ function CreateNotificationGroup({ mode }) {
     participants: [],
     rules: []
   });
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [pendingNavigation, setPendingNavigation] = React.useState(null);
 
   React.useEffect(() => {
     if (isEdit && groupId) {
@@ -177,39 +180,87 @@ function CreateNotificationGroup({ mode }) {
     }
   };
 
+  const handleGoBack = () => {
+    const targetPath = isEdit ? `../${groupId}` : '../';
+
+    if (isDirty) {
+      setPendingNavigation(targetPath);
+    } else {
+      navigate(targetPath);
+    }
+  };
+
+  const handleCancel = () => {
+    const targetPath = isEdit ? `../${groupId}` : '../';
+
+    if (isDirty) {
+      setPendingNavigation(targetPath);
+    } else {
+      navigate(targetPath);
+    }
+  };
+
+  const handleNavigate = () => {
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+
   if (isFetching) {
     return <Loader variant="circular" />;
   }
-
   return (
     <React.Fragment>
       <Formik onSubmit={handleOnSubmit} validationSchema={getNotificationGroupSchema(translateFn)} initialValues={initialState} enableReinitialize>
-        <FormikFormWrapper disabled={isSaving}>
-          <div className="MCP-module-wrapper">
-            <div className="MCP-module-header">
-              <div>
-                <FlatButton style={{ padding: '0px' }} variant="text" startIcon={<IconArrowLeft />} onClick={() => navigate('../')} size="small">
-                  {translateFn('button.caption.backToNotificationGroup')}
-                </FlatButton>
-              </div>
+        {({ dirty }) => {
+          React.useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+          return (
+            <FormikFormWrapper disabled={isSaving}>
+              <div className="MCP-module-wrapper">
+                <div className="MCP-module-header">
+                  <div>
+                    <FlatButton
+                      type="button"
+                      style={{ padding: '0px' }}
+                      variant="text"
+                      startIcon={<IconArrowLeft />}
+                      onClick={() => {
+                        handleGoBack();
+                      }}
+                      size="small">
+                      {translateFn('button.caption.backToNotificationGroup')}
+                    </FlatButton>
+                  </div>
 
-              <ModuleHeader heading={<Heading as="h2">{isEdit ? config.moduleTitle.edit : config.moduleTitle.create}</Heading>} />
-            </div>
-            {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
-            <DynamicRuleGroup config={config} />
-            <div className="controls">
-              <Button variant="secondary" type="button" onClick={() => navigate('..')} size={'md'}>
-                {translateFn('userManagement.label.cancel')}
-              </Button>
-              <Button variant="primary" isLoadingState={isSaving} Icon={isSaving && ButtonLoadingIcon} iconPosition="left" type="submit" size="md">
-                {isSaving
-                  ? translateFn(isEdit ? 'button.caption.updatingGroup' : 'button.caption.creatingGroup')
-                  : translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
-              </Button>
-            </div>
-          </div>
-        </FormikFormWrapper>
+                  <ModuleHeader heading={<Heading as="h2">{isEdit ? config.moduleTitle.edit : config.moduleTitle.create}</Heading>} />
+                </div>
+                {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
+                <DynamicRuleGroup config={config} />
+                <div className="controls">
+                  <Button variant="secondary" type="button" onClick={() => handleCancel()} size={'md'}>
+                    {translateFn('userManagement.label.cancel')}
+                  </Button>
+                  <Button variant="primary" isLoadingState={isSaving} Icon={isSaving && ButtonLoadingIcon} iconPosition="left" type="submit" size="md">
+                    {isSaving
+                      ? translateFn(isEdit ? 'button.caption.updatingGroup' : 'button.caption.creatingGroup')
+                      : translateFn(isEdit ? 'button.caption.updateGroup' : 'button.caption.createGroup')}
+                  </Button>
+                </div>
+              </div>
+            </FormikFormWrapper>
+          );
+        }}
       </Formik>
+      <DiscardChangesModal
+        heading={translateFn('notificationgroup.edit.discardModal.title')}
+        description={translateFn('notificationgroup.edit.discardModal.description')}
+        isOpen={Boolean(pendingNavigation)}
+        onClose={() => setPendingNavigation(null)}
+        onConfirm={handleNavigate}
+      />
     </React.Fragment>
   );
 }

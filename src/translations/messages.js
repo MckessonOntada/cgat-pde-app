@@ -34,6 +34,8 @@ import { ConfigurationMessagesEN } from './config/messages_en';
 import { ConfigurationMessagesES } from './config/messages_es';
 import { NotificationMessagesEN } from './notification-mfe/messages_en';
 import { NotificationMessagesES } from './notification-mfe/messages_es';
+import { NotificationGroupMessageEN } from './order-management/notification-group/messages_en';
+import { NotificationGroupMessageES } from './order-management/notification-group/messages_es';
 
 export const messages = {
   [LOCALES.ENGLISH]: {
@@ -53,7 +55,8 @@ export const messages = {
     ...ManageSPMateriaMessagesEN,
     ...ManageSPAccountMessagesEN,
     ...ConfigurationMessagesEN,
-    ...NotificationMessagesEN
+    ...NotificationMessagesEN,
+    ...NotificationGroupMessageEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
@@ -72,6 +75,7 @@ export const messages = {
     ...ManageSPMaterialMessagesES,
     ...ManageSPAccountMessagesES,
     ...ConfigurationMessagesES,
-    ...NotificationMessagesES
+    ...NotificationMessagesES,
+    ...NotificationGroupMessageES
   }
 };

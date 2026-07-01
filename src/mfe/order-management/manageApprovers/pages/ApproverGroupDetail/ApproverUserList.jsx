@@ -13,8 +13,7 @@ function ApproverUserList({ data }) {
       id: 'approver-list-user-name',
       name: t('approverGroup.userList.name'),
       selector: () => {},
-      sortable: true,
-      sortKey: 'name',
+      sortable: false,
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cell: (props) => props.userName
@@ -23,8 +22,7 @@ function ApproverUserList({ data }) {
       id: 'emailAddress',
       name: t('approverGroup.userList.emailAddress'),
       selector: () => {},
-      sortable: true,
-      sortKey: 'email',
+      sortable: false,
       cell: (props) => props.email
     }
   ];

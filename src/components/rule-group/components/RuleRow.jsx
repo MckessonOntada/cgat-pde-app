@@ -6,8 +6,12 @@ import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import Components from '@src/components/form/Components';
 import style from './style.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { Button } from '@mckesson/mcp-component-library';
 
 export default function RuleRow({ index, rule, attributes }) {
+  const dispatch = useDispatch();
   const { t: translateFn } = useTranslate();
   const [ruleOptions, setRuleOptions] = React.useState([]);
   const selectedAttribute = attributes.find((a) => a.name === rule.attribute);
@@ -36,6 +40,28 @@ export default function RuleRow({ index, rule, attributes }) {
   const onRemove = () => {
     const newRules = values.rules.filter((_, i) => i !== index);
     setFieldValue('rules', newRules);
+    dispatch(closeModal());
+  };
+
+  const confirmOnDelete = () => {
+    const state = {};
+    state.title = translateFn('rules.delete.title');
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{translateFn('rules.delete.confirmation')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          {translateFn('button.caption.no')}
+        </Button>
+        <Button size="md" variant="primary" onClick={onRemove}>
+          {translateFn('button.caption.yes')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
   return (
     <div className={style.ruleWrapper}>
@@ -68,7 +94,7 @@ export default function RuleRow({ index, rule, attributes }) {
               <div className={style.control}>{rule.attribute && targetField && <DynamicValueInput index={index} {...targetField} />}</div>
               {values.rules.length > 1 && !selectedAttribute?.isMandatory && (
                 <div className={style.iconButton}>
-                  <IconButton icon={<DeleteIcon />} variant="tertiary" size="md" onClick={onRemove} />
+                  <IconButton icon={<DeleteIcon />} variant="tertiary" size="md" onClick={confirmOnDelete} />
                 </div>
               )}
             </div>
