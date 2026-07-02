@@ -28,7 +28,6 @@ export default function CustomerSatements(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        minDate: dayjs().subtract(179, 'days').toDate(),
         maxDate: new Date()
       }
     ];
@@ -51,12 +50,12 @@ export default function CustomerSatements(params) {
           name: selectedAccount?.accountName,
           address: GeographicUtils.addressAggregator(selectedAccount)
         },
-        dateFrom:
-          dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') ||
-          null,
-        dateTo:
-          dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') ||
-          null
+        dateFrom: filterConfig.dateRange?.[0]
+          ? dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
+          : null,
+        dateTo: filterConfig.dateRange?.[1]
+          ? dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
+          : null
       },
       'xlsx'
     );
