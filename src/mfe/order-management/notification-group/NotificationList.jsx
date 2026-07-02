@@ -270,7 +270,7 @@ function NotificationList() {
               type={'normal'}
               columns={columns}
               data={data}
-              onSortIconClick={() => {}}
+              onSortIconClick={() => { }}
               handleChangePage={(_event, newPageIndex) => changePage(newPageIndex)}
               currentPage={pagination.pageNo}
               totalPageCount={pagination.totalPages}
@@ -283,6 +283,7 @@ function NotificationList() {
               pagination={true}
               showCardView={showCardView}
               defaultExpandedCardView={true}
+              progressPending={loading}
               noDataComponent={
                 <EmptyDataTable
                   isLoading={loading}
