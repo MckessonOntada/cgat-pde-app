@@ -23,7 +23,7 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   paymentMethod: '',
   paymentStatus: '',
-  dateRange: [dayjs().subtract(179, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')],
+  dateRange: ['', ''],
   billNo: ''
 };
 
@@ -65,10 +65,10 @@ export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) =>
   const [filteredData, setFilteredData] = useState(false);
   const applyFilters = (filters) => {
     setSortConfig(INITIAL_SORT_STATE);
-    const formattedStartDate = filters.dateRange[0]
+    const formattedStartDate = filters.dateRange?.[0]
       ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
-      : dayjs().subtract(179, 'day').format('MM/DD/YYYY');
-    const formattedEndDate = filters.dateRange[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') : dayjs().format('MM/DD/YYYY');
+      : '';
+    const formattedEndDate = filters.dateRange?.[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') : '';
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
@@ -82,17 +82,26 @@ export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) =>
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.confirmationNo?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.paymentMethod?.toString().includes(filters.searchQuery.toLowerCase()) ||
-          item.paymentInitiationDate?.toString().includes(filters.searchQuery.toLowerCase()) ||
-          item.paymentStatus?.toString().includes(filters.searchQuery.toLowerCase()) ||
-          item.totalAuthorizedPaymentAmount?.toString().includes(filters.searchQuery.toLowerCase()) ||
-          item.invoices?.some((invoice) => invoice?.billNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()))
+        item.paymentMethod?.toString().includes(filters.searchQuery.toLowerCase()) ||
+        item.paymentInitiationDate?.toString().includes(filters.searchQuery.toLowerCase()) ||
+        item.paymentStatus?.toString().includes(filters.searchQuery.toLowerCase()) ||
+        item.totalAuthorizedPaymentAmount?.toString().includes(filters.searchQuery.toLowerCase()) ||
+        item.invoices?.some((invoice) => invoice?.billNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()))
         : true;
       const matchesPaymentStatus = filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus) : true;
       const matchesPaymentMethod = filters?.paymentMethod?.length > 0 ? filters.paymentMethod.includes(item.paymentMethod) : true;
 
-      return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
-      // return matchesSearchQuery;
+      const itemDate = dayjs(item.paymentInitiationDate, 'DD/MM/YYYY');
+      const startDate = filters?.dateRange?.[0] ? dayjs(filters.dateRange[0], 'MM/DD/YYYY') : null;
+      const endDate = filters?.dateRange?.[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY') : null;
+
+      const matchesDate =
+        startDate && endDate && itemDate.isValid()
+          ? (itemDate.isSame(startDate, 'day') || itemDate.isAfter(startDate, 'day')) &&
+          (itemDate.isSame(endDate, 'day') || itemDate.isBefore(endDate, 'day'))
+          : true;
+
+      return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDate;
     });
     if (statusSet && statusSet.size) {
       _modifiedData = _modifiedData.filter((row) => statusSet.has(normalize(row.paymentStatus)));
@@ -110,7 +119,7 @@ export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) =>
   };
 
   const { isFetching, isError, refetch } = useQuery({
-    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig.billNo, , Array.from(statusSet ?? [])],
+    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig.billNo, filterConfig.dateRange, Array.from(statusSet ?? [])],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
@@ -118,8 +127,8 @@ export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) =>
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        ...(filterConfig.dateRange[0] ? { dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') } : {}),
+        ...(filterConfig.dateRange[1] ? { dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') } : {}),
         ...(filterConfig.billNo ? { billNo: filterConfig.billNo } : {})
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
@@ -128,16 +137,26 @@ export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) =>
         let _modifiedData = _data.filter((item) => {
           const matchesSearchQuery = filterConfig?.searchQuery
             ? item.confirmationNo?.toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.paymentMethod?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.paymentInitiationDate?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.paymentStatus?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.totalAuthorizedPaymentAmount?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.invoices?.some((invoice) => invoice?.billNo?.toString().includes(filterConfig.searchQuery.toLowerCase()))
+            item.paymentMethod?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+            item.paymentInitiationDate?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+            item.paymentStatus?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+            item.totalAuthorizedPaymentAmount?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+            item.invoices?.some((invoice) => invoice?.billNo?.toString().includes(filterConfig.searchQuery.toLowerCase()))
             : true;
           const matchesPaymentStatus = filterConfig?.paymentStatus?.length > 0 ? filterConfig.paymentStatus.includes(item.paymentStatus) : true;
           const matchesPaymentMethod = filterConfig?.paymentMethod?.length > 0 ? filterConfig.paymentMethod.includes(item.paymentMethod) : true;
 
-          return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
+          const itemDate = dayjs(item.paymentInitiationDate, 'DD/MM/YYYY');
+          const startDate = filterConfig?.dateRange?.[0] ? dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY') : null;
+          const endDate = filterConfig?.dateRange?.[1] ? dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY') : null;
+
+          const matchesDate =
+            startDate && endDate && itemDate.isValid()
+              ? (itemDate.isSame(startDate, 'day') || itemDate.isAfter(startDate, 'day')) &&
+              (itemDate.isSame(endDate, 'day') || itemDate.isBefore(endDate, 'day'))
+              : true;
+
+          return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDate;
         });
         if (statusSet && statusSet.size) {
           _modifiedData = _modifiedData.filter((row) => statusSet.has(normalize(row.paymentStatus)));
@@ -176,8 +195,8 @@ export const PaymentHistoryProvider = ({ children, billNo, paymentStatuses }) =>
           companyCode: selectedAccount?.companyCode,
           salesOrg: selectedAccount?.salesOrg,
           payerAccountNumber: selectedAccount?.accountNumber,
-          dateFrom: dayjs(filterConfig?.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
-          dateTo: dayjs(filterConfig?.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
+          ...(filterConfig?.dateRange?.[0] ? { dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') } : {}),
+          ...(filterConfig?.dateRange?.[1] ? { dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') } : {}),
           paymentHistoryFilter: {
             searchTerm: filterConfig?.searchQuery || '',
             paymentStatus: filterConfig?.paymentStatus || [],
