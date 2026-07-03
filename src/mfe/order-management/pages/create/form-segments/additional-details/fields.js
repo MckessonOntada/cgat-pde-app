@@ -394,26 +394,18 @@ export const getShipmentInformationForm = ({
     component: Components['zipInput'],
     size: 'lg'
   });
-  // row2.push({
-  //   name: 'secondLegShipInfo.address.state',
-  //   label: translationFn('userManagement.create_user.inputLabel.state'),
-  //   placeholder: 'Select State',
-  //   isRequired: true,
-  //   options: US_STATES().unshift({
-  //     isDisabled: true,
-  //     value: '',
-  //     label: translationFn('orgManagement.create_org.option.please_select')
-  //   }),
-  //   isMultiSelect: false,
-  //   component: Components['stateDropdown'],
-  //   size: 'lg'
-  // });
   row2.push({
     name: 'secondLegShipInfo.address.state',
     label: translationFn('userManagement.create_user.inputLabel.state'),
-    placeholder: ' ',
+    placeholder: 'Select State',
     isRequired: true,
-    component: Components['input'],
+    options: US_STATES().unshift({
+      isDisabled: true,
+      value: '',
+      label: translationFn('orgManagement.create_org.option.please_select')
+    }),
+    isMultiSelect: false,
+    component: Components['stateDropdown'],
     size: 'lg'
   });
   row2.push({

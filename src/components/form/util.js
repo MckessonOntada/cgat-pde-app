@@ -57,7 +57,7 @@ export const US_STATES = () => {
 };
 
 export const getCountries = () => {
-  const countries = ['US'];
+  const countries = ['USA'];
   return countries
     .sort((a, b) => a.localeCompare(b))
     .map((country) => ({
