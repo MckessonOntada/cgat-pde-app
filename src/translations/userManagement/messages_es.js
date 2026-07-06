@@ -508,5 +508,17 @@ export const UserManagementES = {
   'notificationGroup.placeholder.selectAccounts': 'Select Accounts',
   'notificationGroup.placeholder.selectMaterials': 'Select Materials',
   'notificationGroup.validation.noLeadingTrailingSpaces': 'S_Group name must not start or end with spaces',
-  'userManagement.message.userRejectSuccess': 'User has been Rejected successfully.'
+  'userManagement.message.userRejectSuccess': 'User has been Rejected successfully.',
+  'notificationGroup.table.status': 'S_Status',
+  'notificationGroup.selected_items': 'S_selected items',
+  'notificationGroup.button.deactivate': 'S_Deactivate',
+  'notificationGroup.button.activate': 'S_Activate',
+  'notificationGroup.messages.deactivate_success': 'S_Notification group deactivated successfully.',
+  'notificationGroup.messages.activate_success': 'S_Notification group activated successfully.',
+  'notificationGroup.messages.deactivate_failure': 'S_Failed to deactivate notification group.',
+  'notificationGroup.messages.activate_failure': 'S_Failed to activate notification group.',
+  'notificationGroup.confirmationmessage': 'S_Confirmation Message',
+  'notificationGroup.confirmationmessage.message': 'S_Are you sure you want to deactivate the selected notification group?',
+  'notificationGroup.confirmationmessage.activatemessage': 'S_Are you sure you want to activate the selected notification group?',
+  'notificationGroup.button.cancel': 'S_Cancel'
 };

@@ -23,7 +23,7 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
   soldToSite: [],
-  dateRange: [dayjs().subtract(179, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
+  dateRange: ['', '']
 };
 
 const INITIAL_SORT_STATE = {
@@ -52,10 +52,10 @@ export const CustomerStatementsProvider = ({ children }) => {
   const [actualData, setActualData] = useState([]);
   const [filteredData, setFilteredData] = useState(false);
   const applyFilters = (filters) => {
-    const formattedStartDate = filters.dateRange[0]
+    const formattedStartDate = filters.dateRange?.[0]
       ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
-      : dayjs().subtract(179, 'day').format('MM/DD/YYYY');
-    const formattedEndDate = filters.dateRange[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') : dayjs().format('MM/DD/YYYY');
+      : '';
+    const formattedEndDate = filters.dateRange?.[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') : '';
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
@@ -74,7 +74,18 @@ export const CustomerStatementsProvider = ({ children }) => {
           item.date?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item.statementBalance?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
-      return matchesSearchQuery;
+
+      const itemDate = dayjs(item.date, 'DD/MM/YYYY');
+      const startDate = filters?.dateRange?.[0] ? dayjs(filters.dateRange[0], 'MM/DD/YYYY') : null;
+      const endDate = filters?.dateRange?.[1] ? dayjs(filters.dateRange[1], 'MM/DD/YYYY') : null;
+
+      const matchesDate =
+        startDate && endDate && itemDate.isValid()
+          ? (itemDate.isSame(startDate, 'day') || itemDate.isAfter(startDate, 'day')) &&
+            (itemDate.isSame(endDate, 'day') || itemDate.isBefore(endDate, 'day'))
+          : true;
+
+      return matchesSearchQuery && matchesDate;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -98,8 +109,8 @@ export const CustomerStatementsProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        ...(filterConfig.dateRange?.[0] ? { dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') } : {}),
+        ...(filterConfig.dateRange?.[1] ? { dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') } : {}),
         validDateRange: true
       };
 
@@ -121,7 +132,18 @@ export const CustomerStatementsProvider = ({ children }) => {
               item.date?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
               item.statementBalance?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase())
             : true;
-          return matchesSearchQuery;
+
+          const itemDate = dayjs(item.date, 'DD/MM/YYYY');
+          const startDate = filterConfig?.dateRange?.[0] ? dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY') : null;
+          const endDate = filterConfig?.dateRange?.[1] ? dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY') : null;
+
+          const matchesDate =
+            startDate && endDate && itemDate.isValid()
+              ? (itemDate.isSame(startDate, 'day') || itemDate.isAfter(startDate, 'day')) &&
+                (itemDate.isSame(endDate, 'day') || itemDate.isBefore(endDate, 'day'))
+              : true;
+
+          return matchesSearchQuery && matchesDate;
         });
 
         setData(_modifiedData.slice(startIndex, endIndex));

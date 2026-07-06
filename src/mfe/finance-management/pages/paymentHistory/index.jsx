@@ -72,7 +72,6 @@ export default function PaymentHistory(params) {
         endDateLabel: t(
           'paymentInvoices.pendingPayments.filter.initiationDateEnd'
         ),
-        minDate: dayjs().subtract(179, 'days').toDate(),
         maxDate: new Date()
       }
     ];

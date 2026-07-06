@@ -5,6 +5,7 @@ import NotificationList from './NotificationList';
 import { ROUTE_PATH } from './config';
 import { TableProvider } from '@src/context/TableContext';
 import NotificationService from '@src/api/commonService/NotificationService';
+import NotificationGroupDetails from './NotificationGroupDetail';
 
 function NotificationGroup() {
   return (
@@ -19,7 +20,7 @@ function NotificationGroup() {
         index
       />
       <Route path={ROUTE_PATH.CREATE} element={<CreateNotificationGroup />} />
-      <Route path={ROUTE_PATH.VIEW} element={<CreateNotificationGroup />} />
+      <Route path={ROUTE_PATH.VIEW} element={<NotificationGroupDetails />} />
       <Route path={ROUTE_PATH.EDIT} element={<CreateNotificationGroup mode={'edit'} />} />
     </Routes>
   );
