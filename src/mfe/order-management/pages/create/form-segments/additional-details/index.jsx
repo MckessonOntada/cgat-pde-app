@@ -115,7 +115,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [isOrderInDraft, setIsOrderInDraft] = React.useState(true);
   const [isAllowedToProceed, setIsAllowedToProceed] = React.useState(true);
   const [isEmptyFirstTime, setEmptyFirstTime] = React.useState(true);
-  const [isSecondLegShipInfoRequired, setIsSecondLegShipInfoRequired] = React.useState(false);
+  const isSecondLegShipInfoRequired = !!orderDetails.therapyConfig?.config?.secondLegShipInfoRequired;
   const [saveType, setSaveType] = React.useState(null);
 
   const manufacturer = getManufacturer(orderDetails);
@@ -141,8 +141,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     if (orderDetails.id) {
-      setIsSecondLegShipInfoRequired(orderDetails.therapyConfig?.config?.secondLegShipInfoRequired);
-
       const prevSearch = locationState.__prevSearch || '';
       if (orderDetails.isPapOrder) navigate(`${RoutePaths.pathOrderManagement}${prevSearch}`);
       if (orderDetails.status === ORDER_STATUS.REVIEW) navigate(`${RoutePaths.pathOrderManagement}`, { replace: true });
