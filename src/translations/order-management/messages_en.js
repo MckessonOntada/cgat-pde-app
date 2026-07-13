@@ -853,6 +853,9 @@ export const MessageEn = {
   'order.account.selection.gov.info.header': 'GOV Program Eligibility Requirements',
   'order.account.selection.gov.info':
     'GOV refers to discounted drug prices available to government agencies  (e.g., VA, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
+  'order.account.selection.gpo.info.header': 'GPO Program Eligibility Requirements',
+  'order.account.selection.gpo.info':
+    'GPO (Group Purchasing Organization) pricing is based on contracted agreements between the manufacturer and affiliated providers.',
   'order.account.selection.340b.info.header': '340B Program Eligibility Requirements',
   'order.account.selection.340b.checkboxHeading': 'I hereby certify that:',
   'order.account.selection.340b.checkboxinfo1': 'The patient meets all 340B program eligibility requirements',

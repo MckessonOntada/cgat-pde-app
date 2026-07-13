@@ -183,6 +183,12 @@ const AccountSelectionUserGuide = ({ trade = {}, onClose, onSubmit, openDrawer, 
             <div className="MCP-modal-body">{t('order.account.selection.gov.info')}</div>
           </InfoModel>
         );
+      case 'GPO':
+        return (
+          <InfoModel title={t('order.account.selection.gpo.info.header')}>
+            <div className="MCP-modal-body">{t('order.account.selection.gpo.info')}</div>
+          </InfoModel>
+        );
       default:
         return '';
     }
