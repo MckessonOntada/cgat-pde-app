@@ -35,6 +35,7 @@ export const ManageCatalogMessagesES = {
   'ManageCatalog.Details.Regularprice': 'S_Regular price',
   'ManageCatalog.Details.ContractPrice': 'S_Contract Price',
   'ManageCatalog.Details.WACPrice': 'S_WAC Price',
+  'ManageCatalog.Details.GPOPrice': 'S_GPO Price',
   'ManageCatalog.Details.340bPrice': 'S_340b Price',
   'ManageCatalog.Details.Priceunit': 'S_Price unit',
   'ManageCatalog.Details.Minimumorderquantity': 'S_Minimum order quantity',
