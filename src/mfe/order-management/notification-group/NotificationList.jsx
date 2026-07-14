@@ -7,7 +7,7 @@ import CommonFilters from '@src/components/Filters';
 import React from 'react';
 import { ROUTE_PATH } from './config';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { useFilters, usePagination, useTable } from '@src/context/TableContext';
+import { useFilters, usePagination, useTable, useSort } from '@src/context/TableContext';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -31,6 +31,11 @@ function NotificationList() {
   const { data, loading, error, isFilterApplied, refreshTable } = useTable();
   const { changePage, pagination } = usePagination();
   const { applyFilters, clearFilters } = useFilters();
+  const { applySort } = useSort();
+
+  const handleOnSort = (column, sortDirection) => {
+    applySort(column.sortKey, sortDirection);
+  };
 
   const handleActivateDeactivateNotificationGroup = async ({ grpId, actionName }) => {
     if (actionName === translateFn('notificationGroup.button.activate')) {
@@ -114,6 +119,8 @@ function NotificationList() {
       {
         id: 'group-name',
         name: translateFn('table.column.caption.groupName'),
+        sortable: true,
+        sortKey: 'name',
         wrap: true,
         maxWidth: '320px',
         cell: (props) => (
@@ -125,6 +132,8 @@ function NotificationList() {
       {
         id: 'created-by',
         name: translateFn('table.column.caption.createdBy'),
+        sortable: true,
+        sortKey: 'createdBy',
         wrap: true,
         minWidth: '260px',
         cell: (props) => (
@@ -136,6 +145,8 @@ function NotificationList() {
       {
         id: 'created-on',
         name: translateFn('table.column.caption.createdOn'),
+        sortable: true,
+        sortKey: 'createdAt',
         wrap: true,
         maxWidth: '260px',
         cell: (props) => (
@@ -270,7 +281,7 @@ function NotificationList() {
               type={'normal'}
               columns={columns}
               data={data}
-              onSortIconClick={() => { }}
+              onSortIconClick={handleOnSort}
               handleChangePage={(_event, newPageIndex) => changePage(newPageIndex)}
               currentPage={pagination.pageNo}
               totalPageCount={pagination.totalPages}

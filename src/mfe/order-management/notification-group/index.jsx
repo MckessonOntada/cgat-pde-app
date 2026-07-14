@@ -13,7 +13,11 @@ function NotificationGroup() {
       <Route
         path={ROUTE_PATH.LIST}
         element={
-          <TableProvider fetchFn={NotificationService.getNotificationGroups}>
+          <TableProvider
+            fetchFn={NotificationService.getNotificationGroups}
+            allowedSort={['name', 'createdBy', 'createdAt']}
+            defaultSort={{ sortBy: 'createdAt', sortOrder: 'desc' }}
+          >
             <NotificationList />
           </TableProvider>
         }
