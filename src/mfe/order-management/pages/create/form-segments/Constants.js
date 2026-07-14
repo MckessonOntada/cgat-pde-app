@@ -41,13 +41,14 @@ export const FormList = (t) => [
     label: t('labels.summary')
   }
 ];
-export const PROGRAM_LIST = ['WAC', '340B', 'GOV'];
+export const PROGRAM_LIST = ['WAC', '340B', 'GOV', 'GPO'];
 
 export const CGAT_IDENTIFIER = {
   WAC: 'WAC',
   '340B': '340B',
   340: '340B',
-  GOV: 'GOV'
+  GOV: 'GOV',
+  GPO: 'GPO'
 };
 
 export const INFO_340B = [

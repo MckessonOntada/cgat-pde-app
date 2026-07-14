@@ -332,8 +332,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       isSpOrder || readOnly
         ? false
         : !status
-        ? false
-        : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
+          ? false
+          : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
 
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
@@ -816,11 +816,11 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             } else {
               isSpOrder
                 ? setDraftChanges((prev) => ({
-                    ...prev,
-                    ...tempValue
-                  }))
+                  ...prev,
+                  ...tempValue
+                }))
                 : AuthUtils.isSystemAdminView()
-                ? setDraftChanges((prev) => ({
+                  ? setDraftChanges((prev) => ({
                     ...prev,
                     ...tempValue,
                     patientDTO: {
@@ -831,7 +831,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       }
                     }
                   }))
-                : setDraftChanges((prev) => ({
+                  : setDraftChanges((prev) => ({
                     ...prev,
                     ...tempValue
                   }));
@@ -965,20 +965,20 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const draftChangesInitialValue =
       manufacturer === MANUFACTURER.ORCA
         ? {
-            additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-            patientIdentifier: orderDetails.patient?.patientIdentifier,
-            medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
-            manufacturerOrderId: orderDetails.patient?.manufacturerOrderId,
-            coiId: orderDetails.patient?.coiId,
-            patientDTO: { patient: { ...patient } }
-          }
+          additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+          patientIdentifier: orderDetails.patient?.patientIdentifier,
+          medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+          manufacturerOrderId: orderDetails.patient?.manufacturerOrderId,
+          coiId: orderDetails.patient?.coiId,
+          patientDTO: { patient: { ...patient } }
+        }
         : {
-            additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
-            patientIdentifier: orderDetails.patient?.patientIdentifier,
-            medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
-            coiId: orderDetails.patient?.coiId,
-            patientDTO: null
-          };
+          additionalDetailsRequestDTO: { ...orderDetails.additionalDetails },
+          patientIdentifier: orderDetails.patient?.patientIdentifier,
+          medicalRecordNumber: orderDetails.patient?.medicalRecordNumber,
+          coiId: orderDetails.patient?.coiId,
+          patientDTO: null
+        };
 
     const isOrderChanged = !CommonUtils.deepEqual(draftChanges, draftChangesInitialValue);
     const controlPrintSummary = (
@@ -1119,7 +1119,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   if (additionalDetails.variantDetails?.variantDocumentPath) {
     try {
       variantAttachment = JSON.parse(additionalDetails.variantDetails.variantDocumentPath);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   if (additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0) {
@@ -1181,10 +1181,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const backTextKey = backToInvoiceListing
     ? 'orderManagement.backToInvoiceDetails'
     : backToInvoiceDetails
-    ? 'paymentInvoices.Details.backToInvoiceDetails'
-    : isPhysician
-    ? 'captions.btnBackToPrescriptions'
-    : 'captions.btnBackToManageOrder';
+      ? 'paymentInvoices.Details.backToInvoiceDetails'
+      : isPhysician
+        ? 'captions.btnBackToPrescriptions'
+        : 'captions.btnBackToManageOrder';
 
   const unitAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : catalog.netPrice);
   const netAmount = CommonUtils.formatNumberWithoutSymbol(papOrderOptions.isChecked ? 0 : orderDetails.totalNetPrice);
@@ -1224,7 +1224,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                   />
                 )}
                 {!isApprover &&
-                (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted || isCSReview) ? (
+                  (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted || isCSReview) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t(isSpOrder ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
                     {showPapBadge}
@@ -1384,20 +1384,19 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     heading={<Heading as="h3">{t(isSpOrder ? 'labels.orderDetails' : 'labels.priceDetails')}</Heading>}
                   />
                   <div
-                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
-                      isSubmitted || isCSReview
-                        ? !isSpOrder
-                          ? 'lg:grid-cols-6 xl:grid-cols-6'
-                          : 'lg:grid-cols-2 xl:grid-cols-2'
-                        : 'lg:grid-cols-5 xl:grid-cols-5'
-                    }`}>
+                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${isSubmitted || isCSReview
+                      ? !isSpOrder
+                        ? 'lg:grid-cols-6 xl:grid-cols-6'
+                        : 'lg:grid-cols-2 xl:grid-cols-2'
+                      : 'lg:grid-cols-5 xl:grid-cols-5'
+                      }`}>
                     {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
                       ((isSubmitted || isCSReview) && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
-                      <DetailSegment
-                        label={t('labels.orderId')}
-                        value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId || orderDetails.id}
-                      />
-                    )}
+                        <DetailSegment
+                          label={t('labels.orderId')}
+                          value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId || orderDetails.id}
+                        />
+                      )}
                     <DetailSegment
                       label={t('labels.therapy')}
                       noTooltip={true}
@@ -1561,7 +1560,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           label={t(isSpOrder ? 'labels.prescriptionChannel' : 'labels.orderChannel')}
                           value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)}
                         />
-                        {!isSpOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier]} />}
+                        {!isSpOrder && <DetailSegment label={t('labels.program')} value={CGAT_IDENTIFIER[accountDetails?.soldToAccount?.cgatIdentifier === 'WAC' && catalog?.contractNo ? 'GPO' : accountDetails?.soldToAccount?.cgatIdentifier]} />}
                       </div>
                     </div>
                   </div>

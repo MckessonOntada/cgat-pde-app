@@ -144,8 +144,14 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   </div>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => (
-                      <div className="details-li" key={`${item.sectionHeading}-${item.label || idx}`}>
-                        <div className="details-key">{t(`ManageCatalog.Details.${item.label}`)}</div>
+                      <div className="details-li" key={`${item.sectionHeading}-${item.label || index}`}>
+                        <div className="details-key">
+                          {item.label === 'WACPrice' &&
+                          (data?.catalogPrice?.contractNo || data?.contractNo) &&
+                          (data?.catalogPrice?.customerIdentifier === 'WAC' || data?.customerIdentifier === 'WAC')
+                            ? t('ManageCatalog.Details.GPOPrice')
+                            : t(`ManageCatalog.Details.${item.label}`)}
+                        </div>
                         <div className="details-value">{data?.catalogPrice[item.value] || '-'}</div>
                       </div>
                     ))}
