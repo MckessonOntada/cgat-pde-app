@@ -1,4 +1,5 @@
 import { ReactComponent as AddIcon } from '@src/assets/image/add_circle_bold.svg';
+import { ReactComponent as ViewIcon } from '@src/assets/image/view.svg';
 import { Button, Heading, Alert, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -14,7 +15,6 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
-import FlatButton from '@src/components/button';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { DateUtils } from '@src/util/DateUtil';
@@ -160,19 +160,18 @@ function NotificationList() {
         name: translateFn('notificationGroup.table.status'),
         center: true,
         minWidth: '100px',
-        cell: (props) => (
-          <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
-        )
+        cell: (props) => <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
       },
       {
         id: 'action',
         name: translateFn('table.column.caption.action'),
         wrap: true,
+        center: true,
         maxWidth: '120px',
         cell: (props) => (
-          <FlatButton size="small" style={{ paddingLeft: 0, paddingRight: 0 }} variant="text" onClick={() => navigate(`${props.id}`)}>
-            View
-          </FlatButton>
+          <Button Icon={ViewIcon} variant="tertiary" size="md" className="button-icon" onClick={() => navigate(`${props.id}`)}>
+            {translateFn('userManagement.table.action.view') || 'View'}
+          </Button>
         )
       }
     ];
@@ -332,15 +331,9 @@ function NotificationList() {
               <Button
                 size="md"
                 onClick={() =>
-                  handleConfirm(
-                    selectedRows?.active
-                      ? translateFn('notificationGroup.button.deactivate')
-                      : translateFn('notificationGroup.button.activate')
-                  )
+                  handleConfirm(selectedRows?.active ? translateFn('notificationGroup.button.deactivate') : translateFn('notificationGroup.button.activate'))
                 }>
-                {selectedRows?.active
-                  ? translateFn('notificationGroup.button.deactivate')
-                  : translateFn('notificationGroup.button.activate')}
+                {selectedRows?.active ? translateFn('notificationGroup.button.deactivate') : translateFn('notificationGroup.button.activate')}
               </Button>
             </React.Fragment>
           ),
