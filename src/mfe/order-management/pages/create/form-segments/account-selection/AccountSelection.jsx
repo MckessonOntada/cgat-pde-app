@@ -78,7 +78,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (!soldToAccount) return;
 
     setAccountConfig({
-      program: CGAT_IDENTIFIER[soldToAccount.cgatIdentifier],
+      program: CGAT_IDENTIFIER[orderDetails.program],
       channelType: soldToAccount.channelType
     });
   }, [orderDetails]);
