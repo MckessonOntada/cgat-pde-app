@@ -26,7 +26,6 @@ import TermsToUse from './pages/FooterPages/TermsToUse';
 import PrivacyNotice from './pages/FooterPages/PrivacyNotice';
 import PrivacyNoticePage from './pages/FooterPages/PrivacyNoticeForStateSpecific.';
 import ContactUs from './pages/FooterPages/ContactUs';
-import ContactUsLoggedIn from './pages/FooterPages/ContactUs/ContactUsLoggedIn';
 import Success from './pages/FooterPages/ContactUs/Success';
 
 function AuthorizedRoute({ children }) {
@@ -125,7 +124,6 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
-          <Route path={AppRoutes.pathContactSecure} element={<ContactUsLoggedIn />} />
           <Route element={<PublicRoute />}>
             <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />
