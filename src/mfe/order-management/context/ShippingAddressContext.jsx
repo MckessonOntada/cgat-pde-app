@@ -2,6 +2,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import AuthUtils from '@src/util/AuthUtils';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 const initialFilterState = {
   searchQuery: '',
@@ -32,7 +33,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const [pageConfig, setPageConfig] = useState(initialPageConfig);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = useState([]);
-  const { trade, selectedAccount } = accountDetails;
+  const { trade, selectedAccount, program } = accountDetails;
 
   const prepareDataForTable = (_data) => {
     const tableData = [];
@@ -63,9 +64,12 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
       ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder }),
       ...(selectedAccount?.channelType && {
         channelType: selectedAccount?.channelType
+      }),
+      ...(selectedAccount?.channelType === CHANNEL_TYPE.BUY_AND_BILL && program && {
+        program
       })
     }),
-    [filterState, pageConfig.currentPage, selectedAccount?.channelType, sortConfig]
+    [filterState, pageConfig.currentPage, selectedAccount?.channelType, sortConfig, program]
   );
 
   const {

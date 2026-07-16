@@ -78,7 +78,7 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
     if (!soldToAccount) return;
 
     setAccountConfig({
-      program: CGAT_IDENTIFIER[soldToAccount.cgatIdentifier],
+      program: CGAT_IDENTIFIER[orderDetails.program],
       channelType: soldToAccount.channelType
     });
   }, [orderDetails]);
@@ -360,7 +360,13 @@ const AccountSelection = ({ readOnly, hasPermission }) => {
               </div>
             </div>
             {selectedSoldToAccount && (
-              <ShippingAddressProvider accountDetails={{ trade: tradeDetails, selectedAccount: selectedSoldToAccount }}>
+              <ShippingAddressProvider
+                accountDetails={{
+                  trade: tradeDetails,
+                  selectedAccount: selectedSoldToAccount,
+                  program: accountConfig?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? CGAT_IDENTIFIER[accountConfig.program] : ''
+                }}
+              >
                 <ShippingAddress selectedShippingAddress={selectedShipToAccount} readOnly={readOnly} setSelectedShippingAddress={setSelectedShipToAccount} />
               </ShippingAddressProvider>
             )}
