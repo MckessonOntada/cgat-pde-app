@@ -17,3 +17,201 @@
     margin: 0px;
   }
 }
+
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--brand-color-background);
+}
+
+.contact-content {
+  display: flex;
+  padding: var(--spacing-06) var(--spacing-03);
+  justify-content: center;
+}
+
+.contact-card {
+  background: var(--brand-color-background-white);
+  border-radius: var(--brand-border-radius--16);
+  box-shadow: 0 var(--spacing-02) var(--spacing-05) rgba(38, 44, 54, 0.08);
+  width: 100%;
+  max-width: 672px;
+  box-sizing: border-box;
+}
+
+.contact-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--brand-color-grey-scale-cool-2);
+  padding: var(--spacing-03) var(--spacing-04);
+  background: var(--brand-color-grey-scale-cool-3);
+  border-radius: var(--brand-border-radius--16) var(--brand-border-radius--16) 0 0;
+
+  .user-profile-section {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-03);
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--brand-border-radius-50-per);
+      background-color: var(--brand-color-background-blue-2);
+      color: var(--brand-color-background-white);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: var(--brand-font-weight-700);
+      font-size: var(--brand-font-size--15);
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+
+      .user-name {
+        font-size: var(--brand-font-size--large);
+        font-weight: var(--brand-font-weight-700);
+        color: var(--brand-color-black);
+      }
+
+      .user-status {
+        font-size: var(--brand-font-size--large);
+        color: var(--brand-color-text-light-slate);
+      }
+    }
+  }
+}
+
+.progress-indicator-bar {
+  display: flex;
+  gap: var(--spacing-02);
+  margin-bottom: var(--spacing-04);
+
+  .progress-step {
+    flex: 1;
+    height: 6px;
+    border-radius: var(--brand-border-radius--3);
+    background-color: var(--brand-color-progress-grey);
+
+    &.active {
+      background-color: var(--brand-color-primary);
+    }
+  }
+}
+
+.contact-card-body {
+  padding: var(--spacing-04);
+
+  .body-heading {
+    font-size: var(--brand-font-size--28);
+    font-weight: var(--brand-font-weight-700);
+    color: var(--brand-color-black);
+    margin: 0 0 var(--spacing-02) 0;
+  }
+
+  .body-subheading {
+    font-size: var(--brand-font-size--default);
+    margin-bottom: var(--spacing-04);
+  }
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-02);
+  margin-bottom: 12px;
+}
+
+.step-header__number {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--brand-border-radius-50-per);
+  background: #007cc1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-700);
+  line-height: var(--brand-line-height--24);
+}
+
+.step-header__title {
+  margin: 0;
+  color: #163e5e;
+  font-size: var(--brand-font-size--default) !important;
+  font-weight: var(--brand-font-weight-700);
+  line-height: var(--brand-line-height--24);
+}
+
+.description-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-01);
+}
+
+.description-field {
+  width: 100%;
+  height: 100px;
+  min-height: 66px;
+
+  padding: 6px 4px 6px 8px;
+
+  background: #ffffff;
+
+  border-radius: var(--brand-border-radius--4);
+  border: 1px solid #627386;
+
+  display: flex;
+  align-items: flex-start;
+
+  resize: vertical;
+
+  font-family: "Nunito";
+  font-size: --brand-font-size--default;
+  font-weight: var(--brand-font-weight-400);
+  line-height: var(--brand-line-height--24);
+
+  color: #1e394e;
+
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #007cc1;
+  }
+
+  &::placeholder {
+    color: #627386;
+  }
+}
+
+.description-counter {
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-01);
+  margin-bottom: var(--spacing-04);
+
+  font-size: var(--brand-font-size--extra-small);
+  font-weight: var(--brand-font-weight-400);
+  line-height: var(--brand-line-height--medium);
+  letter-spacing: 0.01rem;
+
+  color: #627386;
+
+  span:first-child {
+    color: #1e394e;
+  }
+}
+
+.contact-form-submit-button {
+  width: 100%;
+  cursor: pointer;
+}
