@@ -64,7 +64,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
           : '-'
         : state?.payOn
           ? dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')
-          : '-') || '-',
+          : '-'),
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
