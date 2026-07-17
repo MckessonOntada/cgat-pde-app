@@ -121,7 +121,6 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
 
   const handleDownload = () => {
     const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}/detail/export?confirmationNo=${confirmationNumber}`;
-    debugger;
     const payload = {
       companyCode: selectedAccount?.companyCode,
       salesOrg: selectedAccount?.salesOrg,
