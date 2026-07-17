@@ -55,5 +55,15 @@ export const LoginMessagesES = {
   'forms.validation.invalidLastName': 'S_Please enter a valid Last Name',
   'header.login.title': 'S_Welcome to InspiroLink',
   'login.page.desc.1':
-    'S_InspiroLink is an ordering application designed to provide a simplified experience for healthcare providers providing cell, gene, and advanced therapy treatments. InspiroLink was developed from the ground up to implement customized order workflows and make ordering, scheduling, and tracking product as effortless as possible.'
+    'S_InspiroLink is an ordering application designed to provide a simplified experience for healthcare providers providing cell, gene, and advanced therapy treatments. InspiroLink was developed from the ground up to implement customized order workflows and make ordering, scheduling, and tracking product as effortless as possible.',
+  'contactUs.subheading': "S_Tell us what you need help with and we'll route it to the right team.",
+  'contactUs.reasonForContact': 'S_Reason for contact',
+  'contactUs.selectTherapy': 'S_Select Therapy',
+  'contactUs.orderingChannel': 'S_Ordering channel',
+  'contactUs.selectAccount': 'S_Select Account',
+  'contactUs.describeIssue': 'S_Describe the issue',
+  'contactUs.submitRequest': 'S_Submit Request',
+  'contactUs.maxCharacters': 'S_Maximum 1,000 Characters',
+  'contactUs.affectedModule': 'S_Affected module',
+  'contactUs.selectOption': 'S_Select an option'
 };
