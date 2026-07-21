@@ -4,14 +4,19 @@ import { contactReasons } from '../constants';
 import { Button } from '@mckesson/mcp-component-library';
 import { useFormikContext } from 'formik';
 import StepHeader from '../StepHeader';
+import { useTranslate } from '@src/translations/useTranslation';
 
 export function TabSelection() {
+  const { t } = useTranslate();
   const { values, setFieldValues, resetForm } = useFormikContext();
   const handleClick = (reason) => {
     resetForm({
       values: {
         reason,
         affectedModule: '',
+        therapy: '',
+        orderingChannel: '',
+        account: '',
         description: ''
       }
     });
@@ -19,7 +24,7 @@ export function TabSelection() {
 
   return (
     <div className="tab-selection">
-      <StepHeader step={1} title="Reason for contact" />
+      <StepHeader step={1} title={t('contactUs.reasonForContact')} />
 
       <div className="tab-selection__menu">
         {contactReasons.map((reason) => {
