@@ -68,5 +68,15 @@ export const LoginMessagesEN = {
   'forms.validation.invalidFirstName': 'Please enter a valid First Name',
   'forms.validation.lastNameRequired': 'Please enter the Last Name',
   'forms.validation.invalidLastName': 'Please enter a valid Last Name',
-  'header.login.title': 'Welcome to InspiroLink'
+  'header.login.title': 'Welcome to InspiroLink',
+  'contactUs.subheading': "Tell us what you need help with and we'll route it to the right team.",
+  'contactUs.reasonForContact': 'Reason for contact',
+  'contactUs.selectTherapy': 'Select Therapy',
+  'contactUs.orderingChannel': 'Ordering channel',
+  'contactUs.selectAccount': 'Select Account',
+  'contactUs.describeIssue': 'Describe the issue',
+  'contactUs.submitRequest': 'Submit Request',
+  'contactUs.maxCharacters': 'Maximum 1,000 Characters',
+  'contactUs.affectedModule': 'Affected module',
+  'contactUs.selectOption': 'Select an option'
 };

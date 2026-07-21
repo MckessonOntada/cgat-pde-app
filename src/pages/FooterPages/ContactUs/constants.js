@@ -20,3 +20,11 @@ export const techIssueOptions = [
   { id: 'notification', label: 'Notifications', icon: notificaionIcon },
   { id: 'other', label: 'Other', icon: otherIcon }
 ];
+
+export const therapyOptions = [
+  { label: 'CASGEVY', value: 'CASGEVY', isCrosswalked: true },
+  { label: 'ABECMA', value: 'ABECMA', isCrosswalked: false },
+  { label: 'BREYANZI', value: 'BREYANZI', isCrosswalked: false },
+  { label: 'LYNPARZA', value: 'LYNPARZA', isCrosswalked: true },
+  { label: 'ENHERTU', value: 'ENHERTU', isCrosswalked: true }
+];

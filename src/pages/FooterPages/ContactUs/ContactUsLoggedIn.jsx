@@ -11,12 +11,26 @@ import { TabSelection } from './TabSelection';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '@mckesson/mcp-component-library';
 import TechIssueForm from './TechIssueForm';
+import OrderIssueForm from './OrderIssueForm';
 import StepHeader from './StepHeader';
+import { therapyOptions } from './constants';
+
+const isTherapyCrosswalked = (therapyVal) => {
+  const therapy = therapyOptions.find((t) => t.value === therapyVal);
+  return therapy ? therapy.isCrosswalked : false;
+};
 
 const shouldShowDescription = (values) => {
   if (values.reason === 'tech') {
     return !!values.affectedModule;
-  } else if (values.reason === 'order' || values.reason === 'invoice' || values.reason === 'other') {
+  } else if (values.reason === 'order') {
+    const isCrosswalked = isTherapyCrosswalked(values.therapy);
+    if (isCrosswalked) {
+      return !!values.therapy && !!values.orderingChannel && !!values.account;
+    } else {
+      return !!values.therapy && !!values.account;
+    }
+  } else if (values.reason === 'invoice' || values.reason === 'other') {
     return !!values.therapy && !!values.orderingChannel && !!values.account;
   }
   return false;
@@ -30,8 +44,33 @@ const getProgressState = (values) => {
     };
   }
 
+  if (values.reason === 'order') {
+    const isCrosswalked = isTherapyCrosswalked(values.therapy);
+    const totalSteps = isCrosswalked ? 5 : 4;
+    let currentStep = 2;
+    if (values.therapy) {
+      currentStep = 3;
+    }
+    if (isCrosswalked) {
+      if (values.therapy && values.orderingChannel) {
+        currentStep = 4;
+      }
+      if (values.therapy && values.orderingChannel && values.account) {
+        currentStep = 5;
+      }
+    } else {
+      if (values.therapy && values.account) {
+        currentStep = 4;
+      }
+    }
+    return {
+      totalSteps,
+      currentStep
+    };
+  }
+
   //handle progressbar stepper for other three
-  if (values.reason === 'order' || values.reason === 'invoice' || values.reason === 'other') {
+  if (values.reason === 'invoice' || values.reason === 'other') {
     return {
       totalSteps: 5,
       currentStep: 2
@@ -51,7 +90,16 @@ const canSubmit = (values) => {
     return !!values.affectedModule && !!values.description;
   }
 
-  if (values.reason === 'order' || values.reason === 'invoice' || values.reason === 'other') {
+  if (values.reason === 'order') {
+    const isCrosswalked = isTherapyCrosswalked(values.therapy);
+    if (isCrosswalked) {
+      return !!values.therapy && !!values.orderingChannel && !!values.account && !!values.description;
+    } else {
+      return !!values.therapy && !!values.account && !!values.description;
+    }
+  }
+
+  if (values.reason === 'invoice' || values.reason === 'other') {
     return !!values.therapy && !!values.orderingChannel && !!values.account && !!values.description;
   }
 
@@ -91,7 +139,16 @@ const ContactUsLoggedIn = () => {
               </div>
             </div>
           </div>
-          <Formik initialValues={{ reason: '', affectedModule: '', description: '' }} onSubmit={(values) => console.log(values)}>
+          <Formik
+            initialValues={{
+              reason: '',
+              affectedModule: '',
+              therapy: '',
+              orderingChannel: '',
+              account: '',
+              description: ''
+            }}
+            onSubmit={(values) => console.log(values)}>
             {({ values }) => {
               const progress = getProgressState(values);
 
@@ -100,43 +157,45 @@ const ContactUsLoggedIn = () => {
                   <ProgressBarStepper totalSteps={progress.totalSteps} currentStep={progress.currentStep} />
 
                   <Heading as="h1" className="body-heading">
-                    Contact Us
+                    {t('footer.contactUs')}
                   </Heading>
-                  <p className="body-subheading">Tell us what you need help with and we'll route it to the right team.</p>
+                  <p className="body-subheading">{t('contactUs.subheading')}</p>
 
                   {/* Form */}
                   <Form>
                     <div>
-                      {/* Tab */}
                       <TabSelection />
-                      {/* form1 */}
                       {values.reason === 'tech' && <TechIssueForm />}
+                      {values.reason === 'order' && <OrderIssueForm />}
 
-                      {/* form2 */}
-
-                      {/* common description and submit button for form1 and form2 */}
-                      {/* common description */}
                       {shouldShowDescription(values) && (
                         <>
-                          <StepHeader step={3} title={'Describe the issue'} />
+                          <StepHeader
+                            step={
+                              values.reason === 'tech'
+                                ? 3
+                                : isTherapyCrosswalked(values.therapy)
+                                  ? 5
+                                  : 4
+                            }
+                            title={t('contactUs.describeIssue')}
+                          />
                           <div className="description-wrapper">
                             <Field as="textarea" name="description" maxLength={1000} className="description-field" />
 
                             <div className="description-counter">
-                              <span>Maximum 1,000 Characters</span>
+                              <span>{t('contactUs.maxCharacters')}</span>
                               <span>({values.description.length}/1000)</span>
                             </div>
                           </div>
                         </>
                       )}
 
-                      {/*  submit button */}
                       <div className="submit-button-wrapper">
                         <Button type="submit" className="contact-form-submit-button" variant="primary" size="md" disabled={!canSubmit(values)}>
-                          Submit Request
+                          {t('contactUs.submitRequest')}
                         </Button>
                       </div>
-                      {/* form */}
                     </div>
                   </Form>
                 </div>
