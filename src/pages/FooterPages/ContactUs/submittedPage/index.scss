@@ -48,7 +48,7 @@
 .request-description {
   max-width: 624px;
   text-align: center;
-  color: #3c5c6e;
+  color: var(--brand-color-primary-slate);
   font-size: var(--brand-font-size--default);
 }
 
@@ -73,7 +73,7 @@
 
   background: #eceae3;
   border: 1px solid #dcd9d0;
-  border-radius: 16px;
+  border-radius: var(--brand-border-radius--16);
 }
 
 .support-header {
@@ -105,7 +105,7 @@
   flex-shrink: 0;
 
   path {
-    stroke: #007cc1;
+    stroke: var(--brand-color-primary);
   }
 }
 
@@ -124,7 +124,7 @@
 
   padding: var(--spacing-03);
 
-  background: #fff;
+  background: var(--brand-color-general-white);
   border: 1px solid #e3e0d6;
   border-radius: 12px;
 }
@@ -135,7 +135,7 @@
   flex-shrink: 0;
 
   path {
-    stroke: #007cc1;
+    stroke: var(--brand-color-primary);
   }
 }
 
