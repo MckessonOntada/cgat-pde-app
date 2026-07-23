@@ -35,13 +35,18 @@ export const restoreSessionTransfer = () => {
     if (transferId) {
       const dataStr = localStorage.getItem(`transfer_session_${transferId}`);
       if (dataStr) {
-        const sessionData = JSON.parse(dataStr);
-        Object.entries(sessionData).forEach(([key, value]) => {
-          if (value !== null && value !== undefined) {
-            sessionStorage.setItem(key, value);
-          }
-        });
-        localStorage.removeItem(`transfer_session_${transferId}`);
+        try {
+          const sessionData = JSON.parse(dataStr);
+          Object.entries(sessionData).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              sessionStorage.setItem(key, value);
+            }
+          });
+        } catch (parseError) {
+          console.error('Failed to parse session data:', parseError);
+        } finally {
+          localStorage.removeItem(`transfer_session_${transferId}`);
+        }
       }
       const url = new URL(window.location.href);
       url.searchParams.delete('sessionTransferId');

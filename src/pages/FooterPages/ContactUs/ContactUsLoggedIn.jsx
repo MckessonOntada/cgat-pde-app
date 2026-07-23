@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import PrimaryHeader from '@src/components/header/PrimaryHeader';
 import AuthUtils from '@src/util/AuthUtils';
+import { restoreSessionTransfer } from '@src/util/SessionTransferUtils';
 import { ReactComponent as McKessonLogo } from '@src/assets/svg/pagelogo.svg';
 import { Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
@@ -106,6 +107,7 @@ const canSubmit = (values) => {
   return false;
 };
 const ContactUsLoggedIn = () => {
+  restoreSessionTransfer();
   const { t } = useTranslate();
   const [searchParams] = useSearchParams();
   const nameFromUrl = searchParams.get('name');
