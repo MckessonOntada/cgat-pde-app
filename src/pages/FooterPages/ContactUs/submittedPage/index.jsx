@@ -7,8 +7,10 @@ import { ReactComponent as CheckIcon } from '@src/assets/svg/check-icon-success.
 import { ReactComponent as SupportIcon } from '@src/assets/svg/support-icon.svg';
 import { ReactComponent as PhoneIcon } from '@src/assets/svg/call-icon.svg';
 import { ReactComponent as EmailIcon } from '@src/assets/svg/mail-icon.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
+  const { t } = useTranslate();
   return (
     <div className="request-submitted">
       <div className="success-icon">
@@ -17,11 +19,9 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
         </div>
       </div>
 
-      <h2 className="request-title">Request submitted</h2>
+      <h2 className="request-title">{t('contactUs.submittedPage.title')}</h2>
 
-      <p className="request-description">
-        Our support team will review your case and respond within 1-2 business days. You'll receive a confirmation email shortly.
-      </p>
+      <p className="request-description">{t('contactUs.submittedPage.description')}</p>
 
       <div className="ticket-number">
         <span>{ticketId}</span>
@@ -32,9 +32,9 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
           <SupportIcon className="support-header-icon" />
 
           <div className="support-header-text">
-            <span>Need immediate assistance?</span>
+            <span>{t('contactUs.submittedPage.support.title')}</span>
 
-            <p>Our support team is available Monday - Friday, 8 am - 8 pm ET.</p>
+            <p>{t('contactUs.submittedPage.support.description')}</p>
           </div>
         </div>
 
@@ -43,7 +43,7 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
             <PhoneIcon className="contact-icon" />
 
             <div className="support-text">
-              <span className="label">CALL US</span>
+              <span className="label">{t('contactUs.submittedPage.callUs')}</span>
 
               <span className="value">{phone}</span>
             </div>
@@ -53,7 +53,7 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
             <EmailIcon className="contact-icon" />
 
             <div className="support-text">
-              <span className="label">EMAIL US</span>
+              <span className="label">{t('contactUs.submittedPage.emailUs')}</span>
 
               <span className="value">{mail}</span>
             </div>
@@ -61,10 +61,10 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
         </div>
       </div>
 
-      <p className="ticket-note">Save your ticket number for reference</p>
+      <p className="ticket-note">{t('contactUs.submittedPage.ticketNote')}</p>
 
       <Button type="button" variant="primary" size="md" className="contact-form-submit-button" onClick={() => {}}>
-        SUBMIT ANOTHER REQUEST
+        {t('contactUs.submittedPage.submitAnotherRequest')}
       </Button>
     </div>
   );
