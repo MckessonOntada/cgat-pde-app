@@ -9,6 +9,7 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLinkWhite.svg';
 import { useOktaAuth } from '@okta/okta-react';
 import AuthUtils from '@src/util/AuthUtils';
+import { prepareSessionTransfer } from '@src/util/SessionTransferUtils';
 
 const Footer = () => {
   const { t } = useTranslate();
@@ -60,6 +61,24 @@ const Footer = () => {
                   const targetUrl = isContact && isAuthenticated
                     ? `/contact-us?name=${encodeURIComponent(AuthUtils.getFullName() || '')}`
                     : link.url;
+                  if (isContact) {
+                    return (
+                      <a
+                        key={linkIndex}
+                        href={targetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const transferId = prepareSessionTransfer();
+                          const finalUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + 'sessionTransferId=' + transferId;
+                          window.open(finalUrl, '_blank');
+                        }}
+                      >
+                        {t(link.text)}
+                      </a>
+                    );
+                  }
                   return (
                     <Link key={linkIndex} to={targetUrl} target="_blank">
                       {t(link.text)}
