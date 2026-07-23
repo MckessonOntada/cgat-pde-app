@@ -59,8 +59,12 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
     'Payment Method': state?.paymentMethod,
     'Pay On Date':
       (type === PATHS.paymentHistory
-        ? dayjs(state?.dateScheduled, 'DD/MM/YYYY').format('MM/DD/YYYY') || '-'
-        : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
+        ? state?.dateScheduled
+          ? dayjs(state?.dateScheduled, 'DD/MM/YYYY').format('MM/DD/YYYY')
+          : '-'
+        : state?.payOn
+          ? dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')
+          : '-'),
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
@@ -121,8 +125,9 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       companyCode: selectedAccount?.companyCode,
       salesOrg: selectedAccount?.salesOrg,
       payerAccountNumber: selectedAccount?.accountNumber,
-      dateFrom: dayjs(state?.filterConfig?.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
-      dateTo: dayjs(state?.filterConfig?.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
+      dateFrom: state?.filterConfig?.dateRange?.[0] ? dayjs(state.filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') : null,
+
+      dateTo: state?.filterConfig?.dateRange?.[1] ? dayjs(state.filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') : null,
       paymentHistoryFilter: {
         searchTerm: '',
         paymentStatus: [],
