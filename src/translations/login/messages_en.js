@@ -78,5 +78,14 @@ export const LoginMessagesEN = {
   'contactUs.submitRequest': 'Submit Request',
   'contactUs.maxCharacters': 'Maximum 1,000 Characters',
   'contactUs.affectedModule': 'Affected module',
-  'contactUs.selectOption': 'Select an option'
+  'contactUs.selectOption': 'Select an option',
+  'contactUs.submittedPage.title': 'Request Submitted',
+  'contactUs.submittedPage.description':
+    "Our support team will review your case and respond within 1-2 business days. You'll receive a confirmation email shortly.",
+  'contactUs.submittedPage.support.title': 'Need immediate assistance?',
+  'contactUs.submittedPage.support.description': 'Our support team is available Monday - Friday, 8 am - 8 pm ET.',
+  'contactUs.submittedPage.callUs': 'CALL US',
+  'contactUs.submittedPage.emailUs': 'EMAIL US',
+  'contactUs.submittedPage.ticketNote': 'Save your ticket number for reference',
+  'contactUs.submittedPage.submitAnotherRequest': 'SUBMIT ANOTHER REQUEST'
 };
