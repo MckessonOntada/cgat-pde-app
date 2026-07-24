@@ -57,11 +57,14 @@ const Footer = () => {
               <div key={index}>
                 <Heading as="h2">{t(section.heading)}</Heading>
                 {section.links.map((link, linkIndex) => {
+                  const sessionTransferUrls = ['/contact', '/contact/'];
+                  const requiresSessionTransfer = sessionTransferUrls.includes(link.url);
                   const isContact = link.url === '/contact' || link.url === '/contact/';
                   const targetUrl = isContact && isAuthenticated
-                    ? `/contact-us?name=${encodeURIComponent(AuthUtils.getFullName() || '')}`
+                    ? '/contact-us'
                     : link.url;
-                  if (isContact) {
+
+                  if (requiresSessionTransfer) {
                     return (
                       <a
                         key={linkIndex}
