@@ -7,6 +7,8 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { useQuery } from 'react-query';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLinkWhite.svg';
+import { useOktaAuth } from '@okta/okta-react';
+import { prepareSessionTransfer } from '@src/util/SessionTransferUtils';
 
 const Footer = () => {
   const { t } = useTranslate();
@@ -42,6 +44,9 @@ const Footer = () => {
     };
   }, []);
 
+  const { authState } = useOktaAuth() || {};
+  const isAuthenticated = authState?.isAuthenticated;
+
   return (
     <footer className={style.footer} ref={footerRef}>
       <div className={`max-container ${style.footerWrapper}`}>
@@ -50,11 +55,34 @@ const Footer = () => {
             footerData?.footerSection?.map((section, index) => (
               <div key={index}>
                 <Heading as="h2">{t(section.heading)}</Heading>
-                {section.links.map((link, linkIndex) => (
-                  <Link key={linkIndex} to={link.url} target="_blank">
-                    {t(link.text)}
-                  </Link>
-                ))}
+                {section.links.map((link, linkIndex) => {
+                  const sessionTransferUrls = ['/faq', '/faq/'];
+                  const requiresSessionTransfer = sessionTransferUrls.includes(link.url);
+                  const targetUrl = link.url;
+                  if (requiresSessionTransfer) {
+                    return (
+                      <a
+                        key={linkIndex}
+                        href={targetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const transferId = prepareSessionTransfer();
+                          const finalUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + 'sessionTransferId=' + transferId;
+                          window.open(finalUrl, '_blank');
+                        }}
+                      >
+                        {t(link.text)}
+                      </a>
+                    );
+                  }
+                  return (
+                    <Link key={linkIndex} to={targetUrl} target="_blank">
+                      {t(link.text)}
+                    </Link>
+                  );
+                })}
               </div>
             ))}
         </div>

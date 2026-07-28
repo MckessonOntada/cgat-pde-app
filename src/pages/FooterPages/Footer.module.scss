@@ -203,3 +203,42 @@
     height: auto;
   }
 }
+
+.videoSectionWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.videoMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.videoBadge {
+  display: inline-block;
+  background-color: #f0f8ff;
+  color: #0076a8;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.videoDuration {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.videoDescription {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+

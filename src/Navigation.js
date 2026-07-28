@@ -124,11 +124,11 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
+          <Route path={AppRoutes.pathFaq} element={<Faq />} />
           <Route element={<PublicRoute />}>
             <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />
             <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
-            <Route path={AppRoutes.pathFaq} element={<Faq />} />
             <Route path={AppRoutes.pathTermsOfUse} element={<TermsToUse />} />
             <Route path={AppRoutes.pathPrivacyNotice} element={<PrivacyNotice />} />
             <Route path={AppRoutes.pathContact} element={<ContactUs />} />

@@ -609,6 +609,17 @@ export default [
     accessibleWithoutLogin: false,
     question: [
       {
+        questionTitle: 'How to Place an Order in InspiroLink',
+        video: {
+          url: '/TrainingVideo/master.m3u8',
+          badge: 'Training Video',
+          duration: '6:42',
+          description:
+            'This training video provides a step-by-step walkthrough of the complete order placement process, including patient and therapy selection, required field completion, warning resolution, and order submission for Approval and Customer Service Review.'
+        },
+        answerSegment: []
+      },
+      {
         questionTitle: 'Are there therapy-specific requirements I should be aware of? ',
         answerSegment: [
           {

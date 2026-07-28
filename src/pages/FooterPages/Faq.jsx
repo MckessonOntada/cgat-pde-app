@@ -10,8 +10,11 @@ import { ReactComponent as Expend } from '@src/assets/svg/expend.svg';
 import { ReactComponent as Collapse } from '@src/assets/svg/collapse.svg';
 import { IconButton, Button } from '@mckesson/mcp-component-library';
 import data from './FaqList.js';
+import { restoreSessionTransfer } from '@src/util/SessionTransferUtils';
+import HlsPlayer from './HlsPlayer';
 
 function Faq() {
+  restoreSessionTransfer();
   const [openIndexes, setOpenIndexes] = useState([]);
   const [activeSection, seActiveSection] = useState(0);
   const faqData = React.useMemo(() => {
@@ -106,7 +109,18 @@ function Faq() {
 
                             {openIndexes.includes(index) && (
                               <div key={index} className={style.content}>
-                                <AnswerRenderer segments={q.answerSegment} />
+                                {q.video ? (
+                                  <div className={style.videoSectionWrapper}>
+                                    <HlsPlayer src={q.video.url} />
+                                    <div className={style.videoMetaRow}>
+                                      <span className={style.videoBadge}>{q.video.badge}</span>
+                                      <span className={style.videoDuration}>{q.video.duration}</span>
+                                    </div>
+                                    <p className={style.videoDescription}>{q.video.description}</p>
+                                  </div>
+                                ) : (
+                                  <AnswerRenderer segments={q.answerSegment} />
+                                )}
                               </div>
                             )}
                           </div>
