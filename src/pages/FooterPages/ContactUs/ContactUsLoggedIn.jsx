@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import PrimaryHeader from '@src/components/header/PrimaryHeader';
@@ -11,29 +11,32 @@ import { ProgressBarStepper } from '@src/components/stepper';
 import { TabSelection } from './TabSelection';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '@mckesson/mcp-component-library';
-import TechIssueForm from './TechIssueForm';
-import OrderIssueForm from './OrderIssueForm';
 import StepHeader from './StepHeader';
-import { therapyOptions } from './constants';
+import useTherapies from './useTherapies';
+import TechIssueForm from './TechIssueForm/Index';
+import OrderIssueForm from './OrderIssueForm/Index';
 
-const isTherapyCrosswalked = (therapyVal) => {
-  const therapy = therapyOptions.find((t) => t.value === therapyVal);
-  return therapy ? therapy.isCrosswalked : false;
+const isTherapyCrosswalked = (selectedTherapy) => {
+  return selectedTherapy?.isCrosswalked ?? false;
 };
-
+const isTherapyBasedReason = (reason) => {
+  return ['order', 'invoice', 'other'].includes(reason);
+};
 const shouldShowDescription = (values) => {
   if (values.reason === 'tech') {
     return !!values.affectedModule;
-  } else if (values.reason === 'order') {
-    const isCrosswalked = isTherapyCrosswalked(values.therapy);
+  }
+
+  if (isTherapyBasedReason(values.reason)) {
+    const isCrosswalked = isTherapyCrosswalked(values.selectedTherapy);
+
     if (isCrosswalked) {
       return !!values.therapy && !!values.orderingChannel && !!values.account;
-    } else {
-      return !!values.therapy && !!values.account;
     }
-  } else if (values.reason === 'invoice' || values.reason === 'other') {
-    return !!values.therapy && !!values.orderingChannel && !!values.account;
+
+    return !!values.therapy && !!values.account;
   }
+
   return false;
 };
 
@@ -45,36 +48,31 @@ const getProgressState = (values) => {
     };
   }
 
-  if (values.reason === 'order') {
-    const isCrosswalked = isTherapyCrosswalked(values.therapy);
+  if (isTherapyBasedReason(values.reason)) {
+    const isCrosswalked = isTherapyCrosswalked(values.selectedTherapy);
     const totalSteps = isCrosswalked ? 5 : 4;
+
     let currentStep = 2;
+
     if (values.therapy) {
       currentStep = 3;
     }
+
     if (isCrosswalked) {
       if (values.therapy && values.orderingChannel) {
         currentStep = 4;
       }
+
       if (values.therapy && values.orderingChannel && values.account) {
         currentStep = 5;
       }
-    } else {
-      if (values.therapy && values.account) {
-        currentStep = 4;
-      }
+    } else if (values.therapy && values.account) {
+      currentStep = 4;
     }
+
     return {
       totalSteps,
       currentStep
-    };
-  }
-
-  //handle progressbar stepper for other three
-  if (values.reason === 'invoice' || values.reason === 'other') {
-    return {
-      totalSteps: 5,
-      currentStep: 2
     };
   }
 
@@ -88,20 +86,16 @@ const canSubmit = (values) => {
   if (!values.reason) return false;
 
   if (values.reason === 'tech') {
-    return !!values.affectedModule && !!values.description;
+    return !!values.affectedModule;
   }
 
-  if (values.reason === 'order') {
-    const isCrosswalked = isTherapyCrosswalked(values.therapy);
+  if (isTherapyBasedReason(values.reason)) {
+    const isCrosswalked = isTherapyCrosswalked(values.selectedTherapy);
     if (isCrosswalked) {
-      return !!values.therapy && !!values.orderingChannel && !!values.account && !!values.description;
-    } else {
-      return !!values.therapy && !!values.account && !!values.description;
+      return !!values.therapy && !!values.orderingChannel && !!values.account;
     }
-  }
 
-  if (values.reason === 'invoice' || values.reason === 'other') {
-    return !!values.therapy && !!values.orderingChannel && !!values.account && !!values.description;
+    return !!values.therapy && !!values.account;
   }
 
   return false;
@@ -110,6 +104,8 @@ const ContactUsLoggedIn = () => {
   restoreSessionTransfer();
   const { t } = useTranslate();
   const [searchParams] = useSearchParams();
+  const [therapyQuery, setTherapyQuery] = React.useState('');
+  const { therapyOptions, isFetching } = useTherapies(therapyQuery);
   const nameFromUrl = searchParams.get('name');
   const fullName = nameFromUrl ? decodeURIComponent(nameFromUrl) : AuthUtils.getFullName() || AuthUtils.getUserName() || 'User';
 
@@ -145,6 +141,7 @@ const ContactUsLoggedIn = () => {
             initialValues={{
               reason: '',
               affectedModule: '',
+              selectedTherapy: null,
               therapy: '',
               orderingChannel: '',
               account: '',
@@ -168,18 +165,14 @@ const ContactUsLoggedIn = () => {
                     <div>
                       <TabSelection />
                       {values.reason === 'tech' && <TechIssueForm />}
-                      {values.reason === 'order' && <OrderIssueForm />}
+                      {isTherapyBasedReason(values.reason) && (
+                        <OrderIssueForm key={values.reason} therapyOptions={therapyOptions} setTherapyQuery={setTherapyQuery} isFetching={isFetching} />
+                      )}
 
                       {shouldShowDescription(values) && (
                         <>
                           <StepHeader
-                            step={
-                              values.reason === 'tech'
-                                ? 3
-                                : isTherapyCrosswalked(values.therapy)
-                                  ? 5
-                                  : 4
-                            }
+                            step={values.reason === 'tech' ? 3 : isTherapyCrosswalked(values.selectedTherapy) ? 5 : 4}
                             title={t('contactUs.describeIssue')}
                           />
                           <div className="description-wrapper">
