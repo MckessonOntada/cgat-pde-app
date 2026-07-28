@@ -11,10 +11,10 @@ import { ProgressBarStepper } from '@src/components/stepper';
 import { TabSelection } from './TabSelection';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '@mckesson/mcp-component-library';
-import OrderIssueForm from './OrderIssueForm';
 import StepHeader from './StepHeader';
 import useTherapies from './useTherapies';
 import TechIssueForm from './TechIssueForm/Index';
+import OrderIssueForm from './OrderIssueForm/Index';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
