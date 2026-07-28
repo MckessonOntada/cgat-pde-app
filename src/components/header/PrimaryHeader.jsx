@@ -104,6 +104,8 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     if (closeDrawer) setDrawerOpen(false);
   };
 
+  const isNewTab = location.pathname === '/contact-us';
+
   const LeftSideView = ({ children }) => (
     <div className={styles.navItemsLeft}>
       <div className={styles.branding}>
@@ -217,44 +219,49 @@ const PrimaryHeader = ({ onNotificationClick }) => {
             </div>
           )}
 
-          {authState?.isAuthenticated && (
+          {authState?.isAuthenticated && !isNewTab && (
             <div className={styles.desktopOnly}>
               <RightSideView notificationsCount={notificationsCount} handleNotificationClick={handleNotificationClick} />
             </div>
           )}
+          {authState?.isAuthenticated && !isNewTab && (
+            <div className={styles.mobileOnly}>
+              <Button variant="tertiary" className={styles.hamburger} onClick={toggleDrawer} aria-label="Open drawer menu">
+                <IconMenu />
+              </Button>
 
-          <div className={styles.mobileOnly}>
-            <Button variant="tertiary" className={styles.hamburger} onClick={toggleDrawer} aria-label="Open drawer menu">
-              <IconMenu />
-            </Button>
-
-            <FloatingDrawer
-              anchor="right"
-              open={drawerOpen}
-              onClose={toggleDrawer}
-              heading={
-                <Link className={`${styles.appLogo} ${styles.actionLink}`} to="" aria-label="dashboard">
-                  <AppLogo />
-                </Link>
-              }
-              controls={
-                <Button
-                  className={styles.logoutBtnMobile}
-                  label={'button.logout'}
-                  aria-label="Log out of account"
-                  Icon={IconLogout}
-                  iconPosition="right"
-                  id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
-                  data-testid="LOGOUT"
-                  size="md"
-                  variant="primary"
-                  onClick={logout}>
-                  {t('header.label.logout')}
-                </Button>
-              }>
-              <RightSideMobile onClose={() => setDrawerOpen(false)} notificationsCount={notificationsCount} handleNotificationClick={handleNotificationClick} />
-            </FloatingDrawer>
-          </div>
+              <FloatingDrawer
+                anchor="right"
+                open={drawerOpen}
+                onClose={toggleDrawer}
+                heading={
+                  <Link className={`${styles.appLogo} ${styles.actionLink}`} to="" aria-label="dashboard">
+                    <AppLogo />
+                  </Link>
+                }
+                controls={
+                  <Button
+                    className={styles.logoutBtnMobile}
+                    label={'button.logout'}
+                    aria-label="Log out of account"
+                    Icon={IconLogout}
+                    iconPosition="right"
+                    id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
+                    data-testid="LOGOUT"
+                    size="md"
+                    variant="primary"
+                    onClick={logout}>
+                    {t('header.label.logout')}
+                  </Button>
+                }>
+                <RightSideMobile
+                  onClose={() => setDrawerOpen(false)}
+                  notificationsCount={notificationsCount}
+                  handleNotificationClick={handleNotificationClick}
+                />
+              </FloatingDrawer>
+            </div>
+          )}
         </div>
       </div>
 
