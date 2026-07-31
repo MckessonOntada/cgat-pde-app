@@ -108,20 +108,15 @@ function Faq() {
                             </div>
 
                             {openIndexes.includes(index) && (
-                              <div key={index} className={style.content}>
-                                {q.video ? (
-                                  <div className={style.videoSectionWrapper}>
-                                    <HlsPlayer src={q.video.url} />
-                                    <div className={style.videoMetaRow}>
-                                      <span className={style.videoBadge}>{q.video.badge}</span>
-                                      <span className={style.videoDuration}>{q.video.duration}</span>
-                                    </div>
-                                    <p className={style.videoDescription}>{q.video.description}</p>
-                                  </div>
-                                ) : (
+                              q.video ? (
+                                <div key={index} className={style.videoContent}>
+                                  <HlsPlayer videoId={q.video.id} />
+                                </div>
+                              ) : (
+                                <div key={index} className={style.content}>
                                   <AnswerRenderer segments={q.answerSegment} />
-                                )}
-                              </div>
+                                </div>
+                              )
                             )}
                           </div>
                         );
