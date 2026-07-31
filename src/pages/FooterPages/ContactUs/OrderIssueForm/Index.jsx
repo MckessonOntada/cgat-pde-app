@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormikContext, Field } from 'formik';
 import StepHeader from '../StepHeader';
 import CardSelector from '../CardSelector';
@@ -7,66 +7,85 @@ import { ReactComponent as BuyAndBillIcon } from '@src/assets/svg/buy-and-bill.s
 import { ReactComponent as OrderIcon } from '@src/assets/svg/order-outlined.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import OrderService from '@src/api/commonService/OrderService';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import AuthUtils from '@src/util/AuthUtils';
+import { serializeParams } from '@src/util/ApiUtils';
+import useTherapies from '../useTherapies';
 
-const OrderIssueForm = ({ therapyOptions, setTherapyQuery, isFetching }) => {
+const OrderIssueForm = () => {
   const { t } = useTranslate();
+  const [therapyQuery, setTherapyQuery] = React.useState('');
+  const { therapyOptions, therapyTotalElements, isFetching } = useTherapies(therapyQuery);
+  const [accountQuery, setAccountQuery] = React.useState('');
+  const isSystemAdminView = AuthUtils.isSystemAdmin();
   const { values, setFieldValue } = useFormikContext();
-  const [accountOptions, setAccountOptions] = React.useState([]);
-  const [loadingAccounts, setLoadingAccounts] = React.useState(false);
-
   const selectedTherapy = values.selectedTherapy;
   const isCrosswalked = selectedTherapy?.isCrosswalked ?? false;
   const orderingChannels = [
     { id: 'BUY_AND_BILL', label: t('labels.BUY_AND_BILL'), icon: BuyAndBillIcon },
     { id: 'SPECIALITY_PHARMA', label: t('labels.SPECIALITY_PHARMACY'), icon: OrderIcon }
   ];
+  const { data: accountResponse, isFetching: loadingAccounts } = useQuery({
+    queryKey: ['sold-to-accounts', isSystemAdminView, selectedTherapy?.ndc, selectedTherapy?.channelType, values.orderingChannel, accountQuery],
+    enabled: !!selectedTherapy?.ndc && (!selectedTherapy.isCrosswalked || !!values.orderingChannel),
 
-  React.useEffect(() => {
-    const fetchAccounts = async () => {
-      if (!selectedTherapy?.ndc) {
-        setAccountOptions([]);
-        return;
+    queryFn: async () => {
+      if (isSystemAdminView) {
+        const requestParams = {
+          pageNo: 0,
+          pageSize: 20,
+          practiceId: 'all',
+          allAccounts: true,
+          partnerFunction: 'SOLD_TO',
+          channelType: isCrosswalked ? values.orderingChannel : 'ALL'.toString(),
+          ...(accountQuery && { query: accountQuery })
+        };
+        const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${0}/accounts?${serializeParams(requestParams)}`;
+
+        const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+        return res.data;
       }
 
-      if (selectedTherapy.isCrosswalked && !values.orderingChannel) {
-        setAccountOptions([]);
-        return;
+      let query = '';
+
+      if (selectedTherapy.isCrosswalked) {
+        query = new URLSearchParams({
+          channelType: values.orderingChannel,
+          ndcChannelType: selectedTherapy.channelType,
+          ...(accountQuery && { query: accountQuery })
+        }).toString();
+      } else {
+        query = new URLSearchParams({
+          channelType: selectedTherapy.channelType,
+          ndcChannelType: selectedTherapy.channelType,
+          ...(accountQuery && { query: accountQuery })
+        }).toString();
       }
 
-      try {
-        setLoadingAccounts(true);
+      return await OrderService.getSoldToAccounts(selectedTherapy.ndc, query);
+    },
 
-        let query = '';
+    keepPreviousData: false
+  });
+  const accountOptions = (accountResponse?.content || []).map((account) => {
+    const salesOrg = String(account.salesOrg || '').toUpperCase();
 
-        if (selectedTherapy.isCrosswalked) {
-          query = new URLSearchParams({
-            channelType: values.orderingChannel,
-            ndcChannelType: selectedTherapy.channelType
-          }).toString();
-        } else if (!selectedTherapy.isCrosswalked) {
-          query = new URLSearchParams({
-            channelType: selectedTherapy.channelType,
-            ndcChannelType: selectedTherapy.channelType
-          }).toString();
-        }
-        const response = await OrderService.getSoldToAccounts(selectedTherapy.ndc, query);
-
-        const options = (response?.content || []).map((account) => ({
-          value: account.id,
-          label: account.accountName
-        }));
-
-        setAccountOptions(options);
-      } catch (err) {
-        console.error(err);
-        setAccountOptions([]);
-      } finally {
-        setLoadingAccounts(false);
-      }
+    return {
+      value: String(account.id),
+      label: account.accountName,
+      salesOrg:
+        salesOrg === '1100' || salesOrg === '2'
+          ? '3PL'
+          : salesOrg === '1000' || salesOrg === '1010'
+          ? 'SD'
+          : salesOrg === '3PL' || salesOrg === 'SD'
+          ? salesOrg
+          : ''
     };
-
-    fetchAccounts();
-  }, [selectedTherapy, values.orderingChannel]);
+  });
 
   return (
     <div className="order-issue-form">
@@ -83,24 +102,20 @@ const OrderIssueForm = ({ therapyOptions, setTherapyQuery, isFetching }) => {
           onChange={(value) => {
             const selected = therapyOptions.find((t) => String(t.value) === String(value));
 
-            if (!selected) {
-              return;
-            }
+            if (!selected) return;
 
             setFieldValue('therapy', value);
             setFieldValue('selectedTherapy', selected, false);
-
             setFieldValue('orderingChannel', '');
             setFieldValue('account', '');
             setFieldValue('description', '');
-            setAccountOptions([]);
           }}
           variant="async"
           onSearch={setTherapyQuery}
-          recordsCountToEnableSearch={3}
+          recordsCountToEnableSearch={20}
           size="lg"
           isAsyncLoading={isFetching}
-          asyncRecordsFound={therapyOptions.length}
+          asyncRecordsFound={therapyTotalElements}
         />
       </div>
 
@@ -115,7 +130,7 @@ const OrderIssueForm = ({ therapyOptions, setTherapyQuery, isFetching }) => {
               setFieldValue('orderingChannel', val);
               setFieldValue('account', '');
               setFieldValue('description', '');
-              setAccountOptions([]);
+              setAccountQuery('');
             }}
           />
         </div>
@@ -124,7 +139,26 @@ const OrderIssueForm = ({ therapyOptions, setTherapyQuery, isFetching }) => {
       {values.therapy && (!isCrosswalked || values.orderingChannel) && (
         <div style={{ marginBottom: '24px' }}>
           <StepHeader step={isCrosswalked ? 4 : 3} title={t('contactUs.selectAccount')} />
-          <Field name="account" component={Components.dropdown} placeholder={t('contactUs.selectOption')} options={accountOptions} />
+          <Field
+            component={Components['multiSelectDropdown']}
+            name="account"
+            label=" "
+            isMultiSelect={false}
+            placeholder={t('contactUs.selectOption')}
+            options={accountOptions}
+            value={values.account.toString()}
+            onChange={(value) => {
+              const selected = accountOptions.find((account) => String(account.value) === String(value));
+              setFieldValue('account', value);
+              setFieldValue('selectedAccount', selected, false);
+              setFieldValue('description', '');
+            }}
+            variant="async"
+            onSearch={setAccountQuery}
+            isAsyncLoading={loadingAccounts}
+            asyncRecordsFound={accountResponse?.totalElements ?? 0}
+            recordsCountToEnableSearch={20}
+          />
         </div>
       )}
     </div>

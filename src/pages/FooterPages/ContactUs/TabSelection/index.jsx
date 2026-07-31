@@ -8,18 +8,15 @@ import { useTranslate } from '@src/translations/useTranslation';
 
 export function TabSelection() {
   const { t } = useTranslate();
-  const { values, setFieldValues, resetForm } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
   const handleClick = (reason) => {
-    resetForm({
-      values: {
-        reason,
-        affectedModule: '',
-        therapy: '',
-        orderingChannel: '',
-        account: '',
-        description: ''
-      }
-    });
+    setFieldValue('reason', reason);
+    setFieldValue('affectedModule', '');
+    setFieldValue('selectedTherapy', null);
+    setFieldValue('therapy', '');
+    setFieldValue('orderingChannel', '');
+    setFieldValue('account', '');
+    setFieldValue('description', '');
   };
 
   return (

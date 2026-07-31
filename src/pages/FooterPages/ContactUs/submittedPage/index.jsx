@@ -9,7 +9,7 @@ import { ReactComponent as PhoneIcon } from '@src/assets/svg/call-icon.svg';
 import { ReactComponent as EmailIcon } from '@src/assets/svg/mail-icon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 
-const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
+const RequestSubmitted = ({ submittedData, handleSubmitAnotherRequest }) => {
   const { t } = useTranslate();
   return (
     <div className="request-submitted">
@@ -24,7 +24,7 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
       <p className="request-description">{t('contactUs.submittedPage.description')}</p>
 
       <div className="ticket-number">
-        <span>{ticketId}</span>
+        <span># {submittedData.ticketId}</span>
       </div>
 
       <div className="support-card">
@@ -45,7 +45,7 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
             <div className="support-text">
               <span className="label">{t('contactUs.submittedPage.callUs')}</span>
 
-              <span className="value">{phone}</span>
+              <span className="value">{submittedData.supportPhone}</span>
             </div>
           </div>
 
@@ -55,7 +55,7 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
             <div className="support-text">
               <span className="label">{t('contactUs.submittedPage.emailUs')}</span>
 
-              <span className="value">{mail}</span>
+              <span className="value">{submittedData.supportEmail}</span>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ const RequestSubmitted = ({ ticketId = '', phone = '', mail = '' }) => {
 
       <p className="ticket-note">{t('contactUs.submittedPage.ticketNote')}</p>
 
-      <Button type="button" variant="primary" size="md" className="contact-form-submit-button" onClick={() => {}}>
+      <Button type="button" variant="primary" size="md" className="contact-form-submit-button" onClick={handleSubmitAnotherRequest}>
         {t('contactUs.submittedPage.submitAnotherRequest')}
       </Button>
     </div>
