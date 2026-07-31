@@ -11,7 +11,7 @@ import { ReactComponent as Collapse } from '@src/assets/svg/collapse.svg';
 import { IconButton, Button } from '@mckesson/mcp-component-library';
 import data from './FaqList.js';
 import { restoreSessionTransfer } from '@src/util/SessionTransferUtils';
-import HlsPlayer from './HlsPlayer';
+import HlsPlayer from '@src/components/HlsPlayer';
 
 function Faq() {
   restoreSessionTransfer();
@@ -109,7 +109,7 @@ function Faq() {
 
                             {openIndexes.includes(index) && (
                               q.video ? (
-                                <div key={index} className={style.videoContent}>
+                                <div key={index} className={`${style.content} ${style.videoContent}`}>
                                   <HlsPlayer videoId={q.video.id} />
                                 </div>
                               ) : (

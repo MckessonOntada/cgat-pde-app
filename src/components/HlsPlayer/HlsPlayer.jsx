@@ -6,7 +6,7 @@ import ApiRoutes from "@src/api/ApiRoutes";
 import { ORDERMANAGEMENT_SERVICE_BASE_URL } from "@src/config/AppConfig";
 import { Loader } from "@mckesson/mcp-component-library";
 import Alert from "@src/components/cgat-alert/Alert";
-import style from "./Footer.module.scss";
+import style from "./HlsPlayer.module.scss";
 
 const formatDuration = (seconds) => {
   if (!seconds) return "0:00";
