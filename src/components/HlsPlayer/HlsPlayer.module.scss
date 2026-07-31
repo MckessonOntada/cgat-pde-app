@@ -1,0 +1,47 @@
+.videoSectionWrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--brand-border-radius--8);
+  border: 1px solid var(--brand-color-grey-scale-warm-1);
+
+  video {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--brand-border-radius--8) var(--brand-border-radius--8) 0px 0px;
+  }
+
+  .videoInfo {
+    padding: var(--spacing-04);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-02);
+
+    .videoMetaRow {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-02);
+
+      .videoBadge {
+        display: inline-block;
+        background-color: var(--brand-color-cool-blue);
+        color: var(--brand-color-primary-blue);
+        font-size: var(--brand-font-size--small);
+        font-weight: var(--brand-font-weight-700);
+        padding: var(--spacing-01) var(--spacing-03);
+        border-radius: 100px;
+        width: fit-content;
+      }
+
+      .videoDuration {
+        font-size: var(--brand-font-size--extra-small);
+        color: var(--brand-color-text-light-slate);
+        font-weight: var(--brand-font-weight-600);
+      }
+    }
+
+    .videoDescription {
+      font-size: var(--brand-font-size--small);
+      font-weight: var(--brand-font-weight-400);
+    }
+  }
+}
