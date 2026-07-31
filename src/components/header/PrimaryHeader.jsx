@@ -103,7 +103,6 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     onNotificationClick?.();
     if (closeDrawer) setDrawerOpen(false);
   };
-  debugger;
   const isNewTab = ['/contact-us', '/faq/'].includes(location.pathname);
 
   const LeftSideView = ({ children }) => (
