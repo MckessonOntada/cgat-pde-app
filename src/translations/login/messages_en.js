@@ -71,6 +71,7 @@ export const LoginMessagesEN = {
   'header.login.title': 'Welcome to InspiroLink',
   'contactUs.subheading': "Tell us what you need help with and we'll route it to the right team.",
   'contactUs.reasonForContact': 'Reason for contact',
+  'contactUs.signedIn': 'Signed in',
   'contactUs.selectTherapy': 'Select Therapy',
   'contactUs.orderingChannel': 'Ordering channel',
   'contactUs.selectAccount': 'Select Account',
@@ -79,6 +80,8 @@ export const LoginMessagesEN = {
   'contactUs.maxCharacters': 'Maximum 1,000 Characters',
   'contactUs.affectedModule': 'Affected module',
   'contactUs.selectOption': 'Select an option',
+  'contactUs.searchTherapy': 'Search therapy',
+  'contactUs.searchAccount': 'Search account',
   'contactUs.submittedPage.title': 'Request Submitted',
   'contactUs.submittedPage.description':
     "Our support team will review your case and respond within 1-2 business days. You'll receive a confirmation email shortly.",
@@ -87,5 +90,13 @@ export const LoginMessagesEN = {
   'contactUs.submittedPage.callUs': 'CALL US',
   'contactUs.submittedPage.emailUs': 'EMAIL US',
   'contactUs.submittedPage.ticketNote': 'Save your ticket number for reference',
-  'contactUs.submittedPage.submitAnotherRequest': 'SUBMIT ANOTHER REQUEST'
+  'contactUs.submittedPage.submitAnotherRequest': 'SUBMIT ANOTHER REQUEST',
+  'contactUs.reason.label1': 'Tech issue',
+  'contactUs.reason.label2': 'Order issue',
+  'contactUs.reason.label3': 'Invoices & Payments',
+  'contactUs.reason.label4': 'Other',
+  'contactUs.techIssue.label1': 'Login & Account Management',
+  'contactUs.techIssue.label2': 'User & Role Management',
+  'contactUs.techIssue.label3': 'Notifications',
+  'contactUs.techIssue.label4': 'Other'
 };

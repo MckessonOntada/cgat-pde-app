@@ -35,7 +35,7 @@ export function TabSelection() {
               variant="secondary"
               onClick={() => handleClick(reason.id)}
               size="md">
-              {reason.label}
+              {t(reason.label)}
             </Button>
           );
         })}

@@ -8,11 +8,9 @@ import { ReactComponent as OrderIcon } from '@src/assets/svg/order-outlined.svg'
 import { useTranslate } from '@src/translations/useTranslation';
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
-import { serializeParams } from '@src/util/ApiUtils';
 import useTherapies from '../useTherapies';
+import AccountService from '@src/api/commonService/AccountService';
 
 const OrderIssueForm = () => {
   const { t } = useTranslate();
@@ -42,11 +40,8 @@ const OrderIssueForm = () => {
           channelType: isCrosswalked ? values.orderingChannel : 'ALL'.toString(),
           ...(accountQuery && { query: accountQuery })
         };
-        const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${0}/accounts?${serializeParams(requestParams)}`;
 
-        const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-
-        return res.data;
+        return await AccountService.getAccountList(requestParams, 0);
       }
 
       let query = '';
@@ -112,7 +107,7 @@ const OrderIssueForm = () => {
           }}
           variant="async"
           onSearch={setTherapyQuery}
-          recordsCountToEnableSearch={20}
+          recordsCountToEnableSearch={19}
           size="lg"
           isAsyncLoading={isFetching}
           asyncRecordsFound={therapyTotalElements}
@@ -157,7 +152,7 @@ const OrderIssueForm = () => {
             onSearch={setAccountQuery}
             isAsyncLoading={loadingAccounts}
             asyncRecordsFound={accountResponse?.totalElements ?? 0}
-            recordsCountToEnableSearch={20}
+            recordsCountToEnableSearch={19}
           />
         </div>
       )}

@@ -1,9 +1,6 @@
 import { useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 
 function useTherapies(query) {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -17,10 +14,7 @@ function useTherapies(query) {
           channelTypes: 'BUY_AND_BILL,SPECIALITY_PHARMA'.toString(),
           ...(query && { query })
         };
-
-        const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ALL_MATERIALS()}?${serializeParams(params)}`, httpVerb.GET, {});
-
-        return res.data;
+        return await MaterialService.getMaterialList(params);
       }
 
       return MaterialService.getTherapies({
@@ -32,7 +26,6 @@ function useTherapies(query) {
 
     select: (response) => {
       const { content = [], totalElements = 0 } = response;
-
       const therapies = content
         .flatMap(({ channelType, tradeName, therapies = [] }) =>
           therapies.map((therapy) => ({

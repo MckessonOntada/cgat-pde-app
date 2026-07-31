@@ -8,15 +8,15 @@ import { ReactComponent as notificaionIcon } from '@src/assets/svg/notification-
 import { ReactComponent as userIcon } from '@src/assets/svg/user-icon.svg';
 
 export const contactReasons = [
-  { id: 1, value: 'Tech issue', label: 'Tech issue', Icon: wrenchIcon },
-  { id: 2, value: 'Order issue', label: 'Order issue', Icon: orderIcon },
-  { id: 3, value: 'Invoices & Payments', label: 'Invoices & Payments', Icon: invoiceIcon },
-  { id: 4, value: 'Other', label: 'Other', Icon: questionMarkIcon }
+  { id: 1, value: 'Tech issue', label: 'contactUs.reason.label1', Icon: wrenchIcon },
+  { id: 2, value: 'Order issue', label: 'contactUs.reason.label2', Icon: orderIcon },
+  { id: 3, value: 'Invoices & Payments', label: 'contactUs.reason.label3', Icon: invoiceIcon },
+  { id: 4, value: 'Other', label: 'contactUs.reason.label4', Icon: questionMarkIcon }
 ];
 
 export const techIssueOptions = [
-  { id: 1, value: 'Login & Account Management', label: 'Login & Account Management', icon: loginIcon },
-  { id: 2, value: 'User & Role Management', label: 'User & Role Management', icon: userIcon },
-  { id: 3, value: 'Notifications', label: 'Notifications', icon: notificaionIcon },
-  { id: 4, value: 'Other', label: 'Other', icon: otherIcon }
+  { id: 1, value: 'Login & Account Management', label: 'contactUs.techIssue.label1', icon: loginIcon },
+  { id: 2, value: 'User & Role Management', label: 'contactUs.techIssue.label2', icon: userIcon },
+  { id: 3, value: 'Notifications', label: 'contactUs.techIssue.label3', icon: notificaionIcon },
+  { id: 4, value: 'Other', label: 'contactUs.techIssue.label1', icon: otherIcon }
 ];

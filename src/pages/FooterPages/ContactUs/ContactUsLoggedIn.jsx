@@ -15,11 +15,10 @@ import StepHeader from './StepHeader';
 import TechIssueForm from './TechIssueForm/Index';
 import OrderIssueForm from './OrderIssueForm/Index';
 import { useMutation } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
 import RequestSubmitted from './submittedPage';
 import { contactReasons, techIssueOptions } from './constants';
 import mainLayoutStyles from '@src/assets/styles/MainLayout.module.scss';
+import UserService from '@src/api/commonService/UserService';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
@@ -139,9 +138,9 @@ const ContactUsLoggedIn = () => {
   const { mutate, isLoading } = useMutation(
     async ({ values }) => {
       const payload = buildContactUsPayload(values);
-      const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}contact-us`, httpVerb.POST, payload);
-      setSubmittedData(res.data);
-      return res.data;
+      const data = await UserService.contactUs(payload);
+      setSubmittedData(data);
+      return data;
     },
     {
       onSuccess: (data) => {
@@ -167,7 +166,7 @@ const ContactUsLoggedIn = () => {
                   <div className="user-avatar">{initials}</div>
                   <div className="user-details">
                     <span className="user-name">{fullName}</span>
-                    <span className="user-status">Signed in</span>
+                    <span className="user-status"> {t('contactUs.signedIn')}</span>
                   </div>
                 </div>
               </div>
