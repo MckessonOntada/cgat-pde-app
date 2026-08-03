@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import styles from '../ContactUs.module.scss';
 import { useFormikContext, Field } from 'formik';
 import StepHeader from '../StepHeader';
 import CardSelector from '../CardSelector';
@@ -84,7 +85,7 @@ const OrderIssueForm = () => {
 
   return (
     <div className="order-issue-form">
-      <div style={{ marginBottom: '24px' }}>
+      <div className={styles.formSectionGap}>
         <StepHeader step={2} title={t('contactUs.selectTherapy')} />
         <Field
           component={Components['multiSelectDropdown']}
@@ -98,8 +99,8 @@ const OrderIssueForm = () => {
             const selected = therapyOptions.find((t) => String(t.value) === String(value));
 
             if (!selected) return;
-
             setFieldValue('therapy', value);
+            setFieldValue('ndcNumber', selected?.ndc || '');
             setFieldValue('selectedTherapy', selected, false);
             setFieldValue('orderingChannel', '');
             setFieldValue('account', '');
@@ -115,7 +116,7 @@ const OrderIssueForm = () => {
       </div>
 
       {values.therapy && isCrosswalked && (
-        <div style={{ marginBottom: '24px' }}>
+        <div className={styles.formSectionGap}>
           <CardSelector
             step={3}
             title={t('contactUs.orderingChannel')}
@@ -132,7 +133,7 @@ const OrderIssueForm = () => {
       )}
 
       {values.therapy && (!isCrosswalked || values.orderingChannel) && (
-        <div style={{ marginBottom: '24px' }}>
+        <div className={styles.formSectionGap}>
           <StepHeader step={isCrosswalked ? 4 : 3} title={t('contactUs.selectAccount')} />
           <Field
             component={Components['multiSelectDropdown']}
@@ -144,7 +145,8 @@ const OrderIssueForm = () => {
             value={values.account.toString()}
             onChange={(value) => {
               const selected = accountOptions.find((account) => String(account.value) === String(value));
-              setFieldValue('account', value);
+              setFieldValue('account', selected?.label ?? value);
+
               setFieldValue('selectedAccount', selected, false);
               setFieldValue('description', '');
             }}

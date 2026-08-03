@@ -1,7 +1,6 @@
 import React from 'react';
-import './index.scss';
-import '../index.scss';
-
+import styles from './index.module.scss';
+import contactUsStyles from '../ContactUs.module.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as CheckIcon } from '@src/assets/svg/check-icon-success.svg';
 import { ReactComponent as SupportIcon } from '@src/assets/svg/support-icon.svg';
@@ -11,59 +10,60 @@ import { useTranslate } from '@src/translations/useTranslation';
 
 const RequestSubmitted = ({ submittedData, handleSubmitAnotherRequest }) => {
   const { t } = useTranslate();
+
   return (
-    <div className="request-submitted">
-      <div className="success-icon">
-        <div className="success-icon-inner">
-          <CheckIcon className="success-check-icon" />
+    <div className={styles.requestSubmitted}>
+      <div className={styles.successIcon}>
+        <div className={styles.successIconInner}>
+          <CheckIcon className={styles.successCheckIcon} />
         </div>
       </div>
 
-      <h2 className="request-title">{t('contactUs.submittedPage.title')}</h2>
+      <h2 className={styles.requestTitle}>{t('contactUs.submittedPage.title')}</h2>
 
-      <p className="request-description">{t('contactUs.submittedPage.description')}</p>
+      <p className={styles.requestDescription}>{t('contactUs.submittedPage.description')}</p>
 
-      <div className="ticket-number">
+      <div className={styles.ticketNumber}>
         <span># {submittedData.ticketId}</span>
       </div>
 
-      <div className="support-card">
-        <div className="support-header">
-          <SupportIcon className="support-header-icon" />
+      <div className={styles.supportCard}>
+        <div className={styles.supportHeader}>
+          <SupportIcon className={styles.supportHeaderIcon} />
 
-          <div className="support-header-text">
+          <div className={styles.supportHeaderText}>
             <span>{t('contactUs.submittedPage.support.title')}</span>
 
             <p>{t('contactUs.submittedPage.support.description')}</p>
           </div>
         </div>
 
-        <div className="support-options">
-          <div className="support-option">
-            <PhoneIcon className="contact-icon" />
+        <div className={styles.supportOptions}>
+          <div className={styles.supportOption}>
+            <PhoneIcon className={styles.contactIcon} />
 
-            <div className="support-text">
-              <span className="label">{t('contactUs.submittedPage.callUs')}</span>
+            <div className={styles.supportText}>
+              <span className={styles.label}>{t('contactUs.submittedPage.callUs')}</span>
 
-              <span className="value">{submittedData.supportPhone}</span>
+              <span className={styles.value}>{submittedData.supportPhone}</span>
             </div>
           </div>
 
-          <div className="support-option">
-            <EmailIcon className="contact-icon" />
+          <div className={styles.supportOption}>
+            <EmailIcon className={styles.contactIcon} />
 
-            <div className="support-text">
-              <span className="label">{t('contactUs.submittedPage.emailUs')}</span>
+            <div className={styles.supportText}>
+              <span className={styles.label}>{t('contactUs.submittedPage.emailUs')}</span>
 
-              <span className="value">{submittedData.supportEmail}</span>
+              <span className={styles.value}>{submittedData.supportEmail}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <p className="ticket-note">{t('contactUs.submittedPage.ticketNote')}</p>
+      <p className={styles.ticketNote}>{t('contactUs.submittedPage.ticketNote')}</p>
 
-      <Button type="button" variant="primary" size="md" className="contact-form-submit-button" onClick={handleSubmitAnotherRequest}>
+      <Button type="button" variant="primary" size="md" className={contactUsStyles.contactFormSubmitButton} onClick={handleSubmitAnotherRequest}>
         {t('contactUs.submittedPage.submitAnotherRequest')}
       </Button>
     </div>

@@ -6,7 +6,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { restoreSessionTransfer } from '@src/util/SessionTransferUtils';
 import { ReactComponent as McKessonLogo } from '@src/assets/svg/pagelogo.svg';
 import { Heading } from '@mckesson/mcp-component-library';
-import './index.scss';
+import styles from './ContactUs.module.scss';
 import { ProgressBarStepper } from '@src/components/stepper';
 import { TabSelection } from './TabSelection';
 import { Formik, Form, Field } from 'formik';
@@ -132,7 +132,8 @@ const ContactUsLoggedIn = () => {
       therapy: values?.selectedTherapy?.label || '',
       account: values?.account || '',
       channel: values?.selectedAccount?.salesOrg || '',
-      comments: values?.description || ''
+      comments: values?.description || '',
+      ndcNumber: values?.ndcNumber || ''
     };
   };
   const { mutate, isLoading } = useMutation(
@@ -154,19 +155,21 @@ const ContactUsLoggedIn = () => {
       <PrimaryHeader />
 
       <div className={mainLayoutStyles['app-wrapper']}>
-        <div className="contact-container">
-          <div className="contact-content">
-            <div className="contact-card">
-              <div className="contact-card-header">
-                <div className="logo-section">
-                  <McKessonLogo aria-hidden="true" focusable="false" className="brand-logo" />
+        <div className={styles.contactContainer}>
+          <div className={styles.contactContent}>
+            <div className={styles.contactCard}>
+              <div className={styles.contactCardHeader}>
+                <div>
+                  <McKessonLogo aria-hidden="true" focusable="false" />
                 </div>
 
-                <div className="user-profile-section">
-                  <div className="user-avatar">{initials}</div>
-                  <div className="user-details">
-                    <span className="user-name">{fullName}</span>
-                    <span className="user-status"> {t('contactUs.signedIn')}</span>
+                <div className={styles.userProfileSection}>
+                  <div className={styles.userAvatar}>{initials}</div>
+
+                  <div className={styles.userDetails}>
+                    <span className={styles.userName}>{fullName}</span>
+
+                    <span className={styles.userStatus}>{t('contactUs.signedIn')}</span>
                   </div>
                 </div>
               </div>
@@ -180,7 +183,8 @@ const ContactUsLoggedIn = () => {
                   therapy: '',
                   orderingChannel: '',
                   account: '',
-                  description: ''
+                  description: '',
+                  ndcNumber: ''
                 }}
                 onSubmit={(values) => {
                   mutate({ values });
@@ -189,7 +193,7 @@ const ContactUsLoggedIn = () => {
                   const progress = getProgressState(values);
 
                   return (
-                    <div className="contact-card-body">
+                    <div className={styles.contactCardBody}>
                       {submittedData ? (
                         <RequestSubmitted
                           submittedData={submittedData}
@@ -202,11 +206,11 @@ const ContactUsLoggedIn = () => {
                         <>
                           <ProgressBarStepper totalSteps={progress.totalSteps} currentStep={progress.currentStep} />
 
-                          <Heading as="h1" className="body-heading">
+                          <Heading as="h1" className={styles.bodyHeading}>
                             {t('footer.contactUs')}
                           </Heading>
 
-                          <p className="body-subheading">{t('contactUs.subheading')}</p>
+                          <p className={styles.bodySubheading}>{t('contactUs.subheading')}</p>
 
                           <Form>
                             <div>
@@ -223,10 +227,10 @@ const ContactUsLoggedIn = () => {
                                     title={t('contactUs.describeIssue')}
                                   />
 
-                                  <div className="description-wrapper">
-                                    <Field as="textarea" name="description" maxLength={1000} className="description-field" />
+                                  <div className={styles.descriptionWrapper}>
+                                    <Field as="textarea" name="description" maxLength={1000} className={styles.descriptionField} />
 
-                                    <div className="description-counter">
+                                    <div className={styles.descriptionCounter}>
                                       <span>{t('contactUs.maxCharacters')}</span>
                                       <span>({values.description.length}/1000)</span>
                                     </div>
@@ -234,8 +238,8 @@ const ContactUsLoggedIn = () => {
                                 </>
                               )}
 
-                              <div className="submit-button-wrapper">
-                                <Button type="submit" className="contact-form-submit-button" variant="primary" size="md" disabled={!canSubmit(values)}>
+                              <div className={styles.submitButtonWrapper}>
+                                <Button type="submit" className={styles.contactFormSubmitButton} variant="primary" size="md" disabled={!canSubmit(values)}>
                                   {t('contactUs.submitRequest')}
                                 </Button>
                               </div>

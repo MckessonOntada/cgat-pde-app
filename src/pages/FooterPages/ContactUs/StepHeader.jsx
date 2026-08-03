@@ -1,12 +1,12 @@
 import React from 'react';
-import './index.scss';
+import styles from './ContactUs.module.scss';
 
 const StepHeader = ({ step, title }) => {
   return (
-    <div className="step-header">
-      <div className="step-header__number">{step}</div>
+    <div className={styles.stepHeader}>
+      <div className={styles.stepHeaderNumber}>{step}</div>
 
-      <h2 className="step-header__title">{title}</h2>
+      <h2 className={styles.stepHeaderTitle}>{title}</h2>
     </div>
   );
 };
