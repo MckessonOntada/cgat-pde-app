@@ -30,7 +30,7 @@ function useTherapies(query) {
         .flatMap(({ channelType, tradeName, therapies = [] }) =>
           therapies.map((therapy) => ({
             value: therapy.id,
-            label: therapies.length === 1 ? tradeName : therapy.materialDescription,
+            label: therapy.materialDescription,
             ndc: therapy.ndc,
             channelType,
             isCrosswalked: therapy.isCrosswalked ?? false

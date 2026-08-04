@@ -239,7 +239,12 @@ const ContactUsLoggedIn = () => {
                               )}
 
                               <div className={styles.submitButtonWrapper}>
-                                <Button type="submit" className={styles.contactFormSubmitButton} variant="primary" size="md" disabled={!canSubmit(values)}>
+                                <Button
+                                  type="submit"
+                                  className={styles.contactFormSubmitButton}
+                                  variant="primary"
+                                  size="md"
+                                  disabled={!canSubmit(values) || isLoading}>
                                   {t('contactUs.submitRequest')}
                                 </Button>
                               </div>
