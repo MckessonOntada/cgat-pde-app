@@ -609,6 +609,13 @@ export default [
     accessibleWithoutLogin: false,
     question: [
       {
+        questionTitle: 'How to Place an Order in InspiroLink',
+        video: {
+          id: 'training-101'
+        },
+        answerSegment: []
+      },
+      {
         questionTitle: 'Are there therapy-specific requirements I should be aware of? ',
         answerSegment: [
           {

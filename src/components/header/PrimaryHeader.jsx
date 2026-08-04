@@ -103,8 +103,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     onNotificationClick?.();
     if (closeDrawer) setDrawerOpen(false);
   };
-
-  const isNewTab = location.pathname === '/contact-us';
+  const isNewTab = ['/contact-us', '/faq/'].includes(location.pathname);
 
   const LeftSideView = ({ children }) => (
     <div className={styles.navItemsLeft}>

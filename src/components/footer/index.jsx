@@ -8,7 +8,6 @@ import { useQuery } from 'react-query';
 import { FooterContext } from '@src/components/footer/FooterContext';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLinkWhite.svg';
 import { useOktaAuth } from '@okta/okta-react';
-import AuthUtils from '@src/util/AuthUtils';
 import { prepareSessionTransfer } from '@src/util/SessionTransferUtils';
 
 const Footer = () => {
@@ -57,13 +56,10 @@ const Footer = () => {
               <div key={index}>
                 <Heading as="h2">{t(section.heading)}</Heading>
                 {section.links.map((link, linkIndex) => {
-                  const sessionTransferUrls = ['/contact', '/contact/'];
+                  const sessionTransferUrls = ['/contact', '/contact/', '/faq', '/faq/'];
                   const requiresSessionTransfer = sessionTransferUrls.includes(link.url);
                   const isContact = link.url === '/contact' || link.url === '/contact/';
-                  const targetUrl = isContact && isAuthenticated
-                    ? '/contact-us'
-                    : link.url;
-
+                  const targetUrl = isContact && isAuthenticated ? '/contact-us' : link.url;
                   if (requiresSessionTransfer) {
                     return (
                       <a
@@ -76,8 +72,7 @@ const Footer = () => {
                           const transferId = prepareSessionTransfer();
                           const finalUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + 'sessionTransferId=' + transferId;
                           window.open(finalUrl, '_blank');
-                        }}
-                      >
+                        }}>
                         {t(link.text)}
                       </a>
                     );

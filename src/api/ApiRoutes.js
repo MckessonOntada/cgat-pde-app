@@ -87,6 +87,7 @@ const ApiRoutes = Object.freeze({
   NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl('in-app-notification/read/all'),
   NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`),
   USER_BASE: () => constructUserManagementServiceUrl(''),
+  GET_VIDEO: (videoId) => constructOrderServiceUrl(`api/videos/${videoId}`),
   ORDER_SERVICE_SYSTEM_ADMIN: () => constructOrderServiceUrl('api/admin/orders/')
 });
 
