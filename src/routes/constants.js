@@ -20,6 +20,7 @@ export const RoutePaths = {
   pathTermsOfUse: '/terms-of-use',
   pathPrivacyNotice: '/privacy-notice',
   pathContact: '/contact',
+  pathContactSecure: '/contact-us',
   pathContactSuccess: '/contact-success',
   pathPrivacyNoticeForStateSpecificPrivacyLaws: 'privacy-notice-for-state-specific-privacy-laws'
 };

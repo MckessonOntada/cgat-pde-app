@@ -1,0 +1,281 @@
+.formSegmentTitle {
+  font-size: var(--brand-font-size--large);
+  font-weight: var(--brand-font-weight-600);
+}
+
+.navitemBorder {
+  border-right: 0 !important;
+}
+
+.py3 {
+  padding-top: var(--spacing-03);
+  padding-bottom: var(--spacing-03);
+}
+
+.lineHeight {
+  .dropdownLabel {
+    margin: 0;
+  }
+}
+
+.contactContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.contactContent {
+  display: flex;
+  padding: var(--spacing-06) var(--spacing-03);
+  justify-content: center;
+}
+
+.contactCard {
+  background: var(--brand-color-background-white);
+  border-radius: var(--brand-border-radius--16);
+  box-shadow: 0 var(--spacing-02) var(--spacing-05) rgba(38, 44, 54, 0.08);
+  width: 100%;
+  max-width: 672px;
+  box-sizing: border-box;
+}
+
+.contactCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--brand-color-grey-scale-cool-2);
+  padding: var(--spacing-03) var(--spacing-04);
+  background: var(--brand-color-grey-scale-cool-3);
+  border-radius: var(--brand-border-radius--16) var(--brand-border-radius--16) 0 0;
+
+  .userProfileSection {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-03);
+
+    .userAvatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--brand-border-radius-50-per);
+      background-color: var(--brand-color-background-blue-2);
+      color: var(--brand-color-background-white);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: var(--brand-font-weight-700);
+      font-size: var(--brand-font-size--15);
+    }
+
+    .userDetails {
+      display: flex;
+      flex-direction: column;
+
+      .userName {
+        font-size: var(--brand-font-size--large);
+        font-weight: var(--brand-font-weight-700);
+        color: var(--brand-color-black);
+      }
+
+      .userStatus {
+        font-size: var(--brand-font-size--large);
+        color: var(--brand-color-text-light-slate);
+      }
+    }
+  }
+}
+
+.progressIndicatorBar {
+  display: flex;
+  gap: var(--spacing-02);
+  margin-bottom: var(--spacing-04);
+
+  .progressStep {
+    flex: 1;
+    height: 6px;
+    border-radius: var(--brand-border-radius--3);
+    background-color: var(--brand-color-progress-grey);
+
+    &.active {
+      background-color: var(--brand-color-primary);
+    }
+  }
+}
+
+.contactCardBody {
+  padding: var(--spacing-04);
+
+  .bodyHeading {
+    font-size: var(--brand-font-size--28);
+    font-weight: var(--brand-font-weight-700);
+    color: var(--brand-color-black);
+    margin: 0 0 var(--spacing-02) 0;
+  }
+
+  .bodySubheading {
+    font-size: var(--brand-font-size--default);
+    margin-bottom: var(--spacing-04);
+  }
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-02);
+  margin-bottom: 12px;
+}
+
+.stepHeaderNumber {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--brand-border-radius-50-per);
+  background: #007cc1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-700);
+  line-height: var(--brand-line-height--24);
+}
+
+.stepHeaderTitle {
+  margin: 0;
+  color: #163e5e;
+  font-size: var(--brand-font-size--default) !important;
+  font-weight: var(--brand-font-weight-700);
+  line-height: var(--brand-line-height--24);
+}
+
+.descriptionWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-01);
+}
+
+.descriptionField {
+  width: 100%;
+  height: 100px;
+  min-height: 66px;
+  padding: 6px 4px 6px 8px;
+  background: #ffffff;
+  border-radius: var(--brand-border-radius--4);
+  border: 1px solid #627386;
+  display: flex;
+  align-items: flex-start;
+  resize: vertical;
+  font-family: "Nunito";
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-400);
+  line-height: var(--brand-line-height--24);
+  color: #1e394e;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #007cc1;
+  }
+
+  &::placeholder {
+    color: #627386;
+  }
+}
+
+.descriptionCounter {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-01);
+  margin-bottom: var(--spacing-04);
+  font-size: var(--brand-font-size--extra-small);
+  font-weight: var(--brand-font-weight-400);
+  line-height: var(--brand-line-height--medium);
+  letter-spacing: 0.01rem;
+  color: #627386;
+
+  span:first-child {
+    color: #1e394e;
+  }
+}
+
+.contactFormSubmitButton {
+  width: 100%;
+  cursor: pointer;
+}
+
+.techOptions {
+  width: 100%;
+  margin-bottom: var(--spacing-04);
+
+  &Grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+.techCard {
+  width: 306px;
+  min-height: 72px;
+  padding: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #ffffff;
+  border: 2px solid #dfe6ea;
+  border-radius: 14px;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  text-align: left;
+
+  &:hover {
+    border-color: #007cc1;
+  }
+
+  &Active {
+    border-color: #007cc1;
+    background: #f0f7fc;
+
+    .techCardIcon {
+      background: #007cc1;
+
+      svg * {
+        stroke: #fff !important;
+      }
+    }
+  }
+
+  &Icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f0f7fc;
+    border-radius: 10px;
+
+    flex-shrink: 0;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &Label {
+    color: var(--brand-color-primary-slate);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+}
+
+.formSectionGap {
+  margin-bottom: 24px;
+}
