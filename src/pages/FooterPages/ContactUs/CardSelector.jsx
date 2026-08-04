@@ -1,13 +1,16 @@
 import React from 'react';
 import StepHeader from './StepHeader';
-import './TechIssueForm/index.scss';
+import styles from './ContactUs.module.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const CardSelector = ({ step, title, options, value, onChange }) => {
+  const { t } = useTranslate();
+
   return (
-    <div className="tech-options">
+    <div className={styles.techOptions}>
       <StepHeader step={step} title={title} />
 
-      <div className="tech-options__grid">
+      <div className={styles.techOptionsGrid}>
         {options.map((option) => {
           const Icon = option.icon;
           const isSelected = value === option.id;
@@ -16,14 +19,13 @@ const CardSelector = ({ step, title, options, value, onChange }) => {
             <button
               key={option.id}
               type="button"
-              className={`tech-card ${isSelected ? 'tech-card--active' : ''}`}
-              onClick={() => onChange(option.id)}
-            >
-              <div className="tech-card__icon">
+              className={`${styles.techCard} ${isSelected ? styles.techCardActive : ''}`}
+              onClick={() => onChange(option.id)}>
+              <div className={styles.techCardIcon}>
                 <Icon />
               </div>
 
-              <span className="tech-card__label">{option.label}</span>
+              <span className={styles.techCardLabel}>{t(option.label)}</span>
             </button>
           );
         })}

@@ -1,4 +1,4 @@
-.tab-selection {
+.tabSelection {
   width: 100%;
   height: 100%;
   display: inline-flex;
@@ -8,7 +8,7 @@
   margin-bottom: var(--spacing-04);
 }
 
-.tab-selection__menu {
+.tabSelectionMenu {
   align-self: stretch;
   display: inline-flex;
   justify-content: flex-start;
@@ -16,7 +16,7 @@
   gap: var(--spacing-02);
 }
 
-.tab-selection__option {
+.tabSelectionOption {
   padding: 21px var(--spacing-03) !important;
   background: var(--brand-color-background-white) !important;
   border-radius: var(--spacing-04) !important;
@@ -33,16 +33,47 @@
   cursor: pointer !important;
   color: var(--status-info-emphasis, #1e394e) !important;
   text-transform: none !important;
+
+  [class*="IonButton-module--buttonWrapper"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+
+  [class*="IonButton-module--icon"] {
+    width: 16px !important;
+    height: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    color: transparent !important;
+
+    svg {
+      width: 16px !important;
+      height: 16px !important;
+    }
+  }
+
+  &:hover {
+    [class*="IonButton-module--icon"] svg * {
+      fill: transparent !important;
+      background: transparent !important;
+    }
+  }
 }
 
-.tab-selection__option--active {
+.tabSelectionOptionActive {
   background: var(--brand-color-primary) !important;
   outline-color: var(--brand-color-primary) !important;
   box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.1) !important;
   color: var(--brand-color-background-white) !important;
+
+  [class*="IonButton-module--icon"] svg * {
+    stroke: #fff !important;
+  }
 }
 
-.tab-selection__icon {
+.tabSelectionIcon {
   width: 16px;
   height: 16px;
   position: relative;
@@ -50,36 +81,7 @@
   align-items: center;
 }
 
-.tab-selection__label {
+.tabSelectionLabel {
   text-align: center;
   word-wrap: break-word;
-}
-
-.tab-selection__option [class*="IonButton-module--buttonWrapper"] {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-}
-
-.tab-selection__option [class*="IonButton-module--icon"] {
-  width: 16px !important;
-  height: 16px !important;
-  display: flex !important;
-  align-items: center !important;
-  color: transparent !important;
-}
-
-.tab-selection__option [class*="IonButton-module--icon"] svg {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-.tab-selection__option:hover [class*="IonButton-module--icon"] svg * {
-  fill: transparent !important;
-  background: transparent !important;
-}
-
-.tab-selection__option--active [class*="IonButton-module--icon"] svg * {
-  stroke: #fff !important;
 }

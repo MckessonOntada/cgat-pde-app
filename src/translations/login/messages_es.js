@@ -58,6 +58,7 @@ export const LoginMessagesES = {
     'S_InspiroLink is an ordering application designed to provide a simplified experience for healthcare providers providing cell, gene, and advanced therapy treatments. InspiroLink was developed from the ground up to implement customized order workflows and make ordering, scheduling, and tracking product as effortless as possible.',
   'contactUs.subheading': "S_Tell us what you need help with and we'll route it to the right team.",
   'contactUs.reasonForContact': 'S_Reason for contact',
+  'contactUs.signedIn': 'S_Signed in',
   'contactUs.selectTherapy': 'S_Select Therapy',
   'contactUs.orderingChannel': 'S_Ordering channel',
   'contactUs.selectAccount': 'S_Select Account',
@@ -66,6 +67,8 @@ export const LoginMessagesES = {
   'contactUs.maxCharacters': 'S_Maximum 1,000 Characters',
   'contactUs.affectedModule': 'S_Affected module',
   'contactUs.selectOption': 'S_Select an option',
+  'contactUs.searchTherapy': 'S_Search therapy',
+  'contactUs.searchAccount': 'S_Search account',
   'contactUs.submittedPage.title': 'S_Request Submitted',
   'contactUs.submittedPage.description':
     "S_Our support team will review your case and respond within 1-2 business days. You'll receive a confirmation email shortly.",
@@ -74,5 +77,13 @@ export const LoginMessagesES = {
   'contactUs.submittedPage.callUs': 'S_CALL US',
   'contactUs.submittedPage.emailUs': 'S_EMAIL US',
   'contactUs.submittedPage.ticketNote': 'S_Save your ticket number for reference',
-  'contactUs.submittedPage.submitAnotherRequest': 'S_SUBMIT ANOTHER REQUEST'
+  'contactUs.submittedPage.submitAnotherRequest': 'S_SUBMIT ANOTHER REQUEST',
+  'contactUs.reason.label1': 'S_Tech issue',
+  'contactUs.reason.label2': 'S_Order issue',
+  'contactUs.reason.label3': 'S_Invoices & Payments',
+  'contactUs.reason.label4': 'S_Other',
+  'contactUs.techIssue.label1': 'S_Login & Account Management',
+  'contactUs.techIssue.label2': 'S_User & Role Management',
+  'contactUs.techIssue.label3': 'S_Notifications',
+  'contactUs.techIssue.label4': 'S_Other'
 };

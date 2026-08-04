@@ -8,23 +8,15 @@ import { ReactComponent as notificaionIcon } from '@src/assets/svg/notification-
 import { ReactComponent as userIcon } from '@src/assets/svg/user-icon.svg';
 
 export const contactReasons = [
-  { id: 'tech', label: 'Tech issue', Icon: wrenchIcon },
-  { id: 'order', label: 'Order issue', Icon: orderIcon },
-  { id: 'invoice', label: 'Invoices & Payments', Icon: invoiceIcon },
-  { id: 'other', label: 'Other', Icon: questionMarkIcon }
+  { id: 1, value: 'Tech issue', label: 'contactUs.reason.label1', Icon: wrenchIcon },
+  { id: 2, value: 'Order issue', label: 'contactUs.reason.label2', Icon: orderIcon },
+  { id: 3, value: 'Invoices & Payments', label: 'contactUs.reason.label3', Icon: invoiceIcon },
+  { id: 4, value: 'Other', label: 'contactUs.reason.label4', Icon: questionMarkIcon }
 ];
 
 export const techIssueOptions = [
-  { id: 'login', label: 'Login & Account Management', icon: loginIcon },
-  { id: 'userrole', label: 'User & Role Managament', icon: userIcon },
-  { id: 'notification', label: 'Notifications', icon: notificaionIcon },
-  { id: 'other', label: 'Other', icon: otherIcon }
-];
-
-export const therapyOptions = [
-  { label: 'CASGEVY', value: 'CASGEVY', isCrosswalked: true },
-  { label: 'ABECMA', value: 'ABECMA', isCrosswalked: false },
-  { label: 'BREYANZI', value: 'BREYANZI', isCrosswalked: false },
-  { label: 'LYNPARZA', value: 'LYNPARZA', isCrosswalked: true },
-  { label: 'ENHERTU', value: 'ENHERTU', isCrosswalked: true }
+  { id: 1, value: 'Login & Account Management', label: 'contactUs.techIssue.label1', icon: loginIcon },
+  { id: 2, value: 'User & Role Management', label: 'contactUs.techIssue.label2', icon: userIcon },
+  { id: 3, value: 'Notifications', label: 'contactUs.techIssue.label3', icon: notificaionIcon },
+  { id: 4, value: 'Other', label: 'contactUs.techIssue.label1', icon: otherIcon }
 ];

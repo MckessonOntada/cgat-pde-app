@@ -88,6 +88,11 @@ async function rejectUserRequest(id, params) {
   return res.data ?? null;
 }
 
+async function contactUs(payload) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}contact-us`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  return res.data ?? null;
+}
 const UserService = Object.freeze({
   getTherapyById,
   getAssignee,
@@ -100,7 +105,8 @@ const UserService = Object.freeze({
   createUser,
   updateUser,
   approveUserRequest,
-  rejectUserRequest
+  rejectUserRequest,
+  contactUs
 });
 
 export default UserService;
