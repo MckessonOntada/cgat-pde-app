@@ -71,7 +71,7 @@ const OrderIssueForm = () => {
 
     return {
       value: String(account.id),
-      label: account.accountName,
+      label: account.accountNumber ? `${account.accountNumber} - ${account.accountName}` : account.accountName,
       salesOrg:
         salesOrg === '1100' || salesOrg === '2'
           ? '3PL'
@@ -79,7 +79,7 @@ const OrderIssueForm = () => {
           ? 'SD'
           : salesOrg === '3PL' || salesOrg === 'SD'
           ? salesOrg
-          : ''
+          : null
     };
   });
 
