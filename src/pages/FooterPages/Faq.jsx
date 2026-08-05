@@ -15,7 +15,7 @@ import HlsPlayer from '@src/components/HlsPlayer';
 
 function Faq() {
   restoreSessionTransfer();
-  const [openIndexes, setOpenIndexes] = useState([]);
+  const [openIndexes, setOpenIndexes] = useState([0]);
   const [activeSection, seActiveSection] = useState(0);
   const faqData = React.useMemo(() => {
     const username = localStorage.getItem('username');
@@ -32,7 +32,7 @@ function Faq() {
   const collapseAll = () => setOpenIndexes([]);
   const handleOnSectionChange = (sIdx) => {
     seActiveSection(sIdx);
-    setOpenIndexes([]);
+    setOpenIndexes([0]);
   };
   return (
     <div className={mainLayoutStyles.appContainer}>
