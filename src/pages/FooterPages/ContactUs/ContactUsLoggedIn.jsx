@@ -128,12 +128,12 @@ const ContactUsLoggedIn = () => {
     const selectedModule = techIssueOptions.find((m) => m.id === values.affectedModule);
     return {
       category: selectedReason?.value,
-      subCategory: values?.reason === 1 ? selectedModule?.value : selectedReason?.value,
-      therapy: values?.selectedTherapy?.label || '',
-      account: values?.account || '',
-      channel: values?.selectedAccount?.salesOrg || '',
-      comments: values?.description || '',
-      ndcNumber: values?.ndcNumber || ''
+      subCategory: values?.reason === 1 ? selectedModule?.value : null,
+      therapy: values?.selectedTherapy?.label || null,
+      account: values?.account || null,
+      channel: values?.selectedAccount?.salesOrg || null,
+      comments: values?.description || null,
+      ndcNumber: values?.ndcNumber || null
     };
   };
   const { mutate, isLoading } = useMutation(
