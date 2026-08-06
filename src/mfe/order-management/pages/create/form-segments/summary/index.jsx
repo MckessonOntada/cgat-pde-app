@@ -1727,9 +1727,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
                     {isSpOrder && (
                       <>
-                        {additionalDetails?.orderQuantity && (
-                          <DetailSegment label={t('labels.orderQuantity')} value={String(additionalDetails.orderQuantity) || '-'} />
-                        )}
                         <DetailSegment label={t('label.diagnosisCode')} value={getDiagnosisCodesDisplayLabel(additionalDetails?.diagnosisCode)} />
                         {additionalDetails?.clinicalDetails?.hasAllergies && (
                           <DetailSegment label={t('label.allergies')} value={additionalDetails.clinicalDetails.allergiesSpecification || '-'} />
