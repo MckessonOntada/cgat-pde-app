@@ -731,6 +731,7 @@ export const MessageEs = {
   'manageMaterial.drawer.details.configuration.body.maxQuantityRequired': 'S_Maximum quantity is required',
   'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'S_Minimum quantity must be less than maximum quantity',
   'additional.details.order.quantity.error': 'S_The entered quantity is outside the permitted range for this material. Please enter a value between',
+  'additional.details.order.quantity.equal.error': 'S_The entered quantity is outside the permitted range for this material. Allowed Quantity is',
   'labels.shipToPONumber': 'S_Ship to PO Number',
   'orderManagement.patientID.verification':
     'S_{patientID} do not match the master file. Please verify the details before submitting. You may still proceed with the order submission.',
