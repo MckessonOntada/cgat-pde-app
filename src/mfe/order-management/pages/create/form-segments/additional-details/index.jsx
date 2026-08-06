@@ -855,9 +855,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const maxQty = orderQuantityConfig.maxQuantity ?? 99;
 
       if (orderQuantity < minQty || orderQuantity > maxQty) {
+        const isMinEqualMax = Number(minQty) === Number(maxQty);
         setAlert({
           type: 'error',
-          description: `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
+          description: isMinEqualMax
+            ? `${t('additional.details.order.quantity.equal.error')} ${minQty}`
+            : `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
         });
 
         return;
