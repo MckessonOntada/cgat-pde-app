@@ -47,6 +47,9 @@
   background: var(--brand-color-grey-scale-cool-3);
   border-radius: var(--brand-border-radius--16) var(--brand-border-radius--16) 0 0;
 
+  &.nonLoggedInHeader {
+    justify-content: center;
+  }
   .userProfileSection {
     display: flex;
     align-items: center;
@@ -278,4 +281,18 @@
 
 .formSectionGap {
   margin-bottom: 24px;
+}
+
+.personalDetails {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.personalDetailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(306px, 1fr));
+  column-gap: 12px;
+  row-gap: 12px;
+  align-items: start;
 }
