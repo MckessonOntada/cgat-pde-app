@@ -2,19 +2,25 @@ import { useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
 import AuthUtils from '@src/util/AuthUtils';
 
-function useTherapies(query) {
+function useTherapies(query, reason) {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { data: therapyResponse = {}, isFetching } = useQuery({
-    queryKey: ['fetch-therapies', query, isSystemAdminView],
+  const {
+    data: therapyResponse = {},
+    isFetching,
+    isFetched
+  } = useQuery({
+    queryKey: ['fetch-therapies', reason, query, isSystemAdminView],
+
     queryFn: async () => {
       if (isSystemAdminView) {
         const params = {
           pageNo: 0,
           pageSize: 20,
-          channelTypes: 'BUY_AND_BILL,SPECIALITY_PHARMA'.toString(),
+          channelTypes: 'BUY_AND_BILL,SPECIALITY_PHARMA',
           ...(query && { query })
         };
-        return await MaterialService.getMaterialList(params);
+
+        return MaterialService.getMaterialList(params);
       }
 
       return MaterialService.getTherapies({
@@ -24,10 +30,13 @@ function useTherapies(query) {
       });
     },
 
+    keepPreviousData: true,
+    refetchOnMount: true,
     select: (response) => {
       const { content = [], totalElements = 0 } = response;
+
       const therapies = content
-        .flatMap(({ channelType, tradeName, therapies = [] }) =>
+        .flatMap(({ channelType, therapies = [] }) =>
           therapies.map((therapy) => ({
             value: therapy.id,
             label: therapy.materialDescription,
@@ -47,7 +56,8 @@ function useTherapies(query) {
   return {
     therapyOptions: therapyResponse.therapies || [],
     therapyTotalElements: therapyResponse.totalElements || 0,
-    isFetching
+    isFetching,
+    isFetched
   };
 }
 

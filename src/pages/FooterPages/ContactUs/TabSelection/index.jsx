@@ -6,14 +6,18 @@ import { useFormikContext } from 'formik';
 import StepHeader from '../StepHeader';
 import { useTranslate } from '@src/translations/useTranslation';
 
-export function TabSelection() {
+export function TabSelection({ alert, setAlert }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
 
   const handleClick = (reason) => {
+    if (alert?.key === 'NO_ACCOUNTS' || reason === 1) {
+      setAlert(null);
+    }
     setFieldValue('reason', reason);
     setFieldValue('affectedModule', '');
     setFieldValue('selectedTherapy', null);
+    setFieldValue('selectedAccount', null);
     setFieldValue('therapy', '');
     setFieldValue('ndcNumber', '');
     setFieldValue('orderingChannel', '');
