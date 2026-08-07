@@ -78,7 +78,7 @@ export const LoginMessagesEN = {
   'contactUs.describeIssue': 'Describe the issue',
   'contactUs.submitRequest': 'Submit Request',
   'contactUs.maxCharacters': 'Maximum 1,000 Characters',
-  'contactUs.affectedModule': 'Affected module',
+  'contactUs.affectedModule': 'What do you need help with?',
   'contactUs.selectOption': 'Select an option',
   'contactUs.searchTherapy': 'Search therapy',
   'contactUs.searchAccount': 'Search account',
@@ -98,5 +98,9 @@ export const LoginMessagesEN = {
   'contactUs.techIssue.label1': 'Login & Account Management',
   'contactUs.techIssue.label2': 'User & Role Management',
   'contactUs.techIssue.label3': 'Notifications',
-  'contactUs.techIssue.label4': 'Other'
+  'contactUs.techIssue.label4': 'Other',
+  'contactUs.noTherapies.alertMessage':
+    'No therapies are available based on your current access permissions. Please contact your Organization Administrator if you believe additional access is required.',
+  'contactUs.noAccounts.alertMessage':
+    'No accounts are available based on your current selected therapies. Please contact your Organization Administrator if you believe additional access is required.'
 };

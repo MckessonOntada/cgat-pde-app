@@ -19,6 +19,7 @@ import RequestSubmitted from './submittedPage';
 import { contactReasons, techIssueOptions } from './constants';
 import mainLayoutStyles from '@src/assets/styles/MainLayout.module.scss';
 import UserService from '@src/api/commonService/UserService';
+import Alert from '@src/components/cgat-alert/Alert';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
@@ -114,6 +115,11 @@ const ContactUsLoggedIn = () => {
   const nameFromUrl = searchParams.get('name');
   const fullName = nameFromUrl ? decodeURIComponent(nameFromUrl) : AuthUtils.getFullName() || AuthUtils.getUserName() || 'User';
   const [submittedData, setSubmittedData] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
+
+  const handleAlertClose = () => {
+    setAlert(null);
+  };
 
   const getInitials = (name) => {
     if (!name) return 'U';
@@ -214,13 +220,18 @@ const ContactUsLoggedIn = () => {
 
                           <Form>
                             <div>
-                              <TabSelection />
+                              <TabSelection setAlert={setAlert} alert={alert} />
+                              {alert && alert.type && values.reason !== 1 && (
+                                <div className={styles.formSectionGap}>
+                                  <Alert description={alert.description} onClose={handleAlertClose} type={alert.type} showCloseIcon={false} />
+                                </div>
+                              )}
+                              {values.reason === 1 && <TechIssueForm step={2} title={t('contactUs.affectedModule')} />}
 
-                              {values.reason === 1 && <TechIssueForm />}
-
-                              {isTherapyBasedReason(values.reason) && <OrderIssueForm key={values.reason} />}
-
-                              {shouldShowDescription(values) && (
+                              {isTherapyBasedReason(values.reason) && (
+                                <OrderIssueForm reason={values.reason} alert={alert} setAlert={setAlert} resetForm={resetForm} />
+                              )}
+                              {!alert && shouldShowDescription(values) && (
                                 <>
                                   <StepHeader
                                     step={values.reason === 1 ? 3 : isTherapyCrosswalked(values.selectedTherapy) ? 5 : 4}
