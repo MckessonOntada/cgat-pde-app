@@ -171,20 +171,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         is: () => isVariantRequired,
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
-      }),
-      orderQuantity: Yup.number()
-        .transform((value, originalValue) => {
-          if (!/^[0-9]+$/.test(originalValue)) {
-            return NaN;
-          }
-          return value;
-        })
-        .typeError(t('labels.OrderQuantityShouldPositive'))
-        .min(1, t('labels.OrderQuantityMin', { min: 1 }))
-        .max(99, t('labels.OrderQuantityMax', { max: 99 }))
-        .required(t('labels.orderQuantityRequired'))
-        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-        .integer(t('labels.OrderQuantityMustBeInteger'))
+      })
     });
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
@@ -279,6 +266,19 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           dynamicFields[field.fieldName] = validator;
         }
       });
+      dynamicFields['orderQuantity'] = Yup.number()
+        .transform((value, originalValue) => {
+          if (!/^[0-9]+$/.test(originalValue)) {
+            return NaN;
+          }
+          return value;
+        })
+        .typeError(t('labels.OrderQuantityShouldPositive'))
+        .min(1, t('labels.OrderQuantityMin', { min: 1 }))
+        .max(99, t('labels.OrderQuantityMax', { max: 99 }))
+        .required(t('labels.orderQuantityRequired'))
+        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+        .integer(t('labels.OrderQuantityMustBeInteger'));
       schema = schema.concat(Yup.object().shape(dynamicFields));
     }
 
@@ -363,11 +363,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     setValidationSchema(finalValidationSchema);
 
     const initialQuantityDetails = {};
-    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      if (spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity && spTherapyConfig.minQuantity > 0) {
-        initialQuantityDetails.orderQuantity = spTherapyConfig.minQuantity;
-      }
-    } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       if (therapyConfig.maxQuantity === therapyConfig.minQuantity && therapyConfig.minQuantity > 0) {
         initialQuantityDetails.orderQuantity = therapyConfig.minQuantity;
       }
@@ -656,16 +652,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         strength: spTherapyConfig.strength,
         daysSupply: spTherapyConfig.daysSupply,
         quantity: spTherapyConfig.quantity,
-        orderQuantity: additionalDetails?.orderQuantity,
         refills: spTherapyConfig.refills,
         instructions: spTherapyConfig.instructions,
         terms: false,
         consentPolicy: spTherapyConfig.consentPolicy,
         acknowledgement: false
       });
-      if (spTherapyConfig.maxQuantity === spTherapyConfig.minQuantity && spTherapyConfig.minQuantity > 0) {
-        initialValues.orderQuantity = spTherapyConfig.minQuantity;
-      }
     } else if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       getValueWIthoutPrefixAndSuffix(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
       if (therapyConfig.maxQuantity === therapyConfig.minQuantity && therapyConfig.minQuantity > 0) {
@@ -858,14 +850,17 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       orderQuantityConfig = spTherapyConfig;
     }
-    if (orderQuantity) {
+    if (channelType === CHANNEL_TYPE.BUY_AND_BILL && orderQuantity) {
       const minQty = orderQuantityConfig.minQuantity ?? 1;
       const maxQty = orderQuantityConfig.maxQuantity ?? 99;
 
       if (orderQuantity < minQty || orderQuantity > maxQty) {
+        const isMinEqualMax = Number(minQty) === Number(maxQty);
         setAlert({
           type: 'error',
-          description: `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
+          description: isMinEqualMax
+            ? `${t('additional.details.order.quantity.equal.error')} ${minQty}`
+            : `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
         });
 
         return;
@@ -917,7 +912,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       }
 
       payload.clinicalDetails = clinicalDetails;
-      payload.orderQuantity = orderQuantity;
       payload.diagnosisCode = JSON.stringify(
         diagnosisCode.map((item) => ({
           code: item.code,

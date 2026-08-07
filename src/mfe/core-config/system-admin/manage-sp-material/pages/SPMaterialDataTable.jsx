@@ -179,17 +179,6 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
           secondaryViewHeading={`${selectedSPMaterial?.length} ${t('manageMaterial.table.header.text')}`}
           secondaryViewControls={
             <div className="controls">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setOpenConfiguration((prev) => ({
-                    ...prev,
-                    orderQuantityConfig: !prev.orderQuantityConfig
-                  }));
-                }}
-                size="sm">
-                {t('manageMaterial.table.header.button.OrderQuantity')}
-              </Button>
               {!isMultipleSelected && (
                 <>
                   <Button
