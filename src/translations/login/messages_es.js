@@ -89,5 +89,24 @@ export const LoginMessagesES = {
   'contactUs.noTherapiesMessage':
     'S_No therapies are available based on your current access permissions. Please contact your Organization Administrator if you believe additional access is required.',
   'contactUs.noAccountsMessage':
-    'S_No accounts are available based on your current selected therapies. Please contact your Organization Administrator if you believe additional access is required.'
+    'S_No accounts are available based on your current selected therapies. Please contact your Organization Administrator if you believe additional access is required.',
+  'contactUs.loginRequired.orderAlertMessage':
+    "S_You must be logged in to submit an order-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
+  'contactUs.loginRequired.invoiceAlertMessage':
+    "S_You must be logged in to submit an invoices-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
+  'contactUs.nonLoggedIn.infoAlertMessage':
+    'S_Get faster support by signing in to InspiroLink. Your account details will be pre-filled, helping us route your request more efficiently.',
+  'contactUs.personalDetails.title': 'S_Personal Details',
+  'contactUs.personalDetails.label.firstName': 'S_First Name',
+  'contactUs.personalDetails.label.lastName': 'S_Last Name',
+  'contactUs.personalDetails.label.email': 'S_Email Address',
+  'contactUs.personalDetails.label.phoneNumber': 'S_Phone Number',
+  'contactUs.defaultErrorMessage': 'S_Something went wrong, Please ty again',
+  'contactUs.validation.firstNameRequired': 'S_First Name is required',
+  'contactUs.validation.lastNameRequired': 'S_Last Name is required',
+  'contactUs.validation.emailRequired': 'S_Email address is required',
+  'contactUs.validation.phoneNumberRequired': 'S_Phone Number is required',
+  'contactUs.validation.invalidEmail': 'S_Please enter a valid email address',
+  'contactUs.validation.invalidPhone': 'S_Please enter a valid phone number.',
+  'contactUs.validation.emailMax': 'S_Email cannot exceed 50 characters.'
 };

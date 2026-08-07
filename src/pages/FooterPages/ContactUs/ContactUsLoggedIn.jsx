@@ -20,6 +20,10 @@ import { contactReasons, techIssueOptions } from './constants';
 import mainLayoutStyles from '@src/assets/styles/MainLayout.module.scss';
 import UserService from '@src/api/commonService/UserService';
 import Alert from '@src/components/cgat-alert/Alert';
+import { useOktaAuth } from '@okta/okta-react';
+import PersonalDetails from './PersonalDetails';
+import * as Yup from 'yup';
+import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
@@ -107,8 +111,11 @@ const canSubmit = (values) => {
 
   return false;
 };
+
 const ContactUsLoggedIn = () => {
   restoreSessionTransfer();
+  const { authState } = useOktaAuth() || {};
+  const isAuthenticated = authState?.isAuthenticated;
   const { t } = useTranslate();
   const [searchParams] = useSearchParams();
 
@@ -117,10 +124,6 @@ const ContactUsLoggedIn = () => {
   const [submittedData, setSubmittedData] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
 
-  const handleAlertClose = () => {
-    setAlert(null);
-  };
-
   const getInitials = (name) => {
     if (!name) return 'U';
     const parts = name.trim().split(/\s+/);
@@ -128,20 +131,35 @@ const ContactUsLoggedIn = () => {
     return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   };
   const initials = getInitials(fullName);
-
   const buildContactUsPayload = (values) => {
     const selectedReason = contactReasons.find((r) => r.id === values.reason);
     const selectedModule = techIssueOptions.find((m) => m.id === values.affectedModule);
-    return {
+
+    const payload = {
       category: selectedReason?.value,
       subCategory: values?.reason === 1 ? selectedModule?.value : null,
+      comments: values?.description || null
+    };
+
+    if (!isAuthenticated) {
+      return {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        workEmail: values.email,
+        phoneNumber: values.phoneNumber,
+        ...payload
+      };
+    }
+
+    return {
+      ...payload,
       therapy: values?.selectedTherapy?.label || null,
       account: values?.account || null,
       channel: values?.selectedAccount?.salesOrg || null,
-      comments: values?.description || null,
       ndcNumber: values?.ndcNumber || null
     };
   };
+
   const { mutate, isLoading } = useMutation(
     async ({ values }) => {
       const payload = buildContactUsPayload(values);
@@ -155,6 +173,16 @@ const ContactUsLoggedIn = () => {
       }
     }
   );
+  const personalDetailsSchema = Yup.object({
+    firstName: Yup.string().trim().required(t('contactUs.validation.firstNameRequired')).max(50, 'Maximum 50 characters'),
+    lastName: Yup.string().trim().required(t('contactUs.validation.lastNameRequired')).max(50, 'Maximum 50 characters'),
+    email: Yup.string()
+      .trim()
+      .email(t('contactUs.validation.invalidEmail'))
+      .required(t('contactUs.validation.emailRequired'))
+      .max(50, t('contactUs.validation.emailMax')),
+    phoneNumber: Yup.string().matches(PHONE_REGEX, t('contactUs.validation.invalidPhone')).required(t('contactUs.validation.phoneNumberRequired'))
+  });
 
   return (
     <div className={mainLayoutStyles.appContainer}>
@@ -164,24 +192,30 @@ const ContactUsLoggedIn = () => {
         <div className={styles.contactContainer}>
           <div className={styles.contactContent}>
             <div className={styles.contactCard}>
-              <div className={styles.contactCardHeader}>
+              <div className={`${styles.contactCardHeader} ${!isAuthenticated ? styles.nonLoggedInHeader : ''}`}>
                 <div>
                   <McKessonLogo aria-hidden="true" focusable="false" />
                 </div>
 
-                <div className={styles.userProfileSection}>
-                  <div className={styles.userAvatar}>{initials}</div>
+                {isAuthenticated && (
+                  <div className={styles.userProfileSection}>
+                    <div className={styles.userAvatar}>{initials}</div>
 
-                  <div className={styles.userDetails}>
-                    <span className={styles.userName}>{fullName}</span>
+                    <div className={styles.userDetails}>
+                      <span className={styles.userName}>{fullName}</span>
 
-                    <span className={styles.userStatus}>{t('contactUs.signedIn')}</span>
+                      <span className={styles.userStatus}>{t('contactUs.signedIn')}</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <Formik
                 initialValues={{
+                  firstName: '',
+                  lastName: '',
+                  email: '',
+                  phoneNumber: '',
                   reason: '',
                   affectedModule: '',
                   selectedTherapy: null,
@@ -192,10 +226,13 @@ const ContactUsLoggedIn = () => {
                   description: '',
                   ndcNumber: ''
                 }}
+                validateOnBlur={true}
+                validateOnChange={true}
+                validationSchema={!isAuthenticated ? personalDetailsSchema : undefined}
                 onSubmit={(values) => {
                   mutate({ values });
                 }}>
-                {({ values, resetForm }) => {
+                {({ values, resetForm, validateForm, isValid }) => {
                   const progress = getProgressState(values);
 
                   return (
@@ -210,7 +247,13 @@ const ContactUsLoggedIn = () => {
                         />
                       ) : (
                         <>
-                          <ProgressBarStepper totalSteps={progress.totalSteps} currentStep={progress.currentStep} />
+                          {isAuthenticated ? (
+                            <ProgressBarStepper totalSteps={progress.totalSteps} currentStep={progress.currentStep} />
+                          ) : (
+                            <div className={styles.formSectionGap}>
+                              <Alert description={t('contactUs.nonLoggedIn.infoAlertMessage')} type="info" showCloseIcon={false} />
+                            </div>
+                          )}
 
                           <Heading as="h1" className={styles.bodyHeading}>
                             {t('footer.contactUs')}
@@ -220,17 +263,27 @@ const ContactUsLoggedIn = () => {
 
                           <Form>
                             <div>
-                              <TabSelection setAlert={setAlert} alert={alert} />
-                              {alert && alert.type && values.reason !== 1 && (
-                                <div className={styles.formSectionGap}>
-                                  <Alert description={alert.description} onClose={handleAlertClose} type={alert.type} showCloseIcon={false} />
+                              {!isAuthenticated && (
+                                <div
+                                  onBlur={() => {
+                                    validateForm();
+                                  }}>
+                                  <PersonalDetails step={1} />
                                 </div>
                               )}
-                              {values.reason === 1 && <TechIssueForm step={2} title={t('contactUs.affectedModule')} />}
+                              {<TabSelection setAlert={setAlert} alert={alert} isAuthenticated={isAuthenticated} />}
 
-                              {isTherapyBasedReason(values.reason) && (
+                              {alert && alert.type && values.reason !== 1 && (
+                                <div className={styles.formSectionGap}>
+                                  <Alert description={alert.description} onClose={() => setAlert(null)} type={alert.type} showCloseIcon={false} />
+                                </div>
+                              )}
+                              {values.reason === 1 && <TechIssueForm step={isAuthenticated ? 2 : 3} title={t('contactUs.affectedModule')} />}
+
+                              {isAuthenticated && isTherapyBasedReason(values.reason) && (
                                 <OrderIssueForm reason={values.reason} alert={alert} setAlert={setAlert} resetForm={resetForm} />
                               )}
+
                               {!alert && shouldShowDescription(values) && (
                                 <>
                                   <StepHeader
@@ -255,7 +308,7 @@ const ContactUsLoggedIn = () => {
                                   className={styles.contactFormSubmitButton}
                                   variant="primary"
                                   size="md"
-                                  disabled={!canSubmit(values) || isLoading}>
+                                  disabled={!isAuthenticated ? !isValid || !canSubmit(values) || isLoading : !canSubmit(values) || isLoading}>
                                   {t('contactUs.submitRequest')}
                                 </Button>
                               </div>

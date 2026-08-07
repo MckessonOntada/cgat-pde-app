@@ -102,5 +102,24 @@ export const LoginMessagesEN = {
   'contactUs.noTherapies.alertMessage':
     'No therapies are available based on your current access permissions. Please contact your Organization Administrator if you believe additional access is required.',
   'contactUs.noAccounts.alertMessage':
-    'No accounts are available based on your current selected therapies. Please contact your Organization Administrator if you believe additional access is required.'
+    'No accounts are available based on your current selected therapies. Please contact your Organization Administrator if you believe additional access is required.',
+  'contactUs.loginRequired.orderAlertMessage':
+    "You must be logged in to submit an order-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
+  'contactUs.loginRequired.invoiceAlertMessage':
+    "You must be logged in to submit an invoices-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
+  'contactUs.nonLoggedIn.infoAlertMessage':
+    'Get faster support by signing in to InspiroLink. Your account details will be pre-filled, helping us route your request more efficiently.',
+  'contactUs.personalDetails.title': 'Personal Details',
+  'contactUs.personalDetails.label.firstName': 'First Name',
+  'contactUs.personalDetails.label.lastName': 'Last Name',
+  'contactUs.personalDetails.label.email': 'Email Address',
+  'contactUs.personalDetails.label.phoneNumber': 'Phone Number',
+  'contactUs.defaultErrorMessage': 'Something went wrong, Please ty again',
+  'contactUs.validation.firstNameRequired': 'First Name is required',
+  'contactUs.validation.lastNameRequired': 'Last Name is required',
+  'contactUs.validation.emailRequired': 'Email address is required',
+  'contactUs.validation.phoneNumberRequired': 'Phone Number is required',
+  'contactUs.validation.invalidEmail': 'Please enter a valid email address',
+  'contactUs.validation.invalidPhone': 'Please enter a valid phone number.',
+  'contactUs.validation.emailMax': 'Email cannot exceed 50 characters.'
 };
