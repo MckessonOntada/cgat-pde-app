@@ -111,11 +111,6 @@ const canSubmit = (values) => {
 
   return false;
 };
-const isPersonalDetailsComplete = (values) => {
-  const isPhoneValid = PHONE_REGEX.test(values.phoneNumber || '');
-
-  return values.firstName?.trim() && values.lastName?.trim() && values.email?.trim() && isPhoneValid;
-};
 
 const ContactUsLoggedIn = () => {
   restoreSessionTransfer();
@@ -237,25 +232,8 @@ const ContactUsLoggedIn = () => {
                 onSubmit={(values) => {
                   mutate({ values });
                 }}>
-                {({ values, resetForm, validateForm, setFieldValue }) => {
+                {({ values, resetForm, validateForm, isValid }) => {
                   const progress = getProgressState(values);
-                  const canShowTabs = isAuthenticated || isPersonalDetailsComplete(values);
-
-                  React.useEffect(() => {
-                    if (!isAuthenticated && !isPersonalDetailsComplete(values)) {
-                      setAlert(null);
-                      if (values.reason) {
-                        setFieldValue('reason', '');
-                        setFieldValue('affectedModule', '');
-                        setFieldValue('selectedTherapy', null);
-                        setFieldValue('selectedAccount', null);
-                        setFieldValue('therapy', '');
-                        setFieldValue('orderingChannel', '');
-                        setFieldValue('account', '');
-                        setFieldValue('description', '');
-                      }
-                    }
-                  }, [isAuthenticated, values.firstName, values.lastName, values.email, values.phoneNumber]);
 
                   return (
                     <div className={styles.contactCardBody}>
@@ -293,7 +271,7 @@ const ContactUsLoggedIn = () => {
                                   <PersonalDetails step={1} />
                                 </div>
                               )}
-                              {canShowTabs && <TabSelection setAlert={setAlert} alert={alert} isAuthenticated={isAuthenticated} />}
+                              {<TabSelection setAlert={setAlert} alert={alert} isAuthenticated={isAuthenticated} />}
 
                               {alert && alert.type && values.reason !== 1 && (
                                 <div className={styles.formSectionGap}>
@@ -330,9 +308,7 @@ const ContactUsLoggedIn = () => {
                                   className={styles.contactFormSubmitButton}
                                   variant="primary"
                                   size="md"
-                                  disabled={
-                                    !isAuthenticated ? !isPersonalDetailsComplete(values) || !canSubmit(values) || isLoading : !canSubmit(values) || isLoading
-                                  }>
+                                  disabled={!isAuthenticated ? !isValid || !canSubmit(values) || isLoading : !canSubmit(values) || isLoading}>
                                   {t('contactUs.submitRequest')}
                                 </Button>
                               </div>
