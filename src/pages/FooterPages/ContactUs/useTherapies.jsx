@@ -2,12 +2,13 @@ import { useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
 import AuthUtils from '@src/util/AuthUtils';
 
-function useTherapies(query, reason) {
+function useTherapies(query, reason, setAlert) {
   const isSystemUser = AuthUtils.isSystemAdmin() || AuthUtils.isCustomerCenter() || AuthUtils.isTreatmentCentreExecutive();
   const {
     data: therapyResponse = {},
     isFetching,
-    isFetched
+    isFetched,
+    isError
   } = useQuery({
     queryKey: ['fetch-therapies', reason, query, isSystemUser],
 
@@ -27,6 +28,13 @@ function useTherapies(query, reason) {
         pageNo: 0,
         pageSize: 20,
         ...(query && { query })
+      });
+    },
+    onError: () => {
+      setAlert({
+        type: 'error',
+        key: 'THERAPY_API_ERROR',
+        description: 'errors.default'
       });
     },
 
@@ -57,7 +65,8 @@ function useTherapies(query, reason) {
     therapyOptions: therapyResponse.therapies || [],
     therapyTotalElements: therapyResponse.totalElements || 0,
     isFetching,
-    isFetched
+    isFetched,
+    isError
   };
 }
 

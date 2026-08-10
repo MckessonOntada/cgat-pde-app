@@ -170,6 +170,13 @@ const ContactUsLoggedIn = () => {
     {
       onSuccess: (data) => {
         setSubmittedData(data);
+      },
+      onError: () => {
+        setAlert({
+          type: 'error',
+          key: 'SUBMIT_ERROR',
+          description: 'errors.default'
+        });
       }
     }
   );
@@ -183,7 +190,6 @@ const ContactUsLoggedIn = () => {
       .max(50, t('contactUs.validation.emailMax')),
     phoneNumber: Yup.string().matches(PHONE_REGEX, t('contactUs.validation.invalidPhone')).required(t('contactUs.validation.phoneNumberRequired'))
   });
-
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
@@ -272,19 +278,19 @@ const ContactUsLoggedIn = () => {
                                 </div>
                               )}
                               {<TabSelection setAlert={setAlert} alert={alert} isAuthenticated={isAuthenticated} />}
-
-                              {alert && alert.type && values.reason !== 1 && (
+                              {alert && (
                                 <div className={styles.formSectionGap}>
-                                  <Alert description={alert.description} onClose={() => setAlert(null)} type={alert.type} showCloseIcon={false} />
+                                  <Alert description={t(alert.description)} onClose={() => setAlert(null)} type={alert.type} showCloseIcon={false} />
                                 </div>
                               )}
+
                               {values.reason === 1 && <TechIssueForm step={isAuthenticated ? 2 : 3} title={t('contactUs.affectedModule')} />}
 
                               {isAuthenticated && isTherapyBasedReason(values.reason) && (
                                 <OrderIssueForm reason={values.reason} alert={alert} setAlert={setAlert} resetForm={resetForm} />
                               )}
 
-                              {!alert && shouldShowDescription(values) && (
+                              {shouldShowDescription(values) && (
                                 <>
                                   <StepHeader
                                     step={values.reason === 1 ? 3 : isTherapyCrosswalked(values.selectedTherapy) ? 5 : 4}

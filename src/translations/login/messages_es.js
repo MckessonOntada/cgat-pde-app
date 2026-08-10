@@ -101,7 +101,7 @@ export const LoginMessagesES = {
   'contactUs.personalDetails.label.lastName': 'S_Last Name',
   'contactUs.personalDetails.label.email': 'S_Email Address',
   'contactUs.personalDetails.label.phoneNumber': 'S_Phone Number',
-  'contactUs.defaultErrorMessage': 'S_Something went wrong, Please ty again',
+  'contactUs.defaultErrorMessage': 'S_Something went wrong, Please try again',
   'contactUs.validation.firstNameRequired': 'S_First Name is required',
   'contactUs.validation.lastNameRequired': 'S_Last Name is required',
   'contactUs.validation.emailRequired': 'S_Email address is required',

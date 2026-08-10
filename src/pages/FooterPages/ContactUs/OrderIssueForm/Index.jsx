@@ -16,7 +16,7 @@ import AccountService from '@src/api/commonService/AccountService';
 const OrderIssueForm = ({ reason, setAlert, alert }) => {
   const { t } = useTranslate();
   const [therapyQuery, setTherapyQuery] = React.useState('');
-  const { therapyOptions, therapyTotalElements, isFetching, isFetched } = useTherapies(therapyQuery, reason);
+  const { therapyOptions, therapyTotalElements, isFetching, isFetched, isError: therapyApiError } = useTherapies(therapyQuery, reason, setAlert);
   const [accountQuery, setAccountQuery] = React.useState('');
   const isSystemAdminView = AuthUtils.isSystemAdmin() || AuthUtils.isCustomerCenter() || AuthUtils.isTreatmentCentreExecutive();
   const { values, setFieldValue } = useFormikContext();
@@ -29,7 +29,8 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
   const {
     data: accountResponse,
     isFetching: loadingAccounts,
-    isFetched: accountFetched
+    isFetched: accountFetched,
+    isError: accountApiError
   } = useQuery({
     queryKey: ['sold-to-accounts', isSystemAdminView, selectedTherapy?.ndc, selectedTherapy?.channelType, values.orderingChannel, accountQuery],
     enabled: !!selectedTherapy?.ndc && (!selectedTherapy.isCrosswalked || !!values.orderingChannel),
@@ -45,7 +46,6 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
           channelType: isCrosswalked ? values.orderingChannel : 'ALL'.toString(),
           ...(accountQuery && { query: accountQuery })
         };
-
         return await AccountService.getAccountList(requestParams, 0);
       }
 
@@ -67,6 +67,13 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
 
       return await OrderService.getSoldToAccounts(selectedTherapy.ndc, query);
     },
+    onError: () => {
+      setAlert({
+        type: 'error',
+        key: 'ACCOUNT_API_ERROR',
+        description: 'errors.default'
+      });
+    },
 
     keepPreviousData: false
   });
@@ -80,17 +87,17 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
         salesOrg === '1100' || salesOrg === '2'
           ? '3PL'
           : salesOrg === '1000' || salesOrg === '1010'
-            ? 'SD'
-            : salesOrg === '3PL' || salesOrg === 'SD'
-              ? salesOrg
-              : null
+          ? 'SD'
+          : salesOrg === '3PL' || salesOrg === 'SD'
+          ? salesOrg
+          : null
     };
   });
-  const noTherapies = isFetched && !isFetching && therapyQuery.trim() === '' && therapyOptions.length === 0;
+  const noTherapies = !therapyApiError && isFetched && !isFetching && therapyQuery.trim() === '' && therapyOptions.length === 0;
 
   const shouldShowAccounts = values.therapy && (!isCrosswalked || values.orderingChannel) && !!accountResponse;
 
-  const noAccounts = shouldShowAccounts && accountFetched && !loadingAccounts && accountQuery.trim() === '' && accountOptions.length === 0;
+  const noAccounts = !accountApiError && shouldShowAccounts && accountFetched && !loadingAccounts && accountQuery.trim() === '' && accountOptions.length === 0;
 
   React.useEffect(() => {
     if (isFetching || loadingAccounts) {
@@ -101,7 +108,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
       setAlert({
         type: 'error',
         key: 'NO_THERAPIES',
-        description: t('contactUs.noTherapies.alertMessage')
+        description: 'contactUs.noTherapies.alertMessage'
       });
 
       return;
@@ -111,11 +118,10 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
       setAlert({
         type: 'error',
         key: 'NO_ACCOUNTS',
-        description: t('contactUs.noAccounts.alertMessage')
+        description: 'contactUs.noAccounts.alertMessage'
       });
     }
   }, [isFetching, loadingAccounts, noTherapies, noAccounts]);
-
   return (
     <div className="order-issue-form">
       <div className={styles.formSectionGap}>
@@ -130,7 +136,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
           options={therapyOptions}
           value={values.therapy}
           onChange={(value) => {
-            if (alert?.key === 'NO_ACCOUNTS') {
+            if (alert?.key === 'NO_ACCOUNTS' || alert?.key === 'ACCOUNT_API_ERROR' || alert?.key === 'SUBMIT_ERROR') {
               setAlert(null);
             }
             const selected = therapyOptions.find((t) => String(t.value) === String(value));
