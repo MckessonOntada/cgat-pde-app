@@ -114,7 +114,7 @@ export const LoginMessagesEN = {
   'contactUs.personalDetails.label.lastName': 'Last Name',
   'contactUs.personalDetails.label.email': 'Email Address',
   'contactUs.personalDetails.label.phoneNumber': 'Phone Number',
-  'contactUs.defaultErrorMessage': 'Something went wrong, Please ty again',
+  'contactUs.defaultErrorMessage': 'Something went wrong. Please try again',
   'contactUs.validation.firstNameRequired': 'First Name is required',
   'contactUs.validation.lastNameRequired': 'Last Name is required',
   'contactUs.validation.emailRequired': 'Email address is required',
