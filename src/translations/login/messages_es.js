@@ -89,7 +89,7 @@ export const LoginMessagesES = {
   'contactUs.noTherapiesMessage':
     'S_No therapies are available based on your current access permissions. Please contact your Organization Administrator if you believe additional access is required.',
   'contactUs.noAccountsMessage':
-    'S_No accounts are available based on your current selected therapies. Please contact your Organization Administrator if you believe additional access is required.',
+    'S_No accounts are available based on your current selected therapy. Please contact your Organization Administrator if you believe additional access is required.',
   'contactUs.loginRequired.orderAlertMessage':
     "S_You must be logged in to submit an order-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
   'contactUs.loginRequired.invoiceAlertMessage':
