@@ -124,8 +124,22 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
-          <Route path={AppRoutes.pathContactSecure} element={<ContactUsLoggedIn />} />
-          <Route path={AppRoutes.pathFaq} element={<Faq />} />
+          <Route
+            path={AppRoutes.pathContactSecure}
+            element={
+              <IdleTimer timeout={timeout}>
+                <ContactUsLoggedIn />
+              </IdleTimer>
+            }
+          />
+          <Route
+            path={AppRoutes.pathFaq}
+            element={
+              <IdleTimer timeout={timeout}>
+                <Faq />
+              </IdleTimer>
+            }
+          />
           <Route element={<PublicRoute />}>
             <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />

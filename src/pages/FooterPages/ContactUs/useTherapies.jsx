@@ -3,17 +3,17 @@ import MaterialService from '@src/api/commonService/MaterialService';
 import AuthUtils from '@src/util/AuthUtils';
 
 function useTherapies(query, reason, setAlert) {
-  const isSystemAdminView = AuthUtils.isSystemAdmin();
+  const isSystemUser = AuthUtils.isSystemAdmin() || AuthUtils.isCustomerCenter() || AuthUtils.isTreatmentCentreExecutive();
   const {
     data: therapyResponse = {},
     isFetching,
     isFetched,
     isError
   } = useQuery({
-    queryKey: ['fetch-therapies', reason, query, isSystemAdminView],
+    queryKey: ['fetch-therapies', reason, query, isSystemUser],
 
     queryFn: async () => {
-      if (isSystemAdminView) {
+      if (isSystemUser) {
         const params = {
           pageNo: 0,
           pageSize: 20,
