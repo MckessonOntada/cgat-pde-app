@@ -1085,6 +1085,7 @@ export const MessageEn = {
   'manageMaterial.drawer.details.configuration.body.maxQuantityRequired': 'Maximum quantity is required',
   'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'Minimum quantity must be less than maximum quantity',
   'additional.details.order.quantity.error': 'The entered quantity is outside the permitted range for this material. Please enter a value between',
+  'additional.details.order.quantity.equal.error': 'The entered quantity is outside the permitted range for this material. Allowed Quantity is',
   'labels.shipToPONumber': 'Ship to PO Number',
   'labels.shipToPONumberLengthError': 'Ship to PO Number should not exceed 35 characters',
   'labels.shipToPONumberMustValid': 'Ship to PO Number should only contain letters and numbers.',

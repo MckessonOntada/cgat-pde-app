@@ -47,16 +47,6 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
       component: Components['input'],
       maxLength: 2
     });
-  } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-    dynamic_fields.push({
-      name: 'orderQuantity',
-      label: translationFn('labels.orderQuantity'),
-      placeholder: ' ',
-      isRequired: true,
-      // readOnly: spTherapyConfig?.maxQuantity === spTherapyConfig?.minQuantity,
-      component: Components['input'],
-      maxLength: 2
-    });
   }
   return dynamic_fields;
 };
