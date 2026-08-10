@@ -18,5 +18,5 @@ export const techIssueOptions = [
   { id: 1, value: 'Login & Account Management', label: 'contactUs.techIssue.label1', icon: loginIcon },
   { id: 2, value: 'User & Role Management', label: 'contactUs.techIssue.label2', icon: userIcon },
   { id: 3, value: 'Notifications', label: 'contactUs.techIssue.label3', icon: notificaionIcon },
-  { id: 4, value: 'Other', label: 'contactUs.techIssue.label1', icon: otherIcon }
+  { id: 4, value: 'Other', label: 'contactUs.techIssue.label4', icon: otherIcon }
 ];

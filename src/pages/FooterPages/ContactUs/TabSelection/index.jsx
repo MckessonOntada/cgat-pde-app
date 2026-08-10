@@ -41,7 +41,7 @@ export function TabSelection({ alert, setAlert, isAuthenticated }) {
       return;
     }
 
-    if (alert?.key === 'NO_ACCOUNTS' || reason === 1) {
+    if (alert?.key === 'NO_ACCOUNTS' || reason === 1 || alert?.key === 'ACCOUNT_API_ERROR' || alert?.key === 'SUBMIT_ERROR') {
       setAlert(null);
     }
   };
