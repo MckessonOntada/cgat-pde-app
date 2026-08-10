@@ -39,15 +39,17 @@ const RequestSubmitted = ({ submittedData, handleSubmitAnotherRequest }) => {
         </div>
 
         <div className={styles.supportOptions}>
-          <div className={styles.supportOption}>
-            <PhoneIcon className={styles.contactIcon} />
+          {submittedData.supportPhone && (
+            <div className={styles.supportOption}>
+              <PhoneIcon className={styles.contactIcon} />
 
-            <div className={styles.supportText}>
-              <span className={styles.label}>{t('contactUs.submittedPage.callUs')}</span>
+              <div className={styles.supportText}>
+                <span className={styles.label}>{t('contactUs.submittedPage.callUs')}</span>
 
-              <span className={styles.value}>{submittedData.supportPhone}</span>
+                <span className={styles.value}>{submittedData.supportPhone}</span>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className={styles.supportOption}>
             <EmailIcon className={styles.contactIcon} />

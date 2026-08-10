@@ -18,7 +18,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
   const [therapyQuery, setTherapyQuery] = React.useState('');
   const { therapyOptions, therapyTotalElements, isFetching, isFetched } = useTherapies(therapyQuery, reason);
   const [accountQuery, setAccountQuery] = React.useState('');
-  const isSystemAdminView = AuthUtils.isSystemAdmin();
+  const isSystemAdminView = AuthUtils.isSystemAdmin() || AuthUtils.isCustomerCenter() || AuthUtils.isTreatmentCentreExecutive();
   const { values, setFieldValue } = useFormikContext();
   const selectedTherapy = values.selectedTherapy;
   const isCrosswalked = selectedTherapy?.isCrosswalked ?? false;
@@ -80,10 +80,10 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
         salesOrg === '1100' || salesOrg === '2'
           ? '3PL'
           : salesOrg === '1000' || salesOrg === '1010'
-          ? 'SD'
-          : salesOrg === '3PL' || salesOrg === 'SD'
-          ? salesOrg
-          : null
+            ? 'SD'
+            : salesOrg === '3PL' || salesOrg === 'SD'
+              ? salesOrg
+              : null
     };
   });
   const noTherapies = isFetched && !isFetching && therapyQuery.trim() === '' && therapyOptions.length === 0;
