@@ -175,7 +175,7 @@ const ContactUsLoggedIn = () => {
         setAlert({
           type: 'error',
           key: 'SUBMIT_ERROR',
-          description: 'contactUs.defaultErrorMessage'
+          description: 'errors.default'
         });
       }
     }

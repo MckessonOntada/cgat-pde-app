@@ -71,7 +71,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
       setAlert({
         type: 'error',
         key: 'ACCOUNT_API_ERROR',
-        description: 'contactUs.defaultErrorMessage'
+        description: 'errors.default'
       });
     },
 
@@ -87,10 +87,10 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
         salesOrg === '1100' || salesOrg === '2'
           ? '3PL'
           : salesOrg === '1000' || salesOrg === '1010'
-            ? 'SD'
-            : salesOrg === '3PL' || salesOrg === 'SD'
-              ? salesOrg
-              : null
+          ? 'SD'
+          : salesOrg === '3PL' || salesOrg === 'SD'
+          ? salesOrg
+          : null
     };
   });
   const noTherapies = !therapyApiError && isFetched && !isFetching && therapyQuery.trim() === '' && therapyOptions.length === 0;

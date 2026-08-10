@@ -34,7 +34,7 @@ function useTherapies(query, reason, setAlert) {
       setAlert({
         type: 'error',
         key: 'THERAPY_API_ERROR',
-        description: 'contactUs.defaultErrorMessage'
+        description: 'errors.default'
       });
     },
 
