@@ -63,7 +63,7 @@ const AddAccounts = () => {
         navigate(`./../materials`);
       }
     },
-    onError: (error) => {}
+    onError: (error) => { }
   });
 
   const handleOnSubmit = () => {
@@ -84,6 +84,8 @@ const AddAccounts = () => {
           practiceId={practiceId}
           selectableRows={true}
           allowSelectAll={true}
+          unlinkedAccounts={true}
+          userId={id}
         />
         <div className={'controls'}>
           <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>

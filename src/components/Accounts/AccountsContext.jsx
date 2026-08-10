@@ -35,7 +35,7 @@ const INITIAL_PAGINATION_STATE = {
   pageNumber: 1
 };
 
-export const AccountsProvider = ({ children, practiceId, userId }) => {
+export const AccountsProvider = ({ children, practiceId, userId, unlinkedAccounts = false }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState(INITIAL_SORT_PARAMS);
@@ -74,6 +74,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       ...(filterConfig.salesOrg && { salesOrg: filterConfig.salesOrg }),
       ...(practiceId && { channelType: 'ALL' })
     };
+
+    if (unlinkedAccounts) {
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/unlinked/accounts?${serializeParams(params)}`;
+    }
 
     if (userId) {
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
