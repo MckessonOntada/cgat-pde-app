@@ -25,7 +25,7 @@ import Faq from './pages/FooterPages/Faq';
 import TermsToUse from './pages/FooterPages/TermsToUse';
 import PrivacyNotice from './pages/FooterPages/PrivacyNotice';
 import PrivacyNoticePage from './pages/FooterPages/PrivacyNoticeForStateSpecific.';
-import ContactUsLoggedIn from './pages/FooterPages/ContactUs/ContactUsLoggedIn';
+import ContactUsForm from './pages/FooterPages/ContactUs/ContactUsForm';
 import Success from './pages/FooterPages/ContactUs/Success';
 
 function AuthorizedRoute({ children }) {
@@ -128,7 +128,7 @@ const Navigation = () => {
             path={AppRoutes.pathContactSecure}
             element={
               <IdleTimer timeout={timeout}>
-                <ContactUsLoggedIn />
+                <ContactUsForm />
               </IdleTimer>
             }
           />
@@ -146,7 +146,7 @@ const Navigation = () => {
             <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
             <Route path={AppRoutes.pathTermsOfUse} element={<TermsToUse />} />
             <Route path={AppRoutes.pathPrivacyNotice} element={<PrivacyNotice />} />
-            <Route path={AppRoutes.pathContact} element={<ContactUsLoggedIn />} />
+            <Route path={AppRoutes.pathContact} element={<ContactUsForm />} />
             <Route path={AppRoutes.pathContactSuccess} element={<Success />} />
             <Route path={AppRoutes.pathPrivacyNoticeForStateSpecificPrivacyLaws} element={<PrivacyNoticePage />} />
           </Route>
