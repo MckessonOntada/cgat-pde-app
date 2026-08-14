@@ -2,11 +2,11 @@ import React, { Fragment, useState } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import { useLocation } from 'react-router-dom';
 import { Button, InputField, Heading } from '@mckesson/mcp-component-library';
-import { ReactComponent as McKessonLogo } from '@src/assets/image/McKesson_logo.svg';
+import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLink 2.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import '@src/pages/login/assets/styles/Login.css';
 import style from '@src/pages/login/assets/styles/Login.module.scss';
-import Footer from '../login/Footer';
+import Footer from '@src/components/footer';
 import { useNavigate } from 'react-router-dom';
 
 const useQuery = () => {
@@ -39,27 +39,21 @@ const ForgotPassword = () => {
   };
 
   return (
-  <div className={style.oktaRoot}>
-    <div className={`${style.loginWrap} max-container`}>
-      <div className={style.loginHeader}>
-        <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
-        <Heading as="h2">
-          <span>{t('login.header.1')} </span>
-          {t('login.header.2')}
-        </Heading>
-        <p>
-          <span>{t('login.page.desc.1')} </span>
-          {t('login.page.desc.2')}
-        </p>
-      </div>
-      
-      <div className={style.loginContainor}>
-        {!message ? (
-          <>
-            <p className={style.lWelcome}>{t('login.welcome')}</p>
-            <Heading as="h3" className={style.lHead}>{t('login.ordringPortal')}</Heading>
-            <p className={style.lDetails}>{t('login.details')}</p>
-            <div className={style.forgotWrapper}>
+    <div className={style.oktaRoot}>
+      <div className={`${style.loginWrap} max-container`}>
+        <div className={style.loginHeader}>
+          <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
+          <Heading as="h2">{t('login.header.1')}</Heading>
+          <p>{t('login.page.desc.1')}</p>
+        </div>
+
+        <div className={style.loginContainor}>
+          {!message ? (
+            <>
+              <p className={style.lWelcome}>{t('login.welcome')}</p>
+              <Heading as="h3" className={style.lHead}>{t('login.ordringPortal')}</Heading>
+              <p className={style.lDetails}>{t('login.details')}</p>
+              <div className={style.forgotWrapper}>
                 <form onSubmit={handleSubmit}>
                   <Heading as="h3">{t('forgot.password')}</Heading>
                   <div className={style.emailInput}>
@@ -75,19 +69,19 @@ const ForgotPassword = () => {
                   </div>
                   <Button type="submit" size="lg">{t('forgot.password.submit')}</Button>
                 </form>
+              </div>
+            </>
+          ) : (
+            <div className={style.message}>
+              <Heading as="h3">{t('loginrequest.heading')}</Heading>
+              <p>{message}</p>
+              <Button type="submit" onClick={() => navigate('/login')} size="lg">{t('loginrequest.button')}</Button>
             </div>
-          </>
-        ) : (
-          <div className={style.message}>
-            <Heading as="h3">{t('loginrequest.heading')}</Heading>
-            <p>{message}</p>
-            <Button type="submit" onClick={() => navigate('/login')} size="lg">{t('loginrequest.button')}</Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
 
   );
 };

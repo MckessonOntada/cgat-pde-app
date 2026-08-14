@@ -25,7 +25,7 @@ import Faq from './pages/FooterPages/Faq';
 import TermsToUse from './pages/FooterPages/TermsToUse';
 import PrivacyNotice from './pages/FooterPages/PrivacyNotice';
 import PrivacyNoticePage from './pages/FooterPages/PrivacyNoticeForStateSpecific.';
-import ContactUs from './pages/FooterPages/ContactUs';
+import ContactUsForm from './pages/FooterPages/ContactUs/ContactUsForm';
 import Success from './pages/FooterPages/ContactUs/Success';
 
 function AuthorizedRoute({ children }) {
@@ -124,14 +124,29 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
-          <Route path={AppRoutes.pathFaq} element={<Faq />} />
+          <Route
+            path={AppRoutes.pathContactSecure}
+            element={
+              <IdleTimer timeout={timeout}>
+                <ContactUsForm />
+              </IdleTimer>
+            }
+          />
+          <Route
+            path={AppRoutes.pathFaq}
+            element={
+              <IdleTimer timeout={timeout}>
+                <Faq />
+              </IdleTimer>
+            }
+          />
           <Route element={<PublicRoute />}>
             <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />
             <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
             <Route path={AppRoutes.pathTermsOfUse} element={<TermsToUse />} />
             <Route path={AppRoutes.pathPrivacyNotice} element={<PrivacyNotice />} />
-            <Route path={AppRoutes.pathContact} element={<ContactUs />} />
+            <Route path={AppRoutes.pathContact} element={<ContactUsForm />} />
             <Route path={AppRoutes.pathContactSuccess} element={<Success />} />
             <Route path={AppRoutes.pathPrivacyNoticeForStateSpecificPrivacyLaws} element={<PrivacyNoticePage />} />
           </Route>

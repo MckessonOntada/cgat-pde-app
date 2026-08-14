@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { Button, Heading, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import './index.scss';
 import mainLayoutStyles from '@src/assets/styles/MainLayout.module.scss';
 import { useNavigate } from 'react-router-dom';
 import PrimaryHeader from '@src/components/header/PrimaryHeader';
