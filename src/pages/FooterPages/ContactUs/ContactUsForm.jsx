@@ -112,7 +112,7 @@ const canSubmit = (values) => {
   return false;
 };
 
-const ContactUsLoggedIn = () => {
+const ContactUsForm = () => {
   restoreSessionTransfer();
   const { authState } = useOktaAuth() || {};
   const isAuthenticated = authState?.isAuthenticated;
@@ -334,4 +334,4 @@ const ContactUsLoggedIn = () => {
   );
 };
 
-export default ContactUsLoggedIn;
+export default ContactUsForm;
