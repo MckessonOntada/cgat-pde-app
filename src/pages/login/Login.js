@@ -19,6 +19,13 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/InspiroLink 2.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import Footer from '@src/components/footer';
+import { PRODUCTION_URL } from '@src/config/AppConfig';
+
+const isEnvironmentBanner = () => {
+  const productionHostname = new URL(PRODUCTION_URL).hostname.toLowerCase();
+  const currentHostname = window.location.hostname.toLowerCase();
+  return currentHostname !== productionHostname;
+};
 
 const Login = () => {
   const widgetRef = useRef();
@@ -30,6 +37,8 @@ const Login = () => {
   let oktaConfig = OktaHelper.getConfiguration();
   let { oktaAuth } = useOktaAuth();
   const navigate = useNavigate();
+
+  const showEnvironmentBanner = isEnvironmentBanner();
 
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
@@ -183,6 +192,22 @@ const Login = () => {
 
   return (
     <div className={style.oktaRoot} id={debugIds(ID.LOGIN, ID.CONTAINER)}>
+      {showEnvironmentBanner && (
+        <div className={style.environmentBanner}>
+          <div className={style.environment}>
+            <span className={style.environmentIcon} />
+            <span className={style.environmentText}>{t('environmentBanner.text1')}</span>
+          </div>
+
+          <div className={style.message}>
+            {t('environmentBanner.text2')}
+            <a href={PRODUCTION_URL} target="_blank" rel="noopener noreferrer">
+              {t('environmentBanner.linkText')}
+            </a>
+            "
+          </div>
+        </div>
+      )}
       <div className={`${style.loginWrap} max-container`}>
         <div className={style.loginHeader}>
           <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />

@@ -10,3 +10,4 @@ export const REACT_APP_OKTA_AUTH_SERVER_ID = __REACT_APP_OKTA_AUTH_SERVER_ID__;
 export const REACT_APP_OKTA_CLIENT_ID = __REACT_APP_OKTA_CLIENT_ID__;
 export const REACT_APP_OKTA_BASE_URL = __REACT_APP_OKTA_BASE_URL__;
 export const REACT_APP_OKTA_LOGIN_URL = __REACT_APP_OKTA_LOGIN_URL__;
+export const PRODUCTION_URL = 'https://www.inspirolink.inspirogene.com';
