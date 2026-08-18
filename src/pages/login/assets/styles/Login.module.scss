@@ -14,6 +14,72 @@
   }
 }
 
+.environmentBanner {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px var(--spacing-04);
+
+  background: #ed8222;
+  box-shadow: 0px 2px 10px rgba(38, 44, 54, 0.28);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-03);
+
+  color: #3d2600;
+
+  .environment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .environmentIcon {
+    width: 11px;
+    height: 11px;
+    position: relative;
+    flex-shrink: 0;
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 7.83px;
+      height: 7.83px;
+      top: 1.58px;
+      left: 1.58px;
+      background: #3d2600;
+      opacity: 0.38;
+      border-radius: 50%;
+    }
+  }
+
+  .environmentText {
+    font-size: var(--brand-font-size--default);
+    font-weight: 800;
+    line-height: var(--brand-line-height--24);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  .message {
+    opacity: 0.9;
+    font-family: "Nunito", sans-serif;
+    font-size: 13px;
+    font-weight: var(--brand-font-weight-600);
+    line-height: var(--brand-line-height--m-large);
+    letter-spacing: 0.2px;
+
+    a {
+      color: inherit;
+      font: inherit;
+      font-weight: var(--brand-font-weight-700);
+      text-decoration: underline;
+    }
+  }
+}
+
 .loginWrap {
   display: flex;
   margin: var(--spacing-08) auto 0px;
@@ -271,6 +337,22 @@
           min-width: 100%;
         }
       }
+    }
+  }
+  .environmentBanner {
+    flex-direction: column;
+    gap: 2px;
+    min-height: unset;
+    padding: var(--spacing-02) var(--spacing-03);
+
+    .environmentText {
+      font-size: var(--brand-font-size--small);
+      line-height: var(--brand-line-height--m-large);
+    }
+
+    .message {
+      font-size: var(--brand-font-size--extra-small);
+      line-height: var(--brand-line-height--large);
     }
   }
 }
