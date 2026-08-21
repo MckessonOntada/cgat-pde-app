@@ -609,7 +609,7 @@ export default [
     accessibleWithoutLogin: false,
     question: [
       {
-        questionTitle: 'How to Place an Order in InspiroLink',
+        questionTitle: 'How to Place an Order on InspiroLink',
         video: {
           id: 'training-101'
         },
