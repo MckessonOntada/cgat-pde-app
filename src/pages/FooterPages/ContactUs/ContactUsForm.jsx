@@ -170,6 +170,7 @@ const ContactUsForm = () => {
     {
       onSuccess: (data) => {
         setSubmittedData(data);
+        setAlert(null);
       },
       onError: () => {
         setAlert({
@@ -249,6 +250,7 @@ const ContactUsForm = () => {
                           handleSubmitAnotherRequest={() => {
                             resetForm();
                             setSubmittedData(null);
+                            setAlert(null);
                           }}
                         />
                       ) : (
