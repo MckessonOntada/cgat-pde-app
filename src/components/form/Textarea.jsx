@@ -3,7 +3,21 @@ import React, { useRef } from 'react';
 import { highlightFieldOnLabelClick } from './util';
 
 export default function Textarea(props) {
-  const { id, label, labelControls, value, error, isRequired, maxCharLimit = 1000, displayType = 'outline', onChange, onBlur, ...rest } = props;
+  const {
+    id,
+    label,
+    labelControls,
+    value,
+    error,
+    isRequired,
+    maxCharLimit = 1000,
+    displayType = 'outline',
+    onChange,
+    onBlur,
+    minRows,
+    maxCharHelperText,
+    ...rest
+  } = props;
   const fieldContainerRef = useRef(null);
 
   return (
@@ -23,12 +37,13 @@ export default function Textarea(props) {
         showError={!!error}
         displayType={displayType}
         maxCharLimit={maxCharLimit}
-        minRows={3}
+        minRows={minRows}
         value={value}
+        maxCharHelperText={maxCharHelperText}
         {...rest}
       />
       {error && (
-        <div style={{ marginTop: '-20px', display: 'inline-block' }}>
+        <div style={{ marginTop: maxCharHelperText ? '0px' : '-20px', display: 'inline-block' }}>
           <TextError errorMessage={error}></TextError>
         </div>
       )}

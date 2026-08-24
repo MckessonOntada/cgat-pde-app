@@ -4,7 +4,7 @@ import Textarea from '../Textarea';
 import { getFieldname, getNestedValue } from '../util';
 
 export default function TextareaFormik(props) {
-  const { field, form, fieldlabel, labelControls, isRequired, maxCharLimit, isReadOnly, onChange } = props;
+  const { field, form, fieldlabel, labelControls, isRequired, maxCharLimit, isReadOnly, onChange, minRows = 3 } = props;
   const { t } = useTranslate();
   const { name, onBlur } = field;
   const { errors, touched, setFieldValue } = form;
@@ -27,6 +27,7 @@ export default function TextareaFormik(props) {
       maxCharWarningLimit={props.maxCharWarningLimit}
       maxLength={props.maxLength}
       maxLimitReachedHelpertext={props.maxLimitReachedHelpertext}
+      minRows={minRows}
       {...field}
     />
   );

@@ -23,7 +23,8 @@ import Alert from '@src/components/cgat-alert/Alert';
 import { useOktaAuth } from '@okta/okta-react';
 import PersonalDetails from './PersonalDetails';
 import * as Yup from 'yup';
-import { PHONE_REGEX } from '@src/components/form/ValidationRegExp';
+import { CONTACT_US_DESCRIPTION_REGEX, PHONE_REGEX } from '@src/components/form/ValidationRegExp';
+import Components from '@src/components/form/Components';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
@@ -170,6 +171,7 @@ const ContactUsForm = () => {
     {
       onSuccess: (data) => {
         setSubmittedData(data);
+        setAlert(null);
       },
       onError: () => {
         setAlert({
@@ -190,6 +192,11 @@ const ContactUsForm = () => {
       .max(50, t('contactUs.validation.emailMax')),
     phoneNumber: Yup.string().matches(PHONE_REGEX, t('contactUs.validation.invalidPhone')).required(t('contactUs.validation.phoneNumberRequired'))
   });
+
+  const contactUsSchema = Yup.object({
+    description: Yup.string().matches(CONTACT_US_DESCRIPTION_REGEX, t('contactUs.validation.description'))
+  }).concat(isAuthenticated ? Yup.object() : personalDetailsSchema);
+
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
@@ -234,11 +241,11 @@ const ContactUsForm = () => {
                 }}
                 validateOnBlur={true}
                 validateOnChange={true}
-                validationSchema={!isAuthenticated ? personalDetailsSchema : undefined}
+                validationSchema={contactUsSchema}
                 onSubmit={(values) => {
                   mutate({ values });
                 }}>
-                {({ values, resetForm, validateForm, isValid }) => {
+                {({ values, resetForm, validateForm, isValid, setFieldValue, setFieldTouched }) => {
                   const progress = getProgressState(values);
 
                   return (
@@ -249,6 +256,7 @@ const ContactUsForm = () => {
                           handleSubmitAnotherRequest={() => {
                             resetForm();
                             setSubmittedData(null);
+                            setAlert(null);
                           }}
                         />
                       ) : (
@@ -297,13 +305,19 @@ const ContactUsForm = () => {
                                     title={t('contactUs.describeIssue')}
                                   />
 
-                                  <div className={styles.descriptionWrapper}>
-                                    <Field as="textarea" name="description" maxLength={1000} className={styles.descriptionField} />
-
-                                    <div className={styles.descriptionCounter}>
-                                      <span>{t('contactUs.maxCharacters')}</span>
-                                      <span>({values.description.length}/1000)</span>
-                                    </div>
+                                  <div className={styles.formSectionGap}>
+                                    <Field
+                                      id="description"
+                                      name="description"
+                                      component={Components['textarea']}
+                                      maxCharLimit={1000}
+                                      onChange={(value) => {
+                                        setFieldValue('description', value);
+                                        setFieldTouched('description', true, false);
+                                      }}
+                                      maxCharHelperText={t('contactUs.maxCharacters')}
+                                      minRows={5}
+                                    />
                                   </div>
                                 </>
                               )}
@@ -314,7 +328,7 @@ const ContactUsForm = () => {
                                   className={styles.contactFormSubmitButton}
                                   variant="primary"
                                   size="md"
-                                  disabled={!isAuthenticated ? !isValid || !canSubmit(values) || isLoading : !canSubmit(values) || isLoading}>
+                                  disabled={!isValid || !canSubmit(values) || isLoading}>
                                   {t('contactUs.submitRequest')}
                                 </Button>
                               </div>
