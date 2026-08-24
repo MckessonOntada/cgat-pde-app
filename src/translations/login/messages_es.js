@@ -111,5 +111,6 @@ export const LoginMessagesES = {
   'contactUs.validation.phoneNumberRequired': 'S_Phone Number is required',
   'contactUs.validation.invalidEmail': 'S_Please enter a valid email address',
   'contactUs.validation.invalidPhone': 'S_Please enter a valid phone number.',
-  'contactUs.validation.emailMax': 'S_Email cannot exceed 50 characters.'
+  'contactUs.validation.emailMax': 'S_Email cannot exceed 50 characters.',
+  'contactUs.validation.description': 'S_Only alphabets, numbers, spaces, commas, periods, and hyphens are allowed.'
 };
