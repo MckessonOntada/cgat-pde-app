@@ -187,8 +187,9 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
   };
   const shouldShowIdentifierSection =
     channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
-    [spTherapyConfig.coiIdRequirement, spTherapyConfig.patientIdentifierRequirement, spTherapyConfig.mrnRequirement].some(
-      (key) => key !== REQUIREMENT.NOT_REQUIRED
+    spTherapyConfig?.config?.fields?.some(
+      (field) =>
+        field?.properties?.displayOnForm === true
     );
   const shouldShowRequiredLabel = (spTherapyConfig?.isCoiIdRequired || spTherapyConfig?.isMRNRequired) && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
@@ -760,8 +761,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
               isApprover
                 ? t('headings.reviewOrder')
                 : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                ? t('headings.createNewPrescription')
-                : t('headings.createNewOrder')
+                  ? t('headings.createNewPrescription')
+                  : t('headings.createNewOrder')
             }
           />
         }
@@ -969,8 +970,8 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
                                           key === 'phone'
                                             ? CommonUtils.formatPhoneNumber(rawValue)
                                             : key === 'tin'
-                                            ? CommonUtils.formatTIN(rawValue)
-                                            : rawValue;
+                                              ? CommonUtils.formatTIN(rawValue)
+                                              : rawValue;
                                         return (
                                           <Tooltip key={key} body={value}>
                                             <p className="detail-segment inline-text-overflow">
