@@ -202,7 +202,7 @@ const Login = () => {
           <div className={style.message}>
             {t('environmentBanner.text2')}
             <a href={PRODUCTION_URL} target="_blank" rel="noopener noreferrer">
-              {t('environmentBanner.linkText')}
+              {PRODUCTION_URL}
             </a>
             "
           </div>
