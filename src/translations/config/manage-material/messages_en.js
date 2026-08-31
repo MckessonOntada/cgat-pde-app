@@ -102,5 +102,36 @@ export const SystemConfigurationEN = {
   'labels.doNotDisplay': 'Do Not Display',
   'labels.yes': 'Yes',
   'labels.no': 'No',
-  'manageMaterial.drawer.details.configuration.body.shipToPORequirement': 'Ship to PO Number'
+  'manageMaterial.drawer.details.configuration.body.shipToPORequirement': 'Ship to PO Number',
+  // Noification Settings
+  'manageMaterial.table.header.button.notificationSettings': 'Notification Settings',
+  'manageMaterial.notificationSettings.heading': 'Notification Settings',
+  'manageMaterial.notificationSettings.backToManageMatierial': 'Back to Manage Material page',
+  'manageMaterial.notificationSettings.Tab1': 'Order Submission',
+  'manageMaterial.notificationSettings.Tab2': 'Patient ingestion',
+  'manageMaterial.notificationSettings.heading.notifications': 'Order Submission Notifications',
+  'manageMaterial.notificationSettings.subHeading.notifications':
+    'Associated Customer Service users will receive an email each time an order is submitted for the selected manufacturer material.',
+  'manageMaterial.notificationSettings.label.addRecipients': 'Do you want to add more recipients for order submission notification?',
+  'manageMaterial.notificationSettings.button.addRecipient': 'Add Recipient',
+  'manageMaterial.notificationSettings.recipientsTable.heading': 'Recipient Listing',
+  'manageMaterial.notificationSettings.button.cancel': 'Cancel',
+  'manageMaterial.notificationSettings.button.save': 'Save',
+  // Add Recipients
+  'manageMaterial.addRecipients.heading': 'Add Recipients',
+  'manageMaterial.addRecipients.form.heading': 'Recipient Details',
+  'manageMaterial.addRecipients.backToSettings': 'Back to Notification Settings',
+  'manageMaterial.addRecipients.label.firstName': 'First Name',
+  'manageMaterial.addRecipients.label.lastName': 'Last Name',
+  'manageMaterial.addRecipients.label.middleName': 'Middle Name',
+  'manageMaterial.addRecipients.label.email': 'Email ID',
+  'manageMaterial.addRecipients.required.firstName': 'First Name is required',
+  'manageMaterial.addRecipients.required.lastName': 'Last Name is required',
+  'manageMaterial.addRecipients.required.email': 'Email ID is required',
+  'manageMaterial.addRecipients.validation.email': 'Please enter a valid email address',
+  'manageMaterial.addRecipients.validation.uniqueEmail': 'Email addresses must be unique',
+  'manageMaterial.addRecipients.button.remove': 'Remove',
+  'manageMaterial.addRecipients.button.addMore': 'Add more',
+  'manageMaterial.addRecipients.button.cancel': 'Cancel',
+  'manageMaterial.addRecipients.button.addRecipient': 'add recipient'
 };
