@@ -321,6 +321,9 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
               disabled={isBothSelected || isSPSelected}>
               {t('manageMaterial.table.header.button.configure')}
             </Button>
+            <Button variant="secondary" onClick={() => navigate(routeConstants.NOTIFICATION_SETTINGS, { state: { therapy: selectedMaterials } })} size="sm">
+              {t('manageMaterial.table.header.button.notificationSettings')}
+            </Button>
           </div>
         }
       />
