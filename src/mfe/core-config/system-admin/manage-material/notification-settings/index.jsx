@@ -37,7 +37,6 @@ const MaterialNotificationSettings = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-
   const therapy = location.state?.therapy;
 
   const tabList = [

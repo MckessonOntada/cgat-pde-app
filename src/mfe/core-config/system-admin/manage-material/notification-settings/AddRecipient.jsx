@@ -23,11 +23,8 @@ const recipientValidationSchema = (t) =>
       .of(
         Yup.object({
           firstName: Yup.string().trim().required(t('manageMaterial.addRecipients.required.firstName')),
-
           middleName: Yup.string().trim(),
-
           lastName: Yup.string().trim().required(t('manageMaterial.addRecipients.required.lastName')),
-
           email: Yup.string().trim().email(t('manageMaterial.addRecipients.validation.email')).required(t('manageMaterial.addRecipients.required.email'))
         })
       )
@@ -54,9 +51,7 @@ const recipientValidationSchema = (t) =>
 
 const AddRecipientForm = ({ onCancel }) => {
   const { t } = useTranslate();
-
   const { values, validateForm, setFieldTouched } = useFormikContext();
-
   const recipients = values.recipients || [];
 
   const handleAddMore = async (index, push) => {
@@ -108,7 +103,7 @@ const AddRecipientForm = ({ onCancel }) => {
                             placeholder=" "
                             isRequired
                             component={Components.input}
-                            maxLength={100}
+                            maxLength={50}
                           />
                         </div>
 
@@ -118,7 +113,7 @@ const AddRecipientForm = ({ onCancel }) => {
                             label={t('manageMaterial.addRecipients.label.middleName')}
                             placeholder=" "
                             component={Components.input}
-                            maxLength={100}
+                            maxLength={50}
                           />
                         </div>
 
@@ -129,7 +124,7 @@ const AddRecipientForm = ({ onCancel }) => {
                             placeholder=" "
                             isRequired
                             component={Components.input}
-                            maxLength={100}
+                            maxLength={50}
                           />
                         </div>
 
@@ -140,7 +135,7 @@ const AddRecipientForm = ({ onCancel }) => {
                             placeholder=" "
                             isRequired
                             component={Components.input}
-                            maxLength={254}
+                            maxLength={100}
                           />
                         </div>
                       </div>
@@ -184,7 +179,6 @@ const AddRecipient = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-
   const therapy = location.state?.therapy;
 
   const handleBackToSettings = () => {
