@@ -132,5 +132,6 @@ export const SystemConfigurationES = {
   'manageMaterial.addRecipients.button.remove': 'S_Remove',
   'manageMaterial.addRecipients.button.addMore': 'S_Add more',
   'manageMaterial.addRecipients.button.cancel': 'S_Cancel',
-  'manageMaterial.addRecipients.button.addRecipient': 'S_add recipient'
+  'manageMaterial.addRecipients.button.addRecipient': 'S_add recipient',
+  'manageMaterial.table.header.button.configureMaterial': 'S_material configuration',
 };
