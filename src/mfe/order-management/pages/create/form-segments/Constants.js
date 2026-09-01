@@ -17,7 +17,8 @@ export const MANUFACTURER = {
   ORCA: 'ORCA',
   REGENERON: 'REGENERON',
   KITE: 'KITE',
-  BMS: 'BMS'
+  BMS: 'BMS',
+  MERCK: 'MERCK'
 };
 export const FormList = (t) => [
   {
