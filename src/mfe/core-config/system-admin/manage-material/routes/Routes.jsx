@@ -3,8 +3,8 @@ import React from 'react';
 import { routeConstants } from './constants';
 import ManageMaterial from '../ManageMaterial';
 import ConfigurationSpMaterial from '../../manage-sp-material/pages/configure-material/ConfigurationSpMaterial';
-import MaterialNotificationSettings from '../notification-settings';
-import AddRecipient from '../notification-settings/AddRecipient';
+import MaterialNotificationSettings from '../../notification-settings';
+import AddRecipient from '../../notification-settings/AddRecipient';
 
 function ManageMaterialRoute() {
   return (

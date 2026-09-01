@@ -8,7 +8,7 @@ import ModuleHeader from '@src/components/module-header';
 import { Field, Formik, Form } from 'formik';
 
 import styles from './MaterialNotificationSettings.module.scss';
-import { routeConstants } from '../routes/constants';
+import { routeConstants } from '../manage-material/routes/constants';
 
 const recipientData = [
   {

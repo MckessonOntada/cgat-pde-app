@@ -9,6 +9,7 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import * as Yup from 'yup';
 import { Divider } from '@mckesson/mcp-component-library';
+import CommonUtils from '@src/util/CommonUtils';
 
 const emptyRecipient = {
   firstName: '',
@@ -22,9 +23,9 @@ const recipientValidationSchema = (t) =>
     recipients: Yup.array()
       .of(
         Yup.object({
-          firstName: Yup.string().trim().required(t('manageMaterial.addRecipients.required.firstName')),
-          middleName: Yup.string().trim(),
-          lastName: Yup.string().trim().required(t('manageMaterial.addRecipients.required.lastName')),
+          firstName: CommonUtils.getNameValidation(t, { field: 'first_name', required: true }),
+          middleName: CommonUtils.getNameValidation(t, { field: 'middle_name', min: 0 }),
+          lastName: CommonUtils.getNameValidation(t, { field: 'last_name', required: true }),
           email: Yup.string().trim().email(t('manageMaterial.addRecipients.validation.email')).required(t('manageMaterial.addRecipients.required.email'))
         })
       )
