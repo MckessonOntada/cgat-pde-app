@@ -72,11 +72,11 @@ export const LoginMessagesEN = {
   'environmentBanner.text1': 'Demo Environment',
   'environmentBanner.text2': ' To place a therapy order please go here "',
   'environmentBanner.linkText': 'Production Link',
-  'contactUs.subheading': "Tell us what you need help with and we'll route it to the right team.",
+  'contactUs.subheading': 'Tell us how we can help, and we’ll connect you with the appropriate team.',
   'contactUs.reasonForContact': 'Reason for contact',
   'contactUs.signedIn': 'Signed in',
   'contactUs.selectTherapy': 'Select Therapy',
-  'contactUs.orderingChannel': 'Ordering channel',
+  'contactUs.orderingChannel': 'Ordering Channel',
   'contactUs.selectAccount': 'Select Account',
   'contactUs.describeIssue': 'Describe the issue',
   'contactUs.submitRequest': 'Submit Request',
@@ -87,7 +87,7 @@ export const LoginMessagesEN = {
   'contactUs.searchAccount': 'Search account',
   'contactUs.submittedPage.title': 'Request Submitted',
   'contactUs.submittedPage.description':
-    "Our support team will review your case and respond within 1-2 business days. You'll receive a confirmation email shortly.",
+    'Your request has been received and is currently under review by our support team. A confirmation email will be sent shortly.',
   'contactUs.submittedPage.support.title': 'Need immediate assistance?',
   'contactUs.submittedPage.support.description': 'Our support team is available Monday - Friday, 8 am - 8 pm ET.',
   'contactUs.submittedPage.callUs': 'CALL US',
@@ -103,15 +103,15 @@ export const LoginMessagesEN = {
   'contactUs.techIssue.label3': 'Notifications',
   'contactUs.techIssue.label4': 'Other',
   'contactUs.noTherapies.alertMessage':
-    'No therapies are available based on your current access permissions. Please contact your Organization Administrator if you believe additional access is required.',
+    'You don’t currently have access to any therapies. Contact your Organization Administrator to request access to additional therapies.',
   'contactUs.noAccounts.alertMessage':
-    'No accounts are available based on your current selected therapy. Please contact your Organization Administrator if you believe additional access is required.',
+    'You don’t currently have access to any accounts. Contact your Organization Administrator to request access to additional accounts.',
   'contactUs.loginRequired.orderAlertMessage':
     "You must be logged in to submit an order-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
   'contactUs.loginRequired.invoiceAlertMessage':
     "You must be logged in to submit an invoices-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
   'contactUs.nonLoggedIn.infoAlertMessage':
-    'Get faster support by signing in to InspiroLink. Your account details will be pre-filled, helping us route your request more efficiently.',
+    'Sign in to InspiroLink for faster support. Your account details will be pre-filled, making it easier to submit and route your request.',
   'contactUs.personalDetails.title': 'Personal Details',
   'contactUs.personalDetails.label.firstName': 'First Name',
   'contactUs.personalDetails.label.lastName': 'Last Name',
