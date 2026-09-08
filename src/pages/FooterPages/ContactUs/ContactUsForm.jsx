@@ -41,11 +41,9 @@ const shouldShowDescription = (values) => {
 
   if (isTherapyBasedReason(values.reason)) {
     const isCrosswalked = isTherapyCrosswalked(values.selectedTherapy);
-
     if (isCrosswalked) {
       return !!values.therapy && !!values.orderingChannel && !!values.account;
     }
-
     return !!values.therapy && !!values.account;
   }
 
