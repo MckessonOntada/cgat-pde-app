@@ -26,6 +26,7 @@ const RequestSubmitted = ({ submittedData, handleSubmitAnotherRequest }) => {
       <div className={styles.ticketNumber}>
         <span># {submittedData.ticketId}</span>
       </div>
+      <p className={styles.ticketNote}>{t('contactUs.submittedPage.ticketNote')}</p>
 
       <div className={styles.supportCard}>
         <div className={styles.supportHeader}>
@@ -62,8 +63,6 @@ const RequestSubmitted = ({ submittedData, handleSubmitAnotherRequest }) => {
           </div>
         </div>
       </div>
-
-      <p className={styles.ticketNote}>{t('contactUs.submittedPage.ticketNote')}</p>
 
       <Button type="button" variant="primary" size="md" className={contactUsStyles.contactFormSubmitButton} onClick={handleSubmitAnotherRequest}>
         {t('contactUs.submittedPage.submitAnotherRequest')}
