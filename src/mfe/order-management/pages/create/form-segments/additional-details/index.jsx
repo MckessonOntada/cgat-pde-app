@@ -662,6 +662,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       getValueWIthoutPrefixAndSuffix(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
       if (therapyConfig.maxQuantity === therapyConfig.minQuantity && therapyConfig.minQuantity > 0) {
         initialValues.orderQuantity = therapyConfig.minQuantity;
+      } else {
+        initialValues.orderQuantity = '';
       }
     }
 
@@ -744,8 +746,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           shipToPONumber
         });
       }
-
-      console.log(orderQuantity);
 
       setStoredValue((prev) => ({
         ...prev,

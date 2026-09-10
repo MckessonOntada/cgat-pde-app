@@ -195,7 +195,10 @@ export function getValueWIthoutPrefixAndSuffix(values, fieldConfigs) {
     const field = config.fieldName;
     const value = values[field];
 
-    if (value === undefined || value === null || value === '') return;
+    if (value === undefined || value === null || value === '') {
+      values[field] = '';
+      return;
+    }
 
     const regex = config.properties?.fieldFormat?.validationRegex;
     if (!regex) return;
