@@ -1161,5 +1161,7 @@ export const MessageEn = {
   'labels.layout.clearAll': 'CLEAR ALL',
   'labels.layout.apply': 'APPLY',
   'messages.layout.applySuccess': 'Column preferences applied successfully.',
-  'messages.layout.applyError': 'Failed to save column preferences. Please try again.'
+  'messages.layout.applyError': 'Failed to save column preferences. Please try again.',
+  'labels.doseIdentifier': 'Dose Identifier',
+  'labels.doseIdentifierRequired': 'Dose Identifier is required'
 };

@@ -1,6 +1,6 @@
 import Components from '@src/components/form/Components';
 import CommonUtils from '@src/util/CommonUtils';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, MANUFACTURER } from '../Constants';
 import { getCountries, US_STATES } from '@src/components/form/util';
 import OrderService from '@src/api/commonService/OrderService';
 import React from 'react';
@@ -16,40 +16,105 @@ const getBinaryOptions = (keyPrefix = '', readOnly) => {
   }));
 };
 
-export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, spTherapyConfig, channelType, handleCoiIdValidation }) => {
+export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, spTherapyConfig, channelType, handleCoiIdValidation, manufacturer }) => {
   const dynamic_fields = [];
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
-    therapyConfig?.config?.fields?.forEach((field) => {
-      if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
-        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
-        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-        const formatType = field?.properties?.fieldFormat?.formatType;
-        dynamic_fields.push({
-          name: field?.fieldName,
-          label: field?.properties?.displayName,
-          isRequired: field?.properties?.mandatoryField,
-          component:
-            Components[prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input'],
-          prefix,
-          suffix,
-          ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
-          infoText: field?.properties.helpInfoMessage,
-          ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
-        });
-      }
-    });
-    dynamic_fields.push({
-      name: 'orderQuantity',
-      label: translationFn('labels.orderQuantity'),
-      placeholder: ' ',
-      isRequired: true,
-      // readOnly: therapyConfig?.maxQuantity === therapyConfig?.minQuantity,
-      component: Components['input'],
-      maxLength: 2
-    });
+    if (manufacturer === MANUFACTURER.MERCK) {
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName === 'coiId' && field?.properties?.displayOnForm) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          dynamic_fields.push({
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            component:
+              Components[prefix || suffix ? 'inputText' : 'input'],
+            prefix,
+            suffix,
+            infoText: field?.properties.helpInfoMessage,
+            onBlur: handleCoiIdValidation
+          });
+        }
+      });
+      dynamic_fields.push({
+        name: 'doseIdentifier',
+        label: translationFn('labels.doseIdentifier'),
+        placeholder: 'Select Dose Identifier',
+        isRequired: true,
+        component: Components['dropdown'],
+        options: [{
+          value: 'test1',
+          label: 'test1'
+        }, {
+          value: 'test2',
+          label: 'test2',
+        },
+        {
+          value: 'test3',
+          label: 'test3',
+        }],
+        size: 'lg'
+      });
+      dynamic_fields.push({
+        name: 'orderQuantity',
+        label: translationFn('labels.orderQuantity'),
+        placeholder: ' ',
+        isRequired: true,
+        component: Components['input'],
+        maxLength: 2
+      });
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.fieldName !== 'coiId' && field?.properties?.displayOnForm) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          const formatType = field?.properties?.fieldFormat?.formatType;
+          dynamic_fields.push({
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            component:
+              Components[prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input'],
+            prefix,
+            suffix,
+            ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
+            infoText: field?.properties.helpInfoMessage,
+            ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
+          });
+        }
+      });
+    } else {
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          const formatType = field?.properties?.fieldFormat?.formatType;
+          dynamic_fields.push({
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            component:
+              Components[prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input'],
+            prefix,
+            suffix,
+            ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
+            infoText: field?.properties.helpInfoMessage,
+            ...(field.fieldName === 'coiId' && { onBlur: handleCoiIdValidation })
+          });
+        }
+      });
+      dynamic_fields.push({
+        name: 'orderQuantity',
+        label: translationFn('labels.orderQuantity'),
+        placeholder: ' ',
+        isRequired: true,
+        component: Components['input'],
+        maxLength: 2
+      });
+    }
   }
   return dynamic_fields;
-};
+}
 
 export const getClinicalDetailFields = ({ translationFn, formValues, setFieldValue, onDiagnosisCodeSearch, diagnosisCode }) => {
   const fields = [];

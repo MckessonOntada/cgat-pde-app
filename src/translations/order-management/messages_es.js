@@ -806,5 +806,7 @@ export const MessageEs = {
   'labels.layout.clearAll': 'S_CLEAR ALL',
   'labels.layout.apply': 'S_APPLY',
   'messages.layout.applySuccess': 'S_Column preferences applied successfully.',
-  'messages.layout.applyError': 'S_Failed to save column preferences. Please try again.'
+  'messages.layout.applyError': 'S_Failed to save column preferences. Please try again.',
+  'labels.doseIdentifier': 'S_Dose Identifier',
+  'labels.doseIdentifierRequired': 'S_Dose Identifier is required'
 };

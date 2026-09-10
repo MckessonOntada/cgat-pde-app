@@ -58,6 +58,7 @@ import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-load
 
 const INITIAL_VALUES = {
   coiId: '',
+  doseIdentifier: '',
   orderQuantity: '',
   poNumber: '',
   shipToPONumber: '',
@@ -147,7 +148,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   }, [orderDetails]);
 
-  const initialValidationSchema = ({ isVariantRequired, channelType, secondLegShipInfoRequired = false }) => {
+  const initialValidationSchema = ({ isVariantRequired, channelType, secondLegShipInfoRequired = false, manufacturer }) => {
     let schema = Yup.object({
       variant: Yup.object()
         .shape({
@@ -196,7 +197,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
+          let validator = Yup.string();
+          if (field.properties?.fieldFormat?.validationRegex) {
+            validator = validator.matches(field.properties.fieldFormat.validationRegex, {
+              message: field.properties.errorMessage,
+              excludeEmptyString: true
+            });
+          }
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
@@ -266,8 +273,16 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           dynamicFields[field.fieldName] = validator;
         }
       });
+      if (manufacturer === MANUFACTURER.MERCK) {
+        dynamicFields['doseIdentifier'] = Yup.string()
+          .trim()
+          .required(t('labels.doseIdentifierRequired'));
+      }
       dynamicFields['orderQuantity'] = Yup.number()
         .transform((value, originalValue) => {
+          if (originalValue === '' || originalValue === null || originalValue === undefined) {
+            return undefined;
+          }
           if (!/^[0-9]+$/.test(originalValue)) {
             return NaN;
           }
@@ -348,7 +363,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
-    const updatedValidationSchema = initialValidationSchema({ isVariantRequired, channelType, secondLegShipInfoRequired: isSecondLegShipInfoRequired });
+    const updatedValidationSchema = initialValidationSchema({
+      isVariantRequired,
+      channelType,
+      secondLegShipInfoRequired: isSecondLegShipInfoRequired,
+      manufacturer
+    });
 
     let questionnaireValidationSchema = Yup.object();
     let questionnaireFields = {};
@@ -375,7 +395,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       ...storedValue,
       ...questionnaireFields
     });
-  }, [variantsData, questionnaireTemplateConfig, channelType]);
+  }, [variantsData, questionnaireTemplateConfig, channelType, therapyConfig, manufacturer, isSecondLegShipInfoRequired, orderDetails]);
 
   const navigateToNextStage = (id) => {
     navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
@@ -454,23 +474,23 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                 ? Yup.string().required('Value is required')
                 : Yup.string().nullable()
               : question.type === QUESTION_TYPE.RADIO_BUTTON
-              ? question.isMandatory
-                ? Yup.string().required('Select at least one option')
-                : Yup.string().nullable()
-              : question.type === QUESTION_TYPE.DATE_PICKER
-              ? question.isMandatory
-                ? Yup.date().required('Date is required')
-                : Yup.date().nullable()
-              : question.type === QUESTION_TYPE.CHECKBOX
-              ? question.isMandatory
-                ? Yup.array()
-                    .of(Yup.string())
-                    .min(1, 'Select at least one option')
-                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
-                : Yup.array().of(Yup.string()).nullable()
-              : question.isMandatory
-              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
-              : Yup.array().of(Yup.string()).nullable(),
+                ? question.isMandatory
+                  ? Yup.string().required('Select at least one option')
+                  : Yup.string().nullable()
+                : question.type === QUESTION_TYPE.DATE_PICKER
+                  ? question.isMandatory
+                    ? Yup.date().required('Date is required')
+                    : Yup.date().nullable()
+                  : question.type === QUESTION_TYPE.CHECKBOX
+                    ? question.isMandatory
+                      ? Yup.array()
+                        .of(Yup.string())
+                        .min(1, 'Select at least one option')
+                        .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                      : Yup.array().of(Yup.string()).nullable()
+                    : question.isMandatory
+                      ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+                      : Yup.array().of(Yup.string()).nullable(),
             document: Yup.object()
               .shape({
                 url: Yup.string(),
@@ -662,6 +682,11 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       getValueWIthoutPrefixAndSuffix(initialValues, orderDetails?.therapyConfig?.config?.fields || []);
       if (therapyConfig.maxQuantity === therapyConfig.minQuantity && therapyConfig.minQuantity > 0) {
         initialValues.orderQuantity = therapyConfig.minQuantity;
+      } else {
+        initialValues.orderQuantity = '';
+      }
+      if (manufacturer === MANUFACTURER.MERCK) {
+        initialValues.doseIdentifier = '';
       }
     }
 
@@ -673,6 +698,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         timeOfApheresis,
         timeOfAdministration,
         coiId,
+        doseIdentifier,
         orderQuantity,
         patientConsentTaken,
         poNumber,
@@ -740,6 +766,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           timeOfApheresis,
           timeOfAdministration,
           coiId,
+          doseIdentifier: doseIdentifier ?? (manufacturer === MANUFACTURER.MERCK ? '' : undefined),
           orderQuantity,
           shipToPONumber
         });
@@ -832,18 +859,28 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
     const variantDetails = !!variant
       ? {
-          variant: variant.variant,
-          variantDescription: variant.variantDescription,
-          variantAcknowledgment: variantAcknowledgement.isChecked,
-          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document),
-          therapy: {
-            id: variant.therapyId
-          }
+        variant: variant.variant,
+        variantDescription: variant.variantDescription,
+        variantAcknowledgment: variantAcknowledgement.isChecked,
+        variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document),
+        therapy: {
+          id: variant.therapyId
         }
+      }
       : null;
 
-    const { coiId, orderQuantity, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber, timeOfAdministration, timeOfApheresis } =
-      values;
+    const {
+      coiId,
+      doseIdentifier,
+      orderQuantity,
+      poNumber,
+      dateOfAdministration,
+      dateOfApheresis,
+      diagnosisCode,
+      shipToPONumber,
+      timeOfAdministration,
+      timeOfApheresis
+    } = values;
     let orderQuantityConfig = {};
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       orderQuantityConfig = therapyConfig;
@@ -920,6 +957,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       );
     } else {
       payload.coiId = coiId;
+      if (manufacturer === MANUFACTURER.MERCK || doseIdentifier) {
+        payload.doseIdentifier = doseIdentifier;
+      }
       payload.orderQuantity = orderQuantity;
       payload.shipToPONumber = shipToPONumber;
       payload.dateOfAdministration = dateOfAdministration;
@@ -1219,8 +1259,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
               isApprover
                 ? t('headings.reviewOrder')
                 : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                ? t('headings.createNewPrescription')
-                : t('headings.createNewOrder')
+                  ? t('headings.createNewPrescription')
+                  : t('headings.createNewOrder')
             }
           />
         }
@@ -1294,7 +1334,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
                       <div className="form-segment-list">
                         <AdditionalDetailsDefaultFields
-                          {...{ therapyConfig, channelType, spTherapyConfig }}
+                          {...{ therapyConfig, channelType, spTherapyConfig, manufacturer }}
                           readOnly={readOnly || !isAllowedToProceed}
                           handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors)}
                         />
@@ -1452,7 +1492,7 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
           <InfoIcon />
         </div>
       ),
-      selector: () => {},
+      selector: () => { },
       minWidth: '220px',
       maxWidth: '280px',
       sortable: false,
@@ -1469,7 +1509,7 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
       id: 'variantDescription',
       name: <div className="variant-table-cell">{t('labels.variantDescription')}</div>,
       minWidth: '300px',
-      selector: () => {},
+      selector: () => { },
       sortable: false,
       showInMobileHeader: true,
       cell: (props) => <span>{props.variantDescription}</span>
@@ -1487,7 +1527,7 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, spTherapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
+const AdditionalDetailsDefaultFields = ({ therapyConfig, spTherapyConfig, channelType, readOnly, handleCoiIdValidation, manufacturer }) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
   const defaultFields = getDefaultAdditionalDetailsFields({
@@ -1496,7 +1536,8 @@ const AdditionalDetailsDefaultFields = ({ therapyConfig, spTherapyConfig, channe
     spTherapyConfig,
     channelType,
     setFieldValue,
-    handleCoiIdValidation
+    handleCoiIdValidation,
+    manufacturer
   });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;
