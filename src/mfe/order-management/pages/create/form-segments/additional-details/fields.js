@@ -16,7 +16,16 @@ const getBinaryOptions = (keyPrefix = '', readOnly) => {
   }));
 };
 
-export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig, spTherapyConfig, channelType, handleCoiIdValidation, manufacturer }) => {
+export const getDefaultAdditionalDetailsFields = ({
+  translationFn,
+  therapyConfig,
+  spTherapyConfig,
+  channelType,
+  handleCoiIdValidation,
+  handleDoseIdentifierValidation,
+  manufacturer,
+  doseIdentifierOptions = []
+}) => {
   const dynamic_fields = [];
   if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
     if (manufacturer === MANUFACTURER.MERCK) {
@@ -43,17 +52,10 @@ export const getDefaultAdditionalDetailsFields = ({ translationFn, therapyConfig
         placeholder: 'Select Dose Identifier',
         isRequired: true,
         component: Components['dropdown'],
-        options: [{
-          value: 'test1',
-          label: 'test1'
-        }, {
-          value: 'test2',
-          label: 'test2',
-        },
-        {
-          value: 'test3',
-          label: 'test3',
-        }],
+        options: doseIdentifierOptions,
+        onChangeHandler: handleDoseIdentifierValidation,
+        isDisabled: doseIdentifierOptions.length === 0,
+        disabled: doseIdentifierOptions.length === 0,
         size: 'lg'
       });
       dynamic_fields.push({
