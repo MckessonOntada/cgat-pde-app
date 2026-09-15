@@ -811,6 +811,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               setDoseIdentifierOptions(options);
             }
             setIsMerckCoiVerified(true);
+            setAlert(null);
           } else {
             setIsMerckCoiVerified(false);
             setAlert({
@@ -1096,6 +1097,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               if (formattedCoiId && !doseIdentifier) {
                 coiIdValidation({ coiId: formattedCoiId });
               } else if (formattedCoiId && doseIdentifier) {
+                if (isMerckCoiVerified) {
+                  setAlert(null);
+                }
                 doseIdentifierValidation({ coiId: formattedCoiId, doseIdentifier });
               }
               setAllowedSubmission(true);
