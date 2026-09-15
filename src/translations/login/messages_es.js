@@ -59,11 +59,11 @@ export const LoginMessagesES = {
   'environmentBanner.text1': 'S_Demo Environment',
   'environmentBanner.text2': ' S_To place a therapy order please go here "',
   'environmentBanner.linkText': 'S_Production Link',
-  'contactUs.subheading': "S_Tell us what you need help with and we'll route it to the right team.",
+  'contactUs.subheading': 'S_Tell us how we can help, and we’ll connect you with the appropriate team.',
   'contactUs.reasonForContact': 'S_Reason for contact',
   'contactUs.signedIn': 'S_Signed in',
   'contactUs.selectTherapy': 'S_Select Therapy',
-  'contactUs.orderingChannel': 'S_Ordering channel',
+  'contactUs.orderingChannel': 'S_Ordering Channel',
   'contactUs.selectAccount': 'S_Select Account',
   'contactUs.describeIssue': 'S_Describe the issue',
   'contactUs.submitRequest': 'S_Submit Request',
@@ -74,7 +74,7 @@ export const LoginMessagesES = {
   'contactUs.searchAccount': 'S_Search account',
   'contactUs.submittedPage.title': 'S_Request Submitted',
   'contactUs.submittedPage.description':
-    "S_Our support team will review your case and respond within 1-2 business days. You'll receive a confirmation email shortly.",
+    'S_Your request has been received and is currently under review by our support team. A confirmation email will be sent shortly.',
   'contactUs.submittedPage.support.title': 'S_Need immediate assistance?',
   'contactUs.submittedPage.support.description': 'S_Our support team is available Monday - Friday, 8 am - 8 pm ET.',
   'contactUs.submittedPage.callUs': 'S_CALL US',
@@ -89,16 +89,16 @@ export const LoginMessagesES = {
   'contactUs.techIssue.label2': 'S_User & Role Management',
   'contactUs.techIssue.label3': 'S_Notifications',
   'contactUs.techIssue.label4': 'S_Other',
-  'contactUs.noTherapiesMessage':
-    'S_No therapies are available based on your current access permissions. Please contact your Organization Administrator if you believe additional access is required.',
-  'contactUs.noAccountsMessage':
-    'S_No accounts are available based on your current selected therapy. Please contact your Organization Administrator if you believe additional access is required.',
+  'contactUs.noTherapies.alertMessage':
+    'S_You don’t currently have access to any therapies. Contact your Organization Administrator to request access to additional therapies.',
+  'contactUs.noAccounts.alertMessage':
+    'S_You don’t currently have access to any accounts. Contact your Organization Administrator to request access to additional accounts.',
   'contactUs.loginRequired.orderAlertMessage':
     "S_You must be logged in to submit an order-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
   'contactUs.loginRequired.invoiceAlertMessage':
     "S_You must be logged in to submit an invoices-related request. If you're experiencing login issues, please select Tech Issue above for assistance.",
   'contactUs.nonLoggedIn.infoAlertMessage':
-    'S_Get faster support by signing in to InspiroLink. Your account details will be pre-filled, helping us route your request more efficiently.',
+    'S_Sign in to InspiroLink for faster support. Your account details will be pre-filled, making it easier to submit and route your request.',
   'contactUs.personalDetails.title': 'S_Personal Details',
   'contactUs.personalDetails.label.firstName': 'S_First Name',
   'contactUs.personalDetails.label.lastName': 'S_Last Name',
