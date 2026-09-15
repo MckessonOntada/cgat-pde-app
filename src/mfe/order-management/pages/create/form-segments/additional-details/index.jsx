@@ -773,8 +773,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         });
       }
 
-      console.log(orderQuantity);
-
       setStoredValue((prev) => ({
         ...prev,
         ...initialValues
