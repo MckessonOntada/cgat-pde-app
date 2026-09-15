@@ -111,7 +111,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const { orcaPatient, isVerified: isOrcaPatientVerified } = state;
   const patientData = orcaPatient && Object.keys(orcaPatient).length > 0 ? orcaPatient : patient;
   const isSpOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
-  const manufacturer = MANUFACTURER.MERCK;
+  const manufacturer = isSpOrder ? orderDetails.spTherapyConfig?.config?.manufacturerName : orderDetails.therapyConfig?.config?.manufacturerName;
   const hasUserPhiPermission = AuthUtils.hasUserPhiPermission();
   React.useEffect(() => {
     if (manufacturer === MANUFACTURER.ORCA) {
