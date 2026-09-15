@@ -390,7 +390,11 @@ const PatientDetails = ({ readOnly, hasPermission }) => {
     }
     setIsOrderInDraft(isSavingDraft);
     setSaveType(isSavingDraft ? 'draft' : 'continue');
-    if (!!manufacturer && manufacturer !== MANUFACTURER.BMS && isEmptyFirstTime) {
+    if (
+      manufacturer &&
+      ![MANUFACTURER.BMS, MANUFACTURER.MERCK].includes(manufacturer) &&
+      isEmptyFirstTime
+    ) {
       if (manufacturer === MANUFACTURER.ORCA && (!form.patient?.patientIdentifier || !form.patient?.medicalRecordNumber)) {
         setAlert({
           description: t('orderManagement.mrn.patientID.empty', {
