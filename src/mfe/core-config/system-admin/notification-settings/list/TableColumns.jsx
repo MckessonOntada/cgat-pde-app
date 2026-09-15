@@ -4,7 +4,7 @@ import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 
-export const createColumns = (t, handleOnOptionSelection) => [
+export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = false) => [
   {
     id: 'fullName',
     name: 'Name',
@@ -30,7 +30,7 @@ export const createColumns = (t, handleOnOptionSelection) => [
     selector: () => {},
     sortable: true,
     sortKey: 'lastUpdatedDate',
-    width: '233px',
+    width: '200px',
     cell: (props) => (
       <div>
         <EclipsesTextcss str={CommonUtils.convertDateStringFormat(props.lastUpdatedDate)} maxWidth={201} />
@@ -40,8 +40,7 @@ export const createColumns = (t, handleOnOptionSelection) => [
   {
     id: 'action',
     name: 'Action(s)',
-    center: true,
-    width: '159px',
+    width: '150px',
     isAction: true,
     cell: (row) => {
       const options = [
@@ -57,11 +56,20 @@ export const createColumns = (t, handleOnOptionSelection) => [
 
       return (
         <MenuList
-          menuIcon={<IconEllipsis key={`menu-list-${row.id}`} />}
+          menuIcon={
+            <IconEllipsis
+              key={`menu-list-${row.id}`}
+              style={{
+                opacity: isActionsDisabled ? 0.4 : 1,
+                pointerEvents: isActionsDisabled ? 'none' : 'auto'
+              }}
+            />
+          }
           handleSelect={(value) => handleOnOptionSelection(value, row)}
           options={options}
           aria-label="Action options"
           size="md"
+          isDisabled={isActionsDisabled}
         />
       );
     }

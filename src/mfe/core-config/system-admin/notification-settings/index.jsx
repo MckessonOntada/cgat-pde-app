@@ -8,9 +8,25 @@ import ModuleHeader from '@src/components/module-header';
 import { Field, Formik, Form } from 'formik';
 import styles from './MaterialNotificationSettings.module.scss';
 import RecipientList from './list/RecipientList';
+import { RecipientListProvider } from './context/RecipientListContext';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useMutation, useQuery } from 'react-query';
-import { buildNotificationConfigPayload } from './NotificationConfigUtils';
+import { buildNotificationConfigPayload, getNotificationType } from './NotificationConfigUtils';
+
+const TAB_LIST = [
+  {
+    id: 1,
+    configName: 'manageMaterial.notificationSettings.Tab1',
+    sequence: 1,
+    labelForMobile: 'manageMaterial.notificationSettings.Tab1'
+  },
+  {
+    id: 2,
+    configName: 'manageMaterial.notificationSettings.Tab2',
+    sequence: 2,
+    labelForMobile: 'manageMaterial.notificationSettings.Tab2'
+  }
+];
 
 const MaterialNotificationSettings = () => {
   const { t } = useTranslate();
@@ -21,6 +37,12 @@ const MaterialNotificationSettings = () => {
 
   const isSPMaterial = location.pathname.includes('/manage-sp-material');
 
+  const materialRoute = isSPMaterial ? '/system-admin/config/manage-sp-material' : '/system-admin/config/manage-material';
+
+  const addRecipientsRoute = isSPMaterial
+    ? '/system-admin/config/manage-sp-material/notification-settings/add-recipients'
+    : '/system-admin/config/manage-material/notification-settings/add-recipients';
+
   const therapyList = Array.isArray(therapy) ? therapy : [];
   const isSingleTherapy = therapyList.length === 1;
   const isMultipleTherapy = therapyList.length > 1;
@@ -28,17 +50,15 @@ const MaterialNotificationSettings = () => {
   const [selectedTab, setSelectedTab] = useState(location.state?.selectedTab || 1);
   const [alert, setAlert] = useState(null);
 
-  const notificationType = selectedTab === 1 ? 'ORDER_SUBMIT' : 'PATIENT_INGESTION';
-
   const selectedTherapy = therapyList[0];
 
   const requestParams = useMemo(
     () => ({
       ndcNumber: selectedTherapy?.ndc || selectedTherapy?.ndcNumber,
       channelType: selectedTherapy?.channelType,
-      notificationType
+      notificationType: getNotificationType(selectedTab)
     }),
-    [selectedTherapy, notificationType]
+    [selectedTherapy, selectedTab]
   );
 
   const {
@@ -63,23 +83,36 @@ const MaterialNotificationSettings = () => {
 
   const { mutate: createNotificationConfig, isLoading: isCreating } = useMutation((payload) => MaterialService.createMaterialNotificationConfig(payload), {
     onSuccess: () => {
-      if (isSingleTherapy) {
-        refetchNotificationConfig();
-      }
+      navigateBackToMaterial(getConfigSavedMessage());
     },
     onError: (error) => {
       console.error('Failed to create notification config:', error);
+      setAlert({ type: 'error', message: t('errors.default') });
     }
   });
+
+  const { mutate: updateNotificationConfigsBulk, isLoading: isBulkUpdating } = useMutation(
+    (payload) => MaterialService.updateMaterialNotificationConfigsBulk(payload),
+    {
+      onSuccess: () => {
+        navigateBackToMaterial(getConfigSavedMessage());
+      },
+      onError: (error) => {
+        console.error('Failed to bulk update notification configs:', error);
+        setAlert({ type: 'error', message: t('errors.default') });
+      }
+    }
+  );
 
   const { mutate: updateNotificationConfig, isLoading: isUpdating } = useMutation(
     ({ configId, payload }) => MaterialService.updateMaterialNotificationConfig(configId, payload),
     {
       onSuccess: () => {
-        refetchNotificationConfig();
+        navigateBackToMaterial(getConfigSavedMessage());
       },
       onError: (error) => {
         console.error('Failed to update notification config:', error);
+        setAlert({ type: 'error', message: t('errors.default') });
       }
     }
   );
@@ -89,55 +122,52 @@ const MaterialNotificationSettings = () => {
     {
       onSuccess: () => {
         refetchNotificationConfig();
+
+        setAlert({
+          type: 'success',
+          message: t('manageMaterial.notificationSettings.messages.recipientDeleted')
+        });
       },
       onError: (error) => {
         console.error('Failed to delete notification recipient:', error);
+        setAlert({ type: 'error', message: t('errors.default') });
       }
     }
   );
 
-  const isSaving = isCreating || isUpdating || isDeleting;
+  const isSaving = isCreating || isUpdating || isBulkUpdating || isDeleting;
 
   const handleOnBackToMaterial = () => {
-    navigate(isSPMaterial ? '/system-admin/config/manage-sp-material' : '/system-admin/config/manage-material');
+    navigate(materialRoute);
   };
 
-  const tabList = [
-    {
-      id: 1,
-      configName: 'manageMaterial.notificationSettings.Tab1',
-      sequence: 1,
-      labelForMobile: 'manageMaterial.notificationSettings.Tab1'
-    },
-    {
-      id: 2,
-      configName: 'manageMaterial.notificationSettings.Tab2',
-      sequence: 2,
-      labelForMobile: 'manageMaterial.notificationSettings.Tab2'
-    }
-  ];
+  const getConfigSavedMessage = () => {
+    const count = therapyList.length;
+    return count === 1
+      ? t('manageMaterial.notificationSettings.messages.configSavedMaterial', { count })
+      : t('manageMaterial.notificationSettings.messages.configSavedMaterials', { count });
+  };
+
+  const navigateBackToMaterial = (description) => {
+    navigate(materialRoute, { state: { alert: { type: 'success', description } } });
+  };
 
   const handleOnOptionSelection = (value, row, currentValues) => {
     const currentTherapy = therapyList[0];
 
     if (value === 'edit') {
-      navigate(
-        isSPMaterial
-          ? '/system-admin/config/manage-sp-material/notification-settings/add-recipients'
-          : '/system-admin/config/manage-material/notification-settings/add-recipients',
-        {
-          state: {
-            therapy,
-            isEdit: true,
-            recipient: row,
-            currentEmail: row?.email,
-            selectedTab: currentValues.selectedTab,
-            notifications: currentValues.notifications,
-            addRecipients: currentValues.addRecipients,
-            notificationConfigId: isSingleTherapy ? notificationConfigId : undefined
-          }
+      navigate(addRecipientsRoute, {
+        state: {
+          therapy,
+          isEdit: true,
+          recipient: row,
+          currentEmail: row?.email,
+          selectedTab: currentValues.selectedTab,
+          notifications: currentValues.notifications,
+          addRecipients: currentValues.addRecipients,
+          notificationConfigId: isSingleTherapy ? notificationConfigId : undefined
         }
-      );
+      });
 
       return;
     }
@@ -159,14 +189,29 @@ const MaterialNotificationSettings = () => {
       return;
     }
 
+    if (isMultipleTherapy) {
+      const payload = buildNotificationConfigPayload({
+        therapy,
+        selectedTab: values.selectedTab,
+        notifications: values.notifications,
+        recipients: values.recipients,
+        isBulk: true
+      });
+
+      updateNotificationConfigsBulk(payload);
+
+      return;
+    }
+
     const payload = buildNotificationConfigPayload({
       therapy,
       selectedTab: values.selectedTab,
       notifications: values.notifications,
-      recipients: values.recipients
+      recipients: values.recipients,
+      isBulk: false
     });
 
-    if (isSingleTherapy && notificationConfigId) {
+    if (notificationConfigId) {
       updateNotificationConfig({
         configId: notificationConfigId,
         payload
@@ -193,7 +238,7 @@ const MaterialNotificationSettings = () => {
         notificationConfigId: isSingleTherapy ? notificationConfigId : undefined
       }
     });
-  }, [navigationAlert, navigate, location.pathname, therapy, selectedTab, isSingleTherapy, notificationConfigId]);
+  }, [navigationAlert, location.pathname, therapy, selectedTab, isSingleTherapy, notificationConfigId]);
 
   return (
     <div className="MCP-module-wrapper">
@@ -212,7 +257,7 @@ const MaterialNotificationSettings = () => {
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('manageMaterial.notificationSettings.heading')}</Heading>} />
 
-        {alert && <Alert description={alert.message} onClose={() => setAlert(null)} type={alert.type} />}
+        {alert && <Alert description={alert.description || alert.message} onClose={() => setAlert(null)} type={alert.type} />}
 
         <Formik
           initialValues={{
@@ -226,30 +271,27 @@ const MaterialNotificationSettings = () => {
           enableReinitialize>
           {({ values, setFieldValue, setFieldTouched }) => {
             const handleAddRecipient = () => {
-              navigate(
-                isSPMaterial
-                  ? '/system-admin/config/manage-sp-material/notification-settings/add-recipients'
-                  : '/system-admin/config/manage-material/notification-settings/add-recipients',
-                {
-                  state: {
-                    therapy,
-                    isEdit: false,
-                    selectedTab: values.selectedTab,
-                    notifications: values.notifications,
-                    addRecipients: values.addRecipients,
-                    notificationConfigId: isSingleTherapy ? notificationConfigId : undefined
-                  }
+              navigate(addRecipientsRoute, {
+                state: {
+                  therapy,
+                  isEdit: false,
+                  selectedTab: values.selectedTab,
+                  notifications: values.notifications,
+                  addRecipients: values.addRecipients,
+                  notificationConfigId: isSingleTherapy ? notificationConfigId : undefined,
+                  originalNotifications: fetchedNotifications,
+                  existingRecipients: values.recipients
                 }
-              );
+              });
             };
 
             return (
-              <Form>
+              <>
                 <div className="MCP-panel-container">
                   <div style={{ padding: '0px 16px' }}>
                     <div className="customTab">
                       <TabList
-                        options={tabList.map((tab) => ({
+                        options={TAB_LIST.map((tab) => ({
                           ...tab,
                           configName: t(tab.configName),
                           labelForMobile: t(tab.labelForMobile),
@@ -344,23 +386,31 @@ const MaterialNotificationSettings = () => {
                     </div>
 
                     <div className={styles.dataTable}>
-                      <RecipientList recipients={values.recipients} handleOnOptionSelection={(value, row) => handleOnOptionSelection(value, row, values)} />
+                      <RecipientListProvider key={values.selectedTab} recipients={values.recipients}>
+                        <RecipientList
+                          handleOnOptionSelection={(value, row) => handleOnOptionSelection(value, row, values)}
+                          isActionsDisabled={
+                            !values.notifications || values.addRecipients !== 'yes' || isSaving || isNotificationConfigLoading || isNotificationConfigFetching
+                          }
+                        />
+                      </RecipientListProvider>
                     </div>
                   </div>
                 </div>
+                <Form>
+                  <div className={styles.footer}>
+                    <div className={styles.footerContent}>
+                      <Button type="button" size="md" variant="secondary" onClick={handleOnBackToMaterial} disabled={isSaving}>
+                        {t('manageMaterial.notificationSettings.button.cancel')}
+                      </Button>
 
-                <div className={styles.footer}>
-                  <div className={styles.footerContent}>
-                    <Button type="button" size="md" variant="secondary" onClick={handleOnBackToMaterial} disabled={isSaving}>
-                      {t('manageMaterial.notificationSettings.button.cancel')}
-                    </Button>
-
-                    <Button type="submit" size="md" disabled={isSaving || isNotificationConfigLoading || isNotificationConfigFetching}>
-                      {t('manageMaterial.notificationSettings.button.save')}
-                    </Button>
+                      <Button type="submit" size="md" disabled={isSaving || isNotificationConfigLoading || isNotificationConfigFetching}>
+                        {t('manageMaterial.notificationSettings.button.save')}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </Form>
+                </Form>
+              </>
             );
           }}
         </Formik>

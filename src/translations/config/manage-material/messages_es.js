@@ -102,7 +102,7 @@ export const SystemConfigurationES = {
   'labels.yes': 'S_Yes',
   'labels.no': 'S_No',
   'manageMaterial.drawer.details.configuration.body.shipToPORequirement': 'S_Ship to PO Number',
-  // Noification Settings
+  // Notification Settings
   'manageMaterial.table.header.button.notificationSettings': 'S_Notification Settings',
   'manageMaterial.notificationSettings.heading': 'S_Notification Settings',
   'manageMaterial.notificationSettings.backToManageMatierial': 'S_Back to Manage Material page',
@@ -116,8 +116,16 @@ export const SystemConfigurationES = {
   'manageMaterial.notificationSettings.recipientsTable.heading': 'S_Recipient Listing',
   'manageMaterial.notificationSettings.button.cancel': 'S_Cancel',
   'manageMaterial.notificationSettings.button.save': 'S_Save',
-  // Add Recipients
+  // Notification Settings Messages
+  'manageMaterial.notificationSettings.messages.configSavedMaterial': 'S_Notification Settings has been updated for {count} material.',
+  'manageMaterial.notificationSettings.messages.configSavedMaterials': 'S_Notification Settings has been updated for {count} materials.',
+  'manageMaterial.notificationSettings.messages.recipientDeleted': 'S_Recipient deleted successfully',
+  'manageMaterial.notificationSettings.messages.recipientAdded': 'S_recipient has been added.',
+  'manageMaterial.notificationSettings.messages.recipientsAdded': 'S_recipients has been added.',
+  'manageMaterial.notificationSettings.messages.recipientUpdated': 'S_Recipient details updated successfully',
+  // Recipients
   'manageMaterial.addRecipients.heading': 'S_Add Recipients',
+  'manageMaterial.addRecipients.editHeading': 'S_Edit Recipient',
   'manageMaterial.addRecipients.form.heading': 'S_Recipient Details',
   'manageMaterial.addRecipients.backToSettings': 'S_Back to Notification Settings',
   'manageMaterial.addRecipients.label.firstName': 'S_First Name',
@@ -129,9 +137,13 @@ export const SystemConfigurationES = {
   'manageMaterial.addRecipients.required.email': 'S_Email ID is required',
   'manageMaterial.addRecipients.validation.email': 'S_Please enter a valid email address',
   'manageMaterial.addRecipients.validation.uniqueEmail': 'S_Email addresses must be unique',
+  'manageMaterial.addRecipients.validation.emailExistsInList': 'S_This email address already exists in the recipient list.',
   'manageMaterial.addRecipients.button.remove': 'S_Remove',
   'manageMaterial.addRecipients.button.addMore': 'S_Add more',
   'manageMaterial.addRecipients.button.cancel': 'S_Cancel',
+  'manageMaterial.addRecipients.button.update': 'S_Update recipient',
   'manageMaterial.addRecipients.button.addRecipient': 'S_add recipient',
   'manageMaterial.table.header.button.configureMaterial': 'S_material configuration',
+  'recipients.delete.title': 'S_Delete Recipient',
+  'recipients.delete.confirmation': 'S_Are you sure you want to delete this recipient?'
 };

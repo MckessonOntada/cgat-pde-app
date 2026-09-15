@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Field, FieldArray, Formik, Form, useFormikContext } from 'formik';
-import { Button, Heading, Divider } from '@mckesson/mcp-component-library';
+import { Button, Heading, Divider, Alert } from '@mckesson/mcp-component-library';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import styles from './AddRecipient.module.scss';
@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
-import { buildNotificationConfigPayload } from './NotificationConfigUtils';
+import { buildNotificationConfigPayload, getNotificationType, mapRecipients } from './NotificationConfigUtils';
 
 const emptyRecipient = {
   firstName: '',
@@ -20,7 +20,7 @@ const emptyRecipient = {
   email: ''
 };
 
-const recipientValidationSchema = (t) =>
+export const recipientValidationSchema = (t, existingEmailSet = new Set(), currentEmail = '') =>
   Yup.object({
     recipients: Yup.array()
       .of(
@@ -64,6 +64,34 @@ const recipientValidationSchema = (t) =>
 
         return true;
       })
+      .test('exists-in-list', function (recipients) {
+        if (!recipients || !existingEmailSet.size) {
+          return true;
+        }
+
+        const normalizedCurrentEmail = currentEmail?.trim().toLowerCase() || '';
+
+        for (let index = 0; index < recipients.length; index++) {
+          const email = recipients[index]?.email?.trim().toLowerCase();
+
+          if (!email) {
+            continue;
+          }
+
+          if (normalizedCurrentEmail && email === normalizedCurrentEmail) {
+            continue;
+          }
+
+          if (existingEmailSet.has(email)) {
+            return this.createError({
+              path: `recipients.${index}.email`,
+              message: t('manageMaterial.addRecipients.validation.emailExistsInList')
+            });
+          }
+        }
+
+        return true;
+      })
   });
 
 const AddRecipientForm = ({ onCancel, isEdit, isSubmitting }) => {
@@ -74,20 +102,6 @@ const AddRecipientForm = ({ onCancel, isEdit, isSubmitting }) => {
   const recipients = values.recipients || [];
 
   const handleAddMore = async (index, push) => {
-    const validationErrors = await validateForm();
-
-    const recipientErrors = validationErrors?.recipients?.[index];
-
-    if (recipientErrors) {
-      await setFieldTouched(`recipients.${index}.firstName`, true, false);
-
-      await setFieldTouched(`recipients.${index}.lastName`, true, false);
-
-      await setFieldTouched(`recipients.${index}.email`, true, false);
-
-      return;
-    }
-
     push({ ...emptyRecipient });
   };
 
@@ -166,7 +180,7 @@ const AddRecipientForm = ({ onCancel, isEdit, isSubmitting }) => {
                       )}
                     </div>
 
-                    <Divider />
+                    {!isEdit && <Divider />}
                   </React.Fragment>
                 ))}
 
@@ -212,8 +226,12 @@ const AddRecipient = () => {
     notifications = true,
     addRecipients = 'yes',
     currentEmail,
-    notificationConfigId
+    notificationConfigId,
+    existingRecipients = [],
+    originalNotifications = notifications
   } = location.state || {};
+
+  const existingEmailSet = new Set(existingRecipients.map((r) => r.email?.trim().toLowerCase()).filter(Boolean));
 
   const therapyList = Array.isArray(therapy) ? therapy : [];
 
@@ -221,13 +239,22 @@ const AddRecipient = () => {
 
   const isMultipleTherapy = therapyList.length > 1;
 
+  const getAddSuccessMessage = (count) =>
+    count === 1
+      ? `1 ${t('manageMaterial.notificationSettings.messages.recipientAdded')}`
+      : `${count} ${t('manageMaterial.notificationSettings.messages.recipientsAdded')}`;
+
   const effectiveNotificationConfigId = isSingleTherapy ? notificationConfigId : undefined;
+
+  const [alert, setAlert] = useState(null);
 
   const isSPMaterial = location.pathname.includes('/manage-sp-material');
 
   const settingsRoute = isSPMaterial
     ? '/system-admin/config/manage-sp-material/notification-settings'
     : '/system-admin/config/manage-material/notification-settings';
+
+  const materialRoute = isSPMaterial ? '/system-admin/config/manage-sp-material' : '/system-admin/config/manage-material';
 
   const handleBackToSettings = () => {
     navigate(settingsRoute, {
@@ -241,7 +268,7 @@ const AddRecipient = () => {
     });
   };
 
-  const navigateToSettingsOnSuccess = ({ type, message }) => {
+  const navigateToSettingsOnSuccess = ({ type, description }) => {
     navigate(settingsRoute, {
       state: {
         therapy,
@@ -251,7 +278,7 @@ const AddRecipient = () => {
         notificationConfigId: effectiveNotificationConfigId,
         alert: {
           type,
-          message
+          description
         }
       }
     });
@@ -272,20 +299,33 @@ const AddRecipient = () => {
 
   const { mutate: createNotificationConfig, isLoading: isCreating } = useMutation((payload) => MaterialService.createMaterialNotificationConfig(payload), {
     onSuccess: (_, variables) => {
-      const count = variables.recipients?.length || 0;
-
       navigateToSettingsOnSuccess({
         type: 'success',
-        message:
-          count === 1
-            ? `1 ${t('manageMaterial.notificationSettings.messages.recipientAdded')}`
-            : `${count} ${t('manageMaterial.notificationSettings.messages.recipientsAdded')}`
+        description: getAddSuccessMessage(variables.recipients?.length || 0)
       });
     },
     onError: (error) => {
       console.error('Failed to create notification config:', error);
+      setAlert({ type: 'error', description: t('errors.default') });
     }
   });
+
+  const { mutate: updateNotificationConfigsBulk, isLoading: isBulkUpdating } = useMutation(
+    (payload) => MaterialService.updateMaterialNotificationConfigsBulk(payload),
+    {
+      onSuccess: (_, variables) => {
+        // navigate(materialRoute, { state: { alert: { type: 'success', description: count === 1 ? t('manageMaterial.notificationSettings.messages.configSavedMaterial', { count }) : t('manageMaterial.notificationSettings.messages.configSavedMaterials', { count }) } } });
+        navigateToSettingsOnSuccess({
+          type: 'success',
+          description: getAddSuccessMessage(variables.recipients?.length || 0)
+        });
+      },
+      onError: (error) => {
+        console.error('Failed to bulk update notification configs:', error);
+        setAlert({ type: 'error', description: t('errors.default') });
+      }
+    }
+  );
 
   const { mutate: updateNotificationRecipient, isLoading: isUpdatingRecipient } = useMutation(
     (payload) => MaterialService.updateMaterialNotificationRecipient(payload),
@@ -293,56 +333,67 @@ const AddRecipient = () => {
       onSuccess: () => {
         navigateToSettingsOnSuccess({
           type: 'success',
-          message: t('manageMaterial.notificationSettings.messages.recipientUpdated')
+          description: t('manageMaterial.notificationSettings.messages.recipientUpdated')
         });
       },
       onError: (error) => {
         console.error('Failed to update notification recipient:', error);
+        setAlert({ type: 'error', description: t('errors.default') });
       }
     }
   );
+
+  const pendingAddRecipientsPayload = useRef(null);
 
   const { mutate: addNotificationRecipients, isLoading: isAddingRecipient } = useMutation(
     (payload) => MaterialService.addMaterialNotificationRecipients(payload),
     {
       onSuccess: (_, variables) => {
-        const count = variables.recipients?.length || 0;
-
         navigateToSettingsOnSuccess({
           type: 'success',
-          message:
-            count === 1
-              ? `1 ${t('manageMaterial.notificationSettings.messages.recipientAdded')}`
-              : `${count} ${t('manageMaterial.notificationSettings.messages.recipientsAdded')}`
+          description: getAddSuccessMessage(variables.recipients?.length || 0)
         });
       },
       onError: (error) => {
         console.error('Failed to add notification recipients:', error);
+        setAlert({ type: 'error', description: t('errors.default') });
       }
     }
   );
 
-  const isSaving = isCreating || isAddingRecipient || isUpdatingRecipient;
+  const { mutate: updateNotificationConfig, isLoading: isUpdatingConfig } = useMutation(
+    ({ configId, payload }) => MaterialService.updateMaterialNotificationConfig(configId, payload),
+    {
+      onSuccess: () => {
+        if (pendingAddRecipientsPayload.current) {
+          addNotificationRecipients(pendingAddRecipientsPayload.current);
+          pendingAddRecipientsPayload.current = null;
+        }
+      },
+      onError: (error) => {
+        console.error('Failed to update notification config:', error);
+        pendingAddRecipientsPayload.current = null;
+        setAlert({ type: 'error', description: t('errors.default') });
+      }
+    }
+  );
+
+  const isSaving = isCreating || isBulkUpdating || isAddingRecipient || isUpdatingRecipient || isUpdatingConfig;
 
   const handleSubmit = (values) => {
     const selectedTherapy = therapyList[0];
 
     const ndcNumber = selectedTherapy?.ndc || selectedTherapy?.ndcNumber;
 
-    const notificationType = selectedTab === 1 ? 'ORDER_SUBMIT' : 'PATIENT_INGESTION';
+    const notificationType = getNotificationType(selectedTab);
 
-    const recipientsPayload = values.recipients.map(({ firstName, middleName, lastName, email }) => ({
-      firstName,
-      middleName,
-      lastName,
-      email
-    }));
+    const recipientsPayload = mapRecipients(values.recipients);
 
     if (isEdit) {
       const recipientValue = values.recipients[0];
 
       updateNotificationRecipient({
-        ndcNumbers: [ndcNumber],
+        ndcNumbers: therapyList.map((item) => item?.ndc || item?.ndcNumber).filter(Boolean),
         channelType: selectedTherapy?.channelType,
         notificationType,
         currentEmail: currentEmail || recipient?.email,
@@ -350,10 +401,39 @@ const AddRecipient = () => {
           firstName: recipientValue.firstName,
           middleName: recipientValue.middleName,
           lastName: recipientValue.lastName,
-          email: recipientValue.email
+          email: recipientValue.email,
+          lastUpdatedDate: recipient?.lastUpdatedDate
         }
       });
 
+      return;
+    }
+
+    if (isMultipleTherapy) {
+      updateNotificationConfigsBulk(
+        buildNotificationConfigPayload({
+          therapy,
+          selectedTab,
+          notifications,
+          recipients: values.recipients,
+          isBulk: true
+        })
+      );
+
+      return;
+    }
+
+    if (effectiveNotificationConfigId && notifications && !originalNotifications) {
+      pendingAddRecipientsPayload.current = {
+        ndcNumbers: [ndcNumber],
+        channelType: selectedTherapy?.channelType,
+        notificationType,
+        recipients: recipientsPayload
+      };
+      updateNotificationConfig({
+        configId: effectiveNotificationConfigId,
+        payload: buildNotificationConfigPayload({ therapy, selectedTab, notifications, recipients: existingRecipients, isBulk: false })
+      });
       return;
     }
 
@@ -373,7 +453,8 @@ const AddRecipient = () => {
         therapy,
         selectedTab,
         notifications,
-        recipients: values.recipients
+        recipients: values.recipients,
+        isBulk: false
       })
     );
   };
@@ -393,12 +474,14 @@ const AddRecipient = () => {
           heading={<Heading as="h1">{isEdit ? t('manageMaterial.addRecipients.editHeading') : t('manageMaterial.addRecipients.heading')}</Heading>}
         />
 
+        {alert && <Alert description={alert.description} onClose={() => setAlert(null)} type={alert.type} />}
+
         <Formik
           initialValues={{
             therapy,
             recipients: [initialRecipient]
           }}
-          validationSchema={recipientValidationSchema(t)}
+          validationSchema={recipientValidationSchema(t, existingEmailSet, currentEmail)}
           onSubmit={handleSubmit}
           enableReinitialize>
           <AddRecipientForm onCancel={handleBackToSettings} isEdit={isEdit} isSubmitting={isSaving} />

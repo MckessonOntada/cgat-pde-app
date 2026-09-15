@@ -327,6 +327,16 @@ async function addMaterialNotificationRecipients(payload) {
 
   return res?.data || {};
 }
+async function updateMaterialNotificationConfigsBulk(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid payload. A valid JSON object is required.');
+  }
+
+  const url = constructUserManagementServicePublicUrl('material-notification-configs/config/update');
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+
+  return res?.data || {};
+}
 
 const MaterialService = Object.freeze({
   getMaterialById,
@@ -360,7 +370,8 @@ const MaterialService = Object.freeze({
   updateMaterialNotificationConfig,
   updateMaterialNotificationRecipient,
   deleteMaterialNotificationRecipient,
-  addMaterialNotificationRecipients
+  addMaterialNotificationRecipients,
+  updateMaterialNotificationConfigsBulk
 });
 
 export default MaterialService;
