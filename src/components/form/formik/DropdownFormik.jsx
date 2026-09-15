@@ -29,6 +29,9 @@ export default function DropdownFormik(props) {
       onChange={(value) => {
         setFieldValue(name, value);
         onChangeHandler(value);
+        if (typeof props.onChange === 'function') {
+          props.onChange(value);
+        }
       }}
       size="lg"
       {...props}
