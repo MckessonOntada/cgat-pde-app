@@ -56,11 +56,8 @@ const Footer = () => {
               <div key={index}>
                 <Heading as="h2">{t(section.heading)}</Heading>
                 {section.links.map((link, linkIndex) => {
-                  const sessionTransferUrls = ['/contact', '/contact/', '/faq', '/faq/'];
-                  const requiresSessionTransfer = sessionTransferUrls.includes(link.url);
                   const isContact = link.url === '/contact' || link.url === '/contact/';
                   const targetUrl = isContact && isAuthenticated ? '/contact-us' : link.url;
-                  // if (requiresSessionTransfer) {
                   return (
                     <a
                       key={linkIndex}
@@ -76,12 +73,6 @@ const Footer = () => {
                       {t(link.text)}
                     </a>
                   );
-                  // }
-                  // return (
-                  //   <Link key={linkIndex} to={targetUrl} target="_blank">
-                  //     {t(link.text)}
-                  //   </Link>
-                  // );
                 })}
               </div>
             ))}
