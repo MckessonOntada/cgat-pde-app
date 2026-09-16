@@ -175,7 +175,6 @@ const ContactUsForm = () => {
       onSuccess: (data) => {
         setSubmittedData(data);
         setAlert(null);
-        scrollToTopUtil();
       },
       onError: () => {
         setAlert({
