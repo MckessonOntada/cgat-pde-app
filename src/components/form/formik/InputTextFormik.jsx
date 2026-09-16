@@ -17,10 +17,10 @@ export default function InputTextFormik(props) {
     }
   };
 
-  const handleOnBlur = () => {
+  const handleOnBlur = (event) => {
     setFieldTouched(name, true);
     if (typeof props.onBlur === 'function') {
-      props.onBlur();
+      props.onBlur(event);
     }
   };
 

@@ -806,5 +806,13 @@ export const MessageEs = {
   'labels.layout.clearAll': 'S_CLEAR ALL',
   'labels.layout.apply': 'S_APPLY',
   'messages.layout.applySuccess': 'S_Column preferences applied successfully.',
-  'messages.layout.applyError': 'S_Failed to save column preferences. Please try again.'
+  'messages.layout.applyError': 'S_Failed to save column preferences. Please try again.',
+  'labels.doseIdentifier': 'S_Dose Identifier',
+  'labels.doseIdentifierRequired': 'S_Dose Identifier is required',
+  'orderManagement.merck.NO_ACTIVE_DOSE': 'S_No active Dose Identifier is available for the entered {coiId}. Please contact Customer Support before placing this order.',
+  'orderManagement.merck.COMBINATION_INVALID': 'S_The previously verified {coiId} is no longer valid or authorized for order submission. Please re-verify the {coiId} and select a valid Dose Identifier before submitting the order. If the issue persists, contact Customer Support for assistance.',
+  'orderManagement.merck.UNEXPECTED': 'S_The {coiId} validation service returned an unexpected response. Please try again. If the issue persists, contact Customer Support.',
+  'orderManagement.merck.VERIFIED': 'S_{coiId} verified',
+  'orderManagement.merck.COI_INVALID': 'S_The entered {coiId} is not valid. Please enter a valid {coiId} and try again. If the issue persists, contact Customer Support before submitting the order.',
+  'orderManagement.merck.COI_INACTIVE': 'S_The entered {coiId} is currently inactive and is not eligible for order placement. Please contact Customer Support for further assistance.'
 };

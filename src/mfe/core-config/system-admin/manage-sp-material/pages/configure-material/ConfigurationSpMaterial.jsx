@@ -45,13 +45,13 @@ export default function ConfigurationSpMaterial() {
 
   const channelOptions = isBnbMaterial
     ? [
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.yes'), value: true },
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.no'), value: false }
-      ]
+      { isDisabled: false, label: t('manageSPMaterial.configuration.radio.yes'), value: true },
+      { isDisabled: false, label: t('manageSPMaterial.configuration.radio.no'), value: false }
+    ]
     : [
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'SP' },
-        { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'HUB' }
-      ];
+      { isDisabled: false, label: t('manageSPMaterial.configuration.radio.sp'), value: 'SP' },
+      { isDisabled: false, label: t('manageSPMaterial.configuration.radio.hub'), value: 'HUB' }
+    ];
 
   const { data: materialDetails, isLoading } = useQuery({
     queryKey: ['MaterialDetails', materialType, therapy],
@@ -198,6 +198,20 @@ export default function ConfigurationSpMaterial() {
 
       if (manufacturerName === MANUFACTURER.KITE) {
         if ([FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) {
+          updatedField = {
+            ...field,
+            properties: {
+              ...field.properties,
+              displayOnForm: true,
+              mandatoryField: true
+            }
+          };
+          openTabs.push(`field-${idx}`);
+        }
+      }
+
+      if (manufacturerName === MANUFACTURER.MERCK) {
+        if ([FIELD_NAMES.COI_ID].includes(field.fieldName)) {
           updatedField = {
             ...field,
             properties: {

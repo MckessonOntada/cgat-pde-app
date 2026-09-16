@@ -46,10 +46,10 @@ html {
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -81,6 +81,7 @@ div.disable-all {
   gap: var(--spacing-05);
   align-items: stretch;
   justify-content: space-between;
+
   .page-heading {
     font-size: var(--brand-font-size--22);
   }
@@ -95,6 +96,7 @@ div.disable-all {
   justify-content: space-between;
   // font-size: var(--brand-font-size--default);
 }
+
 .MCP-modal-body {
   font-size: var(--brand-font-size--default);
 }
@@ -182,6 +184,7 @@ div.disable-all {
     padding-right: var(--spacing-03);
   }
 }
+
 .entity-name {
   text-transform: capitalize;
 }
@@ -794,6 +797,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -935,7 +939,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -956,6 +960,7 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -981,6 +986,7 @@ div.disable-all {
       line-height: var(--brand-line-height--x-large);
       margin-bottom: var(--spacing-04);
     }
+
     div {
       margin-right: var(--spacing-02);
     }
@@ -1526,12 +1532,12 @@ div[role="row"] {
   }
 }
 
-.custom-radio input:checked ~ .checkmark {
+.custom-radio input:checked~.checkmark {
   background-color: var(--brand-color-primary);
   border: none;
 }
 
-.custom-radio input:disabled ~ .checkmark {
+.custom-radio input:disabled~.checkmark {
   background-color: var(--brand-color-dark-grey);
   border: none;
 }
@@ -1542,7 +1548,7 @@ div[role="row"] {
   display: none;
 }
 
-.custom-radio input:checked ~ .checkmark:after {
+.custom-radio input:checked~.checkmark:after {
   display: block;
 }
 
@@ -1580,7 +1586,7 @@ div[role="row"] {
     padding: 12px 0px 12px 16px;
   }
 
-  > div {
+  >div {
     border-left: none;
     border-top: none;
     border-right: none;
@@ -1743,14 +1749,14 @@ div[class*="CheckboxGroup-module"] {
   align-items: flex-start;
 }
 
-input[type="checkbox"] + label {
+input[type="checkbox"]+label {
   font-size: var(--brand-font-size--default) !important;
   line-height: var(--brand-line-height--m-large);
   color: var(--brand-color-grey);
 }
 
 .form-segment-list {
-  input[type="checkbox"] + label {
+  input[type="checkbox"]+label {
     font-size: var(--brand-font-size--small) !important;
   }
 }
@@ -1763,25 +1769,31 @@ input[type="checkbox"] + label {
   margin: 0;
   padding-left: var(--spacing-03);
 }
+
 .textarea textarea {
   height: 70px !important;
 }
+
 .QEODL {
   padding: 12px var(--spacing-03) !important;
 }
+
 .imeerY {
   padding: 12px var(--spacing-03) !important;
 }
+
 .notification-content-wrap {
   font-size: var(--brand-font-size--small);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
 }
+
 .notification-header {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-600);
 }
+
 .notification-btn {
   border: 2px solid #007cc1;
   color: #007cc1;
@@ -1792,17 +1804,21 @@ input[type="checkbox"] + label {
   text-transform: uppercase;
   text-decoration: none;
 }
+
 .notification-summary {
   gap: var(--spacing-03) 0px;
+
   span {
     font-size: var(--brand-font-size--default);
     font-weight: var(--brand-font-weight-600);
   }
 }
+
 .notification-summary p {
   display: flex;
   flex-direction: column;
 }
+
 .table-selection-wrapper {
   display: flex;
   flex-direction: row;
@@ -1814,29 +1830,33 @@ input[type="checkbox"] + label {
     flex-grow: 1;
     min-width: 0;
   }
+
   .list {
     width: 320px;
     flex-grow: 0;
     flex-shrink: 0;
   }
 }
+
 .table-selection-container {
   display: grid;
   grid-template-columns:
-    calc(66.66% - var(--spacing-04) / 2)
-    calc(33.33% - var(--spacing-04) / 2);
+    calc(66.66% - var(--spacing-04) / 2) calc(33.33% - var(--spacing-04) / 2);
   gap: var(--spacing-04);
   align-items: start;
 }
+
 .list-card-with-action {
   display: flex;
   gap: var(--spacing-02);
   align-items: center;
   justify-content: space-between;
+
   .card-content {
     flex: 1;
     word-break: break-word;
   }
+
   .card-action {
     flex-grow: 0;
   }
@@ -1846,4 +1866,8 @@ input[type="checkbox"] + label {
   display: flex;
   width: 100%;
   justify-content: end;
+}
+
+.drawer-alert {
+  margin-bottom: var(--spacing-03);
 }
