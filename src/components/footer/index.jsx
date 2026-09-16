@@ -56,31 +56,22 @@ const Footer = () => {
               <div key={index}>
                 <Heading as="h2">{t(section.heading)}</Heading>
                 {section.links.map((link, linkIndex) => {
-                  const sessionTransferUrls = ['/contact', '/contact/', '/faq', '/faq/'];
-                  const requiresSessionTransfer = sessionTransferUrls.includes(link.url);
                   const isContact = link.url === '/contact' || link.url === '/contact/';
                   const targetUrl = isContact && isAuthenticated ? '/contact-us' : link.url;
-                  if (requiresSessionTransfer) {
-                    return (
-                      <a
-                        key={linkIndex}
-                        href={targetUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const transferId = prepareSessionTransfer();
-                          const finalUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + 'sessionTransferId=' + transferId;
-                          window.open(finalUrl, '_blank');
-                        }}>
-                        {t(link.text)}
-                      </a>
-                    );
-                  }
                   return (
-                    <Link key={linkIndex} to={targetUrl} target="_blank">
+                    <a
+                      key={linkIndex}
+                      href={targetUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const transferId = prepareSessionTransfer();
+                        const finalUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + 'sessionTransferId=' + transferId;
+                        window.open(finalUrl, '_blank');
+                      }}>
                       {t(link.text)}
-                    </Link>
+                    </a>
                   );
                 })}
               </div>
