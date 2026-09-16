@@ -120,9 +120,9 @@ export const SystemConfigurationEN = {
   // Notification Settings Messages
   'manageMaterial.notificationSettings.messages.configSavedMaterial': 'Notification Settings has been updated for {count} material.',
   'manageMaterial.notificationSettings.messages.configSavedMaterials': 'Notification Settings has been updated for {count} materials.',
-  'manageMaterial.notificationSettings.messages.recipientDeleted': 'Recipient deleted successfully',
-  'manageMaterial.notificationSettings.messages.recipientAdded': 'recipient has been added.',
-  'manageMaterial.notificationSettings.messages.recipientsAdded': 'recipients has been added.',
+  'manageMaterial.notificationSettings.messages.recipientDeleted': 'Recipient removed. Click Save to submit your changes.',
+  'manageMaterial.notificationSettings.messages.recipientAdded': '{count} recipient has been added. Click Save to submit your changes.',
+  'manageMaterial.notificationSettings.messages.recipientsAdded': '{count} recipients have been added. Click Save to submit your changes.',
   'manageMaterial.notificationSettings.messages.recipientUpdated': 'Recipient details updated successfully',
   // Recipients
   'manageMaterial.addRecipients.heading': 'Add Recipients',

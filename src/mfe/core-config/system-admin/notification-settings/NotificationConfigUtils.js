@@ -2,35 +2,31 @@ export const getNotificationType = (selectedTab) => (selectedTab === 1 ? 'ORDER_
 
 export const mapRecipients = (recipients = []) =>
   recipients.map(({ firstName, middleName, lastName, email }) => ({
-    firstName,
-    middleName,
-    lastName,
-    email
+    firstName: firstName || '',
+    middleName: middleName || '',
+    lastName: lastName || '',
+    email: email || ''
   }));
 
-export const buildNotificationConfigPayload = ({ therapy, selectedTab, notifications, recipients = [], isBulk = false }) => {
+export const buildCombinedNotificationPayload = ({ therapy, tabState }) => {
   const therapyList = Array.isArray(therapy) ? therapy : [];
-  const selectedTherapy = therapyList[0];
-
   const ndcNumbers = therapyList.map((item) => item?.ndc || item?.ndcNumber).filter(Boolean);
-
-  const basePayload = {
-    channelType: selectedTherapy?.channelType,
-    notificationType: getNotificationType(selectedTab),
-    isCustomerServiceEnabled: notifications,
-    isActive: selectedTherapy?.isActive ?? selectedTherapy?.active,
-    recipients: mapRecipients(recipients)
-  };
-
-  if (isBulk) {
-    return {
-      ...basePayload,
-      ndcNumbers
-    };
-  }
+  const channelType = therapyList[0]?.channelType;
 
   return {
-    ...basePayload,
-    ndcNumber: ndcNumbers[0]
+    ndcNumbers,
+    channelType,
+    notificationTypeConfigs: [
+      {
+        notificationType: 'ORDER_SUBMIT',
+        isCustomerServiceEnabled: tabState?.[1]?.notifications ?? true,
+        recipients: mapRecipients(tabState?.[1]?.recipients ?? [])
+      },
+      {
+        notificationType: 'PATIENT_INGESTION',
+        isCustomerServiceEnabled: tabState?.[2]?.notifications ?? true,
+        recipients: mapRecipients(tabState?.[2]?.recipients ?? [])
+      }
+    ]
   };
 };

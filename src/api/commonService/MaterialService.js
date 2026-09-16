@@ -259,81 +259,26 @@ async function getManufacturers(channelType) {
 //Notification Settings
 const constructUserManagementServicePublicUrl = (uri) => `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
 
-async function createMaterialNotificationConfig(payload) {
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Invalid payload. A valid JSON object is required.');
-  }
-
-  const url = constructUserManagementServicePublicUrl('material-notification-configs');
-  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
-
-  return res?.data || {};
-}
-
 async function getMaterialNotificationConfig(requestParams) {
   if (!requestParams || typeof requestParams !== 'object') {
     throw new Error('Invalid request parameters. A valid object is required.');
   }
 
   const url = `${constructUserManagementServicePublicUrl('material-notification-configs')}?${serializeParams(requestParams)}`;
+
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
 
   return res?.data || {};
 }
 
-async function updateMaterialNotificationConfig(configId, payload) {
-  if (!configId) {
-    throw new Error('Notification configuration ID is required.');
-  }
-
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Invalid payload. A valid JSON object is required.');
-  }
-
-  const url = constructUserManagementServicePublicUrl(`material-notification-configs/${configId}`);
-  const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
-
-  return res?.data || {};
-}
-
-async function updateMaterialNotificationRecipient(payload) {
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Invalid payload. A valid JSON object is required.');
-  }
-
-  const url = constructUserManagementServicePublicUrl('material-notification-configs/recipients');
-  const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
-
-  return res?.data || {};
-}
-
-async function deleteMaterialNotificationRecipient(payload) {
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Invalid payload. A valid JSON object is required.');
-  }
-
-  const url = constructUserManagementServicePublicUrl('material-notification-configs/recipients');
-  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, payload);
-
-  return res?.data || {};
-}
-async function addMaterialNotificationRecipients(payload) {
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Invalid payload. A valid JSON object is required.');
-  }
-
-  const url = constructUserManagementServicePublicUrl('material-notification-configs/recipients');
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
-
-  return res?.data || {};
-}
 async function updateMaterialNotificationConfigsBulk(payload) {
   if (!payload || typeof payload !== 'object') {
     throw new Error('Invalid payload. A valid JSON object is required.');
   }
 
-  const url = constructUserManagementServicePublicUrl('material-notification-configs/config/update');
-  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  const url = constructUserManagementServicePublicUrl('material-notification-configs');
+
+  const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
 
   return res?.data || {};
 }
@@ -365,12 +310,7 @@ const MaterialService = Object.freeze({
   getManufacturers,
   addMaterial,
   unlinkCustomerCentreMaterials,
-  createMaterialNotificationConfig,
   getMaterialNotificationConfig,
-  updateMaterialNotificationConfig,
-  updateMaterialNotificationRecipient,
-  deleteMaterialNotificationRecipient,
-  addMaterialNotificationRecipients,
   updateMaterialNotificationConfigsBulk
 });
 
