@@ -44,10 +44,10 @@ function useTherapies(query, reason, setAlert) {
       const { content = [], totalElements = 0 } = response;
 
       const therapies = content
-        .flatMap(({ channelType, therapies = [] }) =>
+        .flatMap(({ tradeName, channelType, therapies = [] }) =>
           therapies.map((therapy) => ({
             value: therapy.id,
-            label: therapy.materialDescription,
+            label: tradeName ? `${tradeName} - ${therapy.materialDescription}` : therapy.materialDescription,
             ndc: therapy.ndc,
             channelType,
             isCrosswalked: therapy.isCrosswalked ?? false
