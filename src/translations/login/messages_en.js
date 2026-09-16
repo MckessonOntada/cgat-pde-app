@@ -125,5 +125,5 @@ export const LoginMessagesEN = {
   'contactUs.validation.invalidEmail': 'Please enter a valid email address',
   'contactUs.validation.invalidPhone': 'Please enter a valid phone number.',
   'contactUs.validation.emailMax': 'Email cannot exceed 50 characters.',
-  'contactUs.validation.description': 'Only alphabets, numbers, spaces, commas, periods, and hyphens are allowed.'
+  'contactUs.validation.description': 'Only alphabets, numbers, spaces, commas, periods, slashes and hyphens are allowed.'
 };
