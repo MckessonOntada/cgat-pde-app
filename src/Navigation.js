@@ -140,6 +140,22 @@ const Navigation = () => {
               </IdleTimer>
             }
           />
+          <Route
+            path={AppRoutes.pathTermsOfUse}
+            element={
+              <IdleTimer timeout={timeout}>
+                <TermsToUse />
+              </IdleTimer>
+            }
+          />
+          <Route
+            path={AppRoutes.pathPrivacyNotice}
+            element={
+              <IdleTimer timeout={timeout}>
+                <PrivacyNotice />
+              </IdleTimer>
+            }
+          />
           <Route element={<PublicRoute />}>
             <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />

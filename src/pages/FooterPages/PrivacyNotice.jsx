@@ -5,6 +5,7 @@ import PrimaryHeader from '@src/components/header/PrimaryHeader';
 import style from './Footer.module.scss';
 import { ReactComponent as McKessonLogo } from '@src/assets/svg/InspiroLink.svg';
 import { Link } from 'react-router-dom';
+import Footer from '@src/components/footer';
 const PrivacyNotice = () => {
   return (
     <div className={mainLayoutStyles.appContainer}>
@@ -222,6 +223,7 @@ const PrivacyNotice = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     </div>
   );

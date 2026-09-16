@@ -13,6 +13,16 @@ import AuthUtils from '@src/util/AuthUtils';
 import useTherapies from '../useTherapies';
 import AccountService from '@src/api/commonService/AccountService';
 
+const CHANNEL_ICON_MAP = {
+  BUY_AND_BILL: BuyAndBillIcon,
+  SPECIALITY_PHARMA: OrderIcon
+};
+
+const CHANNEL_LABEL_MAP = {
+  BUY_AND_BILL: 'labels.BUY_AND_BILL',
+  SPECIALITY_PHARMA: 'labels.SPECIALITY_PHARMACY'
+};
+
 const OrderIssueForm = ({ reason, setAlert, alert }) => {
   const { t } = useTranslate();
   const [therapyQuery, setTherapyQuery] = React.useState('');
@@ -22,10 +32,43 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
   const { values, setFieldValue } = useFormikContext();
   const selectedTherapy = values.selectedTherapy;
   const isCrosswalked = selectedTherapy?.isCrosswalked ?? false;
-  const orderingChannels = [
-    { id: 'BUY_AND_BILL', label: t('labels.BUY_AND_BILL'), icon: BuyAndBillIcon },
-    { id: 'SPECIALITY_PHARMA', label: t('labels.SPECIALITY_PHARMACY'), icon: OrderIcon }
-  ];
+
+  const {
+    data: channelConfigData,
+    isFetching: loadingChannelConfig,
+    isError: channelConfigError
+  } = useQuery({
+    queryKey: ['program-channel-config', selectedTherapy?.ndc],
+    enabled: !!selectedTherapy?.ndc && isCrosswalked,
+    queryFn: async () => OrderService.getProgramAndChannelConfig(selectedTherapy.ndc, {}),
+    onError: () => {
+      setAlert({
+        type: 'error',
+        key: 'CHANNEL_CONFIG_ERROR',
+        description: 'errors.default'
+      });
+    },
+    keepPreviousData: false
+  });
+
+  React.useEffect(() => {
+    if (!isCrosswalked || !channelConfigData) return;
+    setFieldValue('channelConfig', channelConfigData, false);
+    const channels = channelConfigData.channels || [];
+    if (channels.length === 1) {
+      setFieldValue('orderingChannel', channels[0]);
+    }
+  }, [channelConfigData, isCrosswalked]);
+
+  const availableChannels = channelConfigData?.channels || [];
+  const showOrderingChannelStep = isCrosswalked && !loadingChannelConfig && availableChannels.length > 1;
+
+  const orderingChannelOptions = availableChannels.map((channel) => ({
+    id: channel,
+    label: t(CHANNEL_LABEL_MAP[channel] || channel),
+    icon: CHANNEL_ICON_MAP[channel] || OrderIcon
+  }));
+
   const {
     data: accountResponse,
     isFetching: loadingAccounts,
@@ -33,7 +76,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
     isError: accountApiError
   } = useQuery({
     queryKey: ['sold-to-accounts', isSystemAdminView, selectedTherapy?.ndc, selectedTherapy?.channelType, values.orderingChannel, accountQuery],
-    enabled: !!selectedTherapy?.ndc && (!selectedTherapy.isCrosswalked || !!values.orderingChannel),
+    enabled: !!selectedTherapy?.ndc && (!isCrosswalked || !!values.orderingChannel),
 
     queryFn: async () => {
       if (isSystemAdminView) {
@@ -77,6 +120,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
 
     keepPreviousData: false
   });
+
   const accountOptions = (accountResponse?.content || []).map((account) => {
     const salesOrg = String(account.salesOrg || '').toUpperCase();
 
@@ -93,10 +137,9 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
           : null
     };
   });
+
   const noTherapies = !therapyApiError && isFetched && !isFetching && therapyQuery.trim() === '' && therapyOptions.length === 0;
-
   const shouldShowAccounts = values.therapy && (!isCrosswalked || values.orderingChannel) && !!accountResponse;
-
   const noAccounts = !accountApiError && shouldShowAccounts && accountFetched && !loadingAccounts && accountQuery.trim() === '' && accountOptions.length === 0;
 
   React.useEffect(() => {
@@ -122,6 +165,9 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
       });
     }
   }, [isFetching, loadingAccounts, noTherapies, noAccounts]);
+
+  const accountStep = showOrderingChannelStep ? 4 : 3;
+
   return (
     <div className="order-issue-form">
       <div className={styles.formSectionGap}>
@@ -136,7 +182,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
           options={therapyOptions}
           value={values.therapy}
           onChange={(value) => {
-            if (alert?.key === 'NO_ACCOUNTS' || alert?.key === 'ACCOUNT_API_ERROR' || alert?.key === 'SUBMIT_ERROR') {
+            if (alert?.key === 'NO_ACCOUNTS' || alert?.key === 'ACCOUNT_API_ERROR' || alert?.key === 'SUBMIT_ERROR' || alert?.key === 'CHANNEL_CONFIG_ERROR') {
               setAlert(null);
             }
             const selected = therapyOptions.find((t) => String(t.value) === String(value));
@@ -148,6 +194,8 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
             setFieldValue('orderingChannel', '');
             setFieldValue('account', '');
             setFieldValue('description', '');
+            setFieldValue('selectedAccount', null, false);
+            setFieldValue('channelConfig', null, false);
           }}
           variant="async"
           onSearch={setTherapyQuery}
@@ -158,12 +206,12 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
         />
       </div>
 
-      {values.therapy && isCrosswalked && (
+      {values.therapy && showOrderingChannelStep && (
         <div className={styles.formSectionGap}>
           <CardSelector
             step={3}
             title={t('contactUs.orderingChannel')}
-            options={orderingChannels}
+            options={orderingChannelOptions}
             value={values.orderingChannel}
             onChange={(val) => {
               if (alert?.key === 'NO_ACCOUNTS') {
@@ -180,7 +228,7 @@ const OrderIssueForm = ({ reason, setAlert, alert }) => {
 
       {values.therapy && (!isCrosswalked || values.orderingChannel) && (
         <div className={styles.formSectionGap}>
-          <StepHeader step={isCrosswalked ? 4 : 3} title={t('contactUs.selectAccount')} />
+          <StepHeader step={accountStep} title={t('contactUs.selectAccount')} />
           <Field
             component={Components['multiSelectDropdown']}
             name="account"

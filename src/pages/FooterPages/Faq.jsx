@@ -12,6 +12,7 @@ import { IconButton, Button } from '@mckesson/mcp-component-library';
 import data from './FaqList.js';
 import { restoreSessionTransfer } from '@src/util/SessionTransferUtils';
 import HlsPlayer from '@src/components/HlsPlayer';
+import Footer from '@src/components/footer';
 
 function Faq() {
   restoreSessionTransfer();
@@ -107,8 +108,8 @@ function Faq() {
                               <span>{q.questionTitle}</span>
                             </div>
 
-                            {openIndexes.includes(index) && (
-                              q.video ? (
+                            {openIndexes.includes(index) &&
+                              (q.video ? (
                                 <div key={index} className={`${style.content} ${style.videoContent}`}>
                                   <HlsPlayer videoId={q.video.id} />
                                 </div>
@@ -116,8 +117,7 @@ function Faq() {
                                 <div key={index} className={style.content}>
                                   <AnswerRenderer segments={q.answerSegment} />
                                 </div>
-                              )
-                            )}
+                              ))}
                           </div>
                         );
                       })}
@@ -128,6 +128,7 @@ function Faq() {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     </div>
   );
