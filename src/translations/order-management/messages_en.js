@@ -1085,7 +1085,7 @@ export const MessageEn = {
   'manageMaterial.drawer.details.configuration.body.maxQuantityRequired': 'Maximum quantity is required',
   'manageMaterial.drawer.details.configuration.body.minMaxQuantity': 'Minimum quantity must be less than maximum quantity',
   'additional.details.order.quantity.error': 'The entered quantity is outside the permitted range for this material. Please enter a value between',
-  'additional.details.order.quantity.equal.error': 'The entered quantity is outside the permitted range for this material. Allowed Quantity is',
+  'additional.details.order.quantity.equal.error': 'The entered quantity is outside the permitted range for this material. The allowed quantity is',
   'labels.shipToPONumber': 'Ship to PO Number',
   'labels.shipToPONumberLengthError': 'Ship to PO Number should not exceed 35 characters',
   'labels.shipToPONumberMustValid': 'Ship to PO Number should only contain letters and numbers.',
@@ -1164,10 +1164,15 @@ export const MessageEn = {
   'messages.layout.applyError': 'Failed to save column preferences. Please try again.',
   'labels.doseIdentifier': 'Dose Identifier',
   'labels.doseIdentifierRequired': 'Dose Identifier is required',
-  'orderManagement.merck.NO_ACTIVE_DOSE': 'No active Dose Identifier is available for the entered {coiId}. Please contact Customer Support before placing this order.',
-  'orderManagement.merck.COMBINATION_INVALID': 'The previously verified {coiId} is no longer valid or authorized for order submission. Please re-verify the {coiId} and select a valid Dose Identifier before submitting the order. If the issue persists, contact Customer Support for assistance.',
-  'orderManagement.merck.UNEXPECTED': 'The {coiId} validation service returned an unexpected response. Please try again. If the issue persists, contact Customer Support.',
+  'orderManagement.merck.NO_ACTIVE_DOSE':
+    'No active Dose Identifier is available for the entered {coiId}. Please contact Customer Support before placing this order.',
+  'orderManagement.merck.COMBINATION_INVALID':
+    'The previously verified {coiId} is no longer valid or authorized for order submission. Please re-verify the {coiId} and select a valid Dose Identifier before submitting the order. If the issue persists, contact Customer Support for assistance.',
+  'orderManagement.merck.UNEXPECTED':
+    'The {coiId} validation service returned an unexpected response. Please try again. If the issue persists, contact Customer Support.',
   'orderManagement.merck.VERIFIED': '{coiId} verified',
-  'orderManagement.merck.COI_INVALID': 'The entered {coiId} is not valid. Please enter a valid {coiId} and try again. If the issue persists, contact Customer Support before submitting the order.',
-  'orderManagement.merck.COI_INACTIVE': 'The entered {coiId} is currently inactive and is not eligible for order placement. Please contact Customer Support for further assistance.'
+  'orderManagement.merck.COI_INVALID':
+    'The entered {coiId} is not valid. Please enter a valid {coiId} and try again. If the issue persists, contact Customer Support before submitting the order.',
+  'orderManagement.merck.COI_INACTIVE':
+    'The entered {coiId} is currently inactive and is not eligible for order placement. Please contact Customer Support for further assistance.'
 };
