@@ -5,7 +5,7 @@ import PrimaryHeader from '@src/components/header/PrimaryHeader';
 import AuthUtils from '@src/util/AuthUtils';
 import { restoreSessionTransfer } from '@src/util/SessionTransferUtils';
 import { ReactComponent as McKessonLogo } from '@src/assets/svg/pagelogo.svg';
-import { Heading } from '@mckesson/mcp-component-library';
+import { Heading, Loader } from '@mckesson/mcp-component-library';
 import styles from './ContactUs.module.scss';
 import { ProgressBarStepper } from '@src/components/stepper';
 import { TabSelection } from './TabSelection';
@@ -25,9 +25,14 @@ import PersonalDetails from './PersonalDetails';
 import * as Yup from 'yup';
 import { CONTACT_US_DESCRIPTION_REGEX, PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 import Components from '@src/components/form/Components';
+import Footer from '@src/components/footer';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
+};
+
+const showOrderingChannelStep = (values) => {
+  return values.selectedTherapy?.isCrosswalked === true && (values.channelConfig?.channels?.length ?? 0) > 1;
 };
 
 const isTherapyBasedReason = (reason) => {
@@ -59,8 +64,8 @@ const getProgressState = (values) => {
   }
 
   if (isTherapyBasedReason(values.reason)) {
-    const isCrosswalked = isTherapyCrosswalked(values.selectedTherapy);
-    const totalSteps = isCrosswalked ? 5 : 4;
+    const hasOrderingChannelStep = showOrderingChannelStep(values);
+    const totalSteps = hasOrderingChannelStep ? 5 : 4;
 
     let currentStep = 2;
 
@@ -68,7 +73,7 @@ const getProgressState = (values) => {
       currentStep = 3;
     }
 
-    if (isCrosswalked) {
+    if (hasOrderingChannelStep) {
       if (values.therapy && values.orderingChannel) {
         currentStep = 4;
       }
@@ -195,6 +200,10 @@ const ContactUsForm = () => {
     description: Yup.string().matches(CONTACT_US_DESCRIPTION_REGEX, t('contactUs.validation.description'))
   }).concat(isAuthenticated ? Yup.object() : personalDetailsSchema);
 
+  if (!authState) {
+    return <Loader type={'screen'} />;
+  }
+
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
@@ -231,6 +240,7 @@ const ContactUsForm = () => {
                   affectedModule: '',
                   selectedTherapy: null,
                   selectedAccount: null,
+                  channelConfig: null,
                   therapy: '',
                   orderingChannel: '',
                   account: '',
@@ -299,7 +309,7 @@ const ContactUsForm = () => {
                               {shouldShowDescription(values) && (
                                 <>
                                   <StepHeader
-                                    step={values.reason === 1 ? 3 : isTherapyCrosswalked(values.selectedTherapy) ? 5 : 4}
+                                    step={values.reason === 1 ? (isAuthenticated ? 3 : 4) : showOrderingChannelStep(values) ? 5 : 4}
                                     title={t('contactUs.describeIssue')}
                                   />
 
@@ -341,6 +351,7 @@ const ContactUsForm = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     </div>
   );
