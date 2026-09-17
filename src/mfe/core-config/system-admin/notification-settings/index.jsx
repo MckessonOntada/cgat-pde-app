@@ -37,13 +37,15 @@ const buildInitialTabState = (locationState) => {
   if (forTab && locationState?.editedRecipient && locationState?.originalEmail) {
     const tabData = base[forTab] || { notifications: null, recipients: null };
     const originalEmailLower = locationState.originalEmail.trim().toLowerCase();
+    const updatedRecipients =
+      tabData.recipients == null
+        ? null
+        : tabData.recipients.map((recipient) => (recipient.email?.trim().toLowerCase() === originalEmailLower ? locationState.editedRecipient : recipient));
     return {
       ...base,
       [forTab]: {
         ...tabData,
-        recipients: (tabData.recipients || []).map((recipient) =>
-          recipient.email?.trim().toLowerCase() === originalEmailLower ? locationState.editedRecipient : recipient
-        )
+        recipients: updatedRecipients
       }
     };
   }
@@ -73,16 +75,16 @@ const MaterialNotificationSettings = () => {
   const [addRecipients, setAddRecipients] = useState(location.state?.addRecipients || 'yes');
   const [tabState, setTabState] = useState(() => buildInitialTabState(location.state));
 
-  // True when returning from Add/Edit Recipient; false on a fresh open from Manage Material.
   const isReturningFromRecipientPage = !!location.state?.tabState;
 
   const [alert, setAlert] = useState(() => {
     if (location.state?.newRecipients?.length > 0) {
       const count = location.state.newRecipients.length;
-      const key = count === 1
-        ? 'manageMaterial.notificationSettings.messages.recipientAdded'
-        : 'manageMaterial.notificationSettings.messages.recipientsAdded';
+      const key = count === 1 ? 'manageMaterial.notificationSettings.messages.recipientAdded' : 'manageMaterial.notificationSettings.messages.recipientsAdded';
       return { type: 'success', description: t(key, { count }) };
+    }
+    if (location.state?.editedRecipient) {
+      return { type: 'success', description: t('manageMaterial.notificationSettings.messages.recipientUpdated') };
     }
     return location.state?.alert || null;
   });
@@ -109,7 +111,6 @@ const MaterialNotificationSettings = () => {
     const patientIngestionConfig = notificationConfig.PATIENT_INGESTION || notificationConfig.patient_ingestion;
 
     if (isReturningFromRecipientPage) {
-      // Preserve local edits from before the Add/Edit navigation; only seed null slots from API.
       setTabState((prev) => ({
         1: {
           notifications: prev[1]?.notifications ?? orderSubmitConfig?.isCustomerServiceEnabled ?? true,
@@ -121,8 +122,6 @@ const MaterialNotificationSettings = () => {
         }
       }));
     } else {
-      // Fresh open — always overwrite with API data. React Query fires this twice (stale → fresh);
-      // without ??, the fresh response correctly wins on the second call.
       setTabState({
         1: { notifications: orderSubmitConfig?.isCustomerServiceEnabled ?? true, recipients: orderSubmitConfig?.recipients ?? [] },
         2: { notifications: patientIngestionConfig?.isCustomerServiceEnabled ?? true, recipients: patientIngestionConfig?.recipients ?? [] }

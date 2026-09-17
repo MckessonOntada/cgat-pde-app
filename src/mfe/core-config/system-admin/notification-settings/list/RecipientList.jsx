@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { openModal, closeModal } from '@src/store/reducer/modalReducer';
@@ -13,44 +13,46 @@ const RecipientList = ({ handleOnOptionSelection, isActionsDisabled = false }) =
   const { t } = useTranslate();
   const { pagedData, paginationConfig, totalElements, totalPages, handleSort, handleChangePage } = useRecipientList();
 
-  const confirmOnDelete = (row) => {
-    const onDelete = () => {
-      handleOnOptionSelection('delete', row);
-      dispatch(closeModal());
-    };
+  const handleOnOptionSelectionRef = useRef(handleOnOptionSelection);
+  handleOnOptionSelectionRef.current = handleOnOptionSelection;
 
-    const state = {
-      title: t('recipients.delete.title'),
-      body: (
-        <div className="MCP-modal-body">
-          <p>{t('recipients.delete.confirmation')}</p>
-        </div>
-      ),
-      footer: (
-        <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            {t('button.caption.no')}
-          </Button>
-          <Button size="md" variant="primary" onClick={onDelete}>
-            {t('button.caption.yes')}
-          </Button>
-        </div>
-      )
-    };
+  const stableHandleSelect = useCallback(
+    (value, row) => {
+      if (value === 'delete') {
+        const onDelete = () => {
+          handleOnOptionSelectionRef.current('delete', row);
+          dispatch(closeModal());
+        };
 
-    dispatch(openModal(state));
-  };
+        const state = {
+          title: t('recipients.delete.title'),
+          body: (
+            <div className="MCP-modal-body">
+              <p>{t('recipients.delete.confirmation')}</p>
+            </div>
+          ),
+          footer: (
+            <div className="controls">
+              <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+                {t('button.caption.no')}
+              </Button>
+              <Button size="md" variant="primary" onClick={onDelete}>
+                {t('button.caption.yes')}
+              </Button>
+            </div>
+          )
+        };
 
-  const handleOptionSelection = (value, row) => {
-    if (value === 'delete') {
-      confirmOnDelete(row);
-      return;
-    }
+        dispatch(openModal(state));
+        return;
+      }
 
-    handleOnOptionSelection(value, row);
-  };
+      handleOnOptionSelectionRef.current(value, row);
+    },
+    [dispatch, t]
+  );
 
-  const columns = useMemo(() => createColumns(t, handleOptionSelection, isActionsDisabled), [isActionsDisabled]);
+  const columns = useMemo(() => createColumns(t, stableHandleSelect, isActionsDisabled), [t, stableHandleSelect, isActionsDisabled]);
 
   const conditionalRowStyles = useMemo(() => (isActionsDisabled ? [{ when: () => true, style: { backgroundColor: '#FBFBFA' } }] : []), [isActionsDisabled]);
 

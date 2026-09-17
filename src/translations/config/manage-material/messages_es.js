@@ -122,7 +122,7 @@ export const SystemConfigurationES = {
   'manageMaterial.notificationSettings.messages.recipientDeleted': 'S_Recipient removed. Click Save to submit your changes.',
   'manageMaterial.notificationSettings.messages.recipientAdded': 'S_{count} recipient has been added. Click Save to submit your changes.',
   'manageMaterial.notificationSettings.messages.recipientsAdded': 'S_{count} recipients have been added. Click Save to submit your changes.',
-  'manageMaterial.notificationSettings.messages.recipientUpdated': 'S_Recipient details updated successfully',
+  'manageMaterial.notificationSettings.messages.recipientUpdated': 'S_Recipient details updated. Click Save to submit the changes.',
   // Recipients
   'manageMaterial.addRecipients.heading': 'S_Add Recipients',
   'manageMaterial.addRecipients.editHeading': 'S_Edit Recipient',
