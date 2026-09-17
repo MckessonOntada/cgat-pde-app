@@ -2,7 +2,6 @@ import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import ServiceUtil from './ServiceUtil';
-import { USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
 async function getMaterialById(id) {
   const url = `${ApiRoutes.GET_MATERIAL_BY_ID(id)}`;
@@ -257,14 +256,12 @@ async function getManufacturers(channelType) {
 }
 
 //Notification Settings
-const constructUserManagementServicePublicUrl = (uri) => `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
-
 async function getMaterialNotificationConfig(requestParams) {
   if (!requestParams || typeof requestParams !== 'object') {
     throw new Error('Invalid request parameters. A valid object is required.');
   }
 
-  const url = `${constructUserManagementServicePublicUrl('material-notification-configs')}?${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.MATERIAL_NOTIFICATION_CONFIGS()}?${serializeParams(requestParams)}`;
 
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
 
@@ -276,7 +273,7 @@ async function updateMaterialNotificationConfigsBulk(payload) {
     throw new Error('Invalid payload. A valid JSON object is required.');
   }
 
-  const url = constructUserManagementServicePublicUrl('material-notification-configs');
+  const url = ApiRoutes.MATERIAL_NOTIFICATION_CONFIGS();
 
   const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
 

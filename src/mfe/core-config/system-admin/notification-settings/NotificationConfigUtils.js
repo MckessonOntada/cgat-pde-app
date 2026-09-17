@@ -1,4 +1,6 @@
-export const getNotificationType = (selectedTab) => (selectedTab === 1 ? 'ORDER_SUBMIT' : 'PATIENT_INGESTION');
+import { NOTIFICATION_TYPES } from './constants';
+
+export const getNotificationType = (selectedTab) => (selectedTab === 1 ? NOTIFICATION_TYPES.ORDER_SUBMIT : NOTIFICATION_TYPES.PATIENT_INGESTION);
 
 export const mapRecipients = (recipients = []) =>
   recipients.map(({ firstName, middleName, lastName, email }) => ({
@@ -18,12 +20,12 @@ export const buildCombinedNotificationPayload = ({ therapy, tabState }) => {
     channelType,
     notificationTypeConfigs: [
       {
-        notificationType: 'ORDER_SUBMIT',
+        notificationType: NOTIFICATION_TYPES.ORDER_SUBMIT,
         isCustomerServiceEnabled: tabState?.[1]?.notifications ?? true,
         recipients: mapRecipients(tabState?.[1]?.recipients ?? [])
       },
       {
-        notificationType: 'PATIENT_INGESTION',
+        notificationType: NOTIFICATION_TYPES.PATIENT_INGESTION,
         isCustomerServiceEnabled: tabState?.[2]?.notifications ?? true,
         recipients: mapRecipients(tabState?.[2]?.recipients ?? [])
       }

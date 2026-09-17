@@ -8,5 +8,5 @@ export const routeConstants = {
   ADD_DIAGNOSIS_CODES: 'add',
   CONFIGURE: 'configure',
   NOTIFICATION_SETTINGS: 'notification-settings',
-  ADD_RECIPIENTS: 'add-recipients'
+  RECIPIENTS: 'recipients'
 };

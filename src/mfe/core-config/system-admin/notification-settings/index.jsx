@@ -10,17 +10,8 @@ import MaterialService from '@src/api/commonService/MaterialService';
 import RecipientList from './list/RecipientList';
 import { RecipientListProvider } from './context/RecipientListContext';
 import { buildCombinedNotificationPayload } from './NotificationConfigUtils';
+import { TAB_LIST, DEFAULT_TAB_STATE, NOTIFICATION_TYPES, ROUTES } from './constants';
 import styles from './MaterialNotificationSettings.module.scss';
-
-const TAB_LIST = [
-  { id: 1, configName: 'manageMaterial.notificationSettings.Tab1', sequence: 1, labelForMobile: 'manageMaterial.notificationSettings.Tab1' },
-  { id: 2, configName: 'manageMaterial.notificationSettings.Tab2', sequence: 2, labelForMobile: 'manageMaterial.notificationSettings.Tab2' }
-];
-
-const DEFAULT_TAB_STATE = {
-  1: { notifications: null, recipients: null },
-  2: { notifications: null, recipients: null }
-};
 
 const buildInitialTabState = (locationState) => {
   const base = locationState?.tabState || DEFAULT_TAB_STATE;
@@ -62,10 +53,10 @@ const MaterialNotificationSettings = () => {
   const { therapy, notificationConfigId: navigationConfigId } = location.state || {};
 
   const isSPMaterial = location.pathname.includes('/manage-sp-material');
-  const materialRoute = isSPMaterial ? '/system-admin/config/manage-sp-material' : '/system-admin/config/manage-material';
+  const materialRoute = isSPMaterial ? ROUTES.SP_MATERIAL : ROUTES.MATERIAL;
   const addRecipientsRoute = isSPMaterial
-    ? '/system-admin/config/manage-sp-material/notification-settings/add-recipients'
-    : '/system-admin/config/manage-material/notification-settings/add-recipients';
+    ? `${ROUTES.SP_MATERIAL_NOTIFICATION_SETTINGS}/recipients`
+    : `${ROUTES.MATERIAL_NOTIFICATION_SETTINGS}/recipients`;
 
   const therapyList = Array.isArray(therapy) ? therapy : [];
   const isSingleTherapy = therapyList.length === 1;
@@ -107,8 +98,8 @@ const MaterialNotificationSettings = () => {
   useEffect(() => {
     if (!notificationConfig || !isSingleTherapy) return;
 
-    const orderSubmitConfig = notificationConfig.ORDER_SUBMIT || notificationConfig.order_submit;
-    const patientIngestionConfig = notificationConfig.PATIENT_INGESTION || notificationConfig.patient_ingestion;
+    const orderSubmitConfig = notificationConfig[NOTIFICATION_TYPES.ORDER_SUBMIT] || notificationConfig.order_submit;
+    const patientIngestionConfig = notificationConfig[NOTIFICATION_TYPES.PATIENT_INGESTION] || notificationConfig.patient_ingestion;
 
     if (isReturningFromRecipientPage) {
       setTabState((prev) => ({
@@ -153,7 +144,7 @@ const MaterialNotificationSettings = () => {
     },
     onError: (error) => {
       console.error('Failed to save notification config:', error);
-      setAlert({ type: 'error', message: t('errors.default') });
+      setAlert({ type: 'error', description: t('errors.default') });
     }
   });
 
@@ -164,7 +155,7 @@ const MaterialNotificationSettings = () => {
   };
 
   const notificationConfigId = isSingleTherapy
-    ? notificationConfig?.ORDER_SUBMIT?.id || notificationConfig?.PATIENT_INGESTION?.id || navigationConfigId
+    ? notificationConfig?.[NOTIFICATION_TYPES.ORDER_SUBMIT]?.id || notificationConfig?.[NOTIFICATION_TYPES.PATIENT_INGESTION]?.id || navigationConfigId
     : undefined;
 
   const handleOnOptionSelection = (value, row) => {

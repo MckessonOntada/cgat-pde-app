@@ -12,7 +12,7 @@ function ManageMaterialRoute() {
       <Route path={routeConstants.MANAGE_MATERIAL} element={<ManageMaterial />} />
       <Route path={routeConstants.CONFIGURE} element={<ConfigurationSpMaterial />} />
       <Route path={routeConstants.NOTIFICATION_SETTINGS} element={<MaterialNotificationSettings />} />
-      <Route path={`${routeConstants.NOTIFICATION_SETTINGS}/${routeConstants.ADD_RECIPIENTS}`} element={<AddRecipient />} />
+      <Route path={`${routeConstants.NOTIFICATION_SETTINGS}/${routeConstants.RECIPIENTS}`} element={<AddRecipient />} />
     </Routes>
   );
 }

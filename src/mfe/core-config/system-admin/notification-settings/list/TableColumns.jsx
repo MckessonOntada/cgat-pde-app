@@ -3,6 +3,7 @@ import { MenuList } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
+import { RECIPIENT_ACTION_OPTIONS } from '../constants';
 
 export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = false) => [
   {
@@ -43,17 +44,6 @@ export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = fa
     width: '150px',
     isAction: true,
     cell: (row) => {
-      const options = [
-        {
-          label: 'Edit',
-          value: 'edit'
-        },
-        {
-          label: 'Delete',
-          value: 'delete'
-        }
-      ];
-
       return (
         <MenuList
           menuIcon={
@@ -66,7 +56,7 @@ export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = fa
             />
           }
           handleSelect={(value) => handleOnOptionSelection(value, row)}
-          options={options}
+          options={RECIPIENT_ACTION_OPTIONS}
           aria-label="Action options"
           size="md"
           isDisabled={isActionsDisabled}

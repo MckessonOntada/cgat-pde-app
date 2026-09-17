@@ -37,7 +37,7 @@ function ManageSPMaterialRoute() {
         }
       />
       <Route path={routeConstants.NOTIFICATION_SETTINGS} element={<MaterialNotificationSettings />} />
-      <Route path={`${routeConstants.NOTIFICATION_SETTINGS}/${routeConstants.ADD_RECIPIENTS}`} element={<AddRecipient />} />
+      <Route path={`${routeConstants.NOTIFICATION_SETTINGS}/${routeConstants.RECIPIENTS}`} element={<AddRecipient />} />
     </Routes>
   );
 }

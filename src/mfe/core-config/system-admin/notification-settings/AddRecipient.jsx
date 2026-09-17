@@ -9,8 +9,7 @@ import ModuleHeader from '@src/components/module-header';
 import CommonUtils from '@src/util/CommonUtils';
 import Components from '@src/components/form/Components';
 import styles from './AddRecipient.module.scss';
-
-const emptyRecipient = { firstName: '', middleName: '', lastName: '', email: '' };
+import { EMPTY_RECIPIENT, DEFAULT_TAB_STATE, ROUTES } from './constants';
 
 export const recipientValidationSchema = (t, existingEmailSet = new Set(), currentEmail = '') =>
   Yup.object({
@@ -50,9 +49,9 @@ export const recipientValidationSchema = (t, existingEmailSet = new Set(), curre
       })
   });
 
-const AddRecipientForm = ({ onCancel, isEdit, isSubmitting }) => {
+const AddRecipientForm = ({ onCancel, isEdit }) => {
   const { t } = useTranslate();
-  const { values } = useFormikContext();
+  const { values, isSubmitting } = useFormikContext();
   const recipients = values.recipients || [];
 
   return (
@@ -135,7 +134,7 @@ const AddRecipientForm = ({ onCancel, isEdit, isSubmitting }) => {
                 ))}
 
                 {!isEdit && (
-                  <Button type="button" className={styles.addMoreButton} variant="tertiary" size="md" onClick={() => push({ ...emptyRecipient })}>
+                  <Button type="button" className={styles.addMoreButton} variant="tertiary" size="md" onClick={() => push({ ...EMPTY_RECIPIENT })}>
                     + {t('manageMaterial.addRecipients.button.addMore')}
                   </Button>
                 )}
@@ -170,7 +169,7 @@ const AddRecipient = () => {
     isEdit = false,
     recipient,
     selectedTab = 1,
-    tabState = { 1: { notifications: null, recipients: null }, 2: { notifications: null, recipients: null } },
+    tabState = DEFAULT_TAB_STATE,
     addRecipients = 'yes',
     currentEmail,
     notificationConfigId,
@@ -180,9 +179,7 @@ const AddRecipient = () => {
   const existingEmailSet = new Set(existingRecipients.map((r) => r.email?.trim().toLowerCase()).filter(Boolean));
 
   const isSPMaterial = location.pathname.includes('/manage-sp-material');
-  const settingsRoute = isSPMaterial
-    ? '/system-admin/config/manage-sp-material/notification-settings'
-    : '/system-admin/config/manage-material/notification-settings';
+  const settingsRoute = isSPMaterial ? ROUTES.SP_MATERIAL_NOTIFICATION_SETTINGS : ROUTES.MATERIAL_NOTIFICATION_SETTINGS;
 
   const baseNavState = { therapy, selectedTab, tabState, addRecipients, notificationConfigId };
 
@@ -190,7 +187,7 @@ const AddRecipient = () => {
 
   const initialRecipient =
     !isEdit || !recipient
-      ? { ...emptyRecipient }
+      ? { ...EMPTY_RECIPIENT }
       : { firstName: recipient.firstName || '', middleName: recipient.middleName || '', lastName: recipient.lastName || '', email: recipient.email || '' };
 
   const handleSubmit = (values) => {
@@ -232,7 +229,7 @@ const AddRecipient = () => {
           validationSchema={recipientValidationSchema(t, existingEmailSet, currentEmail)}
           onSubmit={handleSubmit}
           enableReinitialize>
-          <AddRecipientForm onCancel={handleBackToSettings} isEdit={isEdit} isSubmitting={false} />
+          <AddRecipientForm onCancel={handleBackToSettings} isEdit={isEdit} />
         </Formik>
       </div>
     </div>

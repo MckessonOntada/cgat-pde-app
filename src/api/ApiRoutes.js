@@ -90,7 +90,8 @@ const ApiRoutes = Object.freeze({
   MERCK_COI_VALIDATE: (coiId) => constructUserManagementServiceUrl(`merck/validate/${coiId}`),
   MERCK_DOSE_VALIDATE: (coiId, doseIdentifier) => constructUserManagementServiceUrl(`merck/validate/${coiId}/${doseIdentifier}`),
   GET_VIDEO: (videoId) => constructOrderServiceUrl(`api/videos/${videoId}`),
-  ORDER_SERVICE_SYSTEM_ADMIN: () => constructOrderServiceUrl('api/admin/orders/')
+  ORDER_SERVICE_SYSTEM_ADMIN: () => constructOrderServiceUrl('api/admin/orders/'),
+  MATERIAL_NOTIFICATION_CONFIGS: () => constructUserManagementServicePublicUrl('material-notification-configs')
 });
 
 export default ApiRoutes;
