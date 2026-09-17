@@ -26,6 +26,7 @@ import * as Yup from 'yup';
 import { CONTACT_US_DESCRIPTION_REGEX, PHONE_REGEX } from '@src/components/form/ValidationRegExp';
 import Components from '@src/components/form/Components';
 import Footer from '@src/components/footer';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 
 const isTherapyCrosswalked = (selectedTherapy) => {
   return selectedTherapy?.isCrosswalked ?? false;
@@ -128,6 +129,12 @@ const ContactUsForm = () => {
   const [submittedData, setSubmittedData] = React.useState(null);
   const [alert, setAlert] = React.useState(null);
 
+  React.useEffect(() => {
+    if (submittedData) {
+      scrollToTopUtil('contact-us-app-wrapper');
+    }
+  }, [submittedData]);
+
   const getInitials = (name) => {
     if (!name) return 'U';
     const parts = name.trim().split(/\s+/);
@@ -208,7 +215,7 @@ const ContactUsForm = () => {
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
 
-      <div className={mainLayoutStyles['app-wrapper']}>
+      <div id="contact-us-app-wrapper" className={mainLayoutStyles['app-wrapper']}>
         <div className={styles.contactContainer}>
           <div className={styles.contactContent}>
             <div className={styles.contactCard}>
@@ -265,6 +272,7 @@ const ContactUsForm = () => {
                             resetForm();
                             setSubmittedData(null);
                             setAlert(null);
+                            scrollToTopUtil('contact-us-app-wrapper');
                           }}
                         />
                       ) : (
