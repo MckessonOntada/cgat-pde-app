@@ -103,7 +103,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [triageAlert, setTriageAlert] = React.useState(null);
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isApprover } = state;
-  const { tradeDetails = {}, spTherapyConfig = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired, additionalDetails } = orderDetails || {};
+  const {
+    tradeDetails = {},
+    spTherapyConfig = {},
+    therapyConfig = {},
+    channelType = CHANNEL_TYPE.BUY_AND_BILL,
+    patientDetailsRequired,
+    additionalDetails
+  } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -275,9 +282,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       });
       if (manufacturer === MANUFACTURER.MERCK) {
-        dynamicFields['doseIdentifier'] = Yup.string()
-          .trim()
-          .required(t('labels.doseIdentifierRequired'));
+        dynamicFields['doseIdentifier'] = Yup.string().trim().required(t('labels.doseIdentifierRequired'));
       }
       dynamicFields['orderQuantity'] = Yup.number()
         .transform((value, originalValue) => {
@@ -475,23 +480,23 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                 ? Yup.string().required('Value is required')
                 : Yup.string().nullable()
               : question.type === QUESTION_TYPE.RADIO_BUTTON
-                ? question.isMandatory
-                  ? Yup.string().required('Select at least one option')
-                  : Yup.string().nullable()
-                : question.type === QUESTION_TYPE.DATE_PICKER
-                  ? question.isMandatory
-                    ? Yup.date().required('Date is required')
-                    : Yup.date().nullable()
-                  : question.type === QUESTION_TYPE.CHECKBOX
-                    ? question.isMandatory
-                      ? Yup.array()
-                        .of(Yup.string())
-                        .min(1, 'Select at least one option')
-                        .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
-                      : Yup.array().of(Yup.string()).nullable()
-                    : question.isMandatory
-                      ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
-                      : Yup.array().of(Yup.string()).nullable(),
+              ? question.isMandatory
+                ? Yup.string().required('Select at least one option')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.DATE_PICKER
+              ? question.isMandatory
+                ? Yup.date().required('Date is required')
+                : Yup.date().nullable()
+              : question.type === QUESTION_TYPE.CHECKBOX
+              ? question.isMandatory
+                ? Yup.array()
+                    .of(Yup.string())
+                    .min(1, 'Select at least one option')
+                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                : Yup.array().of(Yup.string()).nullable()
+              : question.isMandatory
+              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+              : Yup.array().of(Yup.string()).nullable(),
             document: Yup.object()
               .shape({
                 url: Yup.string(),
@@ -858,14 +863,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
     const variantDetails = !!variant
       ? {
-        variant: variant.variant,
-        variantDescription: variant.variantDescription,
-        variantAcknowledgment: variantAcknowledgement.isChecked,
-        variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document),
-        therapy: {
-          id: variant.therapyId
+          variant: variant.variant,
+          variantDescription: variant.variantDescription,
+          variantAcknowledgment: variantAcknowledgement.isChecked,
+          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document),
+          therapy: {
+            id: variant.therapyId
+          }
         }
-      }
       : null;
 
     const {
@@ -895,7 +900,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         setAlert({
           type: 'error',
           description: isMinEqualMax
-            ? `${t('additional.details.order.quantity.equal.error')} ${minQty}`
+            ? `${t('additional.details.order.quantity.equal.error')} ${minQty}.`
             : `${t('additional.details.order.quantity.error')} ${minQty} and ${maxQty}.`
         });
 
@@ -1385,8 +1390,8 @@ function AdditionalDetails({ readOnly, hasPermission }) {
               isApprover
                 ? t('headings.reviewOrder')
                 : orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-                  ? t('headings.createNewPrescription')
-                  : t('headings.createNewOrder')
+                ? t('headings.createNewPrescription')
+                : t('headings.createNewOrder')
             }
           />
         }
@@ -1619,7 +1624,7 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
           <InfoIcon />
         </div>
       ),
-      selector: () => { },
+      selector: () => {},
       minWidth: '220px',
       maxWidth: '280px',
       sortable: false,
@@ -1636,7 +1641,7 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
       id: 'variantDescription',
       name: <div className="variant-table-cell">{t('labels.variantDescription')}</div>,
       minWidth: '300px',
-      selector: () => { },
+      selector: () => {},
       sortable: false,
       showInMobileHeader: true,
       cell: (props) => <span>{props.variantDescription}</span>
