@@ -103,7 +103,9 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     onNotificationClick?.();
     if (closeDrawer) setDrawerOpen(false);
   };
-  const isNewTab = ['/contact-us', '/faq/'].includes(location.pathname);
+  const isNewTab = ['/contact-us', '/faq/', 'privacy-notice-for-state-specific-privacy-laws/', '/privacy-notice/', '/terms-of-use/'].includes(
+    location.pathname
+  );
 
   const LeftSideView = ({ children }) => (
     <div className={styles.navItemsLeft}>
