@@ -27,6 +27,7 @@ import PrivacyNotice from './pages/FooterPages/PrivacyNotice';
 import PrivacyNoticePage from './pages/FooterPages/PrivacyNoticeForStateSpecific.';
 import ContactUsForm from './pages/FooterPages/ContactUs/ContactUsForm';
 import Success from './pages/FooterPages/ContactUs/Success';
+import { FooterProvider } from './components/footer/FooterContext';
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -101,11 +102,6 @@ const Navigation = () => {
     if (authState?.isAuthenticated) {
       AuthService.setAppAuthToken(authState);
 
-      // const redirectTo =
-      //   sessionStorage.getItem('USER_ROLE') === 'SYSTEM_ADMIN'
-      //     ? AppRoutes.pathUserManagement
-      //     : AppRoutes.pathAdmin;
-
       setTimeout(() => {
         navigate(AppRoutes.pathAppBase);
       }, 1000);
@@ -128,7 +124,9 @@ const Navigation = () => {
             path={AppRoutes.pathContactSecure}
             element={
               <IdleTimer timeout={timeout}>
-                <ContactUsForm />
+                <FooterProvider>
+                  <ContactUsForm />
+                </FooterProvider>
               </IdleTimer>
             }
           />
@@ -136,7 +134,9 @@ const Navigation = () => {
             path={AppRoutes.pathFaq}
             element={
               <IdleTimer timeout={timeout}>
-                <Faq />
+                <FooterProvider>
+                  <Faq />
+                </FooterProvider>
               </IdleTimer>
             }
           />
@@ -144,7 +144,9 @@ const Navigation = () => {
             path={AppRoutes.pathTermsOfUse}
             element={
               <IdleTimer timeout={timeout}>
-                <TermsToUse />
+                <FooterProvider>
+                  <TermsToUse />
+                </FooterProvider>
               </IdleTimer>
             }
           />
@@ -152,7 +154,19 @@ const Navigation = () => {
             path={AppRoutes.pathPrivacyNotice}
             element={
               <IdleTimer timeout={timeout}>
-                <PrivacyNotice />
+                <FooterProvider>
+                  <PrivacyNotice />
+                </FooterProvider>
+              </IdleTimer>
+            }
+          />
+          <Route
+            path={AppRoutes.pathPrivacyNoticeForStateSpecificPrivacyLaws}
+            element={
+              <IdleTimer timeout={timeout}>
+                <FooterProvider>
+                  <PrivacyNoticePage />
+                </FooterProvider>
               </IdleTimer>
             }
           />
