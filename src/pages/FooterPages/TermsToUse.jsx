@@ -429,7 +429,7 @@ const TermsOfUse = () => {
                     your medical provider about any health care questions and do not rely on this or any other web site to make medical decisions.  Never delay
                     seeking medical advice or disregard medical advice because of anything you read on this site.
                   </p>
-                  <Heading as="h4">General Terms</Heading>
+                  <Heading as="h3">General Terms</Heading>
                   <p>
                     In the event that any provision of these Terms of Use is held to be invalid or unenforceable, then that provision will be limited or
                     eliminated to the minimum extent necessary, and the remaining provisions of these Terms of Use will remain in full force and effect
