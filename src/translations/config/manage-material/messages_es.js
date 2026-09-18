@@ -112,6 +112,10 @@ export const SystemConfigurationES = {
   'manageMaterial.notificationSettings.subHeading.notifications':
     'S_Associated Customer Service users will receive an email each time an order is submitted for the selected manufacturer material.',
   'manageMaterial.notificationSettings.label.addRecipients': 'S_Do you want to add more recipients for order submission notification?',
+  'manageMaterial.notificationSettings.Tab2.heading.notifications': 'S_Patient Ingestion Notifications',
+  'manageMaterial.notificationSettings.Tab2.subHeading.notifications':
+    'S_Associated Customer Service users will receive an email each time a patient is ingested for the selected manufacturer material.',
+  'manageMaterial.notificationSettings.Tab2.label.addRecipients': 'S_Do you want to add more recipients for patient ingestion notification?',
   'manageMaterial.notificationSettings.button.addRecipient': 'S_Add Recipient',
   'manageMaterial.notificationSettings.recipientsTable.heading': 'S_Recipient Listing',
   'manageMaterial.notificationSettings.button.cancel': 'S_Cancel',

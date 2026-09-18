@@ -63,7 +63,6 @@ const MaterialNotificationSettings = () => {
   const selectedTherapy = therapyList[0];
 
   const [selectedTab, setSelectedTab] = useState(location.state?.selectedTab || 1);
-  const [addRecipients, setAddRecipients] = useState(location.state?.addRecipients || 'yes');
   const [tabState, setTabState] = useState(() => buildInitialTabState(location.state));
 
   const isReturningFromRecipientPage = !!location.state?.tabState;
@@ -105,23 +104,35 @@ const MaterialNotificationSettings = () => {
       setTabState((prev) => ({
         1: {
           notifications: prev[1]?.notifications ?? orderSubmitConfig?.isCustomerServiceEnabled ?? true,
+          addRecipients: prev[1]?.addRecipients ?? orderSubmitConfig?.isAdditionalRecipientEnabled ?? true,
           recipients: prev[1]?.recipients ?? orderSubmitConfig?.recipients ?? []
         },
         2: {
           notifications: prev[2]?.notifications ?? patientIngestionConfig?.isCustomerServiceEnabled ?? true,
+          addRecipients: prev[2]?.addRecipients ?? patientIngestionConfig?.isAdditionalRecipientEnabled ?? true,
           recipients: prev[2]?.recipients ?? patientIngestionConfig?.recipients ?? []
         }
       }));
     } else {
       setTabState({
-        1: { notifications: orderSubmitConfig?.isCustomerServiceEnabled ?? true, recipients: orderSubmitConfig?.recipients ?? [] },
-        2: { notifications: patientIngestionConfig?.isCustomerServiceEnabled ?? true, recipients: patientIngestionConfig?.recipients ?? [] }
+        1: {
+          notifications: orderSubmitConfig?.isCustomerServiceEnabled ?? true,
+          addRecipients: orderSubmitConfig?.isAdditionalRecipientEnabled ?? true,
+          recipients: orderSubmitConfig?.recipients ?? []
+        },
+        2: {
+          notifications: patientIngestionConfig?.isCustomerServiceEnabled ?? true,
+          addRecipients: patientIngestionConfig?.isAdditionalRecipientEnabled ?? true,
+          recipients: patientIngestionConfig?.recipients ?? []
+        }
       });
     }
   }, [notificationConfig, isSingleTherapy]);
 
   const currentTabState = tabState[selectedTab] || {};
   const currentNotificationValue = currentTabState.notifications ?? true;
+  const currentAddRecipients = currentTabState.addRecipients ?? true;
+  const addRecipientsValue = currentAddRecipients ? 'yes' : 'no';
   const currentRecipients = currentTabState.recipients ?? [];
 
   const handleOnBackToMaterial = () => navigate(materialRoute);
@@ -150,6 +161,18 @@ const MaterialNotificationSettings = () => {
 
   const isControlsDisabled = isNotificationConfigLoading || isNotificationConfigFetching || isSaving;
 
+  const notificationHeadingKey = selectedTab === 2
+    ? 'manageMaterial.notificationSettings.Tab2.heading.notifications'
+    : 'manageMaterial.notificationSettings.heading.notifications';
+
+  const notificationSubHeadingKey = selectedTab === 2
+    ? 'manageMaterial.notificationSettings.Tab2.subHeading.notifications'
+    : 'manageMaterial.notificationSettings.subHeading.notifications';
+
+  const addRecipientsLabelKey = selectedTab === 2
+    ? 'manageMaterial.notificationSettings.Tab2.label.addRecipients'
+    : 'manageMaterial.notificationSettings.label.addRecipients';
+
   const handleSave = () => {
     saveConfig(buildCombinedNotificationPayload({ therapy, tabState }));
   };
@@ -168,7 +191,6 @@ const MaterialNotificationSettings = () => {
           currentEmail: row?.email,
           selectedTab,
           tabState,
-          addRecipients,
           notificationConfigId,
           existingRecipients: currentRecipients
         }
@@ -187,7 +209,7 @@ const MaterialNotificationSettings = () => {
 
   const handleAddRecipient = () => {
     navigate(addRecipientsRoute, {
-      state: { therapy, isEdit: false, selectedTab, tabState, addRecipients, notificationConfigId, existingRecipients: currentRecipients }
+      state: { therapy, isEdit: false, selectedTab, tabState, notificationConfigId, existingRecipients: currentRecipients }
     });
   };
 
@@ -226,8 +248,8 @@ const MaterialNotificationSettings = () => {
 
           <div className={styles.notificationSetting}>
             <div className={styles.notificationInfo}>
-              <Heading as="h3">{t('manageMaterial.notificationSettings.heading.notifications')}</Heading>
-              <span>{t('manageMaterial.notificationSettings.subHeading.notifications')}</span>
+              <Heading as="h3">{t(notificationHeadingKey)}</Heading>
+              <span>{t(notificationSubHeadingKey)}</span>
             </div>
             <div className={styles.notificationControl}>
               <Switch
@@ -241,17 +263,22 @@ const MaterialNotificationSettings = () => {
           </div>
 
           <div className={styles.recipientQuestion}>
-            <Heading as="h4">{t('manageMaterial.notificationSettings.label.addRecipients')}</Heading>
+            <Heading as="h4">{t(addRecipientsLabelKey)}</Heading>
             <RadioGroup
               direction="row"
               radioBtnWidth="auto"
               size="lg"
-              value={addRecipients}
+              value={addRecipientsValue}
               items={[
                 { label: 'Yes', value: 'yes', isDisabled: !currentNotificationValue },
                 { label: 'No', value: 'no', isDisabled: !currentNotificationValue }
               ]}
-              onChangeValue={(value) => setAddRecipients(value)}
+              onChangeValue={(value) =>
+                setTabState((prev) => ({
+                  ...prev,
+                  [selectedTab]: { ...prev[selectedTab], addRecipients: value === 'yes' }
+                }))
+              }
             />
           </div>
 
@@ -263,7 +290,7 @@ const MaterialNotificationSettings = () => {
                 Icon={AddCircleFilled}
                 className="button-icon"
                 size="md"
-                disabled={!currentNotificationValue || addRecipients !== 'yes' || isControlsDisabled}
+                disabled={!currentNotificationValue || !currentAddRecipients || isControlsDisabled}
                 onClick={handleAddRecipient}>
                 {t('manageMaterial.notificationSettings.button.addRecipient')}
               </Button>
@@ -272,7 +299,7 @@ const MaterialNotificationSettings = () => {
               <RecipientListProvider key={selectedTab} recipients={currentRecipients}>
                 <RecipientList
                   handleOnOptionSelection={handleOnOptionSelection}
-                  isActionsDisabled={!currentNotificationValue || addRecipients !== 'yes' || isControlsDisabled}
+                  isActionsDisabled={!currentNotificationValue || !currentAddRecipients || isControlsDisabled}
                 />
               </RecipientListProvider>
             </div>

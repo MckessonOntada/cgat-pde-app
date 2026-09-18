@@ -1,8 +1,8 @@
 export const EMPTY_RECIPIENT = { firstName: '', middleName: '', lastName: '', email: '' };
 
 export const DEFAULT_TAB_STATE = {
-  1: { notifications: null, recipients: null },
-  2: { notifications: null, recipients: null }
+  1: { notifications: null, addRecipients: null, recipients: null },
+  2: { notifications: null, addRecipients: null, recipients: null }
 };
 
 export const TAB_LIST = [

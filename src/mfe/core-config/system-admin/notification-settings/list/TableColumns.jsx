@@ -31,7 +31,7 @@ export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = fa
     selector: () => {},
     sortable: true,
     sortKey: 'lastUpdatedDate',
-    width: '200px',
+    minWidth: '200px',
     cell: (props) => (
       <div>
         <EclipsesTextcss str={CommonUtils.convertDateStringFormat(props.lastUpdatedDate)} maxWidth={201} />
