@@ -170,7 +170,6 @@ const AddRecipient = () => {
     recipient,
     selectedTab = 1,
     tabState = DEFAULT_TAB_STATE,
-    addRecipients = 'yes',
     currentEmail,
     notificationConfigId,
     existingRecipients = []
@@ -181,7 +180,7 @@ const AddRecipient = () => {
   const isSPMaterial = location.pathname.includes('/manage-sp-material');
   const settingsRoute = isSPMaterial ? ROUTES.SP_MATERIAL_NOTIFICATION_SETTINGS : ROUTES.MATERIAL_NOTIFICATION_SETTINGS;
 
-  const baseNavState = { therapy, selectedTab, tabState, addRecipients, notificationConfigId };
+  const baseNavState = { therapy, selectedTab, tabState, notificationConfigId };
 
   const handleBackToSettings = () => navigate(settingsRoute, { state: baseNavState });
 
