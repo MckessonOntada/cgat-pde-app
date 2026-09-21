@@ -9,6 +9,8 @@ import DiagnosisConfiguration from '../pages/diagnosis-code-config/DiagnosisConf
 import { routeConstants } from './constants';
 import ConfigurationSpMaterial from '../pages/configure-material/ConfigurationSpMaterial';
 import { ManageMaterialProvider } from '../../manage-material/context/ManageMaterialContext';
+import MaterialNotificationSettings from '../../notification-settings';
+import AddRecipient from '../../notification-settings/AddRecipient';
 
 function ManageSPMaterialRoute() {
   return (
@@ -34,6 +36,8 @@ function ManageSPMaterialRoute() {
           </OrgAccountSelectionProvider>
         }
       />
+      <Route path={routeConstants.NOTIFICATION_SETTINGS} element={<MaterialNotificationSettings />} />
+      <Route path={`${routeConstants.NOTIFICATION_SETTINGS}/${routeConstants.RECIPIENTS}`} element={<AddRecipient />} />
     </Routes>
   );
 }
