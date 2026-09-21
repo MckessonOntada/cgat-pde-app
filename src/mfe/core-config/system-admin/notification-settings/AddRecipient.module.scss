@@ -1,0 +1,79 @@
+.recipientContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+  box-sizing: border-box;
+}
+
+.fieldsWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.fields {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--spacing-03);
+  row-gap: var(--spacing-04);
+}
+
+.removeContainer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.removeButton {
+  color: #c53026 !important;
+}
+
+.addMoreButton {
+  align-self: flex-start;
+  padding: 9px 0 !important;
+  line-height: var(--brand-line-height--m-large);
+  display: flex;
+  align-items: center;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-03);
+  box-sizing: border-box;
+  margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .removeContainer {
+    position: static;
+    justify-content: flex-end;
+    margin-top: var(--spacing-02);
+  }
+}
+
+@media (max-width: 768px) {
+  .recipientContainer {
+    padding: var(--spacing-04);
+  }
+
+  .fields {
+    grid-template-columns: 1fr;
+  }
+
+  .removeContainer {
+    position: static;
+    justify-content: flex-end;
+    margin-top: 0;
+  }
+}

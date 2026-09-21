@@ -1,4 +1,6 @@
 export const routeConstants = {
   MANAGE_MATERIAL: '',
-  CONFIGURE: 'configure'
+  CONFIGURE: 'configure',
+  NOTIFICATION_SETTINGS: 'notification-settings',
+  RECIPIENTS: 'recipients'
 };
