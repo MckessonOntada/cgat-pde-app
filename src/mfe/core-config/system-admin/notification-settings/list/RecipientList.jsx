@@ -73,7 +73,12 @@ const RecipientList = ({ handleOnOptionSelection, isActionsDisabled = false }) =
       paginationTotalRecorsMessage={t('orgManagement.results')}
       paginationRecordsPerPageMessage={t('orgManagement.per_page')}
       noDataComponent={
-        <EmptyDataTable isLoading={false} image={EmptyDataImage} heading={'No recipients available'} description={'Please add recipients to see here'} />
+        <EmptyDataTable
+          isLoading={false}
+          image={EmptyDataImage}
+          heading={t('manageMaterial.notificationSettings.table.emptyHeading')}
+          description={t('manageMaterial.notificationSettings.table.emptyDescription')}
+        />
       }
     />
   );
