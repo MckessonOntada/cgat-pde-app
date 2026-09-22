@@ -179,16 +179,16 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
           secondaryViewHeading={`${selectedSPMaterial?.length} ${t('manageMaterial.table.header.text')}`}
           secondaryViewControls={
             <div className="controls">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  handleConfiguration(selectedSPMaterial);
-                }}
-                size="sm">
-                {t('manageMaterial.table.header.button.configureMaterial')}
-              </Button>
               {!isMultipleSelected && (
                 <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      handleDXConfiguration(selectedSPMaterial);
+                    }}
+                    size="sm">
+                    {t('manageMaterial.table.header.button.DXConfiguration')}
+                  </Button>
                   <Button
                     variant="secondary"
                     onClick={() => {
@@ -200,18 +200,16 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
                     size="sm">
                     {t('manageMaterial.table.header.button.prescriptionDetails')}
                   </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      handleDXConfiguration(selectedSPMaterial);
-                    }}
-                    size="sm">
-                    {t('manageMaterial.table.header.button.DXConfiguration')}
-                  </Button>
                 </>
               )}
-              <Button variant="secondary" onClick={() => navigate(routeConstants.NOTIFICATION_SETTINGS, { state: { therapy: selectedSPMaterial } })} size="sm">
-                {t('manageMaterial.table.header.button.notificationSettings')}
+
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  handleConfiguration(selectedSPMaterial);
+                }}
+                size="sm">
+                {t('manageMaterial.table.header.button.configure')}
               </Button>
             </div>
           }

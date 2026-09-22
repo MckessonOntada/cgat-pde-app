@@ -303,15 +303,6 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
             <Button
               variant="secondary"
               onClick={() => {
-                handleConfiguration(selectedMaterials);
-              }}
-              size="sm"
-              disabled={isBothSelected || isSPSelected}>
-              {t('manageMaterial.table.header.button.configureMaterial')}
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => {
                 setOpenConfiguration((prev) => ({
                   ...prev,
                   orderQuantityConfig: !prev.orderQuantityConfig
@@ -320,8 +311,15 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
               size="sm">
               {t('manageMaterial.table.header.button.OrderQuantity')}
             </Button>
-            <Button variant="secondary" onClick={() => navigate(routeConstants.NOTIFICATION_SETTINGS, { state: { therapy: selectedMaterials } })} size="sm">
-              {t('manageMaterial.table.header.button.notificationSettings')}
+            <Button
+              variant="secondary"
+              onClick={() => {
+                // setOpenConfiguration((prev) => ({ ...prev, config: !prev.config }));
+                handleConfiguration(selectedMaterials);
+              }}
+              size="sm"
+              disabled={isBothSelected || isSPSelected}>
+              {t('manageMaterial.table.header.button.configure')}
             </Button>
           </div>
         }

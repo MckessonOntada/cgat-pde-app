@@ -87,11 +87,8 @@ const ApiRoutes = Object.freeze({
   NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl('in-app-notification/read/all'),
   NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`),
   USER_BASE: () => constructUserManagementServiceUrl(''),
-  MERCK_COI_VALIDATE: (coiId) => constructUserManagementServiceUrl(`merck/validate/${coiId}`),
-  MERCK_DOSE_VALIDATE: (coiId, doseIdentifier) => constructUserManagementServiceUrl(`merck/validate/${coiId}/${doseIdentifier}`),
   GET_VIDEO: (videoId) => constructOrderServiceUrl(`api/videos/${videoId}`),
-  ORDER_SERVICE_SYSTEM_ADMIN: () => constructOrderServiceUrl('api/admin/orders/'),
-  MATERIAL_NOTIFICATION_CONFIGS: () => constructUserManagementServicePublicUrl('material-notification-configs')
+  ORDER_SERVICE_SYSTEM_ADMIN: () => constructOrderServiceUrl('api/admin/orders/')
 });
 
 export default ApiRoutes;
