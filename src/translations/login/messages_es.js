@@ -56,6 +56,7 @@ export const LoginMessagesES = {
   'header.login.title': 'S_Welcome to InspiroLink',
   'login.page.desc.1':
     'S_InspiroLink is an ordering application designed to provide a simplified experience for healthcare providers providing cell, gene, and advanced therapy treatments. InspiroLink was developed from the ground up to implement customized order workflows and make ordering, scheduling, and tracking product as effortless as possible.',
+  'environmentBanner.text1.qaEnvironment': 'S_QA Environment',
   'environmentBanner.text1': 'S_Demo Environment',
   'environmentBanner.text2': ' S_To place a therapy order please go here "',
   'environmentBanner.linkText': 'S_Production Link',
