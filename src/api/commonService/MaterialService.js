@@ -255,31 +255,6 @@ async function getManufacturers(channelType) {
   return [];
 }
 
-//Notification Settings
-async function getMaterialNotificationConfig(requestParams) {
-  if (!requestParams || typeof requestParams !== 'object') {
-    throw new Error('Invalid request parameters. A valid object is required.');
-  }
-
-  const url = `${ApiRoutes.MATERIAL_NOTIFICATION_CONFIGS()}?${serializeParams(requestParams)}`;
-
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-
-  return res?.data || {};
-}
-
-async function updateMaterialNotificationConfigsBulk(payload) {
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('Invalid payload. A valid JSON object is required.');
-  }
-
-  const url = ApiRoutes.MATERIAL_NOTIFICATION_CONFIGS();
-
-  const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
-
-  return res?.data || {};
-}
-
 const MaterialService = Object.freeze({
   getMaterialById,
   getMaterialConfigById,
@@ -306,9 +281,7 @@ const MaterialService = Object.freeze({
   getUsers,
   getManufacturers,
   addMaterial,
-  unlinkCustomerCentreMaterials,
-  getMaterialNotificationConfig,
-  updateMaterialNotificationConfigsBulk
+  unlinkCustomerCentreMaterials
 });
 
 export default MaterialService;
