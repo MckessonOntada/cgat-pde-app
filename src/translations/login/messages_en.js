@@ -69,6 +69,7 @@ export const LoginMessagesEN = {
   'forms.validation.lastNameRequired': 'Please enter the Last Name',
   'forms.validation.invalidLastName': 'Please enter a valid Last Name',
   'header.login.title': 'Welcome to InspiroLink',
+  'environmentBanner.text1.qaEnvironment': 'QA Environment',
   'environmentBanner.text1': 'Demo Environment',
   'environmentBanner.text2': ' To place a therapy order please go here "',
   'environmentBanner.linkText': 'Production Link',
