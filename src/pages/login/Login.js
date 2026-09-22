@@ -196,7 +196,9 @@ const Login = () => {
         <div className={style.environmentBanner}>
           <div className={style.environment}>
             <span className={style.environmentIcon} />
-            <span className={style.environmentText}>{t('environmentBanner.text1')}</span>
+            <span className={style.environmentText}>
+              {window.location.hostname.toLowerCase().includes('-qa.') ? t('environmentBanner.text1.qaEnvironment') : t('environmentBanner.text1')}
+            </span>
           </div>
 
           <div className={style.message}>
