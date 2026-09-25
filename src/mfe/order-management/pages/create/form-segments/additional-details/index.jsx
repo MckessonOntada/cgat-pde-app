@@ -1569,12 +1569,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                         Icon={isSaving && saveType === 'continue' && ButtonLoadingIcon}
                         iconPosition="left"
                         type="submit"
-                        onClick={(e) => {
-                          if (isCoiIdPendingVerification(values)) {
-                            e?.preventDefault?.();
-                            scrollToTopUtil();
-                          }
-                        }}
                         disabled={
                           (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (!values.consentPolicy || diagnosisCode.length === 0)) ||
                           readOnly ||
