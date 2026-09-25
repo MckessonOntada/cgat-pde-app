@@ -131,6 +131,24 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const dispatch = useDispatch();
   const formikRef = React.useRef();
 
+  const isCoiIdVerifiedRef = React.useRef(false);
+
+  const updateCoiIdVerified = (isVerified) => {
+    isCoiIdVerifiedRef.current = isVerified;
+    const formik = formikRef.current;
+    if (!formik) return;
+    if (isVerified) {
+      formik.setFieldTouched('doseIdentifier', false, false);
+      const { doseIdentifier, ...otherErrors } = formik.errors || {};
+      formik.setErrors(otherErrors);
+    } else {
+      formik.validateForm();
+    }
+  };
+
+  const isCoiIdPendingVerification = (values) =>
+    channelType === CHANNEL_TYPE.BUY_AND_BILL && manufacturer === MANUFACTURER.MERCK && !!values?.coiId && !isCoiIdVerifiedRef.current;
+
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
@@ -282,7 +300,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       });
       if (manufacturer === MANUFACTURER.MERCK) {
-        dynamicFields['doseIdentifier'] = Yup.string().trim().required(t('labels.doseIdentifierRequired'));
+        dynamicFields['doseIdentifier'] = Yup.string()
+          .trim()
+          .when([], {
+            is: () => isCoiIdVerifiedRef.current,
+            then: (s) => s.required(t('labels.doseIdentifierRequired')),
+            otherwise: (s) => s.notRequired()
+          });
       }
       dynamicFields['orderQuantity'] = Yup.number()
         .transform((value, originalValue) => {
@@ -848,6 +872,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
+    if (!isSavingAsDraft && isCoiIdPendingVerification(values)) {
+      scrollToTopUtil();
+      return;
+    }
     setIsOrderInDraft(isSavingAsDraft);
     setSaveType(isSavingAsDraft ? 'draft' : 'continue');
     if (channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA && manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
@@ -1198,6 +1226,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
               }));
               setDoseIdentifierOptions(options);
               if (res?.validationStatus === 'NO_ACTIVE_DOSE') {
+                updateCoiIdVerified(false);
                 formikRef.current?.setFieldValue('doseIdentifier', '');
                 setDoseIdentifierOptions([]);
                 setAlert({
@@ -1205,12 +1234,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
                   type: 'error'
                 });
               } else {
+                updateCoiIdVerified(true);
                 setAlert({
                   description: t('orderManagement.merck.VERIFIED', { coiId: getDisplayNameByFieldName('coiId') }),
                   type: 'success'
                 });
               }
             } else {
+              updateCoiIdVerified(false);
               setDoseIdentifierOptions([]);
               formikRef.current?.setFieldValue('doseIdentifier', '');
               setAlert({
@@ -1230,6 +1261,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       },
       onError: () => {
         if (manufacturer === MANUFACTURER.MERCK) {
+          updateCoiIdVerified(false);
           setDoseIdentifierOptions([]);
           formikRef.current?.setFieldValue('doseIdentifier', '');
         }
@@ -1251,6 +1283,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         if (res) {
           const isValid = res.valid ?? res.validate;
           if (isValid) {
+            updateCoiIdVerified(true);
             if (res.doseIdentifiers && Array.isArray(res.doseIdentifiers)) {
               const options = res.doseIdentifiers.map((id) => ({
                 key: id,
@@ -1314,16 +1347,19 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     const fieldValue = formatFieldWithPrefixSuffix(value, 'coiId');
     setFieldTouched('coiId', true);
 
-    if (errors?.coiId) {
+    if (!value) {
       if (manufacturer === MANUFACTURER.MERCK) {
+        updateCoiIdVerified(false);
         setDoseIdentifierOptions([]);
         formikRef.current?.setFieldValue('doseIdentifier', '');
+        setAlert(null);
       }
       return;
     }
 
-    if (!value) {
+    if (errors?.coiId) {
       if (manufacturer === MANUFACTURER.MERCK) {
+        updateCoiIdVerified(false);
         setDoseIdentifierOptions([]);
         formikRef.current?.setFieldValue('doseIdentifier', '');
         setAlert(null);
@@ -1334,6 +1370,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     if (manufacturer !== MANUFACTURER.REGENERON && manufacturer !== MANUFACTURER.MERCK) return;
 
     if (manufacturer === MANUFACTURER.MERCK) {
+      isCoiIdVerifiedRef.current = false;
       coiIdValidation({
         coiId: fieldValue
       });
