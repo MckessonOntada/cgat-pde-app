@@ -10,7 +10,7 @@ export const getUpdateFormConfig = (
   channelType,
   isCustomerCentreUser,
   manufacturer,
-  { doseIdentifierOptions = [], handleCoiIdValidation, handleDoseIdentifierValidation, t } = {}
+  { doseIdentifierOptions = [], handleCoiIdValidation, t } = {}
 ) => {
   const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
@@ -97,13 +97,16 @@ export const getUpdateFormConfig = (
         isRequired: true,
         type: 'dropdown',
         options: doseIdentifierOptions,
-        onChangeHandler: handleDoseIdentifierValidation,
-        isDisabled: doseIdentifierOptions.length === 0,
-        disabled: doseIdentifierOptions.length === 0,
+        isReadOnly: doseIdentifierOptions.length === 0,
         size: 'lg'
       });
       therapyConfig?.config?.fields?.forEach((field) => {
-        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.fieldName !== 'coiId' && field?.properties?.displayOnForm) {
+        if (
+          field.fieldName !== 'patientIdentifier' &&
+          field.fieldName !== 'medicalRecordNumber' &&
+          field.fieldName !== 'coiId' &&
+          field?.properties?.displayOnForm
+        ) {
           const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
           const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
           const formatType = field?.properties?.fieldFormat?.formatType;
@@ -242,7 +245,7 @@ export const patientDetailsValidationSchema = (t, therapyConfig, channelType, is
   return Yup.object().shape(buildDynamicFieldValidators(therapyConfig, t));
 };
 
-export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer) => {
+export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer, isDoseIdentifierRequired = () => true) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set([
@@ -256,7 +259,11 @@ export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer
     ]);
 
     if (manufacturer === MANUFACTURER.MERCK) {
-      dynamicFields.doseIdentifier = Yup.string().required(t('labels.doseIdentifierRequired'));
+      dynamicFields.doseIdentifier = Yup.string().test(
+        'dose-identifier-required',
+        t('labels.doseIdentifierRequired'),
+        (value) => !isDoseIdentifierRequired() || !!value
+      );
     }
 
     config?.config?.fields?.forEach((field) => {
