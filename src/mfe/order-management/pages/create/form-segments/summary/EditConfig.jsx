@@ -10,7 +10,7 @@ export const getUpdateFormConfig = (
   channelType,
   isCustomerCentreUser,
   manufacturer,
-  { doseIdentifierOptions = [], handleCoiIdValidation, handleDoseIdentifierValidation, t } = {}
+  { doseIdentifierOptions = [], handleCoiIdValidation, t } = {}
 ) => {
   const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
@@ -97,7 +97,6 @@ export const getUpdateFormConfig = (
         isRequired: true,
         type: 'dropdown',
         options: doseIdentifierOptions,
-        // onChangeHandler: handleDoseIdentifierValidation,
         isReadOnly: doseIdentifierOptions.length === 0,
         size: 'lg'
       });
@@ -246,7 +245,7 @@ export const patientDetailsValidationSchema = (t, therapyConfig, channelType, is
   return Yup.object().shape(buildDynamicFieldValidators(therapyConfig, t));
 };
 
-export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer) => {
+export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer, isDoseIdentifierRequired = () => true) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set([
@@ -260,7 +259,11 @@ export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer
     ]);
 
     if (manufacturer === MANUFACTURER.MERCK) {
-      dynamicFields.doseIdentifier = Yup.string().required(t('labels.doseIdentifierRequired'));
+      dynamicFields.doseIdentifier = Yup.string().test(
+        'dose-identifier-required',
+        t('labels.doseIdentifierRequired'),
+        (value) => !isDoseIdentifierRequired() || !!value
+      );
     }
 
     config?.config?.fields?.forEach((field) => {

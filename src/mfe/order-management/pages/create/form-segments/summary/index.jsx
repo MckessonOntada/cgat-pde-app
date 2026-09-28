@@ -83,6 +83,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const hasFetchedInventory = useRef(false);
   const [drawerElement, setDrawerElement] = React.useState(null);
   const [doseIdentifierOptions, setDoseIdentifierOptions] = React.useState([]);
+  const [isDrawerVerificationLoading, setIsDrawerVerificationLoading] = React.useState(false);
   const [isMerckCoiVerified, setIsMerckCoiVerified] = React.useState(false);
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
@@ -777,7 +778,14 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     }
   );
 
-  const coiIdValidationForDrawer = async ({ coiId, doseIdentifier }, setDrawerAlertFn, setFieldValue, setDoseIdentifierOptionsFn) => {
+  const resetDrawerDoseIdentifier = ({ setFieldValue, setFieldTouched }, setDoseIdentifierOptionsFn) => {
+    setDoseIdentifierOptionsFn([]);
+    setFieldTouched('doseIdentifier', false, false);
+    setFieldValue('doseIdentifier', '');
+  };
+
+  const coiIdValidationForDrawer = async ({ coiId, doseIdentifier }, formik, setDrawerAlertFn, setDoseIdentifierOptionsFn) => {
+    setIsDrawerVerificationLoading(true);
     try {
       const res = await OrderService.merckCoiIdVerification(coiId);
       const data = res.data;
@@ -791,7 +799,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             label: id
           }));
           setDoseIdentifierOptionsFn(options);
-          if (doseIdentifier && !doseIdentifiers.includes(doseIdentifier)) setFieldValue('doseIdentifier', '');
+          if (doseIdentifier && !doseIdentifiers.includes(doseIdentifier)) formik.setFieldValue('doseIdentifier', '');
           if (data?.validationStatus === 'NO_ACTIVE_DOSE') {
             setDrawerAlertFn({
               description: t('orderManagement.merck.NO_ACTIVE_DOSE', { coiId: getDisplayNameByFieldName('coiId') }),
@@ -804,8 +812,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
             });
           }
         } else {
-          setDoseIdentifierOptionsFn([]);
-          setFieldValue('doseIdentifier', '');
+          resetDrawerDoseIdentifier(formik, setDoseIdentifierOptionsFn);
           setDrawerAlertFn({
             description: t(`${'orderManagement.merck.'}${data?.validationStatus}`, { coiId: getDisplayNameByFieldName('coiId') }),
             type: 'error'
@@ -815,38 +822,32 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         setDrawerAlertFn(null);
       }
     } catch {
-      setDoseIdentifierOptionsFn([]);
-      setFieldValue('doseIdentifier', '');
+      resetDrawerDoseIdentifier(formik, setDoseIdentifierOptionsFn);
       setDrawerAlertFn({
         type: 'error',
         description: t('errors.default')
       });
+    } finally {
+      setIsDrawerVerificationLoading(false);
     }
   };
 
-  const handleDrawerCoiIdValidation = (e, setFieldTouched, errors, values, setFieldValue, setDrawerAlertFn, setDoseIdentifierOptionsFn) => {
+  const handleDrawerCoiIdValidation = (e, formik, setDrawerAlertFn, setDoseIdentifierOptionsFn) => {
     if (manufacturer !== MANUFACTURER.MERCK) return;
+    const { values, errors, setFieldTouched } = formik;
     const value = e?.target?.value !== undefined ? e.target.value : values?.coiId;
+
+    if (errors?.coiId || !value) {
+      resetDrawerDoseIdentifier(formik, setDoseIdentifierOptionsFn);
+      setFieldTouched('coiId', true);
+      return;
+    }
+
     setFieldTouched('coiId', true);
-
-    if (errors?.coiId) {
-      setDoseIdentifierOptionsFn([]);
-      setFieldValue('doseIdentifier', '');
-      setDrawerAlertFn({ description: errors.coiId, type: 'error' });
-      return;
-    }
-
-    if (!value) {
-      setDoseIdentifierOptionsFn([]);
-      setFieldValue('doseIdentifier', '');
-      setDrawerAlertFn(null);
-      return;
-    }
-
     coiIdValidationForDrawer(
       { coiId: formatFieldWithPrefixSuffix(value, 'coiId'), doseIdentifier: values?.doseIdentifier },
+      formik,
       setDrawerAlertFn,
-      setFieldValue,
       setDoseIdentifierOptionsFn
     );
   };
@@ -854,6 +855,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const handleDrawerDoseIdentifierValidation = async (values, setDrawerAlertFn, setDoseIdentifierOptionsFn) => {
     if (manufacturer !== MANUFACTURER.MERCK || !values?.coiId || !values?.doseIdentifier) return;
     const coiId = formatFieldWithPrefixSuffix(values.coiId, 'coiId');
+    setIsDrawerVerificationLoading(true);
     try {
       const res = await OrderService.merckDoseIdentifierVerification(coiId, values.doseIdentifier);
       const data = res.data;
@@ -881,6 +883,8 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         type: 'error',
         description: t('errors.default')
       });
+    } finally {
+      setIsDrawerVerificationLoading(false);
     }
   };
 
@@ -954,8 +958,10 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
       let initialValues = {};
       let validationSchema = null;
+      const drawerDoseIdentifierOptionsRef = { current: doseIdentifierOptions };
+      const isMerckAdditionalDetails = stage === ORDER_STAGES.ADDITIONAL_DETAILS && manufacturer === MANUFACTURER.MERCK;
       if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
-        validationSchema = additionalDetailsValidationSchema(t, therapyConfig, manufacturer);
+        validationSchema = additionalDetailsValidationSchema(t, therapyConfig, manufacturer, () => drawerDoseIdentifierOptionsRef.current.length > 0);
         if (CommonUtils.isNonEmptyObject(draftChanges?.additionalDetailsRequestDTO)) {
           initialValues = {
             ...stripPrefixSuffixFromData(draftChanges.additionalDetailsRequestDTO, therapyConfig.config.fields),
@@ -1081,7 +1087,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                         variant="primary"
                         size="md"
                         aria-label={t('captions.selectAccount')}
-                        disabled={!dirty}
+                        disabled={!dirty || (isMerckAdditionalDetails && (!values.coiId || !values.doseIdentifier))}
                       />
                     </div>
                   }>
@@ -1092,7 +1098,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     channelType={orderDetails.channelType}
                     isCustomerCentreUser={isCustomerCentreUser}
                     manufacturer={manufacturer}
-                    doseIdentifierOptions={doseIdentifierOptions}
+                    doseIdentifierOptionsRef={drawerDoseIdentifierOptionsRef}
                     handleCoiIdValidation={handleDrawerCoiIdValidation}
                     handleDoseIdentifierValidation={handleDoseIdentifierValidation}
                     handleInitialDoseIdentifierValidation={handleDrawerDoseIdentifierValidation}
@@ -1409,7 +1415,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   return (
     <div className="MCP-module-wrapper order-summary-container">
-      {(patientIdCoiIdValidationLoading || isDoseValidationLoading || isSimulationLoading) && <Loader type={'screen'} />}
+      {(patientIdCoiIdValidationLoading || isDoseValidationLoading || isDrawerVerificationLoading || isSimulationLoading) && <Loader type={'screen'} />}
 
       {!isError && (
         <React.Fragment>
@@ -2310,25 +2316,31 @@ const DrawerFormBody = ({
   channelType,
   isCustomerCentreUser,
   manufacturer,
-  doseIdentifierOptions: initialDoseIdentifierOptions,
+  doseIdentifierOptionsRef,
   handleCoiIdValidation,
   handleDoseIdentifierValidation,
   handleInitialDoseIdentifierValidation,
   t
 }) => {
   const [drawerAlert, setDrawerAlert] = React.useState(null);
-  const [localDoseIdentifierOptions, setLocalDoseIdentifierOptions] = React.useState(initialDoseIdentifierOptions || []);
-  const { values, errors, setFieldTouched, setFieldValue } = useFormikContext();
+  const [localDoseIdentifierOptions, setLocalDoseIdentifierOptions] = React.useState(doseIdentifierOptionsRef?.current || []);
+  const formik = useFormikContext();
+  const { values } = formik;
+
+  const updateDoseIdentifierOptions = (options) => {
+    if (doseIdentifierOptionsRef) doseIdentifierOptionsRef.current = options;
+    setLocalDoseIdentifierOptions(options);
+  };
 
   React.useEffect(() => {
     if (stage === ORDER_STAGES.ADDITIONAL_DETAILS && handleInitialDoseIdentifierValidation) {
-      handleInitialDoseIdentifierValidation(values, setDrawerAlert, setLocalDoseIdentifierOptions);
+      handleInitialDoseIdentifierValidation(values, setDrawerAlert, updateDoseIdentifierOptions);
     }
   }, []);
 
   const formConfig = getUpdateFormConfig(stage, therapyConfig, spTherapyConfig, channelType, isCustomerCentreUser, manufacturer, {
     doseIdentifierOptions: localDoseIdentifierOptions,
-    handleCoiIdValidation: (e) => handleCoiIdValidation(e, setFieldTouched, errors, values, setFieldValue, setDrawerAlert, setLocalDoseIdentifierOptions),
+    handleCoiIdValidation: (e) => handleCoiIdValidation(e, formik, setDrawerAlert, updateDoseIdentifierOptions),
     handleDoseIdentifierValidation: (selectedDose) => handleDoseIdentifierValidation(selectedDose, values),
     t
   });
