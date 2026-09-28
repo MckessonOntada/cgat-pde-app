@@ -97,13 +97,17 @@ export const getUpdateFormConfig = (
         isRequired: true,
         type: 'dropdown',
         options: doseIdentifierOptions,
-        onChangeHandler: handleDoseIdentifierValidation,
-        isDisabled: doseIdentifierOptions.length === 0,
-        disabled: doseIdentifierOptions.length === 0,
+        // onChangeHandler: handleDoseIdentifierValidation,
+        isReadOnly: doseIdentifierOptions.length === 0,
         size: 'lg'
       });
       therapyConfig?.config?.fields?.forEach((field) => {
-        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.fieldName !== 'coiId' && field?.properties?.displayOnForm) {
+        if (
+          field.fieldName !== 'patientIdentifier' &&
+          field.fieldName !== 'medicalRecordNumber' &&
+          field.fieldName !== 'coiId' &&
+          field?.properties?.displayOnForm
+        ) {
           const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
           const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
           const formatType = field?.properties?.fieldFormat?.formatType;
