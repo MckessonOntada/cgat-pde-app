@@ -521,17 +521,17 @@ async function regeneronCoiIdVerification(patientId, coiId) {
   if (res) return res;
 }
 
-async function merckCoiIdVerification(coiId) {
+async function merckCoiIdVerification(coiId, sdAccountNumber) {
   if (!coiId) throw new Error('COI ID is missing. COI ID is required to verify.');
-  let url = `${ApiRoutes.MERCK_COI_VALIDATE(coiId)}`;
+  let url = `${ApiRoutes.MERCK_COI_VALIDATE()}?${serializeParams({ coiId: coiId, sdAccountNumber: sdAccountNumber })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
 
-async function merckDoseIdentifierVerification(coiId, doseIdentifier) {
+async function merckDoseIdentifierVerification(coiId, doseIdentifier, sdAccountNumber) {
   if (!coiId) throw new Error('COI ID is missing. COI ID is required to verify.');
   if (!doseIdentifier) throw new Error('Dose identifier is missing.');
-  let url = `${ApiRoutes.MERCK_DOSE_VALIDATE(coiId, doseIdentifier)}`;
+  let url = `${ApiRoutes.MERCK_DOSE_VALIDATE()}?${serializeParams({ coiId: coiId, doseIdentifier: doseIdentifier, sdAccountNumber: sdAccountNumber })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
