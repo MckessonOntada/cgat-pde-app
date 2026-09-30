@@ -6,5 +6,7 @@ export const routeConstants = {
   ASSOCIATED_ACCOUNT: 'associted-accounts',
   DIAGNOSIS_CODE: 'diagnosis-code',
   ADD_DIAGNOSIS_CODES: 'add',
-  CONFIGURE: 'configure'
+  CONFIGURE: 'configure',
+  NOTIFICATION_SETTINGS: 'notification-settings',
+  RECIPIENTS: 'recipients'
 };
