@@ -54,9 +54,7 @@ const MaterialNotificationSettings = () => {
 
   const isSPMaterial = location.pathname.includes('/manage-sp-material');
   const materialRoute = isSPMaterial ? ROUTES.SP_MATERIAL : ROUTES.MATERIAL;
-  const addRecipientsRoute = isSPMaterial
-    ? `${ROUTES.SP_MATERIAL_NOTIFICATION_SETTINGS}/recipients`
-    : `${ROUTES.MATERIAL_NOTIFICATION_SETTINGS}/recipients`;
+  const addRecipientsRoute = isSPMaterial ? `${ROUTES.SP_MATERIAL_NOTIFICATION_SETTINGS}/recipients` : `${ROUTES.MATERIAL_NOTIFICATION_SETTINGS}/recipients`;
 
   const therapyList = Array.isArray(therapy) ? therapy : [];
   const isSingleTherapy = therapyList.length === 1;
@@ -161,17 +159,14 @@ const MaterialNotificationSettings = () => {
 
   const isControlsDisabled = isNotificationConfigLoading || isNotificationConfigFetching || isSaving;
 
-  const notificationHeadingKey = selectedTab === 2
-    ? 'manageMaterial.notificationSettings.Tab2.heading.notifications'
-    : 'manageMaterial.notificationSettings.heading.notifications';
+  const notificationHeadingKey =
+    selectedTab === 2 ? 'manageMaterial.notificationSettings.Tab2.heading.notifications' : 'manageMaterial.notificationSettings.heading.notifications';
 
-  const notificationSubHeadingKey = selectedTab === 2
-    ? 'manageMaterial.notificationSettings.Tab2.subHeading.notifications'
-    : 'manageMaterial.notificationSettings.subHeading.notifications';
+  const notificationSubHeadingKey =
+    selectedTab === 2 ? 'manageMaterial.notificationSettings.Tab2.subHeading.notifications' : 'manageMaterial.notificationSettings.subHeading.notifications';
 
-  const addRecipientsLabelKey = selectedTab === 2
-    ? 'manageMaterial.notificationSettings.Tab2.label.addRecipients'
-    : 'manageMaterial.notificationSettings.label.addRecipients';
+  const addRecipientsLabelKey =
+    selectedTab === 2 ? 'manageMaterial.notificationSettings.Tab2.label.addRecipients' : 'manageMaterial.notificationSettings.label.addRecipients';
 
   const handleSave = () => {
     saveConfig(buildCombinedNotificationPayload({ therapy, tabState }));
