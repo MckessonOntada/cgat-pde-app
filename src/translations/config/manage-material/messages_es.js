@@ -120,6 +120,13 @@ export const SystemConfigurationES = {
   'manageMaterial.notificationSettings.recipientsTable.heading': 'S_Recipient Listing',
   'manageMaterial.notificationSettings.button.cancel': 'S_Cancel',
   'manageMaterial.notificationSettings.button.save': 'S_Save',
+  // Notification Settings Table
+  'manageMaterial.notificationSettings.table.column.name': 'S_Name',
+  'manageMaterial.notificationSettings.table.column.email': 'S_Email',
+  'manageMaterial.notificationSettings.table.column.updatedDate': 'S_Updated Date',
+  'manageMaterial.notificationSettings.table.column.actions': 'S_Action(s)',
+  'manageMaterial.notificationSettings.table.emptyHeading': 'S_No recipients available',
+  'manageMaterial.notificationSettings.table.emptyDescription': 'S_Please add recipients to see here',
   // Notification Settings Messages
   'manageMaterial.notificationSettings.messages.configSavedMaterial': 'S_Notification Settings has been updated for {count} material.',
   'manageMaterial.notificationSettings.messages.configSavedMaterials': 'S_Notification Settings has been updated for {count} materials.',
