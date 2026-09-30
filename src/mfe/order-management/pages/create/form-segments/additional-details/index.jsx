@@ -369,12 +369,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       }
     }
 
-    setInitialFormValues({
+    setInitialFormValues((prev) => ({
+      ...prev,
       ...formikRef.current?.values,
       ...initialQuantityDetails,
       ...storedValue,
       ...questionnaireFields
-    });
+    }));
   }, [variantsData, questionnaireTemplateConfig, channelType]);
 
   const navigateToNextStage = (id) => {
