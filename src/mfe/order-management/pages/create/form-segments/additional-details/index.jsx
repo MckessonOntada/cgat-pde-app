@@ -418,13 +418,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         initialQuantityDetails.orderQuantity = therapyConfig.minQuantity;
       }
     }
-
-    setInitialFormValues({
+    setInitialFormValues((prev) => ({
+      ...prev,
       ...formikRef.current?.values,
       ...initialQuantityDetails,
       ...storedValue,
       ...questionnaireFields
-    });
+    }));
   }, [variantsData, questionnaireTemplateConfig, channelType, therapyConfig, manufacturer, isSecondLegShipInfoRequired, orderDetails]);
 
   const navigateToNextStage = (id) => {
