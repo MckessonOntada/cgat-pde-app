@@ -8,7 +8,7 @@ import { RECIPIENT_ACTION_OPTIONS } from '../constants';
 export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = false) => [
   {
     id: 'fullName',
-    name: 'Name',
+    name: t('manageMaterial.notificationSettings.table.column.name'),
     selector: () => {},
     sortable: true,
     sortKey: 'fullName',
@@ -18,7 +18,7 @@ export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = fa
   },
   {
     id: 'email',
-    name: 'Email',
+    name: t('manageMaterial.notificationSettings.table.column.email'),
     selector: () => {},
     sortable: false,
     minWidth: '350px',
@@ -27,7 +27,7 @@ export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = fa
   },
   {
     id: 'lastUpdatedDate',
-    name: 'Updated Date',
+    name: t('manageMaterial.notificationSettings.table.column.updatedDate'),
     selector: () => {},
     sortable: true,
     sortKey: 'lastUpdatedDate',
@@ -40,7 +40,7 @@ export const createColumns = (t, handleOnOptionSelection, isActionsDisabled = fa
   },
   {
     id: 'action',
-    name: 'Action(s)',
+    name: t('manageMaterial.notificationSettings.table.column.actions'),
     width: '150px',
     isAction: true,
     cell: (row) => {
