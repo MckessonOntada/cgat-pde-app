@@ -213,6 +213,7 @@ function SPMaterialDataTable({ isLinkCatalog = false, onSuccess, onError, setAle
               <Button variant="secondary" onClick={() => navigate(routeConstants.NOTIFICATION_SETTINGS, { state: { therapy: selectedSPMaterial } })} size="sm">
                 {t('manageMaterial.table.header.button.notificationSettings')}
               </Button>
+
             </div>
           }
           style={{ marginBottom: '16px' }}

@@ -28,13 +28,14 @@ const ConfigurationForm = ({ field, index, setFieldError, setFieldTouched }) => 
       isDisabled:
         (values.manufacturerName === MANUFACTURER.ORCA && [FIELD_NAMES.PATIENT_IDENTIFIER, FIELD_NAMES.MEDICAL_RECORD_NUMBER].includes(field.fieldName)) ||
         (values.manufacturerName === MANUFACTURER.REGENERON && [FIELD_NAMES.COI_ID, FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) ||
-        (values.manufacturerName === MANUFACTURER.KITE && [FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)),
+        (values.manufacturerName === MANUFACTURER.KITE && [FIELD_NAMES.PATIENT_IDENTIFIER].includes(field.fieldName)) ||
+        (values.manufacturerName === MANUFACTURER.MERCK && [FIELD_NAMES.COI_ID].includes(field.fieldName)),
       isChecked: displayOnForm,
       label: t('manageSPMaterial.configuration.checkbox.displayOnForm'),
       value: 'displayOnForm'
     },
     {
-      isDisabled: !displayOnForm,
+      isDisabled: !displayOnForm || (values.manufacturerName === MANUFACTURER.MERCK && [FIELD_NAMES.COI_ID].includes(field.fieldName)),
       isChecked: !!fieldEntry.mandatoryField,
       label: t('manageSPMaterial.configuration.checkbox.mandatoryField'),
       value: 'mandatoryField'
@@ -138,7 +139,12 @@ const ConfigurationForm = ({ field, index, setFieldError, setFieldTouched }) => 
             {t('manageSPMaterial.configuration.button.reset')}
           </Button>
 
-          <Button size="md" buttonWidth="100%" variant="secondary" onClick={() => setCustomRegex(true)} disabled={!displayOnForm || !formatType || formatType === 'Time_HH_MM'}>
+          <Button
+            size="md"
+            buttonWidth="100%"
+            variant="secondary"
+            onClick={() => setCustomRegex(true)}
+            disabled={!displayOnForm || !formatType || formatType === 'Time_HH_MM'}>
             {t('manageSPMaterial.configuration.button.editRegex')}
           </Button>
         </div>

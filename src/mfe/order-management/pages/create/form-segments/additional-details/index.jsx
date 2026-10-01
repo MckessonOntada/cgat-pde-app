@@ -58,6 +58,7 @@ import { ReactComponent as ButtonLoadingIcon } from '@src/assets/svg/button-load
 
 const INITIAL_VALUES = {
   coiId: '',
+  doseIdentifier: '',
   orderQuantity: '',
   poNumber: '',
   shipToPONumber: '',
@@ -102,7 +103,14 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [triageAlert, setTriageAlert] = React.useState(null);
   const { state, setValue } = useWidgetContext();
   const { orderDetails = {}, isApprover } = state;
-  const { tradeDetails = {}, spTherapyConfig = {}, therapyConfig = {}, channelType = CHANNEL_TYPE.BUY_AND_BILL, patientDetailsRequired } = orderDetails || {};
+  const {
+    tradeDetails = {},
+    spTherapyConfig = {},
+    therapyConfig = {},
+    channelType = CHANNEL_TYPE.BUY_AND_BILL,
+    patientDetailsRequired,
+    additionalDetails
+  } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
@@ -119,8 +127,27 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   const [saveType, setSaveType] = React.useState(null);
 
   const manufacturer = getManufacturer(orderDetails);
+  const [doseIdentifierOptions, setDoseIdentifierOptions] = React.useState([]);
   const dispatch = useDispatch();
   const formikRef = React.useRef();
+
+  const isCoiIdVerifiedRef = React.useRef(false);
+
+  const updateCoiIdVerified = (isVerified) => {
+    isCoiIdVerifiedRef.current = isVerified;
+    const formik = formikRef.current;
+    if (!formik) return;
+    if (isVerified) {
+      formik.setFieldTouched('doseIdentifier', false, false);
+      const { doseIdentifier, ...otherErrors } = formik.errors || {};
+      formik.setErrors(otherErrors);
+    } else {
+      formik.validateForm();
+    }
+  };
+
+  const isCoiIdPendingVerification = (values) =>
+    channelType === CHANNEL_TYPE.BUY_AND_BILL && manufacturer === MANUFACTURER.MERCK && !!values?.coiId && !isCoiIdVerifiedRef.current;
 
   const variantsApiRequestParam = {
     pageNo: 0,
@@ -147,7 +174,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     }
   }, [orderDetails]);
 
-  const initialValidationSchema = ({ isVariantRequired, channelType, secondLegShipInfoRequired = false }) => {
+  const initialValidationSchema = ({ isVariantRequired, channelType, secondLegShipInfoRequired = false, manufacturer }) => {
     let schema = Yup.object({
       variant: Yup.object()
         .shape({
@@ -196,7 +223,13 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       const dynamicFields = {};
       therapyConfig?.config?.fields?.forEach((field) => {
         if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field.properties.displayOnForm) {
-          let validator = Yup.string().matches(field.properties.fieldFormat.validationRegex, field.properties.errorMessage);
+          let validator = Yup.string();
+          if (field.properties?.fieldFormat?.validationRegex) {
+            validator = validator.matches(field.properties.fieldFormat.validationRegex, {
+              message: field.properties.errorMessage,
+              excludeEmptyString: true
+            });
+          }
           if (field.properties.fieldFormat.formatType === 'Date_MM_DD_YYYY') {
             const vf = field.properties.fieldFormat.validationFormat;
 
@@ -266,8 +299,20 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           dynamicFields[field.fieldName] = validator;
         }
       });
+      if (manufacturer === MANUFACTURER.MERCK) {
+        dynamicFields['doseIdentifier'] = Yup.string()
+          .trim()
+          .when([], {
+            is: () => isCoiIdVerifiedRef.current,
+            then: (s) => s.required(t('labels.doseIdentifierRequired')),
+            otherwise: (s) => s.notRequired()
+          });
+      }
       dynamicFields['orderQuantity'] = Yup.number()
         .transform((value, originalValue) => {
+          if (originalValue === '' || originalValue === null || originalValue === undefined) {
+            return undefined;
+          }
           if (!/^[0-9]+$/.test(originalValue)) {
             return NaN;
           }
@@ -348,7 +393,12 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   React.useEffect(() => {
     const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
-    const updatedValidationSchema = initialValidationSchema({ isVariantRequired, channelType, secondLegShipInfoRequired: isSecondLegShipInfoRequired });
+    const updatedValidationSchema = initialValidationSchema({
+      isVariantRequired,
+      channelType,
+      secondLegShipInfoRequired: isSecondLegShipInfoRequired,
+      manufacturer
+    });
 
     let questionnaireValidationSchema = Yup.object();
     let questionnaireFields = {};
@@ -368,7 +418,6 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         initialQuantityDetails.orderQuantity = therapyConfig.minQuantity;
       }
     }
-
     setInitialFormValues((prev) => ({
       ...prev,
       ...formikRef.current?.values,
@@ -376,7 +425,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       ...storedValue,
       ...questionnaireFields
     }));
-  }, [variantsData, questionnaireTemplateConfig, channelType]);
+  }, [variantsData, questionnaireTemplateConfig, channelType, therapyConfig, manufacturer, isSecondLegShipInfoRequired, orderDetails]);
 
   const navigateToNextStage = (id) => {
     navigate(`${RoutePaths.pathOrderManagement}/${id}/summary`, {
@@ -666,6 +715,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       } else {
         initialValues.orderQuantity = '';
       }
+      if (manufacturer === MANUFACTURER.MERCK) {
+        initialValues.doseIdentifier = '';
+      }
     }
 
     if (additionalDetails) {
@@ -676,6 +728,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         timeOfApheresis,
         timeOfAdministration,
         coiId,
+        doseIdentifier,
         orderQuantity,
         patientConsentTaken,
         poNumber,
@@ -743,6 +796,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
           timeOfApheresis,
           timeOfAdministration,
           coiId,
+          doseIdentifier: doseIdentifier ?? (manufacturer === MANUFACTURER.MERCK ? '' : undefined),
           orderQuantity,
           shipToPONumber
         });
@@ -818,6 +872,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
   };
 
   const handleOnSubmit = (values, isSavingAsDraft) => {
+    if (!isSavingAsDraft && isCoiIdPendingVerification(values)) {
+      scrollToTopUtil();
+      return;
+    }
     setIsOrderInDraft(isSavingAsDraft);
     setSaveType(isSavingAsDraft ? 'draft' : 'continue');
     if (channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA && manufacturer === MANUFACTURER.REGENERON && !values?.coiId && isEmptyFirstTime) {
@@ -843,8 +901,18 @@ function AdditionalDetails({ readOnly, hasPermission }) {
         }
       : null;
 
-    const { coiId, orderQuantity, poNumber, dateOfAdministration, dateOfApheresis, diagnosisCode, shipToPONumber, timeOfAdministration, timeOfApheresis } =
-      values;
+    const {
+      coiId,
+      doseIdentifier,
+      orderQuantity,
+      poNumber,
+      dateOfAdministration,
+      dateOfApheresis,
+      diagnosisCode,
+      shipToPONumber,
+      timeOfAdministration,
+      timeOfApheresis
+    } = values;
     let orderQuantityConfig = {};
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
       orderQuantityConfig = therapyConfig;
@@ -921,6 +989,9 @@ function AdditionalDetails({ readOnly, hasPermission }) {
       );
     } else {
       payload.coiId = coiId;
+      if (manufacturer === MANUFACTURER.MERCK || doseIdentifier) {
+        payload.doseIdentifier = doseIdentifier;
+      }
       payload.orderQuantity = orderQuantity;
       payload.shipToPONumber = shipToPONumber;
       payload.dateOfAdministration = dateOfAdministration;
@@ -1136,16 +1207,97 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   const { mutate: coiIdValidation, isLoading: isCoiIdValidationLoading } = useMutation(
     async ({ patientId, coiId }) => {
-      const res = await OrderService.regeneronCoiIdVerification(patientId, coiId);
+      const res =
+        manufacturer === MANUFACTURER.MERCK
+          ? await OrderService.merckCoiIdVerification(coiId, soldToAccountId)
+          : await OrderService.regeneronCoiIdVerification(patientId, coiId);
       return res.data;
     },
     {
       onSuccess: (res) => {
         if (res) {
-          setAlert({
-            description: t('orderManagement.coiId.valid', { coiId: getDisplayNameByFieldName('coiId') }),
-            type: 'success'
-          });
+          if (manufacturer === MANUFACTURER.MERCK) {
+            const isValid = res.valid ?? res.validate;
+            if (isValid) {
+              const options = (res.doseIdentifiers || []).map((id) => ({
+                key: id,
+                value: id,
+                label: id
+              }));
+              setDoseIdentifierOptions(options);
+              if (res?.validationStatus === 'NO_ACTIVE_DOSE') {
+                updateCoiIdVerified(false);
+                formikRef.current?.setFieldValue('doseIdentifier', '');
+                setDoseIdentifierOptions([]);
+                setAlert({
+                  description: t('orderManagement.merck.NO_ACTIVE_DOSE', { coiId: getDisplayNameByFieldName('coiId') }),
+                  type: 'error'
+                });
+              } else {
+                updateCoiIdVerified(true);
+                setAlert({
+                  description: t('orderManagement.merck.VERIFIED', { coiId: getDisplayNameByFieldName('coiId') }),
+                  type: 'success'
+                });
+              }
+            } else {
+              updateCoiIdVerified(false);
+              setDoseIdentifierOptions([]);
+              formikRef.current?.setFieldValue('doseIdentifier', '');
+              setAlert({
+                description: t(`${'orderManagement.merck.'}${res?.validationStatus}`, { coiId: getDisplayNameByFieldName('coiId') }),
+                type: 'error'
+              });
+            }
+          } else {
+            setAlert({
+              description: t('orderManagement.coiId.valid', { coiId: getDisplayNameByFieldName('coiId') }),
+              type: 'success'
+            });
+          }
+        } else {
+          setAlert(null);
+        }
+      },
+      onError: () => {
+        if (manufacturer === MANUFACTURER.MERCK) {
+          updateCoiIdVerified(false);
+          setDoseIdentifierOptions([]);
+          formikRef.current?.setFieldValue('doseIdentifier', '');
+        }
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+      }
+    }
+  );
+
+  const { mutate: doseIdentifierValidation, isLoading: isDoseValidationLoading } = useMutation(
+    async ({ coiId, doseIdentifier }) => {
+      const res = await OrderService.merckDoseIdentifierVerification(coiId, doseIdentifier, soldToAccountId);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        if (res) {
+          const isValid = res.valid ?? res.validate;
+          if (isValid) {
+            updateCoiIdVerified(true);
+            if (res.doseIdentifiers && Array.isArray(res.doseIdentifiers)) {
+              const options = res.doseIdentifiers.map((id) => ({
+                key: id,
+                value: id,
+                label: id
+              }));
+              setDoseIdentifierOptions(options);
+            }
+          } else {
+            setAlert({
+              description: t(`${'orderManagement.merck.'}${res?.validationStatus}`, { coiId: getDisplayNameByFieldName('coiId') }),
+              type: 'error'
+            });
+          }
         } else {
           setAlert(null);
         }
@@ -1175,24 +1327,79 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     return materialConfig?.find((field) => field.fieldName === fieldName)?.properties?.displayName || '';
   };
 
-  const handleCoiIdValidation = (e, setFieldTouched, errors) => {
-    const { id, value } = e.target;
+  React.useEffect(() => {
+    if (manufacturer !== MANUFACTURER.MERCK) return;
+
+    const currentCoiId = orderDetails?.additionalDetails?.coiId;
+    const currentDoseIdentifier = orderDetails?.additionalDetails?.doseIdentifier;
+
+    if (currentCoiId && !currentDoseIdentifier) {
+      const formattedCoiId = formatFieldWithPrefixSuffix(currentCoiId, 'coiId');
+      coiIdValidation({ coiId: formattedCoiId });
+    } else if (currentCoiId && currentDoseIdentifier) {
+      const formattedCoiId = formatFieldWithPrefixSuffix(currentCoiId, 'coiId');
+      doseIdentifierValidation({ coiId: formattedCoiId, doseIdentifier: currentDoseIdentifier });
+    }
+  }, [orderDetails?.id]);
+
+  const handleCoiIdValidation = (e, setFieldTouched, errors, values) => {
+    const value = e?.target?.value !== undefined ? e.target.value : values?.coiId;
     const fieldValue = formatFieldWithPrefixSuffix(value, 'coiId');
     setFieldTouched('coiId', true);
 
-    if (errors?.coiId) return;
+    if (!value) {
+      if (manufacturer === MANUFACTURER.MERCK) {
+        updateCoiIdVerified(false);
+        setDoseIdentifierOptions([]);
+        formikRef.current?.setFieldValue('doseIdentifier', '');
+        setAlert(null);
+      }
+      return;
+    }
 
-    if (!value || manufacturer !== MANUFACTURER.REGENERON) return;
-    if (!orderDetails.patient.patientIdentifier) {
-      setAlert({
-        description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
-        type: 'warning'
+    if (errors?.coiId) {
+      if (manufacturer === MANUFACTURER.MERCK) {
+        updateCoiIdVerified(false);
+        setDoseIdentifierOptions([]);
+        formikRef.current?.setFieldValue('doseIdentifier', '');
+        setAlert(null);
+      }
+      return;
+    }
+
+    if (manufacturer !== MANUFACTURER.REGENERON && manufacturer !== MANUFACTURER.MERCK) return;
+
+    if (manufacturer === MANUFACTURER.MERCK) {
+      isCoiIdVerifiedRef.current = false;
+      coiIdValidation({
+        coiId: fieldValue
       });
       return;
     }
-    coiIdValidation({
-      patientId: orderDetails?.patient?.patientIdentifier,
-      coiId: fieldValue
+
+    if (manufacturer === MANUFACTURER.REGENERON) {
+      if (!orderDetails.patient.patientIdentifier) {
+        setAlert({
+          description: t('orderManagement.coiId.verification', { coiId: getDisplayNameByFieldName('coiId') }),
+          type: 'warning'
+        });
+        return;
+      }
+      coiIdValidation({
+        patientId: orderDetails?.patient?.patientIdentifier,
+        coiId: fieldValue
+      });
+    }
+  };
+
+  const handleDoseIdentifierValidation = (selectedDose, values) => {
+    if (!selectedDose || manufacturer !== MANUFACTURER.MERCK) return;
+    const coiId = formatFieldWithPrefixSuffix(values?.coiId, 'coiId');
+    if (!coiId) return;
+
+    doseIdentifierValidation({
+      coiId,
+      doseIdentifier: selectedDose
     });
   };
   const handleOnSaveDraft = (values, errors, touched, setTouched, setErrors) => {
@@ -1206,7 +1413,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   return (
     <div className="MCP-module-wrapper">
-      {isCoiIdValidationLoading && <Loader type={'screen'} />}
+      {(isCoiIdValidationLoading || isDoseValidationLoading) && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -1295,9 +1502,10 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
                       <div className="form-segment-list">
                         <AdditionalDetailsDefaultFields
-                          {...{ therapyConfig, channelType, spTherapyConfig }}
+                          {...{ therapyConfig, channelType, spTherapyConfig, manufacturer, doseIdentifierOptions }}
                           readOnly={readOnly || !isAllowedToProceed}
-                          handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors)}
+                          handleCoiIdValidation={(e) => handleCoiIdValidation(e, setFieldTouched, errors, values)}
+                          handleDoseIdentifierValidation={(selectedDose) => handleDoseIdentifierValidation(selectedDose, values)}
                         />
                         {isSecondLegShipInfoRequired && (
                           <ShipmentInformation
@@ -1488,7 +1696,16 @@ const VariantTable = ({ variant, onChange, data, readOnly }) => {
   );
 };
 
-const AdditionalDetailsDefaultFields = ({ therapyConfig, spTherapyConfig, channelType, readOnly, handleCoiIdValidation }) => {
+const AdditionalDetailsDefaultFields = ({
+  therapyConfig,
+  spTherapyConfig,
+  channelType,
+  readOnly,
+  handleCoiIdValidation,
+  handleDoseIdentifierValidation,
+  manufacturer,
+  doseIdentifierOptions
+}) => {
   const { t } = useTranslate();
   const { setFieldValue } = useFormikContext();
   const defaultFields = getDefaultAdditionalDetailsFields({
@@ -1497,7 +1714,10 @@ const AdditionalDetailsDefaultFields = ({ therapyConfig, spTherapyConfig, channe
     spTherapyConfig,
     channelType,
     setFieldValue,
-    handleCoiIdValidation
+    handleCoiIdValidation,
+    handleDoseIdentifierValidation,
+    manufacturer,
+    doseIdentifierOptions
   });
 
   if (CommonUtils.isEmptyArray(defaultFields)) return null;

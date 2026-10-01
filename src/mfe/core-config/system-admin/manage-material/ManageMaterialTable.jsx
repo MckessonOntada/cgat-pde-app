@@ -378,7 +378,7 @@ function ManageMaterialTable({ onSuccess, onError, ...props }) {
           channelType={channelType}
           therapy={therapy || trade}
           isMaterialListing={true}
-          onSelect={() => {}}
+          onSelect={() => { }}
           onClose={handleOnClose}
           buyAndBillTherapyConstants={TherapyDetailsConstantsForBB(false)}
           spTherapyConstants={TherapyDetailsConstantsForSP}

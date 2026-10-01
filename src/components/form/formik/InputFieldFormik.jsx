@@ -19,6 +19,9 @@ export default function InputFieldFormik(props) {
 
   const handleOnBlur = (event) => {
     setFieldTouched(`${name}`, true);
+    if (typeof props.onBlur === 'function') {
+      props.onBlur(event);
+    }
   };
 
   return (

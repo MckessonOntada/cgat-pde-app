@@ -3,7 +3,15 @@ import { ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import { CHANNEL_TYPE, MANUFACTURER, ORDER_STAGES } from '../Constants';
 import { REQUIREMENT } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
 
-export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, channelType, isCustomerCentreUser, manufacturer) => {
+export const getUpdateFormConfig = (
+  stage,
+  therapyConfig,
+  spTherapyConfig,
+  channelType,
+  isCustomerCentreUser,
+  manufacturer,
+  { doseIdentifierOptions = [], handleCoiIdValidation, t } = {}
+) => {
   const dynamic_fields = [];
   if (stage === ORDER_STAGES.PATIENT_DETAILS) {
     if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
@@ -63,24 +71,78 @@ export const getUpdateFormConfig = (stage, therapyConfig, spTherapyConfig, chann
       });
     }
   } else if (stage === ORDER_STAGES.ADDITIONAL_DETAILS) {
-    therapyConfig?.config?.fields?.forEach((field) => {
-      if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
-        const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
-        const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
-        const formatType = field?.properties?.fieldFormat?.formatType;
-        dynamic_fields.push({
-          id: `additional-details-${field.fieldName}`,
-          name: field?.fieldName,
-          label: field?.properties?.displayName,
-          isRequired: field?.properties?.mandatoryField,
-          type: prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input',
-          prefix,
-          suffix,
-          ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
-          infoText: field?.properties.helpInfoMessage
-        });
-      }
-    });
+    if (manufacturer === MANUFACTURER.MERCK) {
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName === 'coiId' && field?.properties?.displayOnForm) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          dynamic_fields.push({
+            id: `additional-details-${field.fieldName}`,
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            type: prefix || suffix ? 'inputText' : 'input',
+            prefix,
+            suffix,
+            infoText: field?.properties.helpInfoMessage,
+            onBlur: handleCoiIdValidation
+          });
+        }
+      });
+      dynamic_fields.push({
+        id: 'additional-details-doseIdentifier',
+        name: 'doseIdentifier',
+        label: t ? t('labels.doseIdentifier') : 'labels.doseIdentifier',
+        placeholder: 'Select Dose Identifier',
+        isRequired: true,
+        type: 'dropdown',
+        options: doseIdentifierOptions,
+        isReadOnly: doseIdentifierOptions.length === 0,
+        size: 'lg'
+      });
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (
+          field.fieldName !== 'patientIdentifier' &&
+          field.fieldName !== 'medicalRecordNumber' &&
+          field.fieldName !== 'coiId' &&
+          field?.properties?.displayOnForm
+        ) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          const formatType = field?.properties?.fieldFormat?.formatType;
+          dynamic_fields.push({
+            id: `additional-details-${field.fieldName}`,
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            type: prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input',
+            prefix,
+            suffix,
+            ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
+            infoText: field?.properties.helpInfoMessage
+          });
+        }
+      });
+    } else {
+      therapyConfig?.config?.fields?.forEach((field) => {
+        if (field.fieldName !== 'patientIdentifier' && field.fieldName !== 'medicalRecordNumber' && field?.properties?.displayOnForm) {
+          const prefix = field?.properties?.fieldFormat?.validationFormat?.match(/prefix\('([^']*)'\)/)?.[1] ?? '';
+          const suffix = field?.properties?.fieldFormat?.validationFormat?.match(/suffix\('([^']*)'\)/)?.[1] ?? '';
+          const formatType = field?.properties?.fieldFormat?.formatType;
+          dynamic_fields.push({
+            id: `additional-details-${field.fieldName}`,
+            name: field?.fieldName,
+            label: field?.properties?.displayName,
+            isRequired: field?.properties?.mandatoryField,
+            type: prefix || suffix ? 'inputText' : formatType === 'Date_MM_DD_YYYY' ? 'datePicker' : formatType === 'Time_HH_MM' ? 'time' : 'input',
+            prefix,
+            suffix,
+            ...(formatType === 'Date_MM_DD_YYYY' && { disablePast: true }),
+            infoText: field?.properties.helpInfoMessage
+          });
+        }
+      });
+    }
   }
   const formattedControls = [
     {
@@ -183,7 +245,7 @@ export const patientDetailsValidationSchema = (t, therapyConfig, channelType, is
   return Yup.object().shape(buildDynamicFieldValidators(therapyConfig, t));
 };
 
-export const additionalDetailsValidationSchema = (t, therapyConfig) => {
+export const additionalDetailsValidationSchema = (t, therapyConfig, manufacturer, isDoseIdentifierRequired = () => true) => {
   const buildDynamicFieldValidators = (config, t) => {
     const dynamicFields = {};
     const allowedFields = new Set([
@@ -195,6 +257,14 @@ export const additionalDetailsValidationSchema = (t, therapyConfig) => {
       `timeOfApheresis`,
       `timeOfAdministration`
     ]);
+
+    if (manufacturer === MANUFACTURER.MERCK) {
+      dynamicFields.doseIdentifier = Yup.string().test(
+        'dose-identifier-required',
+        t('labels.doseIdentifierRequired'),
+        (value) => !isDoseIdentifierRequired() || !!value
+      );
+    }
 
     config?.config?.fields?.forEach((field) => {
       if (!allowedFields.has(field.fieldName) || !field.properties?.displayOnForm) return;
