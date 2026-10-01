@@ -95,21 +95,21 @@ jobs:
           name: wiz-cli-scan-results
           path: scan_output.txt
           
-      - if: github.ref == 'refs/heads/development' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
+      - if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
         id: version-bump-git-tag
         name: Bump version and push git tag
         uses: anothrNick/github-tag-action@9885a4f9af674ba472de91fb3c0cb033ecb32b7e
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: github.ref == 'refs/heads/development' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
+      - if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
         name: Docker Push
         id: push-docker-image
         run: |
           docker tag $IMAGE_NAME:${{ steps.short-sha.outputs.sha }} $IMAGE_NAME:${{ steps.version-bump-git-tag.outputs.new_tag }}
           docker push -a $IMAGE_NAME
 
-      - if: github.ref == 'refs/heads/development' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
+      - if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
         name: Create Prerelease
         uses: ncipollo/release-action@v1
         with:
