@@ -88,6 +88,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const [isDirty, setIsDirty] = React.useState(false);
   const [draftChanges, setDraftChanges] = React.useState({});
   const [allowedSubmission, setAllowedSubmission] = React.useState(false);
+  const [isSapStatusFailed, setIsSapStatusFailed] = React.useState(false);
   const {
     therapy = {},
     catalog = {},
@@ -139,15 +140,6 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return () => dispatch(hasUnsavedChanges(false));
   }, []);
 
-  // React.useEffect(() => {
-  //   if (isError) {
-  //     addNotification({
-  //       type: 'error',
-  //       description: error.message || 'Something went wrong please try again.'
-  //     });
-  //   }
-  // }, [isError]);
-
   React.useEffect(() => {
     const { isChangeOnPreviousStep } = state;
     if (isChangeOnPreviousStep && !hasPermission) {
@@ -174,9 +166,13 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       isSPOrder: isSpOrder,
       isCustomerCentreUser
     },
-    (status) => setSapStatus(status),
+    (status) => {
+      setSapStatus(status);
+      setIsSapStatusFailed(false);
+    },
     (error) => {
       setSapStatus(SAP_ORDER_STATUS.OPEN);
+      setIsSapStatusFailed(true);
       addNotification({
         description: 'Something went wrong while checking SAP order status. Please try again later.',
         type: 'error',
@@ -294,6 +290,9 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isCSReview = status === ORDER_STATUS.CS_REVIEW;
   const isCanceledOrder = status === ORDER_STATUS.CANCELLED || orderProcessingStatus === ORDER_STATUS.CANCELLED;
   const isCompleted = sapStatus === SAP_ORDER_STATUS.COMPLETED;
+  const isDropShipTherapy = catalog.inventoryType === 'T';
+  const isReviewOrder = status === ORDER_STATUS.REVIEW;
+  const isBnbOrder = orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL;
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -340,12 +339,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled:
-      isSpOrder || readOnly
-        ? false
-        : !status
-        ? false
-        : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || status === 'DELETED'),
+    enabled: isSpOrder || readOnly ? false : !status ? false : !([ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED].includes(status) || isSubmitted || isDeleted),
 
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
@@ -507,7 +501,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   };
 
   const handleOnSubmit = () => {
-    if (status === ORDER_STATUS.REVIEW && AuthUtils.isPhysician()) {
+    if (isReviewOrder && AuthUtils.isPhysician()) {
       navigate(`${RoutePaths.pathOrderManagement}/${orderId}/review`, { state: { ...locationState } });
     } else {
       if (!agreeCheckboxOptions.isChecked) {
@@ -980,7 +974,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
           };
         }
       } else if (stage === ORDER_STAGES.PATIENT_DETAILS) {
-        if (orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL) {
+        if (isBnbOrder) {
           initialValues = {
             ...stripPrefixSuffixFromData(draftChanges, therapyConfig.config.fields)
           };
@@ -1288,9 +1282,15 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         </Button>
       </PermittedComponent>
     );
-    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED].includes(status) || isCanceledOrder || isCompleted || (isSpOrder && status === ORDER_STATUS.SUBMITTED)) {
+    if (
+      [ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED].includes(status) ||
+      isCanceledOrder ||
+      isCompleted ||
+      (isSpOrder && isSubmitted) ||
+      (isDropShipTherapy && isSubmitted)
+    ) {
       controls.push(controlPrintSummary);
-    } else if (status === ORDER_STATUS.REVIEW && isPhysician) {
+    } else if (isReviewOrder && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
     } else if (
       !isApprover &&
@@ -1320,19 +1320,29 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
-    if (isRejected || isDeleted || isCanceledOrder || isCompleted) return false;
-    else if (isSubmitted || isCSReview || status === ORDER_STATUS.REVIEW) return false;
-    // else if (isSpOrder && isSubmitted) return false;
-    else if (sapStatus === SAP_ORDER_STATUS.COMPLETED) return false;
-    else if (status === ORDER_STATUS.APPROVAL_PENDING && !orderDetails.approver) return false;
-    else if (status === ORDER_STATUS.APPROVAL_PENDING && orderDetails.approver && !isApprover) return false;
-    else if (status === ORDER_STATUS.APPROVAL_PENDING && isApprover && orderDetails.approver) {
-      return true;
+    if (isRejected || isDeleted || isCanceledOrder || isCompleted || isDropShipTherapy || isSubmitted || isCSReview || isReviewOrder || isCompleted) {
+      return false;
     }
+
+    if (isApprovalPending) {
+      return Boolean(orderDetails.approver && isApprover);
+    }
+
     return true;
-  }, [isRejected, isDeleted, isSubmitted, isCSReview, isApprover, status, sapStatus, orderDetails, isCanceledOrder, isCompleted]);
-  const allowUpdateBnBAfterSubmit =
-    orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL && (isSubmitted || isCSReview) && !isCompleted && sapStatus === SAP_ORDER_STATUS.OPEN;
+  }, [
+    isRejected,
+    isDeleted,
+    isCanceledOrder,
+    isCompleted,
+    catalog.inventoryType,
+    isSubmitted,
+    isCSReview,
+    status,
+    sapStatus,
+    orderDetails.approver,
+    isApprover
+  ]);
+  const allowUpdateBnBAfterSubmit = isBnbOrder && (isSubmitted || isCSReview) && !isCompleted && !isDropShipTherapy && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
@@ -1443,8 +1453,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                     }
                   />
                 )}
-                {!isApprover &&
-                (isPhysician || isSubmitted || isApprovalPending || isRejected || orderDetails?.status === ORDER_STATUS.REVIEW || isDeleted || isCSReview) ? (
+                {!isApprover && (isPhysician || isSubmitted || isApprovalPending || isRejected || isReviewOrder || isDeleted || isCSReview) ? (
                   <Heading className={styles.orderSummaryHeading} as="h2">
                     <span>{t(isSpOrder ? 'headings.prescriptionSummary' : 'labels.summary')}</span>
                     {showPapBadge}
@@ -1546,7 +1555,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         {readOnly && status === ORDER_STATUS.IN_DRAFT && (
           <NotifyAlert stage={ORDER_STAGES.ORDER_SUMMARY} OnEdit={false} orderId={orderId} setAlert={setAlert} />
         )}
-        {isCustomerCentreUser && status === ORDER_STATUS.CS_REVIEW && (
+        {isCustomerCentreUser && isCSReview && (
           <Alert
             type="info"
             description="Please review and update the order details to proceed with submission. Follow work instructions if needed."
@@ -1570,7 +1579,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
               <div className={'MCP-module-body'}>
                 {isSubmitted && <TrackingDetails orderDetails={orderDetails} />}
 
-                {(isSubmitted || isCSReview || status === ORDER_STATUS.APPROVAL_PENDING) &&
+                {(isSubmitted || isCSReview || isApprovalPending) &&
                   ((isSpOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
                     (!isSpOrder && (orderDetails?.approver || orderDetails?.submittedOn))) && (
                     <div className="MCP-CardContainer">
@@ -1611,8 +1620,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           : 'lg:grid-cols-2 xl:grid-cols-2'
                         : 'lg:grid-cols-5 xl:grid-cols-5'
                     }`}>
-                    {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ||
-                      ((isSubmitted || isCSReview) && orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL)) && (
+                    {(orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA || ((isSubmitted || isCSReview) && isBnbOrder)) && (
                       <DetailSegment
                         label={t('labels.orderId')}
                         value={orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA ? id : backendOrderId || orderDetails.id}
@@ -1804,15 +1812,17 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
-                        (showControls || allowUpdateBnBAfterSubmit) && (
+                        (showControls || allowUpdateBnBAfterSubmit || (isCSReview && !isSpOrder)) && (
                           <Button
                             size="md"
                             variant="tertiary"
                             disabled={
-                              (isSubmitted || isCSReview) &&
-                              !(therapyConfig?.config?.fields ?? []).some(
-                                (field) => ['patientIdentifier', 'medicalRecordNumber'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
-                              )
+                              ((isSubmitted || isCSReview) &&
+                                !(therapyConfig?.config?.fields ?? []).some(
+                                  (field) =>
+                                    ['patientIdentifier', 'medicalRecordNumber'].includes(field?.fieldName) && field?.properties?.displayOnForm === true
+                                )) ||
+                              (isSubmitted && isSapStatusFailed)
                             }
                             onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
                             Icon={() => <IconEditField />}>
@@ -1917,20 +1927,21 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
                           size="md"
                           variant="tertiary"
                           disabled={
-                            (isSubmitted || isCSReview) &&
-                            !isSpOrder &&
-                            !(therapyConfig?.config?.fields ?? []).some(
-                              (field) =>
-                                [
-                                  'coiId',
-                                  'poNumber',
-                                  'shipToPONumber',
-                                  'dateOfAdministration',
-                                  'dateOfApheresis',
-                                  'timeOfApheresis',
-                                  'timeOfAdministration'
-                                ].includes(field?.fieldName) && field?.properties?.displayOnForm === true
-                            )
+                            ((isSubmitted || isCSReview) &&
+                              !isSpOrder &&
+                              !(therapyConfig?.config?.fields ?? []).some(
+                                (field) =>
+                                  [
+                                    'coiId',
+                                    'poNumber',
+                                    'shipToPONumber',
+                                    'dateOfAdministration',
+                                    'dateOfApheresis',
+                                    'timeOfApheresis',
+                                    'timeOfAdministration'
+                                  ].includes(field?.fieldName) && field?.properties?.displayOnForm === true
+                              )) ||
+                            (isSubmitted && isSapStatusFailed)
                           }
                           onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
