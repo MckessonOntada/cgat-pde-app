@@ -290,7 +290,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const isCSReview = status === ORDER_STATUS.CS_REVIEW;
   const isCanceledOrder = status === ORDER_STATUS.CANCELLED || orderProcessingStatus === ORDER_STATUS.CANCELLED;
   const isCompleted = sapStatus === SAP_ORDER_STATUS.COMPLETED;
-  const isDropShipTherapy = catalog.inventoryType === 'T';
+  const isDropShipEditBlocked = catalog.inventoryType === 'T' && isSubmitted;
   const isReviewOrder = status === ORDER_STATUS.REVIEW;
   const isBnbOrder = orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL;
 
@@ -1287,7 +1287,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
       isCanceledOrder ||
       isCompleted ||
       (isSpOrder && isSubmitted) ||
-      (isDropShipTherapy && isSubmitted)
+      isDropShipEditBlocked
     ) {
       controls.push(controlPrintSummary);
     } else if (isReviewOrder && isPhysician) {
@@ -1320,7 +1320,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   if (patient.patientInfo) patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
   const showControls = React.useMemo(() => {
-    if (isRejected || isDeleted || isCanceledOrder || isCompleted || isDropShipTherapy || isSubmitted || isCSReview || isReviewOrder || isCompleted) {
+    if (isRejected || isDeleted || isCanceledOrder || isCompleted || isSubmitted || isCSReview || isReviewOrder || isCompleted || isDropShipEditBlocked) {
       return false;
     }
 
@@ -1334,6 +1334,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     isDeleted,
     isCanceledOrder,
     isCompleted,
+    isDropShipEditBlocked,
     catalog.inventoryType,
     isSubmitted,
     isCSReview,
@@ -1342,7 +1343,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     orderDetails.approver,
     isApprover
   ]);
-  const allowUpdateBnBAfterSubmit = isBnbOrder && (isSubmitted || isCSReview) && !isCompleted && !isDropShipTherapy && sapStatus === SAP_ORDER_STATUS.OPEN;
+  const allowUpdateBnBAfterSubmit = isBnbOrder && (isSubmitted || isCSReview) && !isCompleted && !isDropShipEditBlocked && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
