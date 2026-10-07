@@ -160,7 +160,11 @@ function getOptionsByStatus(props) {
         }
         break;
       case ORDER_ENTITY_ACTION.EDIT:
-        if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL && props.orderProcessingStatus !== ORDER_STATUS.COMPLETED) {
+        if (
+          tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL &&
+          props.orderProcessingStatus !== ORDER_STATUS.COMPLETED &&
+          (props.status === ORDER_STATUS.CS_REVIEW || props.catalog.inventoryType !== 'T')
+        ) {
           navigate(isCSReviewOrdersPage ? `${id}/summary?orgId=${practiceId}` : `${id}/summary`, {
             state: props.status === ORDER_STATUS.SUBMITTED || props.status === ORDER_STATUS.CS_REVIEW ? { ...preservedState, isEdit: true } : preservedState
           });
@@ -259,9 +263,10 @@ function getOptionsByStatus(props) {
     }
     options.push({
       label: translate(
-        `labels.orderActions.${options.length && options.at(-1).value === ORDER_ENTITY_ACTION.UNASSIGN
-          ? ORDER_ENTITY_ACTION.REVIEW.toLowerCase()
-          : ORDER_ENTITY_ACTION.VIEW.toLowerCase()
+        `labels.orderActions.${
+          options.length && options.at(-1).value === ORDER_ENTITY_ACTION.UNASSIGN
+            ? ORDER_ENTITY_ACTION.REVIEW.toLowerCase()
+            : ORDER_ENTITY_ACTION.VIEW.toLowerCase()
         }`
       ),
       value: ORDER_ENTITY_ACTION.REVIEW
@@ -385,7 +390,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.SAP_ID,
     name: 'labels.orderId',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'backend_order_id',
     minWidth: '130px',
@@ -401,7 +406,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.ORDER_ID,
     name: 'labels.orderView.internalOrderId',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'id',
     showInMobileHeader: true,
@@ -419,7 +424,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.PRESCRIPTION_ID,
     name: 'labels.orderView.prescriptionId',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'id',
     showInMobileHeader: true,
@@ -437,7 +442,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.ORDER_ID_SP,
     name: 'labels.orderId',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'id',
     showInMobileHeader: true,
@@ -456,7 +461,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.PATIENT_NAME,
     name: 'labels.patientName',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'patient_details.patient_info.first_name',
     omit: appliedLayoutKeys.length === 0 ? false : !appliedLayoutKeys.includes('PatientName'),
@@ -481,7 +486,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.PATIENT_ID,
     name: 'labels.PatientID',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'patient_identifier',
     minWidth: '130px',
@@ -493,7 +498,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.THERAPY,
     name: 'labels.therapy',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'therapy.therapy_description',
     minWidth: '250px',
@@ -507,7 +512,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.ORGANIZATION,
     name: 'labels.organization',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'organization.name',
     maxWidth: '170px',
@@ -520,7 +525,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.AUTHOR,
     name: 'table.columns.captions.createdBy',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'createdBy.name',
     maxWidth: '150px',
@@ -530,7 +535,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.ASSIGNEE,
     name: 'table.columns.captions.assignee',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'approver.name',
     maxWidth: '130px',
@@ -539,7 +544,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.CREATED_ON,
     name: 'table.columns.captions.createdDate',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
     width: '140px',
@@ -550,7 +555,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.SUBMITTED_BY,
     name: 'table.columns.captions.submittedBy',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
     maxWidth: '155px',
@@ -561,7 +566,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.SUBMITTED_ON,
     name: 'table.columns.captions.submittedOn',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
     width: '155px',
@@ -572,7 +577,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.UPDATED_BY,
     name: 'table.columns.captions.submittedBy',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     maxWidth: '155px',
     sortKey: 'updatedBy.name',
@@ -583,7 +588,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.UPDATED_ON,
     name: 'table.columns.captions.submittedOn',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     width: '155px',
     sortKey: 'updatedAt',
@@ -594,7 +599,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.STATUS,
     name: 'table.columns.captions.status',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'status',
     maxWidth: '180px',
@@ -622,7 +627,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.PROVIDER,
     name: 'labels.provider',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'provider.name',
     maxWidth: '170px',
@@ -637,7 +642,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
     name: 'labels.coiId',
     sortable: true,
     sortKey: 'additional_details.coiId',
-    selector: () => { },
+    selector: () => {},
     minWidth: '120px',
     omit: appliedLayoutKeys ? !appliedLayoutKeys.includes('CoiId') : false,
     cell: function (props) {
@@ -655,7 +660,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.PO_NUMBER,
     name: 'labels.providePONumber',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'additional_details.po_number',
     minWidth: '130px',
@@ -667,7 +672,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.PRICE,
     name: 'table.columns.captions.price',
-    selector: () => { },
+    selector: () => {},
     sortable: true,
     sortKey: 'order_cost',
     right: true,
@@ -689,7 +694,7 @@ const jsxColumns = (isCSReviewOrdersPage, appliedLayoutKeys) => [
   {
     id: COLUMNS.ACTION,
     name: 'table.columns.captions.actions',
-    selector: () => { },
+    selector: () => {},
     sortable: false,
     showInMobileHeader: true,
     width: '100px',
