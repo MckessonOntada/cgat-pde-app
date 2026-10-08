@@ -549,13 +549,25 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return obj;
   }
 
+  const addDoseIdentifierToPayload = (payload) => {
+    if (manufacturer !== MANUFACTURER.MERCK) return payload;
+    return {
+      ...payload,
+      additionalDetailsRequestDTO: {
+        ...payload.additionalDetailsRequestDTO,
+        doseIdentifier: payload.additionalDetailsRequestDTO?.doseIdentifier || additionalDetails?.doseIdentifier
+      }
+    };
+  };
+
   const handleOnReSubmit = () => {
+    const payload = addDoseIdentifierToPayload(draftChanges);
     if (AuthUtils.isSystemAdminView()) {
-      reSubmitOrder(removeKeyFromPayload(draftChanges, 'medicalRecordNumber'));
+      reSubmitOrder(removeKeyFromPayload(payload, 'medicalRecordNumber'));
     } else if (!hasUserPhiPermission) {
-      reSubmitOrder(removeMaskedFields(draftChanges));
+      reSubmitOrder(removeMaskedFields(payload));
     } else {
-      reSubmitOrder(draftChanges);
+      reSubmitOrder(payload);
     }
   };
 
