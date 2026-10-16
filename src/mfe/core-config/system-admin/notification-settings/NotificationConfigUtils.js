@@ -22,13 +22,13 @@ export const buildCombinedNotificationPayload = ({ therapy, tabState }) => {
       {
         notificationType: NOTIFICATION_TYPES.ORDER_SUBMIT,
         isCustomerServiceEnabled: tabState?.[1]?.notifications ?? true,
-        isAdditionalRecipientEnabled: tabState?.[1]?.notifications ?? true ? tabState?.[1]?.addRecipients ?? true : false,
+        isAdditionalRecipientEnabled: tabState?.[1]?.addRecipients ?? true,
         recipients: mapRecipients(tabState?.[1]?.recipients ?? [])
       },
       {
         notificationType: NOTIFICATION_TYPES.PATIENT_INGESTION,
         isCustomerServiceEnabled: tabState?.[2]?.notifications ?? true,
-        isAdditionalRecipientEnabled: tabState?.[2]?.notifications ?? true ? tabState?.[2]?.addRecipients ?? true : false,
+        isAdditionalRecipientEnabled: tabState?.[2]?.addRecipients ?? true,
         recipients: mapRecipients(tabState?.[2]?.recipients ?? [])
       }
     ]

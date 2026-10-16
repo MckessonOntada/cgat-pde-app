@@ -265,8 +265,8 @@ const MaterialNotificationSettings = () => {
               size="lg"
               value={addRecipientsValue}
               items={[
-                { label: 'Yes', value: 'yes', isDisabled: !currentNotificationValue },
-                { label: 'No', value: 'no', isDisabled: !currentNotificationValue }
+                { label: 'Yes', value: 'yes' },
+                { label: 'No', value: 'no' }
               ]}
               onChangeValue={(value) =>
                 setTabState((prev) => ({
@@ -285,7 +285,7 @@ const MaterialNotificationSettings = () => {
                 Icon={AddCircleFilled}
                 className="button-icon"
                 size="md"
-                disabled={!currentNotificationValue || !currentAddRecipients || isControlsDisabled}
+                disabled={!currentAddRecipients || isControlsDisabled}
                 onClick={handleAddRecipient}>
                 {t('manageMaterial.notificationSettings.button.addRecipient')}
               </Button>
@@ -294,7 +294,7 @@ const MaterialNotificationSettings = () => {
               <RecipientListProvider key={selectedTab} recipients={currentRecipients}>
                 <RecipientList
                   handleOnOptionSelection={handleOnOptionSelection}
-                  isActionsDisabled={!currentNotificationValue || !currentAddRecipients || isControlsDisabled}
+                  isActionsDisabled={!currentAddRecipients || isControlsDisabled}
                 />
               </RecipientListProvider>
             </div>
