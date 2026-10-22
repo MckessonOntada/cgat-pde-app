@@ -521,17 +521,17 @@ async function regeneronCoiIdVerification(patientId, coiId) {
   if (res) return res;
 }
 
-async function merckCoiIdVerification(coiId, sdAccountNumber) {
+async function merckCoiIdVerification(coiId, shipToAccountNumber) {
   if (!coiId) throw new Error('COI ID is missing. COI ID is required to verify.');
-  let url = `${ApiRoutes.MERCK_COI_VALIDATE()}?${serializeParams({ coiId: coiId, sdAccountNumber: sdAccountNumber })}`;
+  let url = `${ApiRoutes.MERCK_COI_VALIDATE()}?${serializeParams({ coiId: coiId, shipToAccountNumber: shipToAccountNumber })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
 
-async function merckDoseIdentifierVerification(coiId, doseIdentifier, sdAccountNumber) {
+async function merckDoseIdentifierVerification(coiId, doseIdentifier, shipToAccountNumber) {
   if (!coiId) throw new Error('COI ID is missing. COI ID is required to verify.');
   if (!doseIdentifier) throw new Error('Dose identifier is missing.');
-  let url = `${ApiRoutes.MERCK_DOSE_VALIDATE()}?${serializeParams({ coiId: coiId, doseIdentifier: doseIdentifier, sdAccountNumber: sdAccountNumber })}`;
+  let url = `${ApiRoutes.MERCK_DOSE_VALIDATE()}?${serializeParams({ coiId: coiId, doseIdentifier: doseIdentifier, shipToAccountNumber: shipToAccountNumber })}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res) return res;
 }
