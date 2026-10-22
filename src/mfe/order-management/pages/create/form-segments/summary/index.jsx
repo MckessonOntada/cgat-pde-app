@@ -549,13 +549,25 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     return obj;
   }
 
+  const addDoseIdentifierToPayload = (payload) => {
+    if (manufacturer !== MANUFACTURER.MERCK) return payload;
+    return {
+      ...payload,
+      additionalDetailsRequestDTO: {
+        ...payload.additionalDetailsRequestDTO,
+        doseIdentifier: payload.additionalDetailsRequestDTO?.doseIdentifier || additionalDetails?.doseIdentifier
+      }
+    };
+  };
+
   const handleOnReSubmit = () => {
+    const payload = addDoseIdentifierToPayload(draftChanges);
     if (AuthUtils.isSystemAdminView()) {
-      reSubmitOrder(removeKeyFromPayload(draftChanges, 'medicalRecordNumber'));
+      reSubmitOrder(removeKeyFromPayload(payload, 'medicalRecordNumber'));
     } else if (!hasUserPhiPermission) {
-      reSubmitOrder(removeMaskedFields(draftChanges));
+      reSubmitOrder(removeMaskedFields(payload));
     } else {
-      reSubmitOrder(draftChanges);
+      reSubmitOrder(payload);
     }
   };
 
@@ -730,7 +742,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const { mutate: doseIdentifierValidation, isLoading: isDoseValidationLoading } = useMutation(
     async ({ coiId, doseIdentifier }) => {
-      const res = await OrderService.merckDoseIdentifierVerification(coiId, doseIdentifier, accountDetails.soldToAccount?.accountNumber);
+      const res = await OrderService.merckDoseIdentifierVerification(coiId, doseIdentifier, accountDetails.shipToAccount?.accountNumber);
       return res.data;
     },
     {
@@ -781,7 +793,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
   const coiIdValidationForDrawer = async ({ coiId, doseIdentifier }, formik, setDrawerAlertFn, setDoseIdentifierOptionsFn) => {
     setIsDrawerVerificationLoading(true);
     try {
-      const res = await OrderService.merckCoiIdVerification(coiId, accountDetails.soldToAccount?.accountNumber);
+      const res = await OrderService.merckCoiIdVerification(coiId, accountDetails.shipToAccount?.accountNumber);
       const data = res.data;
       if (data) {
         const isValid = data.valid ?? data.validate;
@@ -851,7 +863,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     const coiId = formatFieldWithPrefixSuffix(values.coiId, 'coiId');
     setIsDrawerVerificationLoading(true);
     try {
-      const res = await OrderService.merckDoseIdentifierVerification(coiId, values.doseIdentifier, accountDetails.soldToAccount?.accountNumber);
+      const res = await OrderService.merckDoseIdentifierVerification(coiId, values.doseIdentifier, accountDetails.shipToAccount?.accountNumber);
       const data = res.data;
       if (!data) return;
       const isValid = data.valid ?? data.validate;

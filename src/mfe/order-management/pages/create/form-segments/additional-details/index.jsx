@@ -1209,7 +1209,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
     async ({ patientId, coiId }) => {
       const res =
         manufacturer === MANUFACTURER.MERCK
-          ? await OrderService.merckCoiIdVerification(coiId, soldToAccountId)
+          ? await OrderService.merckCoiIdVerification(coiId, shipToAccountId)
           : await OrderService.regeneronCoiIdVerification(patientId, coiId);
       return res.data;
     },
@@ -1275,7 +1275,7 @@ function AdditionalDetails({ readOnly, hasPermission }) {
 
   const { mutate: doseIdentifierValidation, isLoading: isDoseValidationLoading } = useMutation(
     async ({ coiId, doseIdentifier }) => {
-      const res = await OrderService.merckDoseIdentifierVerification(coiId, doseIdentifier, soldToAccountId);
+      const res = await OrderService.merckDoseIdentifierVerification(coiId, doseIdentifier, shipToAccountId);
       return res.data;
     },
     {
