@@ -1294,13 +1294,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
         </Button>
       </PermittedComponent>
     );
-    if (
-      [ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED].includes(status) ||
-      isCanceledOrder ||
-      isCompleted ||
-      (isSpOrder && isSubmitted) ||
-      isDropShipEditBlocked
-    ) {
+    if ([ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED].includes(status) || isCanceledOrder || isCompleted || isSubmitted || isDropShipEditBlocked) {
       controls.push(controlPrintSummary);
     } else if (isReviewOrder && isPhysician) {
       controls.push(controlPrintSummary, controlFinalizeOrder);
@@ -1355,7 +1349,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
     orderDetails.approver,
     isApprover
   ]);
-  const allowUpdateBnBAfterSubmit = isBnbOrder && (isSubmitted || isCSReview) && !isCompleted && !isDropShipEditBlocked && sapStatus === SAP_ORDER_STATUS.OPEN;
+  const allowUpdateBnBAfterSubmit = isBnbOrder && isCSReview && !isCompleted && !isDropShipEditBlocked && sapStatus === SAP_ORDER_STATUS.OPEN;
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
