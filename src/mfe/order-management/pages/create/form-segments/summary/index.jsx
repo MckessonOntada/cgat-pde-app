@@ -227,7 +227,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     if (catalog.inventoryType === 'T') {
       setInventoryStatus('DROP_SHIP');
-    } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'A') {
+    } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'I') {
       setInventoryStatus('CHECKING');
       if (hasFetchedInventory.current === false) {
         getInventoryStatus();
