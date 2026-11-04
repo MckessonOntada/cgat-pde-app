@@ -183,7 +183,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const getInventoryStatus = async () => {
     try {
-      const response = await OrderService.getInventoryStatus(orderDetails.id);
+      const response = await OrderService.getInventoryStatus(orderDetails.id, isCustomerCentreUser ? orgId : undefined);
       if (response.status === 200) {
         handleInventoryDetailsResponse(response.data);
       }
@@ -227,7 +227,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
     if (catalog.inventoryType === 'T') {
       setInventoryStatus('DROP_SHIP');
-    } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'I') {
+    } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'A') {
       setInventoryStatus('CHECKING');
       if (hasFetchedInventory.current === false) {
         getInventoryStatus();

@@ -221,9 +221,9 @@ async function getVariants(config, requestParams) {
   return {};
 }
 
-async function getInventoryStatus(orderId) {
+async function getInventoryStatus(orderId, orgId) {
   try {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability/${orderId}`, httpVerb.GET);
+    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY(orgId)}/availability/${orderId}`, httpVerb.GET);
     if (res) {
       return res;
     }
