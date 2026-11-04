@@ -9,7 +9,10 @@ const constructUserManagementServiceUrl = (uri) => {
 
 const constructUserManagementServicePublicUrl = (uri) => `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
 
-const constructOrderManagementServiceUrl = (uri) => {
+const constructOrderManagementServiceUrl = (uri, practiceIdOverride) => {
+  if (practiceIdOverride) {
+    return `${ORDERMANAGEMENT_SERVICE_BASE_URL}api/practices/${practiceIdOverride}/${uri}`;
+  }
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const practiceId = AuthUtils.getPracticeId();
   return `${ORDERMANAGEMENT_SERVICE_BASE_URL}api/practices/${isSystemAdminView ? 1 : practiceId}/${uri}`;

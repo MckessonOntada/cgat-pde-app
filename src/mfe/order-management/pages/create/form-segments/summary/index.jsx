@@ -183,7 +183,7 @@ const Summary = ({ readOnly, hasPermission, checkEditPermission }) => {
 
   const getInventoryStatus = async () => {
     try {
-      const response = await OrderService.getInventoryStatus(orderDetails.id);
+      const response = await OrderService.getInventoryStatus(orderDetails.id, isCustomerCentreUser ? orgId : undefined);
       if (response.status === 200) {
         handleInventoryDetailsResponse(response.data);
       }
