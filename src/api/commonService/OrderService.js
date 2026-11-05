@@ -223,7 +223,8 @@ async function getVariants(config, requestParams) {
 
 async function getInventoryStatus(orderId, orgId) {
   try {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY(orgId)}/availability/${orderId}`, httpVerb.GET);
+    const resolvedOrgId = orgId || new URLSearchParams(window.location.search).get('orgId');
+    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY(resolvedOrgId)}/availability/${orderId}`, httpVerb.GET);
     if (res) {
       return res;
     }
