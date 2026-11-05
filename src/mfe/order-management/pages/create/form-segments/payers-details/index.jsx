@@ -50,6 +50,7 @@ function Payer({ readOnly, hasPermission }) {
   const [alert, setAlert] = React.useState(null);
   const [saveType, setSaveType] = React.useState(null);
   const [isPayerDetailsRequired, setIsPayerDetailsRequired] = React.useState(false);
+  const payerDetailsRequiredRef = React.useRef(null);
   const { controlRef } = useContext(FooterContext);
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -89,6 +90,7 @@ function Payer({ readOnly, hasPermission }) {
 
     const requiredValue = isPayerDetailsRequired ? 'yes' : 'no';
 
+    payerDetailsRequiredRef.current = requiredValue;
     setIsPayerDetailsRequired(requiredValue);
     setFormValues({
       payerDetailsRequired: requiredValue,
@@ -373,6 +375,36 @@ function Payer({ readOnly, hasPermission }) {
 
   const handleOnSaveAndContinue = (values) => handleOnSubmit(values);
 
+  const handleOnOpenPanel = (key, baseInsuranceValues, setValues, setErrors, setTouched) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      insuranceDetails: {
+        ...prevValues.insuranceDetails,
+        [key]: baseInsuranceValues
+      }
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      insuranceDetails: {
+        ...prevErrors.insuranceDetails,
+        [key]: null
+      }
+    }));
+    setTouched((prevTouched) => ({
+      ...prevTouched,
+      insuranceDetails: {
+        ...prevTouched.insuranceDetails,
+        [key]: false
+      }
+    }));
+
+    if (key === 'secondaryMedicalInsurance') {
+      setIsSecondaryMedicalInsuranceOpen(true);
+    } else {
+      setIsSecondaryPharmacyInsuranceOpen(true);
+    }
+  };
+
   const handleOnClosePanel = (key, setFieldValue, currentValues, resetFormFn) => {
     const next = {
       ...currentValues,
@@ -457,13 +489,26 @@ function Payer({ readOnly, hasPermission }) {
             }, [dirty]);
 
             React.useEffect(() => {
-              setIsPayerDetailsRequired(values['payerDetailsRequired']);
-            }, [values]);
-            React.useEffect(() => {
+              const nextValue = values['payerDetailsRequired'];
+              const prevValue = payerDetailsRequiredRef.current;
+
+              payerDetailsRequiredRef.current = nextValue;
+              setIsPayerDetailsRequired(nextValue);
+
+              // Blank out / seed the insurance blocks only when the user switches the answer.
+              // On hydration the ref already holds the saved answer, so the insurance details
+              // loaded from the order are left alone.
+              if (prevValue === null || prevValue === nextValue) return;
+
+              if (nextValue !== 'yes') {
+                setIsSecondaryMedicalInsuranceOpen(false);
+                setIsSecondaryPharmacyInsuranceOpen(false);
+              }
+
               setValues((prevValues) => ({
                 ...prevValues,
                 insuranceDetails:
-                  isPayerDetailsRequired === 'yes'
+                  nextValue === 'yes'
                     ? {
                         primaryMedicalInsurance: getBaseMedicalInsuranceValues(),
                         primaryPharmacyInsurance: getBasePharmacyInsuranceValues()
@@ -479,60 +524,7 @@ function Payer({ readOnly, hasPermission }) {
                 ...prevTouched,
                 insuranceDetails: false
               }));
-            }, [isPayerDetailsRequired]);
-
-            React.useEffect(() => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                insuranceDetails: {
-                  ...prevValues.insuranceDetails,
-                  secondaryMedicalInsurance: isSecondaryMedicalInsuranceOpen ? getBaseMedicalInsuranceValues() : null
-                }
-              }));
-
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                insuranceDetails: {
-                  ...prevErrors.insuranceDetails,
-                  secondaryMedicalInsurance: null
-                }
-              }));
-              setTouched((prevTouched) => ({
-                ...prevTouched,
-                insuranceDetails: {
-                  ...prevTouched.insuranceDetails,
-                  secondaryMedicalInsurance: false
-                }
-              }));
-            }, [isSecondaryMedicalInsuranceOpen]);
-
-            React.useEffect(() => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                insuranceDetails: {
-                  ...prevValues.insuranceDetails,
-                  secondaryPharmacyInsurance: isSecondaryPharmacyInsuranceOpen ? getBasePharmacyInsuranceValues() : null
-                }
-              }));
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                insuranceDetails: {
-                  ...prevErrors.insuranceDetails,
-                  secondaryPharmacyInsurance: null
-                }
-              }));
-              setTouched((prevTouched) => ({
-                ...prevTouched,
-                insuranceDetails: {
-                  ...prevTouched.insuranceDetails,
-                  secondaryPharmacyInsurance: false
-                }
-              }));
-            }, [isSecondaryPharmacyInsuranceOpen]);
-
-            React.useEffect(() => {
-              setValues({ ...formValues });
-            }, [formValues]);
+            }, [values['payerDetailsRequired']]);
 
             return (
               <Form>
@@ -622,7 +614,7 @@ function Payer({ readOnly, hasPermission }) {
                               iconButton={false}
                               textButton={true}
                               Icon={AddIcon}
-                              onClick={() => setIsSecondaryMedicalInsuranceOpen(true)}
+                              onClick={() => handleOnOpenPanel('secondaryMedicalInsurance', getBaseMedicalInsuranceValues(), setValues, setErrors, setTouched)}
                             />
                           ) : (
                             <FormRenderer
@@ -650,7 +642,9 @@ function Payer({ readOnly, hasPermission }) {
                               iconButton={false}
                               textButton={true}
                               Icon={AddIcon}
-                              onClick={() => setIsSecondaryPharmacyInsuranceOpen(true)}
+                              onClick={() =>
+                                handleOnOpenPanel('secondaryPharmacyInsurance', getBasePharmacyInsuranceValues(), setValues, setErrors, setTouched)
+                              }
                             />
                           ) : (
                             <FormRenderer
